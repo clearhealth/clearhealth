@@ -294,6 +294,12 @@ class C_Patient extends Controller {
 			$payment->persist();
 			$this->payment_id = $payment->get('id');
 		}
+
+		if ($encounter->get('status') === "closed") {
+			$this->_generateClaim($encounter);
+			$encounter->set('status','open');
+			$encounter->persist();
+		}
 		
 	}
 
@@ -320,6 +326,173 @@ class C_Patient extends Controller {
 	function update_action($foreign_id = 0, $parent_id = 0) {
 		$this->coding_parent_id = $parent_id;
 		return $this->encounter_action_edit($this->get('encounter_id'));
+	}
+
+	function _generateClaim(&$encounter) {
+
+		require_once "SOAP/Client.php";
+
+		$wsdl = new SOAP_WSDL($GLOBALS['config']['freeb2_wsdl'],array('timeout'=>0));
+		$freeb2 = $wsdl->getProxy();
+
+		// get the objects were going to need
+		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
+		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
+		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
+
+		$cd =& ORDataObject::Factory('CodingData');
+		$codes = $cd->getCodeList($encounter->get('id'));
+
+
+		// create claim entity on clearhealh side
+		$claim =& ORDataObject::Factory('ClearhealthClaim');
+		$claim->set('encounter_id',$encounter->get('id'));
+		$claim->persist();
+
+		// generate a claim identifier from patient and encounter info
+		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'_'.$encounter->get('id');
+
+		// store id in clearhealth
+		$claim->set('identifier',$claim_identifier);
+		$claim->persist();
+
+		// open the claim
+		if (!$freeb2->openClaim($claim_identifier,'0','P')) {
+			trigger_error("Unable to open claim: $claim_identifier - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// add claimlines
+		// fixme: put an amount here
+		foreach($codes as $parent => $data) {
+			$claimline = array();
+			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
+			$claimline['procedure'] = $data['code'];
+			$claimline['modifier'] = $data['modifier'];
+			$claimline['units'] = $data['units'];
+			$cliamline['amount'] = 1;
+			$claimline['diagnoses'] = array();
+
+			$childCodes = $cd->getChildCodes($data['parent_id']);
+			foreach($childCodes as $val) {
+				$claimline['diagnoses'][] = $val['code'];
+			}
+			if (!$freeb2->registerData($claim_identifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ".$freeb2->claimLastError($claim_identifier));
+			}
+		}
+		
+
+		// register patient data
+		$patientData = $this->_cleanDataArray($patient->toArray());
+		if (!$freeb2->registerData($claim_identifier,'Patient',$patientData)) {
+			trigger_error("Unable to register patient data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register subscriber data
+		foreach($relationships as $r) {
+			$data = $r->toArray();
+			$tmp = $this->_cleanDataArray($data['subscriber']);
+			unset($data['subscriber']);
+			$data = array_merge($data,$tmp);
+			$freeb2->registerData($claim_identifier,'Subscriber',$data);
+		}
+
+		// register payers
+		$payerList = array();
+		$clearingHouseData = false;
+		foreach($relationships as $r) {
+			$program =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+			if (!isset($payerList[$program->get('company_id')])) {
+				$payerList[$program->get('company_id')] = true;
+				$data = $program->toArray();
+				$data = $this->_cleanDataArray($data['company']);
+				$data['identifier'] = $data['name'];
+				$freeb2->registerData($claim_identifier,'Payer',$data);
+				if ($clearingHouseData === false) {
+					$clearingHouseData = $data;
+				}
+			}
+		}
+
+		// register provider
+		// fixme: just using state_license_number for the identifier right now, should we be using a program specific one instead?
+		$providerData = $this->_cleanDataArray($provider->toArray());
+		if (!$freeb2->registerData($claim_identifier,'Provider',$providerData)) {
+			trigger_error("Unable to register provider data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register practice
+		$practiceData = $this->_cleanDataArray($practice->toArray());
+		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
+			trigger_error("Unable to register practice data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+
+		// register treating facility
+		$facilityData = $this->_cleanDataArray($facility->toArray());
+		if (!$freeb2->registerData($claim_identifier,'TreatingFacility',$facilityData)) {
+			trigger_error("Unable to register treating facility data - ".$freeb2->claimLastError($claim_identifier));
+		}
+		
+		// register referring provider
+		if (!$freeb2->registerData($claim_identifier,'ReferringProvider',$providerData)) {
+			trigger_error("Unable to register referring provider data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register supervising provider - provider
+		if (!$freeb2->registerData($claim_identifier,'SupervisingProvider',$providerData)) {
+			trigger_error("Unable to register supervising provider data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register responsible party - patient
+		if (!$freeb2->registerData($claim_identifier,'ResponsibleParty',$patientData)) {
+			trigger_error("Unable to register responsible party data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register biling facility - practice
+		if (!$freeb2->registerData($claim_identifier,'BillingFacility',$practiceData)) {
+			trigger_error("Unable to register billing facility data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+		// register clearinghouse - payer
+		if (!$freeb2->registerData($claim_identifier,'ClearingHouse',$clearingHouseData)) {
+			trigger_error("Unable to register clearing hosue data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
+
+		// close the claim
+		if (!$freeb2->closeClaim($claim_identifier,1)) {
+			trigger_Error("Failed to close claim:  $claim_identifier");
+		}
+
+
+	}
+
+	function _cleanDataArray($data) {
+		if (isset($address['date_of_birth'])) {
+			$data['dob'] = $data['date_of_birth'];
+		}
+		if (isset($data['address']['postal_code'])) {
+			$data['address']['zip'] = $data['address']['postal_code'];
+		}
+		if (isset($data['phone_number'])) {
+			$data['phone_number'] = $data['home_phone'];
+		}
+		if (isset($data['gender'])) { 
+			$data['gender'] = substr($data['gender'],0,1);
+		}
+		if (isset($data['address'])) {
+			unset($data['address']['id']);
+			unset($data['address']['name']);
+			unset($data['address']['postal_code']);
+			unset($data['address']['region']);
+		}
+		unset($data['person_id']);
+		unset($data['type']);
+		return $data;
 	}
 }
 ?>

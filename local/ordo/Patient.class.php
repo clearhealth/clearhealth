@@ -200,5 +200,11 @@ class Patient extends MergeDecorator {
 		$ds->setup($this->_db,$sql,$cols);
 		return $ds;
 	}
+
+	function toArray() {
+		$ret = $this->person->toArray();
+		$ret['record_number'] = $this->get('record_number');
+		return $ret;
+	}
 }
 ?>

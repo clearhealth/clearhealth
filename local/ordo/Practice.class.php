@@ -278,6 +278,14 @@ class Practice extends ORDataObject{
 			$this->populate();
 		}
 	}
+
+	function toArray() {
+		$ret = array();
+		$ret['name'] = $this->get('name');
+		$ret['address'] = $this->main_address->toArray();
+
+		return $ret;
+	}
 } // end of Class
 
 ?>

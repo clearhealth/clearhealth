@@ -355,5 +355,15 @@ class Company extends ORDataObject {
 		$addr =& ORDataObject::factory('CompanyAddress',$address_id,$this->id);
 		return $addr;
 	}
+
+	function toArray() {
+		$ret = array();
+		$ret['name'] = $this->get('name');
+
+		$address =& $this->address();
+		$ret['address'] = $address->toArray();
+
+		return $ret;
+	}
 } 
 ?>

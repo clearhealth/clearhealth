@@ -83,7 +83,7 @@ class CodingData extends ORDataObject {
 		$list = $this->_load_enum('code_modifier',false);
 		return array_flip($list);
 	}
-	
+
 	/**
 	 * Get an array of codes for a provided parent_id
 	 * 
@@ -93,7 +93,7 @@ class CodingData extends ORDataObject {
 		$parent_id = intval($parent_id);
 		$sql = "
 			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description  
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code  
 			FROM coding_data AS cd
 			LEFT JOIN codes AS c ON cd.code_id = c.code_id 
 			WHERE parent_id = $parent_id
@@ -123,11 +123,12 @@ class CodingData extends ORDataObject {
 		$foreign_id = intval($foreign_id);
 		$sql = "
 			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description  
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code  
 			FROM coding_data AS cd
 			LEFT JOIN codes AS c ON cd.parent_id = c.code_id 
 			WHERE foreign_id = $foreign_id
 			GROUP BY cd.parent_id
+			order by cd.coding_data_id
 				";
 		
 		$res = $this->_execute($sql);
@@ -146,9 +147,5 @@ class CodingData extends ORDataObject {
 
 		return $this->_parentCode;	
 	}
-
-
-	
-
 }
 ?>

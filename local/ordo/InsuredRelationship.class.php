@@ -61,6 +61,26 @@ class InsuredRelationship extends ORDataObject {
 	}
 
 	/**
+	 * return an array of InsuredRelationship objects that correspond to a personid
+	 */
+	function fromPersonId($person_id) {
+		settype($person_id,'int');
+		$ret = array();
+
+		$ir =& ORDataObject::Factory('InsuredRelationship');
+		$res = $ir->_execute("select * from $ir->_table where person_id = $person_id order by program_order");
+
+		$i = 0;
+		while($res && !$res->EOF) {
+			$ret[$i] = new InsuredRelationship();
+			$ret[$i]->populate_array($res->fields);
+			$res->MoveNext();
+			$i++;
+		}
+		return $ret;
+	}
+
+	/**
 	 * Populate the class from the db
 	 */
 	function populate() {
@@ -179,6 +199,16 @@ class InsuredRelationship extends ORDataObject {
 		$this->_execute("update $this->_table set program_order = program_order +1 where program_order = ".($this->get('program_order') -1)
 					." and person_id = ".(int)$this->get('person_id'));
 		$this->_execute("update $this->_table set program_order = program_order -1 where insured_relationship_id = ".(int)$this->get('id'));
+	}
+
+	function toArray() {
+		$ret = array();
+		$ret['group_name'] = $this->get('group_name');
+		$ret['group_number'] = $this->get('group_number');
+		$ret['relationship'] = $this->lookupSubscriberRelationship($this->get('subscriber_to_patient_relationship'));
+		$subscriber =& ORDataObject::factory('Person',$this->get('subscriber_id'));
+		$ret['subscriber'] = $subscriber->toArray();
+		return $ret;
 	}
 }
 ?>

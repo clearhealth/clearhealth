@@ -91,5 +91,12 @@ class Provider extends MergeDecorator {
 	}
 
 	/**#@-*/
+
+	function toArray() {
+		$ret = $this->person->toArray();
+		$ret['identifier'] = $this->get('state_license_number');
+
+		return $ret;
+	}
 }
 ?>

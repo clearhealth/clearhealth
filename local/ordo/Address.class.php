@@ -251,5 +251,24 @@ class Address extends ORDataObject {
 		    return "<div class='address'>$row[line1]\n$row[line2]\n<br>$row[city], $state $row[postal_code]</div>";
 	    }
     }
+
+	function lookupState($id) {
+		if ($this->_acache_state === false) {
+			$this->_acache_state = $this->getStateList();
+		}
+		if (isset($this->_acache_state[$id])) {
+			return $this->_acache_state[$id];
+		}
+	}
+
+	function toArray() {
+		$fields = array('id','name','line1','line2','city','region','state','postal_code');
+		$ret = array();
+		foreach($fields as $field) {
+			$ret[$field] = $this->get($field);
+		}
+		$ret['state'] = $this->lookupState($ret['state']);
+		return $ret;
+	}
 } 
 ?>

@@ -427,7 +427,7 @@ class Person extends ORDataObject {
 		settype($this->id,'int');
 
 		$type_id = 0;
-		$lookup = array_flip($this->_load_enum('number_type'));
+		$lookup = $this->_load_enum('number_type');
 		if (isset($lookup[$type])) {
 			$type_id = $lookup[$type];
 		}
@@ -469,11 +469,45 @@ class Person extends ORDataObject {
 			return $this->_tCache[$id];
 		}
 	}
+	var $_gCache = false;
+	function lookupGender($id) {
+		if ($this->_gCache === false) {
+			$this->_gCache = $this->getGenderList();
+		}
+		if (isset($this->_gCache[$id])) {
+			return $this->_gCache[$id];
+		}
+	}
+	var $_itCache = false;
+	function lookupIdentifierType($id) {
+		if ($this->_itCache === false) {
+			$this->_itCache = $this->getIdentifierTypeList();
+		}
+		if (isset($this->_itCache[$id])) {
+			return $this->_itCache[$id];
+		}
+	}
+
+
 	function idFromType($type) {
 		if ($this->_tCache === false) {
 			$this->_tCache = $this->getTypeList();
 		}
 		return array_search($type,$this->_tCache);
+	}
+
+	function toArray() {
+		$fields = array('person_id','salutation','first_name','middle_name','last_name','gender','date_of_birth','identifier','identifier_type','type');
+		$ret = array();
+		foreach($fields as $field) {
+			$ret[$field] = $this->get($field);
+		}
+		$address =& $this->address();
+		$ret['address'] = $address->toArray();
+		$ret['identifier_type'] = $this->lookupIdentifierType($ret['identifier_type']);
+		$ret['gender'] = $this->lookupGender($ret['gender']);
+		$ret['home_phone'] = $this->numberByType('Home',true);
+		return $ret;
 	}
 }
 ?>

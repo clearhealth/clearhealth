@@ -54,7 +54,7 @@ class Building extends ORDataObject{
 		$this->description = "";
 		$this->name = "";
 		$this->practice_id = "";
-		$this->address = new Address();
+		$this->address = new BuildingAddress();
 		$this->address->set_type("main");
 
 		$this->_table = "buildings";
@@ -63,11 +63,25 @@ class Building extends ORDataObject{
 			$this->populate();
 		}
 	}
+
+	function setup($id = 0) {
+		if ($id > 0) {
+			$this->set('id',$id);
+			$this->populate();
+		}
+	}
 	
 	function populate() {
 		parent::populate();
-        $ba = new BuildingAddress();
-        $this->address = $ba->addressList($this->id);
+		settype($this->id,'int');
+		$res = $this->_execute("select address_id from building_address where building_id = $this->id");
+		$address_id = 0;
+		if (isset($res->fields['address_id'])) {
+			$address_id = $res->fields['address_id'];
+		}
+		$this->address =& ORDataObject::factory('BuildingAddress',$address_id,$this->id);
+        //$ba = new BuildingAddress();
+        //$this->address = $ba->addressList($this->id);
 	}
 
 	function persist() {
@@ -216,6 +230,13 @@ class Building extends ORDataObject{
 		return $ret;
 	}
 
+	function toArray() {
+		$ret = array();
+		$ret['name'] = $this->get('name');
+		$ret['address'] = $this->address->toArray();
+
+		return $ret;
+	}
 
 } // end of Class
 

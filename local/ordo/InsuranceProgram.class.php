@@ -123,5 +123,14 @@ class InsuranceProgram extends ORDataObject {
 		$ds->registerFilter('payer_type',array(&$this,'lookupPayerType'));
 		return $ds;
 	}
+
+	function toArray() {
+		$ret = array();
+		$ret['name'] = $this->get('name');
+		$ret['payer_type'] = $this->lookupPayerType($this->get('payer_type'));
+		$company =& ORDataObject::factory('Company',$this->get('company_id'));
+		$ret['company'] = $company->toArray();
+		return $ret;
+	}
 }
 ?>
