@@ -58,7 +58,7 @@ class C_PatientFinder extends Controller {
 			$join_type = "LEFT";
 		}
 		//get the db connection and pass it to the helper functions
-		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type FROM patient pt"
+		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type, concat(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string` FROM patient pt"
 		." $join_type JOIN person as psn on psn.person_id=pt.person_id left join person_type ptype using(person_id)";
 		//parse search_string to determine what type of search we have
 		$pos = strpos($search_string, ',');
@@ -96,7 +96,7 @@ class C_PatientFinder extends Controller {
 					$row['person_type'] = 1;
 				}
 				$result_array[$key]['person_type'] = $person->lookupType($row['person_type']);
-				$result_array[$key]['pubpid'] = $result_array[$key]['person_type'] ;
+				$result_array[$key]['string'] = $result_array[$key]['name'] .'('.$result_array[$key]['person_type'].')';
 			}
 		}
 		$this->assign('search_string',$search_string);

@@ -15,7 +15,6 @@ function AutoComplete(getDataFunc, textId, numId, divId, highlight, timeout){
 	this.itemSet = false;
 	this.highlight = highlight;
 	this.timeout = timeout;
-	this.lastKeyTime = 0;
 
 	this.oText.AutoComplete = this;
 	this.oText.onblur = AutoComplete.prototype.onTextBlur;
@@ -53,15 +52,15 @@ AutoComplete.prototype.draw = function(){
 	this.oIdText.value = '';
 
 	if(this.choices.length == 1){
-		this.oText.value = this.choices[0]['name']+ ' #' + this.choices[0]['pubpid'];
+		this.oText.value = this.choices[0]['string'];
 		this.oIdText.value = this.choices[0]['id'];
 		this.oText.focus();
 		this.oText.select();
 	}else if(this.choices.length > 1){
 		// Position the div
 		this.oDiv.style.position='absolute';
-		//this.oDiv.style.top = eval(this.getTopPos() + 20) + "px";
-		//this.oDiv.style.left = this.getLeftPos() + "px";
+		this.oDiv.style.top = eval(this.getTopPos() + 20) + "px";
+		this.oDiv.style.left = this.getLeftPos() + "px";
 
 		// add each string to the popup-div
 		var i, n = this.choices.length;
@@ -72,14 +71,12 @@ AutoComplete.prototype.draw = function(){
 
 			if(this.highlight){
 				// Highlight the matching text
-				var re = new RegExp('('+this.searchString+')', 'ig');
-				var cstr = this.choices[i]['name'] + ' ' + this.choices[i]['DOB'] + ' ' + this.choices[i]['pubpid'] + ' ' + this.choices[i]['ss'];
-				var newstr = cstr.replace(re, "<SPAN CLASS=AutoCompleteMatchingText>$1</SPAN>");
-
+				var re = new RegExp('('+this.searchString+')', 'i');
+				var newstr = this.choices[i]['string'].replace(re, "<SPAN CLASS=AutoCompleteMatchingText>$1</SPAN>");
 				//alert(this.searchString + '\n\n' + newstr);
 				oDiv.innerHTML = newstr;
 			}else{
-				oDiv.innerHTML = this.choices[i]['name'];
+				oDiv.innerHTML = this.choices[i]['string'];
 			}
 			if(i == this.index)
 				oDiv.className = "AutoCompleteHighlight";
@@ -116,18 +113,12 @@ AutoComplete.prototype.onKeyUp = function(evt){
 			this.AutoComplete.draw();
 		}
 	}else{
-		if(typeof(this.lastKeyTime) == 'undefined' || (evt.timeStamp - this.lastKeyTime) < 1400) {
-        	//do nothing as the user is typing speedily
-        	this.lastKeyTime = evt.timeStamp;
-        	clearTimeout(this.timerid);
-            this.timerid = setTimeout('document.getElementById(\''+this.AutoComplete.textFieldId+'\').AutoComplete.getData()', this.AutoComplete.timeout);
+		if(!this.AutoComplete.timerSet){
+			setTimeout('document.getElementById(\''+this.AutoComplete.textFieldId+'\').AutoComplete.getData()', this.AutoComplete.timeout);
+			this.AutoComplete.timerSet = true;
 		}
-        else {
-        	this.lastKeyTime = evt.timeStamp;
-        	clearTimeout(this.timerid);
-        	this.AutoComplete.getData();
-        }
-    }
+		//this.AutoComplete.getData();
+	}
 }
 
 AutoComplete.prototype.onKeyDown = function(evt){
@@ -140,7 +131,7 @@ AutoComplete.prototype.onKeyDown = function(evt){
 		return true;
 
 	if(evt.keyCode == 9 || evt.keyCode == 13){
-		this.value = this.AutoComplete.choices[this.AutoComplete.index]['name'] + ' #' + this.AutoComplete.choices[this.AutoComplete.index]['pubpid'];
+		this.value = this.AutoComplete.choices[this.AutoComplete.index]['string'];
 		this.AutoComplete.oIdText.value = this.AutoComplete.choices[this.AutoComplete.index]['id'];
 		//alert("Set ID to " + this.AutoComplete.choices[this.AutoComplete.index]['id']);
 		//if(event.cancelBubble) event.cancelBubble = true;
@@ -156,8 +147,8 @@ AutoComplete.prototype.onKeyDown = function(evt){
 }
 
 AutoComplete.prototype.getData = function(){
-	if (!this.oText.value.length > 0) return;
 	this.itemSet = false;
+	this.timerSet = false;
 	var results = this.getDataFunc(this.oText.value);
 	this.index = 0;
 	this.searchString = this.oText.value;
@@ -176,26 +167,25 @@ AutoComplete.prototype.clear = function(){
 }
 
 // Item div event handlers
-AutoComplete.prototype.onDivMouseDown = function(e){
+AutoComplete.prototype.onDivMouseDown = function(){
 	//this.AutoComplete.oText.value = this.innerHTML;
 	for(i = 0; i < this.AutoComplete.choices.length; i++){
 		var htmlstr = '';
 		var newstr = '';
 		if(this.AutoComplete.highlight){
 			//alert(this.innerHTML);
-			var re = new RegExp('('+this.AutoComplete.searchString+')', 'ig');
-			var cstr = this.AutoComplete.choices[i]['name'] + ' ' + this.AutoComplete.choices[i]['DOB'] + ' ' + this.AutoComplete.choices[i]['pubpid'] + ' ' + this.AutoComplete.choices[i]['ss'];
-			newstr = cstr.replace(re, "<SPAN CLASS=AutoCompleteMatchingText>$1</SPAN>");
+			var re = new RegExp('('+this.AutoComplete.searchString+')', 'i');
+			newstr = this.AutoComplete.choices[i]['string'].replace(re, "<SPAN CLASS=AutoCompleteMatchingText>$1</SPAN>");
 			// Strip out double quotes, they are put in incossitently across browsers
 			var re2 = new RegExp('"', 'g');
 			htmlstr = this.innerHTML.replace(re2, '');
 		}else{
-			newstr = this.AutoComplete.choices[i]['name'] + ' ' + this.AutoComplete.choices[i]['DOB'] + ' ' + this.AutoComplete.choices[i]['pubpid'] + ' ' + this.AutoComplete.choices[i]['ss'];
+			newstr = this.AutoComplete.choices[i]['string'];
 			htmlstr = this.innerHTML;
 		}
 		//alert(newstr+'\n\n'+htmlstr);
 		if(newstr.toLowerCase() == htmlstr.toLowerCase()){
-			this.AutoComplete.oText.value = this.AutoComplete.choices[i]['name'];
+			this.AutoComplete.oText.value = this.AutoComplete.choices[i]['string'];
 			this.AutoComplete.oIdText.value = this.AutoComplete.choices[i]['id'];
 			this.AutoComplete.itemSet = true;
 		}
