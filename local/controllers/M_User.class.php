@@ -4,6 +4,8 @@ require_once APP_ROOT . "/local/controllers/M_Patient.class.php";
 
 class M_User extends M_Patient {
 
+	var $messageType = "User";
+
 	function process_update($id = 0) {
 		parent::process_update($id);
 		$this->controller->person_id = $this->controller->patient_id;

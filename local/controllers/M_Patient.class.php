@@ -10,6 +10,8 @@ require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
  */
 class M_Patient extends Manager {
 
+	var $messageType = "Patient";
+
 	/**
 	 * Handle an update from an edit or an add
 	 */
@@ -33,10 +35,10 @@ class M_Patient extends Manager {
 		$user->persist();
 		 */
 		if ($id == 0) {
-			$this->messages->addMessage('Patient Created');
+			$this->messages->addMessage($this->messageType.' Created');
 		}
 		else {
-			$this->messages->addmessage('Patient Update');
+			$this->messages->addmessage($this->messageType.' Update');
 		}
 
 		$t_list = $patient->getTypeList();
