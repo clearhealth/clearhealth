@@ -72,6 +72,7 @@ div.waitingActive {
 .AutoCompleteBackground
 {
         background-color: white;
+	z-index: 10;
 }
 .AutoCompleteHighlight {
         background-color: #CCCCCC !important;
