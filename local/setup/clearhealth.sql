@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 19, 2005 at 08:24 PM
+-- Generation Time: Mar 20, 2005 at 05:05 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -282,6 +282,7 @@ INSERT INTO `clearhealth_claim` VALUES (8163, 2093, '8163-14_2093', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8164, 2093, '8164-14_2093', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8171, 8165, '8171-14_8165', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8173, 2093, '8173-14_2093', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8216, 8214, '8216-14_8214', 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -297,6 +298,7 @@ CREATE TABLE `coding_data` (
   `code_id` int(11) NOT NULL default '0',
   `modifier` int(11) NOT NULL default '0',
   `units` float(5,2) NOT NULL default '1.00',
+  `fee` float(11,2) NOT NULL default '0.00',
   PRIMARY KEY  (`coding_data_id`)
 ) TYPE=MyISAM;
 
@@ -304,10 +306,14 @@ CREATE TABLE `coding_data` (
 -- Dumping data for table `coding_data`
 -- 
 
-INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00);
+INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8189, 8184, 26759, 3, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8213, 8184, 26761, 134, 1, 1.00, 45.00);
+INSERT INTO `coding_data` VALUES (8212, 8184, 26761, 1, 1, 1.00, 45.00);
+INSERT INTO `coding_data` VALUES (8215, 8214, 26761, 3, 1, 1.00, 45.00);
 
 -- --------------------------------------------------------
 
@@ -744,6 +750,8 @@ CREATE TABLE `encounter` (
 
 INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-07 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8165, 1, 1707, 1123, '2005-03-18 00:00:00', 1120, '00000000000000', 0, 'closed', 0);
+INSERT INTO `encounter` VALUES (8184, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
+INSERT INTO `encounter` VALUES (8214, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 
 -- --------------------------------------------------------
 
@@ -840,6 +848,249 @@ INSERT INTO `events` VALUES (1807, 'Normal Hours', '', '', '', '', 1806);
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `fbaddress`
+-- 
+
+DROP TABLE IF EXISTS `fbaddress`;
+CREATE TABLE `fbaddress` (
+  `address_id` int(11) NOT NULL default '0',
+  `external_id` int(11) NOT NULL default '0',
+  `type` enum('default') NOT NULL default 'default',
+  `name` varchar(100) NOT NULL default '',
+  `line1` varchar(255) NOT NULL default '',
+  `line2` varchar(255) NOT NULL default '',
+  `city` varchar(255) NOT NULL default '',
+  `state` varchar(5) NOT NULL default '0',
+  `zip` varchar(15) NOT NULL default '',
+  PRIMARY KEY  (`address_id`)
+) TYPE=MyISAM COMMENT='An address that can be for a company or a person';
+
+-- 
+-- Dumping data for table `fbaddress`
+-- 
+
+INSERT INTO `fbaddress` VALUES (8285, 8284, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8287, 8286, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8289, 8288, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8295, 8294, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8297, 8296, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8299, 8298, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8305, 8304, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8307, 8306, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8309, 8308, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8224, 8223, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8226, 8225, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8228, 8227, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8230, 8229, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8232, 8231, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8234, 8233, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8236, 8235, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8238, 8237, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8240, 8239, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8242, 8241, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8244, 8243, '', '', '', '', '', '', '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbclaim`
+-- 
+
+DROP TABLE IF EXISTS `fbclaim`;
+CREATE TABLE `fbclaim` (
+  `claim_id` int(11) NOT NULL default '0',
+  `claim_identifier` varchar(255) NOT NULL default '',
+  `revision` int(11) NOT NULL default '0',
+  `open` enum('closed','open') NOT NULL default 'closed',
+  `timestamp` timestamp(14) NOT NULL,
+  PRIMARY KEY  (`claim_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `fbclaim`
+-- 
+
+INSERT INTO `fbclaim` VALUES (8281, '8280-12_8277', 1, 'open', '20050320000000');
+INSERT INTO `fbclaim` VALUES (8291, '8290-12_8277', 1, 'open', '20050320000000');
+INSERT INTO `fbclaim` VALUES (8301, '8300-12_8277', 1, 'open', '20050320000000');
+INSERT INTO `fbclaim` VALUES (8217, '8216-14_8214', 1, 'open', '20050320000000');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbclaimline`
+-- 
+
+DROP TABLE IF EXISTS `fbclaimline`;
+CREATE TABLE `fbclaimline` (
+  `claimline_id` int(11) NOT NULL default '0',
+  `claim_id` int(11) NOT NULL default '0',
+  `procedure` varchar(10) NOT NULL default '',
+  `modifier` varchar(4) NOT NULL default '',
+  `amount` float(11,2) NOT NULL default '0.00',
+  `units` float(5,2) NOT NULL default '0.00',
+  `comment` varchar(80) NOT NULL default '',
+  `comment_type` varchar(10) NOT NULL default '',
+  `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`claimline_id`),
+  KEY `claim_id` (`claim_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `fbclaimline`
+-- 
+
+INSERT INTO `fbclaimline` VALUES (8282, 8281, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (8292, 8291, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (8302, 8301, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (8218, 8217, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbcompany`
+-- 
+
+DROP TABLE IF EXISTS `fbcompany`;
+CREATE TABLE `fbcompany` (
+  `company_id` int(11) NOT NULL default '0',
+  `claim_id` int(11) NOT NULL default '0',
+  `identifier` varchar(25) NOT NULL default '',
+  `identifier_type` varchar(10) NOT NULL default '',
+  `type` varchar(50) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
+  `phone_number` varchar(45) NOT NULL default '',
+  PRIMARY KEY  (`company_id`)
+) TYPE=MyISAM COMMENT='Base Company record most of the data is in linked tables';
+
+-- 
+-- Dumping data for table `fbcompany`
+-- 
+
+INSERT INTO `fbcompany` VALUES (8288, 8281, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (8298, 8291, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (8308, 8301, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (8227, 8217, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (8231, 8217, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (8233, 8217, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (8241, 8217, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (8243, 8217, 'Grand Insurance Co', '24', 'FBClearingHouse', 'Grand Insurance Co', '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbdiagnoses`
+-- 
+
+DROP TABLE IF EXISTS `fbdiagnoses`;
+CREATE TABLE `fbdiagnoses` (
+  `id` int(11) NOT NULL default '0',
+  `claimline_id` int(11) NOT NULL default '0',
+  `diagnosis` varchar(15) NOT NULL default '',
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `fbdiagnoses`
+-- 
+
+INSERT INTO `fbdiagnoses` VALUES (8283, 8282, '272.2');
+INSERT INTO `fbdiagnoses` VALUES (8293, 8292, '272.2');
+INSERT INTO `fbdiagnoses` VALUES (8303, 8302, '272.2');
+INSERT INTO `fbdiagnoses` VALUES (8219, 8218, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (8220, 8218, '011.34');
+INSERT INTO `fbdiagnoses` VALUES (8221, 8218, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (8222, 8218, '001.9');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fblatest_revision`
+-- 
+
+DROP TABLE IF EXISTS `fblatest_revision`;
+CREATE TABLE `fblatest_revision` (
+  `claim_identifier` varchar(255) NOT NULL default '',
+  `revision` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`claim_identifier`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `fblatest_revision`
+-- 
+
+INSERT INTO `fblatest_revision` VALUES ('8280-12_8277', 1);
+INSERT INTO `fblatest_revision` VALUES ('8290-12_8277', 1);
+INSERT INTO `fblatest_revision` VALUES ('8300-12_8277', 1);
+INSERT INTO `fblatest_revision` VALUES ('8216-14_8214', 1);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbperson`
+-- 
+
+DROP TABLE IF EXISTS `fbperson`;
+CREATE TABLE `fbperson` (
+  `person_id` int(11) NOT NULL default '0',
+  `claim_id` int(11) NOT NULL default '0',
+  `type` varchar(50) NOT NULL default '',
+  `identifier` varchar(100) NOT NULL default '',
+  `identifier_type` varchar(10) NOT NULL default '',
+  `record_number` varchar(255) NOT NULL default '',
+  `salutation` varchar(20) NOT NULL default '',
+  `last_name` varchar(100) NOT NULL default '',
+  `first_name` varchar(100) NOT NULL default '',
+  `middle_name` varchar(50) NOT NULL default '',
+  `gender` enum('M','F','O') default NULL,
+  `date_of_birth` date NOT NULL default '0000-00-00',
+  `phone_number` varchar(45) NOT NULL default '',
+  `comment` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`person_id`)
+) TYPE=MyISAM COMMENT='A person in the system';
+
+-- 
+-- Dumping data for table `fbperson`
+-- 
+
+INSERT INTO `fbperson` VALUES (8284, 8281, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8286, 8281, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8294, 8291, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8296, 8291, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8304, 8301, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8306, 8301, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8223, 8217, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (8225, 8217, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (8229, 8217, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8235, 8217, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8237, 8217, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8239, 8217, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fbpractice`
+-- 
+
+DROP TABLE IF EXISTS `fbpractice`;
+CREATE TABLE `fbpractice` (
+  `practice_id` int(11) NOT NULL default '0',
+  `claim_id` int(11) NOT NULL default '0',
+  `billing_contact_person_id` int(11) NOT NULL default '0',
+  `treating_location_company_company_id` int(11) NOT NULL default '0',
+  `billing_location_company_id` int(11) NOT NULL default '0',
+  `provider_person_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`practice_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `fbpractice`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `fee_schedule`
 -- 
 
@@ -911,6 +1162,17 @@ INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (26752, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 45, '');
 INSERT INTO `fee_schedule_data` VALUES (26761, 1, 2053, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (26760, 1, 2053, 23, '');
+INSERT INTO `fee_schedule_data` VALUES (26759, 1, 2053, 26, '');
+INSERT INTO `fee_schedule_data` VALUES (26758, 1, 2053, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26757, 1, 2053, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26755, 1, 2053, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26750, 1, 2053, 12, '');
+INSERT INTO `fee_schedule_data` VALUES (26749, 1, 2053, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (26748, 1, 2053, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (26754, 1, 2053, 18, '');
+INSERT INTO `fee_schedule_data` VALUES (26753, 1, 2053, 90, '');
+INSERT INTO `fee_schedule_data` VALUES (26751, 1, 2053, 5, '');
 
 -- --------------------------------------------------------
 
@@ -974,8 +1236,6 @@ CREATE TABLE `form_data` (
 -- Dumping data for table `form_data`
 -- 
 
-INSERT INTO `form_data` VALUES (809, 800, 0, '2005-03-04 16:54:38');
-INSERT INTO `form_data` VALUES (1010, 800, 0, '2005-03-08 19:03:03');
 INSERT INTO `form_data` VALUES (2057, 800, 1110, '2005-03-14 15:09:50');
 
 -- --------------------------------------------------------
@@ -4257,6 +4517,64 @@ INSERT INTO `ownership` VALUES (8178, 1);
 INSERT INTO `ownership` VALUES (8179, 1);
 INSERT INTO `ownership` VALUES (8180, 1);
 INSERT INTO `ownership` VALUES (8181, 1);
+INSERT INTO `ownership` VALUES (8182, 1);
+INSERT INTO `ownership` VALUES (8184, 1);
+INSERT INTO `ownership` VALUES (8185, 1);
+INSERT INTO `ownership` VALUES (8186, 1);
+INSERT INTO `ownership` VALUES (8187, 1);
+INSERT INTO `ownership` VALUES (8188, 1);
+INSERT INTO `ownership` VALUES (8189, 1);
+INSERT INTO `ownership` VALUES (8190, 1);
+INSERT INTO `ownership` VALUES (8191, 1);
+INSERT INTO `ownership` VALUES (8192, 1);
+INSERT INTO `ownership` VALUES (8193, 1);
+INSERT INTO `ownership` VALUES (8194, 1);
+INSERT INTO `ownership` VALUES (8195, 1);
+INSERT INTO `ownership` VALUES (8196, 1);
+INSERT INTO `ownership` VALUES (8197, 1);
+INSERT INTO `ownership` VALUES (8198, 1);
+INSERT INTO `ownership` VALUES (8199, 1);
+INSERT INTO `ownership` VALUES (8200, 1);
+INSERT INTO `ownership` VALUES (8201, 1);
+INSERT INTO `ownership` VALUES (8202, 1);
+INSERT INTO `ownership` VALUES (8203, 1);
+INSERT INTO `ownership` VALUES (8204, 1);
+INSERT INTO `ownership` VALUES (8205, 1);
+INSERT INTO `ownership` VALUES (8206, 1);
+INSERT INTO `ownership` VALUES (8207, 1);
+INSERT INTO `ownership` VALUES (8208, 1);
+INSERT INTO `ownership` VALUES (8209, 1);
+INSERT INTO `ownership` VALUES (8210, 1);
+INSERT INTO `ownership` VALUES (8211, 1);
+INSERT INTO `ownership` VALUES (8212, 1);
+INSERT INTO `ownership` VALUES (8213, 1);
+INSERT INTO `ownership` VALUES (8214, 1);
+INSERT INTO `ownership` VALUES (8215, 1);
+INSERT INTO `ownership` VALUES (8216, 1);
+INSERT INTO `ownership` VALUES (8217, 1);
+INSERT INTO `ownership` VALUES (8218, 1);
+INSERT INTO `ownership` VALUES (8223, 1);
+INSERT INTO `ownership` VALUES (8224, 1);
+INSERT INTO `ownership` VALUES (8225, 1);
+INSERT INTO `ownership` VALUES (8226, 1);
+INSERT INTO `ownership` VALUES (8227, 1);
+INSERT INTO `ownership` VALUES (8228, 1);
+INSERT INTO `ownership` VALUES (8229, 1);
+INSERT INTO `ownership` VALUES (8230, 1);
+INSERT INTO `ownership` VALUES (8231, 1);
+INSERT INTO `ownership` VALUES (8232, 1);
+INSERT INTO `ownership` VALUES (8233, 1);
+INSERT INTO `ownership` VALUES (8234, 1);
+INSERT INTO `ownership` VALUES (8235, 1);
+INSERT INTO `ownership` VALUES (8236, 1);
+INSERT INTO `ownership` VALUES (8237, 1);
+INSERT INTO `ownership` VALUES (8238, 1);
+INSERT INTO `ownership` VALUES (8239, 1);
+INSERT INTO `ownership` VALUES (8240, 1);
+INSERT INTO `ownership` VALUES (8241, 1);
+INSERT INTO `ownership` VALUES (8242, 1);
+INSERT INTO `ownership` VALUES (8243, 1);
+INSERT INTO `ownership` VALUES (8244, 1);
 
 -- --------------------------------------------------------
 
@@ -4800,6 +5118,7 @@ INSERT INTO `report_templates` VALUES (1803, 0, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (1804, 0, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (1805, 0, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (8169, 8168, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (8183, 8182, 'Default Template', 'yes');
 
 -- --------------------------------------------------------
 
@@ -4816,15 +5135,16 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=8169 ;
+) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=8183 ;
 
 -- 
 -- Dumping data for table `reports`
 -- 
 
-INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from user', '');
+INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from user where user_id = [user_id]', '');
 INSERT INTO `reports` VALUES (791, '', '', 'Codes with Fee Schedule', 'select code, code_text, data as fee from codes c inner join fee_schedule_data fsd using(code_id)', 'Codes that have had a feed added to them');
 INSERT INTO `reports` VALUES (8168, '', '', 'Multi-query test', '---[users]---\r\nselect * from user\r\n---[reports]---\r\nselect * from reports', '');
+INSERT INTO `reports` VALUES (8182, '', '', 'Sub Query test', 'select * from encounter where treating_person_id = ''[provider:query-select p.person_id, concat_ws('' '',last_name,first_name) name from person p inner join person_type using(person_id) where person_type = 2]''', '');
 
 -- --------------------------------------------------------
 
@@ -4898,7 +5218,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (8181);
+INSERT INTO `sequences` VALUES (8244);
 
 -- --------------------------------------------------------
 
@@ -5130,6 +5450,14 @@ INSERT INTO `storage_date` VALUES (808, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (809, 'test_data', '2005-03-04');
 INSERT INTO `storage_date` VALUES (1010, 'test_data', '2005-03-09');
 INSERT INTO `storage_date` VALUES (2057, 'test_data', '2005-03-15');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8223, '0', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -5182,6 +5510,26 @@ INSERT INTO `storage_string` VALUES (1072, 'email', '');
 INSERT INTO `storage_string` VALUES (1113, 'email', '');
 INSERT INTO `storage_string` VALUES (2049, 'email', '');
 INSERT INTO `storage_string` VALUES (2057, 'test_string', 'Yep a test');
+INSERT INTO `storage_string` VALUES (8217, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8217, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8217, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8217, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8223, 'weight', '');
+INSERT INTO `storage_string` VALUES (8223, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8225, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (8225, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (8225, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (8227, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8227, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8229, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8229, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8231, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8231, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8231, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8231, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8233, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8235, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8235, 'referral_type', 'DN');
 
 -- --------------------------------------------------------
 
@@ -5213,6 +5561,25 @@ INSERT INTO `superbill_data` VALUES (1005, 1, 26761, 1);
 INSERT INTO `superbill_data` VALUES (1006, 1, 26752, 1);
 INSERT INTO `superbill_data` VALUES (1007, 1, 26751, 1);
 INSERT INTO `superbill_data` VALUES (1008, 1, 26758, 1);
+INSERT INTO `superbill_data` VALUES (8190, 1, 3, 1);
+INSERT INTO `superbill_data` VALUES (8191, 1, 8, 0);
+INSERT INTO `superbill_data` VALUES (8192, 1, 13, 0);
+INSERT INTO `superbill_data` VALUES (8193, 1, 18, 0);
+INSERT INTO `superbill_data` VALUES (8194, 1, 37, 0);
+INSERT INTO `superbill_data` VALUES (8195, 1, 39, 0);
+INSERT INTO `superbill_data` VALUES (8196, 1, 41, 0);
+INSERT INTO `superbill_data` VALUES (8197, 1, 43, 0);
+INSERT INTO `superbill_data` VALUES (8198, 1, 45, 0);
+INSERT INTO `superbill_data` VALUES (8199, 1, 42, 0);
+INSERT INTO `superbill_data` VALUES (8200, 1, 40, 0);
+INSERT INTO `superbill_data` VALUES (8201, 1, 38, 0);
+INSERT INTO `superbill_data` VALUES (8202, 1, 36, 0);
+INSERT INTO `superbill_data` VALUES (8203, 1, 35, 0);
+INSERT INTO `superbill_data` VALUES (8204, 1, 1, 1);
+INSERT INTO `superbill_data` VALUES (8205, 1, 2, 1);
+INSERT INTO `superbill_data` VALUES (8206, 1, 4, 1);
+INSERT INTO `superbill_data` VALUES (8207, 1, 5, 1);
+INSERT INTO `superbill_data` VALUES (8208, 1, 6, 1);
 
 -- --------------------------------------------------------
 
