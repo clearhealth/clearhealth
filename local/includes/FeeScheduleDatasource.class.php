@@ -43,7 +43,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 			$cols .= ", `fsd_$field`.data as `$field`, `fsd_$field`.mapped_code as `" . $field . "_mapped_code`";
 			$labels[$field] = $data['label'];
 			$labels[$field . "_mapped_code"] = "Mapped Code";
-			$from .= " left join fee_schedule_data `fsd_$field` on c.code_id = `fsd_$field`.code_id and fsd_new_schedule.fee_schedule_id = " . $data['id'] . " ";
+			$from .= " left join fee_schedule_data `fsd_$field` on c.code_id = `fsd_$field`.code_id and `fsd_$field`.fee_schedule_id = " . $data['id'] . " ";
 			
 			$this->meta['editableMap'][$field] = $field;
 			$this->meta['editableMap'][$field ."_mapped_code"] = $field . "_mapped_code";
