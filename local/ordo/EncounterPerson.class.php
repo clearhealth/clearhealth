@@ -78,6 +78,13 @@ class EncounterPerson extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function get_person() {
+		if (!empty($this->person_id)) {
+			$person =& ORDataObject::factory('Person',$this->person_id);
+			return $person->get('first_name').' '.$person->get('last_name').' ('.$person->lookupType($person->get('type')).')';
+		}
+	}
+
 	/**#@-*/
 
 	function encounterPersonList($encounter_id) {

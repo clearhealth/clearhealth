@@ -459,5 +459,15 @@ class Person extends ORDataObject {
 		$ir =& ORDataObject::Factory('InsuredRelationship');
 		return $ir->insuredRelationshipList($this->get('id'));
 	}
+
+	var $_tCache = false;
+	function lookupType($id) {
+		if ($this->_tCache === false) {
+			$this->_tCache = $this->getTypeList();
+		}
+		if (isset($this->_tCache[$id])) {
+			return $this->_tCache[$id];
+		}
+	}
 }
 ?>
