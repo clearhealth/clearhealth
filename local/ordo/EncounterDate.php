@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: encounter_dates
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -13,17 +13,17 @@ require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
 /**#@-*/
 
 /**
- * Object Relational Persistence Mapping Class for table: encounter_dates
+ * Object Relational Persistence Mapping Class for table: encounter_date
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
-class Encounter_dates extends ORDataObject {
+class EncounterDate extends ORDataObject {
 
 	/**#@+
-	 * Fields of table: encounter_dates mapped to class members
+	 * Fields of table: encounter_date mapped to class members
 	 */
-	var $id		= '';
-	var $encounter_id		= '';
+	var $id			= '';
+	var $encounter_id	= '';
 	var $title		= '';
 	var $date		= '';
 	/**#@-*/
@@ -33,14 +33,14 @@ class Encounter_dates extends ORDataObject {
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
-	function Encounter_dates($db = null) {
+	function EncounterDate($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter_dates';
+		$this->_table = 'encounter_date';
 		$this->_sequence_name = 'sequences';	
 	}
 
 	/**
-	 * Called by factory with passed in parameters, you can specify the primary_key of Encounter_dates with this
+	 * Called by factory with passed in parameters, you can specify the primary_key of Encounter_date with this
 	 */
 	function setup($id = 0) {
 		if ($id > 0) {
@@ -53,25 +53,25 @@ class Encounter_dates extends ORDataObject {
 	 * Populate the class from the db
 	 */
 	function populate() {
-		parent::populate('encounter_dates_id');
+		parent::populate('encounter_date_id');
 	}
 
 	/**#@+
-	 * Getters and Setters for Table: encounter_dates
+	 * Getters and Setters for Table: encounter_date
 	 */
 
 	
 	/**
-	 * Getter for Primary Key: encounter_dates_id
+	 * Getter for Primary Key: encounter_date_id
 	 */
-	function get_encounter_dates_id() {
+	function get_encounter_date_id() {
 		return $this->id;
 	}
 
 	/**
-	 * Setter for Primary Key: encounter_dates_id
+	 * Setter for Primary Key: encounter_date_id
 	 */
-	function set_encounter_dates_id($id)  {
+	function set_encounter_date_id($id)  {
 		$this->id = $id;
 	}
 

@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: encounter
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,21 +15,23 @@ require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: encounter
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class Encounter extends ORDataObject {
 
 	/**#@+
 	 * Fields of table: encounter mapped to class members
 	 */
-	var $id		= '';
+	var $id				= '';
 	var $encounter_reason		= '';
+	var $patient_id			= '';
 	var $building_id		= '';
 	var $date_of_treatment		= '';
 	var $treating_person_id		= '';
-	var $timestamp		= '';
-	var $last_change_user_id		= '';
-	var $status		= '';
+	var $timestamp			= '';
+	var $last_change_user_id	= '';
+	var $status			= '';
+	var $occurence_id		= '';
 	/**#@-*/
 
 
