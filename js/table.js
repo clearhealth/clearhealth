@@ -257,13 +257,11 @@ clniTable.prototype.dropFilter = function(field) {
 
 clniTable.prototype.store = function(cell) {
 	this.dataObject.Sync();
-	
 	var status = this.dataObject.updatefield(cell.updateKey, cell.field, cell.firstChild.value, cell.passAlong);
 	this.data[cell.rowNum][cell.field] = cell.firstChild.value;
 }
 clniTable.prototype.storeSimple = function(cell,value) {
 	this.dataObject.Sync();
-	
 	var status = this.dataObject.updatefield(cell.updateKey,cell.field,value,cell.passAlong);
 	this.data[cell.rowNum][cell.field] = value;
 }
@@ -347,6 +345,7 @@ function makeEditable() {
 		this.appendChild(input);
 		this.parentNode.editing = true;
 		this.editing = true;
+		input.focus();
 	}
 }
 
