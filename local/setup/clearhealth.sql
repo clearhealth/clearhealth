@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 07, 2005 at 11:28 PM
+-- Generation Time: Mar 08, 2005 at 11:21 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -498,6 +498,7 @@ CREATE TABLE `enumeration` (
   `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
   `provider_number_type` enum('State License') NOT NULL default 'State License',
   `subscriber_to_patient_relationship` enum('Self','Mother','Father') NOT NULL default 'Self',
+  `payer_type` enum('medicare') NOT NULL default 'medicare',
   PRIMARY KEY  (`name`)
 ) TYPE=MyISAM COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
 
@@ -505,21 +506,22 @@ CREATE TABLE `enumeration` (
 -- Dumping data for table `enumeration`
 -- 
 
-INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('assigning', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('relation_of_informat', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('provider_number_type', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
-INSERT INTO `enumeration` VALUES ('subscriber_to_patien', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('assigning', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('relation_of_informat', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('provider_number_type', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('subscriber_to_patien', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
+INSERT INTO `enumeration` VALUES ('payer_type', 'Payer Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare');
 
 -- --------------------------------------------------------
 
@@ -945,6 +947,7 @@ CREATE TABLE `gacl_aro` (
 -- 
 
 INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
+INSERT INTO `gacl_aro` VALUES (23, 'users', 'jeichorn', 100, 'jeichorn', 1);
 
 -- --------------------------------------------------------
 
@@ -1086,8 +1089,8 @@ CREATE TABLE `gacl_aro_seq` (
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (22);
-INSERT INTO `gacl_aro_seq` VALUES (22);
+INSERT INTO `gacl_aro_seq` VALUES (23);
+INSERT INTO `gacl_aro_seq` VALUES (23);
 
 -- --------------------------------------------------------
 
@@ -1409,6 +1412,7 @@ CREATE TABLE `insurance_program` (
 -- Dumping data for table `insurance_program`
 -- 
 
+INSERT INTO `insurance_program` VALUES (989, 1, 968, 'Test Program');
 
 -- --------------------------------------------------------
 
@@ -1454,7 +1458,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=34 ;
+) TYPE=InnoDB AUTO_INCREMENT=36 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1493,6 +1497,8 @@ INSERT INTO `menu` VALUES (30, 'default', 1, '', 'children', 100, 'Patients', 'P
 INSERT INTO `menu` VALUES (31, 'default', 30, '', 'children', 10, 'Add Patient', 'Patient/edit');
 INSERT INTO `menu` VALUES (32, 'default', 1, '', 'children', 160, 'Insurance Companies', 'Insurance/list');
 INSERT INTO `menu` VALUES (33, 'default', 32, '', 'children', 10, 'Add Insurance Company', 'Insurance/edit');
+INSERT INTO `menu` VALUES (34, 'admin', 1, '', 'children', 100, 'Users', 'User/list');
+INSERT INTO `menu` VALUES (35, 'admin', 34, '', 'children', 10, 'Add User', 'User/edit');
 
 -- --------------------------------------------------------
 
@@ -1835,6 +1841,22 @@ INSERT INTO `ownership` VALUES (809, 1);
 INSERT INTO `ownership` VALUES (972, 1);
 INSERT INTO `ownership` VALUES (973, 1);
 INSERT INTO `ownership` VALUES (974, 1);
+INSERT INTO `ownership` VALUES (975, 1);
+INSERT INTO `ownership` VALUES (976, 1);
+INSERT INTO `ownership` VALUES (977, 1);
+INSERT INTO `ownership` VALUES (978, 1);
+INSERT INTO `ownership` VALUES (979, 1);
+INSERT INTO `ownership` VALUES (980, 1);
+INSERT INTO `ownership` VALUES (981, 1);
+INSERT INTO `ownership` VALUES (982, 1);
+INSERT INTO `ownership` VALUES (983, 1);
+INSERT INTO `ownership` VALUES (984, 1);
+INSERT INTO `ownership` VALUES (985, 1);
+INSERT INTO `ownership` VALUES (986, 1);
+INSERT INTO `ownership` VALUES (987, 1);
+INSERT INTO `ownership` VALUES (988, 1);
+INSERT INTO `ownership` VALUES (989, 1);
+INSERT INTO `ownership` VALUES (990, 1);
 INSERT INTO `ownership` VALUES (810, 5430);
 INSERT INTO `ownership` VALUES (811, 5430);
 INSERT INTO `ownership` VALUES (812, 5430);
@@ -2017,6 +2039,11 @@ CREATE TABLE `patient` (
 -- 
 
 INSERT INTO `patient` VALUES (955, 0, 0);
+INSERT INTO `patient` VALUES (975, 0, 0);
+INSERT INTO `patient` VALUES (977, 0, 0);
+INSERT INTO `patient` VALUES (979, 0, 0);
+INSERT INTO `patient` VALUES (981, 0, 0);
+INSERT INTO `patient` VALUES (983, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -2050,6 +2077,7 @@ CREATE TABLE `person` (
 -- 
 
 INSERT INTO `person` VALUES (955, '', 'Eichorn', 'Joshua', 'R', 0, '', '0000-00-00', '', '', '', '', '', '', '123-456-7890', 1);
+INSERT INTO `person` VALUES (983, '', 'Eichorn', 'Joshua', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
 
 -- --------------------------------------------------------
 
@@ -2158,6 +2186,7 @@ CREATE TABLE `person_type` (
 -- Dumping data for table `person_type`
 -- 
 
+INSERT INTO `person_type` VALUES (983, 2);
 
 -- --------------------------------------------------------
 
@@ -2254,6 +2283,7 @@ CREATE TABLE `provider` (
 -- Dumping data for table `provider`
 -- 
 
+INSERT INTO `provider` VALUES (983, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -2276,6 +2306,7 @@ CREATE TABLE `provider_to_insurance` (
 -- Dumping data for table `provider_to_insurance`
 -- 
 
+INSERT INTO `provider_to_insurance` VALUES (990, 983, 989, '123456', 1, 'blah blah');
 
 -- --------------------------------------------------------
 
@@ -2392,7 +2423,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (974);
+INSERT INTO `sequences` VALUES (990);
 
 -- --------------------------------------------------------
 
@@ -2695,6 +2726,32 @@ CREATE TABLE `user` (
 -- 
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no');
+INSERT INTO `user` VALUES (984, 'jeichorn', 'test', '', '', 983, '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `users_groups`
+-- 
+
+DROP TABLE IF EXISTS `users_groups`;
+CREATE TABLE `users_groups` (
+  `id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '0',
+  `group_id` int(11) NOT NULL default '0',
+  `foreign_id` int(11) NOT NULL default '0',
+  `table` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `users_groups`
+-- 
+
+INSERT INTO `users_groups` VALUES (1, 1, 1, 0, '');
+INSERT INTO `users_groups` VALUES (634, 306, 1, 0, '');
+INSERT INTO `users_groups` VALUES (635, 306, 0, 0, '');
 
 -- 
 -- Constraints for dumped tables
@@ -2745,6 +2802,12 @@ ALTER TABLE `fee_schedule_data`
 -- 
 ALTER TABLE `person`
   ADD CONSTRAINT `person_ibfk_7` FOREIGN KEY (`person_id`) REFERENCES `ownership` (`id`);
+
+-- 
+-- Constraints for table `person_type`
+-- 
+ALTER TABLE `person_type`
+  ADD CONSTRAINT `person_type_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
 
 -- 
 -- Constraints for table `user`

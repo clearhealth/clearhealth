@@ -118,7 +118,6 @@ class M_Patient extends Manager {
 	 */
 	function process_insuredRelationship_update($patient_id,$data) {
 		if (!empty($data['group_name']) || !empty($data['group_number'])) {
-			var_dump($data);
 			$id = (int)$data['insured_relationship_id'];
 			$ir =& ORDataObject::factory('InsuredRelationship',$id,$patient_id);
 			$ir->populate_array($data);

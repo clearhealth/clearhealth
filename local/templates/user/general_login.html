@@ -1,0 +1,38 @@
+<fieldset class="radio">
+	<legend>Login Information</legend>
+	<input type="hidden" name="user[user_id]" value="{$user->get('id')}">
+	<table>
+		<tr>
+			<td><label>Username: </label></td>
+			<td><input id="username" type="text" name="user[username]" value="{$user->get('username')}"></td>
+		</tr>
+		<tr>
+			<td><label>Password: </label></td>
+			<td><input id="password" type="password" name="user[password]" {if $user->get('id') > 0}disabled="true"{/if}>{if $user->get('id') > 0}<input type="submit" value="Change Password" onclick="return togglePassword(this);">{/if}</td>
+		</tr>
+		<tr>
+			<td><label>Repeat Password: </label></td>
+			<td><input id="password_match" type="password" name="user[password_match]" {if $user->get('id') > 0}disabled="true"{/if}></td>
+		</tr>
+	</table>
+</fieldset>
+{clni_register_validation_rule id="username"}
+{clni_register_validation_rule id="password" rule="match"}
+
+{literal}
+<script type="text/javascript">
+	function togglePassword(el) {
+		if (document.getElementById('password').disabled) {
+			document.getElementById('password').disabled = false;
+			document.getElementById('password_match').disabled = false; 
+			el.value = "Don't Change Password";
+		}
+		else {
+			document.getElementById('password').disabled = true;
+			document.getElementById('password_match').disabled = true; 
+			el.value = "Change Password";
+		}
+		return false;
+	}
+</script>
+{/literal}

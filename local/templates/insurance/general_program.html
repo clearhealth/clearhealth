@@ -1,0 +1,26 @@
+<fieldset class="radio">
+	<legend>Insurance Programs</legend>
+	{$insuranceProgramGrid->render()}
+	{if $insuranceProgramGrid->empty}
+		<p>No Programs have been added</p>
+	{/if}
+
+	<input type="hidden" name="insuranceProgram[insurance_program_id]" value="{$insuranceProgram->get('insurance_program_id')}">
+	<table>
+		<tr>
+			<td><label>Name:</label></td>
+			<td><input name="insuranceProgram[name]" value="{$insuranceProgram->get('name')}"></td>
+		</tr>
+		<tr>
+			<td><label>Payer Type:</label></td>
+			<td><select name="insuranceProgram[payer_type]">
+					{html_options options=$insuranceProgram->getPayerTypeList() selected=$insuranceProgram->get('payer_type')}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program"></td>
+		</tr>
+	</table>
+</fieldset>

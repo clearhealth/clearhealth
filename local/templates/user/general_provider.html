@@ -1,0 +1,20 @@
+{if $provider}
+	<fieldset class="radio">
+		<legend>Provider Details</legend>
+
+		<table>
+			<tr>
+				<td><label>State license number:</label></td>
+				<td><input name="provider['state_license_number']" value="{$provider->get('state_license_number')}"></td>
+			</tr>
+			<tr>
+				<td><label>Clia number:</label></td>
+				<td><input name="provider['clia_number']" value="{$provider->get('clia_number')}"></td>
+			</tr>
+			<tr>
+				<td><label>Dea number:</label></td>
+				<td><input name="provider['dea_number']" value="{$provider->get('dea_number')}"></td>
+			</tr>
+		</table>
+	</fieldset>
+{/if}

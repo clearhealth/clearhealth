@@ -11,7 +11,7 @@
 			<tr>
 				<td><label>Insurance Program:</label></td>
 				<td><select name="insuredRelationship[insurance_program_id]">
-						{html_options options=$insuredRelationship->getInsurerList() selected=$insuredRelationship->get('insurance_program_id')}
+						{html_options options=$insuranceProgram->getProgramList() selected=$insuredRelationship->get('insurance_program_id')}
 					</select>
 				</td>
 			<tr>

@@ -42,7 +42,10 @@ class InsuranceProgram extends ORDataObject {
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Insurance_program with this
 	 */
-	function setup($id = 0) {
+	function setup($id = 0,$company_id = 0) {
+		if ($company_id > 0) {
+			$this->set('company_id',$company_id);
+		}
 		if ($id > 0) {
 			$this->set('id',$id);
 			$this->populate();
@@ -76,5 +79,49 @@ class InsuranceProgram extends ORDataObject {
 	}
 
 	/**#@-*/
+
+	var $_typeCache = false;
+
+	/**
+	 * Cached lookup for payer type
+	 */
+	function lookupPayerType($type_id) {
+		if ($this->_typeCache === false) {
+			$this->_typeCache = $this->getPayerTypeList();
+		}
+		if (isset($this->_typeCache[$type_id])) {
+			return $this->_typeCache[$type_id];
+		}
+	}
+
+	function getPayerTypeList() {
+		$list = $this->_load_enum('payer_type',false);
+		return array_flip($list);
+	}
+
+	function programList() {
+		$res = $this->_execute("select insurance_program_id, name from $this->_table");
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['insurance_program_id']] = $res->fields['name'];
+			$res->MoveNext();
+		}
+		return $ret;
+	}
+
+	function detailedProgramList($company_id) {
+		settype($company_id,'int');
+
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,array(
+				'cols' 	=> "name, payer_type",
+				'from' 	=> "$this->_table",
+				'where' => " company_id = $company_id"
+			),
+			array('name' => 'Program Name','payer_type' => 'Payer Type'));
+
+		$ds->registerFilter('payer_type',array(&$this,'lookupPayerType'));
+		return $ds;
+	}
 }
 ?>

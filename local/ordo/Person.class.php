@@ -241,26 +241,43 @@ class Person extends ORDataObject {
 	/**
 	 * Return a datasource of people of a specific type
 	 *
-	 * @param	string	$type
+	 * @param	string|array	$type
 	 */
-	function &peopleByType($type) {
-		$type_id = 0;
+	function &peopleByType($type,$includeUser = false) {
+		$type_id = array();
+
+		if (!is_array($type)) {
+			$type = array($type);
+		}
 		// lookup id for $type
-		$lookup = $this->getTypeList();
-		if (isset($lookup[$type])) {
-			$type_id = $lookup[$type];
+		$lookup = array_flip($this->getTypeList());
+
+		foreach($type as $t) {
+			if (isset($lookup[$t])) {
+				$type_id[] = $lookup[$t];
+			}
+			else {
+				$type_id[] = 0;
+			}
 		}
 		
+		$from = "$this->_table p inner join person_type pt using(person_id) ";
+		$cols = "p.person_id, last_name, first_name, pt.person_type";
+		$labels = array('last_name' => 'Last Name', 'first_name' => 'First Name', 'person_type' => 'Type');
+		if ($includeUser) {
+			$from .= " inner join user u using(person_id)";
+			$cols .= ", u.username";
+			$labels['username'] = 'Username';
+		}
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "p.person_id, concat_ws(' ',first_name,last_name) name",
-				'from' 	=> "$this->_table p inner join person_type pt using(person_id) ",
-				'where'	=> "pt.person_type = $type_id",
+				'cols' 	=> $cols,
+				'from' 	=> $from,
+				'where'	=> "pt.person_type in(".implode(',',$type_id).")",
 				'orderby' => 'last_name, first_name'
-
 			),
-			array('name' => 'Name'));
+			$labels);
 		return $ds;
 	}
 

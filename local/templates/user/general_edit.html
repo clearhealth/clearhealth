@@ -1,0 +1,20 @@
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+	{assign var="detail_section_title" value="User Details"}
+	{include file="contacts/general_details.html"}
+	    {include file="user/general_login.html"}
+	
+		    <p>
+		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
+		    </p>
+
+		    {if $person->get_person_id() > 0}
+		    {assign var="parent" value=$person}
+		    {include file="user/general_provider.html"}
+		    {include file="user/general_provider_to_insurance.html"}
+		    {include file="contacts/general_phone.html"}
+		    {include file="contacts/general_address.html"}
+		    {include file="contacts/general_identifier.html"}
+		    {include file="contacts/general_name_history.html"}
+		    {/if}
+</form>
+
