@@ -30,12 +30,16 @@ class C_Calendar extends CalendarController {
 		$this->assign("TOP_ACTION", Cellini::link(true));
 		
 		$current_link = Cellini::link(true);
-		if (isset($_GET['date'])) $current_link .=  "date=" . $_GET['date'] . "&";
+		$date_link = "date=&";
+		if (isset($_GET['date'])) {
+			$date_link = "date=" . $_GET['date'] . "&";
+			$current_link .= $date_link;
+		}
 		$this->assign("APPOINTMENT_ACTION",$current_link);
 		$this->assign('DAY_ACTION', Cellini::link('day'));
 		 $this->assign('PATIENT_DASHBOARD_LINK', Cellini::link('dashboard','patient'));
 		
-		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter'). $current_link . "process=true&");
+		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter'). $date_link . "");
 		$this->assign_by_ref("CONTROLLER", $this);
 		$this->assign('DELETE_ACTION', Cellini::link('delete','Location'));
 		
