@@ -136,6 +136,16 @@ function clni_rule_email(element) {
 	return true					
 }
 
+/**
+ * Requre the passing in value to be a number
+ */
+function clni_rule_number(element) {
+	if (element.value.match(/^[0-9\.]+$/)) {
+		return true;
+	}
+	return false;
+}
+
 
 /**
  * Set an element to the alert css class
