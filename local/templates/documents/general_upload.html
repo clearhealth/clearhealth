@@ -33,7 +33,7 @@
 		<td>
 		ID: {$file->get_id()}<br>
 		Name: {$file->get_name()}<br>
-		{*Entity: {$file->get_foreign_id()}<br>*}
+		Entity: {$file->get_foreign_id()}<br>
 		URL: {$file->get_url()}<br>
 		Size: {$file->get_size()}<br>
 		Date: {$file->get_date()}<br>
@@ -44,7 +44,7 @@
 	</tr>
 	{/if}
 </table>
-<input type="hidden" name="foreign_id" value="0" />
+<input type="hidden" name="foreign_id" value="{$foreign_id}" />
 <input type="hidden" name="category_id" value="{$category_id}" />
 <input type="hidden" name="process" value="{$PROCESS}" />
 </form>

@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT 	   . "/controllers/Controller.class.php";
+require_once CELLINI_ROOT. "/controllers/Controller.class.php";
 require_once APP_ROOT . "/local/ordo/Document.class.php";
 require_once APP_ROOT . "/local/includes/CategoryTree.class.php";
 require_once CELLINI_ROOT 	   . "/lib/TreeMenu.php";
@@ -42,7 +42,8 @@ class C_Document extends Controller {
 			$_GET['project_id'] = $_GET[0];
 		}
 		else {
-			$_GET['project_id'] = 0;
+			$_GET['project_id'] = $this->get('patient_id','c_patient');
+			//$_GET['project_id'] = 0;
 		}
 		
 		if(!isset($_GET['id'])) {
@@ -78,7 +79,6 @@ class C_Document extends Controller {
 	}
 	
 	function upload_action($project_id,$category_id) {
-
 		$activity = "";
 		if ($this->showCategoryView) {
 			$activity = $this->viewCategory_action($project_id,$category_id);
@@ -89,6 +89,7 @@ class C_Document extends Controller {
 			$this->assign("category_id", $category_id);
 			$this->assign("category_name", $category_name);
 			$this->assign("project_id", $project_id);
+			$this->assign("foreign_id", $project_id);
 
 			$document =& ORDataObject::factory('Document');
 			$group_list = $document->getGroupList();
@@ -113,7 +114,6 @@ class C_Document extends Controller {
 		if (is_numeric($_POST['foreign_id'])) {
 			$project_id = $_POST['foreign_id'];
 		}
-			
 		foreach ($_FILES as $file) {
 		  $fname = $file['name'];
 		  $err = "";
@@ -408,6 +408,9 @@ class C_Document extends Controller {
 	}
 
 	function list_action_view($project_id = "") {
+		if (empty($project_id) && $this->id > 0) {
+			$project_id = $this->id;
+		}
 		$this->_last_node = null;
 		$categories_list = $this->tree->_get_categories_array($project_id);
 		//print_r($categories_list);
