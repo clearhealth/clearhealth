@@ -20,7 +20,7 @@ function captureEnter (field, event) {
 </script>
 {/literal}
 
-{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+{clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
 <fieldset id="coding_data">
 <legend>Edit Coding Data</legend>
@@ -31,7 +31,7 @@ function captureEnter (field, event) {
 			<table>
 				<tr>
 					<td valign="top">
-						<b>CPT Code:</b>
+						<label>CPT Code: </label>
 					</td>
 					<td valign="top">
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
@@ -41,20 +41,14 @@ function captureEnter (field, event) {
 				</tr>
 				<tr>
 					<td valign="top">
-						<b>Modifier:</b>
+						<label>Modifier:</label>
 					</td>
 					<td valign="top">
 						<select name="modifier">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
-					</td>
-				</tr>
-				<tr>
-					<td valign="top">
-						<b>Units:</b>
-					</td>
-					<td valign="top">
-						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
+					<label style="display:inline;">Units: </label></b> <input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
+					&nbsp;<label style="display:inline;">SuperBill</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
 					</td>
 				</tr>
 			</table>
@@ -63,7 +57,7 @@ function captureEnter (field, event) {
 			<table>
 				<tr>
 					<td valign="top">
-						<b>ICD Code:</b>
+						<label>ICD Code:</label>
 					</td>
 					<td valign="top">
 						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="">
@@ -132,7 +126,7 @@ var CPTSearch = function cpt_search(searchString) {
         h.Sync();
                                                                                 
 		if(searchString.length > 0){
-        	var results = h.cpt_search(searchString);
+        	var results = h.cpt_search(searchString,document.forms.coding_form.superbill.checked);
         	return results;
 		}
 		
@@ -144,7 +138,7 @@ var ICDSearch = function icd_search(searchString) {
         h.Sync();
                                                                                 
 		if(searchString.length > 0){
-        	var results = h.icd_search(searchString);
+        	var results = h.icd_search(searchString,document.forms.coding_form.superbill.checked);
         	return results;
 		}
 		
