@@ -157,7 +157,7 @@ function addICDCode(){
 	var childDiv = document.getElementById('child_codes');
 	var icdCode = document.getElementById('child_id');
 	var icdCodeText = document.getElementById('child_code');
-	alert('Adding ICD Code ' + icdCode.value)
+//	alert('Adding ICD Code ' + icdCode.value)
 	if (childDiv.childNodes.length == 1) {
 		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><BR>';
 	}
