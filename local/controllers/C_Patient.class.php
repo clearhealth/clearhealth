@@ -291,7 +291,6 @@ class C_Patient extends Controller {
 	}
 
 	function encounter_action_process($encounter_id=0) {
-		
 		if (isset($_POST['saveCode'])) {
 			$this->coding->update_action_process();
 			return;

@@ -22,8 +22,8 @@ class C_Coding extends Controller {
 		$code_data =& ORDataObject::factory('CodingData');
 		$parent_code =& ORDataObject::factory('Code', $parent_id);
 		
-		$child_codes = $code_data->getChildCodes($parent_id);
-		//var_dump($child_codes);
+		$child_codes = $code_data->getChildCodes($foreign_id, $parent_id);
+//		var_dump($child_codes);
 		$code_list = $code_data->getCodeList($foreign_id);
 		if(is_array($child_codes) && count($child_codes) > 0){
 			foreach($child_codes as $code){
@@ -35,7 +35,7 @@ class C_Coding extends Controller {
 				}
 			}
 		}
-		//var_dump($code_data);
+//		var_dump($code_data);
 		
 		if ($this->superbill == 1) {
 			$this->assign("superbill", 1);
@@ -55,11 +55,12 @@ class C_Coding extends Controller {
 		if($_POST['process'] != "true")
 			return;
 
+//		var_dump($_POST);
+		
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
 		$this->superbill = $_POST['superbill'];
 		
-		//var_dump($_POST);
 
 		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
 

@@ -91,7 +91,7 @@ function captureEnter (field, event) {
 <fieldset class="radio" id="Code List">
 <legend>Claim Lines</legend>
 {foreach from=$code_list item=code}
-{assign var=children value=$code_data->getChildCodes($code.parent_id)}
+{assign var=children value=$code_data->getChildCodes($code.foreign_id, $code.parent_id)}
 <A HREF="{$EDIT_LINK}parent_id={$code.parent_id}">{$code.description}</A><BR>
 {foreach from=$children item=child}
 &nbsp;&nbsp;&nbsp;{$child.description}<br>
@@ -151,10 +151,11 @@ var ICDSearch = function icd_search(searchString) {
 }
 
 function addICDCode(){
-	//TODD: Move the current code to the bottom of the list
+	//TODO: Move the current code to the bottom of the list
 	var childDiv = document.getElementById('child_codes');
 	var icdCode = document.getElementById('child_id');
 	var icdCodeText = document.getElementById('child_code');
+	alert('Adding ICD Code ' + icdCode.value)
 	if (childDiv.childNodes.length == 1) {
 		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><BR>';
 	}
