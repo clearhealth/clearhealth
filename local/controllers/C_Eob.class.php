@@ -22,8 +22,13 @@ class C_Eob extends Controller {
 
 		ORDataObject::factory_include('Payment');
 		$payments =& Payment::fromForeignId($claim_id);
+		
+		$payment = ORDataObject::factory("Payment");
+		$payment->set("foreign_id",$claim_id);		
 		// get the newest payment
-		$payment = $payments[count($payments)-1];
+		if (count($payments) >0) {
+			$payment = $payments[count($payments)-1];
+		}
 
 		$paymentDs =& $payment->paymentList($claim_id,true);
 		$paymentGrid =& new cGrid($paymentDs);
