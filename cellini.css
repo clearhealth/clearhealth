@@ -43,7 +43,7 @@ table.grid tr.alt td { background-color: #ddd;
 table.grid tr.waiting td { background-color: #aaa;
 }
 table.grid a.orderLink {
-	color: #ddd;
+	color: #ccc;
 }
 table.grid a.orderLink:hover {
     color: rgb(0, 51, 204);
@@ -78,4 +78,7 @@ div.waitingActive {
 }
 .AutoCompleteMatchingText {
         background-color: yellow !important;
+}
+.tooltip {
+	text-decoration: none;
 }
