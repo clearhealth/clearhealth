@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 21, 2005 at 11:51 AM
+-- Generation Time: Mar 29, 2005 at 10:09 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -28,7 +28,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=98 ;
+) TYPE=MyISAM AUTO_INCREMENT=99 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -117,3 +117,4 @@ INSERT INTO `menu` VALUES (94, 'default', 39, '', 'children', 50, 'Change Passwo
 INSERT INTO `menu` VALUES (95, 'patient', 46, '', 'children', 50, 'Change Password', 'User/password', 'main');
 INSERT INTO `menu` VALUES (96, 'billing', 49, '', 'children', 50, 'Change Password', 'User/password', 'main');
 INSERT INTO `menu` VALUES (97, 'admin', 59, '', 'children', 50, 'Change Password', 'User/password', 'main');
+INSERT INTO `menu` VALUES (98, 'admin', 81, '', 'children', 800, 'ACL Editor', 'Admin/acl', 'main');
