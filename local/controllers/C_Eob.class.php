@@ -95,6 +95,7 @@ class C_Eob extends Controller {
 
 			$payment->set('amount',$total_paid);
 			$payment->set('writeoff',$total_writeoff);
+			$payment->set('payment_type',"remittance");
 			$payment->persist();
 	
 			// update claim total
