@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 14, 2005 at 01:02 PM
+-- Generation Time: Mar 14, 2005 at 05:54 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -584,12 +584,14 @@ DROP TABLE IF EXISTS `encounter`;
 CREATE TABLE `encounter` (
   `encounter_id` int(11) NOT NULL default '0',
   `encounter_reason` int(11) NOT NULL default '0',
+  `patient_id` int(11) NOT NULL default '0',
   `building_id` int(11) NOT NULL default '0',
   `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
   `treating_person_id` int(11) NOT NULL default '0',
   `timestamp` timestamp(14) NOT NULL,
   `last_change_user_id` int(11) NOT NULL default '0',
-  `status` enum('closed','open') NOT NULL default 'open',
+  `status` enum('closed','open','billed') NOT NULL default 'open',
+  `occurence_id` int(11) default NULL,
   PRIMARY KEY  (`encounter_id`),
   KEY `building_id` (`building_id`),
   KEY `treating_person_id` (`treating_person_id`),
@@ -604,21 +606,21 @@ CREATE TABLE `encounter` (
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `encounter_dates`
+-- Table structure for table `encounter_date`
 -- 
 
-DROP TABLE IF EXISTS `encounter_dates`;
-CREATE TABLE `encounter_dates` (
-  `encounter_dates_id` int(11) NOT NULL default '0',
+DROP TABLE IF EXISTS `encounter_date`;
+CREATE TABLE `encounter_date` (
+  `encounter_date_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`encounter_dates_id`),
+  PRIMARY KEY  (`encounter_date_id`),
   KEY `encounter_id` (`encounter_id`)
 ) TYPE=MyISAM;
 
 -- 
--- Dumping data for table `encounter_dates`
+-- Dumping data for table `encounter_date`
 -- 
 
 
@@ -786,6 +788,7 @@ CREATE TABLE `form_data` (
 
 INSERT INTO `form_data` VALUES (809, 800, 0, '2005-03-04 16:54:38');
 INSERT INTO `form_data` VALUES (1010, 800, 0, '2005-03-08 19:03:03');
+INSERT INTO `form_data` VALUES (2057, 800, 1110, '2005-03-14 15:09:50');
 
 -- --------------------------------------------------------
 
@@ -1526,6 +1529,31 @@ INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '34
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `menu_form`
+-- 
+
+DROP TABLE IF EXISTS `menu_form`;
+CREATE TABLE `menu_form` (
+  `menu_form_id` int(11) NOT NULL default '0',
+  `menu_id` int(11) NOT NULL default '0',
+  `form_id` int(11) NOT NULL default '0',
+  `title` varchar(50) NOT NULL default '',
+  `custom_action` varchar(255) default NULL,
+  PRIMARY KEY  (`menu_form_id`),
+  KEY `menu_id` (`menu_id`),
+  KEY `form_id` (`form_id`)
+) TYPE=InnoDB;
+
+-- 
+-- Dumping data for table `menu_form`
+-- 
+
+INSERT INTO `menu_form` VALUES (2064, 90, 800, 'Test Data', NULL);
+INSERT INTO `menu_form` VALUES (2066, 91, 1710, 'Patient Vitals', NULL);
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `menu_report`
 -- 
 
@@ -1547,6 +1575,8 @@ CREATE TABLE `menu_report` (
 
 INSERT INTO `menu_report` VALUES (1714, 42, 792, 'Code Report', NULL);
 INSERT INTO `menu_report` VALUES (1715, 4, 792, 'Code Report', NULL);
+INSERT INTO `menu_report` VALUES (2054, 44, 792, 'Test', NULL);
+INSERT INTO `menu_report` VALUES (2055, 89, 792, 'Selected Test', NULL);
 
 -- --------------------------------------------------------
 
@@ -1620,6 +1650,7 @@ CREATE TABLE `number` (
 
 INSERT INTO `number` VALUES (1115, 1, '', '555-555-5555', 1);
 INSERT INTO `number` VALUES (1709, 4, '', '555-555-5551', 1);
+INSERT INTO `number` VALUES (2056, 1, '', '555-555-5555', 1);
 
 -- --------------------------------------------------------
 
@@ -3803,6 +3834,19 @@ INSERT INTO `ownership` VALUES (2050, 1);
 INSERT INTO `ownership` VALUES (2051, 1);
 INSERT INTO `ownership` VALUES (2052, 1);
 INSERT INTO `ownership` VALUES (2053, 1);
+INSERT INTO `ownership` VALUES (2054, 1);
+INSERT INTO `ownership` VALUES (2055, 1);
+INSERT INTO `ownership` VALUES (2056, 1);
+INSERT INTO `ownership` VALUES (2057, 1);
+INSERT INTO `ownership` VALUES (2058, 1);
+INSERT INTO `ownership` VALUES (2059, 1);
+INSERT INTO `ownership` VALUES (2060, 1);
+INSERT INTO `ownership` VALUES (2061, 1);
+INSERT INTO `ownership` VALUES (2062, 1);
+INSERT INTO `ownership` VALUES (2063, 1);
+INSERT INTO `ownership` VALUES (2064, 1);
+INSERT INTO `ownership` VALUES (2065, 1);
+INSERT INTO `ownership` VALUES (2066, 1);
 
 -- --------------------------------------------------------
 
@@ -3926,6 +3970,7 @@ CREATE TABLE `person_number` (
 -- Dumping data for table `person_number`
 -- 
 
+INSERT INTO `person_number` VALUES (1110, 2056);
 INSERT INTO `person_number` VALUES (1707, 1709);
 
 -- --------------------------------------------------------
@@ -4313,7 +4358,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (2053);
+INSERT INTO `sequences` VALUES (2066);
 
 -- --------------------------------------------------------
 
@@ -4544,6 +4589,7 @@ INSERT INTO `storage_date` VALUES (807, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (808, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (809, 'test_data', '2005-03-04');
 INSERT INTO `storage_date` VALUES (1010, 'test_data', '2005-03-09');
+INSERT INTO `storage_date` VALUES (2057, 'test_data', '2005-03-15');
 
 -- --------------------------------------------------------
 
@@ -4595,6 +4641,7 @@ INSERT INTO `storage_string` VALUES (1010, 'test_string', 'test this');
 INSERT INTO `storage_string` VALUES (1072, 'email', '');
 INSERT INTO `storage_string` VALUES (1113, 'email', '');
 INSERT INTO `storage_string` VALUES (2049, 'email', '');
+INSERT INTO `storage_string` VALUES (2057, 'test_string', 'Yep a test');
 
 -- --------------------------------------------------------
 

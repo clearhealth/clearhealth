@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 14, 2005 at 12:57 PM
+-- Generation Time: Mar 14, 2005 at 05:53 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -16,6 +16,7 @@
 -- Table structure for table `menu`
 -- 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -27,7 +28,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=89 ;
+) TYPE=MyISAM AUTO_INCREMENT=93 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -60,7 +61,7 @@ INSERT INTO `menu` VALUES (25, 'admin', 81, '', 'children', 40, 'Add Enumeration
 INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 750, 'Forms', '', '');
 INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 20, 'Add Form', 'Form/edit', 'main');
 INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 30, 'View Form Data', 'Form/view', 'main');
-INSERT INTO `menu` VALUES (29, 'patient', 68, '', 'children', 10, 'Forms', 'Form/fillout', 'main');
+INSERT INTO `menu` VALUES (29, 'patient', 68, '', 'children', 10, 'Fillout Form', 'Form/fillout', 'main');
 INSERT INTO `menu` VALUES (30, 'patient', 1, '', 'children', 100, 'Patients', '', '');
 INSERT INTO `menu` VALUES (31, 'patient', 30, '', 'children', 20, 'Add Patient', 'Patient/edit', 'main');
 INSERT INTO `menu` VALUES (32, 'admin', 5, '', 'children', 160, 'List Insurance Companies', 'Insurance/list', 'main');
@@ -107,3 +108,7 @@ INSERT INTO `menu` VALUES (85, 'admin', 4, '', 'children', 5, 'List Reports', 'R
 INSERT INTO `menu` VALUES (86, 'admin', 1, '', 'children', 900, '', 'Admin/default', 'main');
 INSERT INTO `menu` VALUES (87, 'admin', 4, '', 'children', 50, 'Connect Report', 'Report/connect', 'main');
 INSERT INTO `menu` VALUES (88, 'billing', 1, '', 'children', 0, '', 'Billing/default', 'main');
+INSERT INTO `menu` VALUES (89, 'patient', 1, '', 'children', -1, 'Dashboard Reports', '', 'main/Patient');
+INSERT INTO `menu` VALUES (90, 'patient', 1, '', 'children', -1, 'Dashboard Forms', '', 'main/Patient');
+INSERT INTO `menu` VALUES (91, 'patient', 1, '', 'children', -1, 'Encounter Forms', '', 'main/Encounter');
+INSERT INTO `menu` VALUES (92, 'admin', 26, '', 'children', 100, 'Connect', 'Form/connect', 'main');
