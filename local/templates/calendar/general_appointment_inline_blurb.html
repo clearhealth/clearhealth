@@ -13,7 +13,7 @@
 		<tr>
 			<td class="eventbg_1">
 				{if $ev.p_record_number > 0}
-					<b>{$ev.p_lastname}, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
+					<b><a href="{$PATIENT_EDIT_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
 					{if $ev.notes}
 					<br>
 					{$ev.notes}

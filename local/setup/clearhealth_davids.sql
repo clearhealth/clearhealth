@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 09, 2005 at 01:52 AM
+-- Generation Time: Mar 10, 2005 at 03:03 AM
 -- Server version: 4.0.18
 -- PHP Version: 4.3.4
 -- 
@@ -44,6 +44,7 @@ INSERT INTO `address` VALUES (780, 'Home', '123 E Main', 'Suite 2', 'Mesa', 0, 0
 INSERT INTO `address` VALUES (782, '', '', '', '', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (783, 'Other', '323 Soth St', '', 'Mesa', 0, 0, 2, '85210', '');
 INSERT INTO `address` VALUES (957, 'main', 'test', 'test blah', 'blah', 0, 0, 1, '123', 'blah');
+INSERT INTO `address` VALUES (1063, 'home', '1 main st', '', 'san clemente', 0, 0, 3, '92231', '');
 
 -- --------------------------------------------------------
 
@@ -212,6 +213,7 @@ CREATE TABLE `company` (
 -- 
 
 INSERT INTO `company` VALUES (968, 'Test', '', '', '', '', 'no');
+INSERT INTO `company` VALUES (1072, 'Medi-Cal', '', '', 'CAMC', '', 'no');
 
 -- --------------------------------------------------------
 
@@ -291,6 +293,7 @@ CREATE TABLE `company_type` (
 -- 
 
 INSERT INTO `company_type` VALUES (968, 1);
+INSERT INTO `company_type` VALUES (1072, 1);
 
 -- --------------------------------------------------------
 
@@ -714,6 +717,8 @@ INSERT INTO `events` VALUES (702, '', '', '', '', '', 0);
 INSERT INTO `events` VALUES (1012, 'XRAY 1', '', '', '', '', 1011);
 INSERT INTO `events` VALUES (1029, 'test', '', '', '', '', 1009);
 INSERT INTO `events` VALUES (1059, '', '', '', '', '', 0);
+INSERT INTO `events` VALUES (1080, '', '', '', '', '', 0);
+INSERT INTO `events` VALUES (1082, '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -1502,6 +1507,7 @@ INSERT INTO `identifier` VALUES (963, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (964, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (965, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (966, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (1068, 1061, '123-33-2321', 1);
 
 -- --------------------------------------------------------
 
@@ -1522,6 +1528,7 @@ CREATE TABLE `insurance_program` (
 -- 
 
 INSERT INTO `insurance_program` VALUES (989, 1, 968, 'Test Program');
+INSERT INTO `insurance_program` VALUES (1073, 1, 1072, 'MEDI-CAL');
 
 -- --------------------------------------------------------
 
@@ -1535,7 +1542,7 @@ CREATE TABLE `insured_relationship` (
   `person_id` int(11) NOT NULL default '0',
   `subsciber_id` int(11) NOT NULL default '0',
   `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
-  `copay` double NOT NULL default '0',
+  `copay` float(11,2) NOT NULL default '0.00',
   `assigning` int(11) NOT NULL default '0',
   `group_name` varchar(100) NOT NULL default '',
   `group_number` varchar(100) NOT NULL default '',
@@ -1547,7 +1554,10 @@ CREATE TABLE `insured_relationship` (
 -- Dumping data for table `insured_relationship`
 -- 
 
-INSERT INTO `insured_relationship` VALUES (974, 0, 955, 0, 0, 15, 0, 'blah', 'blah', 0);
+INSERT INTO `insured_relationship` VALUES (974, 0, 955, 0, 0, 15.00, 0, 'blah', 'blah', 0);
+INSERT INTO `insured_relationship` VALUES (1065, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
+INSERT INTO `insured_relationship` VALUES (1066, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
+INSERT INTO `insured_relationship` VALUES (1067, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
 
 -- --------------------------------------------------------
 
@@ -1564,64 +1574,85 @@ CREATE TABLE `menu` (
   `display_order` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
+  `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=63 ;
+) TYPE=MyISAM AUTO_INCREMENT=86 ;
 
 -- 
 -- Dumping data for table `menu`
 -- 
 
-INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '');
-INSERT INTO `menu` VALUES (2, 'default', 39, '', 'children', 100, 'Logout', 'Access/logout');
-INSERT INTO `menu` VALUES (3, 'default', 39, '', 'children', 10, 'Preferences', 'Preferences/list');
-INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 180, 'Reports', 'Report/list');
-INSERT INTO `menu` VALUES (5, 'admin', 1, '', 'children', 10, 'Calendar', 'Location/list');
-INSERT INTO `menu` VALUES (7, 'admin', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule');
-INSERT INTO `menu` VALUES (8, 'default', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practive');
-INSERT INTO `menu` VALUES (9, 'admin', 5, '', 'children', 30, 'Add New Building', 'Location/edit_building');
-INSERT INTO `menu` VALUES (10, 'admin', 5, '', 'children', 40, 'Add New Room', 'Location/edit_room');
-INSERT INTO `menu` VALUES (11, 'admin', 5, '', 'children', 50, 'Add New Room', 'Location/edit_room');
-INSERT INTO `menu` VALUES (12, 'default', 1, '', 'children', 40, 'Day', 'Calendar/day');
-INSERT INTO `menu` VALUES (13, 'default', 1, '', 'children', 20, 'Week Brief', 'Calendar/week');
-INSERT INTO `menu` VALUES (14, 'default', 1, '', 'children', 30, 'Week', 'Calendar/week_grid');
-INSERT INTO `menu` VALUES (15, 'default', 1, '', 'children', 10, 'Month', 'Calendar/month');
-INSERT INTO `menu` VALUES (16, 'default', 1, '', 'children', 60, 'Brief Day', 'Calendar/day_brief');
-INSERT INTO `menu` VALUES (17, 'default', 1, '', 'children', 70, 'Search', 'Calendar/search');
-INSERT INTO `menu` VALUES (18, 'admin', 45, '', 'children', 10, 'List Fee Schedules', 'FeeSchedule/default');
-INSERT INTO `menu` VALUES (19, 'admin', 45, '', 'children', 20, 'Add Fee Schedule', 'FeeSchedule/edit');
-INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit');
-INSERT INTO `menu` VALUES (21, 'admin', 40, '', 'children', 20, 'List Users', 'User/list');
-INSERT INTO `menu` VALUES (22, 'admin', 40, '', 'children', 30, 'Add User', 'User/edit');
-INSERT INTO `menu` VALUES (23, 'admin', 1, '', 'children', 5, 'Dashboard', 'Admin/default');
-INSERT INTO `menu` VALUES (24, 'admin', 1, '', 'children', 180, 'Enumeration', 'Enumeration/list');
-INSERT INTO `menu` VALUES (25, 'admin', 24, '', 'children', 10, 'Add Enumeration', 'Enumeration/edit');
-INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 60, 'Forms', 'Form/list');
-INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 10, 'Add Form', 'Form/edit');
-INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 20, 'View Form Data', 'Form/view');
-INSERT INTO `menu` VALUES (29, 'patient', 1, '', 'children', 150, 'Forms', 'Form/fillout');
-INSERT INTO `menu` VALUES (30, 'patient', 1, '', 'children', 100, 'Patients', 'Patient/list');
-INSERT INTO `menu` VALUES (31, 'patient', 30, '', 'children', 10, 'Add Patient', 'Patient/edit');
-INSERT INTO `menu` VALUES (32, 'admin', 40, '', 'children', 160, 'List Insurance Companies', 'Insurance/list');
-INSERT INTO `menu` VALUES (33, 'admin', 40, '', 'children', 170, 'Add Insurance Company', 'Insurance/edit');
-INSERT INTO `menu` VALUES (36, 'admin', 1, '', 'children', 100, 'Document Categories', 'DocumentCategory/list');
-INSERT INTO `menu` VALUES (37, 'patient', 1, '', 'children', 170, 'Documents', 'Document/list');
-INSERT INTO `menu` VALUES (38, 'admin', 45, '', 'children', 30, 'Edit Superbill', 'Superbill/list');
-INSERT INTO `menu` VALUES (39, 'default', 1, '', 'children', 500, 'My Account', '');
-INSERT INTO `menu` VALUES (40, 'admin', 1, '', 'children', 10, 'Entities', '');
-INSERT INTO `menu` VALUES (41, 'billing', 1, '', 'children', 10, 'dashboard', 'billing/default');
-INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', 'Billing/reports');
-INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 300, 'Reports', 'Calendar/Reports');
-INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', 'Patient/reports');
-INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 50, 'Billing', '');
-INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 500, 'My Account', '');
-INSERT INTO `menu` VALUES (47, 'patient', 46, '', 'children', 100, 'Logout', 'Access/logout');
-INSERT INTO `menu` VALUES (48, 'patient', 46, '', 'children', 10, 'Preferences', 'Preferences/list');
-INSERT INTO `menu` VALUES (49, 'billing', 1, '', 'children', 500, 'My Account', '');
-INSERT INTO `menu` VALUES (57, 'billing', 49, '', 'children', 100, 'Logout', 'Access/logout');
-INSERT INTO `menu` VALUES (58, 'billing', 49, '', 'children', 10, 'Preferences', 'Preferences/list');
-INSERT INTO `menu` VALUES (59, 'admin', 1, '', 'children', 500, 'My Account', '');
-INSERT INTO `menu` VALUES (60, 'admin', 59, '', 'children', 100, 'Logout', 'Access/logout');
-INSERT INTO `menu` VALUES (61, 'admin', 59, '', 'children', 10, 'Preferences', 'Preferences/list');
+INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '', 'main');
+INSERT INTO `menu` VALUES (2, 'default', 39, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (3, 'default', 39, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 800, 'Reports', '', '');
+INSERT INTO `menu` VALUES (5, 'admin', 1, '', 'children', 100, 'Entities', '', '');
+INSERT INTO `menu` VALUES (7, 'admin', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule', 'main');
+INSERT INTO `menu` VALUES (8, 'default', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practive', 'main');
+INSERT INTO `menu` VALUES (9, 'admin', 5, '', 'children', 30, 'Add New Building', 'Location/edit_building', 'main');
+INSERT INTO `menu` VALUES (10, 'admin', 5, '', 'children', 40, 'Add New Room', 'Location/edit_room', 'main');
+INSERT INTO `menu` VALUES (82, 'admin', 26, '', 'children', 10, 'List Forms', 'Form/list', 'main');
+INSERT INTO `menu` VALUES (12, 'default', 65, '', 'children', 10, 'Day', 'Calendar/day', 'main');
+INSERT INTO `menu` VALUES (13, 'default', 65, '', 'children', 50, 'Week Brief', 'Calendar/week', 'main');
+INSERT INTO `menu` VALUES (14, 'default', 65, '', 'children', 20, 'Week', 'Calendar/week_grid', 'main');
+INSERT INTO `menu` VALUES (15, 'default', 65, '', 'children', 30, 'Month', 'Calendar/month', 'main');
+INSERT INTO `menu` VALUES (16, 'default', 65, '', 'children', 40, 'Day Brief', 'Calendar/day_brief', 'main');
+INSERT INTO `menu` VALUES (17, 'default', 65, '', 'children', 60, 'Search', 'Calendar/search', 'main');
+INSERT INTO `menu` VALUES (18, 'admin', 45, '', 'children', 10, 'List Fee Schedules', 'FeeSchedule/default', 'main');
+INSERT INTO `menu` VALUES (19, 'admin', 45, '', 'children', 20, 'Add Fee Schedule', 'FeeSchedule/edit', 'main');
+INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit', 'main');
+INSERT INTO `menu` VALUES (21, 'admin', 81, '', 'children', 10, 'List Users', 'User/list', 'main');
+INSERT INTO `menu` VALUES (22, 'admin', 81, '', 'children', 20, 'Add User', 'User/edit', 'main');
+INSERT INTO `menu` VALUES (80, 'admin', 1, '', 'children', 200, 'Calendar', '', '');
+INSERT INTO `menu` VALUES (24, 'admin', 81, '', 'children', 30, 'List Enumerations', 'Enumeration/list', 'main');
+INSERT INTO `menu` VALUES (25, 'admin', 81, '', 'children', 40, 'Add Enumeration', 'Enumeration/edit', 'main');
+INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 750, 'Forms', '', '');
+INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 20, 'Add Form', 'Form/edit', 'main');
+INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 30, 'View Form Data', 'Form/view', 'main');
+INSERT INTO `menu` VALUES (29, 'patient', 68, '', 'children', 10, 'Forms', 'Form/fillout', 'main');
+INSERT INTO `menu` VALUES (30, 'patient', 1, '', 'children', 100, 'Patients', '', '');
+INSERT INTO `menu` VALUES (31, 'patient', 30, '', 'children', 20, 'Add Patient', 'Patient/edit', 'main');
+INSERT INTO `menu` VALUES (32, 'admin', 5, '', 'children', 160, 'List Insurance Companies', 'Insurance/list', 'main');
+INSERT INTO `menu` VALUES (33, 'admin', 5, '', 'children', 170, 'Add Insurance Company', 'Insurance/edit', 'main');
+INSERT INTO `menu` VALUES (36, 'admin', 81, '', 'children', 50, 'Document Categories', 'DocumentCategory/list', 'main');
+INSERT INTO `menu` VALUES (37, 'patient', 68, '', 'children', 20, 'Documents', 'Document/list', 'main');
+INSERT INTO `menu` VALUES (38, 'admin', 45, '', 'children', 30, 'Edit Superbill', 'Superbill/list', 'main');
+INSERT INTO `menu` VALUES (39, 'default', 1, '', 'children', 300, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (81, 'admin', 1, '', 'children', 700, 'System', '', '');
+INSERT INTO `menu` VALUES (73, 'billing', 62, '', 'children', 30, 'Search', 'Claim/search', 'freeb2');
+INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', 'Billing/reports', 'main');
+INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 200, 'Reports', '', '');
+INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', 'Patient/reports', 'main');
+INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 300, 'Billing', '', 'main');
+INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 400, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (47, 'patient', 46, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (48, 'patient', 46, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (49, 'billing', 1, '', 'children', 500, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (57, 'billing', 49, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (58, 'billing', 49, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (59, 'admin', 1, '', 'children', 900, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (60, 'admin', 59, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (61, 'admin', 59, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (62, 'billing', 1, '', 'children', 100, 'Claims', '', 'freeb2');
+INSERT INTO `menu` VALUES (63, 'billing', 62, '', 'children', 10, 'List Claims', 'Claim/list', 'freeb2');
+INSERT INTO `menu` VALUES (64, 'billing', 62, '', 'children', 20, 'Add Claim', 'Claim/list', 'freeb2');
+INSERT INTO `menu` VALUES (65, 'default', 1, '', 'children', 100, 'View', '', '');
+INSERT INTO `menu` VALUES (66, 'default', 1, '', 'children', 400, 'Help', '', '');
+INSERT INTO `menu` VALUES (67, 'patient', 30, '', 'children', 10, 'List Patients', 'Patient/list', 'main');
+INSERT INTO `menu` VALUES (68, 'patient', 1, '', 'children', 200, 'Actions', '', '');
+INSERT INTO `menu` VALUES (69, 'patient', 30, '', 'children', 30, 'Search', 'PatientFinder/find', 'main');
+INSERT INTO `menu` VALUES (70, 'patient', 68, '', 'children', 30, 'Encounter', 'Patient/encounter', 'main');
+INSERT INTO `menu` VALUES (71, 'default', 66, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
+INSERT INTO `menu` VALUES (72, 'patient', 68, '', 'children', 5, 'Dashboard', 'Patient/dashboard', 'main');
+INSERT INTO `menu` VALUES (74, 'patient', 1, '', 'children', 500, 'Help', '', '');
+INSERT INTO `menu` VALUES (75, 'patient', 74, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
+INSERT INTO `menu` VALUES (76, 'billing', 1, '', 'children', 500, 'Help', '', '');
+INSERT INTO `menu` VALUES (77, 'billing', 76, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
+INSERT INTO `menu` VALUES (78, 'admin', 1, '', 'children', 1000, 'Help', '', '');
+INSERT INTO `menu` VALUES (79, 'admin', 78, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
+INSERT INTO `menu` VALUES (83, 'admin', 5, '', 'children', 5, 'List Schedules/Facilities', 'Location/list', 'main');
+INSERT INTO `menu` VALUES (84, 'admin', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practice', 'main');
+INSERT INTO `menu` VALUES (85, 'admin', 4, '', 'children', 5, 'List Reports', 'Report/list', 'main');
 
 -- --------------------------------------------------------
 
@@ -1644,6 +1675,11 @@ CREATE TABLE `name_history` (
 -- 
 
 INSERT INTO `name_history` VALUES (959, 955, 'Fred', 'Flinstone', 'Q', '2005-03-07');
+INSERT INTO `name_history` VALUES (1069, 1061, 'john', '', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1070, 1061, '', 'adams', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1071, 1061, 'jon', 'adamsly', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1074, 1061, 'jon23', 'adamsly2', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1075, 1061, 'jon23', 'adamsly23', '', '2005-03-09');
 
 -- --------------------------------------------------------
 
@@ -1681,6 +1717,7 @@ CREATE TABLE `number` (
   `number_type` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
   `number` varchar(100) NOT NULL default '',
+  `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
 ) TYPE=MyISAM COMMENT='A phone number';
 
@@ -1688,8 +1725,10 @@ CREATE TABLE `number` (
 -- Dumping data for table `number`
 -- 
 
-INSERT INTO `number` VALUES (784, 1, '', '480-361-1331');
-INSERT INTO `number` VALUES (956, 1, 'tewt', '12345678');
+INSERT INTO `number` VALUES (784, 1, '', '480-361-1331', 1);
+INSERT INTO `number` VALUES (956, 1, 'tewt', '12345678', 1);
+INSERT INTO `number` VALUES (1062, 1, '', '555-555-5555', 0);
+INSERT INTO `number` VALUES (1064, 2, '', '555-555-5555', 1);
 
 -- --------------------------------------------------------
 
@@ -1837,6 +1876,8 @@ INSERT INTO `occurences` VALUES (1056, 1029, '2005-08-23 09:00:00', '2005-08-23 
 INSERT INTO `occurences` VALUES (1057, 1029, '2005-08-30 09:00:00', '2005-08-30 14:00:00', '', 14, 984, 1, NULL);
 INSERT INTO `occurences` VALUES (1058, 1029, '2005-09-06 09:00:00', '2005-09-06 14:00:00', '', 14, 984, 1, NULL);
 INSERT INTO `occurences` VALUES (1060, 1059, '2005-03-08 09:00:00', '2005-03-08 09:15:00', 'test', 14, 984, 1, 0);
+INSERT INTO `occurences` VALUES (1081, 1080, '2005-03-08 10:00:00', '2005-03-08 11:00:00', 'test', 0, 984, 1, 0);
+INSERT INTO `occurences` VALUES (1083, 1082, '2005-03-08 11:15:00', '2005-03-08 11:45:00', 'new test', 0, 984, 1, 1061);
 
 -- --------------------------------------------------------
 
@@ -2274,6 +2315,29 @@ INSERT INTO `ownership` VALUES (1057, 1);
 INSERT INTO `ownership` VALUES (1058, 1);
 INSERT INTO `ownership` VALUES (1059, 1);
 INSERT INTO `ownership` VALUES (1060, 1);
+INSERT INTO `ownership` VALUES (1061, 1);
+INSERT INTO `ownership` VALUES (1062, 1);
+INSERT INTO `ownership` VALUES (1063, 1);
+INSERT INTO `ownership` VALUES (1064, 1);
+INSERT INTO `ownership` VALUES (1065, 1);
+INSERT INTO `ownership` VALUES (1066, 1);
+INSERT INTO `ownership` VALUES (1067, 1);
+INSERT INTO `ownership` VALUES (1068, 1);
+INSERT INTO `ownership` VALUES (1069, 1);
+INSERT INTO `ownership` VALUES (1070, 1);
+INSERT INTO `ownership` VALUES (1071, 1);
+INSERT INTO `ownership` VALUES (1072, 1);
+INSERT INTO `ownership` VALUES (1073, 1);
+INSERT INTO `ownership` VALUES (1074, 1);
+INSERT INTO `ownership` VALUES (1075, 1);
+INSERT INTO `ownership` VALUES (1076, 1);
+INSERT INTO `ownership` VALUES (1077, 1);
+INSERT INTO `ownership` VALUES (1078, 1);
+INSERT INTO `ownership` VALUES (1079, 1);
+INSERT INTO `ownership` VALUES (1080, 1);
+INSERT INTO `ownership` VALUES (1081, 1);
+INSERT INTO `ownership` VALUES (1082, 1);
+INSERT INTO `ownership` VALUES (1083, 1);
 
 -- --------------------------------------------------------
 
@@ -2285,6 +2349,7 @@ CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
+  `record_number` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=MyISAM COMMENT='An patient extends the person entity';
 
@@ -2292,12 +2357,17 @@ CREATE TABLE `patient` (
 -- Dumping data for table `patient`
 -- 
 
-INSERT INTO `patient` VALUES (955, 0, 0);
-INSERT INTO `patient` VALUES (975, 0, 0);
-INSERT INTO `patient` VALUES (977, 0, 0);
-INSERT INTO `patient` VALUES (979, 0, 0);
-INSERT INTO `patient` VALUES (981, 0, 0);
-INSERT INTO `patient` VALUES (983, 0, 0);
+INSERT INTO `patient` VALUES (955, 0, 0, 0);
+INSERT INTO `patient` VALUES (975, 0, 0, 0);
+INSERT INTO `patient` VALUES (977, 0, 0, 0);
+INSERT INTO `patient` VALUES (979, 0, 0, 0);
+INSERT INTO `patient` VALUES (981, 0, 0, 0);
+INSERT INTO `patient` VALUES (983, 0, 0, 0);
+INSERT INTO `patient` VALUES (1061, 0, 0, 7);
+INSERT INTO `patient` VALUES (1076, 0, 0, 8);
+INSERT INTO `patient` VALUES (1077, 0, 0, 9);
+INSERT INTO `patient` VALUES (1078, 0, 0, 10);
+INSERT INTO `patient` VALUES (1079, 0, 0, 11);
 
 -- --------------------------------------------------------
 
@@ -2331,6 +2401,11 @@ CREATE TABLE `person` (
 
 INSERT INTO `person` VALUES (955, '', 'Eichorn', 'Joshua', 'R', 0, '', '0000-00-00', '', '', '', '', '', '', '123-456-7890', 1);
 INSERT INTO `person` VALUES (983, '', 'Eichorn', 'Joshua', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
+INSERT INTO `person` VALUES (1061, '', 'adamsly235', 'jon235', '', 1, '', '1941-03-09', '', '', '', '', '', '', '333-33-2313', 1);
+INSERT INTO `person` VALUES (1076, '', 'Doe', 'Michael', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1077, '', 'Doe', 'Chris', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1078, '', 'Doe', 'Morton', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1079, '', 'Doe', 'Jonathan', '', 0, '', '0000-00-00', '', '', '', '', '', '', '1231214', 1);
 
 -- --------------------------------------------------------
 
@@ -2352,6 +2427,7 @@ CREATE TABLE `person_address` (
 -- 
 
 INSERT INTO `person_address` VALUES (955, 957, 1);
+INSERT INTO `person_address` VALUES (1061, 1063, 1);
 
 -- --------------------------------------------------------
 
@@ -2395,6 +2471,8 @@ INSERT INTO `person_number` VALUES (2, 784);
 INSERT INTO `person_number` VALUES (786, 793);
 INSERT INTO `person_number` VALUES (786, 794);
 INSERT INTO `person_number` VALUES (955, 956);
+INSERT INTO `person_number` VALUES (1061, 1062);
+INSERT INTO `person_number` VALUES (1061, 1064);
 
 -- --------------------------------------------------------
 
@@ -2555,6 +2633,23 @@ INSERT INTO `provider_to_insurance` VALUES (1028, 983, 989, '', 1, '');
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `record_sequence`
+-- 
+
+CREATE TABLE `record_sequence` (
+  `id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `record_sequence`
+-- 
+
+INSERT INTO `record_sequence` VALUES (11);
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `report_templates`
 -- 
 
@@ -2665,7 +2760,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (1060);
+INSERT INTO `sequences` VALUES (1083);
 
 -- --------------------------------------------------------
 
@@ -2940,6 +3035,7 @@ INSERT INTO `storage_string` VALUES (808, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (809, 'test_string', 'Test');
 INSERT INTO `storage_string` VALUES (968, 'email', '');
 INSERT INTO `storage_string` VALUES (1010, 'test_string', 'test this');
+INSERT INTO `storage_string` VALUES (1072, 'email', '');
 
 -- --------------------------------------------------------
 

@@ -60,7 +60,7 @@ function captureEnter (field, event) {
 					<td>Date</td><td><input type="text" name="date" size="9" value="{$edit_oc->get_date()}"></td>
 				</tr>
 				<tr>
-					<td colspan="2">Patient&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>&nbsp;&nbsp;
+					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">New</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
@@ -135,7 +135,7 @@ function captureEnter (field, event) {
 				<td>Date</td><td>{clni_input_date name="date" size="9" value=$edit_oc->get_date()}</td>
 				</tr>
 				<tr>
-					<td colspan="2">Patient&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>&nbsp;&nbsp;
+					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
