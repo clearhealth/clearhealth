@@ -66,7 +66,7 @@ function captureEnter (field, event) {
 				<tr>
 				<td valign="top" colspan="2">
 					<INPUT TYPE="hidden" name="external_id"  id="patient_id_2" value="{$edit_oc->get_external_id()}">
-                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_oc->get_external_id()}">
+                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_patient_name}">
                 	<div id="acDiv2" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 				</td>
 				</tr>
@@ -81,7 +81,7 @@ function captureEnter (field, event) {
 					<td colspan="2">Title</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons select=$edit_oc->get_notes()}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>
@@ -141,7 +141,7 @@ function captureEnter (field, event) {
 				<tr>
 				<td valign="top" colspan="2">
 					<INPUT TYPE="hidden" name="external_id" id="patient_id_1" value="{$edit_oc->get_external_id()}">
-                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_oc->get_external_id()}">
+                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_patient_name}">
                 	<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 				</td>
 				</tr>
@@ -156,7 +156,7 @@ function captureEnter (field, event) {
 					<td colspan="2">Title</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons select=$edit_oc->get_notes()}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>

@@ -170,7 +170,7 @@ class C_PatientFinder extends Controller {
 	function search_by_fName($sql, $search_string) {
 		$name_array = split(",", $search_string);
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
-		$sql .= " WHERE fname LIKE '$fName%'" . " ORDER BY first_name";
+		$sql .= " WHERE first_name LIKE '$fName%'" . " ORDER BY first_name";
 		$sql .= " LIMIT " . $this->limit;
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;

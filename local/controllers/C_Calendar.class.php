@@ -461,6 +461,11 @@ class C_Calendar extends CalendarController {
 		if (isset($_GET['appointment_id']) && is_numeric($_GET['appointment_id'])) {
 			$this->assign("edit_app", true);
 			$oc = new Occurence($_GET['appointment_id']);
+			$sql = "SELECT first_name, last_name from person where person_id =" . $oc->_db->qstr($oc->get_external_id());
+			$result = $oc->_db->execute($sql);
+			if ($result && !$result->EOF) {
+				$this->assign("edit_patient_name", $result->fields['last_name'] . ", " . $result->fields['first_name']);	
+			}
 			$this->assign("edit_oc",$oc);
 		}
 		else {
@@ -472,6 +477,7 @@ class C_Calendar extends CalendarController {
 		}
 		$this->assign_by_ref("sidebar_months",$months);
 		$this->assign("LINK_BASE",$this->_link($view,true));
+		$this->assign("appointment_reasons", array_flip($u->_load_enum("appointment_reasons",false)));
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_sidebar.html");
 	}

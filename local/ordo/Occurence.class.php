@@ -51,6 +51,12 @@ class Occurence extends ORDataObject{
 	var $external_id;
 	
 	/**
+	 *	From appointment reasons enumeration
+	 *	@var reason_id
+	 */
+	var $reason_id;
+	
+	/**
 	 *	
 	 *	@var location
 	 */
@@ -237,6 +243,14 @@ class Occurence extends ORDataObject{
 	
 	function get_external_id() {
 		return $this->external_id;
+	}
+	
+	function set_reason_id($value) {
+		$this->reason_id = $value;
+	}
+	
+	function get_reason_id() {
+		return $this->reason_id;
 	}
 	
 	function set_last_change_id($value) {
