@@ -1,0 +1,21 @@
+<fieldset class="radio" id="account_history">
+	<legend>Account History</legend>
+	{$account_grid->render()}
+	{if $account_grid->empty}
+		<p>Patient has no account history</p>
+	{/if}
+</fieldset>
+<fieldset class="radio" id="account_history">
+	<legend>Account History</legend>
+	{$chc_grid->render()}
+	{if $chc_grid->empty}
+		<p>Patient has no account history</p>
+	{/if}
+</fieldset>
+<fieldset class="radio" id="account_history">
+	<legend>Account History</legend>
+	{$pcl_grid->render()}
+	{if $pcl_grid->empty}
+		<p>Patient has no account history</p>
+	{/if}
+</fieldset>
