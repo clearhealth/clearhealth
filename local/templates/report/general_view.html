@@ -4,17 +4,19 @@
 		<h2>Report: {$report->get_label()}{if $template_name !== "Default Template"} - {$template_name}{/if}</h2>
 		<p>{$report->get_description()}</p>
 
-		{$filter->render()}
 	</td>
 </tr>
+{foreach from=$reports item=report}
+<tr><td>{if $report.title}<h3>{$report.title|make_label}</h3>{/if}{$report.filter->render()}</td></tr>
 <tr>
 	<td>
-		{$grid->render()}
-		{if $grid->empty}
-			<p>Report Contains no data.</p>
+		{$report.grid->render()}
+		{if $report.grid->empty}
+			<p>Report Section Contains no data.</p>
 		{/if}
 
 	</td>
 </tr>
+{/foreach}
 
 </table>

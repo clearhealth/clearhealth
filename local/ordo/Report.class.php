@@ -269,6 +269,16 @@ class Report extends ORDataObject {
 	{
 		$this->query = $query;
 	}
+	function get_exploded_query() {
+		$ret = array();
+		if (strstr($this->query,'---[')) {
+			preg_match_all('/---\[([\w]+)\]---\s+(.+)/',$this->query,$match);
+			foreach($match[1] as $key => $val) {
+				$ret[$val] = trim($match[2][$key]);
+			}
+		}
+		return $ret;
+	}
 
 
 	function connectedReportList($menu_id) {

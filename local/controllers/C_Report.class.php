@@ -257,15 +257,26 @@ class C_Report extends Controller {
 		$this->assign("report",$r);
 		$this->assign("template_name",$template_name);
 
-		$filter =& new ReportFilter($r->get_query());
+		$queries = $r->get_exploded_query();
+		$reports = array();
+		foreach($queries as $key => $query) {
+			$reports[$key]['filter'] =& new ReportFilter($query);
+			$reports[$key]['title'] = $key;
 
-		$ds =& $filter->getDatasource();
+			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
+			$reports[$key]['grid']->pageSize = 20;
 
-		$grid =& new cGrid($ds);
-		$grid->pageSize = 20;
+		}
+		if (count($reports) == 0) {
+			$key = "default";
+			$query = $r->get_query();
+			$reports[$key]['filter'] =& new ReportFilter($query);
 
-		$this->assign_by_ref("grid",$grid);
-		$this->assign_by_ref("filter",$filter);
+			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
+			$reports[$key]['grid']->pageSize = 20;
+			
+		}
+		$this->assign_by_ref("reports",$reports);
 
 		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_view.html"));	
 	}
