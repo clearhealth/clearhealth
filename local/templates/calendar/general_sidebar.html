@@ -47,7 +47,13 @@ function captureEnter (field, event) {
 			<br>
 			
 			<p style="align: center; font-weight:bold;">{$rooms_practice_array[$selected_location]}</p>
+			{if $edit_app}
+			<input type="hidden" name="location_id" value="{$edit_oc->get_location_id()}">
+			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
+			{else}
 			<input type="hidden" name="location_id" value="{$selected_location}">
+			{/if}	
+			
 			
 			<table border="0">
 				<tr>
@@ -117,7 +123,12 @@ function captureEnter (field, event) {
 			<br>
 			
 			<p style="align: center; font-weight:bold;">{$rooms_practice_array[$selected_location]}</p>
+			{if $edit_app}
+			<input type="hidden" name="location_id" value="{$edit_oc->get_location_id()}">
+			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
+			{else}
 			<input type="hidden" name="location_id" value="{$selected_location}">
+			{/if}
 			
 			<table border="0">
 				<tr>

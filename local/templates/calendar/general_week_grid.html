@@ -131,12 +131,10 @@
 								<a href="{$UPDATE_SCHEDULE_ACTION}&id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a>
 
 								{else}
-								<!-- <a href="controller.php?main&location&action=schedule_list#{$ev.schedule_id}">{$ev.schedule_code}</a> <a href="controller.php?main&location&action=schedule_list#{$ev.schedule_id}">{$ev.title}</a> -->
 								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.schedule_code}</a> 
 								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.title}</a>
 
-								<br><a href="{$APPOINTMENT_ACTION}&appointment_id={$ev.occurence_id}">edit</a>, 
-								<!-- <a href="controller.php?location&delete&id={$ev.occurence_id}&object=occurence&process=1">delete</a><br> -->
+								<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>, 
 								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a><br>
 								{$ev.notes}
 								{/if}
