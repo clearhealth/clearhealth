@@ -1,0 +1,122 @@
+{literal}
+<style type="text/css">
+	#practice {
+		float: left;
+	}
+	#facility {
+		padding-left: 1em;
+		float: left;
+	}
+	#provider {
+		padding-left: 1em;
+		float: left;
+	}
+
+	#title {
+		float: right;
+	}
+	h3 {
+		margin-top: 0px;
+	}
+	h4 {
+		margin: 0px;
+		padding: 0px;
+	}
+</style>
+{/literal}
+
+{assign var=practice_array value=$practice_ds->toArray()}
+{assign var=practice value=$practice_array[0]}
+{assign var=facility_array value=$treating_facility_ds->toArray()}
+{assign var=facility value=$facility_array[0]}
+{assign var=patient_array value=$patient_ds->toArray()}
+{assign var=patient value=$patient_array[0]}
+{assign var=provider_array value=$treating_provider_ds->toArray()}
+{assign var=provider value=$provider_array[0]}
+{assign var=encounter_array value=$encounter_ds->toArray()}
+{assign var=encounter value=$encounter_array[0]}
+
+<h3 id="title">{$report->get_label()} : {$patient.last_name}, {$patient.first_name} #{$patient.record_number} {$smarty.now|date_format:"%Y-%m-%d"}</h3>
+
+<div id="practice">
+	<h3>{$practice.name}</h3>
+	<div class="address">
+		{$practice.line1}<br>
+		{if $practice.line2}
+		{$practice.line2}<br>
+		{/if}
+		{$practice.city}, {enum_lookup name=state value=$practice.state} {$practice.postal_code}
+	</div>
+	<br>
+	<div class="phone">
+		Phone: 555-555-1234 <br>{* todo: grab the actual phone in the query *}
+		Fax: 555-555-1235 {* todo: grab the actual phone in the query *}
+	</div>
+</div>
+
+<div id="facility">
+	<h3>{$facility.name}</h3>
+	<div class="address">
+		{$facility.line1}<br>
+		{if $facility.line2}
+		{$facility.line2}<br>
+		{/if}
+		{$facility.city}, {enum_lookup name=state value=$facility.state} {$facility.postal_code}
+	</div>
+</div>
+
+<div id="provider">
+	<h3>{$provider.salutation} {$provider.last_name}, {$provider.first_name}</h3>
+	<div class="address">
+		{$provider.line1}<br>
+		{if $provider.line2}
+		{$provider.line2}<br>
+		{/if}
+		{$provider.city}, {enum_lookup name=state value=$provider.state} {$provider.postal_code}
+	</div>
+	<br>
+	<div class="phone">
+		Phone: {$provider.number}
+	</div>
+	<div>State License #{$provider.state_license_number}</div>
+</div>
+
+
+<div style="clear:both; margin: 1em;">&nbsp;</div>
+
+<div id="patient">
+	<h3>{$patient.salutation} {$patient.last_name}, {$patient.first_name}</h3>
+	<div style="float: left">
+		<div class="address">
+			{$patient.line1}<br>
+			{if $patient.line2}
+			{$patient.line2}<br>
+			{/if}
+			{$patient.city}, {enum_lookup name=state value=$patient.state} {$patient.postal_code}
+		</div>
+	</div>
+	<div style="float: left; padding-left: 1em;">
+		<div class="phone">
+			Phone: {$patient.number}
+		</div>
+		<div>
+			Record Number: {$patient.record_number}
+		</div>
+	</div>
+</div>
+
+<div style="clear:both; margin: 1em;">&nbsp;</div>
+
+
+<div id="codes">
+	<h3>Date of Treatment: {$encounter.date_of_treatment|date_format:"%Y-%m-%d"}</h3>
+	<h4>Procedures</h4>
+	{$code_list_grid->setPageSize(false)}
+	{$code_list_grid->render()}
+</div>
+<br>
+<div id="payments">
+	<h4>Payment History</h4>
+	{$payment_history_grid->setPageSize(false)}
+	{$payment_history_grid->render()}
+</div>
