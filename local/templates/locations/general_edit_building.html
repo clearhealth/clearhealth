@@ -30,7 +30,7 @@
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >City, State Zip</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="25" name="city" value="{$building->address->city}"/> , <input type="text" size="2" maxlength="2" name="state" value="{$building->address->state}"/> <input type="text" size="5" name="zip" value="{$building->address->zip}"/>
+		<input type="text" size="25" name="city" value="{$building->address->city}"/> , {html_options name="state" options=$building->address->getStateList() selected=$building->address->get('state')} <input type="text" size="5" name="zip" value="{$building->address->get("zip")}"/>
 	</td>
 </tr>
 <tr>

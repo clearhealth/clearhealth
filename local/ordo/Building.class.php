@@ -86,7 +86,11 @@ class Building extends ORDataObject{
 
 	function persist() {
 		parent::persist();
-		$this->address->persist($this->id);
+		//reinitialize address with this buildings id on add case 
+		if ($this->address->id == 0) {
+			$this->address->setup(0,$this->id,"building");
+		}
+		$this->address->persist();
 	}
 	
 	/**
