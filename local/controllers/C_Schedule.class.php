@@ -116,7 +116,15 @@ class C_Schedule extends CalendarController {
 			return true;	
 		}
 		
-		$this->assign("availability_message", "The event $sdate - $edate is outside of the providers schedules.");	
+		$sql = "SELECT concat_ws(' ',p.first_name, p.last_name) as resource_name from user u  inner join person p on p.person_id = u.person_id "
+				." where u.user_id =" . $db->qstr($provider_id);
+		$results = $db->query($sql);
+		if ($results && !$results->EOF) {
+			$this->assign("availability_message", "It does not appear that " . $results->fields['resource_name'] . " is available during $sdate - $edate for that facility.");
+		}
+		else {
+			$this->assign("availability_message", "It does not appear that that resource is available during $sdate - $edate for that facility.");
+		}
 		return false;
 	}
 	
