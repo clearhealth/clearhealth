@@ -78,6 +78,20 @@ function clni_rule_match(element) {
 	return false;
 }
 
+/**
+ * Require that an element has by selected by an autocomplete rule
+ */
+function clni_rule_autocomplete(element) {
+
+	var autofield = element.getAttribute('autofield');
+	if (autofield) {
+		if (document.getElementById(autofield).value != "") {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 /**
  * Require tha the passed in element be an email address
