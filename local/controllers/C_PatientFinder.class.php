@@ -89,7 +89,9 @@ class C_PatientFinder extends Controller {
 	function find_remoting($search_string) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
+		
 		$this->find_action_process();
+		
 		if (is_array($this->_tpl_vars['result_set'])) return $this->_tpl_vars['result_set'];
 		return null;
 	}
@@ -104,7 +106,6 @@ class C_PatientFinder extends Controller {
 		$number = mysql_real_escape_string($search_string);
 		$sql .= " WHERE pubpid = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -121,7 +122,6 @@ class C_PatientFinder extends Controller {
 		$number = mysql_real_escape_string($search_string);
 		$sql .= " WHERE ss = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -139,7 +139,6 @@ class C_PatientFinder extends Controller {
 		$dob = date("Y-m-d",strtotime($search_string));
 		$sql .= " WHERE DOB = '$dob'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
@@ -155,7 +154,6 @@ class C_PatientFinder extends Controller {
 		$lName = mysql_real_escape_string($search_string);
 		$sql .= " WHERE last_name LIKE '$lName%'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -173,7 +171,6 @@ class C_PatientFinder extends Controller {
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
 		$sql .= " WHERE fname LIKE '$fName%'" . " ORDER BY first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
 	}
@@ -190,7 +187,6 @@ class C_PatientFinder extends Controller {
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
 		$sql .= " WHERE first_name LIKE '%$fName%' AND last_name LIKE '$lName%'"  . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
