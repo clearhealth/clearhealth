@@ -202,18 +202,22 @@ class C_Patient extends Controller {
 		$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$encounter_id);
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
+		$this->assign('NEW_ENCOUNTER_DATE',Cellini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
 		$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$encounter_id);
 		$encounterValueGrid = new cGrid($encounterValue->encounterValueList($encounter_id));
 		$encounterValueGrid->registerTemplate('value','<a href="'.Cellini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
+		$this->assign('NEW_ENCOUNTER_VALUE',Cellini::managerLink('editEncounterValue',$encounter_id)."id=0&process=true");
 
 		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
+		$this->assign('NEW_ENCOUNTER_PERSON',Cellini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
 		$payment =& ORDataObject::factory('Payment',$this->payment_id,$encounter_id);
 		$paymentGrid = new cGrid($payment->paymentList($encounter_id));
 		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
+		$this->assign('NEW_ENCOUNTER_PAYMENT',Cellini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
 		$formData =& ORDataObject::factory("FormData");
 		$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));

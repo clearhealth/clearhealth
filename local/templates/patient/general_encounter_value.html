@@ -15,7 +15,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" value="{if $encounterValue->get('id') > 0}Upvalue{else}Add{/if} Value"></td>
+			<td colspan="2"><input type="submit" value="{if $encounterValue->get('id') > 0}Update{else}Add{/if} Value">
+				{if $encounterValue->get('id') > 0}
+				<input type="button" value="New Value" onclick="window.location = '{$NEW_ENCOUNTER_VALUE}';">
+				{/if}
+			</td>
 		</tr>
 	</table>
 </fieldset>

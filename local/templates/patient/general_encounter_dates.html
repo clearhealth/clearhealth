@@ -15,7 +15,11 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" value="{if $encounterDate->get('id') > 0}Update{else}Add{/if} Date"></td>
+			<td colspan="2"><input type="submit" value="{if $encounterDate->get('id') > 0}Update{else}Add{/if} Date">
+				{if $encounterDate->get('id') > 0}
+				<input type="button" value="New Date" onclick="window.location = '{$NEW_ENCOUNTER_DATE}';">
+				{/if}
+			</td>
 		</tr>
 	</table>
 </fieldset>

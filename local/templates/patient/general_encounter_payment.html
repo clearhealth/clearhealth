@@ -13,7 +13,11 @@
 			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}"></td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}"></td>
+			<td colspan="2"><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}">
+				{if $payment->get('id') > 0}
+				<input type="button" value="New Payment" onclick="window.location = '{$NEW_ENCOUNTER_PAYMENT}';">
+				{/if}
+			</td>
 		</tr>
 	</table>
 </fieldset>
