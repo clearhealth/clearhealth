@@ -30,13 +30,11 @@ class C_Calendar extends CalendarController {
 		$this->assign("TOP_ACTION", Cellini::link(true));
 		
 		$current_link = Cellini::link(true);
-		isset($_GET['date'])?$current_date=$_GET['date']:$current_date="";
-		isset($_GET['date'])?$current_link.="date=".$current_date."&":"";
+		if (isset($_GET['date'])) $current_link .=  "date=" . $_GET['date'] . "&";
 		$this->assign("APPOINTMENT_ACTION",$current_link);
 		$this->assign('DAY_ACTION', Cellini::link('day'));
-		$this->assign('PATIENT_DASHBOARD_LINK', Cellini::link('dashboard','patient'));
-
-		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter','today')."date=" . $current_date . "&process=true&");
+		
+		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter'). $current_link . "process=true&");
 		$this->assign_by_ref("CONTROLLER", $this);
 		$this->assign('DELETE_ACTION', Cellini::link('delete','Location'));
 		
@@ -88,7 +86,7 @@ class C_Calendar extends CalendarController {
 
 
 	function default_action() {
-		return $this->day_action();
+		return $this->month_action();
 	}
 
 	function month_action($date = "") {
@@ -391,7 +389,7 @@ class C_Calendar extends CalendarController {
 		$week_select = array();
 		$month_select = array();
 		
-		$tw = new Calendar_Week($year,$month,$day,0);
+		$tw = new Calendar_Week($year,$month,$day,1);
 		$tw->build();
 		$twa = $tw->fetchall();
 		$first = array_shift($twa);
