@@ -213,7 +213,9 @@ class Person extends ORDataObject {
 				$this->nameHistory->set('update_date',date('Y-m-d'));
 				$this->nameHistory->set('person_id',$this->get('person_id'));
 			}
-			$this->nameHistory->set($field,$this->$field);
+			if (strlen($this->nameHistory->get("first_name")) == 0) $this->nameHistory->set("first_name",$this->get("first_name"));
+			if (strlen($this->nameHistory->get("middle_name")) == 0) $this->nameHistory->set("middle_name",$this->get("middle_name"));
+			if (strlen($this->nameHistory->get("last_name")) == 0) $this->nameHistory->set("last_name",$this->get("last_name"));
 		}
 	}
 
