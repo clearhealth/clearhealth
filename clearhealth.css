@@ -21,6 +21,7 @@ body {
 	background-color: #ccc;
 	position: relative;
 	z-index: 2;
+	padding: 2px;
 }
 
 #header h1 {
@@ -39,7 +40,6 @@ div#nav {
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
-	height: 25px
 	vertical-align: bottom;
 }
 
