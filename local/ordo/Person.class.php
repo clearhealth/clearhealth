@@ -37,6 +37,8 @@ class Person extends ORDataObject {
 	var $email		= '';
 	var $secondary_email	= '';
 	var $has_photo		= '';
+	var $identifier		= '';
+	var $identifier_type	= '';
 	/**#@-*/
 
 	/**#@+
@@ -169,6 +171,11 @@ class Person extends ORDataObject {
 	 */
 	function getTypeList() {
 		$list = $this->_load_enum('person_type',false);
+		return array_flip($list);
+	}
+
+	function getIdentifierTypeList() {
+		$list = $this->_load_enum('identifier_type',false);
 		return array_flip($list);
 	}
 

@@ -23,7 +23,7 @@ class Patient extends ORDataObject {
 	 * Fields of table: Patient mapped to class members
 	 */
 	var $id			= '';
-	var $terminated		= '';
+	var $ssn		= '';
 	var $date_hired		= '';
 	var $date_terminated	= '';
 	var $date_approved	= null;
@@ -68,7 +68,7 @@ class Patient extends ORDataObject {
 			$this->person->persist();
 			$this->id = $this->person->get('person_id');
 		}
-		parent::persist();
+		//parent::persist();
 	}
 
 	/**
@@ -124,9 +124,9 @@ class Patient extends ORDataObject {
 	}
 
 	/**
-	 * Setup branch relationship
+	 * Setup employer relationship
 	 */
-	function set_branch($branch_id) {
+	function set_employer($branch_id) {
 		if ($branch_id > 0) {
 			if ($this->id > 0) {
 				$this->person->relate($branch_id,0);
@@ -134,25 +134,12 @@ class Patient extends ORDataObject {
 		}
 	}
 
-	function get_branch() {
+	function get_employer() {
 		if ($this->id > 0) {
 			$res = $this->_execute("select c.company_id from company c inner join person_company using(company_id) where person_id = $this->id");
 			return $res->fields['company_id'];
 		}
 		return 0;
-	}
-	// we can't detect stuff that might be null
-	function get_date_approved() {
-		return $this->date_approved;
-	}
-	function set_date_approved($date) {
-		$this->date_approved = $date;
-	}
-	function get_approved_by() {
-		return $this->approved_by;
-	}
-	function set_approved_by($id) {
-		$this->approved_by = $id;
 	}
 
 	/**#@-*/
@@ -166,6 +153,9 @@ class Patient extends ORDataObject {
 	}
 	function getTypeList() {
 		return $this->person->getTypeList();
+	}
+	function getIdentifierTypeList() {
+		return $this->person->getIdentifierTypeList();
 	}
 	function get_numbers() {
 		return $this->person->get_numbers();
