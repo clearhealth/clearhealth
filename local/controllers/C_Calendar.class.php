@@ -64,9 +64,9 @@ class C_Calendar extends CalendarController {
 					switch($type) {
 						case 'user': 
 							$u = new User(null,null);
-							$u->set_id($filter);
+							$u->set('id',$filter);
 							$u->populate();
-							$users .= $u->get_username() . ", "; 
+							$users .= $u->get('username') . ", "; 
 							break;
 						case 'location':
 							$r = new Room($filter);
