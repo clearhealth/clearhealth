@@ -511,7 +511,6 @@ class C_Patient extends Controller {
 			trigger_error("Unable to register clearing hosue data - ".$freeb2->claimLastError($claim_identifier));
 		}
 
-		echo "here";
 		// close the claim
 		/*if (!$freeb2->closeClaim($claim_identifier,1)) {
 			trigger_Error("Failed to close claim:  $claim_identifier");
