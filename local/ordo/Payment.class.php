@@ -26,7 +26,10 @@ class Payment extends ORDataObject {
 	var $foreign_id		= '';
 	var $payment_type	= '';
 	var $amount		= '';
+	var $writeoff		= '';
 	var $user_id		= '';
+	var $payer_id		= '';
+	var $payment_date	= '';
 	/**#@-*/
 
 
@@ -60,19 +63,45 @@ class Payment extends ORDataObject {
 		parent::populate('payment_id');
 	}
 	
+	function &fromForeignId($id) {
+		settype($id,'int');
+
+		$p =& ORDAtaObject::Factory('Payment');
+		$res = $p->_execute("select * from $p->_table where foreign_id = $id order by timestamp");
+
+		$ret = array();
+		$i = 0;
+		while($res && !$res->EOF) {
+			$ret[$i] =& new Payment();
+			$ret[$i]->populate_array($res->fields);
+			$res->MoveNext();
+			$i++;
+		}
+		return $ret;
+	}
+	
 	/**
 	 * Get datasource for payments from the db
 	 */
-	function paymentList($encounter_id) {
-		settype($encounter_id,'int');
+	function paymentList($foreign_id,$extraCols = false) {
+		settype($foreign_id,'int');
+		
 
 		$ds =& new Datasource_sql();
+
+		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
+		if ($extraCols) {
+			$labels['writeoff'] = "Write Off";
+			$labels['payer_id'] = "Payer";
+			$ds->registerFilter('payer_id',array(&$this,'lookupPayer'));
+		}
+
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, timestamp",
+				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
 				'from' 	=> "$this->_table ",
-				'where' => " foreign_id = $encounter_id"
+				'where' => " foreign_id = $foreign_id"
 			),
-			array('payment_type' => 'Type','amount' => 'Amount')
+			$labels
 		);
 
 		$ds->registerFilter('payment_type',array(&$this,'lookupPaymentType'));
@@ -100,6 +129,21 @@ class Payment extends ORDataObject {
 			return $this->_edCache[$id];
 		}
 	}
+
+	var $_pCache = false;
+	function lookupPayer($id) {
+		if ($this->_pCache === false) {
+			$company =& ORDataObject::Factory('Company');
+			$ds = $company->companyListForType('Insurance');
+			$this->_pCache = $ds->toArray('company_id','name');
+		}
+		if (isset($this->_pCache[$id])) {
+			return $this->_pCache[$id];
+		}
+		else if ($id > 0) {
+			return "Self Pay";
+		}
+	}
 	
 
 	/**#@+
@@ -120,6 +164,32 @@ class Payment extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function set_payment_date($date) {
+		$this->payment_date = $this->_mysqlDate($date);
+	}
+
+	function get_payment_date() {
+		if (empty($this->payment_date)) {
+			$this->payment_date = date('Y-m-d');
+		}
+		return $this->payment_date;
+	}
+
 	/**#@-*/
+
+	function totalPaidForCodeId($code_id) {
+		$res = $this->_execute("select sum(pc.paid) p from payment_claimline pc inner join $this->_table using(payment_id) where foreign_id = ".(int)$this->get('foreign_id')." and code_id = $code_id");
+		if ($res && isset($res->fields['p'])) {
+			return $res->fields['p'];
+		}
+		return 0;
+	}
+	function totalWriteoffForCodeId($code_id) {
+		$res = $this->_execute("select sum(pc.writeoff) w from payment_claimline pc inner join $this->_table using(payment_id) where foreign_id = ".(int)$this->get('foreign_id')." and code_id = $code_id");
+		if ($res && isset($res->fields['w'])) {
+			return $res->fields['w'];
+		}
+		return 0;
+	}
 }
 ?>

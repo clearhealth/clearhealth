@@ -1,0 +1,109 @@
+{literal}
+<script type="text/javascript">
+	function updateRow(input) {
+		var row = input.parentNode.parentNode;
+		var match = input.name.match(/bill\[([\w]+)\]\[([\w]+)\]/);
+		var code = match[1];
+		var type = match[2];
+
+		var amountNode 		= row.cells[1].firstChild;
+		var currentPaidNode 	= row.cells[2].firstChild;
+		var currentWriteoffNode	= row.cells[3].firstChild;
+		var paidNode		= row.cells[4].firstChild;
+		var carryNode 		= row.cells[5].firstChild;
+		var writeoffNode	= row.cells[6].firstChild;
+
+		var amount = amountNode.nodeValue - currentPaidNode.nodeValue - currentWriteoffNode.nodeValue;
+		var paid = paidNode.value;
+		var carry = carryNode.value;
+		var writeoff = writeoffNode.value;
+
+		if (paid > amount) {
+			paid = amount;
+			paidNode.value = paid;
+		}
+		if (carry > amount) {
+			carry = amount;
+			carryNode.value = carry;
+		}
+		if (writeoff > amount) {
+			writeoff = amount;
+			writeoffNode.value = writeoff;
+		}
+
+		if (type == "paid" || type == "writeoff") {
+			// update carry value
+			carry = amount - paid - writeoff;
+
+			if (carry < 0) {
+				if (type == "paid") {
+					paid = amount-writeoff;
+					paidNode.value = paid;
+				}
+				if (type == "writeoff") {
+					writeoff = amount-paid;
+					writeoffNode.value = writeoff;
+				}
+				carry = 0;
+			}
+
+			carryNode.value = carry;
+		}
+		else if (type == "carry") {
+			// update writeoff value
+			writeoff = amount - paid - carry;
+			if (writeoff < 0) {
+				carry = amount-paid;
+				carryNode.value = carry;
+				writeoff = 0;
+			}
+			writeoffNode.value = writeoff;
+		}
+	}
+</script>
+{/literal}
+
+<h2>Record Payment for Claim: {$claim->get('identifier')}</h2>
+<p>Claim was created for encounter on: {$encounter->get('date_of_treatment')}</p>
+<p>Patient: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
+
+<h3 style="margin: 0px; padding:0px;">Payment History</h3>
+{$paymentGrid->render()}
+{if $paymentGrid->empty}
+<p>No Payments have been made</p>
+{/if}
+
+<br>
+<h3 style="margin: 0px; padding:0px;">Make Payment</h3>
+{clni_form action=$FORM_ACTION process=$PROCESS}
+<table class="grid">
+	<tr>
+		<th>Code</th><th>Amount<br> Billed</th><th>Current<br> Paid</th><th>Current<br> Writeoff</th><th>Payment<br> Amount</th><th>Carry</th><th>Payment<br> Writeoff</th>
+	</tr>
+	{foreach from=$billList item=code}
+	<tr>
+		<td>{$code.description}<input type="hidden" name="bill[{$code.code}][code_id]" value="{$code.code_id}"></td>
+		<td align="right">{$code.amount}</td>
+		<td align="right">{$code.current_paid}</td>
+		<td align="right">{$code.current_writeoff}</td>
+		<td><input name="bill[{$code.code}][paid]" value="{$code.paid}" size=4 onchange="updateRow(this)"></td>
+		<td><input name="bill[{$code.code}][carry]" value="{$code.carry}" size=4 onchange="updateRow(this)"></td>
+		<td><input name="bill[{$code.code}][writeoff]" value="{$code.writeoff}" size=4 onchange="updateRow(this)"></td>
+	</tr>
+	{/foreach}
+</table>
+
+<table>
+	<tr>
+		<td><label>Payer:</label></td>
+		<td><select name="payment[payer]">
+				{html_options options=$payers}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type="submit" value="Record Payment"></td>
+	</tr>
+</table>
+</form>

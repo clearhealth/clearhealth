@@ -25,6 +25,8 @@ class ClearhealthClaim extends ORDataObject {
 	var $id			= '';
 	var $encounter_id	= '';
 	var $identifier		= '';
+	var $total_billed	= '';
+	var $total_paid		= '';
 	/**#@-*/
 
 

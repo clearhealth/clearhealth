@@ -92,5 +92,30 @@ class FeeSchedule extends ORDataObject {
 	}
 
 	/**#@-*/
+
+	/**
+	 * Returns an object that is the default fee schedule
+	 */
+	function &defaultFeeSchedule() {
+		$feeSchedule =& ORDataObject::Factory('FeeSchedule');
+
+		$res = $feeSchedule->_execute("select fee_schedule_id from $feeSchedule->_table limit 1");
+		if ($res && isseT($res->fields['fee_schedule_id'])) {
+			$feeSchedule->setup($res->fields['fee_schedule_id']);
+		}
+		return $feeSchedule;
+	}
+
+	/**
+	 * Get the fee for a code
+	 */
+	function getFee($code) {
+		$res = $this->_execute("select data from fee_schedule_data fsd inner join codes c using(code_id) where code = ".$this->_quote($code).
+					" and fee_schedule_id = ".(int)$this->get('id'));
+		if ($res && isset($res->fields['data'])) {
+			return $res->fields['data'];
+		}
+		return 0;
+	}
 }
 ?>
