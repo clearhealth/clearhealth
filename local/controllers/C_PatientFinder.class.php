@@ -59,28 +59,30 @@ class C_PatientFinder extends Controller {
 		$pos = strpos($search_string, ',');
 		
 		// get result set into array and pass to array
-		$result_array = array();
 		if (preg_match("/[0-9]{3}-[0-9]{2}-[0-9]{4}/",$search_string)) {
-			$result_array = $this->search_by_ssn($sql, $search_string);
+			$sql = $this->search_by_ssn($sql, $search_string);
 		}
 		elseif (preg_match("/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4}/",$search_string)) {
-			$result_array = $this->search_by_dob($sql, $search_string);
+			$sql = $this->search_by_dob($sql, $search_string);
 		}
 		elseif (is_numeric($search_string)) {
-			$result_array = $this->search_by_number($sql, $search_string);
+			$sql = $this->search_by_number($sql, $search_string);
 		}
 		else if($pos === false) {
 			//no comma just last name
-			$result_array = $this->search_by_lName($sql, $search_string);
+			$sql = $this->search_by_lName($sql, $search_string);
 		}
 		else if($pos === 0){
 			//first name only
-			$result_array = $this->search_by_fName($sql, $search_string);
+			$sql = $this->search_by_fName($sql, $search_string);
 		}
 		else {
 			//last and first at least
-			$result_array = $this->search_by_FullName($sql,$search_string);
+			$sql = $this->search_by_FullName($sql,$search_string);
 		}
+		
+		//print "SQL is $sql \n";
+		$result_array = $this->_db->GetAll($sql);
 		$this->assign('search_string',$search_string);
 		$this->assign('result_set', $result_array);
 		// we're done
@@ -105,12 +107,9 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_number($sql, $search_string) {
 		$number = mysql_real_escape_string($search_string);
-		$sql .= " WHERE pubpid = '$number'" . " ORDER BY last_name, first_name";
+		$sql .= " WHERE record_number = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		//print "SQL is $sql \n";
-		$result_array = $this->_db->GetAll($sql);
-		//print_r($result_array);
-		return $result_array;
+		return $sql;
 	}
 	
 	/**
@@ -121,12 +120,9 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_ssn($sql, $search_string) {
 		$number = mysql_real_escape_string($search_string);
-		$sql .= " WHERE ss = '$number'" . " ORDER BY last_name, first_name";
+		$sql .= " WHERE identifier = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		//print "SQL is $sql \n";
-		$result_array = $this->_db->GetAll($sql);
-		//print_r($result_array);
-		return $result_array;
+		return $sql;
 	}
 	
 	/**
@@ -137,12 +133,11 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_dob($sql, $search_string) {
 		$dob = mysql_real_escape_string($search_string);
-		$dob = date("Y-m-d",strtotime($search_string));
-		$sql .= " WHERE DOB = '$dob'" . " ORDER BY last_name, first_name";
+		$doba = split("/",$search_string);
+        $dob = $doba[2] . "-" . $doba[0] . "-" . $doba[1];
+		$sql .= " WHERE date_of_birth = '$dob'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		//print "SQL is $sql \n";
-		$result_array = $this->_db->GetAll($sql);
-		return $result_array;
+		return $sql;
 	}
 	
 	/**
@@ -155,10 +150,7 @@ class C_PatientFinder extends Controller {
 		$lName = mysql_real_escape_string($search_string);
 		$sql .= " WHERE last_name LIKE '$lName%'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		//print "SQL is $sql \n";
-		$result_array = $this->_db->GetAll($sql);
-		//print_r($result_array);
-		return $result_array;
+		return $sql;
 	}
 	
 	/**
@@ -172,8 +164,7 @@ class C_PatientFinder extends Controller {
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
 		$sql .= " WHERE first_name LIKE '$fName%'" . " ORDER BY first_name";
 		$sql .= " LIMIT " . $this->limit;
-		$result_array = $this->_db->GetAll($sql);
-		return $result_array;
+		return $sql;
 	}
 	
 	/**
@@ -188,9 +179,8 @@ class C_PatientFinder extends Controller {
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
 		$sql .= " WHERE first_name LIKE '%$fName%' AND last_name LIKE '$lName%'"  . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		//print "SQL is $sql \n";
-		$result_array = $this->_db->GetAll($sql);
-		return $result_array;
+		print "SQL is $sql \n";
+		return $sql;
 	}
 }
 ?>
