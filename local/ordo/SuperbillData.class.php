@@ -76,5 +76,21 @@ class SuperbillData extends ORDataObject {
 	}
 
 	/**#@-*/
+	
+	function &superbillList() {
+		settype($company_id,'int');
+		$ds =& new Datasource_sql();
+		$sql = array(
+			'cols' 	=> "superbill_id, status",
+			'from' 	=> "$this->_table",
+			'groupby' => 'superbill_id',
+			'orderby' => 'superbill_id'
+			);
+		$cols = array('superbill_id' => 'Superbill ID','status' => 'Status');
+
+		$ds->setup($this->_db,$sql,$cols);
+		return $ds;
+	}
+	
 }
 ?>

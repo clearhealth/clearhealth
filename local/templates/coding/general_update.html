@@ -1,89 +1,165 @@
-<script type="text/javascript" src="{$base_dir}js/table.js"></script>
+<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+<SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete2.js"></script>
+{literal}
+<script language="javascript">
+function captureEnter (field, event) {
+		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+		if (keyCode == 13) {
+			var i;
+			for (i = 0; i < field.form.elements.length; i++)
+				if (field == field.form.elements[i])
+					break;
+			i = (i + 1) % field.form.elements.length;
+			field.form.elements[i].focus();
+			return false;
+		} 
+		else
+		return true;
+	}      
 
+</script>
+{/literal}
+
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+<input type="hidden" name="foreign_id" value="{$foreign_id}">
+<fieldset class="radio" id="coding_data">
+<legend>Edit Coding Data</legend>
+<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 <table>
 	<tr>
 		<td>
-{literal}
-<form action="javascript:{}" onSubmit="filterCptGrid(this)">
-	<b>Filter CPT Codes</b>
-	<table>
-		<tr>
-			<td><label>Code:</label></td>
-			<td><input id="cpt_code" size=10></td>
-			<td><label>Code name:</label></td>
-			<td><input id="cpt_code_text" size=10></td>
-			<td><input type="submit" value="Filter"></td>
-		</tr>
-	</table>
-</form>
-<script type="text/javascript">
-	function filterCptGrid(form) {
-		if (form.cpt_code.value != "") {
-			o_gcpt.addFilter('code',form.cpt_code.value);
-		}
-		else {
-			o_gcpt.dropFilter('code');
-		}
-		if (form.cpt_code_text.value != "") {
-			o_gcpt.addFilter('code_text',form.cpt_code_text.value);
-		}
-		else {
-			o_gcpt.dropFilter('code_text');
-		}
-		o_gcpt.filter();
-	}
-</script>
+			<table>
+				<tr>
+					<td valign="top">
+						<b>CPT Code:</b>
+					</td>
+					<td valign="top">
+						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
+						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
+							name="parent_code" id="parent_code" SIZE="35" autocomplete="off" value="{$parent_code->getCodeDesc()}">
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<b>Modifier:</b>
+					</td>
+					<td valign="top">
+						<select name="modifier">
+							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<b>Units:</b>
+					</td>
+					<td valign="top">
+						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
+					</td>
+				</tr>
+			</table>
 		</td>
-		<td>
-<form action="javascript:{}" onSubmit="filterIcdGrid(this)">
-	<b>Filter ICD9 Codes</b>
-	<table>
-		<tr>
-			<td><label>Code:</label></td>
-			<td><input id="icd_code" size=10></td>
-			<td><label>Code name:</label></td>
-			<td><input id="icd_code_text" size=10></td>
-			<td><input type="submit" value="Filter"></td>
-		</tr>
-	</table>
-</form>
-<script type="text/javascript">
-	function filterIcdGrid(form) {
-		if (form.icd_code.value != "") {
-			o_gicd.addFilter('code',form.icd_code.value);
-		}
-		else {
-			o_gicd.dropFilter('code');
-		}
-		if (form.icd_code_text.value != "") {
-			o_gicd.addFilter('code_text',form.icd_code_text.value);
-		}
-		else {
-			o_gicd.dropFilter('code_text');
-		}
-		o_gicd.filter();
-	}
-</script>
-
-		</td>
-		<td rowspan="3">
-			<div id="storedCodes" style="border: solid 1px black;"><div></div></div>
+		<td valign="top">
+			<table>
+				<tr>
+					<td valign="top">
+						<b>ICD Code:</b>
+					</td>
+					<td valign="top">
+						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="">
+						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
+						name="child_code" id="child_code" SIZE="35" autocomplete="off" value="">
+						<input type="button" name="add_code" value="Add ICD" onClick="addICDCode()">
+						
+						<div id="child_codes">
+			  			{foreach from=$child_codes item=code}
+						<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
+						{$code.description}<BR>
+						{/foreach}
+						</div>
+					</td>
+				</tr>
+			</table>
 		</td>
 	</tr>
 	<tr>
-		<td colspan=2 align=center>
-			<a href="javascript:{}" onclick="storeRelate()">Store</a>
-			<a href="javascript:{}" onclick="clearRelate()">Clear</a>
-			<div id="currentRelate" style="border: solid 1px black; text-align:left;"><div></div></div>
-		</td>
-	</tr>
-{/literal}
-	<tr>
-		<td>
-			{$cpt->render()}
-		</td>
-		<td align="left">
-			{$icd->render()}
-		</td>
+		<td colspan="2" align="right">
+			<input type="submit" name="saveCode" value="Save"/>
+  		</td>
 	</tr>
 </table>
+</fieldset>
+<fieldset class="radio" id="Code List">
+<legend>Code List</legend>
+{foreach from=$code_list item=code}
+{assign var=children value=$code_data->getChildCodes($code.parent_id)}
+<A HREF="{$EDIT_LINK}parent_id={$code.parent_id}">{$code.description}</A><BR>
+{foreach from=$children item=child}
+&nbsp;&nbsp;&nbsp;{$child.description}<br>
+{/foreach}<BR>
+{/foreach}
+
+</fieldset>
+
+
+
+
+{literal}
+<script language="javascript">
+function setupAutoComplete(){
+	var ac = new AutoComplete(
+		CPTSearch,
+	    'parent_code',
+	    'parent_id',
+	    'acDiv',
+	    true,
+	    600
+	);
+
+	var ac = new AutoComplete(
+		ICDSearch,
+	    'child_code',
+	    'child_id',
+	    'acDiv',
+	    true,
+	    600
+	);
+}
+
+var CPTSearch = function cpt_search(searchString) {
+        var h = new c_coding(this.dataHandler);
+        h.Sync();
+                                                                                
+		if(searchString.length > 0){
+        	var results = h.cpt_search(searchString);
+        	return results;
+		}
+		
+		return;
+}
+
+var ICDSearch = function icd_search(searchString) {
+        var h = new c_coding(this.dataHandler);
+        h.Sync();
+                                                                                
+		if(searchString.length > 0){
+        	var results = h.icd_search(searchString);
+        	return results;
+		}
+		
+		return;
+}
+
+function addICDCode(){
+	//TODD: Move the current code to the bottom of the list
+	var childDiv = document.getElementById('child_codes');
+	var icdCode = document.getElementById('child_id');
+	var icdCodeText = document.getElementById('child_code');
+	childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<BR>';
+	icdCode.value = '';
+	icdCodeText.value = '';
+	icdCodeText.focus();
+}
+setupAutoComplete();
+</script>
+{/literal}
