@@ -269,5 +269,23 @@ class Report extends ORDataObject {
 	{
 		$this->query = $query;
 	}
+
+
+	function connectedReportList($menu_id) {
+		settype($menu_id,'int');
+
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,array(
+				'cols' 	=> "title, report_id, description, rt.report_template_id",
+				'from' 	=> "$this->_table r inner join report_templates rt on r.id = rt.report_id 
+				inner join menu_report mr using(report_template_id)",
+				'where' => " mr.menu_id = $menu_id"
+			),
+			array('title' => 'Title','description' => 'Description')
+		);
+
+		return $ds;
+	}
+
 } 
 ?>

@@ -111,6 +111,10 @@
 	</fieldset>
 	<fieldset class="radio" id="address">
 		<legend>Reports {clni_section_links name="reports"}</legend>
+		{$reportGrid->render()}
+		{if $reportGrid->empty}
+		<p>No Reports have been connected to the dashboard</p>
+		{/if}
 	</fieldset>
 </td>
 </tr>

@@ -57,6 +57,10 @@ class C_Patient extends Controller {
 					$formList[$form['form_id']] = $form['title'];
 				}	
 			}
+
+			$report =& ORDataObject::factory("Report");
+			$reportGrid = new cGrid($report->connectedReportList(89));
+			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 			
 			
 			$this->assign_by_ref("person",$p);
@@ -66,6 +70,7 @@ class C_Patient extends Controller {
 			$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
 			$this->assign_by_ref('encounterGrid',$encounterGrid);
 			$this->assign_by_ref('formDataGrid',$formDataGrid);
+			$this->assign_by_ref('reportGrid',$reportGrid);
 
 			$this->assign('formList',$formList);
 
