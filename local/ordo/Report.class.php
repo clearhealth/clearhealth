@@ -45,6 +45,13 @@ class Report extends ORDataObject {
 			}
 		}
 	}
+
+	function setup($report_id  = 0) {
+		if ($report_id > 0) {
+			$this->set('id',$report_id);
+			$this->populate();
+		}
+	}
     
 	/**
 	* Load all the reports n the system

@@ -1,8 +1,7 @@
 <table width="100%"  border="0" cellspacing="0" cellpadding="8">
 <tr>
-	<td><h1>View Report</h1>
-		<h2>Report: {$report->get_label()}</h2>
-		<h3>{$template_name}</h3>
+	<td>
+		<h2>Report: {$report->get_label()}{if $template_name !== "Default Template"} - {$template_name}{/if}</h2>
 		<p>{$report->get_description()}</p>
 
 		{$filter->render()}

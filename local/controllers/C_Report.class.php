@@ -224,6 +224,8 @@ class C_Report extends Controller {
 
 	/**
 	* View a report
+	*
+	* @todo: does this really belong here or should this be in some sort of withReports class
 	*/
 	function view_action_view($id,$template_id=0)
 	{
