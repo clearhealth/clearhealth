@@ -130,10 +130,10 @@ class C_Coding extends Controller {
 			$where .= " sbd.superbill_id = $superbill AND ";
 		}
 		
-		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') ";
+		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') AND fsd.data > 0";
 		
 		$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
-		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id "
+		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id inner join fee_schedule_data fsd using (code_id) "
 		." $where limit 30";
 		
 		//print($sql);
