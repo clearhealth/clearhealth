@@ -264,7 +264,8 @@ class C_Report extends Controller {
 			$reports[$key]['title'] = $key;
 
 			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
-			$reports[$key]['grid']->pageSize = 20;
+			$reports[$key]['grid']->pageSize = 30;
+			$reports[$key]['grid']->name = $key;
 
 		}
 		if (count($reports) == 0) {
@@ -273,7 +274,7 @@ class C_Report extends Controller {
 			$reports[$key]['filter'] =& new ReportFilter($query);
 
 			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
-			$reports[$key]['grid']->pageSize = 20;
+			$reports[$key]['grid']->pageSize = 30;
 			
 		}
 		$this->assign_by_ref("reports",$reports);
