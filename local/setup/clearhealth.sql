@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 04, 2005 at 04:16 PM
+-- Generation Time: Mar 04, 2005 at 04:27 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -618,6 +618,7 @@ CREATE TABLE `form_data` (
 -- Dumping data for table `form_data`
 -- 
 
+INSERT INTO `form_data` VALUES (801, 800, 0, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -1602,6 +1603,7 @@ INSERT INTO `ownership` VALUES (797, 1);
 INSERT INTO `ownership` VALUES (798, 1);
 INSERT INTO `ownership` VALUES (799, 1);
 INSERT INTO `ownership` VALUES (800, 1);
+INSERT INTO `ownership` VALUES (801, 1);
 
 -- --------------------------------------------------------
 
@@ -1957,7 +1959,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (800);
+INSERT INTO `sequences` VALUES (801);
 
 -- --------------------------------------------------------
 
@@ -2160,6 +2162,63 @@ INSERT INTO `states` VALUES ('Valladolid', 'Valladolid', 'ESP');
 INSERT INTO `states` VALUES ('Vizcaya', 'Vizcaya', 'ESP');
 INSERT INTO `states` VALUES ('Zamora', 'Zamora', 'ESP');
 INSERT INTO `states` VALUES ('Zaragoza', 'Zaragoza', 'ESP');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `storage_date`
+-- 
+
+DROP TABLE IF EXISTS `storage_date`;
+CREATE TABLE `storage_date` (
+  `foreign_key` int(11) NOT NULL default '0',
+  `value_key` varchar(50) NOT NULL default '',
+  `value` date NOT NULL default '0000-00-00',
+  PRIMARY KEY  (`foreign_key`,`value_key`)
+) TYPE=InnoDB COMMENT='Generic way to store date values';
+
+-- 
+-- Dumping data for table `storage_date`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `storage_int`
+-- 
+
+DROP TABLE IF EXISTS `storage_int`;
+CREATE TABLE `storage_int` (
+  `foreign_key` int(11) NOT NULL default '0',
+  `value_key` varchar(50) NOT NULL default '',
+  `value` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`foreign_key`,`value_key`)
+) TYPE=InnoDB COMMENT='Generic way to store integer values (also boolean)';
+
+-- 
+-- Dumping data for table `storage_int`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `storage_string`
+-- 
+
+DROP TABLE IF EXISTS `storage_string`;
+CREATE TABLE `storage_string` (
+  `foreign_key` int(11) NOT NULL default '0',
+  `value_key` varchar(50) NOT NULL default '',
+  `value` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`foreign_key`,`value_key`)
+) TYPE=InnoDB COMMENT='Generic way to string values';
+
+-- 
+-- Dumping data for table `storage_string`
+-- 
+
 
 -- --------------------------------------------------------
 
