@@ -307,6 +307,8 @@ class C_Patient extends Controller {
 			
 			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
 		}
+			$intake_base_link = str_replace("main","util",Cellini::link('report',true,true));
+			$this->assign('INTAKE_REPORT',$intake_base_link."report_id=17857&template_id=17859&encounter_id=".$encounter->get('id'));
 
 
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
