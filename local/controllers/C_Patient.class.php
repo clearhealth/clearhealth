@@ -431,7 +431,7 @@ class C_Patient extends Controller {
 			$claimline['diagnoses'] = array();
 			
 
-			$childCodes = $cd->getChildCodes($data['parent_id']);
+			$childCodes = $cd->getChildCodes($data['parent_id'],$encounter->get('id'));
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}

@@ -29,6 +29,8 @@ class CodingData extends ORDataObject {
 	var $modifier		= '';
 	var $units		= '1.00';
 	var $fee		= '';
+	var $primary_free	= 0;
+	var $code_order		= 0;
 	/**#@-*/
 
 	var $_parentCode 	= null;
@@ -50,6 +52,26 @@ class CodingData extends ORDataObject {
 		if ($id > 0) {
 			$this->set('id',$id);
 			$this->populate();
+		}
+	}
+
+	function persist() {
+		if ($this->get('code_order') == 0) {
+			$res = $this->_execute("select count(*) +1 as c from $this->_table where foreign_id = ".(int)$this->get('foreign_id'));
+			if ($res && !$res->EOF) {
+				$this->set('code_order',$res->fields['c']);
+			}
+		}
+
+		parent::persist();
+
+		// set primary_code == 1 when its the first coding_data row for a giving foreign,parent_id combo
+		$res = $this->_execute("select max(primary_code) pc, min(coding_data_id) cdi from $this->_table where foreign_id = "
+				.(int)$this->get('foreign_id') ." and parent_id = ".(int)$this->get('parent_id'));
+		if ($res && !$res->EOF) {
+			if ($res->fields['pc'] != 1) {
+				$this->_execute("update coding_data set primary_code = 1 where coding_data_id = ".$res->fields['cdi']);
+			}
 		}
 	}
 
