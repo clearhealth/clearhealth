@@ -112,7 +112,7 @@ class Payment extends ORDataObject {
 	/**
 	 * Get datasource for payments from the db for a specific encounter
 	 */
-	function paymentsFromEncounterId($foreign_id,$extraCols = false) {
+	function &paymentsFromEncounterId($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
 		if ($foreign_id == 0) $foreign_id ="NULL";
 		
