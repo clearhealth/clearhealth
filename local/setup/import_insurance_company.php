@@ -2,39 +2,10 @@
 	require_once dirname(__FILE__)."/../../cellini/bootstrap.php";
 	set_time_limit(0);
 
-$data = array(
-		array(
-			'name'	=> 'Test Company',
-			'description' => 'A test company',
-			'url' => 'http://example.com',
-			'notes' => 'notes blah',
-			'numbers' => array(
-				array(
-					'number_type' => 'Primary',
-					'number' => '555-555-5555'
-				),
-			),
-			'addresses' => array(
-				array(
-					'name' => 'Main',
-					'type' => 'Billing',
-					'line1' => '1234 some street',
-					'line2' => 'suite 34',
-					'city'	=> 'Blah',
-					'state' => 'AZ',
-					'postal_code' => '12345'
-				),
-			),
-			'programs' => array(
-				array(
-					'name' => 'My program',
-					'payer_type' => 'medicare',
-					'fee_schedule' => 'test'
-				)
-			)
-		)
-	);
+	$import_file = "ch_payers.php";
 
+
+	require $import_file
 
 	echo "<pre>\n";
 
@@ -53,6 +24,11 @@ $data = array(
 	$feeSchedule =& ORDataObject::factory('FeeSchedule');
 	$schedules = array_flip($feeSchedule->toArray());
 
+}// end reading while loop
+
+
+// starting the writing foreach loop
+
 	foreach($data as $payer) {
 		unset($company);
 		unset($address);
@@ -66,7 +42,7 @@ $data = array(
 
 		foreach($payer['addresses'] as $addr) {
 			unset($address);
-			$address =& ORDataObject::factory('CompanyAddress',0,$company->geT('id'));
+			$address =& ORDataObject::factory('CompanyAddress',0,$company->get('id'));
 			$address->populate_array($addr);
 			$address->set('state',$states[$addr['state']]);
 			$address->set('type',$addressTypes[$addr['type']]);
@@ -91,4 +67,6 @@ $data = array(
 		echo $company->get('id')."\n";
 		flush();
 	}
+
+mysql_close($link);
 ?>
