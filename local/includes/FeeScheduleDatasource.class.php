@@ -3,7 +3,7 @@ require_once CELLINI_ROOT ."/includes/Datasource_editable.class.php";
 
 class FeeScheduleDatasource extends Datasource_editable {
 
-	var $where = array('superbill'=>0);
+	var $where = array('code_type'=>3);
 
 	var $primaryKeyField = 'code_id';
 	var $extra = array('revision_id');

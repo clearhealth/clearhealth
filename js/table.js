@@ -70,8 +70,20 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 			var cell = document.createElement('td');
 
 			if (this.editableMap[field]) {
-				cell.onclick = makeEditable;
+				if (this.meta.editFunc && this.meta.editFunc[field]) {
+					cell.onclick = eval(this.meta.editFunc[field]);
+				}
+				else {
+					cell.onclick = makeEditable;
+				}
 				cell.style.border = "solid 1px black";
+
+				if (this.meta.passAlong) {
+					cell.passAlong = new Object();
+					for(f in this.meta.passAlong) {
+						cell.passAlong[f] = this.data[rowNum][f];
+					}
+				}
 
 				cell.rowNum = rowNum;
 				cell.field = field;
@@ -82,6 +94,11 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 			}
 			cell.appendChild(document.createTextNode(this.data[rowNum][field]));
 			cell.key = field;
+
+			if (this.meta.filterFunc && this.meta.filterFunc[field]) {
+				var tmp = eval(this.meta.filterFunc[field]);
+				tmp(cell);
+			}
 			row.appendChild(cell);
 		}
 	}
@@ -199,8 +216,15 @@ clniTable.prototype.bulkFetch = function(start,rows) {
 
 clniTable.prototype.store = function(cell) {
 	this.dataObject.Sync();
-	var status = this.dataObject.updatefield(cell.updateKey,cell.field,cell.firstChild.value,cell.column);
+	
+	var status = this.dataObject.updatefield(cell.updateKey,cell.field,cell.firstChild.value,cell.passAlong);
 	this.data[cell.rowNum][cell.field] = cell.firstChild.value;
+}
+clniTable.prototype.storeSimple = function(cell,value) {
+	this.dataObject.Sync();
+	
+	var status = this.dataObject.updatefield(cell.updateKey,cell.field,value,cell.passAlong);
+	this.data[cell.rowNum][cell.field] = value;
 }
 
 clniTable.prototype.moveWindow = function(newRow) {
@@ -283,6 +307,35 @@ function makeEditable() {
 		this.appendChild(input);
 		this.parentNode.editing = true;
 		this.editing = true;
+	}
+}
+
+// like makeEditable only makes things a toogle js element instead of an input box
+// you can have many items that have a makeToggle onClick, clicking actually does the change
+function makeToggle() {
+	if (this.selected) {
+		this.selected = 0;
+		this.style.backgroundColor = "";
+	}
+	else {
+		this.selected = 1;
+		this.style.backgroundColor = "green";
+	}
+	//(updateKey,field,value,column)
+	this.parentNode.parentNode.grid.storeSimple(this,this.selected);
+}
+
+function toggleFilter(cell) {
+	var value = cell.firstChild.nodeValue;
+	if (value == 1) {
+		cell.selected = 1;
+		cell.style.backgroundColor = "green";
+		cell.removeChild(cell.firstChild);
+	}
+	else if (value == 0) {
+		cell.selected = 0;
+		cell.style.backgroundColor = "";
+		cell.removeChild(cell.firstChild);
 	}
 }
 
