@@ -162,7 +162,7 @@ class Datasource_AccountHistory extends Datasource {
 				'from' 	=> " payment pa left join encounter e using(encounter_id) left join person p on e.patient_id = p.person_id "
 						." left join clearhealth_claim chc on chc.claim_id = pa.foreign_id "
 						." left join encounter e2 on chc.encounter_id = e2.encounter_id ",
-				'where' => " (e.patient_id = $patient_id or e2.patient_id = $patient_id) and chc.claim_id = $claim_id"
+				'where' => " (e.patient_id = $patient_id /*or e2.patient_id = $patient_id*/) and chc.claim_id = $claim_id"
 			),
 			$labels
 		);
