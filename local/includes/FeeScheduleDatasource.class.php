@@ -95,7 +95,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 		$_SESSION[$this->session]['feeSessions'] = $this->feeSessions;
 	}
 
-	function resetFeeSchedule() {
+	function reset() {
 		$this->feeSessions = array();
 		$this->whereFilter = array();
 

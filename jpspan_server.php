@@ -10,6 +10,7 @@ require_once JPSPAN . 'Server/PostOffice.php';
 require_once APP_ROOT. '/local/controllers/C_PatientFinder.class.php';
 require_once APP_ROOT. '/local/includes/FeeScheduleDatasource.class.php';
 require_once APP_ROOT. '/local/includes/SuperbillDatasource.class.php';
+require_once APP_ROOT. '/local/includes/CodingDatasource.class.php';
 
 // Create the PostOffice server
 $S = & new JPSpan_Server_PostOffice();
@@ -21,6 +22,8 @@ $handle_desc->methods = array('find_remoting');
 $S->addHandler(new C_PatientFinder(), $handle_desc);
 $S->addHandler(new FeeScheduleDatasource());
 $S->addHandler(new SuperbillDatasource());
+$S->addHandler(new IcdCodingDatasource());
+$S->addHandler(new CptCodingDatasource());
 
 
 

@@ -9,6 +9,7 @@ class C_Superbill extends Controller {
 	}
 	function update_action($superbill_id) {
 		$ds =& new SuperbillDatasource();
+		$ds->reset();
 		$renderer = new Grid_Renderer_JS();
 		$grid =& new cGrid($ds,$renderer);
 		//$grid->pageSize = 30;

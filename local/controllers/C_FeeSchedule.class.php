@@ -50,13 +50,13 @@ class C_FeeSchedule extends Controller {
 		$ds =& new FeeScheduleDatasource();
 		if ($fee_schedule_id > 0) {
 			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
-			$ds->resetFeeSchedule();
+			$ds->reset();
 			$ds->addFeeSchedule($feeSchedule->get('name'),$feeSchedule->get('label'),$fee_schedule_id);
 		}
 		else {
 			// add them all
 			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
-			$ds->resetFeeSchedule();
+			$ds->reset();
 
 			$schedules = $feeSchedule->listFeeSchedules();
 			$schedules = $schedules->toArray();

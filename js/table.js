@@ -392,3 +392,139 @@ function closeEditable(tableBody) {
 		}
 	}
 }
+
+var relateSource = false;
+var storedRelations = new Object();
+
+// put me somewhere else
+function relateFilter(cell) {
+}
+
+function makeRelate() {
+	// check if were the current source node, if so turn us off
+	if (this.source) {
+		_resetRelate(this);
+	}
+	// check if someone else in our table is the current source
+	else if (this.parentNode.parentNode.relateSource) {
+		storeRelate();
+		_resetRelate(this.parentNode.parentNode.relateSource);
+		_newRelate(this);
+	}
+	// check if someone else is the source 
+	else if (relateSource) {
+		// we have a source and its not in our table so relate us to it
+		if (this.related) {
+			dropRelated(this);
+		}
+		else {
+			addRelated(this);
+		}
+	}
+	// make us the source 
+	else {
+		_newRelate(this);
+	}
+}
+
+function dropRelated(cell) {
+	var code_id = cell.passAlong.code_id;
+	relateSource.related[code_id] = false;
+	relateSource.text[code_id] = cell.passAlong.code + ": " + cell.passAlong.code_text;
+	relateSource.relatedCount--;
+	cell.style.backgroundColor = "";
+	cell.related = false;
+
+	_updateCurrentRelateMsg();
+}
+	
+function addRelated(cell) {
+	var code_id = cell.passAlong.code_id;
+	relateSource.related[code_id] = true;
+	relateSource.text[code_id] = cell.passAlong.code + ": " + cell.passAlong.code_text;
+	relateSource.relatedCount++;
+	cell.style.backgroundColor = "green";
+	cell.related = true;
+
+	_updateCurrentRelateMsg();
+}
+	
+function _updateCurrentRelateMsg() {
+	msg = document.getElementById('currentRelate');
+	msg.removeChild(msg.firstChild);
+	node = _buildMsg(relateSource);
+	msg.appendChild(node);
+}
+
+function _buildMsg(data) {
+	var node = document.createElement("div");
+	if (data.myText) {
+		node.appendChild(document.createTextNode(data.myText));
+	}
+	var sep = "";
+	for(var code in data.related) {
+		if (data.related[code]) {
+			node.appendChild(document.createTextNode(sep+data.text[code]));
+			sep = ", ";
+		}
+	}
+	return node;
+}
+
+function _resetRelate(cell) {
+	cell.source = false;
+	relateSource = false;
+	cell.parentNode.parentNode.relateSource = false;
+	cell.style.backgroundColor = "";
+	cell.related = false;
+}
+function _newRelate(cell) {
+	cell.source = true;
+	cell.style.backgroundColor = "blue";
+	cell.related = Object();
+	cell.relatedCount = 0;
+	cell.text = Object();
+	cell.myText = cell.passAlong.code + ": " + cell.passAlong.code_text + " => ";
+	cell.code_id = cell.passAlong.code_id;
+	relateSource = cell;
+	cell.parentNode.parentNode.relateSource = cell;
+	_updateCurrentRelateMsg();
+}
+
+function storeRelate() {
+	if (relateSource.relatedCount > 0) {
+		relateSource.fullText = _buildMsg(relateSource);
+		storedRelations[relateSource.code_id] = relateSource;
+		drawStoredRelations();
+		clearRelate();
+	}
+}
+
+function drawStoredRelations() {
+	target = document.getElementById('storedCodes');
+	target.removeChild(target.firstChild);
+
+	surface = document.createElement('div');
+	for(var code_id in storedRelations) {
+		surface.appendChild(storedRelations[code_id].fullText);
+	}
+	target.appendChild(surface);
+}
+
+function clearRelate() {
+	var loop = function(tb) {
+		for(var r = 0; r < tb.rows.length; r++) {
+			var row = tb.rows.item(r);
+			
+			for(var c = 0; c < row.cells.length; c++) {
+				var cell = row.cells.item(c);
+				if (cell.field == "relate") {
+					_resetRelate(cell);
+				}
+			}
+		}
+	}
+	loop(document.getElementById('gicd').getElementsByTagName('tbody').item(0));
+	loop(document.getElementById('gcpt').getElementsByTagName('tbody').item(0));
+	_updateCurrentRelateMsg();
+}
