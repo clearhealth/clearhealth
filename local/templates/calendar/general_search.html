@@ -30,7 +30,9 @@ function captureEnter (field, event) {
 	</tr>
 	<tr>
 		<td><label>Provider:</label></td>
-		<td><select name="provider"><option></option>{html_options options=$providers selected=$search.provider}</select></td>
+		<td><select name="provider"><option></option>{html_options options=$providers selected=$search.provider}</select>
+		<input type="checkbox" name="find_first" value="1" {if $search.find_first eq 1}checked{/if}>&nbsp;find first
+		</td>
 	</tr>
 	<tr>
 		<td><label>Patient:</label></td>
@@ -86,6 +88,12 @@ setupAutoComplete();
 {/literal}
 
 <hr>
+{if $free_time}
+	{foreach from=$free_time  item=time}
+	<p><a href="{$APPOINTMENT_ACTION}date={$time|date_format:"%m/%d/%Y"}&start={$time|date_format:"%H:%M"}&end={$time+900|date_format:"%H:%M"}">{$time|date_format:"%m/%d/%Y"} from {$time|date_format:"%H:%M"} to {$time+900|date_format:"%H:%M"}</a></p>
+	{/foreach}
+
+{else}
 {foreach from=$events key=time item=data}
 <h3>{$time|date_format:"%a, %b %d"}</h3>
 	{foreach from=$data item=interval}
@@ -95,3 +103,4 @@ setupAutoComplete();
 		{/foreach}
 	{/foreach}
 {/foreach}
+{/if}

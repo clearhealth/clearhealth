@@ -72,9 +72,15 @@
     	{assign var=sevents value=$schedule_events.$dts}
     	
 		{foreach name=evs from=$sevents.$this_days_time item=ev}
-			<td colspan="1" width="15" valign="top" style="background-color:#{$ev.color};" class="schedule_border" align="center">
+			{if $ev.room_name}
+			{assign var=bgcolor value="FFA500"}
+			{else}
+			{assign var=bgcolor value=`$ev.color`}
+			{/if}
+			<td colspan="1" width="15" valign="top" style="background-color:#{$bgcolor};" class="schedule_border" align="center">
 			{if $ev.first_inc}
-				{$ev.nickname}<br>
+				{if $ev.nickname}{$ev.nickname}<br>{/if}
+				{if $ev.room_name}{$ev.room_name}<br>{/if}
 			{/if}
 			{strip}
 			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time}" value="{$this_days_time}" onclick="toggleCell(this);">

@@ -44,6 +44,15 @@
 </tr>
 
 <tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Or Facility/Equipment</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	<select name="room_id">
+	<option value=""></option>
+	{html_options options=$rooms_practice_array selected=$schedule->get_room_id()}
+	</select>
+	</td>
+</tr>
+<tr>
 	{if empty($schedule->id) }
 	<td><br /><input type="submit" value="Save" /></td>
 	{else} 
