@@ -158,7 +158,7 @@ class M_Patient extends Manager {
 			$ir =& ORDataObject::factory('InsuredRelationship',$id,$patient_id);
 			$ir->populate_array($data);
 
-			if (isseT($_POST['searchSubscriber'])) {
+			if (isset($_POST['searchSubscriber'])) {
 				$ir->set('subscriber_id',$_POST['searchSubscriber']['person_id']);
 			}
 			if (isset($_POST['newSubscriber'])) {
@@ -333,6 +333,15 @@ class M_Patient extends Manager {
 		$identifier =& ORDataObject::factory('Identifier',$identifier_id,$patient_id);
 		$identifier->drop();
 		$this->messages->addmessage('Secondary Identifier Deleted');
+	}
+
+	function process_moveInsuredRelationshipDown($patient_id,$insured_relationship_id) {
+		$ir =& ORDataObject::factory('InsuredRelationship',$insured_relationship_id);
+		$ir->moveDown();
+	}
+	function process_moveInsuredRelationshipUp($patient_id,$insured_relationship_id) {
+		$ir =& ORDataObject::factory('InsuredRelationship',$insured_relationship_id);
+		$ir->moveUp();
 	}
 }
 ?>

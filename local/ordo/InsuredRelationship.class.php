@@ -67,6 +67,20 @@ class InsuredRelationship extends ORDataObject {
 		parent::populate('insured_relationship_id');
 	}
 
+	function persist() {
+		if (empty($this->program_order)) {
+			// we don't have an order set figure out what it should be
+			$res = $this->_execute("select max(program_order)+1 po from $this->_table where person_id = ".(int)$this->get('person_id'));
+			if ($res && isset($res->fields['po'])) {
+				$this->set('program_order',$res->fields['po']);
+			}
+			else {
+				$this->set('program_order',1);
+			}
+		}
+		parent::persist();
+	}
+
 	/**#@+
 	 * Getters and Setters for Table: insured_relationship
 	 */
@@ -106,9 +120,10 @@ class InsuredRelationship extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "ir.insured_relationship_id, ir.insurance_program_id, group_name, group_number, copay, ip.name as program, c.name as company, program_order, subscriber_to_patient_relationship subscriber_relationship",
 				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
-				'where' => " person_id = $person_id"
+				'where' => " person_id = $person_id",
 			),
-			array('company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay', 'subscriber_relationship' => 'Subscriber'));
+			array('program_order' => false, 'company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay', 'subscriber_relationship' => 'Subscriber'));
+		$ds->addOrderRule('program_order');
 		$ds->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
 		return $ds;
 	}
@@ -144,6 +159,26 @@ class InsuredRelationship extends ORDataObject {
 		if (isset($this->_Cache[$id])) {
 			return $this->_Cache[$id];
 		}
+	}
+
+	function numRelationships($person_id) {
+		settype($person_id,'int');
+		$res = $this->_execute("select count(*) c from $this->_table where person_id = $person_id");
+		if ($res && isset($res->fields['c'])) {
+			return $res->fields['c'];
+		}
+	}
+
+	function moveDown() {
+		$this->_execute("update $this->_table set program_order = program_order -1 where program_order = ".($this->get('program_order') +1)
+					." and person_id = ".(int)$this->get('person_id'));
+		$this->_execute("update $this->_table set program_order = program_order +1 where insured_relationship_id = ".(int)$this->get('id'));
+	}
+
+	function moveUp() {
+		$this->_execute("update $this->_table set program_order = program_order +1 where program_order = ".($this->get('program_order') -1)
+					." and person_id = ".(int)$this->get('person_id'));
+		$this->_execute("update $this->_table set program_order = program_order -1 where insured_relationship_id = ".(int)$this->get('id'));
 	}
 }
 ?>

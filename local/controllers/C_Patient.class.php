@@ -113,6 +113,10 @@ class C_Patient extends Controller {
 		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
 		$insuredRelationshipGrid =& new cGrid($person->insuredRelationshipList());
 		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Cellini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
+		$insuredRelationshipGrid->indexCol = false;
+		$this->payerCount = $insuredRelationship->numRelationships($patient_id);
+		$insuredRelationshipGrid->registerFilter('program_order',array(&$this,'_movePayer'));
+
 
 		$subscriber =& ORDataObject::factory('Patient',$insuredRelationship->get('subscriber_id'));
 
@@ -143,6 +147,7 @@ class C_Patient extends Controller {
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$patient_id));
 		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$patient_id));
+		$this->assign('NEW_PAYER',Cellini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
 		$this->assign('hide_type',true);
 
 		$this->assign('now',date('Y-m-d'));
@@ -283,5 +288,24 @@ class C_Patient extends Controller {
 		
 	}
 
+	function _movePayer($program_order,$row) {
+		$ret = "";
+		if ($program_order > 1) {
+			$ret .= '<a href="'.Cellini::ManagerLink('moveInsuredRelationshipUp',$this->get('patient_id')).'id='.$row['insured_relationship_id'].
+			'&process=true"><img src="'.$this->base_dir.'images/stock/s_asc.png" border=0></a>';
+		}
+		else {
+			$ret .= "<img src='{$this->base_dir}images/stock/blank.gif' width=12 height=9>";
+		}
+		if ($program_order < $this->payerCount) {
+			$ret .= '<a href="'.Cellini::ManagerLink('moveInsuredRelationshipDown',$this->get('patient_id'))
+			.'id='.$row['insured_relationship_id'].'&process=true"><img src="'.$this->base_dir.'images/stock/s_desc.png" border=0></a>';
+		}
+		else {
+			$ret .= "<img src='{$this->base_dir}images/stock/blank.gif' width=12 height=9>";
+		}
+		$ret .=$program_order;
+		return $ret;
+	}
 }
 ?>

@@ -168,7 +168,9 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Payer"></td>
+				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Payer">
+					{if $insuredRelationship->get('id') > 0}<input type="button" value="New Payer" onClick="window.location='{$NEW_PAYER}';">{/if}
+				</td>
 			</tr>
 		</table>
 	</fieldset>
