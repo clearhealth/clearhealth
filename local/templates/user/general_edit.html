@@ -3,91 +3,102 @@
 var cp2 = new ColorPicker(); // DIV style
 </SCRIPT>
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users"}
-	{assign var="detail_section_title" value="User Details"}
-	<fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
-			{clni_section_links name="detail"}
-			</legend>
-			<table>
-			<tbody>
-                        <tr>
-                        <tr>
-				<td><label>First Name: </label></td>
-				<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
-				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
-                        </tr>
-			<tr>
-				<td><label>Last Name: </label></td>
-				<td colspan=2><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
-			</tr>
-			<tr>
-				<td><label>Identifier: </label></td>
-				<td colspan="2"><input id="identifier" name="person[identifier]" size="20" value="{$person->get('identifier')}">
-					<select name="person[identifier_type]">
-						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>Nickname:&nbsp;</td>
-				<td><input type="text" name="user[nickname]" size="15" value="{$user->get("nickname")}"></td>
-			</tr>
-			<tr>
-				<td>Color:&nbsp;</td>
-				<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">Pick</A></td>
-			</tr>
-			<tr>
-				<td><label>Salutation: </label></td>
-                          <td colspan="2">
-			  <input name="person[salutation]" size="5" value="{$person->get('salutation')}">
-			  <!--&nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">-->
-			  &nbsp;&nbsp;Middle Initial: 
-			  <input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
-			  </td>
-                        </tr>
-				{if !$hide_type}
-                        <tr>
-				<td style="vertical-align:top;"><label>Type:</label></td>
-				<td>
-				  <select name="person[type]">
-					  <option></option>
-					  {html_options options=$person->getTypeList() selected=$person->get('type')}
-				  </select>
-			 </td>
-                        </tr>
-			 	{/if}
-                        <tr>
-				<td><label>Email:</label> </td>
-				<td><input name="person[email]" size="30" value="{$person->get('email')}"></td>
-                        </tr>
-				<td style="vertical-align: top;"><label>Notes:</label> </td>
-                          <td colspan="2" valign="top" height="70">
-				  <textarea name="person[notes]" rows="3" cols="35" wrap="virtual">{$person->get('notes')}</textarea>
-			  </td>
-                        </tr>
-                        </tr>
-                      </tbody>
-
-                    </table>
-                    </fieldset>
+{assign var="detail_section_title" value="User Details"}
+<fieldset class="radio" id="person">
+	<legend>
+		{if $detail_section_title}
+			{$detail_section_title}
+		{else}
+			Individual Details
+		{/if} 
+		{clni_section_links name="detail"}
+	</legend>
+	<table>
+	<tbody>
+	<tr>
+		<td><label>First Name: </label></td>
+		<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
+		{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
+	</tr>
+	<tr>
+		<td><label>Last Name: </label></td>
+		<td colspan=2><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+	</tr>
+	<tr>
+		<td><label>Identifier: </label></td>
+		<td colspan="2"><input id="identifier" name="person[identifier]" size="20" value="{$person->get('identifier')}">
+			<select name="person[identifier_type]">
+				{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>Nickname:&nbsp;</td>
+		<td><input type="text" name="user[nickname]" size="15" value="{$user->get("nickname")}"></td>
+	</tr>
+	<tr>
+		<td>Color:&nbsp;</td>
+		<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">Pick</A></td>
+	</tr>
+	<tr>
+		<td><label>Salutation: </label></td>
+		<td colspan="2">
+			<input name="person[salutation]" size="5" value="{$person->get('salutation')}">
+			<!--&nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">-->
+			&nbsp;&nbsp;Middle Initial: 
+			<input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
+		</td>
+	</tr>
+	{if !$hide_type}
+	<tr>
+		<td style="vertical-align:top;"><label>Type:</label></td>
+		<td>
+			<select name="person[type]">
+				<option></option>
+				{html_options options=$person->getTypeList() selected=$person->get('type')}
+			</select>
+		</td>
+	</tr>
+	{/if}
+	<tr>
+		<td style="vertical-align:top;"><label>Default Location:</label></td>
+		<td>
+			<select name="user[default_location_id]">	
+			{html_options options=$rooms_practice_array selected=$user->get('default_location_id')}
+			</select>	
+		</td>
+	</tr>
+	<tr>
+		<td><label>Email:</label> </td>
+		<td><input name="person[email]" size="30" value="{$person->get('email')}"></td>
+	</tr>
+	<tr>
+		<td style="vertical-align: top;"><label>Notes:</label> </td>
+		<td colspan="2" valign="top" height="70">
+			<textarea name="person[notes]" rows="3" cols="35" wrap="virtual">{$person->get('notes')}</textarea>
+		</td>
+	</tr>
+	</tbody>
+	</table>
+</fieldset>
 {clni_register_validation_rule id="last_name"}
 {clni_register_validation_rule id="identifier"}
 <SCRIPT LANGUAGE="JavaScript">cp2.writeDiv()</SCRIPT>
 
-	    {include file="user/general_login.html"}
+{include file="user/general_login.html"}
 	
-		    <p>
-		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
-		    </p>
+<p>
+<input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
+</p>
 
-		    {if $person->get_person_id() > 0}
-		    {assign var="parent" value=$person}
-		    {include file="user/general_provider.html"}
-		    {include file="user/general_provider_to_insurance.html"}
-		    {include file="contacts/general_phone.html"}
-		    {include file="contacts/general_address.html"}
-		    {include file="contacts/general_identifier.html"}
-		    {include file="contacts/general_name_history.html"}
-		    {/if}
+{if $person->get_person_id() > 0}
+{assign var="parent" value=$person}
+{include file="user/general_provider.html"}
+{include file="user/general_provider_to_insurance.html"}
+{include file="contacts/general_phone.html"}
+{include file="contacts/general_address.html"}
+{include file="contacts/general_identifier.html"}
+{include file="contacts/general_name_history.html"}
+{/if}
 </form>
 

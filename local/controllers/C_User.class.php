@@ -25,6 +25,7 @@ class C_User extends Controller {
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$person_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
+		$room =& ORdataObject::factory('Room');
 
 		$user =& User::fromPersonId($person_id);
 		if ($person->get('id') == 0) {
@@ -59,6 +60,7 @@ class C_User extends Controller {
 		$this->assign_by_ref('identifier',$identifier);
 		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
+		$this->assign("rooms_practice_array",$room->rooms_practice_factory());
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$person_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$person_id));
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$person_id));
