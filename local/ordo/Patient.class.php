@@ -30,6 +30,7 @@ class Patient extends MergeDecorator {
 	 * The base Person instance that this patient is extending
 	 */
 	var $person;
+	var $record_number = "";
 
 
 	/**
@@ -41,6 +42,7 @@ class Patient extends MergeDecorator {
 		$this->_table = 'patient';
 		$this->_sequence_name = 'sequences';
 		$this->merge('person',ORDataObject::factory('Person'));
+		
 	}
 
 	/**
@@ -55,9 +57,21 @@ class Patient extends MergeDecorator {
 	}
 
 	/**
+	 * Generate new record number, currently uses database sequence
+	 */
+	function generate_record_number() {
+		
+		$rn = $this->_db->GenID("record_sequence");
+		return $rn;
+	}
+
+	/**
 	 * Persist the data
 	 */
 	function persist() {
+		if (strlen($this->get("record_number")) == 0) {
+			$this->record_number = $this->generate_record_number();	
+		}
 		$this->mergePersist('person_id');
 		if ($this->get('id') == 0) {
 			$this->set('id',$this->person->get('id'));
