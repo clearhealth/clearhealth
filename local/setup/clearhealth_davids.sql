@@ -3,9 +3,15 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 20, 2005 at 03:38 AM
+-- Generation Time: Mar 28, 2005 at 12:54 PM
 -- Server version: 4.0.18
 -- PHP Version: 4.3.4
+
+SET FOREIGN_KEY_CHECKS=0;
+
+SET AUTOCOMMIT=0;
+START TRANSACTION;
+
 -- 
 -- Database: `clearhealth`
 -- 
@@ -16,6 +22,7 @@
 -- Table structure for table `address`
 -- 
 
+DROP TABLE IF EXISTS `address`;
 CREATE TABLE `address` (
   `address_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -58,6 +65,13 @@ INSERT INTO `address` VALUES (8195, '', 'iuy', 'iuy', 'iuy', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (8197, '', 'hh', 'hh', 'hh', 0, 0, 0, 'hh', '');
 INSERT INTO `address` VALUES (8198, '', 'er', 'wer', 'wer', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (8200, '', 'kjh', 'kjh', 'kjh', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8435, '', 'test', 'test', 'test', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8437, '', 'lksjddgflk', 'jw', 'lgkj', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8438, '', 'werr', 'werr', 'wer', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8440, '', 'lgkj', 'slsdkj', 'sddlgk', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8442, '', 'sldffkj', 'sdlkj', 'sdlkfj', 0, 0, 0, 'sds', '');
+INSERT INTO `address` VALUES (8445, '', 'lkjsdfs', 'lkjdff', 'lkjsdf', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8447, '', 'sdlskgj', 'slfsdfkjj', 'dldfkgj', 0, 0, 13, '12342', '');
 
 -- --------------------------------------------------------
 
@@ -65,6 +79,7 @@ INSERT INTO `address` VALUES (8200, '', 'kjh', 'kjh', 'kjh', 0, 0, 0, '', '');
 -- Table structure for table `adodbseq`
 -- 
 
+DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -81,6 +96,7 @@ INSERT INTO `adodbseq` VALUES (1);
 -- Table structure for table `building_address`
 -- 
 
+DROP TABLE IF EXISTS `building_address`;
 CREATE TABLE `building_address` (
   `building_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -98,6 +114,10 @@ INSERT INTO `building_address` VALUES (1123, 8139, 0);
 INSERT INTO `building_address` VALUES (8182, 8184, 0);
 INSERT INTO `building_address` VALUES (8185, 8187, 0);
 INSERT INTO `building_address` VALUES (8196, 8198, 0);
+INSERT INTO `building_address` VALUES (8436, 8438, 0);
+INSERT INTO `building_address` VALUES (8441, 8442, 0);
+INSERT INTO `building_address` VALUES (8444, 8445, 0);
+INSERT INTO `building_address` VALUES (8446, 8447, 0);
 
 -- --------------------------------------------------------
 
@@ -105,6 +125,7 @@ INSERT INTO `building_address` VALUES (8196, 8198, 0);
 -- Table structure for table `buildings`
 -- 
 
+DROP TABLE IF EXISTS `buildings`;
 CREATE TABLE `buildings` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -126,6 +147,13 @@ INSERT INTO `buildings` VALUES (8192, 'kjh', 'kjh', 1122);
 INSERT INTO `buildings` VALUES (8194, 'iuy', 'iuy', 1122);
 INSERT INTO `buildings` VALUES (8196, 'hhh', 'hhh', 1122);
 INSERT INTO `buildings` VALUES (8199, 'kjh', 'kjkh', 1122);
+INSERT INTO `buildings` VALUES (8434, 'test', 'test', 1122);
+INSERT INTO `buildings` VALUES (8436, 'lsdkfj', 'alskdj', 1122);
+INSERT INTO `buildings` VALUES (8439, 'lskdj', 'wlerkj', 1122);
+INSERT INTO `buildings` VALUES (8441, 'sldkffj', 'sdlfkj', 1122);
+INSERT INTO `buildings` VALUES (8443, 'lkj', 'lkj', 1122);
+INSERT INTO `buildings` VALUES (8444, 'lkj', 'lkj', 1122);
+INSERT INTO `buildings` VALUES (8446, 'ldkdjg', 'sldfkj', 1122);
 
 -- --------------------------------------------------------
 
@@ -133,6 +161,7 @@ INSERT INTO `buildings` VALUES (8199, 'kjh', 'kjkh', 1122);
 -- Table structure for table `category`
 -- 
 
+DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -160,6 +189,7 @@ INSERT INTO `category` VALUES (993, 'Sub Category', '', 991, 1, 2);
 -- Table structure for table `category_to_document`
 -- 
 
+DROP TABLE IF EXISTS `category_to_document`;
 CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
@@ -178,6 +208,7 @@ INSERT INTO `category_to_document` VALUES (993, 996);
 -- Table structure for table `clearhealth_claim`
 -- 
 
+DROP TABLE IF EXISTS `clearhealth_claim`;
 CREATE TABLE `clearhealth_claim` (
   `claim_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -327,6 +358,13 @@ INSERT INTO `clearhealth_claim` VALUES (8251, 8201, '8251-12_8201', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8280, 8277, '8280-12_8277', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8290, 8277, '8290-12_8277', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8300, 8277, '8300-12_8277', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8315, 8314, '8315-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8323, 8314, '8323-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8347, 8314, '8347-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8372, 8314, '8372-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8381, 8314, '8381-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8406, 8314, '8406-12_8314', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (8474, 8470, '8474-_8470', 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -334,6 +372,7 @@ INSERT INTO `clearhealth_claim` VALUES (8300, 8277, '8300-12_8277', 0.00, 0.00);
 -- Table structure for table `coding_data`
 -- 
 
+DROP TABLE IF EXISTS `coding_data`;
 CREATE TABLE `coding_data` (
   `coding_data_id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -341,6 +380,7 @@ CREATE TABLE `coding_data` (
   `code_id` int(11) NOT NULL default '0',
   `modifier` int(11) NOT NULL default '0',
   `units` float(5,2) NOT NULL default '1.00',
+  `fee` float(11,2) NOT NULL default '0.00',
   PRIMARY KEY  (`coding_data_id`)
 ) TYPE=MyISAM;
 
@@ -348,12 +388,16 @@ CREATE TABLE `coding_data` (
 -- Dumping data for table `coding_data`
 -- 
 
-INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8202, 8201, 26606, 2240, 1, 1.00);
-INSERT INTO `coding_data` VALUES (8279, 8277, 22386, 2231, 1, 1.00);
+INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8202, 8201, 26606, 2240, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8279, 8277, 22386, 2231, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8459, 8314, 0, 2274, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8460, 8314, 0, 2275, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8472, 8470, 26752, 2274, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8473, 8470, 26752, 2275, 1, 1.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -361,6 +405,7 @@ INSERT INTO `coding_data` VALUES (8279, 8277, 22386, 2231, 1, 1.00);
 -- Table structure for table `company`
 -- 
 
+DROP TABLE IF EXISTS `company`;
 CREATE TABLE `company` (
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -378,6 +423,8 @@ CREATE TABLE `company` (
 
 INSERT INTO `company` VALUES (1113, 'Grand Insurance Co', '', '', '', 'www.grand.com', 'no');
 INSERT INTO `company` VALUES (2049, 'Blue Cross/ Blue Shield', 'bcbs', '', '', '', 'no');
+INSERT INTO `company` VALUES (8462, 'test', '', '', '', '', 'no');
+INSERT INTO `company` VALUES (8503, 'Medical', '', '', '', '', 'no');
 
 -- --------------------------------------------------------
 
@@ -385,6 +432,7 @@ INSERT INTO `company` VALUES (2049, 'Blue Cross/ Blue Shield', 'bcbs', '', '', '
 -- Table structure for table `company_address`
 -- 
 
+DROP TABLE IF EXISTS `company_address`;
 CREATE TABLE `company_address` (
   `company_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -407,6 +455,7 @@ INSERT INTO `company_address` VALUES (2049, 8110, 2);
 -- Table structure for table `company_company`
 -- 
 
+DROP TABLE IF EXISTS `company_company`;
 CREATE TABLE `company_company` (
   `company_id` int(11) NOT NULL default '0',
   `related_company_id` int(11) NOT NULL default '0',
@@ -427,6 +476,7 @@ CREATE TABLE `company_company` (
 -- Table structure for table `company_number`
 -- 
 
+DROP TABLE IF EXISTS `company_number`;
 CREATE TABLE `company_number` (
   `company_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -447,6 +497,7 @@ INSERT INTO `company_number` VALUES (1113, 1115);
 -- Table structure for table `company_type`
 -- 
 
+DROP TABLE IF EXISTS `company_type`;
 CREATE TABLE `company_type` (
   `company_id` int(11) NOT NULL default '0',
   `company_type` int(11) NOT NULL default '0',
@@ -463,6 +514,8 @@ INSERT INTO `company_type` VALUES (968, 1);
 INSERT INTO `company_type` VALUES (1072, 1);
 INSERT INTO `company_type` VALUES (1113, 1);
 INSERT INTO `company_type` VALUES (2049, 1);
+INSERT INTO `company_type` VALUES (8462, 1);
+INSERT INTO `company_type` VALUES (8503, 1);
 
 -- --------------------------------------------------------
 
@@ -470,6 +523,7 @@ INSERT INTO `company_type` VALUES (2049, 1);
 -- Table structure for table `countries`
 -- 
 
+DROP TABLE IF EXISTS `countries`;
 CREATE TABLE `countries` (
   `countries_name` varchar(64) NOT NULL default '',
   `countries_iso_code_2` char(2) NOT NULL default '',
@@ -728,6 +782,7 @@ INSERT INTO `countries` VALUES ('Zimbabwe', 'ZW', 'ZWE');
 -- Table structure for table `document`
 -- 
 
+DROP TABLE IF EXISTS `document`;
 CREATE TABLE `document` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(50) NOT NULL default '',
@@ -759,6 +814,7 @@ INSERT INTO `document` VALUES (996, 'Sunset', '', 71189, '2005-03-08 12:51:19', 
 -- Table structure for table `encounter`
 -- 
 
+DROP TABLE IF EXISTS `encounter`;
 CREATE TABLE `encounter` (
   `encounter_id` int(11) NOT NULL default '0',
   `encounter_reason` int(11) NOT NULL default '0',
@@ -784,6 +840,8 @@ INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-07 00:00:00', 1110
 INSERT INTO `encounter` VALUES (8165, 1, 1707, 1123, '2005-03-18 00:00:00', 1120, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8201, 1, 1110, 8196, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8277, 1, 1110, 8196, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
+INSERT INTO `encounter` VALUES (8314, 1, 1110, 8196, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
+INSERT INTO `encounter` VALUES (8470, 1, 0, 8436, '2005-03-21 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 
 -- --------------------------------------------------------
 
@@ -791,6 +849,7 @@ INSERT INTO `encounter` VALUES (8277, 1, 1110, 8196, '2005-03-20 00:00:00', 1110
 -- Table structure for table `encounter_date`
 -- 
 
+DROP TABLE IF EXISTS `encounter_date`;
 CREATE TABLE `encounter_date` (
   `encounter_date_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -812,6 +871,7 @@ INSERT INTO `encounter_date` VALUES (2094, 2093, 1, '2005-03-07 00:00:00');
 -- Table structure for table `encounter_person`
 -- 
 
+DROP TABLE IF EXISTS `encounter_person`;
 CREATE TABLE `encounter_person` (
   `encounter_person_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -832,6 +892,7 @@ CREATE TABLE `encounter_person` (
 -- Table structure for table `encounter_value`
 -- 
 
+DROP TABLE IF EXISTS `encounter_value`;
 CREATE TABLE `encounter_value` (
   `encounter_value_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -854,6 +915,7 @@ INSERT INTO `encounter_value` VALUES (8167, 8165, 0, 'test');
 -- Table structure for table `enumeration`
 -- 
 
+DROP TABLE IF EXISTS `enumeration`;
 CREATE TABLE `enumeration` (
   `name` varchar(100) NOT NULL default '',
   `title` varchar(100) NOT NULL default '',
@@ -880,7 +942,15 @@ CREATE TABLE `enumeration` (
   `encounter_date_type` enum('Initial Visit Date','Update me please') NOT NULL default 'Initial Visit Date',
   `encounter_person_type` enum('blah') NOT NULL default 'blah',
   `payment_type` enum('visa','mastercard','amex','check','cash','remittance') NOT NULL default 'visa',
-  `ethnicity` enum('Hispanic','Caucasian') NOT NULL default 'Hispanic',
+  `marital_status` enum('Single','Married','Other') NOT NULL default 'Single',
+  `language` enum('English','Spanish','Chinese','Japanese','Korean','Portuguese','Russian','Sign Language','Vietnamese','Tagalog','Punjabi','Hindustani','Armenian','Arabic','Laotian','Hmong','Cambodian','Other') NOT NULL default 'English',
+  `ethnicity` enum('Unknown','Hispanic','Non-Hispanic') NOT NULL default 'Unknown',
+  `race` enum('White/Hispanic','Black','Native American/Alaskan Native','Asian/Pacific Islander','Other/Unknown') NOT NULL default 'White/Hispanic',
+  `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown',
+  `migrant status` enum('Seasonal Agricultural/Migrant Worker') NOT NULL default 'Seasonal Agricultural/Migrant Worker',
+  `migrant_status` enum('Seasonal Agricultural/Migrant Worker') NOT NULL default 'Seasonal Agricultural/Migrant Worker',
+  `appointment_reason` enum('Physical','FP','CDP','CHDP','F/U','Sick','Lab Only') NOT NULL default 'Physical',
+  `appointment_reasons` enum('Physical','FP','CDP','CHDP','F/U','Sick','Lab Only') NOT NULL default 'Physical',
   PRIMARY KEY  (`name`)
 ) TYPE=MyISAM COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
 
@@ -888,29 +958,37 @@ CREATE TABLE `enumeration` (
 -- Dumping data for table `enumeration`
 -- 
 
-INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('assigning', 'Assigning', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('relation_of_information_code', '', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('provider_number_type', 'Provider Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('subscriber_to_patient', 'Subscriber to patient', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('payer_type', 'Payer Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('person_to_person_relation_type', 'Person to person relation type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('code_modifier', 'Code Modifier', 'Modifiers available for codes.', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('encounter_reason', 'Encounter Reason', 'Reasons for an encounter', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('encounter_date_type', 'Encounter Date Type', 'Types for extra dates attached to an encounter', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('encounter_person_type', 'Encounter Person Type', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('payment_type', 'Payment Type', 'Types of payments', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
-INSERT INTO `enumeration` VALUES ('ethnicity', 'Ethnicity', 'Ethnicity of a person, used in Patient Statistics', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Hispanic');
+INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('assigning', 'Assigning', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('relation_of_information_code', '', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('provider_number_type', 'Provider Number Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('subscriber_to_patient', 'Subscriber to patient', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('payer_type', 'Payer Type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('person_to_person_relation_type', 'Person to person relation type', '', 'Male', 'Primary', 'Good', 'New', 'Alaska', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('code_modifier', 'Code Modifier', 'Modifiers available for codes.', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('encounter_reason', 'Encounter Reason', 'Reasons for an encounter', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('encounter_date_type', 'Encounter Date Type', 'Types for extra dates attached to an encounter', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('encounter_person_type', 'Encounter Person Type', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('payment_type', 'Payment Type', 'Types of payments', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('ethnicity', 'Ethnicity', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('marital_status', 'Marital Status', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('language', 'Languages', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('race', 'Race', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('income', 'Income', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('migrant status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('migrant_status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('appointment_reason', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
+INSERT INTO `enumeration` VALUES ('appointment_reasons', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', 'Alabama', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'medicare', 'Dependant', 'SSN', 'Home', 'Home', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Unknown', 'White/Hispanic', 'Unknown', 'Seasonal Agricultural/Migrant Worker', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Physical');
 
 -- --------------------------------------------------------
 
@@ -918,6 +996,7 @@ INSERT INTO `enumeration` VALUES ('ethnicity', 'Ethnicity', 'Ethnicity of a pers
 -- Table structure for table `events`
 -- 
 
+DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
@@ -936,6 +1015,7 @@ CREATE TABLE `events` (
 INSERT INTO `events` VALUES (1128, 'Office Hours', '', '', '', '', 1127);
 INSERT INTO `events` VALUES (1562, 'Office Hours', '', '', '', '', 1561);
 INSERT INTO `events` VALUES (1807, 'Normal Hours', '', '', '', '', 1806);
+INSERT INTO `events` VALUES (8468, '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -943,6 +1023,7 @@ INSERT INTO `events` VALUES (1807, 'Normal Hours', '', '', '', '', 1806);
 -- Table structure for table `fbaddress`
 -- 
 
+DROP TABLE IF EXISTS `fbaddress`;
 CREATE TABLE `fbaddress` (
   `address_id` int(11) NOT NULL default '0',
   `external_id` int(11) NOT NULL default '0',
@@ -960,15 +1041,12 @@ CREATE TABLE `fbaddress` (
 -- Dumping data for table `fbaddress`
 -- 
 
-INSERT INTO `fbaddress` VALUES (8285, 8284, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8287, 8286, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8289, 8288, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8295, 8294, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8297, 8296, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8299, 8298, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8305, 8304, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8307, 8306, '', '', '', '', '', '', '');
-INSERT INTO `fbaddress` VALUES (8309, 8308, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (8558, 8557, '', '', '1 main st', '', 'chandler', 'az', '85002');
+INSERT INTO `fbaddress` VALUES (8567, 8566, '', '', '2 main st', 'suite 10', 'san diego', 'ca', '92117');
+INSERT INTO `fbaddress` VALUES (8576, 8575, '', '', '3 main st', 'suite 90', 'chandler', 'az', '95002');
+INSERT INTO `fbaddress` VALUES (8578, 8577, '', '', '6 main st', '', 'mesa', 'az', '85009');
+INSERT INTO `fbaddress` VALUES (8580, 8579, '', '', '10 main st', '', 'tempe', 'az', '85010');
+INSERT INTO `fbaddress` VALUES (8582, 8581, '', '', '25 main st', '', 'phoenix', 'az', '85430');
 
 -- --------------------------------------------------------
 
@@ -976,11 +1054,12 @@ INSERT INTO `fbaddress` VALUES (8309, 8308, '', '', '', '', '', '', '');
 -- Table structure for table `fbclaim`
 -- 
 
+DROP TABLE IF EXISTS `fbclaim`;
 CREATE TABLE `fbclaim` (
   `claim_id` int(11) NOT NULL default '0',
   `claim_identifier` varchar(255) NOT NULL default '',
   `revision` int(11) NOT NULL default '0',
-  `open` enum('closed','open') NOT NULL default 'closed',
+  `status` enum('closed','open') NOT NULL default 'closed',
   `timestamp` timestamp(14) NOT NULL,
   PRIMARY KEY  (`claim_id`)
 ) TYPE=MyISAM;
@@ -989,9 +1068,7 @@ CREATE TABLE `fbclaim` (
 -- Dumping data for table `fbclaim`
 -- 
 
-INSERT INTO `fbclaim` VALUES (8281, '8280-12_8277', 1, 'open', '20050320000000');
-INSERT INTO `fbclaim` VALUES (8291, '8290-12_8277', 1, 'open', '20050320000000');
-INSERT INTO `fbclaim` VALUES (8301, '8300-12_8277', 1, 'open', '20050320000000');
+INSERT INTO `fbclaim` VALUES (8556, '5678', 1, 'closed', '20050327000000');
 
 -- --------------------------------------------------------
 
@@ -999,6 +1076,7 @@ INSERT INTO `fbclaim` VALUES (8301, '8300-12_8277', 1, 'open', '20050320000000')
 -- Table structure for table `fbclaimline`
 -- 
 
+DROP TABLE IF EXISTS `fbclaimline`;
 CREATE TABLE `fbclaimline` (
   `claimline_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1008,7 +1086,7 @@ CREATE TABLE `fbclaimline` (
   `units` float(5,2) NOT NULL default '0.00',
   `comment` varchar(80) NOT NULL default '',
   `comment_type` varchar(10) NOT NULL default '',
-  `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_of_treatment` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`claimline_id`),
   KEY `claim_id` (`claim_id`)
 ) TYPE=MyISAM;
@@ -1017,9 +1095,8 @@ CREATE TABLE `fbclaimline` (
 -- Dumping data for table `fbclaimline`
 -- 
 
-INSERT INTO `fbclaimline` VALUES (8282, 8281, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
-INSERT INTO `fbclaimline` VALUES (8292, 8291, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
-INSERT INTO `fbclaimline` VALUES (8302, 8301, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (8559, 8556, '99214', '', 16.50, 1.00, '', '', '2005-03-16');
+INSERT INTO `fbclaimline` VALUES (8571, 8556, '80801', 'T1', 123.00, 1.00, '', 'special ca', '2005-03-22');
 
 -- --------------------------------------------------------
 
@@ -1027,6 +1104,7 @@ INSERT INTO `fbclaimline` VALUES (8302, 8301, 'B9998', '1', 0.00, 1.00, '', '', 
 -- Table structure for table `fbcompany`
 -- 
 
+DROP TABLE IF EXISTS `fbcompany`;
 CREATE TABLE `fbcompany` (
   `company_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1042,9 +1120,9 @@ CREATE TABLE `fbcompany` (
 -- Dumping data for table `fbcompany`
 -- 
 
-INSERT INTO `fbcompany` VALUES (8288, 8281, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
-INSERT INTO `fbcompany` VALUES (8298, 8291, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
-INSERT INTO `fbcompany` VALUES (8308, 8301, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (8566, 8556, '12-3232323', '24', 'FBPractice', 'Medical Associates', '444-444-4444');
+INSERT INTO `fbcompany` VALUES (8575, 8556, '123-12-2323', '46', 'FBPayer', 'Payer Associates', '123-123-1233');
+INSERT INTO `fbcompany` VALUES (8581, 8556, '123-123-1233', '24', 'FBTreatingFacility', 'Mesa Clinic', '123-123-1233');
 
 -- --------------------------------------------------------
 
@@ -1052,6 +1130,7 @@ INSERT INTO `fbcompany` VALUES (8308, 8301, 'Blue Cross/ Blue Shield', '46', 'FB
 -- Table structure for table `fbdiagnoses`
 -- 
 
+DROP TABLE IF EXISTS `fbdiagnoses`;
 CREATE TABLE `fbdiagnoses` (
   `id` int(11) NOT NULL default '0',
   `claimline_id` int(11) NOT NULL default '0',
@@ -1063,9 +1142,12 @@ CREATE TABLE `fbdiagnoses` (
 -- Dumping data for table `fbdiagnoses`
 -- 
 
-INSERT INTO `fbdiagnoses` VALUES (8283, 8282, '272.2');
-INSERT INTO `fbdiagnoses` VALUES (8293, 8292, '272.2');
-INSERT INTO `fbdiagnoses` VALUES (8303, 8302, '272.2');
+INSERT INTO `fbdiagnoses` VALUES (8568, 8559, '28.03');
+INSERT INTO `fbdiagnoses` VALUES (8569, 8559, '12.02');
+INSERT INTO `fbdiagnoses` VALUES (8570, 8559, '101.01');
+INSERT INTO `fbdiagnoses` VALUES (8572, 8571, '101.01');
+INSERT INTO `fbdiagnoses` VALUES (8573, 8571, '12.02');
+INSERT INTO `fbdiagnoses` VALUES (8574, 8571, '60.4');
 
 -- --------------------------------------------------------
 
@@ -1073,6 +1155,7 @@ INSERT INTO `fbdiagnoses` VALUES (8303, 8302, '272.2');
 -- Table structure for table `fblatest_revision`
 -- 
 
+DROP TABLE IF EXISTS `fblatest_revision`;
 CREATE TABLE `fblatest_revision` (
   `claim_identifier` varchar(255) NOT NULL default '',
   `revision` int(11) NOT NULL default '0',
@@ -1083,9 +1166,7 @@ CREATE TABLE `fblatest_revision` (
 -- Dumping data for table `fblatest_revision`
 -- 
 
-INSERT INTO `fblatest_revision` VALUES ('8280-12_8277', 1);
-INSERT INTO `fblatest_revision` VALUES ('8290-12_8277', 1);
-INSERT INTO `fblatest_revision` VALUES ('8300-12_8277', 1);
+INSERT INTO `fblatest_revision` VALUES ('5678', 1);
 
 -- --------------------------------------------------------
 
@@ -1093,6 +1174,7 @@ INSERT INTO `fblatest_revision` VALUES ('8300-12_8277', 1);
 -- Table structure for table `fbperson`
 -- 
 
+DROP TABLE IF EXISTS `fbperson`;
 CREATE TABLE `fbperson` (
   `person_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1115,12 +1197,9 @@ CREATE TABLE `fbperson` (
 -- Dumping data for table `fbperson`
 -- 
 
-INSERT INTO `fbperson` VALUES (8284, 8281, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (8286, 8281, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (8294, 8291, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (8296, 8291, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (8304, 8301, 'FBPatient', '112-23-2321', 'SSN', '12', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (8306, 8301, 'FBSubscriber', '', '', '', '', '', '', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (8557, 8556, 'FBPatient', '123-33-2313', '34', '13', '', 'jones', 'mike', '', 'M', '1980-01-01', '555-555-5555', '');
+INSERT INTO `fbperson` VALUES (8577, 8556, 'FBSubscriber', '111-32-3233', '34', '44', '', 'smith', 'mary', '', 'M', '2016-03-22', '444-444-4444', '');
+INSERT INTO `fbperson` VALUES (8579, 8556, 'FBProvider', '888-88-8888', '34', '23', '', 'roberts', 'rob', '', 'M', '2006-05-31', '123-123-1233', '');
 
 -- --------------------------------------------------------
 
@@ -1128,6 +1207,7 @@ INSERT INTO `fbperson` VALUES (8306, 8301, 'FBSubscriber', '', '', '', '', '', '
 -- Table structure for table `fbpractice`
 -- 
 
+DROP TABLE IF EXISTS `fbpractice`;
 CREATE TABLE `fbpractice` (
   `practice_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1149,11 +1229,13 @@ CREATE TABLE `fbpractice` (
 -- Table structure for table `fee_schedule`
 -- 
 
+DROP TABLE IF EXISTS `fee_schedule`;
 CREATE TABLE `fee_schedule` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `label` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
+  `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=MyISAM;
@@ -1162,7 +1244,9 @@ CREATE TABLE `fee_schedule` (
 -- Dumping data for table `fee_schedule`
 -- 
 
-INSERT INTO `fee_schedule` VALUES (2053, 'test', 'test', 'test');
+INSERT INTO `fee_schedule` VALUES (8544, 'test_schedule', 'the schedule 1', '', 1);
+INSERT INTO `fee_schedule` VALUES (8549, 'new_schedule', 'New Schedule', '', 2);
+INSERT INTO `fee_schedule` VALUES (8553, 'third_schedule', 'Third Schedule', '', 2);
 
 -- --------------------------------------------------------
 
@@ -1170,12 +1254,14 @@ INSERT INTO `fee_schedule` VALUES (2053, 'test', 'test', 'test');
 -- Table structure for table `fee_schedule_data`
 -- 
 
+DROP TABLE IF EXISTS `fee_schedule_data`;
 CREATE TABLE `fee_schedule_data` (
   `code_id` int(11) NOT NULL default '0',
   `revision_id` int(11) NOT NULL default '0',
   `fee_schedule_id` int(11) NOT NULL default '0',
-  `data` double NOT NULL default '0',
+  `data` float(11,2) NOT NULL default '0.00',
   `formula` varchar(255) NOT NULL default '',
+  `mapped_code` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
@@ -1185,36 +1271,16 @@ CREATE TABLE `fee_schedule_data` (
 -- Dumping data for table `fee_schedule_data`
 -- 
 
-INSERT INTO `fee_schedule_data` VALUES (1, 1, 711, 22, '');
-INSERT INTO `fee_schedule_data` VALUES (2, 1, 711, 23, '');
-INSERT INTO `fee_schedule_data` VALUES (3, 1, 711, 14.34, '');
-INSERT INTO `fee_schedule_data` VALUES (4, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (5, 1, 711, 12, '');
-INSERT INTO `fee_schedule_data` VALUES (6, 1, 711, 42.67, '');
-INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '');
-INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (22, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (23, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (36, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (37, 1, 711, 34.12, '');
-INSERT INTO `fee_schedule_data` VALUES (38, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26752, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26761, 1, 2053, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (26761, 1, 8544, 444.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26760, 1, 8555, 123.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26752, 1, 8544, 456.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26750, 1, 8544, 567.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26759, 1, 8549, 5666.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26758, 1, 8549, 345.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26757, 1, 8553, 5645.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26761, 1, 8549, 3333.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26748, 1, 8544, 0.00, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26749, 1, 8544, 120.00, '', '');
 
 -- --------------------------------------------------------
 
@@ -1222,6 +1288,7 @@ INSERT INTO `fee_schedule_data` VALUES (26761, 1, 2053, 45, '');
 -- Table structure for table `fee_schedule_revision`
 -- 
 
+DROP TABLE IF EXISTS `fee_schedule_revision`;
 CREATE TABLE `fee_schedule_revision` (
   `revision_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -1235,7 +1302,6 @@ CREATE TABLE `fee_schedule_revision` (
 -- Dumping data for table `fee_schedule_revision`
 -- 
 
-INSERT INTO `fee_schedule_revision` VALUES (1, 0, '2005-03-02 11:58:20', 'default');
 
 -- --------------------------------------------------------
 
@@ -1243,6 +1309,7 @@ INSERT INTO `fee_schedule_revision` VALUES (1, 0, '2005-03-02 11:58:20', 'defaul
 -- Table structure for table `form`
 -- 
 
+DROP TABLE IF EXISTS `form`;
 CREATE TABLE `form` (
   `form_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -1263,6 +1330,7 @@ INSERT INTO `form` VALUES (1710, 'Patient Vitals', 'Patient Vital Statistics');
 -- Table structure for table `form_data`
 -- 
 
+DROP TABLE IF EXISTS `form_data`;
 CREATE TABLE `form_data` (
   `form_data_id` int(11) NOT NULL default '0',
   `form_id` int(11) NOT NULL default '0',
@@ -1285,6 +1353,7 @@ INSERT INTO `form_data` VALUES (2057, 800, 1110, '2005-03-14 15:09:50');
 -- Table structure for table `gacl_acl`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl`;
 CREATE TABLE `gacl_acl` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default 'system',
@@ -1314,6 +1383,7 @@ INSERT INTO `gacl_acl` VALUES (28, 'user', 1, 1, '', '', 1110342647);
 -- Table structure for table `gacl_acl_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl_sections`;
 CREATE TABLE `gacl_acl_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1338,6 +1408,7 @@ INSERT INTO `gacl_acl_sections` VALUES (2, 'user', 2, 'User', 0);
 -- Table structure for table `gacl_acl_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1355,6 +1426,7 @@ INSERT INTO `gacl_acl_seq` VALUES (28);
 -- Table structure for table `gacl_aco`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco`;
 CREATE TABLE `gacl_aco` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1386,6 +1458,7 @@ INSERT INTO `gacl_aco` VALUES (19, 'actions', 'edit_owner', 16, 'Edit Owner', 0)
 -- Table structure for table `gacl_aco_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_map`;
 CREATE TABLE `gacl_aco_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1413,6 +1486,7 @@ INSERT INTO `gacl_aco_map` VALUES (28, 'actions', 'edit_owner');
 -- Table structure for table `gacl_aco_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_sections`;
 CREATE TABLE `gacl_aco_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1436,6 +1510,7 @@ INSERT INTO `gacl_aco_sections` VALUES (11, 'actions', 10, 'Actions', 0);
 -- Table structure for table `gacl_aco_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1453,6 +1528,7 @@ INSERT INTO `gacl_aco_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aco_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1470,6 +1546,7 @@ INSERT INTO `gacl_aco_seq` VALUES (19);
 -- Table structure for table `gacl_aro`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1490,6 +1567,7 @@ INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
 INSERT INTO `gacl_aro` VALUES (23, 'users', 'jeichorn', 100, 'jeichorn', 1);
 INSERT INTO `gacl_aro` VALUES (24, 'users', 'jconrad', 100, 'jconrad', 1);
 INSERT INTO `gacl_aro` VALUES (25, 'users', 'mminton', 100, 'mminton', 1);
+INSERT INTO `gacl_aro` VALUES (26, 'users', 'test', 100, 'test', 1);
 
 -- --------------------------------------------------------
 
@@ -1497,6 +1575,7 @@ INSERT INTO `gacl_aro` VALUES (25, 'users', 'mminton', 100, 'mminton', 1);
 -- Table structure for table `gacl_aro_groups`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups`;
 CREATE TABLE `gacl_aro_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -1523,6 +1602,7 @@ INSERT INTO `gacl_aro_groups` VALUES (12, 10, 2, 3, 'System Admin', 'admin');
 -- Table structure for table `gacl_aro_groups_id_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1540,6 +1620,7 @@ INSERT INTO `gacl_aro_groups_id_seq` VALUES (17);
 -- Table structure for table `gacl_aro_groups_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups_map`;
 CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -1561,6 +1642,7 @@ INSERT INTO `gacl_aro_groups_map` VALUES (28, 12);
 -- Table structure for table `gacl_aro_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_map`;
 CREATE TABLE `gacl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1579,6 +1661,7 @@ CREATE TABLE `gacl_aro_map` (
 -- Table structure for table `gacl_aro_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_sections`;
 CREATE TABLE `gacl_aro_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1602,6 +1685,7 @@ INSERT INTO `gacl_aro_sections` VALUES (10, 'users', 10, 'Users', 0);
 -- Table structure for table `gacl_aro_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1619,6 +1703,7 @@ INSERT INTO `gacl_aro_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aro_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1627,8 +1712,8 @@ CREATE TABLE `gacl_aro_seq` (
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (25);
-INSERT INTO `gacl_aro_seq` VALUES (25);
+INSERT INTO `gacl_aro_seq` VALUES (26);
+INSERT INTO `gacl_aro_seq` VALUES (26);
 
 -- --------------------------------------------------------
 
@@ -1636,6 +1721,7 @@ INSERT INTO `gacl_aro_seq` VALUES (25);
 -- Table structure for table `gacl_axo`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo`;
 CREATE TABLE `gacl_axo` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1685,6 +1771,7 @@ INSERT INTO `gacl_axo` VALUES (57, 'resources', 'room', 10, 'room', 0);
 -- Table structure for table `gacl_axo_groups`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups`;
 CREATE TABLE `gacl_axo_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -1711,6 +1798,7 @@ INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sectio
 -- Table structure for table `gacl_axo_groups_id_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1727,6 +1815,7 @@ INSERT INTO `gacl_axo_groups_id_seq` VALUES (11);
 -- Table structure for table `gacl_axo_groups_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups_map`;
 CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -1747,6 +1836,7 @@ INSERT INTO `gacl_axo_groups_map` VALUES (28, 11);
 -- Table structure for table `gacl_axo_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_map`;
 CREATE TABLE `gacl_axo_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1765,6 +1855,7 @@ CREATE TABLE `gacl_axo_map` (
 -- Table structure for table `gacl_axo_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_sections`;
 CREATE TABLE `gacl_axo_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1788,6 +1879,7 @@ INSERT INTO `gacl_axo_sections` VALUES (0, 'resources', 10, 'Resources', 0);
 -- Table structure for table `gacl_axo_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1804,6 +1896,7 @@ INSERT INTO `gacl_axo_sections_seq` VALUES (20);
 -- Table structure for table `gacl_axo_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1820,6 +1913,7 @@ INSERT INTO `gacl_axo_seq` VALUES (57);
 -- Table structure for table `gacl_groups_aro_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_groups_aro_map`;
 CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
@@ -1838,6 +1932,7 @@ INSERT INTO `gacl_groups_aro_map` VALUES (12, 15);
 -- Table structure for table `gacl_groups_axo_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_groups_axo_map`;
 CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
@@ -1882,6 +1977,7 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 57);
 -- Table structure for table `gacl_phpgacl`
 -- 
 
+DROP TABLE IF EXISTS `gacl_phpgacl`;
 CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
@@ -1901,6 +1997,7 @@ INSERT INTO `gacl_phpgacl` VALUES ('schema_version', '2.1');
 -- Table structure for table `groups`
 -- 
 
+DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -1922,6 +2019,7 @@ INSERT INTO `groups` VALUES (0, 'provider');
 -- Table structure for table `identifier`
 -- 
 
+DROP TABLE IF EXISTS `identifier`;
 CREATE TABLE `identifier` (
   `identifier_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -1938,23 +2036,49 @@ CREATE TABLE `identifier` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `insurance`
+-- 
+
+DROP TABLE IF EXISTS `insurance`;
+CREATE TABLE `insurance` (
+  `company_id` int(11) NOT NULL default '0',
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `insurance`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `insurance_program`
 -- 
 
+DROP TABLE IF EXISTS `insurance_program`;
 CREATE TABLE `insurance_program` (
   `insurance_program_id` int(11) NOT NULL default '0',
   `payer_type` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`insurance_program_id`)
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`insurance_program_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
 ) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `insurance_program`
 -- 
 
-INSERT INTO `insurance_program` VALUES (1114, 2, 1113, 'Professional Care');
-INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America');
+INSERT INTO `insurance_program` VALUES (1114, 2, 1113, 'Professional Care', 0);
+INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America', 0);
+INSERT INTO `insurance_program` VALUES (8463, 1, 8462, 'test', 0);
+INSERT INTO `insurance_program` VALUES (8504, 1, 8503, 'CHDP', 0);
+INSERT INTO `insurance_program` VALUES (8505, 1, 8503, 'EAPC', 0);
+INSERT INTO `insurance_program` VALUES (8518, 1, 1113, 'Another Program', 8519);
 
 -- --------------------------------------------------------
 
@@ -1962,6 +2086,7 @@ INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America');
 -- Table structure for table `insured_relationship`
 -- 
 
+DROP TABLE IF EXISTS `insured_relationship`;
 CREATE TABLE `insured_relationship` (
   `insured_relationship_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
@@ -1982,8 +2107,8 @@ CREATE TABLE `insured_relationship` (
 -- 
 
 INSERT INTO `insured_relationship` VALUES (1708, 1114, 1707, 8039, 2, 25.00, 0, '123', '111-1232323', 0, 1);
-INSERT INTO `insured_relationship` VALUES (2048, 1114, 1110, 0, 0, 35.00, 0, '1234', '1234', 0, 0);
-INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '345545', '2345534', 0, 0);
+INSERT INTO `insured_relationship` VALUES (2048, 1114, 1110, 0, 0, 35.00, 0, '1234', '1234', 0, 2);
+INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '345545', '2345534', 0, 1);
 INSERT INTO `insured_relationship` VALUES (8045, 2050, 1707, 1707, 1, 13.00, 0, 'ABC', '111-AB4567', 0, 2);
 INSERT INTO `insured_relationship` VALUES (8049, 1114, 1707, 1707, 1, 45.00, 0, '456', 'blah blah', 0, 3);
 
@@ -1993,6 +2118,7 @@ INSERT INTO `insured_relationship` VALUES (8049, 1114, 1707, 1707, 1, 45.00, 0, 
 -- Table structure for table `menu`
 -- 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -2004,7 +2130,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=94 ;
+) TYPE=MyISAM AUTO_INCREMENT=96 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -2089,6 +2215,8 @@ INSERT INTO `menu` VALUES (90, 'patient', 1, '', 'children', -1, 'Dashboard Form
 INSERT INTO `menu` VALUES (91, 'patient', 1, '', 'children', -1, 'Encounter Forms', '', 'main/Encounter');
 INSERT INTO `menu` VALUES (92, 'admin', 26, '', 'children', 100, 'Connect', 'Form/connect', 'main');
 INSERT INTO `menu` VALUES (93, 'billing', 1, '', 'children', 0, '', 'Eob/Payment', 'main');
+INSERT INTO `menu` VALUES (94, 'default', 1, '', 'children', 1000, 'operation samahan menu', '', 'main');
+INSERT INTO `menu` VALUES (95, 'default', 94, '', 'children', 10, 'test', 'test', 'main');
 
 -- --------------------------------------------------------
 
@@ -2096,6 +2224,7 @@ INSERT INTO `menu` VALUES (93, 'billing', 1, '', 'children', 0, '', 'Eob/Payment
 -- Table structure for table `menu_form`
 -- 
 
+DROP TABLE IF EXISTS `menu_form`;
 CREATE TABLE `menu_form` (
   `menu_form_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
@@ -2120,6 +2249,7 @@ INSERT INTO `menu_form` VALUES (2066, 91, 1710, 'Patient Vitals', NULL);
 -- Table structure for table `menu_report`
 -- 
 
+DROP TABLE IF EXISTS `menu_report`;
 CREATE TABLE `menu_report` (
   `menu_report_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
@@ -2140,6 +2270,7 @@ INSERT INTO `menu_report` VALUES (1715, 4, 792, 'Code Report', NULL);
 INSERT INTO `menu_report` VALUES (2054, 44, 792, 'Test', NULL);
 INSERT INTO `menu_report` VALUES (2055, 89, 792, 'Selected Test', NULL);
 INSERT INTO `menu_report` VALUES (8170, 44, 8169, 'multi test', NULL);
+INSERT INTO `menu_report` VALUES (8511, 42, 8169, 'New Report', NULL);
 
 -- --------------------------------------------------------
 
@@ -2147,6 +2278,7 @@ INSERT INTO `menu_report` VALUES (8170, 44, 8169, 'multi test', NULL);
 -- Table structure for table `name_history`
 -- 
 
+DROP TABLE IF EXISTS `name_history`;
 CREATE TABLE `name_history` (
   `name_history_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -2165,6 +2297,7 @@ INSERT INTO `name_history` VALUES (1712, 1711, 'nancy', 'jones', '', '2005-03-10
 INSERT INTO `name_history` VALUES (1713, 1711, 'nancy', 'jones3', '', '2005-03-10');
 INSERT INTO `name_history` VALUES (8042, 8039, 'Random', 'Person2', '', '2005-03-17');
 INSERT INTO `name_history` VALUES (8044, 8039, 'Random', 'Person3', '', '2005-03-17');
+INSERT INTO `name_history` VALUES (8507, 1110, 'Joe', 'Conrad', '', '2005-03-21');
 
 -- --------------------------------------------------------
 
@@ -2172,6 +2305,7 @@ INSERT INTO `name_history` VALUES (8044, 8039, 'Random', 'Person3', '', '2005-03
 -- Table structure for table `note`
 -- 
 
+DROP TABLE IF EXISTS `note`;
 CREATE TABLE `note` (
   `id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -2197,6 +2331,7 @@ INSERT INTO `note` VALUES (997, 996, 'This is a note', NULL, '2005-03-08 12:52:3
 -- Table structure for table `number`
 -- 
 
+DROP TABLE IF EXISTS `number`;
 CREATE TABLE `number` (
   `number_id` int(11) NOT NULL default '0',
   `number_type` int(11) NOT NULL default '0',
@@ -2221,6 +2356,7 @@ INSERT INTO `number` VALUES (8033, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8037, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8041, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8066, 1, 'Main contact', '555-555-1234', 1);
+INSERT INTO `number` VALUES (8513, 2, '', '123-323-2321', 1);
 
 -- --------------------------------------------------------
 
@@ -2228,6 +2364,7 @@ INSERT INTO `number` VALUES (8066, 1, 'Main contact', '555-555-1234', 1);
 -- Table structure for table `occurences`
 -- 
 
+DROP TABLE IF EXISTS `occurences`;
 CREATE TABLE `occurences` (
   `id` int(11) NOT NULL default '0',
   `event_id` int(11) NOT NULL default '0',
@@ -3062,6 +3199,7 @@ INSERT INTO `occurences` VALUES (2044, 1807, '2005-11-29 09:00:00', '2005-11-29 
 INSERT INTO `occurences` VALUES (2045, 1807, '2005-11-30 09:00:00', '2005-11-30 16:00:00', '', 1125, 0, 1, NULL, 0);
 INSERT INTO `occurences` VALUES (2046, 1807, '2005-12-01 09:00:00', '2005-12-01 16:00:00', '', 1125, 0, 1, NULL, 0);
 INSERT INTO `occurences` VALUES (2047, 1807, '2005-12-02 09:00:00', '2005-12-02 16:00:00', '', 1125, 0, 1, NULL, 0);
+INSERT INTO `occurences` VALUES (8469, 8468, '2005-03-21 08:00:00', '2005-03-21 08:15:00', 'test', 0, 1121, 1, 1110, 0);
 
 -- --------------------------------------------------------
 
@@ -3069,6 +3207,7 @@ INSERT INTO `occurences` VALUES (2047, 1807, '2005-12-02 09:00:00', '2005-12-02 
 -- Table structure for table `ownership`
 -- 
 
+DROP TABLE IF EXISTS `ownership`;
 CREATE TABLE `ownership` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -4747,6 +4886,262 @@ INSERT INTO `ownership` VALUES (8306, 1);
 INSERT INTO `ownership` VALUES (8307, 1);
 INSERT INTO `ownership` VALUES (8308, 1);
 INSERT INTO `ownership` VALUES (8309, 1);
+INSERT INTO `ownership` VALUES (8310, 1);
+INSERT INTO `ownership` VALUES (8311, 1);
+INSERT INTO `ownership` VALUES (8312, 1);
+INSERT INTO `ownership` VALUES (8313, 1);
+INSERT INTO `ownership` VALUES (8314, 1);
+INSERT INTO `ownership` VALUES (8315, 1);
+INSERT INTO `ownership` VALUES (8316, 1);
+INSERT INTO `ownership` VALUES (8317, 1);
+INSERT INTO `ownership` VALUES (8318, 1);
+INSERT INTO `ownership` VALUES (8319, 1);
+INSERT INTO `ownership` VALUES (8320, 1);
+INSERT INTO `ownership` VALUES (8321, 1);
+INSERT INTO `ownership` VALUES (8322, 1);
+INSERT INTO `ownership` VALUES (8323, 1);
+INSERT INTO `ownership` VALUES (8324, 1);
+INSERT INTO `ownership` VALUES (8325, 1);
+INSERT INTO `ownership` VALUES (8326, 1);
+INSERT INTO `ownership` VALUES (8327, 1);
+INSERT INTO `ownership` VALUES (8328, 1);
+INSERT INTO `ownership` VALUES (8329, 1);
+INSERT INTO `ownership` VALUES (8330, 1);
+INSERT INTO `ownership` VALUES (8331, 1);
+INSERT INTO `ownership` VALUES (8332, 1);
+INSERT INTO `ownership` VALUES (8333, 1);
+INSERT INTO `ownership` VALUES (8334, 1);
+INSERT INTO `ownership` VALUES (8335, 1);
+INSERT INTO `ownership` VALUES (8336, 1);
+INSERT INTO `ownership` VALUES (8337, 1);
+INSERT INTO `ownership` VALUES (8338, 1);
+INSERT INTO `ownership` VALUES (8339, 1);
+INSERT INTO `ownership` VALUES (8340, 1);
+INSERT INTO `ownership` VALUES (8341, 1);
+INSERT INTO `ownership` VALUES (8342, 1);
+INSERT INTO `ownership` VALUES (8343, 1);
+INSERT INTO `ownership` VALUES (8344, 1);
+INSERT INTO `ownership` VALUES (8345, 1);
+INSERT INTO `ownership` VALUES (8346, 1);
+INSERT INTO `ownership` VALUES (8347, 1);
+INSERT INTO `ownership` VALUES (8348, 1);
+INSERT INTO `ownership` VALUES (8349, 1);
+INSERT INTO `ownership` VALUES (8350, 1);
+INSERT INTO `ownership` VALUES (8351, 1);
+INSERT INTO `ownership` VALUES (8352, 1);
+INSERT INTO `ownership` VALUES (8353, 1);
+INSERT INTO `ownership` VALUES (8354, 1);
+INSERT INTO `ownership` VALUES (8355, 1);
+INSERT INTO `ownership` VALUES (8356, 1);
+INSERT INTO `ownership` VALUES (8357, 1);
+INSERT INTO `ownership` VALUES (8358, 1);
+INSERT INTO `ownership` VALUES (8359, 1);
+INSERT INTO `ownership` VALUES (8360, 1);
+INSERT INTO `ownership` VALUES (8361, 1);
+INSERT INTO `ownership` VALUES (8362, 1);
+INSERT INTO `ownership` VALUES (8363, 1);
+INSERT INTO `ownership` VALUES (8364, 1);
+INSERT INTO `ownership` VALUES (8365, 1);
+INSERT INTO `ownership` VALUES (8366, 1);
+INSERT INTO `ownership` VALUES (8367, 1);
+INSERT INTO `ownership` VALUES (8368, 1);
+INSERT INTO `ownership` VALUES (8369, 1);
+INSERT INTO `ownership` VALUES (8370, 1);
+INSERT INTO `ownership` VALUES (8371, 1);
+INSERT INTO `ownership` VALUES (8372, 1);
+INSERT INTO `ownership` VALUES (8373, 1);
+INSERT INTO `ownership` VALUES (8374, 1);
+INSERT INTO `ownership` VALUES (8375, 1);
+INSERT INTO `ownership` VALUES (8376, 1);
+INSERT INTO `ownership` VALUES (8377, 1);
+INSERT INTO `ownership` VALUES (8378, 1);
+INSERT INTO `ownership` VALUES (8379, 1);
+INSERT INTO `ownership` VALUES (8380, 1);
+INSERT INTO `ownership` VALUES (8381, 1);
+INSERT INTO `ownership` VALUES (8382, 1);
+INSERT INTO `ownership` VALUES (8383, 1);
+INSERT INTO `ownership` VALUES (8384, 1);
+INSERT INTO `ownership` VALUES (8385, 1);
+INSERT INTO `ownership` VALUES (8386, 1);
+INSERT INTO `ownership` VALUES (8387, 1);
+INSERT INTO `ownership` VALUES (8388, 1);
+INSERT INTO `ownership` VALUES (8389, 1);
+INSERT INTO `ownership` VALUES (8390, 1);
+INSERT INTO `ownership` VALUES (8391, 1);
+INSERT INTO `ownership` VALUES (8392, 1);
+INSERT INTO `ownership` VALUES (8393, 1);
+INSERT INTO `ownership` VALUES (8394, 1);
+INSERT INTO `ownership` VALUES (8395, 1);
+INSERT INTO `ownership` VALUES (8396, 1);
+INSERT INTO `ownership` VALUES (8397, 1);
+INSERT INTO `ownership` VALUES (8398, 1);
+INSERT INTO `ownership` VALUES (8399, 1);
+INSERT INTO `ownership` VALUES (8400, 1);
+INSERT INTO `ownership` VALUES (8401, 1);
+INSERT INTO `ownership` VALUES (8402, 1);
+INSERT INTO `ownership` VALUES (8403, 1);
+INSERT INTO `ownership` VALUES (8404, 1);
+INSERT INTO `ownership` VALUES (8405, 1);
+INSERT INTO `ownership` VALUES (8406, 1);
+INSERT INTO `ownership` VALUES (8407, 1);
+INSERT INTO `ownership` VALUES (8408, 1);
+INSERT INTO `ownership` VALUES (8409, 1);
+INSERT INTO `ownership` VALUES (8410, 1);
+INSERT INTO `ownership` VALUES (8411, 1);
+INSERT INTO `ownership` VALUES (8412, 1);
+INSERT INTO `ownership` VALUES (8413, 1);
+INSERT INTO `ownership` VALUES (8414, 1);
+INSERT INTO `ownership` VALUES (8415, 1);
+INSERT INTO `ownership` VALUES (8416, 1);
+INSERT INTO `ownership` VALUES (8417, 1);
+INSERT INTO `ownership` VALUES (8418, 1);
+INSERT INTO `ownership` VALUES (8419, 1);
+INSERT INTO `ownership` VALUES (8420, 1);
+INSERT INTO `ownership` VALUES (8421, 1);
+INSERT INTO `ownership` VALUES (8422, 1);
+INSERT INTO `ownership` VALUES (8423, 1);
+INSERT INTO `ownership` VALUES (8424, 1);
+INSERT INTO `ownership` VALUES (8425, 1);
+INSERT INTO `ownership` VALUES (8426, 1);
+INSERT INTO `ownership` VALUES (8427, 1);
+INSERT INTO `ownership` VALUES (8428, 1);
+INSERT INTO `ownership` VALUES (8429, 1);
+INSERT INTO `ownership` VALUES (8430, 1);
+INSERT INTO `ownership` VALUES (8431, 1);
+INSERT INTO `ownership` VALUES (8432, 1);
+INSERT INTO `ownership` VALUES (8433, 1);
+INSERT INTO `ownership` VALUES (8434, 1);
+INSERT INTO `ownership` VALUES (8435, 1);
+INSERT INTO `ownership` VALUES (8436, 1);
+INSERT INTO `ownership` VALUES (8437, 1);
+INSERT INTO `ownership` VALUES (8438, 1);
+INSERT INTO `ownership` VALUES (8439, 1);
+INSERT INTO `ownership` VALUES (8440, 1);
+INSERT INTO `ownership` VALUES (8441, 1);
+INSERT INTO `ownership` VALUES (8442, 1);
+INSERT INTO `ownership` VALUES (8443, 1);
+INSERT INTO `ownership` VALUES (8444, 1);
+INSERT INTO `ownership` VALUES (8445, 1);
+INSERT INTO `ownership` VALUES (8446, 1);
+INSERT INTO `ownership` VALUES (8447, 1);
+INSERT INTO `ownership` VALUES (8448, 1);
+INSERT INTO `ownership` VALUES (8449, 1);
+INSERT INTO `ownership` VALUES (8450, 1);
+INSERT INTO `ownership` VALUES (8451, 1);
+INSERT INTO `ownership` VALUES (8452, 1);
+INSERT INTO `ownership` VALUES (8453, 1);
+INSERT INTO `ownership` VALUES (8454, 1);
+INSERT INTO `ownership` VALUES (8455, 1);
+INSERT INTO `ownership` VALUES (8456, 1);
+INSERT INTO `ownership` VALUES (8457, 1);
+INSERT INTO `ownership` VALUES (8458, 1);
+INSERT INTO `ownership` VALUES (8459, 1);
+INSERT INTO `ownership` VALUES (8460, 1);
+INSERT INTO `ownership` VALUES (8461, 1);
+INSERT INTO `ownership` VALUES (8462, 1);
+INSERT INTO `ownership` VALUES (8463, 1);
+INSERT INTO `ownership` VALUES (8464, 1);
+INSERT INTO `ownership` VALUES (8465, 1);
+INSERT INTO `ownership` VALUES (8466, 1);
+INSERT INTO `ownership` VALUES (8467, 1);
+INSERT INTO `ownership` VALUES (8468, 1);
+INSERT INTO `ownership` VALUES (8469, 1);
+INSERT INTO `ownership` VALUES (8470, 1);
+INSERT INTO `ownership` VALUES (8471, 1);
+INSERT INTO `ownership` VALUES (8472, 1);
+INSERT INTO `ownership` VALUES (8473, 1);
+INSERT INTO `ownership` VALUES (8474, 1);
+INSERT INTO `ownership` VALUES (8475, 1);
+INSERT INTO `ownership` VALUES (8476, 1);
+INSERT INTO `ownership` VALUES (8479, 1);
+INSERT INTO `ownership` VALUES (8480, 1);
+INSERT INTO `ownership` VALUES (8481, 1);
+INSERT INTO `ownership` VALUES (8482, 1);
+INSERT INTO `ownership` VALUES (8483, 1);
+INSERT INTO `ownership` VALUES (8484, 1);
+INSERT INTO `ownership` VALUES (8485, 1);
+INSERT INTO `ownership` VALUES (8486, 1);
+INSERT INTO `ownership` VALUES (8487, 1);
+INSERT INTO `ownership` VALUES (8488, 1);
+INSERT INTO `ownership` VALUES (8489, 1);
+INSERT INTO `ownership` VALUES (8490, 1);
+INSERT INTO `ownership` VALUES (8491, 1);
+INSERT INTO `ownership` VALUES (8492, 1);
+INSERT INTO `ownership` VALUES (8493, 1);
+INSERT INTO `ownership` VALUES (8494, 1);
+INSERT INTO `ownership` VALUES (8495, 1);
+INSERT INTO `ownership` VALUES (8496, 1);
+INSERT INTO `ownership` VALUES (8497, 1);
+INSERT INTO `ownership` VALUES (8498, 1);
+INSERT INTO `ownership` VALUES (8499, 1);
+INSERT INTO `ownership` VALUES (8500, 1);
+INSERT INTO `ownership` VALUES (8501, 1);
+INSERT INTO `ownership` VALUES (8502, 1);
+INSERT INTO `ownership` VALUES (8503, 1);
+INSERT INTO `ownership` VALUES (8504, 1);
+INSERT INTO `ownership` VALUES (8505, 1);
+INSERT INTO `ownership` VALUES (8506, 1);
+INSERT INTO `ownership` VALUES (8507, 1);
+INSERT INTO `ownership` VALUES (8508, 1);
+INSERT INTO `ownership` VALUES (8509, 1);
+INSERT INTO `ownership` VALUES (8510, 1);
+INSERT INTO `ownership` VALUES (8511, 1);
+INSERT INTO `ownership` VALUES (8512, 1);
+INSERT INTO `ownership` VALUES (8513, 1);
+INSERT INTO `ownership` VALUES (8514, 1);
+INSERT INTO `ownership` VALUES (8515, 1);
+INSERT INTO `ownership` VALUES (8516, 1);
+INSERT INTO `ownership` VALUES (8517, 1);
+INSERT INTO `ownership` VALUES (8518, 1);
+INSERT INTO `ownership` VALUES (8519, 1);
+INSERT INTO `ownership` VALUES (8520, 1);
+INSERT INTO `ownership` VALUES (8523, 1);
+INSERT INTO `ownership` VALUES (8524, 1);
+INSERT INTO `ownership` VALUES (8525, 1);
+INSERT INTO `ownership` VALUES (8526, 1);
+INSERT INTO `ownership` VALUES (8527, 1);
+INSERT INTO `ownership` VALUES (8528, 1);
+INSERT INTO `ownership` VALUES (8529, 1);
+INSERT INTO `ownership` VALUES (8530, 1);
+INSERT INTO `ownership` VALUES (8532, 1);
+INSERT INTO `ownership` VALUES (8533, 1);
+INSERT INTO `ownership` VALUES (8534, 1);
+INSERT INTO `ownership` VALUES (8535, 1);
+INSERT INTO `ownership` VALUES (8536, 1);
+INSERT INTO `ownership` VALUES (8537, 1);
+INSERT INTO `ownership` VALUES (8538, 1);
+INSERT INTO `ownership` VALUES (8539, 1);
+INSERT INTO `ownership` VALUES (8540, 1);
+INSERT INTO `ownership` VALUES (8541, 1);
+INSERT INTO `ownership` VALUES (8542, 1);
+INSERT INTO `ownership` VALUES (8543, 1);
+INSERT INTO `ownership` VALUES (8544, 1);
+INSERT INTO `ownership` VALUES (8545, 1);
+INSERT INTO `ownership` VALUES (8546, 1);
+INSERT INTO `ownership` VALUES (8547, 1);
+INSERT INTO `ownership` VALUES (8548, 1);
+INSERT INTO `ownership` VALUES (8549, 1);
+INSERT INTO `ownership` VALUES (8550, 1);
+INSERT INTO `ownership` VALUES (8551, 1);
+INSERT INTO `ownership` VALUES (8552, 1);
+INSERT INTO `ownership` VALUES (8553, 1);
+INSERT INTO `ownership` VALUES (8554, 1);
+INSERT INTO `ownership` VALUES (8555, 1);
+INSERT INTO `ownership` VALUES (8556, 1);
+INSERT INTO `ownership` VALUES (8557, 1);
+INSERT INTO `ownership` VALUES (8558, 1);
+INSERT INTO `ownership` VALUES (8559, 1);
+INSERT INTO `ownership` VALUES (8566, 1);
+INSERT INTO `ownership` VALUES (8567, 1);
+INSERT INTO `ownership` VALUES (8571, 1);
+INSERT INTO `ownership` VALUES (8575, 1);
+INSERT INTO `ownership` VALUES (8576, 1);
+INSERT INTO `ownership` VALUES (8577, 1);
+INSERT INTO `ownership` VALUES (8578, 1);
+INSERT INTO `ownership` VALUES (8579, 1);
+INSERT INTO `ownership` VALUES (8580, 1);
+INSERT INTO `ownership` VALUES (8581, 1);
+INSERT INTO `ownership` VALUES (8582, 1);
 
 -- --------------------------------------------------------
 
@@ -4754,6 +5149,7 @@ INSERT INTO `ownership` VALUES (8309, 1);
 -- Table structure for table `patient`
 -- 
 
+DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   `is_default_provider_primary` int(11) NOT NULL default '0',
@@ -4771,6 +5167,9 @@ INSERT INTO `patient` VALUES (1110, 0, 0, 12);
 INSERT INTO `patient` VALUES (1120, 0, 0, 13);
 INSERT INTO `patient` VALUES (1707, 0, 0, 14);
 INSERT INTO `patient` VALUES (1711, 0, 0, 15);
+INSERT INTO `patient` VALUES (8310, 0, 0, 16);
+INSERT INTO `patient` VALUES (8312, 0, 0, 17);
+INSERT INTO `patient` VALUES (8512, 0, 0, 18);
 
 -- --------------------------------------------------------
 
@@ -4778,13 +5177,14 @@ INSERT INTO `patient` VALUES (1711, 0, 0, 15);
 -- Table structure for table `patient_statistics`
 -- 
 
+DROP TABLE IF EXISTS `patient_statistics`;
 CREATE TABLE `patient_statistics` (
   `person_id` int(11) NOT NULL default '0',
   `ethnicity` int(11) NOT NULL default '0',
   `race` int(11) NOT NULL default '0',
   `income` int(11) NOT NULL default '0',
   `language` int(11) NOT NULL default '0',
-  `migrant` int(11) NOT NULL default '0',
+  `migrant_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=MyISAM;
 
@@ -4820,6 +5220,11 @@ INSERT INTO `patient_statistics` VALUES (8052, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8053, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8461, 2, 2, 2, 12, 1);
+INSERT INTO `patient_statistics` VALUES (8508, 0, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8509, 0, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8510, 0, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8514, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -4827,6 +5232,7 @@ INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
 -- Table structure for table `payment`
 -- 
 
+DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
   `payment_id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -4849,6 +5255,15 @@ INSERT INTO `payment` VALUES (6001, 2093, 1, 12.00, 0.00, 0, '00000000000000', 0
 INSERT INTO `payment` VALUES (8178, 8171, 0, 12.00, 0.00, 1, '20050319195445', 1113, '0000-00-00');
 INSERT INTO `payment` VALUES (8180, 8171, 0, 10.00, 23.00, 1, '20050319201802', 1707, '2005-03-19');
 INSERT INTO `payment` VALUES (8278, 8277, 1, 20.00, 0.00, 0, '20050320032815', 0, '2005-03-20');
+INSERT INTO `payment` VALUES (8371, 8314, 1, 654.00, 0.00, 0, '20050320135543', 0, '2005-03-20');
+INSERT INTO `payment` VALUES (8380, 8314, 1, 654.00, 0.00, 0, '20050320135544', 0, '2005-03-20');
+INSERT INTO `payment` VALUES (8405, 8314, 1, 654.00, 0.00, 0, '20050320135558', 0, '2005-03-20');
+INSERT INTO `payment` VALUES (8430, 8315, 0, 0.00, 0.00, 1, '20050320140034', 1113, '2005-03-20');
+INSERT INTO `payment` VALUES (8431, 8315, 0, 0.00, 0.00, 1, '20050320140103', 1113, '2005-03-20');
+INSERT INTO `payment` VALUES (8432, 8315, 0, 0.00, 0.00, 1, '20050320140818', 1113, '2005-03-20');
+INSERT INTO `payment` VALUES (8433, 8315, 0, 0.00, 0.00, 1, '20050320141149', 1113, '2005-03-20');
+INSERT INTO `payment` VALUES (8471, 8470, 3, 25.00, 0.00, 0, '20050321150220', 0, '2005-03-21');
+INSERT INTO `payment` VALUES (8498, 8315, 0, 123.00, 0.00, 1, '20050321152548', 2049, '2005-03-21');
 
 -- --------------------------------------------------------
 
@@ -4856,6 +5271,7 @@ INSERT INTO `payment` VALUES (8278, 8277, 1, 20.00, 0.00, 0, '20050320032815', 0
 -- Table structure for table `payment_claimline`
 -- 
 
+DROP TABLE IF EXISTS `payment_claimline`;
 CREATE TABLE `payment_claimline` (
   `payment_claimline_id` int(11) NOT NULL default '0',
   `payment_id` int(11) NOT NULL default '0',
@@ -4872,6 +5288,10 @@ CREATE TABLE `payment_claimline` (
 
 INSERT INTO `payment_claimline` VALUES (8179, 8178, 1, 12.00, 0.00, 33.00);
 INSERT INTO `payment_claimline` VALUES (8181, 8180, 1, 10.00, 23.00, 0.00);
+INSERT INTO `payment_claimline` VALUES (8499, 8498, 2274, 0.00, 0.00, 0.00);
+INSERT INTO `payment_claimline` VALUES (8500, 8498, 0, 123.00, 0.00, 0.00);
+INSERT INTO `payment_claimline` VALUES (8501, 8498, 0, 0.00, 0.00, 0.00);
+INSERT INTO `payment_claimline` VALUES (8502, 8498, 0, 0.00, 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -4879,6 +5299,7 @@ INSERT INTO `payment_claimline` VALUES (8181, 8180, 1, 10.00, 23.00, 0.00);
 -- Table structure for table `person`
 -- 
 
+DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL default '0',
   `salutation` varchar(20) NOT NULL default '',
@@ -4903,11 +5324,14 @@ CREATE TABLE `person` (
 -- Dumping data for table `person`
 -- 
 
-INSERT INTO `person` VALUES (1110, '', 'Conrad', 'Joe', '', 0, '', '0000-00-00', '', '', 'pediatric specialist', 'jconorad@example.com', '', '', '112-23-2321', 1);
+INSERT INTO `person` VALUES (1110, '', 'conrad', 'Joe', '', 0, '', '0000-00-00', '', '', 'pediatric specialist', 'jconorad@example.com', '', '', '112-23-2321', 1);
 INSERT INTO `person` VALUES (1120, '', 'Minton', 'Michelle', '', 0, '', '0000-00-00', '', '', '', '', '', '', '234-44-4543', 1);
 INSERT INTO `person` VALUES (1707, '', 'Jones', 'Nancy', '', 2, '', '1955-07-16', '', '', '', '', '', '', '123-34-3432', 1);
 INSERT INTO `person` VALUES (1711, '', 'smith-jones', 'nancy', '', 2, '', '0000-00-00', '', '', '', '', '', '', '123-32-2323', 1);
 INSERT INTO `person` VALUES (8039, '', 'Person', 'Random', '', 0, '', '0000-00-00', '', '', '', '', '', '', '', 0);
+INSERT INTO `person` VALUES (8310, '', 'provider', 'doctor', '', 0, '', '0000-00-00', '', '', '', 'test@test.com', '', '', '123-12-1231', 1);
+INSERT INTO `person` VALUES (8312, '', 'provider', 'doctor', '', 0, '', '0000-00-00', '', '', '', 'test@test.com', '', '', '123-12-1231', 1);
+INSERT INTO `person` VALUES (8512, '', 'smith', 'john', '', 0, '', '0000-00-00', '', '', '', '', '', '', '111-23-2323', 1);
 
 -- --------------------------------------------------------
 
@@ -4915,6 +5339,7 @@ INSERT INTO `person` VALUES (8039, '', 'Person', 'Random', '', 0, '', '0000-00-0
 -- Table structure for table `person_address`
 -- 
 
+DROP TABLE IF EXISTS `person_address`;
 CREATE TABLE `person_address` (
   `person_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -4944,6 +5369,7 @@ INSERT INTO `person_address` VALUES (1707, 8068, 1);
 -- Table structure for table `person_company`
 -- 
 
+DROP TABLE IF EXISTS `person_company`;
 CREATE TABLE `person_company` (
   `person_id` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
@@ -4964,6 +5390,7 @@ CREATE TABLE `person_company` (
 -- Table structure for table `person_number`
 -- 
 
+DROP TABLE IF EXISTS `person_number`;
 CREATE TABLE `person_number` (
   `person_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -4986,6 +5413,7 @@ INSERT INTO `person_number` VALUES (8027, 8029);
 INSERT INTO `person_number` VALUES (8031, 8033);
 INSERT INTO `person_number` VALUES (8035, 8037);
 INSERT INTO `person_number` VALUES (8039, 8041);
+INSERT INTO `person_number` VALUES (8512, 8513);
 
 -- --------------------------------------------------------
 
@@ -4993,6 +5421,7 @@ INSERT INTO `person_number` VALUES (8039, 8041);
 -- Table structure for table `person_person`
 -- 
 
+DROP TABLE IF EXISTS `person_person`;
 CREATE TABLE `person_person` (
   `person_person_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -5013,6 +5442,7 @@ CREATE TABLE `person_person` (
 -- Table structure for table `person_type`
 -- 
 
+DROP TABLE IF EXISTS `person_type`;
 CREATE TABLE `person_type` (
   `person_id` int(11) NOT NULL default '0',
   `person_type` int(11) NOT NULL default '0',
@@ -5034,6 +5464,8 @@ INSERT INTO `person_type` VALUES (8027, 0);
 INSERT INTO `person_type` VALUES (8031, 5);
 INSERT INTO `person_type` VALUES (8035, 5);
 INSERT INTO `person_type` VALUES (8039, 5);
+INSERT INTO `person_type` VALUES (8310, 2);
+INSERT INTO `person_type` VALUES (8312, 2);
 
 -- --------------------------------------------------------
 
@@ -5041,6 +5473,7 @@ INSERT INTO `person_type` VALUES (8039, 5);
 -- Table structure for table `practice_address`
 -- 
 
+DROP TABLE IF EXISTS `practice_address`;
 CREATE TABLE `practice_address` (
   `practice_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -5061,6 +5494,7 @@ CREATE TABLE `practice_address` (
 -- Table structure for table `practices`
 -- 
 
+DROP TABLE IF EXISTS `practices`;
 CREATE TABLE `practices` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -5080,6 +5514,7 @@ INSERT INTO `practices` VALUES (1122, 'Medical Practice Inc.', '');
 -- Table structure for table `preferences`
 -- 
 
+DROP TABLE IF EXISTS `preferences`;
 CREATE TABLE `preferences` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -5105,6 +5540,7 @@ INSERT INTO `preferences` VALUES (9001, 'Special Event Color', '#123444', 9000, 
 -- Table structure for table `provider`
 -- 
 
+DROP TABLE IF EXISTS `provider`;
 CREATE TABLE `provider` (
   `person_id` int(11) NOT NULL default '0',
   `state_license_number` varchar(100) NOT NULL default '',
@@ -5120,6 +5556,7 @@ CREATE TABLE `provider` (
 INSERT INTO `provider` VALUES (983, '', '', '');
 INSERT INTO `provider` VALUES (1110, '1233323J', '', '22342242');
 INSERT INTO `provider` VALUES (1120, '', '', '');
+INSERT INTO `provider` VALUES (8312, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -5127,6 +5564,7 @@ INSERT INTO `provider` VALUES (1120, '', '', '');
 -- Table structure for table `provider_to_insurance`
 -- 
 
+DROP TABLE IF EXISTS `provider_to_insurance`;
 CREATE TABLE `provider_to_insurance` (
   `provider_to_insurance_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -5149,6 +5587,7 @@ INSERT INTO `provider_to_insurance` VALUES (1119, 1110, 1114, '2456633455', 1, '
 -- Table structure for table `record_sequence`
 -- 
 
+DROP TABLE IF EXISTS `record_sequence`;
 CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -5158,7 +5597,7 @@ CREATE TABLE `record_sequence` (
 -- Dumping data for table `record_sequence`
 -- 
 
-INSERT INTO `record_sequence` VALUES (15);
+INSERT INTO `record_sequence` VALUES (18);
 
 -- --------------------------------------------------------
 
@@ -5166,6 +5605,7 @@ INSERT INTO `record_sequence` VALUES (15);
 -- Table structure for table `report_templates`
 -- 
 
+DROP TABLE IF EXISTS `report_templates`;
 CREATE TABLE `report_templates` (
   `report_template_id` int(11) NOT NULL default '0',
   `report_id` int(11) NOT NULL default '0',
@@ -5281,6 +5721,7 @@ INSERT INTO `report_templates` VALUES (8169, 8168, 'Default Template', 'yes');
 -- Table structure for table `reports`
 -- 
 
+DROP TABLE IF EXISTS `reports`;
 CREATE TABLE `reports` (
   `id` int(11) NOT NULL auto_increment,
   `dbase` varchar(255) NOT NULL default '',
@@ -5305,6 +5746,7 @@ INSERT INTO `reports` VALUES (8168, '', '', 'Multi-query test', '---[users]---\r
 -- Table structure for table `rooms`
 -- 
 
+DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -5327,6 +5769,7 @@ INSERT INTO `rooms` VALUES (1126, '', 1, 1123, 'XRAY');
 -- Table structure for table `schedules`
 -- 
 
+DROP TABLE IF EXISTS `schedules`;
 CREATE TABLE `schedules` (
   `id` int(11) NOT NULL default '0',
   `schedule_code` varchar(255) NOT NULL default '',
@@ -5359,6 +5802,7 @@ INSERT INTO `schedules` VALUES (1806, 'PS', 'Exam 1', '', '', 1122, 0, 1125);
 -- Table structure for table `sequences`
 -- 
 
+DROP TABLE IF EXISTS `sequences`;
 CREATE TABLE `sequences` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -5368,7 +5812,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (8309);
+INSERT INTO `sequences` VALUES (8582);
 
 -- --------------------------------------------------------
 
@@ -5376,6 +5820,7 @@ INSERT INTO `sequences` VALUES (8309);
 -- Table structure for table `states`
 -- 
 
+DROP TABLE IF EXISTS `states`;
 CREATE TABLE `states` (
   `zone_code` varchar(32) NOT NULL default '',
   `zone_name` varchar(32) NOT NULL default '',
@@ -5577,6 +6022,7 @@ INSERT INTO `states` VALUES ('Zaragoza', 'Zaragoza', 'ESP');
 -- Table structure for table `storage_date`
 -- 
 
+DROP TABLE IF EXISTS `storage_date`;
 CREATE TABLE `storage_date` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -5630,6 +6076,78 @@ INSERT INTO `storage_date` VALUES (8304, 'date_of_cant_work_start', '0000-00-00'
 INSERT INTO `storage_date` VALUES (8304, 'date_of_cant_work_end', '0000-00-00');
 INSERT INTO `storage_date` VALUES (8304, 'date_of_hospitalization_start', '0000-00-00');
 INSERT INTO `storage_date` VALUES (8304, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8317, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8325, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8349, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8374, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8383, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8408, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8479, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8526, '0', '1969-12-31');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (8557, '0', '1969-12-31');
 
 -- --------------------------------------------------------
 
@@ -5637,6 +6155,7 @@ INSERT INTO `storage_date` VALUES (8304, '0', '1969-12-31');
 -- Table structure for table `storage_int`
 -- 
 
+DROP TABLE IF EXISTS `storage_int`;
 CREATE TABLE `storage_int` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -5655,6 +6174,7 @@ CREATE TABLE `storage_int` (
 -- Table structure for table `storage_string`
 -- 
 
+DROP TABLE IF EXISTS `storage_string`;
 CREATE TABLE `storage_string` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -5797,6 +6317,172 @@ INSERT INTO `storage_string` VALUES (8306, 'group_number', '2345534');
 INSERT INTO `storage_string` VALUES (8306, 'group_name', '345545');
 INSERT INTO `storage_string` VALUES (8308, 'responsibility', 'P');
 INSERT INTO `storage_string` VALUES (8308, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8316, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8316, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8316, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8316, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8317, 'weight', '');
+INSERT INTO `storage_string` VALUES (8317, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8319, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8319, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8319, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8321, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8321, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8324, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8324, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8324, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8324, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8325, 'weight', '');
+INSERT INTO `storage_string` VALUES (8325, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8327, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8327, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8327, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8329, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8329, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8331, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8331, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8333, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8333, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8333, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8333, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8335, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8337, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8337, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (8348, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8348, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8348, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8348, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8349, 'weight', '');
+INSERT INTO `storage_string` VALUES (8349, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8351, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8351, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8351, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8353, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8353, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8355, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8355, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8357, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8357, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8357, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8357, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8359, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8361, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8361, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (8373, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8373, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8373, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8373, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8374, 'weight', '');
+INSERT INTO `storage_string` VALUES (8374, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8376, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8376, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8376, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8378, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8378, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8382, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8382, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8382, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8382, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8383, 'weight', '');
+INSERT INTO `storage_string` VALUES (8383, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8385, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8385, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8385, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8387, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8387, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8389, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8389, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8391, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8391, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8391, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8391, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8393, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8395, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8395, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (8407, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8407, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8407, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8407, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8408, 'weight', '');
+INSERT INTO `storage_string` VALUES (8408, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8410, 'relationship', '');
+INSERT INTO `storage_string` VALUES (8410, 'group_number', '2345534');
+INSERT INTO `storage_string` VALUES (8410, 'group_name', '345545');
+INSERT INTO `storage_string` VALUES (8412, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8412, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8414, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8414, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8416, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8416, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8416, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8416, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8418, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8420, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8420, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (8462, 'email', '');
+INSERT INTO `storage_string` VALUES (8475, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8475, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8475, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8475, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8479, 'weight', '');
+INSERT INTO `storage_string` VALUES (8479, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8481, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8481, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8483, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8483, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8483, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8483, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8485, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8487, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (8487, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (8495, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8495, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8503, 'email', '');
+INSERT INTO `storage_string` VALUES (8515, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (8520, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8520, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8520, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8520, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8523, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8523, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8523, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8523, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8524, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8524, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8524, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8524, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8526, 'weight', '');
+INSERT INTO `storage_string` VALUES (8526, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8528, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8528, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8528, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8528, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8530, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8530, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8530, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8530, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8532, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8532, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8532, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8532, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8556, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (8556, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (8556, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (8556, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (8557, 'weight', '123');
+INSERT INTO `storage_string` VALUES (8557, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (8566, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (8566, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (8566, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (8566, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (8575, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (8575, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (8577, 'relationship', 'self');
+INSERT INTO `storage_string` VALUES (8577, 'group_number', '123434');
+INSERT INTO `storage_string` VALUES (8577, 'group_name', 'health123');
+INSERT INTO `storage_string` VALUES (8579, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (8579, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (8581, 'facility_code', '11');
 
 -- --------------------------------------------------------
 
@@ -5804,6 +6490,7 @@ INSERT INTO `storage_string` VALUES (8308, 'claim_filing_code', '10');
 -- Table structure for table `superbill_data`
 -- 
 
+DROP TABLE IF EXISTS `superbill_data`;
 CREATE TABLE `superbill_data` (
   `superbill_data_id` int(11) NOT NULL default '0',
   `superbill_id` int(11) NOT NULL default '0',
@@ -5816,17 +6503,17 @@ CREATE TABLE `superbill_data` (
 -- Dumping data for table `superbill_data`
 -- 
 
-INSERT INTO `superbill_data` VALUES (998, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (999, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1001, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1002, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1003, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1004, 1, 0, 1);
-INSERT INTO `superbill_data` VALUES (1005, 1, 26761, 1);
-INSERT INTO `superbill_data` VALUES (1006, 1, 26752, 1);
-INSERT INTO `superbill_data` VALUES (1007, 1, 26751, 1);
-INSERT INTO `superbill_data` VALUES (1008, 1, 26758, 1);
+INSERT INTO `superbill_data` VALUES (8448, 1, 1, 0);
+INSERT INTO `superbill_data` VALUES (8449, 1, 1, 1);
+INSERT INTO `superbill_data` VALUES (8450, 1, 9, 1);
+INSERT INTO `superbill_data` VALUES (8451, 1, 20, 1);
+INSERT INTO `superbill_data` VALUES (8452, 1, 24, 1);
+INSERT INTO `superbill_data` VALUES (8453, 1, 29, 1);
+INSERT INTO `superbill_data` VALUES (8454, 1, 26758, 1);
+INSERT INTO `superbill_data` VALUES (8455, 1, 26752, 1);
+INSERT INTO `superbill_data` VALUES (8456, 1, 2273, 1);
+INSERT INTO `superbill_data` VALUES (8457, 1, 2274, 1);
+INSERT INTO `superbill_data` VALUES (8458, 1, 2275, 1);
 
 -- --------------------------------------------------------
 
@@ -5834,6 +6521,7 @@ INSERT INTO `superbill_data` VALUES (1008, 1, 26758, 1);
 -- Table structure for table `user`
 -- 
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL default '0',
   `username` varchar(55) NOT NULL default '',
@@ -5853,9 +6541,10 @@ CREATE TABLE `user` (
 -- 
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 0);
-INSERT INTO `user` VALUES (984, 'jeichorn', 'test', 'jei', '336666', 983, '', 0);
+INSERT INTO `user` VALUES (984, 'jeichorn', 'test', 'jei', '336666', 983, 'no', 0);
 INSERT INTO `user` VALUES (1111, 'jconrad', 'demo', 'jac', 'FF9966', 1110, 'no', 0);
 INSERT INTO `user` VALUES (1121, 'mminton', 'demo', 'mm', '99CCCC', 1120, 'no', 0);
+INSERT INTO `user` VALUES (8313, 'test', 'test', 'test', '336699', 8312, 'no', 1125);
 
 -- --------------------------------------------------------
 
@@ -5863,6 +6552,7 @@ INSERT INTO `user` VALUES (1121, 'mminton', 'demo', 'mm', '99CCCC', 1120, 'no', 
 -- Table structure for table `users_groups`
 -- 
 
+DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE `users_groups` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -5880,3 +6570,7 @@ CREATE TABLE `users_groups` (
 INSERT INTO `users_groups` VALUES (1, 1, 1, 0, '');
 INSERT INTO `users_groups` VALUES (634, 306, 1, 0, '');
 INSERT INTO `users_groups` VALUES (635, 306, 0, 0, '');
+
+SET FOREIGN_KEY_CHECKS=1;
+
+COMMIT;
