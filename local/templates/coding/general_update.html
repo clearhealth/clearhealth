@@ -36,11 +36,14 @@ function captureEnter (field, event) {
 					</td>
 					<td valign="top">
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
-						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
+						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" autofield="parent_id"
 							name="parent_code" id="parent_code" SIZE="35" autocomplete="off" value="{$parent_code->getCodeDesc()}">
 						<select name="modifier" STYLE="z-index: 1;">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
+						<input type="button" name="add_cpt" value="Add CPT" onClick="addCPTCode()">
+						<div id="cptlist">
+						</div>
 					</td>
 				</tr>
 				<tr>
@@ -157,6 +160,14 @@ function addICDCode(){
 	var childDiv = document.getElementById('child_codes');
 	var icdCode = document.getElementById('child_id');
 	var icdCodeText = document.getElementById('child_code');
+
+	if (icdCode.value == "" ) {
+		clni_notify_alert(icdCodeText);
+		return false;
+	}
+	else {
+		clni_notify_alert_reset(icdCodeText);
+	}
 //	alert('Adding ICD Code ' + icdCode.value)
 	if (childDiv.childNodes.length == 1) {
 		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><BR>';
@@ -169,5 +180,45 @@ function addICDCode(){
 	icdCodeText.focus();
 }
 setupAutoComplete();
+
+function clni_rule_hasicd(element) {
+	var childDiv = document.getElementById('child_codes');
+	if (childDiv.childNodes.length == 1) {
+		return false;
+	}
+	return true;
+}
+function clni_rule_hascpt(element) {
+	if (element.value > 0) {
+		return true;
+	}
+	var childDiv = document.getElementById('cptlist');
+	if (childDiv.childNodes.length == 1) {
+		return false;
+	}
+	return true;
+
+}
+
+function addCPTCode() {
+	var listDiv = document.getElementById('cptlist');
+	var cptCode = document.getElementById('parent_id');
+	var cptText = document.getElementById('parent_code');
+
+	if (cptCode.value == "") {
+		clni_notify_alert(cptText);
+		return false;
+	}
+	else {
+		clni_notify_alert_reset(cptText);
+	}
+
+	listDiv.innerHTML = listDiv.innerHTML + '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + ']" value="' + cptCode.value  + '">' + cptText.value  + '<BR>';
+	cptCode.value = '';
+	cptText.value = '';
+	cptText.focus();
+}
 </script>
 {/literal}
+{clni_register_validation_rule id="parent_code" rule="hascpt"}
+{clni_register_validation_rule id="child_code" rule="hasicd"}
