@@ -14,6 +14,7 @@ class C_Patient extends Controller {
 	var $person_person_id = 0;
 	var $encounter_date_id = 0;
 	var $encounter_person_id = 0;
+	var $payment_id = 0;
 
 	function C_Patient() {
 		parent::Controller();
@@ -183,7 +184,10 @@ class C_Patient extends Controller {
 		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
-
+		
+		$payment =& ORDataObject::factory('Payment',$this->payment_id,$encounter_id);
+		$paymentGrid = new cGrid($payment->paymentList($encounter_id));
+		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
 
 		$formData =& ORDataObject::factory("FormData");
 		$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
@@ -200,7 +204,6 @@ class C_Patient extends Controller {
 			}	
 		}
 
-
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
@@ -210,6 +213,8 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
 		$this->assign_by_ref('formDataGrid',$formDataGrid);
 		$this->assign_by_ref('formList',$formList);
+		$this->assign_by_ref('payment',$payment);
+		$this->assign_by_ref('paymentGrid',$paymentGrid);
 
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
@@ -217,6 +222,7 @@ class C_Patient extends Controller {
 		if ($encounter_id > 0) {
 			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
 			$coding = new C_Coding();
+			$coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 			$codingHtml = $coding->update_action($encounter_id);
 			$this->assign('codingHtml',$codingHtml);
 		}
@@ -226,6 +232,7 @@ class C_Patient extends Controller {
 	}
 
 	function encounter_action_process($encounter_id=0) {
+		
 		if (isset($_POST['saveCode'])) {
 			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
 			$coding = new C_Coding();
@@ -239,11 +246,12 @@ class C_Patient extends Controller {
 		if (isset($_POST['encounter']['close'])) {
 			$encounter->set("status","closed");	
 		}
-		
+				
 		$encounter->persist();
 		$this->encounter_id = $encounter->get('id');
 
 		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
+			echo "here" . $_POST['encounterDate']['date'];
 			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
 			$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$this->encounter_id);
 			$encounterDate->populate_array($_POST['encounterDate']);
@@ -256,6 +264,13 @@ class C_Patient extends Controller {
 			$encounterPerson->populate_array($_POST['encounterPerson']);
 			$encounterPerson->persist();
 			$this->encounter_person_id = $encounterPerson->get('id');
+		}
+		if (isset($_POST['payment']) && !empty($_POST['payment']['amount'])) {
+			$this->payment_id = $_POST['payment']['payment_id'];
+			$payment =& ORDataObject::factory('Payment',$this->payment_id,$this->encounter_id);
+			$payment->populate_array($_POST['payment']);
+			$payment->persist();
+			$this->payment_id = $payment->get('id');
 		}
 		
 	}
