@@ -110,7 +110,9 @@ class Patient extends MergeDecorator {
 	}
 
 	function get_search_name() {
-		return $this->get('last_name').", ".$this->get('first_name')." #".$this->get('record_number');
+		if ($this->get('id') > 0) {
+			return $this->get('last_name').", ".$this->get('first_name')." #".$this->get('record_number');
+		}
 	}
 
 
