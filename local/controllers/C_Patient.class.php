@@ -214,8 +214,9 @@ class C_Patient extends Controller {
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 		$this->assign('NEW_ENCOUNTER_PERSON',Cellini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
-		$payment =& ORDataObject::factory('Payment',$this->payment_id,$encounter_id);
-		$paymentGrid = new cGrid($payment->paymentList($encounter_id));
+		$payment =& ORDataObject::factory('Payment',$this->payment_id);
+		$payment->set("encounter_id",$encounter_id);
+		$paymentGrid = new cGrid($payment->paymentsFromEncounterId($encounter_id));
 		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Cellini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
@@ -327,7 +328,8 @@ class C_Patient extends Controller {
 		}
 		if (isset($_POST['payment']) && !empty($_POST['payment']['amount'])) {
 			$this->payment_id = $_POST['payment']['payment_id'];
-			$payment =& ORDataObject::factory('Payment',$this->payment_id,$this->encounter_id);
+			$payment =& ORDataObject::factory('Payment',$this->payment_id);
+			$payment->set("encounter_id", $this->encounter_id);
 			$payment->populate_array($_POST['payment']);
 			$payment->persist();
 			$this->payment_id = $payment->get('id');
@@ -511,9 +513,9 @@ class C_Patient extends Controller {
 		}
 
 		// register clearinghouse - payer
-		if (!$freeb2->registerData($claim_identifier,'ClearingHouse',$clearingHouseData)) {
-			trigger_error("Unable to register clearing hosue data - ".$freeb2->claimLastError($claim_identifier));
-		}
+//		if (!$freeb2->registerData($claim_identifier,'ClearingHouse',$clearingHouseData)) {
+//			trigger_error("Unable to register clearing house data - ".$freeb2->claimLastError($claim_identifier));
+//		}
 
 		// close the claim
 		/*if (!$freeb2->closeClaim($claim_identifier,1)) {
