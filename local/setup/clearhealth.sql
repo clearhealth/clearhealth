@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 21, 2005 at 12:48 PM
+-- Generation Time: Mar 28, 2005 at 03:00 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -3445,6 +3445,7 @@ CREATE TABLE `fee_schedule` (
   `name` varchar(100) NOT NULL default '',
   `label` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
+  `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=MyISAM;
@@ -3453,7 +3454,9 @@ CREATE TABLE `fee_schedule` (
 -- Dumping data for table `fee_schedule`
 -- 
 
-INSERT INTO `fee_schedule` VALUES (2053, 'test', 'test', 'test');
+INSERT INTO `fee_schedule` VALUES (2053, 'test', 'test', 'test', 2);
+INSERT INTO `fee_schedule` VALUES (17029, 'test2', 'Another Testing Fee Schedule', 'blah', 2);
+INSERT INTO `fee_schedule` VALUES (17030, 'medicare_cal', 'Medicare-cal', '', 2);
 
 -- --------------------------------------------------------
 
@@ -3468,6 +3471,7 @@ CREATE TABLE `fee_schedule_data` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   `data` double NOT NULL default '0',
   `formula` varchar(255) NOT NULL default '',
+  `mapped_code` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
@@ -3477,47 +3481,50 @@ CREATE TABLE `fee_schedule_data` (
 -- Dumping data for table `fee_schedule_data`
 -- 
 
-INSERT INTO `fee_schedule_data` VALUES (1, 1, 711, 22, '');
-INSERT INTO `fee_schedule_data` VALUES (2, 1, 711, 23, '');
-INSERT INTO `fee_schedule_data` VALUES (3, 1, 711, 14.34, '');
-INSERT INTO `fee_schedule_data` VALUES (4, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (5, 1, 711, 12, '');
-INSERT INTO `fee_schedule_data` VALUES (6, 1, 711, 42.67, '');
-INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '');
-INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (22, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (23, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (36, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (37, 1, 711, 34.12, '');
-INSERT INTO `fee_schedule_data` VALUES (38, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26752, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26761, 1, 2053, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26760, 1, 2053, 23, '');
-INSERT INTO `fee_schedule_data` VALUES (26759, 1, 2053, 26, '');
-INSERT INTO `fee_schedule_data` VALUES (26758, 1, 2053, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26757, 1, 2053, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26755, 1, 2053, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26750, 1, 2053, 12, '');
-INSERT INTO `fee_schedule_data` VALUES (26749, 1, 2053, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26748, 1, 2053, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26754, 1, 2053, 18, '');
-INSERT INTO `fee_schedule_data` VALUES (26753, 1, 2053, 90, '');
-INSERT INTO `fee_schedule_data` VALUES (26751, 1, 2053, 5, '');
+INSERT INTO `fee_schedule_data` VALUES (1, 1, 711, 22, '', '');
+INSERT INTO `fee_schedule_data` VALUES (2, 1, 711, 23, '', '');
+INSERT INTO `fee_schedule_data` VALUES (3, 1, 711, 14.34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (4, 1, 711, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (5, 1, 711, 12, '', '');
+INSERT INTO `fee_schedule_data` VALUES (6, 1, 711, 42.67, '', '');
+INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (22, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (23, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (36, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (37, 1, 711, 34.12, '', '');
+INSERT INTO `fee_schedule_data` VALUES (38, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26752, 1, 711, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26761, 1, 2053, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26760, 1, 2053, 23, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26759, 1, 2053, 26, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26758, 1, 2053, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26757, 1, 2053, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26755, 1, 2053, 34, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26750, 1, 2053, 12, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26749, 1, 2053, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26748, 1, 2053, 0, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26754, 1, 2053, 18, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26753, 1, 2053, 90, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26751, 1, 2053, 5, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26740, 1, 17029, 23, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26738, 1, 17029, 45, '', '');
+INSERT INTO `fee_schedule_data` VALUES (26735, 1, 17029, 23, '', '');
 
 -- --------------------------------------------------------
 
@@ -4271,6 +4278,25 @@ CREATE TABLE `identifier` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `insurance`
+-- 
+
+DROP TABLE IF EXISTS `insurance`;
+CREATE TABLE `insurance` (
+  `company_id` int(11) NOT NULL default '0',
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `insurance`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `insurance_program`
 -- 
 
@@ -4280,15 +4306,21 @@ CREATE TABLE `insurance_program` (
   `payer_type` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`insurance_program_id`)
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`insurance_program_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
 ) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `insurance_program`
 -- 
 
-INSERT INTO `insurance_program` VALUES (1114, 2, 1113, 'Professional Care');
-INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America');
+INSERT INTO `insurance_program` VALUES (1114, 2, 1113, 'Professional Care', 0);
+INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America', 0);
+INSERT INTO `insurance_program` VALUES (8463, 1, 8462, 'test', 0);
+INSERT INTO `insurance_program` VALUES (8504, 1, 8503, 'CHDP', 0);
+INSERT INTO `insurance_program` VALUES (8505, 1, 8503, 'EAPC', 0);
+INSERT INTO `insurance_program` VALUES (8518, 1, 1113, 'Another Program', 8519);
 
 -- --------------------------------------------------------
 
@@ -16288,6 +16320,11 @@ INSERT INTO `ownership` VALUES (17025, 1);
 INSERT INTO `ownership` VALUES (17026, 1);
 INSERT INTO `ownership` VALUES (17027, 1);
 INSERT INTO `ownership` VALUES (17028, 1);
+INSERT INTO `ownership` VALUES (17029, 1);
+INSERT INTO `ownership` VALUES (17030, 1);
+INSERT INTO `ownership` VALUES (17031, 1);
+INSERT INTO `ownership` VALUES (17032, 1);
+INSERT INTO `ownership` VALUES (17033, 1);
 
 -- --------------------------------------------------------
 
@@ -18667,7 +18704,7 @@ CREATE TABLE `patient_statistics` (
   `race` int(11) NOT NULL default '0',
   `income` int(11) NOT NULL default '0',
   `language` int(11) NOT NULL default '0',
-  `migrant` int(11) NOT NULL default '0',
+  `migrant_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=MyISAM;
 
@@ -18704,6 +18741,7 @@ INSERT INTO `patient_statistics` VALUES (8053, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (17022, 0, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (17032, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -25918,6 +25956,7 @@ CREATE TABLE `person_person` (
 -- 
 
 INSERT INTO `person_person` VALUES (17021, 12491, 11576, 1);
+INSERT INTO `person_person` VALUES (17031, 11576, 15905, 1);
 
 -- --------------------------------------------------------
 
@@ -28633,7 +28672,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (17028);
+INSERT INTO `sequences` VALUES (17033);
 
 -- --------------------------------------------------------
 
