@@ -114,7 +114,6 @@ class Payment extends ORDataObject {
 	function paymentsFromEncounterId($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
 		
-
 		$ds =& new Datasource_sql();
 
 		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
@@ -125,7 +124,7 @@ class Payment extends ORDataObject {
 		}
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
+				'cols' 	=> "payment_id, foreign_id, encounter_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
 				'from' 	=> "$this->_table ",
 				'where' => " encounter_id = $foreign_id"
 			),
