@@ -519,7 +519,7 @@ class C_Location extends Controller {
 		}
 
 		$location = Cellini::link('list','location');
-		$trail = $_SESSION['trail'];
+		$trail = array_reverse($_SESSION['trail']);
 		foreach($trail as $stop) {
 			if (!isset($stop['update_schedule']) && $stop['action'] != "update_schedule") {
 				if (isset($stop['main'])) array_shift($stop);
