@@ -22,6 +22,8 @@ class M_User extends M_Patient {
 
 	/**
 	 * Handle updating login info
+	 *
+	 * @todo: we are going to want to do this bridging of type on person to group on user a lot, move this to some place more reusable
 	 */
 	function process_user_update($person_id,$data) {
 			$u =& User::fromPersonId($person_id);
@@ -32,6 +34,36 @@ class M_User extends M_Patient {
 			$u->populate_array($data);
 			$u->persist();
 			$this->controller->user_id = $u->get('id');
+
+			// update gacl groups from type
+			$person =& ORDataObject::factory('Person',$person_id);
+			$t_list = $person->getTypeList();
+			$types = $person->get('types');
+
+			if (count($types) > 0) {
+				$type = array_shift($types);
+				if ($type > 0) {
+					$group = strtolower(str_replace(' ','_',$t_list[$type]));
+					$gacl_groups = $this->controller->security->sort_groups();
+					$flat_groups = array();
+					foreach($gacl_groups as $grp) {
+						foreach($grp as $k => $v) {
+							$flat_groups[$k] = $v;
+						}
+					}
+					$u->groups = array();
+					foreach($flat_groups as $id => $name) {
+						$data = $this->controller->security->get_group_data($id);
+						if ($data[2] == $group) {
+							$gid = $data[0];
+							$u->groups[$gid] = array('id'=>$data[0]);
+							$u->persist();
+							break;
+						}
+					}
+				}
+			}
+			
 
 			$this->messages->addMessage('Login Information Updated');
 	}
