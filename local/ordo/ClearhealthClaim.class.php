@@ -76,6 +76,29 @@ class ClearhealthClaim extends ORDataObject {
 		}
 		return $status;
 	}
+	
+	/**
+	 * Get datasource for claims from the db
+	 */
+	function claimList($patient_id,$show_lines = false) {
+		settype($foreign_id,'int');
+		
+		if ($foreign_id == 0) $foreign_id = "NULL";
+		
+		$ds =& new Datasource_sql();
+
+		$labels = array('identifier' => 'Id','date_of_treatment' => 'Date', 'total_billed' => 'Billed','total_paid' => 'Paid', 'balance'=>'Balance');
+
+		$ds->setup($this->_db,array(
+				'cols' 	=> "identifier, date_of_treatment, total_billed, total_paid, (total_billed - total_paid) as balance",
+				'from' 	=> "$this->_table inner join encounter as e using (encounter_id)",
+				'where' => " e.patient_id = $patient_id"
+			),
+			$labels
+		);
+		//echo $ds->preview();
+		return $ds;
+	}
 
 	/**
 	 * Populate the class from the db
