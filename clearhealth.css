@@ -118,17 +118,17 @@ div.clear {
 .gridInput {
 	width: 30pt;
 }
-div#header.sectionCalendar {
-	background-color: #FFFFE6;
+.sectionCalendar {
+	background-color: #FFFFE6 !important;
 }
-div#header.sectionPatient  {
-	background-color: #BFCFFF;
+.sectionPatient  {
+	background-color: #BFCFFF !important;
 }
-div#header.sectionBilling  {
-	background-color: #E6FFBF;
+.sectionBilling  {
+	background-color: #E6FFBF !important;
 }
-div#header.sectionAdministration  {
-	background-color: #FFDFBF;
+.sectionAdministration  {
+	background-color: #FFDFBF !important;
 }
 
 fieldset table.data td {
