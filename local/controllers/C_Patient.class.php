@@ -39,6 +39,7 @@ class C_Patient extends Controller {
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
 			$insuredRelationshipGrid =& new cGrid($p->insuredRelationshipList());
+			$insuredRelationshipGrid->indexCol = false;
 
 			$encounter =& ORDataObject::factory("Encounter");
 			$encounterGrid =& new cGrid($encounter->encounterList($this->get('patient_id')));
