@@ -25,11 +25,17 @@ function captureEnter (field, event) {
 	<legend>Encounter</legend>
 	<table>
 		<tr>
-			<td>{include file="patient/general_encounter_details.html"}</td>
-			<td>{include file="patient/general_encounter_dates.html"}</td>
+			<td valign="top">
+				{include file="patient/general_encounter_details.html"}
+				{include file="patient/general_encounter_payment.html"}
+			</td>
+			<td valign="top">{include file="patient/general_encounter_dates.html"}
 		</tr>
 		<tr>
-			<td valign="top">{include file="patient/general_encounter_forms.html"}</td>
+			<td valign="top">
+				
+				{include file="patient/general_encounter_forms.html"}
+			</td>
 			<td valign="top">{include file="patient/general_encounter_people.html"}</td>
 		</tr>
 	</table>
