@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 10, 2005 at 10:06 AM
+-- Generation Time: Mar 14, 2005 at 11:27 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -28,7 +28,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=87 ;
+) TYPE=MyISAM AUTO_INCREMENT=89 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -37,7 +37,7 @@ CREATE TABLE `menu` (
 INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '', 'main');
 INSERT INTO `menu` VALUES (2, 'default', 39, '', 'children', 100, 'Logout', 'Access/logout', 'main');
 INSERT INTO `menu` VALUES (3, 'default', 39, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
-INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 800, 'Reports', '', '');
+INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 800, 'Reports', '', 'main/Admin');
 INSERT INTO `menu` VALUES (5, 'admin', 1, '', 'children', 100, 'Entities', '', '');
 INSERT INTO `menu` VALUES (7, 'admin', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule', 'main');
 INSERT INTO `menu` VALUES (8, 'default', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practive', 'main');
@@ -72,8 +72,8 @@ INSERT INTO `menu` VALUES (38, 'admin', 45, '', 'children', 30, 'Edit Superbill'
 INSERT INTO `menu` VALUES (39, 'default', 1, '', 'children', 300, 'My Account', '', 'main');
 INSERT INTO `menu` VALUES (81, 'admin', 1, '', 'children', 700, 'System', '', '');
 INSERT INTO `menu` VALUES (73, 'billing', 62, '', 'children', 30, 'Search', 'Claim/search', 'freeb2');
-INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', 'Billing/reports', 'main');
-INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 200, 'Reports', '', '');
+INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', '', 'main/Billing');
+INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 200, 'Reports', '', 'main/Calendar');
 INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', 'Patient/reports', 'main');
 INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 300, 'Billing', '', 'main');
 INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 400, 'My Account', '', 'main');
@@ -106,3 +106,5 @@ INSERT INTO `menu` VALUES (83, 'admin', 5, '', 'children', 5, 'List Schedules/Fa
 INSERT INTO `menu` VALUES (84, 'admin', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practice', 'main');
 INSERT INTO `menu` VALUES (85, 'admin', 4, '', 'children', 5, 'List Reports', 'Report/list', 'main');
 INSERT INTO `menu` VALUES (86, 'admin', 1, '', 'children', 900, '', 'Admin/default', 'main');
+INSERT INTO `menu` VALUES (87, 'admin', 4, '', 'children', 50, 'Connect Report', 'Report/connect', 'main');
+INSERT INTO `menu` VALUES (88, 'billing', 1, '', 'children', 0, '', 'Billing/default', 'main');
