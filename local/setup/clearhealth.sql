@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 15, 2005 at 08:23 PM
+-- Generation Time: Mar 17, 2005 at 10:09 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -3927,6 +3927,52 @@ INSERT INTO `patient` VALUES (1711, 0, 0, 15);
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `patient_statistics`
+-- 
+
+DROP TABLE IF EXISTS `patient_statistics`;
+CREATE TABLE `patient_statistics` (
+  `person_id` int(11) NOT NULL default '0',
+  `ethnicity` int(11) NOT NULL default '0',
+  `race` int(11) NOT NULL default '0',
+  `income` int(11) NOT NULL default '0',
+  `language` int(11) NOT NULL default '0',
+  `migrant` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`person_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `patient_statistics`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `payment`
+-- 
+
+DROP TABLE IF EXISTS `payment`;
+CREATE TABLE `payment` (
+  `payment_id` int(11) NOT NULL default '0',
+  `foreign_id` int(11) NOT NULL default '0',
+  `payment_type` int(11) NOT NULL default '0',
+  `amount` float(11,2) NOT NULL default '0.00',
+  `user_id` int(11) NOT NULL default '0',
+  `timestamp` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`payment_id`),
+  KEY `foreign_id` (`foreign_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `payment`
+-- 
+
+INSERT INTO `payment` VALUES (6001, 2093, 1, 12.00, 0, 0);
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `person`
 -- 
 
@@ -4409,7 +4455,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (2094);
+INSERT INTO `sequences` VALUES (8000);
 
 -- --------------------------------------------------------
 
