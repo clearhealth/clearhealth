@@ -282,6 +282,7 @@ class C_Location extends Controller {
 			}
 		}
 		
+		$double = false;
 		//check for double book
 		if (is_numeric($oc->get_user_id()) && !is_numeric($_POST['occurence_id'])) {
 			$double = $cs->check_double_book($oc,$this->event);
