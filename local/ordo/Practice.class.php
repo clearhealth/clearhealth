@@ -40,6 +40,11 @@ class Practice extends ORDataObject{
 	 *	@var secondary address
 	 */
 	var $secondary_address;
+
+	/**
+	 * Phone types
+	 */
+	var $phone_types;
 	
 	/**
 	 * Constructor sets all attributes to their default value
@@ -69,24 +74,35 @@ class Practice extends ORDataObject{
 		if ($id != "") {
 			$this->populate();
 
-			$res = $this->_execute("select * from practice_address where practice_id = ".(int)$id);
-			while($res && !$res->EOF) {
-				switch ($res->fields['address_type']) { 
-					case $tlist['Main']:
-						$this->main_address->setup($res->fields['address_id'],$res->fields['practice_id']);
-						break;
-					case $tlist['Secondary']:
-						$this->secondary_address->setup($res->fields['address_id'],$res->fields['practice_id']);
-						break;
-				}
-				$res->MoveNext();
-
-			}
 		}
+
+		$number = ORDataobject::factory('Number');
+		$this->phone_types =& array_flip($number->getTypeList());
 	}
 
 	function populate() {
 		parent::populate();
+
+		$tlist = array_flip($this->main_address->getTypeList());
+		$res = $this->_execute("select * from practice_address where practice_id = ".(int)$this->id);
+		while($res && !$res->EOF) {
+			switch ($res->fields['address_type']) { 
+				case $tlist['Main']:
+					$this->main_address->setup($res->fields['address_id'],$res->fields['practice_id']);
+					break;
+				case $tlist['Secondary']:
+					$this->secondary_address->setup($res->fields['address_id'],$res->fields['practice_id']);
+					break;
+			}
+			$res->MoveNext();
+
+		}
+
+		$res = $this->_execute("select * from practice_number where practice_id = ".(int)$this->id);
+		while($res && !$res->EOF) {
+			$this->phone_numbers[] = ORDataObject::factory('PracticeNumber',$res->fields['number_id'],$res->fields['practice_id']);
+			$res->MoveNext();
+		}
 	}
 
 	function persist() {
@@ -99,6 +115,13 @@ class Practice extends ORDataObject{
 		}
 		$this->main_address->persist();
 		$this->secondary_address->persist();
+
+		foreach(array_keys($this->phone_numbers) as $key) {
+			if ($this->phone_numbers[$key]->get('id') == 0) {
+				$this->phone_numbers[$key]->setup(0,$this->get('id'));
+			}
+			$this->phone_numbers[$key]->persist();
+		}
 	}
 
 	/**
@@ -166,50 +189,50 @@ class Practice extends ORDataObject{
 	
 	function get_phone1() {
 		foreach($this->phone_numbers as $phone) {
-			if ($phone->type == "work") {
-				return $phone->get_phone_display();
+			if ($phone->get('number_type') == $this->phone_types["Work"]) {
+				return $phone->get('number');
 			}
 		}
 		return "";
 	}
 	function set_phone1($phone) {
-		$this->_set_number($phone, "work");
+		$this->_set_number($phone, $this->phone_types["Work"]);
 	}
 	function get_phone2() {
 		foreach($this->phone_numbers as $phone) {
-			if ($phone->type == "home") {
-				return $phone->get_phone_display();
+			if ($phone->get('number_type') == $this->phone_types["Home"]) {
+				return $phone->get('number');
 			}
 		}
 		return "";
 	}
 	function set_phone2($phone) {
-		$this->_set_number($phone, "home");
+		$this->_set_number($phone, $this->phone_types["Home"]);
 	}
 	function get_fax() {
 		foreach($this->phone_numbers as $phone) {
-			if ($phone->type == "fax") {
-				return $phone->get_phone_display();
+			if ($phone->get('number_type') == $this->phone_types["Fax"]) {
+				return $phone->get('number');
 			}
 		}
 		return "";
 	}
 	function set_fax($phone) {
-		$this->_set_number($phone, "fax");
+		$this->_set_number($phone, $this->phone_types["Fax"]);
 	}
 
 	function _set_number($num, $type) {
 		$found = false;
 		for ($i=0;$i<count($this->phone_numbers);$i++) {
-			if ($this->phone_numbers[$i]->type == $type) {
+			if ($this->phone_numbers[$i]->get('number_type') == $type) {
 				$found = true;
-				$this->phone_numbers[$i]->set_phone($num);
+				$this->phone_numbers[$i]->set('number',$num);
 			}
 		}
 		if ($found == false) {
-			$p = new PhoneNumber("",$this->id);
-			$p->set_type($type);
-			$p->set_phone($num);
+			$p = ORDataObject::Factory('PracticeNumber',0,$this->get('id'));
+			$p->set('number_type',$type);
+			$p->set('number',$num);
 			$this->phone_numbers[] = $p;
 			//print_r($this->phone_numbers);
 			//echo "num is now:" . $p->get_phone_display()  . "<br />";
