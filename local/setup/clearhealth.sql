@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 08, 2005 at 03:28 PM
+-- Generation Time: Mar 08, 2005 at 11:15 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -152,6 +152,26 @@ CREATE TABLE `category_to_document` (
 -- 
 
 INSERT INTO `category_to_document` VALUES (993, 996);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `coding_data`
+-- 
+
+DROP TABLE IF EXISTS `coding_data`;
+CREATE TABLE `coding_data` (
+  `coding_data_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `parent_id` int(11) NOT NULL default '0',
+  `code_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`coding_data_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `coding_data`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -705,6 +725,7 @@ CREATE TABLE `fee_schedule` (
 -- 
 
 INSERT INTO `fee_schedule` VALUES (711, 'test', 'Test', 'My Test Schedule');
+INSERT INTO `fee_schedule` VALUES (1054, 'medicare', 'Medicare', 'Medicare Fee Schedule');
 
 -- --------------------------------------------------------
 
@@ -735,6 +756,7 @@ INSERT INTO `fee_schedule_data` VALUES (4, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (5, 1, 711, 12, '');
 INSERT INTO `fee_schedule_data` VALUES (6, 1, 711, 42.67, '');
 INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (10, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '');
 INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '');
@@ -755,6 +777,23 @@ INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (26737, 1, 711, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (26739, 1, 711, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 21, '');
+INSERT INTO `fee_schedule_data` VALUES (26748, 1, 1054, 8, '');
+INSERT INTO `fee_schedule_data` VALUES (26749, 1, 1054, 7, '');
+INSERT INTO `fee_schedule_data` VALUES (26750, 1, 711, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26751, 1, 1054, 6, '');
+INSERT INTO `fee_schedule_data` VALUES (26752, 1, 1054, 5, '');
+INSERT INTO `fee_schedule_data` VALUES (26753, 1, 1054, 4, '');
+INSERT INTO `fee_schedule_data` VALUES (26754, 1, 711, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (26755, 1, 1054, 3, '');
+INSERT INTO `fee_schedule_data` VALUES (26756, 1, 1054, 2, '');
+INSERT INTO `fee_schedule_data` VALUES (26757, 1, 1054, 56, '');
+INSERT INTO `fee_schedule_data` VALUES (26758, 1, 1054, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (26759, 1, 711, 1, '');
+INSERT INTO `fee_schedule_data` VALUES (26760, 1, 1054, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (26761, 1, 1054, 45, '');
 
 -- --------------------------------------------------------
 
@@ -1622,6 +1661,7 @@ CREATE TABLE `name_history` (
 -- 
 
 INSERT INTO `name_history` VALUES (959, 955, 'Fred', 'Flinstone', 'Q', '2005-03-07');
+INSERT INTO `name_history` VALUES (998, 983, 'Joshua', 'Eichorn', '', '2005-03-08');
 
 -- --------------------------------------------------------
 
@@ -1987,6 +2027,63 @@ INSERT INTO `ownership` VALUES (994, 1);
 INSERT INTO `ownership` VALUES (995, 1);
 INSERT INTO `ownership` VALUES (996, 1);
 INSERT INTO `ownership` VALUES (997, 1);
+INSERT INTO `ownership` VALUES (998, 1);
+INSERT INTO `ownership` VALUES (999, 1);
+INSERT INTO `ownership` VALUES (1000, 1);
+INSERT INTO `ownership` VALUES (1001, 1);
+INSERT INTO `ownership` VALUES (1002, 1);
+INSERT INTO `ownership` VALUES (1003, 1);
+INSERT INTO `ownership` VALUES (1004, 1);
+INSERT INTO `ownership` VALUES (1005, 1);
+INSERT INTO `ownership` VALUES (1006, 1);
+INSERT INTO `ownership` VALUES (1007, 1);
+INSERT INTO `ownership` VALUES (1008, 1);
+INSERT INTO `ownership` VALUES (1009, 1);
+INSERT INTO `ownership` VALUES (1010, 1);
+INSERT INTO `ownership` VALUES (1011, 1);
+INSERT INTO `ownership` VALUES (1012, 1);
+INSERT INTO `ownership` VALUES (1013, 1);
+INSERT INTO `ownership` VALUES (1014, 1);
+INSERT INTO `ownership` VALUES (1015, 1);
+INSERT INTO `ownership` VALUES (1016, 1);
+INSERT INTO `ownership` VALUES (1017, 1);
+INSERT INTO `ownership` VALUES (1018, 1);
+INSERT INTO `ownership` VALUES (1019, 1);
+INSERT INTO `ownership` VALUES (1020, 1);
+INSERT INTO `ownership` VALUES (1021, 1);
+INSERT INTO `ownership` VALUES (1022, 1);
+INSERT INTO `ownership` VALUES (1023, 1);
+INSERT INTO `ownership` VALUES (1024, 1);
+INSERT INTO `ownership` VALUES (1025, 1);
+INSERT INTO `ownership` VALUES (1026, 1);
+INSERT INTO `ownership` VALUES (1027, 1);
+INSERT INTO `ownership` VALUES (1028, 1);
+INSERT INTO `ownership` VALUES (1029, 1);
+INSERT INTO `ownership` VALUES (1030, 1);
+INSERT INTO `ownership` VALUES (1031, 1);
+INSERT INTO `ownership` VALUES (1032, 1);
+INSERT INTO `ownership` VALUES (1033, 1);
+INSERT INTO `ownership` VALUES (1034, 1);
+INSERT INTO `ownership` VALUES (1035, 1);
+INSERT INTO `ownership` VALUES (1036, 1);
+INSERT INTO `ownership` VALUES (1037, 1);
+INSERT INTO `ownership` VALUES (1038, 1);
+INSERT INTO `ownership` VALUES (1039, 1);
+INSERT INTO `ownership` VALUES (1040, 1);
+INSERT INTO `ownership` VALUES (1041, 1);
+INSERT INTO `ownership` VALUES (1042, 1);
+INSERT INTO `ownership` VALUES (1043, 1);
+INSERT INTO `ownership` VALUES (1044, 1);
+INSERT INTO `ownership` VALUES (1045, 1);
+INSERT INTO `ownership` VALUES (1046, 1);
+INSERT INTO `ownership` VALUES (1047, 1);
+INSERT INTO `ownership` VALUES (1048, 1);
+INSERT INTO `ownership` VALUES (1049, 1);
+INSERT INTO `ownership` VALUES (1050, 1);
+INSERT INTO `ownership` VALUES (1051, 1);
+INSERT INTO `ownership` VALUES (1052, 1);
+INSERT INTO `ownership` VALUES (1053, 1);
+INSERT INTO `ownership` VALUES (1054, 1);
 INSERT INTO `ownership` VALUES (810, 5430);
 INSERT INTO `ownership` VALUES (811, 5430);
 INSERT INTO `ownership` VALUES (812, 5430);
@@ -2207,7 +2304,7 @@ CREATE TABLE `person` (
 -- 
 
 INSERT INTO `person` VALUES (955, '', 'Eichorn', 'Joshua', 'R', 0, '', '0000-00-00', '', '', '', '', '', '', '123-456-7890', 1);
-INSERT INTO `person` VALUES (983, '', 'Eichorn', 'Joshua', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
+INSERT INTO `person` VALUES (983, '', 'Person', 'Random', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
 
 -- --------------------------------------------------------
 
@@ -2437,6 +2534,7 @@ CREATE TABLE `provider_to_insurance` (
 -- 
 
 INSERT INTO `provider_to_insurance` VALUES (990, 983, 989, '123456', 1, 'blah blah');
+INSERT INTO `provider_to_insurance` VALUES (999, 983, 989, '', 1, '');
 
 -- --------------------------------------------------------
 
@@ -2553,7 +2651,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (997);
+INSERT INTO `sequences` VALUES (1054);
 
 -- --------------------------------------------------------
 
@@ -2843,13 +2941,29 @@ CREATE TABLE `superbill_data` (
   `superbill_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
   `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
+  PRIMARY KEY  (`superbill_data_id`),
+  UNIQUE KEY `superbill_id` (`superbill_id`,`code_id`)
 ) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `superbill_data`
 -- 
 
+INSERT INTO `superbill_data` VALUES (1026, 1, 26754, 0);
+INSERT INTO `superbill_data` VALUES (1027, 1, 26752, 1);
+INSERT INTO `superbill_data` VALUES (1028, 1, 26747, 1);
+INSERT INTO `superbill_data` VALUES (1029, 1, 26744, 1);
+INSERT INTO `superbill_data` VALUES (1030, 1, 26739, 1);
+INSERT INTO `superbill_data` VALUES (1031, 1, 26735, 1);
+INSERT INTO `superbill_data` VALUES (1032, 1, 26730, 1);
+INSERT INTO `superbill_data` VALUES (1033, 1, 26729, 1);
+INSERT INTO `superbill_data` VALUES (1034, 1, 26758, 1);
+INSERT INTO `superbill_data` VALUES (1039, 1, 26761, 1);
+INSERT INTO `superbill_data` VALUES (1042, 1, 26760, 0);
+INSERT INTO `superbill_data` VALUES (1041, 1, 26759, 1);
+INSERT INTO `superbill_data` VALUES (1051, 1, 26750, 1);
+INSERT INTO `superbill_data` VALUES (1052, 1, 26749, 1);
+INSERT INTO `superbill_data` VALUES (1053, 1, 26748, 1);
 
 -- --------------------------------------------------------
 
