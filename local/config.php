@@ -14,8 +14,6 @@ $config['use_menu'] = true;
 
 $config['documents']['repository'] = APP_ROOT."/user/documents/";
 
-$config['use_storage'] = false;
-
 $config['template_dir'] = APP_ROOT."/local/templates/";
 $GLOBALS['template_dir'] = APP_ROOT."/local/templates/";
 $config['openemr_db'] = 'openemr';

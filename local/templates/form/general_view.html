@@ -1,0 +1,7 @@
+{if $form}
+<p>Viewing Data for Form: {$form->get('name')}</p>
+{/if}
+{$grid->render()}
+{if $grid->empty && $form}
+<p>No one has filled this form out yet.</p>
+{/if}

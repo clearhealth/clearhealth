@@ -1,0 +1,15 @@
+<h2>{$form->get('name')}</h2>
+<p>{$form->get('description')}</p>
+<p>Edited at: {$data->get('last_edit')}</p>
+
+<table>
+	<tr>
+		<th>Name</th><th>Value</th>
+	</tr>
+{foreach from=$data->allData() item=row}
+	<tr>
+		<td>{$row.name|make_label}</td>
+		<td>{$row.value}</td>
+	</tr>
+{/foreach}
+</table>

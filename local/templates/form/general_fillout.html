@@ -1,0 +1,14 @@
+{if $form}
+<h2>{$form->get('name')}</h2>
+<p>{$form->get('description')}</p>
+
+<div style="margin: 1em; border: solid 3px black; padding: 1em;">
+	{if $form->fileExists()}
+	{include file=$form->get('file_path')}
+	{else}
+		<p>There was an error accessing this form.</p>
+	{/if}
+</div>
+{else}
+{$grid->render()}
+{/if}

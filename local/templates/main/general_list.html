@@ -44,15 +44,23 @@ a {
 <link href="{$base_dir}cellini.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
-<title>ClearHealth®</title>
+{if $menu_group === "default"}
+	{assign var="section_name" value="Front Office"}
+{/if}
+{if $menu_group === "admin"}
+	{assign var="section_name" value="Administration"}
+{/if}
+<title>ClearHealth® : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
 </head>
 <body>
 	<div id="header" {if $menu_group === "admin"}style="background-color: #CCCCFF"{/if}>
 	<h1>ClearHealth<sup>®</sup></h1>
+	{if $me->get_id() > 0}
 	<div id="sections">
 		<a href="{$base_dir}index.php/main/default" {if $menu_group == "default"}class="selected"{/if}>Front Office</a> &middot;
 		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Administration</a>
 	</div>
+	{/if}
 	{include file="main/general_menu.html"}
 </div>
 <div id="body">
