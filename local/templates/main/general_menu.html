@@ -5,7 +5,7 @@
 		</ul>
 	{else}
 {foreach from=$menu.$menu_group item=nav}
-	<div>
+	<div class="section">
 	{if $nav.action}
 		<div class="topLevel"><a href="{$TOP_ACTION}{$nav.action}">{$nav.title}</a></div>
 	{else}

@@ -29,10 +29,11 @@ div#nav {
 	vertical-align: bottom;
 }
 
-div#nav > div {
+div#nav div.section {
 	position: relative;
-	float:left;
+	float: left;
 	margin-left: 10pt;
+	border: solid 1px #ccc;
 }
 
 div#nav div.topLevel {
@@ -54,10 +55,7 @@ div#nav div ul {
 
 div#nav div:hover > ul { visibility: visible;
 }
-div#nav > div {
-	border: solid 1px #ccc;
-}
-div#nav > div:hover {
+div#nav div.section:hover {
 	background-color: #eee;
 	border: solid 1px black;
 }
@@ -78,7 +76,6 @@ div#nav > div a {
 
 div#nav a {
 	display: block;
-	box-sizing: content-box;
 }
 
 div.clear {
