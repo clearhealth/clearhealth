@@ -27,6 +27,7 @@ div#nav {
 	left: 0px;
 	height: 25px
 	vertical-align: bottom;
+	z-index:10;
 }
 
 div#nav div.section {
@@ -51,6 +52,7 @@ div#nav div ul {
 	visibility: hidden;
 	width: 101pt;
 	text-align: left;
+	z-index:10;
 }
 
 div#nav div:hover > ul { visibility: visible;
