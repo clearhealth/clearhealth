@@ -222,11 +222,16 @@ class C_Report extends Controller {
 		}
 	}
 
+	function view_action_view($id,$template_id = 0) {
+		return $this->report_action_view($id,$template_id);
+	}
+
 	/**
 	* View a report
 	*
 	* @todo: does this really belong here or should this be in some sort of withReports class
 	*/
+	/*
 	function view_action_view($id,$template_id=0)
 	{
 		if (!is_numeric($id)) {
@@ -281,5 +286,6 @@ class C_Report extends Controller {
 
 		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_view.html"));	
 	}
+	*/
 }
 ?>
