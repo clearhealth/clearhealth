@@ -75,7 +75,8 @@ class PaymentClaimline extends ORDataObject {
 						. " inner join encounter e on e.encounter_id = chc.encounter_id "
 						. " inner join coding_data cd on cd.foreign_id = e.encounter_id "
 						. " inner join company ins on ins.company_id = p.payer_id ",
-				'where' => " patient_id = $patient_id $fwhere"
+				'where' => " patient_id = $patient_id $fwhere",
+				'groupby' => ' pcl.payment_claimline_id '
 			),
 			$labels
 		);
