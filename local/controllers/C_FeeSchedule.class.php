@@ -66,7 +66,8 @@ class C_FeeSchedule extends Controller {
 				$ds->addFeeSchedule($row['name'],$row['label'],$row['fee_schedule_id']);
 			}
 		}
-
+		$ds->_init_feeSessions();
+		//echo $ds->preview();
 		$renderer = new Grid_Renderer_JS();
 		$grid =& new cGrid($ds,$renderer);
 		//$grid->pageSize = 30;
