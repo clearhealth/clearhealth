@@ -39,7 +39,8 @@ class C_PatientFinder extends Controller {
         //prevent javascript injection, whitespace and semi-colons are the worry
         $form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
-		$this->assign("FORM_ACTION", Cellini::link('find',true,false,$form_name));
+		$this->assign("FORM_ACTION", Cellini::link('find',true,true,$form_name));
+		$this->assign('PATIENT_ACTION',Cellini::link('edit','Patient',true));
 		return $this->fetch($GLOBALS['template_dir'] . "patient_finder/" . $this->template_mod . "_find.html");
 	}
 	

@@ -14,8 +14,6 @@ require_once CELLINI_ROOT . "/includes/Pager.class.php";
 require_once CELLINI_ROOT . "/includes/ReportFilter.class.php";
 require_once CELLINI_ROOT . "/includes/Grid.class.php";
 require_once CELLINI_ROOT . "/includes/Datasource_sql.class.php";
-require_once CELLINI_ROOT . "/lib/jpspan/JPSpan.php";
-require_once JPSPAN . 'Server/PostOffice.php';
 
 
 /**
@@ -66,14 +64,14 @@ class C_Report extends Controller {
 	*/
 	function connect_action_edit() {
 		$this->assign("FORM_ACTION", Cellini::link('connect'));
-		$this->assign("REMOTE_ACTION", Cellini::link('remote'));
+		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
 		$r = new Report();
 		$r->set_id(663);
 
 		$this->assign("report",$r);
 
-		$menu =& Menu::getInstance();
+		$menu = Menu::getInstance();
 		$this->assign_by_ref('menu',$menu);
 		//$mr = new MenuReport();
 		//var_dump($mr->getMenuList(7,true));

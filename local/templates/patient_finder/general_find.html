@@ -56,7 +56,8 @@ a {
 {foreach  name="search_results" from=$result_set  item=result}
 	<tr>
 		<td>
-			<a href="javascript:{literal}{}{/literal}" onclick="window.opener.document.{$form_name}.value={$result.id}; window.close();">{$result.name}</a>
+			{*<a href="javascript:{literal}{}{/literal}" onclick="window.opener.document.{$form_name}.value={$result.id}; window.close();">{$result.name}</a>*}
+			<a href="{$PATIENT_ACTION}id={$result.id}">{$result.name}</a>
 		</td>
 		<td>{$result.DOB}</td>
 		<td>&nbsp;</td>

@@ -111,7 +111,7 @@ function captureEnter (field, event) {
 <table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-                <th>Number</th><th>Type</th><th>Notes</th>
+		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
         </tr>
         {foreach from=$parent->get_numbers() item=row}
 	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
@@ -139,7 +139,7 @@ function captureEnter (field, event) {
 			  </td>
 				<td><label>Number: </label></td>
 				<input type="hidden" value="0" name="number[active]">
-                <td><input name="number[number]" size="14" value="{$number->get('number')}" > </label>DNC: </label> <input type="checkbox" value="1" name="number[active]" {if $number->get('active')}checked{/if}></td>
+				<td><input name="number[number]" size="14" value="{$number->get('number')}" > </label>DNC: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" {if $number->get('active') == 0}checked{/if}></td>
                         </tr>
                         <tr>
 				<td><label>Notes: </label></td>

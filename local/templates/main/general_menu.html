@@ -33,7 +33,7 @@
 		{/foreach}
 
 		{if $nav.more || $nav.reports}
-		<li><span style="color:rgb(0, 51, 204);">More</span><ul class="nav">
+		{*<li><span style="color:rgb(0, 51, 204);">More</span><ul class="nav">*}
 			{foreach item=navc from=$nav.more}
 				{if $navc.action}
 				{if $translate[$navc.prefix]}
@@ -46,7 +46,7 @@
 				{/if}
 			{/foreach}
 			{if $nav.reports}
-				<li style="border-bottom: dotted 1px black;"> Reports</li>
+			{*<li style="border-bottom: dotted 1px black;"> Reports</li>*}
 				{foreach item=navc from=$nav.reports}
 				{if $translate[$navc.prefix]}
 					<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
@@ -57,7 +57,7 @@
 				{/if}
 				</ul></li>
 			{/if}
-		</ul>
+			{*</ul>*}
 		{/if}
 	</div>
 {/foreach}
