@@ -3249,7 +3249,7 @@ CREATE TABLE `fbclaim` (
   `claim_id` int(11) NOT NULL default '0',
   `claim_identifier` varchar(255) NOT NULL default '',
   `revision` int(11) NOT NULL default '0',
-  `open` enum('closed','open') NOT NULL default 'closed',
+  `status` enum('closed','open') NOT NULL default 'closed',
   `timestamp` timestamp(14) NOT NULL,
   PRIMARY KEY  (`claim_id`)
 ) TYPE=MyISAM;
