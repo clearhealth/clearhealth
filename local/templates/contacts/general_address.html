@@ -3,7 +3,7 @@
 <table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Region</th>
+		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
         </tr>
         {foreach from=$parent->get_addresses() item=row}
 	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
@@ -11,7 +11,7 @@
 		<td>{$row.type}</td>
 		<td class="address">{$row.line1}<br>{$row.line2}</td>
 		<td>{$row.city}</td>
-		<td>{$row.region}</td>
+		<td>{$row.postal_code}</td>
 		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
         </tr>
         {foreachelse}

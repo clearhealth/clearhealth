@@ -1,6 +1,69 @@
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 	{assign var="detail_section_title" value="Patient Details"}
-	{include file="contacts/general_details.html"}
+		<fieldset class="radio" id="person">
+		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
+			{clni_section_links name="detail"}
+			</legend>
+			<table>
+			<tbody>
+                        <tr>
+                        <tr>
+				<td><label>First Name: </label></td>
+				<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
+				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
+                        </tr>
+			<tr>
+				<td><label>Last Name: </label></td>
+				<td colspan=2><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+			</tr>
+			<tr>
+				<td><label>Identifier: </label></td>
+				<td colspan="2"><input id="identifier" name="person[identifier]" size="20" value="{$person->get('identifier')}">
+					<select name="person[identifier_type]">
+						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><label>Salutation: </label></td>
+                          <td colspan="2">
+			  <input name="person[salutation]" size="5" value="{$person->get('salutation')}">
+			  &nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">
+			  &nbsp;&nbsp;Middle Initial: 
+			  <input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
+			  </td>
+                        </tr>
+				{if !$hide_type}
+                        <tr>
+				<td style="vertical-align:top;"><label>Type:</label></td>
+				<td>
+				  <select name="person[type]">
+					  <option></option>
+					  {html_options options=$person->getTypeList() selected=$person->get('type')}
+				  </select>
+			 </td>
+                        </tr>
+			 	{/if}
+                        <tr>
+				<td><label>Primary Email:</label> </td>
+				<td><input name="person[email]" size="30" value="{$person->get('email')}"></td>
+                        </tr>
+				<td><label>Gender:</label> </td>
+                          <td colspan="2">
+                          <select name="person[gender]">
+				  <option></option>
+				{html_options options=$person->getGenderList() selected=$person->get('gender')}
+                          </select>&nbsp;&nbsp;
+			  DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+                          </td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                    </fieldset>
+{clni_register_validation_rule id="last_name"}
+{clni_register_validation_rule id="identifier"}
+
 	
 		    <p>
 		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
@@ -8,11 +71,57 @@
 
 		    {if $person->get_person_id() > 0}
 		    {assign var="parent" value=$person}
-		    {include file="contacts/general_phone.html"}
+		    <fieldset class="radio" id="number">
+		<legend>Phone Numbers {clni_section_links name="number"}</legend>
+<table class="data" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+                <th>Number</th><th>Type</th><th>Notes</th>
+        </tr>
+        {foreach from=$parent->get_numbers() item=row}
+	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
+		<td><a href="{$EDIT_NUMBER_ACTION}id={$row.number_id}&process=true">{$row.number}</a></td>
+		<td>{$row.number_type}</td>
+		<td>{if !$row.active}DNC{/if}</td>
+		<td>{$row.notes}</td>
+		<td><a onClick="return confirm('Delete Number {$row.number_type}:{$row.number}?')" href="{$DELETE_NUMBER_ACTION}id={$row.number_id}&process=true">delete</a></td>
+        </tr>
+        {foreachelse}
+        <tr>
+                <td colspan="3">No Phone Numbers</td>
+        </tr>
+        {/foreach}
+</table>
+		{if $number->get('id') > 0}
+		<input type="hidden" name="number[number_id]" value="{$number->get('id')}">
+		{/if}
+                    <table>
+                        <tr>
+				<td><label>Type: </label></td>
+                <td><select name="number[number_type]" tabindex="20">
+				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
+				</select>
+			  </td>
+				<td><label>Number: </label></td>
+				<input type="hidden" value="0" name="number[active]">
+                <td><input name="number[number]" size="14" value="{$number->get('number')}" tabindex="21"> </label>DNC: </label> <input type="checkbox" value="1" name="number[active]" {if $number->get('active')}checked{/if}></td>
+                        </tr>
+                        <tr>
+				<td><label>Notes: </label></td>
+                          <td colspan="3"><textarea name="number[notes]" rows="4" cols="35" tabindex="22">{$number->get('notes')}</textarea></td>
+                        </tr>
+                        <tr>
+				<td></td><td><input type="submit" tabindex="23"{if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" tabindex="24">{else}value="Add">{/if}</td>
+
+                        </tr>
+		</table>
+	</fieldset>
+
 		    {include file="contacts/general_address.html"}
+		    {include file="patient/general_insurer.html"}
 		    {include file="contacts/general_identifier.html"}
 		    {include file="contacts/general_name_history.html"}
-		    {include file="patient/general_insurer.html"}
+		    
 		    {*{include file="contacts/general_related_companies.html"}*}
 		    {/if}
 </form>
