@@ -31,6 +31,7 @@ class C_Patient extends Controller {
 		} 
 		
 		if (is_numeric($this->get("patient_id")) && $this->get("patient_id") > 0){
+			$this->set('external_id',$this->get('patient_id'));
 			$p = ORDataObject::Factory("patient",$this->get("patient_id"));
 			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
@@ -44,6 +45,7 @@ class C_Patient extends Controller {
 
 			$formData =& ORDataObject::factory("FormData");
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($this->get('patient_id')));
+			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
 
 			$menu = Menu::getInstance();
@@ -162,6 +164,7 @@ class C_Patient extends Controller {
 		if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 			$encounter_id = $this->get('encounter_id');
 		}	
+		$this->set('external_id',$encounter_id);
 
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$person =& ORDataObject::factory('Person');
@@ -175,6 +178,23 @@ class C_Patient extends Controller {
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 
+
+		$formData =& ORDataObject::factory("FormData");
+		$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
+		$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
+		$formDataGrid->pageSize = 10;
+
+		$menu = Menu::getInstance();
+		$tmp = $menu->getMenuData('patient',91);
+
+		$formList = array();
+		if (isset($tmp['forms'])) {
+			foreach($tmp['forms'] as $form) {
+				$formList[$form['form_id']] = $form['title'];
+			}	
+		}
+
+
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
@@ -182,8 +202,11 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('encounterDateGrid',$encounterDateGrid);
 		$this->assign_by_ref('encounterPerson',$encounterPerson);
 		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
+		$this->assign_by_ref('formDataGrid',$formDataGrid);
+		$this->assign_by_ref('formList',$formList);
 
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
+		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 
 		if ($encounter_id > 0) {
 			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";

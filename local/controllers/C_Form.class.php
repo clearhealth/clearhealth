@@ -117,7 +117,9 @@ class C_Form extends Controller {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
-			$data->set('external_id',$this->get('patient_id','c_patient'));
+
+			$data->set('external_id',$this->get('external_id','c_patient'));
+
 			$data->set('last_edit',date('Y-m-d H:i:s'));
 			$data->persist();
 			$this->messages->addMessage('Form Updated');

@@ -1,4 +1,4 @@
-<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+{*<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
 <SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete2.js"></script>
 {literal}
 <script language="javascript">
@@ -19,10 +19,11 @@ function captureEnter (field, event) {
 
 </script>
 {/literal}
+*}
 
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
-<fieldset class="radio" id="coding_data">
+<fieldset id="coding_data">
 <legend>Edit Coding Data</legend>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 <table>
@@ -84,7 +85,7 @@ function captureEnter (field, event) {
 	</tr>
 	<tr>
 		<td colspan="2" align="right">
-			<input type="submit" name="saveCode" value="Save"/>
+			<input type="submit" name="saveCode" value="Save">
   		</td>
 	</tr>
 </table>
@@ -98,8 +99,9 @@ function captureEnter (field, event) {
 &nbsp;&nbsp;&nbsp;{$child.description}<br>
 {/foreach}<BR>
 {/foreach}
-
+&nbsp;
 </fieldset>
+</form>
 
 
 
