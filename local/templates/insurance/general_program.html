@@ -20,7 +20,11 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program"></td>
+			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program">
+				{if $insuranceProgram->get('id') > 0}
+				<input type="button" value="New Program" onclick="window.location = '{$NEW_PROGRAM}';">
+				{/if}
+			</td>
 		</tr>
 	</table>
 </fieldset>

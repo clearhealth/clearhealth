@@ -114,7 +114,7 @@ class InsuranceProgram extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "name, payer_type",
+				'cols' 	=> "name, payer_type, insurance_program_id",
 				'from' 	=> "$this->_table",
 				'where' => " company_id = $company_id"
 			),

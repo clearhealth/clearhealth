@@ -26,7 +26,9 @@ class C_Insurance extends Controller {
 		$address =& ORDataObject::factory('CompanyAddress',$this->address_id,$company_id);
 
 		$insuranceProgram =& ORDataObject::factory('InsuranceProgram',$this->insurance_program_id);
-		$insuranceProgramGrid =& new cGrid($insuranceProgram->detailedProgramList($company_id));
+		$ds =& $insuranceProgram->detailedProgramList($company_id);
+		$ds->registerTemplate('name','<a href="'.Cellini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
+		$insuranceProgramGrid =& new cGrid($ds);
 
 		$this->assign_by_ref('company',$company);
 		$this->assign_by_ref('number',$number);
@@ -39,6 +41,8 @@ class C_Insurance extends Controller {
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$company_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$company_id));
 		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$company_id));
+		$this->assign('NEW_PROGRAM',Cellini::managerLink('editProgram',$company_id)."id=0&process=true");
+
 		$this->assign('hide_type',true);
 
 		$this->assign('now',date('Y-m-d'));

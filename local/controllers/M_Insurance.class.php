@@ -125,6 +125,13 @@ class M_Insurance extends Manager {
 	}
 
 	/**
+	 * Setup for editing a program
+	 */
+	function process_editProgram($company_id,$program_id) {
+		$this->controller->insurance_program_id = $program_id;
+	}
+
+	/**
 	 * Delete a number
 	 */
 	function process_deleteNumber($company_id,$number_id) {
