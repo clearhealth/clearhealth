@@ -32,6 +32,7 @@ class Encounter extends ORDataObject {
 	var $last_change_user_id	= '';
 	var $status			= 'open';
 	var $occurence_id		= '';
+	var $_erCache = false;
 	/**#@-*/
 
 
@@ -42,7 +43,8 @@ class Encounter extends ORDataObject {
 	function Encounter($db = null) {
 		parent::ORDataObject($db);	
 		$this->_table = 'encounter';
-		$this->_sequence_name = 'sequences';	
+		$this->_sequence_name = 'sequences';
+		$this->date_of_treatment = date("Y-m-d");	
 	}
 
 	/**
@@ -100,9 +102,10 @@ class Encounter extends ORDataObject {
 				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
 				'where' => " patient_id = $patient_id"
 			),
-			array('data_of_treatment' => 'Data of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'));
+			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status','encounter_id' => "Encounter Id"));
 
 		$ds->registerFilter('encounter_reason',array(&$this,'lookupEncounterReason'));
+		//echo $ds->preview();
 		return $ds;
 	}
 
@@ -115,13 +118,13 @@ class Encounter extends ORDataObject {
 	}
 	/**#@-*/
 
-	var $erCache = false;
+	
 	/**
 	 * Cached lookup for encounter_reason
 	 */
 	function lookupEncounterReason($id) {
 		if ($this->_erCache === false) {
-			$this->_erCache = $this->getEncounterReason();
+			$this->_erCache = $this->getEncounterReasonList();
 		}
 		if (isset($this->_erCache[$id])) {
 			return $this->_erCache[$id];
