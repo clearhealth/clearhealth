@@ -92,10 +92,10 @@ class ClearhealthClaim extends ORDataObject {
 						$where .= " c.status = " . $this->_quote($fval) . " and ";
 						break;
 					case 'start':
-						$where .= " UNIX_TIMESTAMP(c.timestamp) > " . $this->_quote(strtotime($fval)) . " and ";
+						$where .= " UNIX_TIMESTAMP(e.date_of_treatment) > " . $this->_quote(strtotime($fval)) . " and ";
 						break;
 					case 'end':
-						$where .= " UNIX_TIMESTAMP(c.timestamp) < " . $this->_quote(strtotime($fval)) . " and ";
+						$where .= " UNIX_TIMESTAMP(e.date_of_treatment) < " . $this->_quote(strtotime($fval)) . " and ";
 						break;
 					case 'facility':
 						$where .= " co.name = " . $this->_quote($fval) . " and ";

@@ -26,13 +26,18 @@ class C_Account extends Controller {
 	
 	function history_action_view($patient_id) {
 		
-		$hds =& new Datasource_AccountHistory();
+		$hds =& new Datasource_AccountHistory($this->filters);
 		$hds->setup($patient_id);
-		$renderer =& new Grid_Renderer_AccountHistory($this->filters);
+		$renderer =& new Grid_Renderer_AccountHistory();
 		$history_grid =& new cGrid($hds,$renderer);
 		$this->assign_by_ref("history_grid",$history_grid);
 		
 		return $this->fetch(Cellini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
+	}
+
+	function history_action_process($patient_id) {
+		$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)] = $_POST['filter'];
+		$this->assign("filters",$this->filters);
 	}
 }
 
