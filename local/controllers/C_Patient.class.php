@@ -184,6 +184,7 @@ class C_Patient extends Controller {
 		$ds =& $person->patientList();
 		$ds->template['name'] = "<a href='".Cellini::link('dashboard')."id={\$person_id}'>{\$name}</a>";
 		$grid =& new cGrid($ds);
+		$grid->pageSize = 50;
 
 		$this->assign_by_ref('grid',$grid);
 
