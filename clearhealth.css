@@ -2,6 +2,8 @@ body {
 	margin:0px; padding:0px;
 	/*text-align:center;*/
 	background-color:#eee;
+	font-family: sans-serif;
+	font-size: 90%;
 }
 
 #sections {
