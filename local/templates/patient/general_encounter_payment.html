@@ -1,14 +1,14 @@
 <fieldset>
-	<legend>Payment</legend>
+	<legend>Copay</legend>
 	{$paymentGrid->render()}
 	{if $paymentGrid->empty}
-	<p>Encounter has no payments</p>
+	<p>Encounter has no Copays</p>
 	{/if}
 	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
 	{if $encounter->get('status') != 'closed'}		
 	<table>
 		<tr>
-			<td><label>Payment Type:</label></td>
+			<td><label>Copay Type:</label></td>
 			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type')}</td>
 			<td><label>Amount Paid:</label></td>
 			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}"></td>
