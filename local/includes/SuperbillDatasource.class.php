@@ -1,7 +1,7 @@
 <?php
-require_once CELLINI_ROOT ."/includes/Datasource_editable.class.php";
+require_once APP_ROOT ."/local/includes/FeeScheduleDatasource.class.php";
 
-class SuperbillDatasource extends Datasource_editable {
+class SuperbillDatasource extends FeeScheduleDatasource {
 
 	var $where = array('code_type'=>3);
 
@@ -15,6 +15,11 @@ class SuperbillDatasource extends Datasource_editable {
 
 	function SuperbillDatasource($session_array = "sbd") {
 		$this->session = $session_array;
+
+		if (isset($_SESSION[$this->session]['whereFilter'])) {
+			$this->whereFilter = $_SESSION[$this->session]['whereFilter'];
+		}
+
 		$this->setup(
 			$GLOBALS['config']['adodb']['db'],
 			array(
@@ -23,28 +28,8 @@ class SuperbillDatasource extends Datasource_editable {
 			),
 			array( 'code' => 'Code', 'code_text' => 'Code name', 'status' => 'Status')
 		);
-
+		
 		$this->object =& ORDataObject::factory('SuperbillData');
-	}
-
-	function prepare() {
-		$where = "";
-		$first = true;
-		foreach($this->where as $col => $value) {
-			if (!$first) {
-				$where .= " and ";
-			}
-			$first = false;
-
-			$where .= " $col = ".$this->_db->qstr($value);
-		}
-		$this->_query['where'] = $where;
-		parent::prepare();
-	}
-
-	function setRevision($id) {
-		$this->revision_id = $id;
-		$_SESSION[$this->session]['revision_id'] = $id;
 	}
 }
 ?>

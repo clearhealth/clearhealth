@@ -10,7 +10,7 @@ class C_FeeSchedule extends Controller {
 
 	function list_action() {
 
-		$fs =& ORDataobject::factory('feeSchedule');
+		$fs =& ORDataobject::factory('FeeSchedule');
 		$ds =& $fs->listFeeSchedules();
 		$ds->template['label'] = '<a href="'.Cellini::link('edit').'id={$fee_schedule_id}">{$label}</a>';
 
@@ -21,7 +21,7 @@ class C_FeeSchedule extends Controller {
 
 	function edit_action($fee_schedule_id = 0) {
 
-		$feeSchedule =& ORDataObject::Factory('feeSchedule',$fee_schedule_id);
+		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
 		$this->Assign_By_ref('feeSchedule',$feeSchedule);
 		$this->assign('FORM_ACTION',Cellini::link('edit',true,true,$fee_schedule_id));
 		$this->assign('UPDATE_ACTION',Cellini::link('update',true,true,$fee_schedule_id));
@@ -29,7 +29,7 @@ class C_FeeSchedule extends Controller {
 	}
 
 	function edit_action_process($fee_schedule_id = 0) {
-		$feeSchedule =& ORDataObject::Factory('feeSchedule',$fee_schedule_id);
+		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
 		$feeSchedule->populate_array($_POST['feeSchedule']);
 
 		if ($feeSchedule->persist()) {
@@ -45,9 +45,27 @@ class C_FeeSchedule extends Controller {
 		}
 	}
 
-	function update_action($fee_schedule_id) {
+	function update_action($fee_schedule_id = 0) {
 
 		$ds =& new FeeScheduleDatasource();
+		if ($fee_schedule_id > 0) {
+			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+			$ds->resetFeeSchedule();
+			$ds->addFeeSchedule($feeSchedule->get('name'),$feeSchedule->get('label'),$fee_schedule_id);
+		}
+		else {
+			// add them all
+			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+			$ds->resetFeeSchedule();
+
+			$schedules = $feeSchedule->listFeeSchedules();
+			$schedules = $schedules->toArray();
+
+			foreach($schedules as $row) { 
+				$ds->addFeeSchedule($row['name'],$row['label'],$row['fee_schedule_id']);
+			}
+		}
+
 		$renderer = new Grid_Renderer_JS();
 		$grid =& new cGrid($ds,$renderer);
 		//$grid->pageSize = 30;

@@ -53,7 +53,11 @@ clniTable.prototype.render = function() {
 	}
 	this.bulkFetch(i,this.windowSize+this.prefetchSize);
 
-	for(var i = this.windowRow; i < (this.windowRow + this.windowSize); i++) {
+	var end = (this.windowRow + this.windowSize);
+	if (end > this.dataRows) {
+		end = this.dataRows;
+	}
+	for(var i = this.windowRow; i < end; i++) {
 		this.appendRow(i);
 	}
 }
@@ -209,15 +213,46 @@ clniTable.prototype.numRows = function() {
 
 clniTable.prototype.bulkFetch = function(start,rows) {
 	d = this.dataObject.fetchbulk(start,rows);
-	for(var i = 0; i < d.length; i++) {
-		this.data[start+i] = d[i];
+	if (d) {
+		for(var i = 0; i < d.length; i++) {
+			this.data[start+i] = d[i];
+		}
 	}
+}
+clniTable.prototype.filter = function() {
+	this.dataObject.Sync();
+
+	// clear data cache
+	this.data = Array();
+	this.dataRows = -1;
+
+	// remove current table rows
+	var size = this.tableBody.rows.length;
+	for(var i = 0; i < size; i++) {
+		this.dropRow(0);
+	}
+
+	//document.getElementById('debug').value = this.dataObject.getsql();
+
+	// redraw table
+	var status = this.render();
+}
+
+clniTable.prototype.addFilter = function(field,value) {
+	this.dataObject.Sync();
+	
+	var status = this.dataObject.addfilter(field,value);
+}
+clniTable.prototype.dropFilter = function(field) {
+	this.dataObject.Sync();
+	
+	var status = this.dataObject.dropfilter(field);
 }
 
 clniTable.prototype.store = function(cell) {
 	this.dataObject.Sync();
 	
-	var status = this.dataObject.updatefield(cell.updateKey,cell.field,cell.firstChild.value,cell.passAlong);
+	var status = this.dataObject.updatefield(cell.updateKey, cell.field, cell.firstChild.value, cell.passAlong);
 	this.data[cell.rowNum][cell.field] = cell.firstChild.value;
 }
 clniTable.prototype.storeSimple = function(cell,value) {

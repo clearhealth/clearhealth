@@ -1,2 +1,36 @@
 <script type="text/javascript" src="{$base_dir}js/table.js"></script>
+
+
+{literal}
+<form action="javascript:{}" onSubmit="filterGrid(this)">
+	<b>Filter Codes</b>
+	<table>
+		<tr>
+			<td><label>Code:</label></td>
+			<td><input id="search_code" size=10></td>
+			<td><label>Code name:</label></td>
+			<td><input id="search_code_text" size=10></td>
+			<td><input type="submit" value="Filter"></td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+	function filterGrid(form) {
+		if (form.search_code.value != "") {
+			o_cGrid.addFilter('code',form.search_code.value);
+		}
+		else {
+			o_cGrid.dropFilter('code');
+		}
+		if (form.search_code_text.value != "") {
+			o_cGrid.addFilter('code_text',form.search_code_text.value);
+		}
+		else {
+			o_cGrid.dropFilter('code_text');
+		}
+		o_cGrid.filter();
+	}
+</script>
+{/literal}
+
 {$grid->render()}
