@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 07, 2005 at 10:03 AM
+-- Generation Time: Mar 07, 2005 at 11:28 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -44,6 +44,7 @@ INSERT INTO `address` VALUES (779, '', '', '', '', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (780, 'Home', '123 E Main', 'Suite 2', 'Mesa', 0, 0, 2, '85205', 'use this address');
 INSERT INTO `address` VALUES (782, '', '', '', '', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (783, 'Other', '323 Soth St', '', 'Mesa', 0, 0, 2, '85210', '');
+INSERT INTO `address` VALUES (957, 'main', 'test', 'test blah', 'blah', 0, 0, 1, '123', 'blah');
 
 -- --------------------------------------------------------
 
@@ -104,6 +105,113 @@ CREATE TABLE `buildings` (
 
 INSERT INTO `buildings` VALUES (12, '', 'Main Office', 2);
 INSERT INTO `buildings` VALUES (620, '', 'North County', 2);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `company`
+-- 
+
+DROP TABLE IF EXISTS `company`;
+CREATE TABLE `company` (
+  `company_id` int(11) NOT NULL default '0',
+  `name` varchar(100) NOT NULL default '',
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `initials` varchar(10) NOT NULL default '',
+  `url` varchar(255) NOT NULL default '',
+  `is_historic` enum('no','yes') NOT NULL default 'no',
+  PRIMARY KEY  (`company_id`)
+) TYPE=InnoDB COMMENT='Base Company record most of the data is in linked tables';
+
+-- 
+-- Dumping data for table `company`
+-- 
+
+INSERT INTO `company` VALUES (968, 'Test', '', '', '', '', 'no');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `company_address`
+-- 
+
+DROP TABLE IF EXISTS `company_address`;
+CREATE TABLE `company_address` (
+  `company_id` int(11) NOT NULL default '0',
+  `address_id` int(11) NOT NULL default '0',
+  `address_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`,`address_id`),
+  KEY `company_id` (`company_id`),
+  KEY `address_id` (`address_id`)
+) TYPE=InnoDB COMMENT='Links a company to a address specifying the address type';
+
+-- 
+-- Dumping data for table `company_address`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `company_company`
+-- 
+
+DROP TABLE IF EXISTS `company_company`;
+CREATE TABLE `company_company` (
+  `company_id` int(11) NOT NULL default '0',
+  `related_company_id` int(11) NOT NULL default '0',
+  `company_relation_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`,`related_company_id`),
+  KEY `company_id` (`company_id`),
+  KEY `related_company_id` (`related_company_id`)
+) TYPE=InnoDB COMMENT='Relates a company to another company specify the type with a';
+
+-- 
+-- Dumping data for table `company_company`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `company_number`
+-- 
+
+DROP TABLE IF EXISTS `company_number`;
+CREATE TABLE `company_number` (
+  `company_id` int(11) NOT NULL default '0',
+  `number_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`,`number_id`),
+  KEY `company_id` (`company_id`),
+  KEY `number_id` (`number_id`)
+) TYPE=InnoDB COMMENT='Links between company and phone_numbers';
+
+-- 
+-- Dumping data for table `company_number`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `company_type`
+-- 
+
+DROP TABLE IF EXISTS `company_type`;
+CREATE TABLE `company_type` (
+  `company_id` int(11) NOT NULL default '0',
+  `company_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`,`company_type`),
+  KEY `company_id` (`company_id`),
+  KEY `company_type` (`company_type`)
+) TYPE=InnoDB COMMENT='Link to specify company type';
+
+-- 
+-- Dumping data for table `company_type`
+-- 
+
+INSERT INTO `company_type` VALUES (968, 1);
 
 -- --------------------------------------------------------
 
@@ -379,12 +487,17 @@ CREATE TABLE `enumeration` (
   `company_number_type` enum('Primary','Fax') NOT NULL default 'Primary',
   `address_type` enum('Main','Billing','Shipping') NOT NULL default 'Main',
   `quality_of_file` enum('Good','Bad') NOT NULL default 'Good',
-  `company_type` enum('Branch','Realtor','Appraisal','Title Escrow') NOT NULL default 'Branch',
   `number_type` enum('Main','Mobile','Work') NOT NULL default 'Main',
   `disposition` enum('New','Waiting','Compete') NOT NULL default 'New',
-  `person_type` enum('Loan Officer','Branch Manager','Administrator','Human Resources') NOT NULL default 'Loan Officer',
   `state` enum('Alaska','Arizona','California') NOT NULL default 'Alaska',
   `group_list` enum('All','Arizona','California') NOT NULL default 'All',
+  `identifier_type` enum('SSN') NOT NULL default 'SSN',
+  `company_type` enum('Insurance') NOT NULL default 'Insurance',
+  `assigning` enum('A - Assigned','B - Assigned Lab Services Only','C - Not Assigned','P - Assignment Refused') NOT NULL default 'A - Assigned',
+  `relation_of_information_code` enum('A - On file','I - Informed Consent','M - Limited Ability','N - Not allowed','O - On file','Y - Has permission') NOT NULL default 'A - On file',
+  `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
+  `provider_number_type` enum('State License') NOT NULL default 'State License',
+  `subscriber_to_patient_relationship` enum('Self','Mother','Father') NOT NULL default 'Self',
   PRIMARY KEY  (`name`)
 ) TYPE=MyISAM COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
 
@@ -392,16 +505,21 @@ CREATE TABLE `enumeration` (
 -- Dumping data for table `enumeration`
 -- 
 
-INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
+INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('assigning', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('relation_of_informat', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('provider_number_type', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
+INSERT INTO `enumeration` VALUES ('subscriber_to_patien', '', '', 'Male', 'Primary', 'Main', 'Good', 'Main', 'New', 'Alaska', 'All', 'SSN', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self');
 
 -- --------------------------------------------------------
 
@@ -1248,6 +1366,80 @@ INSERT INTO `groups` VALUES (0, 'provider');
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `identifier`
+-- 
+
+DROP TABLE IF EXISTS `identifier`;
+CREATE TABLE `identifier` (
+  `identifier_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  `identifier` varchar(100) NOT NULL default '',
+  `identifier_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`identifier_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `identifier`
+-- 
+
+INSERT INTO `identifier` VALUES (960, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (961, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (962, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (963, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (964, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (965, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (966, 0, 'blah', 1);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `insurance_program`
+-- 
+
+DROP TABLE IF EXISTS `insurance_program`;
+CREATE TABLE `insurance_program` (
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `payer_type` int(11) NOT NULL default '0',
+  `company_id` int(11) NOT NULL default '0',
+  `name` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`insurance_program_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `insurance_program`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `insured_relationship`
+-- 
+
+DROP TABLE IF EXISTS `insured_relationship`;
+CREATE TABLE `insured_relationship` (
+  `insured_relationship_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  `subsciber_id` int(11) NOT NULL default '0',
+  `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
+  `copay` double NOT NULL default '0',
+  `assigning` int(11) NOT NULL default '0',
+  `group_name` varchar(100) NOT NULL default '',
+  `group_number` varchar(100) NOT NULL default '',
+  `default_provider` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`insured_relationship_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `insured_relationship`
+-- 
+
+INSERT INTO `insured_relationship` VALUES (974, 0, 955, 0, 0, 15, 0, 'blah', 'blah', 0);
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `menu`
 -- 
 
@@ -1262,7 +1454,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=30 ;
+) TYPE=InnoDB AUTO_INCREMENT=34 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1285,8 +1477,8 @@ INSERT INTO `menu` VALUES (14, 'default', 6, '', 'children', 30, 'Week Grid', 'C
 INSERT INTO `menu` VALUES (15, 'default', 6, '', 'children', 10, 'Month', 'Calendar/month');
 INSERT INTO `menu` VALUES (16, 'default', 6, '', 'children', 60, 'Brief Day', 'Calendar/day_brief');
 INSERT INTO `menu` VALUES (17, 'default', 6, '', 'children', 70, 'Search', 'Calendar/search');
-INSERT INTO `menu` VALUES (18, 'default', 1, '', 'children', 150, 'Fee Schedule', 'FeeSchedule/default');
-INSERT INTO `menu` VALUES (19, 'default', 18, '', 'children', 10, 'Add Fee Schedule', 'FeeSchedule/edit');
+INSERT INTO `menu` VALUES (18, 'admin', 1, '', 'children', 150, 'Fee Schedule', 'FeeSchedule/default');
+INSERT INTO `menu` VALUES (19, 'admin', 18, '', 'children', 10, 'Add Fee Schedule', 'FeeSchedule/edit');
 INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit');
 INSERT INTO `menu` VALUES (21, 'admin', 1, '', 'children', 20, 'Users', 'User/list');
 INSERT INTO `menu` VALUES (22, 'admin', 21, '', 'children', 10, 'Add User', 'User/edit');
@@ -1297,6 +1489,33 @@ INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 100, 'Forms', 'Form/l
 INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 10, 'Add Form', 'Form/edit');
 INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 20, 'View Form Data', 'Form/view');
 INSERT INTO `menu` VALUES (29, 'default', 1, '', 'children', 150, 'Forms', 'Form/fillout');
+INSERT INTO `menu` VALUES (30, 'default', 1, '', 'children', 100, 'Patients', 'Patient/list');
+INSERT INTO `menu` VALUES (31, 'default', 30, '', 'children', 10, 'Add Patient', 'Patient/edit');
+INSERT INTO `menu` VALUES (32, 'default', 1, '', 'children', 160, 'Insurance Companies', 'Insurance/list');
+INSERT INTO `menu` VALUES (33, 'default', 32, '', 'children', 10, 'Add Insurance Company', 'Insurance/edit');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `name_history`
+-- 
+
+DROP TABLE IF EXISTS `name_history`;
+CREATE TABLE `name_history` (
+  `name_history_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  `first_name` varchar(100) NOT NULL default '',
+  `last_name` varchar(100) NOT NULL default '',
+  `middle_name` varchar(50) NOT NULL default '',
+  `update_date` date NOT NULL default '0000-00-00',
+  PRIMARY KEY  (`name_history_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `name_history`
+-- 
+
+INSERT INTO `name_history` VALUES (959, 955, 'Fred', 'Flinstone', 'Q', '2005-03-07');
 
 -- --------------------------------------------------------
 
@@ -1318,6 +1537,7 @@ CREATE TABLE `number` (
 -- 
 
 INSERT INTO `number` VALUES (784, 1, '', '480-361-1331');
+INSERT INTO `number` VALUES (956, 1, 'tewt', '12345678');
 
 -- --------------------------------------------------------
 
@@ -1612,6 +1832,171 @@ INSERT INTO `ownership` VALUES (806, 1);
 INSERT INTO `ownership` VALUES (807, 1);
 INSERT INTO `ownership` VALUES (808, 1);
 INSERT INTO `ownership` VALUES (809, 1);
+INSERT INTO `ownership` VALUES (972, 1);
+INSERT INTO `ownership` VALUES (973, 1);
+INSERT INTO `ownership` VALUES (974, 1);
+INSERT INTO `ownership` VALUES (810, 5430);
+INSERT INTO `ownership` VALUES (811, 5430);
+INSERT INTO `ownership` VALUES (812, 5430);
+INSERT INTO `ownership` VALUES (813, 5430);
+INSERT INTO `ownership` VALUES (814, 5430);
+INSERT INTO `ownership` VALUES (815, 5430);
+INSERT INTO `ownership` VALUES (816, 5430);
+INSERT INTO `ownership` VALUES (817, 5430);
+INSERT INTO `ownership` VALUES (818, 5430);
+INSERT INTO `ownership` VALUES (819, 5430);
+INSERT INTO `ownership` VALUES (820, 5430);
+INSERT INTO `ownership` VALUES (821, 5430);
+INSERT INTO `ownership` VALUES (822, 5430);
+INSERT INTO `ownership` VALUES (823, 5430);
+INSERT INTO `ownership` VALUES (824, 5430);
+INSERT INTO `ownership` VALUES (825, 5430);
+INSERT INTO `ownership` VALUES (826, 5430);
+INSERT INTO `ownership` VALUES (827, 5430);
+INSERT INTO `ownership` VALUES (828, 5430);
+INSERT INTO `ownership` VALUES (829, 5430);
+INSERT INTO `ownership` VALUES (830, 5430);
+INSERT INTO `ownership` VALUES (831, 5430);
+INSERT INTO `ownership` VALUES (832, 5430);
+INSERT INTO `ownership` VALUES (833, 5430);
+INSERT INTO `ownership` VALUES (834, 5430);
+INSERT INTO `ownership` VALUES (835, 5430);
+INSERT INTO `ownership` VALUES (836, 5430);
+INSERT INTO `ownership` VALUES (837, 5430);
+INSERT INTO `ownership` VALUES (838, 5430);
+INSERT INTO `ownership` VALUES (839, 5430);
+INSERT INTO `ownership` VALUES (840, 5430);
+INSERT INTO `ownership` VALUES (841, 5430);
+INSERT INTO `ownership` VALUES (842, 5430);
+INSERT INTO `ownership` VALUES (843, 5430);
+INSERT INTO `ownership` VALUES (844, 5430);
+INSERT INTO `ownership` VALUES (845, 5430);
+INSERT INTO `ownership` VALUES (846, 5430);
+INSERT INTO `ownership` VALUES (847, 5430);
+INSERT INTO `ownership` VALUES (848, 5430);
+INSERT INTO `ownership` VALUES (849, 5430);
+INSERT INTO `ownership` VALUES (850, 5430);
+INSERT INTO `ownership` VALUES (851, 5430);
+INSERT INTO `ownership` VALUES (852, 5430);
+INSERT INTO `ownership` VALUES (853, 5430);
+INSERT INTO `ownership` VALUES (854, 5430);
+INSERT INTO `ownership` VALUES (855, 5430);
+INSERT INTO `ownership` VALUES (856, 5430);
+INSERT INTO `ownership` VALUES (857, 5430);
+INSERT INTO `ownership` VALUES (858, 5430);
+INSERT INTO `ownership` VALUES (859, 5430);
+INSERT INTO `ownership` VALUES (860, 5430);
+INSERT INTO `ownership` VALUES (861, 5430);
+INSERT INTO `ownership` VALUES (862, 5430);
+INSERT INTO `ownership` VALUES (863, 5430);
+INSERT INTO `ownership` VALUES (864, 5430);
+INSERT INTO `ownership` VALUES (865, 5430);
+INSERT INTO `ownership` VALUES (866, 5430);
+INSERT INTO `ownership` VALUES (867, 5430);
+INSERT INTO `ownership` VALUES (868, 5430);
+INSERT INTO `ownership` VALUES (869, 5430);
+INSERT INTO `ownership` VALUES (870, 5430);
+INSERT INTO `ownership` VALUES (871, 5430);
+INSERT INTO `ownership` VALUES (872, 5430);
+INSERT INTO `ownership` VALUES (873, 5430);
+INSERT INTO `ownership` VALUES (874, 5430);
+INSERT INTO `ownership` VALUES (875, 5430);
+INSERT INTO `ownership` VALUES (876, 5430);
+INSERT INTO `ownership` VALUES (877, 5430);
+INSERT INTO `ownership` VALUES (878, 5430);
+INSERT INTO `ownership` VALUES (879, 5430);
+INSERT INTO `ownership` VALUES (880, 5430);
+INSERT INTO `ownership` VALUES (881, 5430);
+INSERT INTO `ownership` VALUES (882, 5430);
+INSERT INTO `ownership` VALUES (883, 5430);
+INSERT INTO `ownership` VALUES (884, 5430);
+INSERT INTO `ownership` VALUES (885, 5430);
+INSERT INTO `ownership` VALUES (886, 5430);
+INSERT INTO `ownership` VALUES (887, 5430);
+INSERT INTO `ownership` VALUES (888, 5430);
+INSERT INTO `ownership` VALUES (889, 5430);
+INSERT INTO `ownership` VALUES (890, 5430);
+INSERT INTO `ownership` VALUES (891, 5430);
+INSERT INTO `ownership` VALUES (892, 5430);
+INSERT INTO `ownership` VALUES (893, 5430);
+INSERT INTO `ownership` VALUES (894, 5430);
+INSERT INTO `ownership` VALUES (895, 5430);
+INSERT INTO `ownership` VALUES (896, 5430);
+INSERT INTO `ownership` VALUES (897, 5430);
+INSERT INTO `ownership` VALUES (898, 5430);
+INSERT INTO `ownership` VALUES (899, 5430);
+INSERT INTO `ownership` VALUES (900, 5430);
+INSERT INTO `ownership` VALUES (901, 5430);
+INSERT INTO `ownership` VALUES (902, 5430);
+INSERT INTO `ownership` VALUES (903, 5430);
+INSERT INTO `ownership` VALUES (904, 5430);
+INSERT INTO `ownership` VALUES (905, 5430);
+INSERT INTO `ownership` VALUES (906, 5430);
+INSERT INTO `ownership` VALUES (907, 5430);
+INSERT INTO `ownership` VALUES (908, 5430);
+INSERT INTO `ownership` VALUES (909, 5430);
+INSERT INTO `ownership` VALUES (910, 5430);
+INSERT INTO `ownership` VALUES (911, 5430);
+INSERT INTO `ownership` VALUES (912, 5430);
+INSERT INTO `ownership` VALUES (913, 5430);
+INSERT INTO `ownership` VALUES (914, 5430);
+INSERT INTO `ownership` VALUES (915, 5430);
+INSERT INTO `ownership` VALUES (916, 5430);
+INSERT INTO `ownership` VALUES (917, 5430);
+INSERT INTO `ownership` VALUES (918, 5430);
+INSERT INTO `ownership` VALUES (919, 5430);
+INSERT INTO `ownership` VALUES (920, 5430);
+INSERT INTO `ownership` VALUES (921, 5430);
+INSERT INTO `ownership` VALUES (922, 5430);
+INSERT INTO `ownership` VALUES (923, 5430);
+INSERT INTO `ownership` VALUES (924, 5430);
+INSERT INTO `ownership` VALUES (925, 5430);
+INSERT INTO `ownership` VALUES (926, 5430);
+INSERT INTO `ownership` VALUES (927, 5430);
+INSERT INTO `ownership` VALUES (928, 5430);
+INSERT INTO `ownership` VALUES (929, 5430);
+INSERT INTO `ownership` VALUES (930, 5430);
+INSERT INTO `ownership` VALUES (931, 5430);
+INSERT INTO `ownership` VALUES (932, 5430);
+INSERT INTO `ownership` VALUES (933, 5430);
+INSERT INTO `ownership` VALUES (934, 5430);
+INSERT INTO `ownership` VALUES (935, 5430);
+INSERT INTO `ownership` VALUES (936, 5430);
+INSERT INTO `ownership` VALUES (937, 5430);
+INSERT INTO `ownership` VALUES (938, 5430);
+INSERT INTO `ownership` VALUES (939, 5430);
+INSERT INTO `ownership` VALUES (940, 5430);
+INSERT INTO `ownership` VALUES (941, 5430);
+INSERT INTO `ownership` VALUES (942, 5430);
+INSERT INTO `ownership` VALUES (943, 5430);
+INSERT INTO `ownership` VALUES (944, 5430);
+INSERT INTO `ownership` VALUES (945, 5430);
+INSERT INTO `ownership` VALUES (946, 5430);
+INSERT INTO `ownership` VALUES (947, 5430);
+INSERT INTO `ownership` VALUES (948, 5430);
+INSERT INTO `ownership` VALUES (949, 5430);
+INSERT INTO `ownership` VALUES (950, 5430);
+INSERT INTO `ownership` VALUES (951, 5430);
+INSERT INTO `ownership` VALUES (952, 5430);
+INSERT INTO `ownership` VALUES (953, 5430);
+INSERT INTO `ownership` VALUES (954, 5430);
+INSERT INTO `ownership` VALUES (955, 5430);
+INSERT INTO `ownership` VALUES (956, 5430);
+INSERT INTO `ownership` VALUES (957, 5430);
+INSERT INTO `ownership` VALUES (958, 5430);
+INSERT INTO `ownership` VALUES (959, 5430);
+INSERT INTO `ownership` VALUES (960, 5430);
+INSERT INTO `ownership` VALUES (961, 5430);
+INSERT INTO `ownership` VALUES (962, 5430);
+INSERT INTO `ownership` VALUES (963, 5430);
+INSERT INTO `ownership` VALUES (964, 5430);
+INSERT INTO `ownership` VALUES (965, 5430);
+INSERT INTO `ownership` VALUES (966, 5430);
+INSERT INTO `ownership` VALUES (967, 5430);
+INSERT INTO `ownership` VALUES (968, 5430);
+INSERT INTO `ownership` VALUES (969, 5430);
+INSERT INTO `ownership` VALUES (970, 5430);
+INSERT INTO `ownership` VALUES (971, 5430);
 
 -- --------------------------------------------------------
 
@@ -1622,6 +2007,8 @@ INSERT INTO `ownership` VALUES (809, 1);
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
+  `is_default_provider_primary` int(11) NOT NULL default '0',
+  `default_provider` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=InnoDB COMMENT='An patient extends the person entity';
 
@@ -1629,6 +2016,7 @@ CREATE TABLE `patient` (
 -- Dumping data for table `patient`
 -- 
 
+INSERT INTO `patient` VALUES (955, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1661,6 +2049,7 @@ CREATE TABLE `person` (
 -- Dumping data for table `person`
 -- 
 
+INSERT INTO `person` VALUES (955, '', 'Eichorn', 'Joshua', 'R', 0, '', '0000-00-00', '', '', '', '', '', '', '123-456-7890', 1);
 
 -- --------------------------------------------------------
 
@@ -1682,6 +2071,7 @@ CREATE TABLE `person_address` (
 -- Dumping data for table `person_address`
 -- 
 
+INSERT INTO `person_address` VALUES (955, 957, 1);
 
 -- --------------------------------------------------------
 
@@ -1726,6 +2116,7 @@ CREATE TABLE `person_number` (
 INSERT INTO `person_number` VALUES (2, 784);
 INSERT INTO `person_number` VALUES (786, 793);
 INSERT INTO `person_number` VALUES (786, 794);
+INSERT INTO `person_number` VALUES (955, 956);
 
 -- --------------------------------------------------------
 
@@ -1767,10 +2158,6 @@ CREATE TABLE `person_type` (
 -- Dumping data for table `person_type`
 -- 
 
-INSERT INTO `person_type` VALUES (786, 2);
-INSERT INTO `person_type` VALUES (787, 1);
-INSERT INTO `person_type` VALUES (789, 1);
-INSERT INTO `person_type` VALUES (790, 1);
 
 -- --------------------------------------------------------
 
@@ -1847,6 +2234,48 @@ CREATE TABLE `preferences` (
 
 INSERT INTO `preferences` VALUES (9000, 'Defaults', '', 0, 1, 4);
 INSERT INTO `preferences` VALUES (9001, 'Special Event Color', '#123444', 9000, 2, 3);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `provider`
+-- 
+
+DROP TABLE IF EXISTS `provider`;
+CREATE TABLE `provider` (
+  `person_id` int(11) NOT NULL default '0',
+  `state_license_number` varchar(100) NOT NULL default '',
+  `clia_number` varchar(100) NOT NULL default '',
+  `dea_number` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`person_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `provider`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `provider_to_insurance`
+-- 
+
+DROP TABLE IF EXISTS `provider_to_insurance`;
+CREATE TABLE `provider_to_insurance` (
+  `provider_to_insurance_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `provider_number` varchar(100) NOT NULL default '',
+  `provider_number_type` int(11) NOT NULL default '0',
+  `group_number` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`provider_to_insurance_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `provider_to_insurance`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -1963,7 +2392,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (809);
+INSERT INTO `sequences` VALUES (974);
 
 -- --------------------------------------------------------
 
@@ -2239,6 +2668,7 @@ INSERT INTO `storage_string` VALUES (806, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (807, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (808, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (809, 'test_string', 'Test');
+INSERT INTO `storage_string` VALUES (968, 'email', '');
 
 -- --------------------------------------------------------
 
@@ -2266,34 +2696,42 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no');
 
--- --------------------------------------------------------
-
--- 
--- Table structure for table `users_groups`
--- 
-
-DROP TABLE IF EXISTS `users_groups`;
-CREATE TABLE `users_groups` (
-  `id` int(11) NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
-  `group_id` int(11) NOT NULL default '0',
-  `foreign_id` int(11) NOT NULL default '0',
-  `table` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) TYPE=MyISAM;
-
--- 
--- Dumping data for table `users_groups`
--- 
-
-INSERT INTO `users_groups` VALUES (1, 1, 1, 0, '');
-INSERT INTO `users_groups` VALUES (634, 306, 1, 0, '');
-INSERT INTO `users_groups` VALUES (635, 306, 0, 0, '');
-
 -- 
 -- Constraints for dumped tables
 -- 
+
+-- 
+-- Constraints for table `company`
+-- 
+ALTER TABLE `company`
+  ADD CONSTRAINT `company_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `ownership` (`id`);
+
+-- 
+-- Constraints for table `company_address`
+-- 
+ALTER TABLE `company_address`
+  ADD CONSTRAINT `company_address_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
+  ADD CONSTRAINT `company_address_ibfk_2` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`);
+
+-- 
+-- Constraints for table `company_company`
+-- 
+ALTER TABLE `company_company`
+  ADD CONSTRAINT `company_company_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
+  ADD CONSTRAINT `company_company_ibfk_2` FOREIGN KEY (`related_company_id`) REFERENCES `company` (`company_id`);
+
+-- 
+-- Constraints for table `company_number`
+-- 
+ALTER TABLE `company_number`
+  ADD CONSTRAINT `company_number_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `ownership` (`id`),
+  ADD CONSTRAINT `company_number_ibfk_2` FOREIGN KEY (`number_id`) REFERENCES `number` (`number_id`);
+
+-- 
+-- Constraints for table `company_type`
+-- 
+ALTER TABLE `company_type`
+  ADD CONSTRAINT `company_type_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`);
 
 -- 
 -- Constraints for table `fee_schedule_data`
