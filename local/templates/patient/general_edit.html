@@ -97,10 +97,8 @@ var C_PatientFinder = function find_remoting(searchString) {
             <tr>
 				<td><label>Marital Status:</label> </td>
 				<td colspan="2">
-					<select name="person[marital_status]">
-						<option></option>
-						{html_options options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
-					</select>&nbsp;&nbsp;
+					{html_options name="person[marital_status]" options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
+					&nbsp;&nbsp;
 					Default Provider:
 					<select name="person[default_provider]">
 						<option></option>

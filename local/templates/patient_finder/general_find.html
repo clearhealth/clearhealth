@@ -34,9 +34,7 @@ a {
 <form name="patientfinder" method="post" action="{$FORM_ACTION}">
 <table>
 	<tr>
-		<td colspan="2">Search (<em>'smith' for lastname, ',john' for first name, 'smith,john' for first & last name, '1233' for record number, '01/01/1980' for dob, '000-00-0000' for ssn</em>)</td>
-	</tr>
-	<tr>
+		<td colspan="2"><a href="#" class="tooltip" {popup text="'smith' for lastname, ',john' for first name, 'smith,john' for first & last name, '1233' for record number, '01/01/1980' for dob, '000-00-0000' for ssn"}><label style="display:inline;">{l}Search{/l}: </label></a></td>
 		<td>
 			<input type="text" size="40" name="searchstring" value=""/>&nbsp;&nbsp;<input type="submit" value="search"/>
 		</td>

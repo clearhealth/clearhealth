@@ -7,16 +7,19 @@
 				<td>{html_options name="patientStatistics[ethnicity]" options=$patientStatistics->getEthnicityList() selected=$patientStatistics->get('ethnicity')}</td>
 				<td><label>Race</label></td>
 				<td>{html_options name="patientStatistics[race]" options=$patientStatistics->getRaceList() selected=$patientStatistics->get('race')}</td>
-				<td><label>Income</label></td>
-				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income')}</td>
+				
 			</tr>
 			<tr>
 				<td><label>Language</label></td>
 				<td>{html_options name="patientStatistics[language]" options=$patientStatistics->getLanguageList() selected=$patientStatistics->get('language')}</td>
-				<td colspan="2"><label>Migrant Status</label></td>
-				<td>{html_options name="patientStatistics[migrant]" options=$patientStatistics->getMigrantList() selected=$patientStatistics->get('migrant')}</td>
+				<td><label>Migrant Status</label></td>
+				<td>{html_options name="patientStatistics[migrant_status]" options=$patientStatistics->getMigrantStatusList() selected=$patientStatistics->get('migrant_status')}</td>
 				<td><label></label></td>
 				<td></td>
+			</tr>
+			<tr>
+				<td><label>Income</label></td>
+				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income')}</td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Save"></td>
