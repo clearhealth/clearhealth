@@ -86,7 +86,7 @@ class C_Calendar extends CalendarController {
 
 
 	function default_action() {
-		return $this->month_action();
+		return $this->day_action();
 	}
 
 	function month_action($date = "") {
