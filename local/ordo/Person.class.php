@@ -294,6 +294,7 @@ class Person extends ORDataObject {
 				'orderby' => 'last_name, first_name'
 			),
 			$labels);
+		$ds->registerFilter('person_type',array(&$this,'lookupType'));
 		return $ds;
 	}
 
