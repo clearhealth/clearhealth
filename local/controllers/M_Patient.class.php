@@ -81,6 +81,7 @@ class M_Patient extends Manager {
 	 * Handle updating a phone #
 	 */
 	function process_phone_update($patient_id,$data) {
+		
 		if (!empty($data['number']) || !empty($data['notes'])) {
 			$id = 0;
 			if (isset($data['number_id']) && !isset($data['add_as_new'])) {
@@ -122,7 +123,7 @@ class M_Patient extends Manager {
 			$ir =& ORDataObject::factory('InsuredRelationship',$id,$patient_id);
 			$ir->populate_array($data);
 			$ir->persist();
-			$this->controller->insured_relationship_id = $id->get('id');
+			$this->controller->insured_relationship_id = $ir->get('id');
 
 			$this->messages->addMessage('Insurer Updated');
 		}
