@@ -35,9 +35,9 @@ class FeeScheduleDatasource extends Datasource_editable {
 		$labels = array( 'code' => 'Code', 'code_text' => 'Code name');
 		$from = 'codes c ';
 		foreach($this->feeSessions as $field => $data) {
-			$cols .= ", fsd_$field.data as $field";
+			$cols .= ", `fsd_$field`.data as `$field`";
 			$labels[$field] = $data['label'];
-			$from .= " left join fee_schedule_data fsd_$field using(code_id)";
+			$from .= " left join fee_schedule_data `fsd_$field` using(code_id)";
 			$this->meta['editableMap'][$field] = $field;
 			$this->where["fsd_$field.fee_schedule_id"] = $data['id'];
 		}
