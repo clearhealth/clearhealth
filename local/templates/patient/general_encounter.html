@@ -121,7 +121,7 @@ var C_PatientFinder = function find_remoting(searchString) {
         var h = new c_patientfinder(this.dataHandler);
         h.Sync();
                                                                                 
-        var results = h.find_remoting(searchString);
+        var results = h.find_remoting(searchString,true);
         return results;
 }
 

@@ -6,7 +6,8 @@ class C_PatientFinder extends Controller {
 	var $template_mod;
 	var $_db;
 	var $join_db;
-	var $limit;
+	var $limit = 50;
+	var $showNonPatients = false;
 	
 	function C_PatientFinder($template_mod = "general") {
 		parent::Controller();
@@ -52,9 +53,13 @@ class C_PatientFinder extends Controller {
 		if ($_POST['process'] != "true")
 			return;
 		$search_string = $_POST['searchstring'];
+		$join_type = "INNER";
+		if ($this->showNonPatients === true) {
+			$join_type = "LEFT";
+		}
 		//get the db connection and pass it to the helper functions
-		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss FROM patient pt"
-		." LEFT JOIN person as psn on psn.person_id=pt.person_id ";
+		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type FROM patient pt"
+		." $join_type JOIN person as psn on psn.person_id=pt.person_id left join person_type ptype using(person_id)";
 		//parse search_string to determine what type of search we have
 		$pos = strpos($search_string, ',');
 		
@@ -83,13 +88,25 @@ class C_PatientFinder extends Controller {
 		
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
+
+		if ($this->showNonPatients) {
+			$person =& ORDataObject::factory('person');
+			foreach($result_array as $key => $row) {
+				if (empty($row['person_type'])) {
+					$row['person_type'] = 1;
+				}
+				$result_array[$key]['person_type'] = $person->lookupType($row['person_type']);
+				$result_array[$key]['pubpid'] = $result_array[$key]['person_type'] ;
+			}
+		}
 		$this->assign('search_string',$search_string);
 		$this->assign('result_set', $result_array);
 		// we're done
 		$_POST['process'] = "";
 	}
 
-	function find_remoting($search_string) {
+	function find_remoting($search_string,$showNonPatients = false) {
+		$this->showNonPatients = $showNonPatients;
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
 		
@@ -179,7 +196,7 @@ class C_PatientFinder extends Controller {
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
 		$sql .= " WHERE first_name LIKE '%$fName%' AND last_name LIKE '$lName%'"  . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
-		print "SQL is $sql \n";
+		//print "SQL is $sql \n";
 		return $sql;
 	}
 }
