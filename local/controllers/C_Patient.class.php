@@ -361,11 +361,29 @@ class C_Patient extends Controller {
 
 	function _generateClaim(&$encounter) {
 
-		require_once "SOAP/Client.php";
+		//require_once "SOAP/Client.php";
 
-		$wsdl = new SOAP_WSDL($GLOBALS['config']['freeb2_wsdl'],array('timeout'=>0));
-		$freeb2 = $wsdl->getProxy();
-
+		//$wsdl = new SOAP_WSDL($GLOBALS['config']['freeb2_wsdl'],array('timeout'=>0));
+		require_once(APP_ROOT . "/../freeb2/local/controllers/C_FreeBGateway.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBCompany.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPerson.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBAddress.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBBillingContact.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPractice.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBBillingFacility.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBReferringProvider.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBResponsibleParty.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBSubscriber.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBSupervisingProvider.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBTreatingFacility.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBProvider.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClaim.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClaimline.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClearingHouse.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPatient.class.php");
+		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPayer.class.php");
+		//freeb2 = $wsdl->getProxy();		
+		$freeb2 = new C_FreeBGateway();
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
@@ -376,7 +394,6 @@ class C_Patient extends Controller {
 
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
-
 
 		// create claim entity on clearhealh side
 		$claim =& ORDataObject::Factory('ClearhealthClaim');
@@ -391,10 +408,10 @@ class C_Patient extends Controller {
 		$claim->persist();
 
 		// open the claim
-		if (!$freeb2->openClaim($claim_identifier,'0','P')) {
+		if (!$freeb2->openClaim($claim_identifier)) {
 			trigger_error("Unable to open claim: $claim_identifier - ".$freeb2->claimLastError($claim_identifier));
 		}
-
+		
 		// add claimlines
 		// fixme: put an amount here
 		foreach($codes as $parent => $data) {
@@ -405,13 +422,14 @@ class C_Patient extends Controller {
 			$claimline['units'] = $data['units'];
 			$cliamline['amount'] = 1;
 			$claimline['diagnoses'] = array();
+			
 
 			$childCodes = $cd->getChildCodes($data['parent_id']);
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
 			if (!$freeb2->registerData($claim_identifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ".$freeb2->claimLastError($claim_identifier));
+				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
 			}
 		}
 		
@@ -493,11 +511,11 @@ class C_Patient extends Controller {
 			trigger_error("Unable to register clearing hosue data - ".$freeb2->claimLastError($claim_identifier));
 		}
 
-
+		echo "here";
 		// close the claim
-		if (!$freeb2->closeClaim($claim_identifier,1)) {
+		/*if (!$freeb2->closeClaim($claim_identifier,1)) {
 			trigger_Error("Failed to close claim:  $claim_identifier");
-		}
+		}*/
 
 
 	}
