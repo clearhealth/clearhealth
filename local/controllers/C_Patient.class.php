@@ -234,6 +234,11 @@ class C_Patient extends Controller {
 
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$encounter->populate_array($_POST['encounter']);
+		
+		if (isset($_POST['encounter']['close'])) {
+			$encounter->set("status","closed");	
+		}
+		
 		$encounter->persist();
 		$this->encounter_id = $encounter->get('id');
 
@@ -251,6 +256,7 @@ class C_Patient extends Controller {
 			$encounterPerson->persist();
 			$this->encounter_person_id = $encounterPerson->get('id');
 		}
+		
 	}
 
 }
