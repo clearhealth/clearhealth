@@ -257,7 +257,7 @@ class C_Report extends Controller {
 		$this->assign("report",$r);
 		$this->assign("template_name",$template_name);
 
-		$filter = new ReportFilter($r->get_query());
+		$filter =& new ReportFilter($r->get_query());
 
 		$ds =& $filter->getDatasource();
 
