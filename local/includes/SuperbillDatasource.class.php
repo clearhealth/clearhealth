@@ -1,7 +1,7 @@
 <?php
 require_once APP_ROOT ."/local/includes/FeeScheduleDatasource.class.php";
 
-class SuperbillDatasource extends FeeScheduleDatasource {
+class SuperbillDatasource extends Datasource_editable {
 
 	var $where = array('code_type'=>3);
 

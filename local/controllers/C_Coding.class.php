@@ -32,6 +32,7 @@ class C_Coding extends Controller {
 			foreach($child_codes as $code){
 				if($code['coding_data_id'] != 0){
 					$code_data->set('id', $code['coding_data_id']);
+					
 					$code_data->populate();
 					break;
 				}
@@ -57,6 +58,9 @@ class C_Coding extends Controller {
 		$this->parent_id = $_POST['parent_id'];
 		
 		//var_dump($_POST);
+
+		ORdataObject::Factory_include('FeeSchedule');
+		$feeSchedule = FeeSchedule::defaultFeeSchedule();
 					
 		$code_data =& ORdataObject::factory('CodingData');
 		$code_data->populate_array($_POST);
@@ -68,7 +72,9 @@ class C_Coding extends Controller {
 					continue;
 					
 				$code_data->set("id", 0);
+				var_dump($feeSchedule->getFeeFromCodeId($code_id));
 				$code_data->set('code_id', $code_id);
+				$code_data->set('fee',$feeSchedule->getFeeFromCodeId($code_id));
 				$code_data->persist();
 				//var_dump($code_data);
 			}	
