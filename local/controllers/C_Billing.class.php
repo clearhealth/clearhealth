@@ -12,7 +12,9 @@ class C_Billing extends Controller {
 	}
 
 	function default_action() {
-		return $this->fetch($GLOBALS['frame']['config']['template_dir'] ."/default/" . $this->template_mod . "_default.html");
+		//return $this->fetch($GLOBALS['frame']['config']['template_dir'] ."/default/" . $this->template_mod . "_default.html");
+		header('Location: '.$GLOBALS['config']['translate']['freeb2'].Cellini::link('list','Claim','freeb2',false,false,false));
+		die();
 	}
 	
 	function sendclaim_action($encounter_id) {
