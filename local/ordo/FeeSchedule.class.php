@@ -124,7 +124,6 @@ class FeeSchedule extends ORDataObject {
 	function getFeeFromCodeId($code_id) {
 		settype($code_id,'int');
 		$res = $this->_execute("select data from fee_schedule_data fsd inner join codes c using(code_id) where c.code_id = $code_id and fee_schedule_id = ".(int)$this->get('id'));
-		var_dump("select data from fee_schedule_data fsd inner join codes c using(code_id) where c.code_id = $code_id and fee_schedule_id = ".(int)$this->get('id'));
 		if ($res && isset($res->fields['data'])) {
 			return $res->fields['data'];
 		}
