@@ -157,17 +157,17 @@ class C_Schedule extends CalendarController {
 			$oca['start_ts'] = $oc->get_start_timestamp();
 			$oca['end_ts'] = $oc->get_end_timestamp();
 			$u = $oc->get_user();
-			$oca['nickname'] = $u->get_nickname();
-			$oca['color'] = $u->get_color();
+			$oca['nickname'] = $u->get('nickname');
+			$oca['color'] = $u->get('color');
 			$p = new Patient($oc->get_external_id());
 			$oca['notes'] = $oc->get_notes(); 
-			$oca['p_lastname'] = $p->get_lastname();
-			$oca['p_firstname'] = $p->get_firstname();
-			$oca['dob'] = $p->get_dob();
-			$oca['p_record_number'] = $p->get_record_number();
-			$oca['p_patient_number'] = $p->get_patient_number();
-			$oca['p_phone'] = $p->get_phone();
-			$oca['age'] = $p->get_age();
+			$oca['p_lastname'] = $p->get('last_name');
+			$oca['p_firstname'] = $p->get('first_name');
+			$oca['dob'] = $p->get('date_of_birth');
+			$oca['p_record_number'] = $p->get('record_number');
+			$oca['p_patient_number'] = $p->get('patient_number');
+			$oca['p_phone'] = $p->get('phone');
+			$oca['age'] = $p->get('age');
 			
 			$this->assign("ev", $oca);
 			$app_display = $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_appointment_inline_blurb.html");
