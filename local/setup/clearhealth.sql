@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 18, 2005 at 09:22 AM
+-- Generation Time: Mar 19, 2005 at 11:04 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -50,6 +50,10 @@ INSERT INTO `address` VALUES (8028, '', '123 A Street', '', 'Los Angeles', 0, 0,
 INSERT INTO `address` VALUES (8032, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
 INSERT INTO `address` VALUES (8036, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
 INSERT INTO `address` VALUES (8040, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8068, '', '12345 Some Street', 'Apt 35', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8109, '', '123 blah street', '', 'Sturgis', 0, 0, 23, '49091', '');
+INSERT INTO `address` VALUES (8110, '', '123 West South Street', '', 'Some City', 0, 0, 1, '12345', '');
+INSERT INTO `address` VALUES (8139, '', '1234 State St.', '', 'Ukiah', 0, 0, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -88,6 +92,7 @@ CREATE TABLE `building_address` (
 -- Dumping data for table `building_address`
 -- 
 
+INSERT INTO `building_address` VALUES (1123, 8139, 0);
 
 -- --------------------------------------------------------
 
@@ -160,6 +165,123 @@ INSERT INTO `category_to_document` VALUES (993, 996);
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `clearhealth_claim`
+-- 
+
+DROP TABLE IF EXISTS `clearhealth_claim`;
+CREATE TABLE `clearhealth_claim` (
+  `claim_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `identifier` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`claim_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `clearhealth_claim`
+-- 
+
+INSERT INTO `clearhealth_claim` VALUES (8057, 2093, '8057-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8058, 2093, '8058-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8059, 2093, '8059-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8060, 2093, '8060-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8061, 2093, '8061-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8062, 2093, '8062-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8063, 2093, '8063-_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8064, 2093, '8064-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8065, 2093, '8065-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8069, 2093, '8069-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8070, 2093, '8070-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8071, 2093, '8071-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8072, 2093, '8072-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8073, 2093, '8073-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8074, 2093, '8074-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8075, 2093, '8075-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8076, 2093, '8076-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8077, 2093, '8077-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8078, 2093, '8078-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8079, 2093, '8079-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8080, 2093, '8080-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8081, 2093, '8081-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8082, 2093, '8082-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8083, 2093, '8083-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8084, 2093, '8084-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8085, 2093, '8085-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8086, 2093, '8086-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8087, 2093, '8087-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8088, 2093, '8088-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8089, 2093, '8089-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8090, 2093, '8090-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8091, 2093, '8091-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8092, 2093, '8092-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8093, 2093, '8093-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8094, 2093, '8094-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8095, 2093, '8095-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8096, 2093, '8096-14_2005-03-15_2093');
+INSERT INTO `clearhealth_claim` VALUES (8097, 2093, '8097-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8098, 2093, '8098-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8099, 2093, '8099-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8100, 2093, '8100-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8101, 2093, '8101-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8102, 2093, '8102-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8103, 2093, '8103-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8104, 2093, '8104-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8105, 2093, '8105-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8106, 2093, '8106-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8107, 2093, '8107-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8108, 2093, '8108-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8111, 2093, '8111-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8112, 2093, '8112-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8113, 2093, '8113-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8114, 2093, '8114-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8115, 2093, '8115-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8116, 2093, '8116-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8117, 2093, '8117-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8118, 2093, '8118-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8119, 2093, '8119-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8120, 2093, '8120-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8121, 2093, '8121-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8122, 2093, '8122-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8123, 2093, '8123-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8124, 2093, '8124-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8125, 2093, '8125-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8126, 2093, '8126-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8127, 2093, '8127-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8128, 2093, '8128-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8129, 2093, '8129-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8130, 2093, '8130-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8131, 2093, '8131-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8132, 2093, '8132-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8133, 2093, '8133-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8134, 2093, '8134-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8135, 2093, '8135-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8136, 2093, '8136-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8137, 2093, '8137-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8138, 2093, '8138-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8140, 2093, '8140-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8141, 2093, '8141-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8142, 2093, '8142-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8143, 2093, '8143-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8144, 2093, '8144-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8145, 2093, '8145-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8146, 2093, '8146-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8147, 2093, '8147-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8148, 2093, '8148-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8149, 2093, '8149-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8150, 2093, '8150-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8151, 2093, '8151-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8152, 2093, '8152-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8153, 2093, '8153-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8154, 2093, '8154-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8155, 2093, '8155-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8156, 2093, '8156-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8157, 2093, '8157-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8162, 2093, '8162-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8163, 2093, '8163-14_2093');
+INSERT INTO `clearhealth_claim` VALUES (8164, 2093, '8164-14_2093');
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `coding_data`
 -- 
 
@@ -178,6 +300,9 @@ CREATE TABLE `coding_data` (
 -- Dumping data for table `coding_data`
 -- 
 
+INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00);
+INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00);
+INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00);
 
 -- --------------------------------------------------------
 
@@ -224,6 +349,8 @@ CREATE TABLE `company_address` (
 -- Dumping data for table `company_address`
 -- 
 
+INSERT INTO `company_address` VALUES (1113, 8109, 2);
+INSERT INTO `company_address` VALUES (2049, 8110, 2);
 
 -- --------------------------------------------------------
 
@@ -610,7 +737,8 @@ CREATE TABLE `encounter` (
 -- Dumping data for table `encounter`
 -- 
 
-INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-15 00:00:00', 1110, '00000000000000', 0, 'open', 0);
+INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-07 00:00:00', 1110, '00000000000000', 0, 'open', 0);
+INSERT INTO `encounter` VALUES (8165, 1, 1707, 1123, '2005-03-18 00:00:00', 1120, '00000000000000', 0, 'open', 0);
 
 -- --------------------------------------------------------
 
@@ -675,6 +803,8 @@ CREATE TABLE `encounter_value` (
 -- Dumping data for table `encounter_value`
 -- 
 
+INSERT INTO `encounter_value` VALUES (8166, 8165, 0, 'test');
+INSERT INTO `encounter_value` VALUES (8167, 8165, 0, 'test');
 
 -- --------------------------------------------------------
 
@@ -1715,6 +1845,7 @@ INSERT INTO `number` VALUES (8029, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8033, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8037, 0, '', '123-123-4567', 1);
 INSERT INTO `number` VALUES (8041, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8066, 1, 'Main contact', '555-555-1234', 1);
 
 -- --------------------------------------------------------
 
@@ -3993,6 +4124,119 @@ INSERT INTO `ownership` VALUES (8051, 1);
 INSERT INTO `ownership` VALUES (8052, 1);
 INSERT INTO `ownership` VALUES (8053, 1);
 INSERT INTO `ownership` VALUES (8054, 1);
+INSERT INTO `ownership` VALUES (8055, 1);
+INSERT INTO `ownership` VALUES (8056, 1);
+INSERT INTO `ownership` VALUES (8057, 1);
+INSERT INTO `ownership` VALUES (8058, 1);
+INSERT INTO `ownership` VALUES (8059, 1);
+INSERT INTO `ownership` VALUES (8060, 1);
+INSERT INTO `ownership` VALUES (8061, 1);
+INSERT INTO `ownership` VALUES (8062, 1);
+INSERT INTO `ownership` VALUES (8063, 1);
+INSERT INTO `ownership` VALUES (8064, 1);
+INSERT INTO `ownership` VALUES (8065, 1);
+INSERT INTO `ownership` VALUES (8066, 1);
+INSERT INTO `ownership` VALUES (8067, 1);
+INSERT INTO `ownership` VALUES (8068, 1);
+INSERT INTO `ownership` VALUES (8069, 1);
+INSERT INTO `ownership` VALUES (8070, 1);
+INSERT INTO `ownership` VALUES (8071, 1);
+INSERT INTO `ownership` VALUES (8072, 1);
+INSERT INTO `ownership` VALUES (8073, 1);
+INSERT INTO `ownership` VALUES (8074, 1);
+INSERT INTO `ownership` VALUES (8075, 1);
+INSERT INTO `ownership` VALUES (8076, 1);
+INSERT INTO `ownership` VALUES (8077, 1);
+INSERT INTO `ownership` VALUES (8078, 1);
+INSERT INTO `ownership` VALUES (8079, 1);
+INSERT INTO `ownership` VALUES (8080, 1);
+INSERT INTO `ownership` VALUES (8081, 1);
+INSERT INTO `ownership` VALUES (8082, 1);
+INSERT INTO `ownership` VALUES (8083, 1);
+INSERT INTO `ownership` VALUES (8084, 1);
+INSERT INTO `ownership` VALUES (8085, 1);
+INSERT INTO `ownership` VALUES (8086, 1);
+INSERT INTO `ownership` VALUES (8087, 1);
+INSERT INTO `ownership` VALUES (8088, 1);
+INSERT INTO `ownership` VALUES (8089, 1);
+INSERT INTO `ownership` VALUES (8090, 1);
+INSERT INTO `ownership` VALUES (8091, 1);
+INSERT INTO `ownership` VALUES (8092, 1);
+INSERT INTO `ownership` VALUES (8093, 1);
+INSERT INTO `ownership` VALUES (8094, 1);
+INSERT INTO `ownership` VALUES (8095, 1);
+INSERT INTO `ownership` VALUES (8096, 1);
+INSERT INTO `ownership` VALUES (8097, 1);
+INSERT INTO `ownership` VALUES (8098, 1);
+INSERT INTO `ownership` VALUES (8099, 1);
+INSERT INTO `ownership` VALUES (8100, 1);
+INSERT INTO `ownership` VALUES (8101, 1);
+INSERT INTO `ownership` VALUES (8102, 1);
+INSERT INTO `ownership` VALUES (8103, 1);
+INSERT INTO `ownership` VALUES (8104, 1);
+INSERT INTO `ownership` VALUES (8105, 1);
+INSERT INTO `ownership` VALUES (8106, 1);
+INSERT INTO `ownership` VALUES (8107, 1);
+INSERT INTO `ownership` VALUES (8108, 1);
+INSERT INTO `ownership` VALUES (8109, 1);
+INSERT INTO `ownership` VALUES (8110, 1);
+INSERT INTO `ownership` VALUES (8111, 1);
+INSERT INTO `ownership` VALUES (8112, 1);
+INSERT INTO `ownership` VALUES (8113, 1);
+INSERT INTO `ownership` VALUES (8114, 1);
+INSERT INTO `ownership` VALUES (8115, 1);
+INSERT INTO `ownership` VALUES (8116, 1);
+INSERT INTO `ownership` VALUES (8117, 1);
+INSERT INTO `ownership` VALUES (8118, 1);
+INSERT INTO `ownership` VALUES (8119, 1);
+INSERT INTO `ownership` VALUES (8120, 1);
+INSERT INTO `ownership` VALUES (8121, 1);
+INSERT INTO `ownership` VALUES (8122, 1);
+INSERT INTO `ownership` VALUES (8123, 1);
+INSERT INTO `ownership` VALUES (8124, 1);
+INSERT INTO `ownership` VALUES (8125, 1);
+INSERT INTO `ownership` VALUES (8126, 1);
+INSERT INTO `ownership` VALUES (8127, 1);
+INSERT INTO `ownership` VALUES (8128, 1);
+INSERT INTO `ownership` VALUES (8129, 1);
+INSERT INTO `ownership` VALUES (8130, 1);
+INSERT INTO `ownership` VALUES (8131, 1);
+INSERT INTO `ownership` VALUES (8132, 1);
+INSERT INTO `ownership` VALUES (8133, 1);
+INSERT INTO `ownership` VALUES (8134, 1);
+INSERT INTO `ownership` VALUES (8135, 1);
+INSERT INTO `ownership` VALUES (8136, 1);
+INSERT INTO `ownership` VALUES (8137, 1);
+INSERT INTO `ownership` VALUES (8138, 1);
+INSERT INTO `ownership` VALUES (8139, 1);
+INSERT INTO `ownership` VALUES (8140, 1);
+INSERT INTO `ownership` VALUES (8141, 1);
+INSERT INTO `ownership` VALUES (8142, 1);
+INSERT INTO `ownership` VALUES (8143, 1);
+INSERT INTO `ownership` VALUES (8144, 1);
+INSERT INTO `ownership` VALUES (8145, 1);
+INSERT INTO `ownership` VALUES (8146, 1);
+INSERT INTO `ownership` VALUES (8147, 1);
+INSERT INTO `ownership` VALUES (8148, 1);
+INSERT INTO `ownership` VALUES (8149, 1);
+INSERT INTO `ownership` VALUES (8150, 1);
+INSERT INTO `ownership` VALUES (8151, 1);
+INSERT INTO `ownership` VALUES (8152, 1);
+INSERT INTO `ownership` VALUES (8153, 1);
+INSERT INTO `ownership` VALUES (8154, 1);
+INSERT INTO `ownership` VALUES (8155, 1);
+INSERT INTO `ownership` VALUES (8156, 1);
+INSERT INTO `ownership` VALUES (8157, 1);
+INSERT INTO `ownership` VALUES (8158, 1);
+INSERT INTO `ownership` VALUES (8159, 1);
+INSERT INTO `ownership` VALUES (8160, 1);
+INSERT INTO `ownership` VALUES (8161, 1);
+INSERT INTO `ownership` VALUES (8162, 1);
+INSERT INTO `ownership` VALUES (8163, 1);
+INSERT INTO `ownership` VALUES (8164, 1);
+INSERT INTO `ownership` VALUES (8165, 1);
+INSERT INTO `ownership` VALUES (8166, 1);
+INSERT INTO `ownership` VALUES (8167, 1);
 
 -- --------------------------------------------------------
 
@@ -4067,6 +4311,7 @@ INSERT INTO `patient_statistics` VALUES (8051, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8052, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8053, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -4157,6 +4402,7 @@ INSERT INTO `person_address` VALUES (8027, 8028, 0);
 INSERT INTO `person_address` VALUES (8031, 8032, 0);
 INSERT INTO `person_address` VALUES (8035, 8036, 0);
 INSERT INTO `person_address` VALUES (8039, 8040, 0);
+INSERT INTO `person_address` VALUES (1707, 8068, 1);
 
 -- --------------------------------------------------------
 
@@ -4200,6 +4446,7 @@ CREATE TABLE `person_number` (
 
 INSERT INTO `person_number` VALUES (1110, 2056);
 INSERT INTO `person_number` VALUES (1707, 1709);
+INSERT INTO `person_number` VALUES (1707, 8066);
 INSERT INTO `person_number` VALUES (8015, 8017);
 INSERT INTO `person_number` VALUES (8019, 8021);
 INSERT INTO `person_number` VALUES (8023, 8025);
@@ -4600,7 +4847,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (8054);
+INSERT INTO `sequences` VALUES (8167);
 
 -- --------------------------------------------------------
 
