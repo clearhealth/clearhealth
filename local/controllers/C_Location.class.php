@@ -313,7 +313,9 @@ class C_Location extends Controller {
 		$trail = $_SESSION['trail'];
 
 		$location = Cellini::link('list','location');
-		$trail = $_SESSION['trail'];
+		//$trail = $_SESSION['trail'];
+		//var_dump($trail);
+		$trail = array_reverse($trail);
 		foreach($trail as $stop) {
 				if (!isset($stop['edit_appointment']) && 
 				$stop['action'] != "edit_appointment" &&

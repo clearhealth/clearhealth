@@ -7,7 +7,7 @@ class SuperbillDatasource extends FeeScheduleDatasource {
 
 	var $primaryKeyField = 'superbill_data_id';
 
-	var $meta = array('editableMap' => array('status'=>'status'), 'editFunc' => array('status'=>'makeToggle'), 'passAlong' => array('code_id'=>'code_id'), 'filterFunc' => array('status'=>'toggleFilter'));
+	var $meta = array('editableMap' => array('status'=>'status'), 'editFunc' => array('status'=>'makeToggle'), 'passAlong' => array('code_id'=>'code_id','status'=>'status'), 'filterFunc' => array('status'=>'toggleFilter'));
 
 	var $superbill_id = 1;
 

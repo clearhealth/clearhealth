@@ -94,7 +94,7 @@ class ProviderToInsurance extends ORDataObject {
 				'from' 	=> "$this->_table inner join insurance_program ip using(insurance_program_id)",
 				'where' => " person_id = $person_id"
 			),
-			array('group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay'));
+			array('name' => 'Name','provider_number'=> 'Provider Number', 'group_number' => 'Group Number'));
 
 		$ds->registerFilter('provider_number_type',array(&$this,'lookupProviderNumberType'));
 		return $ds;

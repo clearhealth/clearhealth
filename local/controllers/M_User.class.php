@@ -45,12 +45,14 @@ class M_User extends M_Patient {
 	function process_providerToInsurance_update($person_id,$data) {
 		$id = (int)$data['provider_to_insurance_id'];
 
-		$pti = ORDataObject::factory('ProviderToInsurance',$id,$person_id);
-		$pti->populate_array($data);
-		$pti->persist();
+		if (!empty($data['provider_number'])) {
+			$pti = ORDataObject::factory('ProviderToInsurance',$id,$person_id);
+			$pti->populate_array($data);
+			$pti->persist();
 
-		$this->controller->provider_to_insurance_id = $pti->get('id');
-		$this->messages->addMessage('Insurance Program Updated');
+			$this->controller->provider_to_insurance_id = $pti->get('id');
+			$this->messages->addMessage('Insurance Program Updated');
+		}
 	}
 }
 ?>

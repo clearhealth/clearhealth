@@ -196,6 +196,12 @@ class Address extends ORDataObject {
 	function set_postal_code($c) {
 		$this->postal_code = $c;
 	}
+	function get_zip() {
+		return $this->postal_code;
+	}
+	function set_zip($c) {
+		$this->postal_code = $c;
+	}
 
 	function get_notes() {
 		return $this->notes;

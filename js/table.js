@@ -112,7 +112,7 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 			cell.key = field;
 			row.appendChild(cell);
 		}
-		this.fillFetch();
+		//this.fillFetch();
 	}
 }
 

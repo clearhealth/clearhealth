@@ -1,6 +1,6 @@
 {if $providerToInsurance}
 	<fieldset class="radio" id="insurer">
-		<legend>Insurance Programs</legend>
+		<legend>Insurance Programs</legend> <a href="{php}echo Cellini::link("edit","insurance");{/php}">add new</a>
 
 		{$providerToInsuranceGrid->render()}
 		{if $providerToInsuranceGrid->empty}
@@ -11,7 +11,7 @@
 		<input type="hidden" name="providerToInsurance[provider_to_insurance_id]" value="{$providerToInsurance->get('provider_to_insurance_id')}">
 		<table>
 			<tr>
-				<td><label>Insurance Program:</label></td>
+				<td><label>Insurance Program:</label> </td>
 				<td><select name="providerToInsurance[insurance_program_id]">
 						{html_options options=$insuranceProgram->programList() selected=$providerToInsurance->get('insurance_program_id')}
 					</select>
