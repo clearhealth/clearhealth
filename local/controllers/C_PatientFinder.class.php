@@ -11,7 +11,7 @@ class C_PatientFinder extends Controller {
 	function C_PatientFinder($template_mod = "general") {
 		parent::Controller();
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
-		$this->_join_db = $GLOBALS['frame']['config']['openemr_db'];
+		//$this->_join_db = $GLOBALS['frame']['config']['openemr_db'];
 		$this->template_mod = $template_mod;
 		$this->assign("FORM_ACTION", Cellini::link(true,true,false) . $_SERVER['QUERY_STRING']);
 		$this->assign("CURRENT_ACTION", Cellini::link('patient_finder'));
@@ -52,7 +52,8 @@ class C_PatientFinder extends Controller {
 			return;
 		$search_string = $_POST['searchstring'];
 		//get the db connection and pass it to the helper functions
-		$sql = "SELECT CONCAT(lname, ', ', fname, ' ', mname) as name, DOB, id, pubpid, ss FROM " . $this->_join_db . ".patient_data ";
+		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss FROM patient pt"
+		." LEFT JOIN person as psn on psn.person_id=pt.person_id ";
 		//parse search_string to determine what type of search we have
 		$pos = strpos($search_string, ',');
 		
@@ -101,8 +102,9 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_number($sql, $search_string) {
 		$number = mysql_real_escape_string($search_string);
-		$sql .= " WHERE pubpid = '$number'" . " ORDER BY lname, fname";
+		$sql .= " WHERE pubpid = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -117,8 +119,9 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_ssn($sql, $search_string) {
 		$number = mysql_real_escape_string($search_string);
-		$sql .= " WHERE ss = '$number'" . " ORDER BY lname, fname";
+		$sql .= " WHERE ss = '$number'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -134,8 +137,9 @@ class C_PatientFinder extends Controller {
 	function search_by_dob($sql, $search_string) {
 		$dob = mysql_real_escape_string($search_string);
 		$dob = date("Y-m-d",strtotime($search_string));
-		$sql .= " WHERE DOB = '$dob'" . " ORDER BY lname, fname";
+		$sql .= " WHERE DOB = '$dob'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
@@ -149,8 +153,9 @@ class C_PatientFinder extends Controller {
 	*/
 	function search_by_lName($sql, $search_string) {
 		$lName = mysql_real_escape_string($search_string);
-		$sql .= " WHERE lname LIKE '$lName%'" . " ORDER BY lname, fname";
+		$sql .= " WHERE last_name LIKE '$lName%'" . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		//print_r($result_array);
@@ -166,8 +171,9 @@ class C_PatientFinder extends Controller {
 	function search_by_fName($sql, $search_string) {
 		$name_array = split(",", $search_string);
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
-		$sql .= " WHERE fname LIKE '$fName%'" . " ORDER BY fname";
+		$sql .= " WHERE fname LIKE '$fName%'" . " ORDER BY first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
 	}
@@ -182,8 +188,9 @@ class C_PatientFinder extends Controller {
 		$name_array = split(",", $search_string);
 		$lName = mysql_real_escape_string($name_array[0]);
 		$fName = mysql_real_escape_string( trim($name_array[1]) );
-		$sql .= " WHERE fname LIKE '%$fName%' AND lname LIKE '$lName%'"  . " ORDER BY lname, fname";
+		$sql .= " WHERE first_name LIKE '%$fName%' AND last_name LIKE '$lName%'"  . " ORDER BY last_name, first_name";
 		$sql .= " LIMIT " . $this->limit;
+		echo $sql;
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
 		return $result_array;
