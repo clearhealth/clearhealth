@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 28, 2005 at 05:46 PM
+-- Generation Time: Mar 29, 2005 at 08:11 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -53,7 +53,7 @@ INSERT INTO `address` VALUES (8040, '', '123 A Street', '', 'Los Angeles', 0, 0,
 INSERT INTO `address` VALUES (8068, '', '12345 Some Street', 'Apt 35', 'Los Angeles', 0, 0, 5, '90008', '');
 INSERT INTO `address` VALUES (8109, '', '123 blah street', '', 'Sturgis', 0, 0, 23, '49091', '');
 INSERT INTO `address` VALUES (8110, '', '123 West South Street', '', 'Some City', 0, 0, 1, '12345', '');
-INSERT INTO `address` VALUES (8139, '', '1234 State St.', '', 'Ukiah', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8139, '', '1234 State St.', '', 'Ukiah', 0, 0, 5, '', '');
 INSERT INTO `address` VALUES (10002, '', '41 BUTLER RD APT 1', '', 'DENHAM SPRINGS', 0, 0, 39, '16249', '');
 INSERT INTO `address` VALUES (10005, '', 'H8 DOUBLE BOGIE PASS', '', 'CHARLOTTE', 0, 0, 5, '91344', '');
 INSERT INTO `address` VALUES (10008, '', '777 S WAGNER RD STE 1', '', 'YAUCO', 0, 0, 33, '13083', '');
@@ -2394,6 +2394,26 @@ INSERT INTO `address` VALUES (17010, '', '27-597 KALAOA CAMP RD', '', 'BEVERLY',
 INSERT INTO `address` VALUES (17013, '', 'KETTELHUT BLDG', '', 'ALTON', 0, 0, 48, '98168', '');
 INSERT INTO `address` VALUES (17016, '', '67 LAKESHORE', '', 'ANASCO', 0, 0, 33, '12514', '');
 INSERT INTO `address` VALUES (17019, '', '8004 STATE HIGHWAY 36 W', '', 'BLOOMFIELD', 0, 0, 33, '12514', '');
+INSERT INTO `address` VALUES (17055, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17056, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17057, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17058, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17059, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17060, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17061, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17062, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17063, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17064, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17065, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17066, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17067, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17068, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17069, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17070, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17071, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '', '');
+INSERT INTO `address` VALUES (17072, '', '', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (17073, '', '1234 Some Street', '', 'Some City', 0, 0, 3, '12345', '');
+INSERT INTO `address` VALUES (17074, '', '1234 Some Other Street', 'Suite 34', 'Some City', 0, 0, 3, '12345', '');
 
 -- --------------------------------------------------------
 
@@ -2623,6 +2643,11 @@ INSERT INTO `clearhealth_claim` VALUES (8164, 2093, '8164-14_2093', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8171, 8165, '8171-14_8165', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8173, 2093, '8173-14_2093', 0.00, 0.00);
 INSERT INTO `clearhealth_claim` VALUES (8216, 8214, '8216-14_8214', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (17082, 8184, '17082-14_8184', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (17112, 8214, '17112-14_8214', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (17139, 8214, '17139-14_8214', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (17166, 8214, '17166-14_8214', 0.00, 0.00);
+INSERT INTO `clearhealth_claim` VALUES (17196, 17193, '17196-14_17193', 0.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -2639,6 +2664,8 @@ CREATE TABLE `coding_data` (
   `modifier` int(11) NOT NULL default '0',
   `units` float(5,2) NOT NULL default '1.00',
   `fee` float(11,2) NOT NULL default '0.00',
+  `primary_code` tinyint(4) NOT NULL default '0',
+  `code_order` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`coding_data_id`)
 ) TYPE=MyISAM;
 
@@ -2646,15 +2673,17 @@ CREATE TABLE `coding_data` (
 -- Dumping data for table `coding_data`
 -- 
 
-INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00, 0.00);
-INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00, 0.00);
-INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00, 0.00);
-INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00, 0.00);
-INSERT INTO `coding_data` VALUES (8189, 8184, 26759, 3, 1, 1.00, 0.00);
-INSERT INTO `coding_data` VALUES (8213, 8184, 26761, 134, 1, 1.00, 45.00);
-INSERT INTO `coding_data` VALUES (8212, 8184, 26761, 1, 1, 1.00, 45.00);
-INSERT INTO `coding_data` VALUES (8215, 8214, 26761, 3, 1, 1.00, 45.00);
-INSERT INTO `coding_data` VALUES (17043, 17034, 26751, 13, 1, 1.00, 0.00);
+INSERT INTO `coding_data` VALUES (8056, 2093, 26537, 5976, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8161, 2093, 26474, 1254, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8160, 2093, 26474, 823, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8172, 8165, 26761, 1, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8189, 8184, 26759, 3, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8213, 8184, 26761, 134, 1, 1.00, 45.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8212, 8184, 26761, 1, 1, 1.00, 45.00, 0, 0);
+INSERT INTO `coding_data` VALUES (8215, 8214, 26761, 3, 1, 1.00, 45.00, 0, 0);
+INSERT INTO `coding_data` VALUES (17043, 17034, 26751, 13, 1, 1.00, 0.00, 0, 0);
+INSERT INTO `coding_data` VALUES (17194, 17193, 26761, 37, 1, 1.00, 45.00, 1, 1);
+INSERT INTO `coding_data` VALUES (17195, 17193, 26761, 3, 1, 1.00, 45.00, 0, 2);
 
 -- --------------------------------------------------------
 
@@ -3096,6 +3125,7 @@ INSERT INTO `encounter` VALUES (8214, 1, 1707, 1123, '2005-03-20 00:00:00', 1110
 INSERT INTO `encounter` VALUES (17023, 1, 12491, 1123, '2005-03-21 00:00:00', 1110, '00000000000000', 0, 'open', 0);
 INSERT INTO `encounter` VALUES (17034, 1, 16271, 1123, '2005-03-28 00:00:00', 1110, '00000000000000', 0, 'open', 0);
 INSERT INTO `encounter` VALUES (17035, 1, 16271, 1123, '2005-03-28 00:00:00', 1110, '00000000000000', 0, 'open', 0);
+INSERT INTO `encounter` VALUES (17193, 1, 1707, 1123, '2005-03-29 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 
 -- --------------------------------------------------------
 
@@ -3192,6 +3222,8 @@ CREATE TABLE `events` (
 INSERT INTO `events` VALUES (1128, 'Office Hours', '', '', '', '', 1127);
 INSERT INTO `events` VALUES (1562, 'Office Hours', '', '', '', '', 1561);
 INSERT INTO `events` VALUES (1807, 'Normal Hours', '', '', '', '', 1806);
+INSERT INTO `events` VALUES (17053, 'Exam 1', '', '', '', '', 17052);
+INSERT INTO `events` VALUES (17054, 'XRAY', '', '', '', '', 17052);
 
 -- --------------------------------------------------------
 
@@ -3237,6 +3269,56 @@ INSERT INTO `fbaddress` VALUES (8238, 8237, '', '', '', '', '', '', '');
 INSERT INTO `fbaddress` VALUES (8240, 8239, '', '', '', '', '', '', '');
 INSERT INTO `fbaddress` VALUES (8242, 8241, '', '', '', '', '', '', '');
 INSERT INTO `fbaddress` VALUES (8244, 8243, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17092, 17091, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17094, 17093, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17096, 17095, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17098, 17097, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17100, 17099, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17102, 17101, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17104, 17103, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17106, 17105, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17108, 17107, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17110, 17109, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17120, 17119, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17122, 17121, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17124, 17123, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17126, 17125, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17128, 17127, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17130, 17129, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17132, 17131, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17134, 17133, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17136, 17135, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17138, 17137, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17147, 17146, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17149, 17148, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17151, 17150, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17153, 17152, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17155, 17154, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17157, 17156, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17159, 17158, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17161, 17160, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17163, 17162, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17165, 17164, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17174, 17173, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17176, 17175, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17178, 17177, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17180, 17179, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17182, 17181, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17184, 17183, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17186, 17185, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17188, 17187, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17190, 17189, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17192, 17191, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17200, 17199, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17202, 17201, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17204, 17203, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17206, 17205, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17208, 17207, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17210, 17209, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17212, 17211, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17214, 17213, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17216, 17215, '', '', '', '', '', '', '');
+INSERT INTO `fbaddress` VALUES (17218, 17217, '', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -3262,6 +3344,11 @@ INSERT INTO `fbclaim` VALUES (8281, '8280-12_8277', 1, 'open', '20050320000000')
 INSERT INTO `fbclaim` VALUES (8291, '8290-12_8277', 1, 'open', '20050320000000');
 INSERT INTO `fbclaim` VALUES (8301, '8300-12_8277', 1, 'open', '20050320000000');
 INSERT INTO `fbclaim` VALUES (8217, '8216-14_8214', 1, 'open', '20050320000000');
+INSERT INTO `fbclaim` VALUES (17083, '17082-14_8184', 1, 'open', '20050329000000');
+INSERT INTO `fbclaim` VALUES (17113, '17112-14_8214', 1, 'open', '20050329000000');
+INSERT INTO `fbclaim` VALUES (17140, '17139-14_8214', 1, 'open', '20050329000000');
+INSERT INTO `fbclaim` VALUES (17167, '17166-14_8214', 1, 'open', '20050329000000');
+INSERT INTO `fbclaim` VALUES (17197, '17196-14_17193', 1, 'open', '20050329000000');
 
 -- --------------------------------------------------------
 
@@ -3292,6 +3379,12 @@ INSERT INTO `fbclaimline` VALUES (8282, 8281, 'B9998', '1', 0.00, 1.00, '', '', 
 INSERT INTO `fbclaimline` VALUES (8292, 8291, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
 INSERT INTO `fbclaimline` VALUES (8302, 8301, 'B9998', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
 INSERT INTO `fbclaimline` VALUES (8218, 8217, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17084, 17083, 'S2090', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17086, 17083, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17114, 17113, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17141, 17140, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17168, 17167, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
+INSERT INTO `fbclaimline` VALUES (17198, 17197, 'S2095', '1', 0.00, 1.00, '', '', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -3323,6 +3416,26 @@ INSERT INTO `fbcompany` VALUES (8231, 8217, '', '24', 'FBPractice', 'Medical Pra
 INSERT INTO `fbcompany` VALUES (8233, 8217, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
 INSERT INTO `fbcompany` VALUES (8241, 8217, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
 INSERT INTO `fbcompany` VALUES (8243, 8217, 'Grand Insurance Co', '24', 'FBClearingHouse', 'Grand Insurance Co', '');
+INSERT INTO `fbcompany` VALUES (17095, 17083, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (17099, 17083, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17101, 17083, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (17109, 17083, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17123, 17113, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (17127, 17113, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17129, 17113, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (17137, 17113, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17150, 17140, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (17154, 17140, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17156, 17140, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (17164, 17140, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17177, 17167, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (17181, 17167, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17183, 17167, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (17191, 17167, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17203, 17197, 'Blue Cross/ Blue Shield', '46', 'FBPayer', 'Blue Cross/ Blue Shield', '');
+INSERT INTO `fbcompany` VALUES (17207, 17197, '', '24', 'FBPractice', 'Medical Practice Inc.', '');
+INSERT INTO `fbcompany` VALUES (17209, 17197, '', '24', 'FBTreatingFacility', 'Ukiah Office', '');
+INSERT INTO `fbcompany` VALUES (17217, 17197, '', '24', 'FBBillingFacility', 'Medical Practice Inc.', '');
 
 -- --------------------------------------------------------
 
@@ -3349,6 +3462,23 @@ INSERT INTO `fbdiagnoses` VALUES (8219, 8218, '001.0');
 INSERT INTO `fbdiagnoses` VALUES (8220, 8218, '011.34');
 INSERT INTO `fbdiagnoses` VALUES (8221, 8218, '001.0');
 INSERT INTO `fbdiagnoses` VALUES (8222, 8218, '001.9');
+INSERT INTO `fbdiagnoses` VALUES (17085, 17084, '001.9');
+INSERT INTO `fbdiagnoses` VALUES (17087, 17086, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17088, 17086, '011.34');
+INSERT INTO `fbdiagnoses` VALUES (17089, 17086, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17090, 17086, '001.9');
+INSERT INTO `fbdiagnoses` VALUES (17115, 17114, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17116, 17114, '011.34');
+INSERT INTO `fbdiagnoses` VALUES (17117, 17114, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17118, 17114, '001.9');
+INSERT INTO `fbdiagnoses` VALUES (17142, 17141, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17143, 17141, '011.34');
+INSERT INTO `fbdiagnoses` VALUES (17144, 17141, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17145, 17141, '001.9');
+INSERT INTO `fbdiagnoses` VALUES (17169, 17168, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17170, 17168, '011.34');
+INSERT INTO `fbdiagnoses` VALUES (17171, 17168, '001.0');
+INSERT INTO `fbdiagnoses` VALUES (17172, 17168, '001.9');
 
 -- --------------------------------------------------------
 
@@ -3371,6 +3501,11 @@ INSERT INTO `fblatest_revision` VALUES ('8280-12_8277', 1);
 INSERT INTO `fblatest_revision` VALUES ('8290-12_8277', 1);
 INSERT INTO `fblatest_revision` VALUES ('8300-12_8277', 1);
 INSERT INTO `fblatest_revision` VALUES ('8216-14_8214', 1);
+INSERT INTO `fblatest_revision` VALUES ('17082-14_8184', 1);
+INSERT INTO `fblatest_revision` VALUES ('17112-14_8214', 1);
+INSERT INTO `fblatest_revision` VALUES ('17139-14_8214', 1);
+INSERT INTO `fblatest_revision` VALUES ('17166-14_8214', 1);
+INSERT INTO `fblatest_revision` VALUES ('17196-14_17193', 1);
 
 -- --------------------------------------------------------
 
@@ -3413,6 +3548,36 @@ INSERT INTO `fbperson` VALUES (8229, 8217, 'FBProvider', '1233323J', 'SSN', '', 
 INSERT INTO `fbperson` VALUES (8235, 8217, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
 INSERT INTO `fbperson` VALUES (8237, 8217, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
 INSERT INTO `fbperson` VALUES (8239, 8217, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17091, 17083, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17093, 17083, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17097, 17083, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17103, 17083, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17105, 17083, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17107, 17083, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17119, 17113, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17121, 17113, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17125, 17113, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17131, 17113, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17133, 17113, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17135, 17113, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17146, 17140, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17148, 17140, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17152, 17140, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17158, 17140, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17160, 17140, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17162, 17140, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17173, 17167, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17175, 17167, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17179, 17167, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17185, 17167, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17187, 17167, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17189, 17167, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17199, 17197, 'FBPatient', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17201, 17197, 'FBSubscriber', '123-34-3432', 'SSN', '', '', 'Jones', 'Nancy', '', NULL, '1955-07-16', '', '');
+INSERT INTO `fbperson` VALUES (17205, 17197, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17211, 17197, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17213, 17197, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (17215, 17197, 'FBResponsibleParty', '123-34-3432', 'SSN', '14', '', 'Jones', 'Nancy', '', 'F', '1955-07-16', '', '');
 
 -- --------------------------------------------------------
 
@@ -3837,6 +4002,7 @@ CREATE TABLE `gacl_aro` (
 
 INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
 INSERT INTO `gacl_aro` VALUES (26, 'users', 'jconrad', 1111, 'jconrad', 1);
+INSERT INTO `gacl_aro` VALUES (27, 'users', 'rdoc', 17045, 'rdoc', 1);
 
 -- --------------------------------------------------------
 
@@ -3998,8 +4164,8 @@ CREATE TABLE `gacl_aro_seq` (
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (26);
-INSERT INTO `gacl_aro_seq` VALUES (26);
+INSERT INTO `gacl_aro_seq` VALUES (27);
+INSERT INTO `gacl_aro_seq` VALUES (27);
 
 -- --------------------------------------------------------
 
@@ -4232,6 +4398,7 @@ CREATE TABLE `gacl_groups_aro_map` (
 
 INSERT INTO `gacl_groups_aro_map` VALUES (12, 15);
 INSERT INTO `gacl_groups_aro_map` VALUES (20, 26);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 27);
 
 -- --------------------------------------------------------
 
@@ -16405,6 +16572,159 @@ INSERT INTO `ownership` VALUES (17040, 1);
 INSERT INTO `ownership` VALUES (17041, 1);
 INSERT INTO `ownership` VALUES (17042, 1);
 INSERT INTO `ownership` VALUES (17043, 1);
+INSERT INTO `ownership` VALUES (17044, 1);
+INSERT INTO `ownership` VALUES (17045, 1);
+INSERT INTO `ownership` VALUES (17046, 1);
+INSERT INTO `ownership` VALUES (17047, 1);
+INSERT INTO `ownership` VALUES (17048, 1);
+INSERT INTO `ownership` VALUES (17049, 1);
+INSERT INTO `ownership` VALUES (17050, 1);
+INSERT INTO `ownership` VALUES (17051, 1);
+INSERT INTO `ownership` VALUES (17052, 1);
+INSERT INTO `ownership` VALUES (17053, 1);
+INSERT INTO `ownership` VALUES (17054, 1);
+INSERT INTO `ownership` VALUES (17055, 1);
+INSERT INTO `ownership` VALUES (17056, 1);
+INSERT INTO `ownership` VALUES (17057, 1);
+INSERT INTO `ownership` VALUES (17058, 1);
+INSERT INTO `ownership` VALUES (17059, 1);
+INSERT INTO `ownership` VALUES (17060, 1);
+INSERT INTO `ownership` VALUES (17061, 1);
+INSERT INTO `ownership` VALUES (17062, 1);
+INSERT INTO `ownership` VALUES (17063, 1);
+INSERT INTO `ownership` VALUES (17064, 1);
+INSERT INTO `ownership` VALUES (17065, 1);
+INSERT INTO `ownership` VALUES (17066, 1);
+INSERT INTO `ownership` VALUES (17067, 1);
+INSERT INTO `ownership` VALUES (17068, 1);
+INSERT INTO `ownership` VALUES (17069, 1);
+INSERT INTO `ownership` VALUES (17070, 1);
+INSERT INTO `ownership` VALUES (17071, 1);
+INSERT INTO `ownership` VALUES (17072, 1);
+INSERT INTO `ownership` VALUES (17073, 1);
+INSERT INTO `ownership` VALUES (17074, 1);
+INSERT INTO `ownership` VALUES (17075, 1);
+INSERT INTO `ownership` VALUES (17081, 1);
+INSERT INTO `ownership` VALUES (17082, 1);
+INSERT INTO `ownership` VALUES (17083, 1);
+INSERT INTO `ownership` VALUES (17084, 1);
+INSERT INTO `ownership` VALUES (17086, 1);
+INSERT INTO `ownership` VALUES (17091, 1);
+INSERT INTO `ownership` VALUES (17092, 1);
+INSERT INTO `ownership` VALUES (17093, 1);
+INSERT INTO `ownership` VALUES (17094, 1);
+INSERT INTO `ownership` VALUES (17095, 1);
+INSERT INTO `ownership` VALUES (17096, 1);
+INSERT INTO `ownership` VALUES (17097, 1);
+INSERT INTO `ownership` VALUES (17098, 1);
+INSERT INTO `ownership` VALUES (17099, 1);
+INSERT INTO `ownership` VALUES (17100, 1);
+INSERT INTO `ownership` VALUES (17101, 1);
+INSERT INTO `ownership` VALUES (17102, 1);
+INSERT INTO `ownership` VALUES (17103, 1);
+INSERT INTO `ownership` VALUES (17104, 1);
+INSERT INTO `ownership` VALUES (17105, 1);
+INSERT INTO `ownership` VALUES (17106, 1);
+INSERT INTO `ownership` VALUES (17107, 1);
+INSERT INTO `ownership` VALUES (17108, 1);
+INSERT INTO `ownership` VALUES (17109, 1);
+INSERT INTO `ownership` VALUES (17110, 1);
+INSERT INTO `ownership` VALUES (17111, 1);
+INSERT INTO `ownership` VALUES (17112, 1);
+INSERT INTO `ownership` VALUES (17113, 1);
+INSERT INTO `ownership` VALUES (17114, 1);
+INSERT INTO `ownership` VALUES (17119, 1);
+INSERT INTO `ownership` VALUES (17120, 1);
+INSERT INTO `ownership` VALUES (17121, 1);
+INSERT INTO `ownership` VALUES (17122, 1);
+INSERT INTO `ownership` VALUES (17123, 1);
+INSERT INTO `ownership` VALUES (17124, 1);
+INSERT INTO `ownership` VALUES (17125, 1);
+INSERT INTO `ownership` VALUES (17126, 1);
+INSERT INTO `ownership` VALUES (17127, 1);
+INSERT INTO `ownership` VALUES (17128, 1);
+INSERT INTO `ownership` VALUES (17129, 1);
+INSERT INTO `ownership` VALUES (17130, 1);
+INSERT INTO `ownership` VALUES (17131, 1);
+INSERT INTO `ownership` VALUES (17132, 1);
+INSERT INTO `ownership` VALUES (17133, 1);
+INSERT INTO `ownership` VALUES (17134, 1);
+INSERT INTO `ownership` VALUES (17135, 1);
+INSERT INTO `ownership` VALUES (17136, 1);
+INSERT INTO `ownership` VALUES (17137, 1);
+INSERT INTO `ownership` VALUES (17138, 1);
+INSERT INTO `ownership` VALUES (17139, 1);
+INSERT INTO `ownership` VALUES (17140, 1);
+INSERT INTO `ownership` VALUES (17141, 1);
+INSERT INTO `ownership` VALUES (17146, 1);
+INSERT INTO `ownership` VALUES (17147, 1);
+INSERT INTO `ownership` VALUES (17148, 1);
+INSERT INTO `ownership` VALUES (17149, 1);
+INSERT INTO `ownership` VALUES (17150, 1);
+INSERT INTO `ownership` VALUES (17151, 1);
+INSERT INTO `ownership` VALUES (17152, 1);
+INSERT INTO `ownership` VALUES (17153, 1);
+INSERT INTO `ownership` VALUES (17154, 1);
+INSERT INTO `ownership` VALUES (17155, 1);
+INSERT INTO `ownership` VALUES (17156, 1);
+INSERT INTO `ownership` VALUES (17157, 1);
+INSERT INTO `ownership` VALUES (17158, 1);
+INSERT INTO `ownership` VALUES (17159, 1);
+INSERT INTO `ownership` VALUES (17160, 1);
+INSERT INTO `ownership` VALUES (17161, 1);
+INSERT INTO `ownership` VALUES (17162, 1);
+INSERT INTO `ownership` VALUES (17163, 1);
+INSERT INTO `ownership` VALUES (17164, 1);
+INSERT INTO `ownership` VALUES (17165, 1);
+INSERT INTO `ownership` VALUES (17166, 1);
+INSERT INTO `ownership` VALUES (17167, 1);
+INSERT INTO `ownership` VALUES (17168, 1);
+INSERT INTO `ownership` VALUES (17173, 1);
+INSERT INTO `ownership` VALUES (17174, 1);
+INSERT INTO `ownership` VALUES (17175, 1);
+INSERT INTO `ownership` VALUES (17176, 1);
+INSERT INTO `ownership` VALUES (17177, 1);
+INSERT INTO `ownership` VALUES (17178, 1);
+INSERT INTO `ownership` VALUES (17179, 1);
+INSERT INTO `ownership` VALUES (17180, 1);
+INSERT INTO `ownership` VALUES (17181, 1);
+INSERT INTO `ownership` VALUES (17182, 1);
+INSERT INTO `ownership` VALUES (17183, 1);
+INSERT INTO `ownership` VALUES (17184, 1);
+INSERT INTO `ownership` VALUES (17185, 1);
+INSERT INTO `ownership` VALUES (17186, 1);
+INSERT INTO `ownership` VALUES (17187, 1);
+INSERT INTO `ownership` VALUES (17188, 1);
+INSERT INTO `ownership` VALUES (17189, 1);
+INSERT INTO `ownership` VALUES (17190, 1);
+INSERT INTO `ownership` VALUES (17191, 1);
+INSERT INTO `ownership` VALUES (17192, 1);
+INSERT INTO `ownership` VALUES (17193, 1);
+INSERT INTO `ownership` VALUES (17194, 1);
+INSERT INTO `ownership` VALUES (17195, 1);
+INSERT INTO `ownership` VALUES (17196, 1);
+INSERT INTO `ownership` VALUES (17197, 1);
+INSERT INTO `ownership` VALUES (17198, 1);
+INSERT INTO `ownership` VALUES (17199, 1);
+INSERT INTO `ownership` VALUES (17200, 1);
+INSERT INTO `ownership` VALUES (17201, 1);
+INSERT INTO `ownership` VALUES (17202, 1);
+INSERT INTO `ownership` VALUES (17203, 1);
+INSERT INTO `ownership` VALUES (17204, 1);
+INSERT INTO `ownership` VALUES (17205, 1);
+INSERT INTO `ownership` VALUES (17206, 1);
+INSERT INTO `ownership` VALUES (17207, 1);
+INSERT INTO `ownership` VALUES (17208, 1);
+INSERT INTO `ownership` VALUES (17209, 1);
+INSERT INTO `ownership` VALUES (17210, 1);
+INSERT INTO `ownership` VALUES (17211, 1);
+INSERT INTO `ownership` VALUES (17212, 1);
+INSERT INTO `ownership` VALUES (17213, 1);
+INSERT INTO `ownership` VALUES (17214, 1);
+INSERT INTO `ownership` VALUES (17215, 1);
+INSERT INTO `ownership` VALUES (17216, 1);
+INSERT INTO `ownership` VALUES (17217, 1);
+INSERT INTO `ownership` VALUES (17218, 1);
 
 -- --------------------------------------------------------
 
@@ -18770,6 +19090,8 @@ INSERT INTO `patient` VALUES (17009, 0, 0, 4536);
 INSERT INTO `patient` VALUES (17012, 0, 0, 4537);
 INSERT INTO `patient` VALUES (17015, 0, 0, 4538);
 INSERT INTO `patient` VALUES (17018, 0, 0, 4539);
+INSERT INTO `patient` VALUES (17044, 0, 0, 16);
+INSERT INTO `patient` VALUES (17046, 0, 0, 17);
 
 -- --------------------------------------------------------
 
@@ -18834,6 +19156,7 @@ DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
   `payment_id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
   `payment_type` int(11) NOT NULL default '0',
   `amount` float(11,2) NOT NULL default '0.00',
   `writeoff` float(11,2) NOT NULL default '0.00',
@@ -18849,10 +19172,12 @@ CREATE TABLE `payment` (
 -- Dumping data for table `payment`
 -- 
 
-INSERT INTO `payment` VALUES (6001, 2093, 1, 12.00, 0.00, 0, '00000000000000', 0, '0000-00-00');
-INSERT INTO `payment` VALUES (8178, 8171, 0, 12.00, 0.00, 1, '20050319195445', 1113, '0000-00-00');
-INSERT INTO `payment` VALUES (8180, 8171, 0, 10.00, 23.00, 1, '20050319201802', 1707, '2005-03-19');
-INSERT INTO `payment` VALUES (17026, 17023, 1, 12.00, 0.00, 0, '20050321115835', 0, '2005-03-21');
+INSERT INTO `payment` VALUES (6001, 2093, 0, 1, 12.00, 0.00, 0, '00000000000000', 0, '0000-00-00');
+INSERT INTO `payment` VALUES (8178, 8171, 0, 0, 12.00, 0.00, 1, '20050319195445', 1113, '0000-00-00');
+INSERT INTO `payment` VALUES (8180, 8171, 0, 0, 10.00, 23.00, 1, '20050319201802', 1707, '2005-03-19');
+INSERT INTO `payment` VALUES (17026, 17023, 0, 1, 12.00, 0.00, 0, '20050321115835', 0, '2005-03-21');
+INSERT INTO `payment` VALUES (17081, 0, 0, 1, 15.00, 0.00, 0, '20050329165516', 0, '2005-03-29');
+INSERT INTO `payment` VALUES (17111, 0, 8214, 5, 15.00, 0.00, 0, '20050329171702', 0, '2005-03-29');
 
 -- --------------------------------------------------------
 
@@ -21254,6 +21579,8 @@ INSERT INTO `person` VALUES (17009, '', 'Dimsdale', 'Randall', 'Kiehne', 0, '', 
 INSERT INTO `person` VALUES (17012, '', 'Greenstreet', 'Laquita', 'Gearldine', 0, '', '1964-10-01', '', '', '', '', '', '', '746-51-7885', 1);
 INSERT INTO `person` VALUES (17015, '', 'Sagar', 'Johnathon', 'Stanage', 0, '', '1912-03-08', '', '', '', '', '', '', '057-70-2540', 1);
 INSERT INTO `person` VALUES (17018, '', 'Lipman', 'Zita', 'Freid', 0, '', '1940-05-15', '', '', '', '', '', '', '600-56-1408', 1);
+INSERT INTO `person` VALUES (17044, '', 'Doctor', 'Random', '', 0, '', '0000-00-00', '', '', '', 'rdoc@example.com', '', '', '123-456-7890', 1);
+INSERT INTO `person` VALUES (17046, 'Dr', 'Doctor', 'Random', '', 0, '', '0000-00-00', '', '', '', 'rdoc@example.com', '', '', '123-456-7890', 1);
 
 -- --------------------------------------------------------
 
@@ -28407,6 +28734,8 @@ INSERT INTO `person_type` VALUES (17009, 1);
 INSERT INTO `person_type` VALUES (17012, 1);
 INSERT INTO `person_type` VALUES (17015, 1);
 INSERT INTO `person_type` VALUES (17018, 1);
+INSERT INTO `person_type` VALUES (17044, 2);
+INSERT INTO `person_type` VALUES (17046, 2);
 
 -- --------------------------------------------------------
 
@@ -28428,6 +28757,8 @@ CREATE TABLE `practice_address` (
 -- Dumping data for table `practice_address`
 -- 
 
+INSERT INTO `practice_address` VALUES (1122, 17073, 4);
+INSERT INTO `practice_address` VALUES (1122, 17074, 5);
 
 -- --------------------------------------------------------
 
@@ -28447,7 +28778,7 @@ CREATE TABLE `practices` (
 -- Dumping data for table `practices`
 -- 
 
-INSERT INTO `practices` VALUES (1122, 'Medical Practice Inc.', '');
+INSERT INTO `practices` VALUES (1122, 'Medical Practice Inc.', 'http://example.com');
 
 -- --------------------------------------------------------
 
@@ -28494,6 +28825,7 @@ CREATE TABLE `provider` (
 -- Dumping data for table `provider`
 -- 
 
+INSERT INTO `provider` VALUES (17046, '', '', '');
 INSERT INTO `provider` VALUES (1110, '1233323J', '', '22342242');
 INSERT INTO `provider` VALUES (1120, '', '', '');
 
@@ -28536,7 +28868,7 @@ CREATE TABLE `record_sequence` (
 -- Dumping data for table `record_sequence`
 -- 
 
-INSERT INTO `record_sequence` VALUES (15);
+INSERT INTO `record_sequence` VALUES (17);
 
 -- --------------------------------------------------------
 
@@ -28654,6 +28986,11 @@ INSERT INTO `report_templates` VALUES (1804, 0, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (1805, 0, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (8169, 8168, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (8183, 8182, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (17076, 17075, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (17077, 17075, 'Invoice View', 'no');
+INSERT INTO `report_templates` VALUES (17078, 17077, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (17079, 1705, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (17080, 1775, 'Default Template', 'yes');
 
 -- --------------------------------------------------------
 
@@ -28670,7 +29007,7 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=8183 ;
+) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=17076 ;
 
 -- 
 -- Dumping data for table `reports`
@@ -28680,6 +29017,7 @@ INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from user where 
 INSERT INTO `reports` VALUES (791, '', '', 'Codes with Fee Schedule', 'select code, code_text, data as fee from codes c inner join fee_schedule_data fsd using(code_id)', 'Codes that have had a feed added to them');
 INSERT INTO `reports` VALUES (8168, '', '', 'Multi-query test', '---[users]---\r\nselect * from user\r\n---[reports]---\r\nselect * from reports', '');
 INSERT INTO `reports` VALUES (8182, '', '', 'Sub Query test', 'select * from encounter where treating_person_id = ''[provider:query-select p.person_id, concat_ws('' '',last_name,first_name) name from person p inner join person_type using(person_id) where person_type = 2]''', '');
+INSERT INTO `reports` VALUES (17075, '', '', 'Exit Report', '---[practice]---\r\nselect \r\n p.name,\r\n a.line1,\r\n a.line2,\r\n a.city,\r\n a.state,\r\n a.postal_code\r\nfrom practices p \r\ninner join buildings b on p.id = b.practice_id\r\ninner join encounter e on b.id = e.building_id\r\nleft join practice_address pa on p.id = pa.practice_id\r\nleft join address a using(address_id)\r\nwhere address_type = 4 and e.encounter_id = ''[encounter_id:GET]''\r\n---[treating_facility]---\r\nselect \r\n b.name,\r\n a.line1,\r\n a.line2,\r\n a.city,\r\n a.state,\r\n a.postal_code\r\nfrom buildings b\r\ninner join encounter e on b.id = e.building_id\r\nleft join building_address ba on b.id = ba.building_id\r\nleft join address a using(address_id)\r\nwhere e.encounter_id = ''[encounter_id:GET]''\r\n---[treating_provider]---\r\nselect \r\n per.salutation,\r\n per.last_name,\r\n per.first_name,\r\n p.state_license_number,\r\n a.line1,\r\n a.line2,\r\n a.city,\r\n a.state,\r\n a.postal_code,\r\n n.number\r\n\r\nfrom provider p\r\ninner join person per using(person_id)\r\ninner join encounter e on p.person_id = e.treating_person_id\r\nleft join person_address pa on p.person_id = pa.person_id\r\nleft join address a using(address_id)\r\nleft join person_number pn on p.person_id = pn.person_id\r\nleft join number n using(number_id)\r\nwhere n.number_type = 1 and address_type =1  and e.encounter_id = ''[encounter_id:GET]''\r\n---[patient]---\r\nselect * from person p\r\ninner join patient pat using(person_id)\r\ninner join encounter e on p.person_id = e.patient_id\r\nleft join person_address pa on p.person_id = pa.person_id\r\nleft join address a using(address_id)\r\nleft join person_number pn on p.person_id = pn.person_id\r\nleft join number n using(number_id)\r\nwhere n.number_type = 1 and address_type =1  and e.encounter_id = ''[encounter_id:GET]''\r\n---[code_list]--- \r\nselect cpt.code_text `Procedure`, cpt.code Code, \r\nconcat_ws('', ''\r\n,max(case code_order when 1 then c.code else null end) \r\n,max(case code_order when 2 then c.code else null end)\r\n,max(case code_order when 3 then c.code else null end)\r\n,max(case code_order when 4 then c.code else null end) \r\n) Diagnosis, cd.modifier, cd.units, cd.fee\r\nfrom coding_data cd\r\ninner join codes c using(code_id)\r\ninner join codes cpt on cd.parent_id = cpt.code_id\r\ninner join encounter e on cd.foreign_id = e.encounter_id\r\nwhere e.encounter_id = ''[encounter_id:GET]''\r\ngroup by cd.parent_id\r\nunion\r\nselect ''Total'','''','''',null,sum(units),sum(fee)\r\nfrom coding_data cd\r\nwhere foreign_id = ''[encounter_id:GET]'' and primary_code = 1\r\n---[payment_history]---\r\nselect \r\npayment_date, amount, payment_type\r\nfrom payment\r\nwhere encounter_id = ''[encounter_id:GET]''\r\n---[encounter]---\r\nselect * from encounter e where e.encounter_id = ''[encounter_id:GET]''', '');
 
 -- --------------------------------------------------------
 
@@ -28736,6 +29074,7 @@ INSERT INTO `schedules` VALUES (1011, 'PS', 'XRay Schedule', '', '', 2, 0, 14);
 INSERT INTO `schedules` VALUES (1127, 'PS', 'Michelles Schedule', '', '', 1122, 1121, 0);
 INSERT INTO `schedules` VALUES (1561, 'PS', 'Joes Schedule', '', '', 1122, 1111, 0);
 INSERT INTO `schedules` VALUES (1806, 'PS', 'Exam 1', '', '', 1122, 0, 1125);
+INSERT INTO `schedules` VALUES (17052, 'PS', 'Dr Doctor''s Schedule', '', '', 0, 17047, 0);
 
 -- --------------------------------------------------------
 
@@ -28753,7 +29092,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (17043);
+INSERT INTO `sequences` VALUES (17218);
 
 -- --------------------------------------------------------
 
@@ -28993,6 +29332,46 @@ INSERT INTO `storage_date` VALUES (8223, 'date_of_cant_work_start', '0000-00-00'
 INSERT INTO `storage_date` VALUES (8223, 'date_of_cant_work_end', '0000-00-00');
 INSERT INTO `storage_date` VALUES (8223, 'date_of_hospitalization_start', '0000-00-00');
 INSERT INTO `storage_date` VALUES (8223, '0', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17091, '0', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17119, '0', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17146, '0', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17173, '0', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_death', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_last_seen', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_onset', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_initial_treatment', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_cant_work_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_cant_work_end', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, 'date_of_hospitalization_start', '0000-00-00');
+INSERT INTO `storage_date` VALUES (17199, '0', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -29065,6 +29444,106 @@ INSERT INTO `storage_string` VALUES (8231, 'pos_code', '110');
 INSERT INTO `storage_string` VALUES (8233, 'facility_code', '');
 INSERT INTO `storage_string` VALUES (8235, 'taxonomy_code', '');
 INSERT INTO `storage_string` VALUES (8235, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (17083, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (17083, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (17083, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (17083, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (17091, 'weight', '');
+INSERT INTO `storage_string` VALUES (17091, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (17093, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (17093, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (17093, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (17095, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (17095, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (17097, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (17097, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (17099, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (17099, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (17099, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (17099, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (17101, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (17103, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (17103, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (17113, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (17113, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (17113, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (17113, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (17119, 'weight', '');
+INSERT INTO `storage_string` VALUES (17119, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (17121, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (17121, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (17121, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (17123, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (17123, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (17125, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (17125, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (17127, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (17127, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (17127, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (17127, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (17129, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (17131, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (17131, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (17140, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (17140, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (17140, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (17140, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (17146, 'weight', '');
+INSERT INTO `storage_string` VALUES (17146, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (17148, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (17148, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (17148, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (17150, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (17150, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (17152, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (17152, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (17154, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (17154, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (17154, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (17154, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (17156, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (17158, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (17158, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (17167, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (17167, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (17167, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (17167, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (17173, 'weight', '');
+INSERT INTO `storage_string` VALUES (17173, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (17175, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (17175, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (17175, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (17177, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (17177, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (17179, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (17179, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (17181, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (17181, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (17181, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (17181, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (17183, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (17185, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (17185, 'referral_type', 'DN');
+INSERT INTO `storage_string` VALUES (17197, 'auto_accident_state', '');
+INSERT INTO `storage_string` VALUES (17197, 'medicaid_resubmission_code', '');
+INSERT INTO `storage_string` VALUES (17197, 'original_reference_number', '');
+INSERT INTO `storage_string` VALUES (17197, 'prior_authorization_number', '');
+INSERT INTO `storage_string` VALUES (17199, 'weight', '');
+INSERT INTO `storage_string` VALUES (17199, 'comment_type', '');
+INSERT INTO `storage_string` VALUES (17201, 'relationship', 'Self');
+INSERT INTO `storage_string` VALUES (17201, 'group_number', 'blah blah');
+INSERT INTO `storage_string` VALUES (17201, 'group_name', '456');
+INSERT INTO `storage_string` VALUES (17203, 'responsibility', 'P');
+INSERT INTO `storage_string` VALUES (17203, 'claim_filing_code', '10');
+INSERT INTO `storage_string` VALUES (17205, 'signature_on_file', 'Y');
+INSERT INTO `storage_string` VALUES (17205, 'accepts_assignment', 'A');
+INSERT INTO `storage_string` VALUES (17207, 'sender_id', '');
+INSERT INTO `storage_string` VALUES (17207, 'receiver_id', '');
+INSERT INTO `storage_string` VALUES (17207, 'x12_version', '004010X098A1');
+INSERT INTO `storage_string` VALUES (17207, 'pos_code', '110');
+INSERT INTO `storage_string` VALUES (17209, 'facility_code', '');
+INSERT INTO `storage_string` VALUES (17211, 'taxonomy_code', '');
+INSERT INTO `storage_string` VALUES (17211, 'referral_type', 'DN');
 
 -- --------------------------------------------------------
 
@@ -29142,6 +29621,7 @@ CREATE TABLE `user` (
 -- 
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 0);
+INSERT INTO `user` VALUES (17047, 'rdoc', 'test', 'rdoc', '006600', 17046, 'no', 1125);
 INSERT INTO `user` VALUES (1111, 'jconrad', 'demo', 'jac', 'FF9966', 1110, 'no', 0);
 INSERT INTO `user` VALUES (1121, 'mminton', 'demo', 'mm', '99CCCC', 1120, 'no', 0);
 
