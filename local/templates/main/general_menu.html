@@ -22,7 +22,7 @@
 	{$nav.title}
 	{/if}
 
-	{if $nav.children}
+	{if $nav.children || $nav.reports}
 	<ul class="quicknav">
 		{foreach item=navc from=$nav.children}
 		{if $translate[$navc.prefix]}
