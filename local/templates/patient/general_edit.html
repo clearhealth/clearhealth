@@ -23,6 +23,7 @@ function captureEnter (field, event) {
 
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 	{assign var="detail_section_title" value="Patient Details"}
+	<table class="columns"><tr><td>
 		<fieldset class="radio" id="person">
 		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
 			{clni_section_links name="detail"}
@@ -85,6 +86,10 @@ function captureEnter (field, event) {
 			  DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
                           </td>
                         </tr>
+			<tr>
+				<td></td>
+				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
+			</tr>
                       </tbody>
 
                     </table>
@@ -93,9 +98,11 @@ function captureEnter (field, event) {
 {clni_register_validation_rule id="identifier"}
 
 	
+	{*
 		    <p>
 		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
 		    </p>
+		    *}
 
 		    {if $person->get_person_id() > 0}
 		    {assign var="parent" value=$person}
@@ -146,10 +153,15 @@ function captureEnter (field, event) {
 	</fieldset>
 
 		    {include file="contacts/general_address.html"}
+	    </td>
+	    <td>
 		    {include file="patient/general_insurer.html"}
 		    {include file="patient/general_relationship.html"}
 		    {include file="contacts/general_identifier.html"}
 		    {include file="contacts/general_name_history.html"}
+	    </td>
+    </tr>
+    </table>
 		    
 		    {*{include file="contacts/general_related_companies.html"}*}
 		    {/if}

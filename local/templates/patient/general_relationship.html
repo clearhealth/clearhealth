@@ -17,6 +17,8 @@
 				of
 			<input type="hidden" name="personPerson[related_person_id]" id="person_id_1" value="{$personPerson->get('related_person_id')}">
 				</td>
+			</tr>
+			<tr>
 				<td>
 			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
 				autocomplete="off" value="{$personPerson->get('related_person_id')}">
@@ -24,6 +26,8 @@
 					class="AutoCompleteBackground"></div></div>
 
 		</td>
+	</tr>
+	<tr>
 		<td>
 			<input type="submit" value="{if $personPerson->get('id') > 0}Update{else}Add{/if} Relationship">
 			</td>

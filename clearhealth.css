@@ -113,3 +113,28 @@ div#header.sectionBilling  {
 div#header.sectionAdministration  {
 	background-color: #FFDFBF;
 }
+
+fieldset table.data td {
+	margin: 2px;
+	padding: 2px;
+	background-color: #ddd;
+}
+fieldset table.data th {
+	margin: 2px;
+	padding: 2px;
+}
+table.columns {
+	font-size: 100%;
+}
+table.columns td {
+	vertical-align: top;
+	font-size: 100%;
+}
+
+table td label {
+	text-align: right;
+	display: block;
+}
+table td label.inline {
+	display: inline;
+}

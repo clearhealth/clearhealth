@@ -44,14 +44,14 @@
                         <tr>
 				<td><label>City:</label> </td>
 				<td><input name="address[city]" size="15" value="{$address->get('city')}" tabindex="33"></td>
-				<td><label>State:</label> </td>
+				{*<td><label>State:</label> </td>*}
 				<td>
 					<select name="address[state]" tabindex="34">
 					{html_options options=$address->getStateList() selected=$address->get('state')}
 					</select>
 				</td>	
-				<td><label>Zip:</label> </td>
-				<td><input name="address[postal_code]" size="10" value="{$address->get('postal_code')}" tabindex="35"></td>
+				<td><label class="inline">Zip:</label> 
+				<input name="address[postal_code]" size="10" value="{$address->get('postal_code')}" tabindex="35"></td>
       </tr>
 				{*
       <tr>
