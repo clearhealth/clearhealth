@@ -211,6 +211,13 @@ class M_Patient extends Manager {
 	function process_editEncounterPerson($patient_id,$encounter_person_id) {
 		$this->controller->encounter_person_id = $encounter_person_id;
 	}
+	
+	/**
+	 * Setup for editing a payment
+	 */
+	function process_editPayment($patient_id,$payment_id) {
+		$this->controller->payment_id = $payment_id;
+	}
 
 	/**
 	 * Approve an patient
