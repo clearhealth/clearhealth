@@ -1,0 +1,834 @@
+{literal}
+<style type="text/css">
+<!--
+	h3 {
+		margin-top: 0px;
+	}
+	h4 {
+		margin: 0px;
+		padding: 0px;
+	}
+	td {
+		font-size:8pt;
+		font-family: arial;
+	}
+	input {
+		display:inline;
+	}
+-->
+</style>
+{/literal}
+
+{assign var=practice_array value=$practice_ds->toArray()}
+{assign var=practice value=$practice_array[0]}
+{assign var=facility_array value=$treating_facility_ds->toArray()}
+{assign var=facility value=$facility_array[0]}
+{assign var=patient_array value=$patient_ds->toArray()}
+{assign var=patient value=$patient_array[0]}
+{assign var=provider_array value=$treating_provider_ds->toArray()}
+{assign var=provider value=$provider_array[0]}
+
+<table border="0" style="font-size:9pt;">
+<tr>
+<td valign="top" rowspan="2">
+	<table>
+	<tr>
+	<td><h3>Practice: {$practice.name}</h3></td>
+	</tr>
+	<tr>
+	<td>{$practice.line1}<br>
+		{if $practice.line2}
+		{$practice.line2}<br>
+		{/if}
+		{$practice.city}, {enum_lookup name=state value=$practice.state} {$practice.postal_code}
+	</td>
+	</tr>
+		<!--Phone: 555-555-1234 <br>{* todo: grab the actual phone in the query *}-->
+		<!--Fax: 555-555-1235 {* todo: grab the actual phone in the query *}-->
+	</table>
+</td>
+<td colspan="3" align="left">
+<h3 id="title">{$report->get_label()} : {$patient.last_name}, {$patient.first_name} #{$patient.record_number} {$smarty.now|date_format:"%Y-%m-%d"}</h3>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<table>
+	<tr>
+	<td><h3>Facility: {$facility.name}</h3></td>
+	</tr>
+	<tr>
+		<td>{$facility.line1}<br>
+		{if $facility.line2}
+		{$facility.line2}<br>
+		{/if}
+		{$facility.city}, {enum_lookup name=state value=$facility.state} {$facility.postal_code}
+	</td>
+	</tr>
+	</table>
+</td>
+<td valign="top">
+	<table>
+	<tr>
+	<td><h3>Provider: {$provider.salutation} {$provider.last_name}, {$provider.first_name}</h3></td>
+	</tr>
+	<tr>
+	<td>
+	{$provider.line1}<br>
+	{if $provider.line2}
+	{$provider.line2}<br>
+	{/if}
+	{$provider.city}, {enum_lookup name=state value=$provider.state} {$provider.postal_code}<br />
+	Phone: {$provider.number}
+	</td>
+	</tr>
+	<tr>
+		<td>State License #{$provider.state_license_number}</td>
+	</tr>
+	</table>
+</td>
+<td valign="top">
+	<table>
+	<tr>
+	<td>
+	<h3>{$patient.salutation} {$patient.last_name}, {$patient.first_name}</h3>
+	
+			{$patient.line1}<br>
+			{if $patient.line2}
+			{$patient.line2}<br>
+			{/if}
+			{$patient.city}, {enum_lookup name=state value=$patient.state} {$patient.postal_code}<br>
+			Phone: {$patient.number}<br>
+			Record Number: {$patient.record_number}
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+<table style="text-align: left;" border="1" cellspacing="0"
+cellpadding="1">
+<tbody>
+<tr>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Office Visits - New Patient</span><br>
+</td>
+<td colspan="4" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Preventative Care ESTAB Cont.</span><br>
+</td>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Lab</span><br>
+</td>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Medications</span><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top:">&bull;&nbsp; Brief<br>
+</td>
+<td style="vertical-align: top; width: 35px; text-align: right;">99201<br>
+</td>
+<td style="vertical-align: top:">&bull;&nbsp; 12-17 Yrs.<br>
+</td>
+<td style="vertical-align: top;  width: 35px;  text-align: right;">99394<br>
+</td>
+<td style="vertical-align: top:">&bull;&nbsp; 40-64 Yrs.<br>
+</td>
+<td style="vertical-align: top;  width: 35px; text-align: right;">99396<br>
+</td>
+<td style="vertical-align: top:">&bull;&nbsp; Alcohol Breath Test<br>
+</td>
+<td style="vertical-align: top;  width: 35px; text-align: right;">82075<br>
+</td>
+<td colspan="1" rowspan="3" style="vertical-align: top;">&bull;&nbsp; Rocephin:<br>
+<table style="text-align: left;" border="0"
+cellspacing="2" cellpadding="2">
+<tbody>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 250mg<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; 500mg<br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 1gm<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; 2gm<br>
+</td>
+</tr>
+</tbody>
+</table>
+<br>
+</td>
+<td style="vertical-align: top;  width: 35px; text-align: right;">J0896<br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Minimal<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99202<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; 18-39 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99395<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; 65 and
+Over<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99397<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Allergy
+Shot Single<br>
+</td>
+<td style="vertical-align: top; text-align: right;">95115<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Limited<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99203<br>
+</td>
+<td colspan="4" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Procedures</span><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Allergy
+Shot 2+<br>
+</td>
+<td style="vertical-align: top; text-align: right;">95117<br>
+</td>
+<td style="vertical-align: top; text-align: right;">J2000<br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Extended<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99204<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Acupunture
+(1 or More Needles)<br>
+</td>
+<td style="vertical-align: top; text-align: right;">97790<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Join
+Injection Intermediate </td>
+<td style="vertical-align: top; text-align: right;">20005<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Blood
+Sugar<br>
+</td>
+<td style="vertical-align: top; text-align: right;">82948<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Lidocaine<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Complete<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99205<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Blood Draw<br>
+</td>
+<td style="vertical-align: top; text-align: right;">36415<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Joint
+Injection, Major </td>
+<td style="vertical-align: top; text-align: right;">20610<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Chlamydia,
+only<br>
+</td>
+<td style="vertical-align: top; text-align: right;">87491<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Office
+Visits - Return Patient</span><br>
+</td>
+<td colspan="1" rowspan="2" style="vertical-align: top;">Casting<br>
+Specify:<br>
+</td>
+<td colspan="1" rowspan="2"
+style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Nebulizer
+</td>
+<td style="vertical-align: top; text-align: right;">94640<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; GC Only<br>
+</td>
+<td style="vertical-align: top; text-align: right;">87591<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Minimal<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99211<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; 02 SAT </td>
+<td style="vertical-align: top; text-align: right;">94760<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; GC/Clamydia<br>
+</td>
+<td style="vertical-align: top; text-align: right;">87801<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Brief<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99212<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Colposcopy<br>
+</td>
+<td style="vertical-align: top; text-align: right;">57452<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Peek Flow
+</td>
+<td style="vertical-align: top; text-align: right;">94200<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; HCT<br>
+</td>
+<td style="vertical-align: top; text-align: right;">85013<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Limited<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99213<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Colposcopy/BX</td>
+<td style="vertical-align: top; text-align: right;">57454<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Pulmonary
+TX </td>
+<td style="vertical-align: top; text-align: right;">94610<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; HCG
+Pregnancy Test<br>
+</td>
+<td style="vertical-align: top; text-align: right;">81025<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Extended<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99214<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Colposcopy/CX</td>
+<td style="vertical-align: top; text-align: right;">57511<br>
+</td>
+<td colspan="1" rowspan="3" style="vertical-align: top;">Shave BX:<br>
+<br>
+Site:<br>
+<br>
+CM: <br>
+</td>
+<td colspan="1" rowspan="3"
+style="vertical-align: top; text-align: right;"><br>
+<br>
+<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hemoccult<br>
+</td>
+<td style="vertical-align: top; text-align: right;">82270<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Complete<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99215<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Destruct/Plantar<br>
+</td>
+<td style="vertical-align: top; text-align: right;">17000<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Multi
+Drug Screen<br>
+</td>
+<td style="vertical-align: top; text-align: right;">80100<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Nursing
+Home Visits - New or Estab. Pt</span><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Destruct
+2-14 Les.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">17003<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Pap<br>
+</td>
+<td style="vertical-align: top; text-align: right;">88150<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Low
+Complexity<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99311<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Destruct
+/ Flat Wart<br>
+</td>
+<td style="vertical-align: top; text-align: right;">17110<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Skin
+Tags/Remove 1-15 </td>
+<td style="vertical-align: top; text-align: right;">11200<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Single
+Drug Screen<br>
+</td>
+<td style="vertical-align: top; text-align: right;">88101<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Med
+Complexity<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99312<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Ear
+Irrigation<br>
+</td>
+<td style="vertical-align: top; text-align: right;">89210<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Snellen </td>
+<td style="vertical-align: top; text-align: right;">92081<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Strep Test<br>
+</td>
+<td style="vertical-align: top; text-align: right;">88403<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; High
+Complexity<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99313<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; EKG w/o
+Report/Tracing Only<br>
+</td>
+<td style="vertical-align: top; text-align: right;">93005<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Spirometry
+</td>
+<td style="vertical-align: top; text-align: right;">94010<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Thin Prep
+Pap<br>
+</td>
+<td style="vertical-align: top; text-align: right;">88142<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top; background-color: rgb(204, 204, 204);" colspan="2" ><span style="font-weight: bold;">Preventative
+Care - New Pt.</span><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Electrocardiogram
+Complete (ECG)<br>
+</td>
+<td style="vertical-align: top; text-align: right;">93000<br>
+</td>
+<td colspan="1" rowspan="1" style="vertical-align: top;">&bull;&nbsp; Sterile
+Tray</td>
+<td style="vertical-align: top; text-align: right;">A4550<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; U/A
+Labstick<br>
+</td>
+<td style="vertical-align: top; text-align: right;">81002<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Under 1
+Yr.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99301<br>
+</td>
+<td colspan="1" rowspan="3" style="vertical-align: top;">&bull;&nbsp; Exlcusions:<br>
+<br>
+Site:<br>
+<br>
+Cm:<br>
+</td>
+<td colspan="1" rowspan="3"
+style="vertical-align: top; text-align: right;"><br>
+</td>
+<td colspan="1" rowspan="2" style="vertical-align: top;">Suturing:<br>
+<br>
+Site:<br>
+<br>
+CM: </td>
+<td colspan="1" rowspan="2"
+style="vertical-align: top; text-align: right;"><br>
+<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; U/A Micro<br>
+</td>
+<td style="vertical-align: top; text-align: right;">81000<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 1-4 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99302<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Urine
+Micro Albumin<br>
+</td>
+<td style="vertical-align: top; text-align: right;">82044<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 5-11 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99303<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; TCA
+Female </td>
+<td style="vertical-align: top; text-align: right;">57081<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Wet Mount<br>
+</td>
+<td style="vertical-align: top; text-align: right;">87210<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 12-17 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99304<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hearing
+Screen<br>
+</td>
+<td style="vertical-align: top; text-align: right;">92551<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; TCA Male </td>
+<td style="vertical-align: top; text-align: right;">54050<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 18-39 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99305<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; I &amp; D
+Abacess<br>
+</td>
+<td style="vertical-align: top; text-align: right;">10060<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Toenail
+Avulsion </td>
+<td style="vertical-align: top; text-align: right;">11730<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 40-64 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99306<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Joint
+Injection, Small<br>
+</td>
+<td style="vertical-align: top; text-align: right;">20600<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Event
+Monitor </td>
+<td style="vertical-align: top; text-align: right;">93268<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 65 and
+over<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99307<br>
+</td>
+<td colspan="4" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Immuizations</span><br>
+</td>
+<td
+style="vertical-align: top; background-color: rgb(204, 204, 204);" colspan="2"><span
+style="font-weight: bold;">Immunizations
+Cont.</span><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td colspan="2" rowspan="1"
+style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+style="font-weight: bold;">Preventative
+Care Estab Pt.</span><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; DtaP<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90700<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; MMR<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90707<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; HIB<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; Under 1
+Yr.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99391<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hep A
+Pediatric/Adol<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90633<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; PPD<br>
+</td>
+<td style="vertical-align: top; text-align: right;">95580<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; IPV<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 1-4 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99392<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hep A
+Adult<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90632<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Td Adult
+7 Yr &amp; Older<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90718<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; IZ
+Administrat.<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">&bull;&nbsp; 5-11 Yrs.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">99393<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hep B
+Pediatric/Adol<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90744<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Theraputic
+Inj.<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90782<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; IZ
+Administrat. Add'l<br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Hep B
+Adult<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90746<br>
+</td>
+<td style="vertical-align: top;">&bull;&nbsp; Varicella<br>
+</td>
+<td style="vertical-align: top; text-align: right;">90716<br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+<td style="vertical-align: top;"><br>
+</td>
+<td style="vertical-align: top; text-align: right;"><br>
+</td>
+</tr>
+<tr>
+<td colspan="6" style="vertical-align: top;">DX:<br>
+1)_________________________________________________________________________________<br>
+2)_________________________________________________________________________________<br>
+3)_________________________________________________________________________________<br>
+4)_________________________________________________________________________________
+</td>
+<td style="vertical-align: top;" colspan="4">Additional Procedures:<br>
+&bull;&nbsp; Translation&nbsp;&nbsp;&bull;&nbsp; Behavorial Medicine Referral<br>
+1)____________________________________________<br>
+2)____________________________________________
+</td>
+</tr>
+<tr>
+<td colspan="6" style="vertical-align: top;">
+<table>
+<tr>
+<td>
+&bull;&nbsp; Follow Up __Days __Weeks __Months<br>
+&bull;&nbsp; Phys Exam<br>
+&bull;&nbsp; Well Child
+</td>
+<td>
+Provide Signature:<br>
+X_________________________________________
+</td>
+</tr>
+</table>
+</td>
+<td style="vertical-align: top;" colspan="4">
+&bull;&nbsp; Cash  Initial____________<br>
+&bull;&nbsp; Credit Card<br>
+&bull;&nbsp; Check #_________<br>
+&bull;&nbsp; Receipt #_________
+</td>
+</tr>
+<tr>
+<td style="vertical-align: top;">Date Last Paid:<br><br>
+</td>
+<td style="vertical-align: top;">Prev PT Balance:<br><br>
+</td>
+<td style="vertical-align: top;">Todays Charge:<br><br>
+</td>
+<td style="vertical-align: top;">Discount Amount<br><br>
+</td>
+<td style="vertical-align: top;">Amount Due<br><br>
+</td>
+<td style="vertical-align: top;">Amount Paid:<br><br>
+</td>
+<td style="vertical-align: top;">Balance Due:<br><br>
+</td>
+<td style="vertical-align: top;" colspan="3"><br>
+</td>
+</tr>
+</tbody>
+</table>
