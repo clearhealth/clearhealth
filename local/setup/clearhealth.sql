@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
+-- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 09, 2005 at 01:56 PM
--- Server version: 4.0.23
--- PHP Version: 4.3.10
+-- Generation Time: Mar 09, 2005 at 04:43 PM
+-- Server version: 4.0.18
+-- PHP Version: 4.3.4
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -35,7 +35,7 @@ CREATE TABLE `address` (
   `postal_code` varchar(255) NOT NULL default '',
   `notes` text NOT NULL,
   PRIMARY KEY  (`address_id`)
-) TYPE=InnoDB COMMENT='An address that can be for a company or a person';
+) TYPE=MyISAM COMMENT='An address that can be for a company or a person';
 
 -- 
 -- Dumping data for table `address`
@@ -51,6 +51,7 @@ INSERT INTO `address` VALUES (780, 'Home', '123 E Main', 'Suite 2', 'Mesa', 0, 0
 INSERT INTO `address` VALUES (782, '', '', '', '', 0, 0, 0, '', '');
 INSERT INTO `address` VALUES (783, 'Other', '323 Soth St', '', 'Mesa', 0, 0, 2, '85210', '');
 INSERT INTO `address` VALUES (957, 'main', 'test', 'test blah', 'blah', 0, 0, 1, '123', 'blah');
+INSERT INTO `address` VALUES (1063, 'home', '1 main st', '', 'san clemente', 0, 0, 3, '92231', '');
 
 -- --------------------------------------------------------
 
@@ -83,7 +84,7 @@ CREATE TABLE `building_address` (
   PRIMARY KEY  (`building_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `building_id` (`building_id`)
-) TYPE=InnoDB COMMENT='Links a building to a address specifying the address type';
+) TYPE=MyISAM COMMENT='Links a building to a address specifying the address type';
 
 -- 
 -- Dumping data for table `building_address`
@@ -195,13 +196,14 @@ CREATE TABLE `company` (
   `url` varchar(255) NOT NULL default '',
   `is_historic` enum('no','yes') NOT NULL default 'no',
   PRIMARY KEY  (`company_id`)
-) TYPE=InnoDB COMMENT='Base Company record most of the data is in linked tables';
+) TYPE=MyISAM COMMENT='Base Company record most of the data is in linked tables';
 
 -- 
 -- Dumping data for table `company`
 -- 
 
 INSERT INTO `company` VALUES (968, 'Test', '', '', '', '', 'no');
+INSERT INTO `company` VALUES (1072, 'Medi-Cal', '', '', 'CAMC', '', 'no');
 
 -- --------------------------------------------------------
 
@@ -217,7 +219,7 @@ CREATE TABLE `company_address` (
   PRIMARY KEY  (`company_id`,`address_id`),
   KEY `company_id` (`company_id`),
   KEY `address_id` (`address_id`)
-) TYPE=InnoDB COMMENT='Links a company to a address specifying the address type';
+) TYPE=MyISAM COMMENT='Links a company to a address specifying the address type';
 
 -- 
 -- Dumping data for table `company_address`
@@ -238,7 +240,7 @@ CREATE TABLE `company_company` (
   PRIMARY KEY  (`company_id`,`related_company_id`),
   KEY `company_id` (`company_id`),
   KEY `related_company_id` (`related_company_id`)
-) TYPE=InnoDB COMMENT='Relates a company to another company specify the type with a';
+) TYPE=MyISAM COMMENT='Relates a company to another company specify the type with a';
 
 -- 
 -- Dumping data for table `company_company`
@@ -258,7 +260,7 @@ CREATE TABLE `company_number` (
   PRIMARY KEY  (`company_id`,`number_id`),
   KEY `company_id` (`company_id`),
   KEY `number_id` (`number_id`)
-) TYPE=InnoDB COMMENT='Links between company and phone_numbers';
+) TYPE=MyISAM COMMENT='Links between company and phone_numbers';
 
 -- 
 -- Dumping data for table `company_number`
@@ -278,13 +280,14 @@ CREATE TABLE `company_type` (
   PRIMARY KEY  (`company_id`,`company_type`),
   KEY `company_id` (`company_id`),
   KEY `company_type` (`company_type`)
-) TYPE=InnoDB COMMENT='Link to specify company type';
+) TYPE=MyISAM COMMENT='Link to specify company type';
 
 -- 
 -- Dumping data for table `company_type`
 -- 
 
 INSERT INTO `company_type` VALUES (968, 1);
+INSERT INTO `company_type` VALUES (1072, 1);
 
 -- --------------------------------------------------------
 
@@ -658,6 +661,11 @@ INSERT INTO `events` VALUES (696, '', '', '', '', '', 0);
 INSERT INTO `events` VALUES (698, '', '', '', '', '', 0);
 INSERT INTO `events` VALUES (700, '', '', '', '', '', 0);
 INSERT INTO `events` VALUES (702, '', '', '', '', '', 0);
+INSERT INTO `events` VALUES (1012, 'XRAY 1', '', '', '', '', 1011);
+INSERT INTO `events` VALUES (1029, 'test', '', '', '', '', 1009);
+INSERT INTO `events` VALUES (1059, '', '', '', '', '', 0);
+INSERT INTO `events` VALUES (1080, '', '', '', '', '', 0);
+INSERT INTO `events` VALUES (1082, '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -673,14 +681,13 @@ CREATE TABLE `fee_schedule` (
   `description` text NOT NULL,
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `fee_schedule`
 -- 
 
 INSERT INTO `fee_schedule` VALUES (711, 'test', 'Test', 'My Test Schedule');
-INSERT INTO `fee_schedule` VALUES (1054, 'medicare', 'Medicare', 'Medicare Fee Schedule');
 
 -- --------------------------------------------------------
 
@@ -698,7 +705,7 @@ CREATE TABLE `fee_schedule_data` (
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `fee_schedule_data`
@@ -711,7 +718,6 @@ INSERT INTO `fee_schedule_data` VALUES (4, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (5, 1, 711, 12, '');
 INSERT INTO `fee_schedule_data` VALUES (6, 1, 711, 42.67, '');
 INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (10, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '');
 INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '');
@@ -732,23 +738,6 @@ INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26737, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26739, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26747, 1, 711, 21, '');
-INSERT INTO `fee_schedule_data` VALUES (26748, 1, 1054, 8, '');
-INSERT INTO `fee_schedule_data` VALUES (26749, 1, 1054, 7, '');
-INSERT INTO `fee_schedule_data` VALUES (26750, 1, 711, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26751, 1, 1054, 6, '');
-INSERT INTO `fee_schedule_data` VALUES (26752, 1, 1054, 5, '');
-INSERT INTO `fee_schedule_data` VALUES (26753, 1, 1054, 4, '');
-INSERT INTO `fee_schedule_data` VALUES (26754, 1, 711, 45, '');
-INSERT INTO `fee_schedule_data` VALUES (26755, 1, 1054, 3, '');
-INSERT INTO `fee_schedule_data` VALUES (26756, 1, 1054, 2, '');
-INSERT INTO `fee_schedule_data` VALUES (26757, 1, 1054, 56, '');
-INSERT INTO `fee_schedule_data` VALUES (26758, 1, 1054, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (26759, 1, 711, 1, '');
-INSERT INTO `fee_schedule_data` VALUES (26760, 1, 1054, 34, '');
-INSERT INTO `fee_schedule_data` VALUES (26761, 1, 1054, 45, '');
 
 -- --------------------------------------------------------
 
@@ -764,7 +753,7 @@ CREATE TABLE `fee_schedule_revision` (
   `name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`revision_id`),
   KEY `user_id` (`user_id`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `fee_schedule_revision`
@@ -784,7 +773,7 @@ CREATE TABLE `form` (
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`form_id`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `form`
@@ -812,6 +801,7 @@ CREATE TABLE `form_data` (
 -- 
 
 INSERT INTO `form_data` VALUES (809, 800, 0, '2005-03-04 16:54:38');
+INSERT INTO `form_data` VALUES (1010, 800, 0, '2005-03-08 19:03:03');
 
 -- --------------------------------------------------------
 
@@ -840,6 +830,8 @@ CREATE TABLE `gacl_acl` (
 
 INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', '', 1110310784);
 INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', '', 1110310727);
+INSERT INTO `gacl_acl` VALUES (27, 'user', 1, 1, '', '', 1110340743);
+INSERT INTO `gacl_acl` VALUES (28, 'user', 1, 1, '', '', 1110342647);
 
 -- --------------------------------------------------------
 
@@ -881,8 +873,8 @@ CREATE TABLE `gacl_acl_seq` (
 -- Dumping data for table `gacl_acl_seq`
 -- 
 
-INSERT INTO `gacl_acl_seq` VALUES (26);
-INSERT INTO `gacl_acl_seq` VALUES (26);
+INSERT INTO `gacl_acl_seq` VALUES (28);
+INSERT INTO `gacl_acl_seq` VALUES (28);
 
 -- --------------------------------------------------------
 
@@ -913,6 +905,8 @@ INSERT INTO `gacl_aco` VALUES (13, 'actions', 'add', 12, 'add', 0);
 INSERT INTO `gacl_aco` VALUES (14, 'actions', 'delete', 13, 'delete', 0);
 INSERT INTO `gacl_aco` VALUES (16, 'actions', 'usage', 9, 'usage', 0);
 INSERT INTO `gacl_aco` VALUES (17, 'actions', 'uploadFile', 14, 'Upload A file', 0);
+INSERT INTO `gacl_aco` VALUES (18, 'actions', 'delete_owner', 15, 'Delete Owner', 0);
+INSERT INTO `gacl_aco` VALUES (19, 'actions', 'edit_owner', 16, 'Edit Owner', 0);
 
 -- --------------------------------------------------------
 
@@ -939,6 +933,8 @@ INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'uploadFile');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'usage');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'view');
 INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (27, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (28, 'actions', 'edit_owner');
 
 -- --------------------------------------------------------
 
@@ -997,8 +993,8 @@ CREATE TABLE `gacl_aco_seq` (
 -- Dumping data for table `gacl_aco_seq`
 -- 
 
-INSERT INTO `gacl_aco_seq` VALUES (17);
-INSERT INTO `gacl_aco_seq` VALUES (17);
+INSERT INTO `gacl_aco_seq` VALUES (19);
+INSERT INTO `gacl_aco_seq` VALUES (19);
 
 -- --------------------------------------------------------
 
@@ -1090,6 +1086,8 @@ CREATE TABLE `gacl_aro_groups_map` (
 
 INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
 INSERT INTO `gacl_aro_groups_map` VALUES (26, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (27, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (28, 12);
 
 -- --------------------------------------------------------
 
@@ -1208,6 +1206,15 @@ INSERT INTO `gacl_axo` VALUES (37, 'resources', 'user', 10, 'Section - User', 0)
 INSERT INTO `gacl_axo` VALUES (36, 'resources', 'enumeration', 10, 'Section - Enumeration', 0);
 INSERT INTO `gacl_axo` VALUES (45, 'resources', 'report', 10, 'Section - Report', 0);
 INSERT INTO `gacl_axo` VALUES (46, 'resources', 'schedule', 10, 'Section - Schedule', 0);
+INSERT INTO `gacl_axo` VALUES (47, 'resources', 'form', 10, 'Section - Form', 0);
+INSERT INTO `gacl_axo` VALUES (48, 'resources', 'billing', 10, 'Section - Billing', 0);
+INSERT INTO `gacl_axo` VALUES (49, 'resources', 'admin', 10, 'Section - Admin', 0);
+INSERT INTO `gacl_axo` VALUES (50, 'resources', 'document', 10, 'Section - Document', 0);
+INSERT INTO `gacl_axo` VALUES (51, 'resources', 'documentcategory', 10, 'Section - DocumentCategory', 0);
+INSERT INTO `gacl_axo` VALUES (52, 'resources', 'insurance', 10, 'Section - Insurance', 0);
+INSERT INTO `gacl_axo` VALUES (53, 'resources', 'superbill', 10, 'Section - Superbill', 0);
+INSERT INTO `gacl_axo` VALUES (54, 'resources', 'event', 10, 'Section - Event', 0);
+INSERT INTO `gacl_axo` VALUES (55, 'resources', 'occurence', 10, 'Section - Occurence', 0);
 
 -- --------------------------------------------------------
 
@@ -1271,6 +1278,8 @@ CREATE TABLE `gacl_axo_groups_map` (
 -- 
 
 INSERT INTO `gacl_axo_groups_map` VALUES (24, 11);
+INSERT INTO `gacl_axo_groups_map` VALUES (27, 11);
+INSERT INTO `gacl_axo_groups_map` VALUES (28, 11);
 
 -- --------------------------------------------------------
 
@@ -1330,7 +1339,7 @@ CREATE TABLE `gacl_axo_sections_seq` (
 -- Dumping data for table `gacl_axo_sections_seq`
 -- 
 
-INSERT INTO `gacl_axo_sections_seq` VALUES (19);
+INSERT INTO `gacl_axo_sections_seq` VALUES (20);
 
 -- --------------------------------------------------------
 
@@ -1347,7 +1356,7 @@ CREATE TABLE `gacl_axo_seq` (
 -- Dumping data for table `gacl_axo_seq`
 -- 
 
-INSERT INTO `gacl_axo_seq` VALUES (46);
+INSERT INTO `gacl_axo_seq` VALUES (55);
 
 -- --------------------------------------------------------
 
@@ -1401,6 +1410,15 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 43);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 44);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 45);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 46);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 47);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 48);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 49);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 50);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 51);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 52);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 53);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 54);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 55);
 
 -- --------------------------------------------------------
 
@@ -1470,6 +1488,7 @@ INSERT INTO `identifier` VALUES (963, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (964, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (965, 0, 'blah', 1);
 INSERT INTO `identifier` VALUES (966, 0, 'blah', 1);
+INSERT INTO `identifier` VALUES (1068, 1061, '123-33-2321', 1);
 
 -- --------------------------------------------------------
 
@@ -1491,6 +1510,7 @@ CREATE TABLE `insurance_program` (
 -- 
 
 INSERT INTO `insurance_program` VALUES (989, 1, 968, 'Test Program');
+INSERT INTO `insurance_program` VALUES (1073, 1, 1072, 'MEDI-CAL');
 
 -- --------------------------------------------------------
 
@@ -1505,7 +1525,7 @@ CREATE TABLE `insured_relationship` (
   `person_id` int(11) NOT NULL default '0',
   `subsciber_id` int(11) NOT NULL default '0',
   `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
-  `copay` double NOT NULL default '0',
+  `copay` float(11,2) NOT NULL default '0.00',
   `assigning` int(11) NOT NULL default '0',
   `group_name` varchar(100) NOT NULL default '',
   `group_number` varchar(100) NOT NULL default '',
@@ -1517,7 +1537,10 @@ CREATE TABLE `insured_relationship` (
 -- Dumping data for table `insured_relationship`
 -- 
 
-INSERT INTO `insured_relationship` VALUES (974, 0, 955, 0, 0, 15, 0, 'blah', 'blah', 0);
+INSERT INTO `insured_relationship` VALUES (974, 0, 955, 0, 0, 15.00, 0, 'blah', 'blah', 0);
+INSERT INTO `insured_relationship` VALUES (1065, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
+INSERT INTO `insured_relationship` VALUES (1066, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
+INSERT INTO `insured_relationship` VALUES (1067, 989, 1061, 0, 0, 25.00, 0, '12343', '123243', 0);
 
 -- --------------------------------------------------------
 
@@ -1541,7 +1564,11 @@ CREATE TABLE `name_history` (
 -- 
 
 INSERT INTO `name_history` VALUES (959, 955, 'Fred', 'Flinstone', 'Q', '2005-03-07');
-INSERT INTO `name_history` VALUES (998, 983, 'Joshua', 'Eichorn', '', '2005-03-08');
+INSERT INTO `name_history` VALUES (1069, 1061, 'john', '', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1070, 1061, '', 'adams', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1071, 1061, 'jon', 'adamsly', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1074, 1061, 'jon23', 'adamsly2', '', '2005-03-09');
+INSERT INTO `name_history` VALUES (1075, 1061, 'jon23', 'adamsly23', '', '2005-03-09');
 
 -- --------------------------------------------------------
 
@@ -1581,15 +1608,18 @@ CREATE TABLE `number` (
   `number_type` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
   `number` varchar(100) NOT NULL default '',
+  `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
-) TYPE=InnoDB COMMENT='A phone number';
+) TYPE=MyISAM COMMENT='A phone number';
 
 -- 
 -- Dumping data for table `number`
 -- 
 
-INSERT INTO `number` VALUES (784, 1, '', '480-361-1331');
-INSERT INTO `number` VALUES (956, 1, 'tewt', '12345678');
+INSERT INTO `number` VALUES (784, 1, '', '480-361-1331', 1);
+INSERT INTO `number` VALUES (956, 1, 'tewt', '12345678', 1);
+INSERT INTO `number` VALUES (1062, 1, '', '555-555-5555', 0);
+INSERT INTO `number` VALUES (1064, 2, '', '555-555-5555', 1);
 
 -- --------------------------------------------------------
 
@@ -1694,6 +1724,52 @@ INSERT INTO `occurences` VALUES (695, 694, '2005-02-18 09:00:00', '2005-02-18 10
 INSERT INTO `occurences` VALUES (697, 696, '2005-02-18 09:00:00', '2005-02-18 10:00:00', 'test', 14, 306, NULL, NULL);
 INSERT INTO `occurences` VALUES (699, 698, '2005-02-18 09:00:00', '2005-02-18 10:00:00', 'test', 14, 306, NULL, NULL);
 INSERT INTO `occurences` VALUES (701, 700, '2005-02-18 09:00:00', '2005-02-18 10:00:00', 'test', 14, 306, 1, 273);
+INSERT INTO `occurences` VALUES (1013, 1012, '2005-01-24 09:00:00', '2005-01-24 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1014, 1012, '2005-01-31 09:00:00', '2005-01-31 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1015, 1012, '2005-02-07 09:00:00', '2005-02-07 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1016, 1012, '2005-02-14 09:00:00', '2005-02-14 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1017, 1012, '2005-02-21 09:00:00', '2005-02-21 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1018, 1012, '2005-02-28 09:00:00', '2005-02-28 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1019, 1012, '2005-03-07 09:00:00', '2005-03-07 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1020, 1012, '2005-03-14 09:00:00', '2005-03-14 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1021, 1012, '2005-03-21 09:00:00', '2005-03-21 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1022, 1012, '2005-03-28 09:00:00', '2005-03-28 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1023, 1012, '2005-04-04 09:00:00', '2005-04-04 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1024, 1012, '2005-04-11 09:00:00', '2005-04-11 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1025, 1012, '2005-04-18 09:00:00', '2005-04-18 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1026, 1012, '2005-04-25 09:00:00', '2005-04-25 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1027, 1012, '2005-05-02 09:00:00', '2005-05-02 13:00:00', '', 14, 0, 1, NULL);
+INSERT INTO `occurences` VALUES (1031, 1029, '2005-03-01 09:00:00', '2005-03-01 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1032, 1029, '2005-03-08 09:00:00', '2005-03-08 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1033, 1029, '2005-03-15 09:00:00', '2005-03-15 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1034, 1029, '2005-03-22 09:00:00', '2005-03-22 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1035, 1029, '2005-03-29 09:00:00', '2005-03-29 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1036, 1029, '2005-04-05 09:00:00', '2005-04-05 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1037, 1029, '2005-04-12 09:00:00', '2005-04-12 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1038, 1029, '2005-04-19 09:00:00', '2005-04-19 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1039, 1029, '2005-04-26 09:00:00', '2005-04-26 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1040, 1029, '2005-05-03 09:00:00', '2005-05-03 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1041, 1029, '2005-05-10 09:00:00', '2005-05-10 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1042, 1029, '2005-05-17 09:00:00', '2005-05-17 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1043, 1029, '2005-05-24 09:00:00', '2005-05-24 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1044, 1029, '2005-05-31 09:00:00', '2005-05-31 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1045, 1029, '2005-06-07 09:00:00', '2005-06-07 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1046, 1029, '2005-06-14 09:00:00', '2005-06-14 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1047, 1029, '2005-06-21 09:00:00', '2005-06-21 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1048, 1029, '2005-06-28 09:00:00', '2005-06-28 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1049, 1029, '2005-07-05 09:00:00', '2005-07-05 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1050, 1029, '2005-07-12 09:00:00', '2005-07-12 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1051, 1029, '2005-07-19 09:00:00', '2005-07-19 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1052, 1029, '2005-07-26 09:00:00', '2005-07-26 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1053, 1029, '2005-08-02 09:00:00', '2005-08-02 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1054, 1029, '2005-08-09 09:00:00', '2005-08-09 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1055, 1029, '2005-08-16 09:00:00', '2005-08-16 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1056, 1029, '2005-08-23 09:00:00', '2005-08-23 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1057, 1029, '2005-08-30 09:00:00', '2005-08-30 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1058, 1029, '2005-09-06 09:00:00', '2005-09-06 14:00:00', '', 14, 984, 1, NULL);
+INSERT INTO `occurences` VALUES (1060, 1059, '2005-03-08 09:00:00', '2005-03-08 09:15:00', 'test', 14, 984, 1, 0);
+INSERT INTO `occurences` VALUES (1081, 1080, '2005-03-08 10:00:00', '2005-03-08 11:00:00', 'test', 0, 984, 1, 0);
+INSERT INTO `occurences` VALUES (1083, 1082, '2005-03-08 11:15:00', '2005-03-08 11:45:00', 'new test', 0, 984, 1, 1061);
 
 -- --------------------------------------------------------
 
@@ -1708,7 +1784,7 @@ CREATE TABLE `ownership` (
   PRIMARY KEY  (`id`,`user_id`),
   KEY `user_id` (`user_id`),
   KEY `id` (`id`)
-) TYPE=InnoDB COMMENT='Stores which items are owned by which user';
+) TYPE=MyISAM COMMENT='Stores which items are owned by which user';
 
 -- 
 -- Dumping data for table `ownership`
@@ -1884,86 +1960,6 @@ INSERT INTO `ownership` VALUES (806, 1);
 INSERT INTO `ownership` VALUES (807, 1);
 INSERT INTO `ownership` VALUES (808, 1);
 INSERT INTO `ownership` VALUES (809, 1);
-INSERT INTO `ownership` VALUES (972, 1);
-INSERT INTO `ownership` VALUES (973, 1);
-INSERT INTO `ownership` VALUES (974, 1);
-INSERT INTO `ownership` VALUES (975, 1);
-INSERT INTO `ownership` VALUES (976, 1);
-INSERT INTO `ownership` VALUES (977, 1);
-INSERT INTO `ownership` VALUES (978, 1);
-INSERT INTO `ownership` VALUES (979, 1);
-INSERT INTO `ownership` VALUES (980, 1);
-INSERT INTO `ownership` VALUES (981, 1);
-INSERT INTO `ownership` VALUES (982, 1);
-INSERT INTO `ownership` VALUES (983, 1);
-INSERT INTO `ownership` VALUES (984, 1);
-INSERT INTO `ownership` VALUES (985, 1);
-INSERT INTO `ownership` VALUES (986, 1);
-INSERT INTO `ownership` VALUES (987, 1);
-INSERT INTO `ownership` VALUES (988, 1);
-INSERT INTO `ownership` VALUES (989, 1);
-INSERT INTO `ownership` VALUES (990, 1);
-INSERT INTO `ownership` VALUES (994, 1);
-INSERT INTO `ownership` VALUES (995, 1);
-INSERT INTO `ownership` VALUES (996, 1);
-INSERT INTO `ownership` VALUES (997, 1);
-INSERT INTO `ownership` VALUES (998, 1);
-INSERT INTO `ownership` VALUES (999, 1);
-INSERT INTO `ownership` VALUES (1000, 1);
-INSERT INTO `ownership` VALUES (1001, 1);
-INSERT INTO `ownership` VALUES (1002, 1);
-INSERT INTO `ownership` VALUES (1003, 1);
-INSERT INTO `ownership` VALUES (1004, 1);
-INSERT INTO `ownership` VALUES (1005, 1);
-INSERT INTO `ownership` VALUES (1006, 1);
-INSERT INTO `ownership` VALUES (1007, 1);
-INSERT INTO `ownership` VALUES (1008, 1);
-INSERT INTO `ownership` VALUES (1009, 1);
-INSERT INTO `ownership` VALUES (1010, 1);
-INSERT INTO `ownership` VALUES (1011, 1);
-INSERT INTO `ownership` VALUES (1012, 1);
-INSERT INTO `ownership` VALUES (1013, 1);
-INSERT INTO `ownership` VALUES (1014, 1);
-INSERT INTO `ownership` VALUES (1015, 1);
-INSERT INTO `ownership` VALUES (1016, 1);
-INSERT INTO `ownership` VALUES (1017, 1);
-INSERT INTO `ownership` VALUES (1018, 1);
-INSERT INTO `ownership` VALUES (1019, 1);
-INSERT INTO `ownership` VALUES (1020, 1);
-INSERT INTO `ownership` VALUES (1021, 1);
-INSERT INTO `ownership` VALUES (1022, 1);
-INSERT INTO `ownership` VALUES (1023, 1);
-INSERT INTO `ownership` VALUES (1024, 1);
-INSERT INTO `ownership` VALUES (1025, 1);
-INSERT INTO `ownership` VALUES (1026, 1);
-INSERT INTO `ownership` VALUES (1027, 1);
-INSERT INTO `ownership` VALUES (1028, 1);
-INSERT INTO `ownership` VALUES (1029, 1);
-INSERT INTO `ownership` VALUES (1030, 1);
-INSERT INTO `ownership` VALUES (1031, 1);
-INSERT INTO `ownership` VALUES (1032, 1);
-INSERT INTO `ownership` VALUES (1033, 1);
-INSERT INTO `ownership` VALUES (1034, 1);
-INSERT INTO `ownership` VALUES (1035, 1);
-INSERT INTO `ownership` VALUES (1036, 1);
-INSERT INTO `ownership` VALUES (1037, 1);
-INSERT INTO `ownership` VALUES (1038, 1);
-INSERT INTO `ownership` VALUES (1039, 1);
-INSERT INTO `ownership` VALUES (1040, 1);
-INSERT INTO `ownership` VALUES (1041, 1);
-INSERT INTO `ownership` VALUES (1042, 1);
-INSERT INTO `ownership` VALUES (1043, 1);
-INSERT INTO `ownership` VALUES (1044, 1);
-INSERT INTO `ownership` VALUES (1045, 1);
-INSERT INTO `ownership` VALUES (1046, 1);
-INSERT INTO `ownership` VALUES (1047, 1);
-INSERT INTO `ownership` VALUES (1048, 1);
-INSERT INTO `ownership` VALUES (1049, 1);
-INSERT INTO `ownership` VALUES (1050, 1);
-INSERT INTO `ownership` VALUES (1051, 1);
-INSERT INTO `ownership` VALUES (1052, 1);
-INSERT INTO `ownership` VALUES (1053, 1);
-INSERT INTO `ownership` VALUES (1054, 1);
 INSERT INTO `ownership` VALUES (810, 5430);
 INSERT INTO `ownership` VALUES (811, 5430);
 INSERT INTO `ownership` VALUES (812, 5430);
@@ -2126,6 +2122,115 @@ INSERT INTO `ownership` VALUES (968, 5430);
 INSERT INTO `ownership` VALUES (969, 5430);
 INSERT INTO `ownership` VALUES (970, 5430);
 INSERT INTO `ownership` VALUES (971, 5430);
+INSERT INTO `ownership` VALUES (972, 1);
+INSERT INTO `ownership` VALUES (973, 1);
+INSERT INTO `ownership` VALUES (974, 1);
+INSERT INTO `ownership` VALUES (975, 1);
+INSERT INTO `ownership` VALUES (976, 1);
+INSERT INTO `ownership` VALUES (977, 1);
+INSERT INTO `ownership` VALUES (978, 1);
+INSERT INTO `ownership` VALUES (979, 1);
+INSERT INTO `ownership` VALUES (980, 1);
+INSERT INTO `ownership` VALUES (981, 1);
+INSERT INTO `ownership` VALUES (982, 1);
+INSERT INTO `ownership` VALUES (983, 1);
+INSERT INTO `ownership` VALUES (984, 1);
+INSERT INTO `ownership` VALUES (985, 1);
+INSERT INTO `ownership` VALUES (986, 1);
+INSERT INTO `ownership` VALUES (987, 1);
+INSERT INTO `ownership` VALUES (988, 1);
+INSERT INTO `ownership` VALUES (989, 1);
+INSERT INTO `ownership` VALUES (990, 1);
+INSERT INTO `ownership` VALUES (994, 1);
+INSERT INTO `ownership` VALUES (995, 1);
+INSERT INTO `ownership` VALUES (996, 1);
+INSERT INTO `ownership` VALUES (997, 1);
+INSERT INTO `ownership` VALUES (998, 1);
+INSERT INTO `ownership` VALUES (999, 1);
+INSERT INTO `ownership` VALUES (1000, 1);
+INSERT INTO `ownership` VALUES (1001, 1);
+INSERT INTO `ownership` VALUES (1002, 1);
+INSERT INTO `ownership` VALUES (1003, 1);
+INSERT INTO `ownership` VALUES (1004, 1);
+INSERT INTO `ownership` VALUES (1005, 1);
+INSERT INTO `ownership` VALUES (1006, 1);
+INSERT INTO `ownership` VALUES (1007, 1);
+INSERT INTO `ownership` VALUES (1008, 1);
+INSERT INTO `ownership` VALUES (1009, 1);
+INSERT INTO `ownership` VALUES (1010, 1);
+INSERT INTO `ownership` VALUES (1011, 1);
+INSERT INTO `ownership` VALUES (1012, 1);
+INSERT INTO `ownership` VALUES (1013, 1);
+INSERT INTO `ownership` VALUES (1014, 1);
+INSERT INTO `ownership` VALUES (1015, 1);
+INSERT INTO `ownership` VALUES (1016, 1);
+INSERT INTO `ownership` VALUES (1017, 1);
+INSERT INTO `ownership` VALUES (1018, 1);
+INSERT INTO `ownership` VALUES (1019, 1);
+INSERT INTO `ownership` VALUES (1020, 1);
+INSERT INTO `ownership` VALUES (1021, 1);
+INSERT INTO `ownership` VALUES (1022, 1);
+INSERT INTO `ownership` VALUES (1023, 1);
+INSERT INTO `ownership` VALUES (1024, 1);
+INSERT INTO `ownership` VALUES (1025, 1);
+INSERT INTO `ownership` VALUES (1026, 1);
+INSERT INTO `ownership` VALUES (1027, 1);
+INSERT INTO `ownership` VALUES (1028, 1);
+INSERT INTO `ownership` VALUES (1029, 1);
+INSERT INTO `ownership` VALUES (1030, 1);
+INSERT INTO `ownership` VALUES (1031, 1);
+INSERT INTO `ownership` VALUES (1032, 1);
+INSERT INTO `ownership` VALUES (1033, 1);
+INSERT INTO `ownership` VALUES (1034, 1);
+INSERT INTO `ownership` VALUES (1035, 1);
+INSERT INTO `ownership` VALUES (1036, 1);
+INSERT INTO `ownership` VALUES (1037, 1);
+INSERT INTO `ownership` VALUES (1038, 1);
+INSERT INTO `ownership` VALUES (1039, 1);
+INSERT INTO `ownership` VALUES (1040, 1);
+INSERT INTO `ownership` VALUES (1041, 1);
+INSERT INTO `ownership` VALUES (1042, 1);
+INSERT INTO `ownership` VALUES (1043, 1);
+INSERT INTO `ownership` VALUES (1044, 1);
+INSERT INTO `ownership` VALUES (1045, 1);
+INSERT INTO `ownership` VALUES (1046, 1);
+INSERT INTO `ownership` VALUES (1047, 1);
+INSERT INTO `ownership` VALUES (1048, 1);
+INSERT INTO `ownership` VALUES (1049, 1);
+INSERT INTO `ownership` VALUES (1050, 1);
+INSERT INTO `ownership` VALUES (1051, 1);
+INSERT INTO `ownership` VALUES (1052, 1);
+INSERT INTO `ownership` VALUES (1053, 1);
+INSERT INTO `ownership` VALUES (1054, 1);
+INSERT INTO `ownership` VALUES (1055, 1);
+INSERT INTO `ownership` VALUES (1056, 1);
+INSERT INTO `ownership` VALUES (1057, 1);
+INSERT INTO `ownership` VALUES (1058, 1);
+INSERT INTO `ownership` VALUES (1059, 1);
+INSERT INTO `ownership` VALUES (1060, 1);
+INSERT INTO `ownership` VALUES (1061, 1);
+INSERT INTO `ownership` VALUES (1062, 1);
+INSERT INTO `ownership` VALUES (1063, 1);
+INSERT INTO `ownership` VALUES (1064, 1);
+INSERT INTO `ownership` VALUES (1065, 1);
+INSERT INTO `ownership` VALUES (1066, 1);
+INSERT INTO `ownership` VALUES (1067, 1);
+INSERT INTO `ownership` VALUES (1068, 1);
+INSERT INTO `ownership` VALUES (1069, 1);
+INSERT INTO `ownership` VALUES (1070, 1);
+INSERT INTO `ownership` VALUES (1071, 1);
+INSERT INTO `ownership` VALUES (1072, 1);
+INSERT INTO `ownership` VALUES (1073, 1);
+INSERT INTO `ownership` VALUES (1074, 1);
+INSERT INTO `ownership` VALUES (1075, 1);
+INSERT INTO `ownership` VALUES (1076, 1);
+INSERT INTO `ownership` VALUES (1077, 1);
+INSERT INTO `ownership` VALUES (1078, 1);
+INSERT INTO `ownership` VALUES (1079, 1);
+INSERT INTO `ownership` VALUES (1080, 1);
+INSERT INTO `ownership` VALUES (1081, 1);
+INSERT INTO `ownership` VALUES (1082, 1);
+INSERT INTO `ownership` VALUES (1083, 1);
 
 -- --------------------------------------------------------
 
@@ -2138,19 +2243,25 @@ CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
+  `record_number` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) TYPE=InnoDB COMMENT='An patient extends the person entity';
+) TYPE=MyISAM COMMENT='An patient extends the person entity';
 
 -- 
 -- Dumping data for table `patient`
 -- 
 
-INSERT INTO `patient` VALUES (955, 0, 0);
-INSERT INTO `patient` VALUES (975, 0, 0);
-INSERT INTO `patient` VALUES (977, 0, 0);
-INSERT INTO `patient` VALUES (979, 0, 0);
-INSERT INTO `patient` VALUES (981, 0, 0);
-INSERT INTO `patient` VALUES (983, 0, 0);
+INSERT INTO `patient` VALUES (955, 0, 0, 0);
+INSERT INTO `patient` VALUES (975, 0, 0, 0);
+INSERT INTO `patient` VALUES (977, 0, 0, 0);
+INSERT INTO `patient` VALUES (979, 0, 0, 0);
+INSERT INTO `patient` VALUES (981, 0, 0, 0);
+INSERT INTO `patient` VALUES (983, 0, 0, 0);
+INSERT INTO `patient` VALUES (1061, 0, 0, 7);
+INSERT INTO `patient` VALUES (1076, 0, 0, 8);
+INSERT INTO `patient` VALUES (1077, 0, 0, 9);
+INSERT INTO `patient` VALUES (1078, 0, 0, 10);
+INSERT INTO `patient` VALUES (1079, 0, 0, 11);
 
 -- --------------------------------------------------------
 
@@ -2177,14 +2288,19 @@ CREATE TABLE `person` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) TYPE=InnoDB COMMENT='A person in the system';
+) TYPE=MyISAM COMMENT='A person in the system';
 
 -- 
 -- Dumping data for table `person`
 -- 
 
 INSERT INTO `person` VALUES (955, '', 'Eichorn', 'Joshua', 'R', 0, '', '0000-00-00', '', '', '', '', '', '', '123-456-7890', 1);
-INSERT INTO `person` VALUES (983, '', 'Person', 'Random', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
+INSERT INTO `person` VALUES (983, '', 'Eichorn', 'Joshua', '', 1, '', '0000-00-00', '', '', '', '', '', '', '12345678', 1);
+INSERT INTO `person` VALUES (1061, '', 'adamsly235', 'jon235', '', 1, '', '1941-03-09', '', '', '', '', '', '', '333-33-2313', 1);
+INSERT INTO `person` VALUES (1076, '', 'Doe', 'Michael', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1077, '', 'Doe', 'Chris', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1078, '', 'Doe', 'Morton', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
+INSERT INTO `person` VALUES (1079, '', 'Doe', 'Jonathan', '', 0, '', '0000-00-00', '', '', '', '', '', '', '1231214', 1);
 
 -- --------------------------------------------------------
 
@@ -2200,13 +2316,14 @@ CREATE TABLE `person_address` (
   PRIMARY KEY  (`person_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `person_id` (`person_id`)
-) TYPE=InnoDB COMMENT='Links a person to a address specifying the address type';
+) TYPE=MyISAM COMMENT='Links a person to a address specifying the address type';
 
 -- 
 -- Dumping data for table `person_address`
 -- 
 
 INSERT INTO `person_address` VALUES (955, 957, 1);
+INSERT INTO `person_address` VALUES (1061, 1063, 1);
 
 -- --------------------------------------------------------
 
@@ -2222,7 +2339,7 @@ CREATE TABLE `person_company` (
   PRIMARY KEY  (`person_id`,`company_id`),
   KEY `person_id` (`person_id`),
   KEY `company_id` (`company_id`)
-) TYPE=InnoDB COMMENT='Links a person to a company and optionaly specifies the lin';
+) TYPE=MyISAM COMMENT='Links a person to a company and optionaly specifies the lin';
 
 -- 
 -- Dumping data for table `person_company`
@@ -2242,7 +2359,7 @@ CREATE TABLE `person_number` (
   PRIMARY KEY  (`person_id`,`number_id`),
   KEY `person_id` (`person_id`),
   KEY `phone_id` (`number_id`)
-) TYPE=InnoDB COMMENT='Links between people and phone_numbers';
+) TYPE=MyISAM COMMENT='Links between people and phone_numbers';
 
 -- 
 -- Dumping data for table `person_number`
@@ -2252,6 +2369,8 @@ INSERT INTO `person_number` VALUES (2, 784);
 INSERT INTO `person_number` VALUES (786, 793);
 INSERT INTO `person_number` VALUES (786, 794);
 INSERT INTO `person_number` VALUES (955, 956);
+INSERT INTO `person_number` VALUES (1061, 1062);
+INSERT INTO `person_number` VALUES (1061, 1064);
 
 -- --------------------------------------------------------
 
@@ -2267,7 +2386,7 @@ CREATE TABLE `person_person` (
   PRIMARY KEY  (`person_id`,`related_person_id`,`relation_type`),
   KEY `person_id` (`person_id`),
   KEY `related_person_id` (`related_person_id`)
-) TYPE=InnoDB;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `person_person`
@@ -2287,7 +2406,7 @@ CREATE TABLE `person_type` (
   PRIMARY KEY  (`person_id`,`person_type`),
   KEY `person_id` (`person_id`),
   KEY `person_type` (`person_type`)
-) TYPE=InnoDB COMMENT='Link to specify person type';
+) TYPE=MyISAM COMMENT='Link to specify person type';
 
 -- 
 -- Dumping data for table `person_type`
@@ -2309,7 +2428,7 @@ CREATE TABLE `practice_address` (
   PRIMARY KEY  (`practice_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `practice_id` (`practice_id`)
-) TYPE=InnoDB COMMENT='Links a practice to a address specifying the address type';
+) TYPE=MyISAM COMMENT='Links a practice to a address specifying the address type';
 
 -- 
 -- Dumping data for table `practice_address`
@@ -2414,7 +2533,25 @@ CREATE TABLE `provider_to_insurance` (
 -- 
 
 INSERT INTO `provider_to_insurance` VALUES (990, 983, 989, '123456', 1, 'blah blah');
-INSERT INTO `provider_to_insurance` VALUES (999, 983, 989, '', 1, '');
+INSERT INTO `provider_to_insurance` VALUES (1028, 983, 989, '', 1, '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `record_sequence`
+-- 
+
+DROP TABLE IF EXISTS `record_sequence`;
+CREATE TABLE `record_sequence` (
+  `id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `record_sequence`
+-- 
+
+INSERT INTO `record_sequence` VALUES (11);
 
 -- --------------------------------------------------------
 
@@ -2430,7 +2567,7 @@ CREATE TABLE `report_templates` (
   `is_default` enum('yes','no') NOT NULL default 'yes',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
-) TYPE=InnoDB COMMENT='Report templates';
+) TYPE=MyISAM COMMENT='Report templates';
 
 -- 
 -- Dumping data for table `report_templates`
@@ -2456,7 +2593,7 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=792 ;
+) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=792 ;
 
 -- 
 -- Dumping data for table `reports`
@@ -2503,6 +2640,7 @@ CREATE TABLE `schedules` (
   `description_short` text NOT NULL,
   `practice_id` int(11) NOT NULL default '0',
   `user_id` int(11) default NULL,
+  `room_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 
@@ -2510,10 +2648,12 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 -- 
 
-INSERT INTO `schedules` VALUES (126, 'PS', 'Dr Smiths Schedule', '', '', 2, 1);
-INSERT INTO `schedules` VALUES (501, 'PS', 'Provider 2', '', '', 2, 306);
-INSERT INTO `schedules` VALUES (640, 'PS', 'Jnelson''s Office hours', '', '', 2, 306);
-INSERT INTO `schedules` VALUES (662, 'PS', 'Test Schedule', '', '', 2, 306);
+INSERT INTO `schedules` VALUES (126, 'PS', 'Dr Smiths Schedule', '', '', 2, 984, 0);
+INSERT INTO `schedules` VALUES (501, 'PS', 'Provider 2', '', '', 2, 306, 0);
+INSERT INTO `schedules` VALUES (640, 'PS', 'Jnelson''s Office hours', '', '', 2, 984, 0);
+INSERT INTO `schedules` VALUES (662, 'PS', 'Test Schedule', '', '', 2, 306, 0);
+INSERT INTO `schedules` VALUES (1009, 'PS', 'Test Schedule', '', 'testing 123', 2, 984, 0);
+INSERT INTO `schedules` VALUES (1011, 'PS', 'XRay Schedule', '', '', 2, 0, 14);
 
 -- --------------------------------------------------------
 
@@ -2531,7 +2671,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (1054);
+INSERT INTO `sequences` VALUES (1083);
 
 -- --------------------------------------------------------
 
@@ -2747,7 +2887,7 @@ CREATE TABLE `storage_date` (
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to store date values';
+) TYPE=MyISAM COMMENT='Generic way to store date values';
 
 -- 
 -- Dumping data for table `storage_date`
@@ -2761,6 +2901,7 @@ INSERT INTO `storage_date` VALUES (806, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (807, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (808, 'test_string', '2005-03-31');
 INSERT INTO `storage_date` VALUES (809, 'test_data', '2005-03-04');
+INSERT INTO `storage_date` VALUES (1010, 'test_data', '2005-03-09');
 
 -- --------------------------------------------------------
 
@@ -2774,7 +2915,7 @@ CREATE TABLE `storage_int` (
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to store integer values (also boolean)';
+) TYPE=MyISAM COMMENT='Generic way to store integer values (also boolean)';
 
 -- 
 -- Dumping data for table `storage_int`
@@ -2793,7 +2934,7 @@ CREATE TABLE `storage_string` (
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to string values';
+) TYPE=MyISAM COMMENT='Generic way to string values';
 
 -- 
 -- Dumping data for table `storage_string`
@@ -2808,6 +2949,8 @@ INSERT INTO `storage_string` VALUES (807, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (808, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (809, 'test_string', 'Test');
 INSERT INTO `storage_string` VALUES (968, 'email', '');
+INSERT INTO `storage_string` VALUES (1010, 'test_string', 'test this');
+INSERT INTO `storage_string` VALUES (1072, 'email', '');
 
 -- --------------------------------------------------------
 
@@ -2821,29 +2964,24 @@ CREATE TABLE `superbill_data` (
   `superbill_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
   `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`),
-  UNIQUE KEY `superbill_id` (`superbill_id`,`code_id`)
+  PRIMARY KEY  (`superbill_data_id`)
 ) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `superbill_data`
 -- 
 
-INSERT INTO `superbill_data` VALUES (1026, 1, 26754, 0);
-INSERT INTO `superbill_data` VALUES (1027, 1, 26752, 1);
-INSERT INTO `superbill_data` VALUES (1028, 1, 26747, 1);
-INSERT INTO `superbill_data` VALUES (1029, 1, 26744, 1);
-INSERT INTO `superbill_data` VALUES (1030, 1, 26739, 1);
-INSERT INTO `superbill_data` VALUES (1031, 1, 26735, 1);
-INSERT INTO `superbill_data` VALUES (1032, 1, 26730, 1);
-INSERT INTO `superbill_data` VALUES (1033, 1, 26729, 1);
-INSERT INTO `superbill_data` VALUES (1034, 1, 26758, 1);
-INSERT INTO `superbill_data` VALUES (1039, 1, 26761, 1);
-INSERT INTO `superbill_data` VALUES (1042, 1, 26760, 0);
-INSERT INTO `superbill_data` VALUES (1041, 1, 26759, 1);
-INSERT INTO `superbill_data` VALUES (1051, 1, 26750, 1);
-INSERT INTO `superbill_data` VALUES (1052, 1, 26749, 1);
-INSERT INTO `superbill_data` VALUES (1053, 1, 26748, 1);
+INSERT INTO `superbill_data` VALUES (998, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (999, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1001, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1002, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1003, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1004, 1, 0, 1);
+INSERT INTO `superbill_data` VALUES (1005, 1, 26761, 1);
+INSERT INTO `superbill_data` VALUES (1006, 1, 26752, 1);
+INSERT INTO `superbill_data` VALUES (1007, 1, 26751, 1);
+INSERT INTO `superbill_data` VALUES (1008, 1, 26758, 1);
 
 -- --------------------------------------------------------
 
@@ -2864,14 +3002,14 @@ CREATE TABLE `user` (
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
-) TYPE=InnoDB COMMENT='Users in the System';
+) TYPE=MyISAM COMMENT='Users in the System';
 
 -- 
 -- Dumping data for table `user`
 -- 
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 0);
-INSERT INTO `user` VALUES (984, 'jeichorn', 'test', '', '', 983, '', 0);
+INSERT INTO `user` VALUES (984, 'jeichorn', 'test', 'jei', '336666', 983, '', 0);
 
 -- --------------------------------------------------------
 
@@ -2897,68 +3035,6 @@ CREATE TABLE `users_groups` (
 INSERT INTO `users_groups` VALUES (1, 1, 1, 0, '');
 INSERT INTO `users_groups` VALUES (634, 306, 1, 0, '');
 INSERT INTO `users_groups` VALUES (635, 306, 0, 0, '');
-
--- 
--- Constraints for dumped tables
--- 
-
--- 
--- Constraints for table `company`
--- 
-ALTER TABLE `company`
-  ADD CONSTRAINT `company_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `ownership` (`id`);
-
--- 
--- Constraints for table `company_address`
--- 
-ALTER TABLE `company_address`
-  ADD CONSTRAINT `company_address_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
-  ADD CONSTRAINT `company_address_ibfk_2` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`);
-
--- 
--- Constraints for table `company_company`
--- 
-ALTER TABLE `company_company`
-  ADD CONSTRAINT `company_company_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`),
-  ADD CONSTRAINT `company_company_ibfk_2` FOREIGN KEY (`related_company_id`) REFERENCES `company` (`company_id`);
-
--- 
--- Constraints for table `company_number`
--- 
-ALTER TABLE `company_number`
-  ADD CONSTRAINT `company_number_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `ownership` (`id`),
-  ADD CONSTRAINT `company_number_ibfk_2` FOREIGN KEY (`number_id`) REFERENCES `number` (`number_id`);
-
--- 
--- Constraints for table `company_type`
--- 
-ALTER TABLE `company_type`
-  ADD CONSTRAINT `company_type_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`);
-
--- 
--- Constraints for table `fee_schedule_data`
--- 
-ALTER TABLE `fee_schedule_data`
-  ADD CONSTRAINT `fee_schedule_data_ibfk_2` FOREIGN KEY (`revision_id`) REFERENCES `fee_schedule_revision` (`revision_id`),
-  ADD CONSTRAINT `fee_schedule_data_ibfk_3` FOREIGN KEY (`fee_schedule_id`) REFERENCES `fee_schedule` (`fee_schedule_id`);
-
--- 
--- Constraints for table `person`
--- 
-ALTER TABLE `person`
-  ADD CONSTRAINT `person_ibfk_7` FOREIGN KEY (`person_id`) REFERENCES `ownership` (`id`);
-
--- 
--- Constraints for table `person_type`
--- 
-ALTER TABLE `person_type`
-  ADD CONSTRAINT `person_type_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
-
--- 
--- Constraints for table `user`
--- 
-ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
 
 SET FOREIGN_KEY_CHECKS=1;
 
