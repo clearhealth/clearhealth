@@ -199,6 +199,20 @@ class M_Patient extends Manager {
 	}
 
 	/**
+	 * Setup for editing an encounter date
+	 */
+	function process_editEncounterDate($patient_id,$encounter_date_id) {
+		$this->controller->encounter_date_id = $encounter_date_id;
+	}
+
+	/**
+	 * Setup for editing an encounter person
+	 */
+	function process_editEncounterPerson($patient_id,$encounter_person_id) {
+		$this->controller->encounter_person_id = $encounter_person_id;
+	}
+
+	/**
 	 * Approve an patient
 	 */
 	function process_approve($patient_id) {

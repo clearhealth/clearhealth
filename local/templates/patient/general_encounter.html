@@ -89,11 +89,11 @@ function captureEnter (field, event) {
 	{if $encounterPersonGrid->empty}
 	<p>Encounter has no extra people</p>
 	{/if}
-	<input type="hidden" name="encounterPerson[encounter_person_id]" value="{$encounterPerson->get('encounter_person_id')}" id="person_id_1">
+	<input type="hidden" name="encounterPerson[encounter_person_id]" value="{$encounterPerson->get('encounter_person_id')}">
 	<table>
 		<tr>
 			<td>
-				<input type="hidden" name="encounterPerson[person_id]" value="{$encounterPerson->get('person_id')}">
+				<input type="hidden" name="encounterPerson[person_id]" value="{$encounterPerson->get('person_id')}" id="person_id_1">
 			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
 				autocomplete="off" value="{$encounterPerson->get('person_id')}">
 			<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 

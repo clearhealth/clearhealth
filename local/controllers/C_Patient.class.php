@@ -166,11 +166,11 @@ class C_Patient extends Controller {
 
 		$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$encounter_id);
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
-		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate').'id={$encounter_date_id}">{$date}</a>');
+		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
 
 		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
-		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson').'id={$encounter_person_id}">{$person}</a>');
+		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
