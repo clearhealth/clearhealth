@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1
+-- version 2.6.1-rc2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 20, 2005 at 01:01 AM
--- Server version: 4.0.18
--- PHP Version: 4.3.4
+-- Generation Time: Mar 21, 2005 at 11:51 AM
+-- Server version: 4.0.23
+-- PHP Version: 4.3.10
 -- 
 -- Database: `clearhealth`
 -- 
@@ -16,6 +16,7 @@
 -- Table structure for table `menu`
 -- 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -27,7 +28,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=94 ;
+) TYPE=MyISAM AUTO_INCREMENT=98 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -112,3 +113,7 @@ INSERT INTO `menu` VALUES (90, 'patient', 1, '', 'children', -1, 'Dashboard Form
 INSERT INTO `menu` VALUES (91, 'patient', 1, '', 'children', -1, 'Encounter Forms', '', 'main/Encounter');
 INSERT INTO `menu` VALUES (92, 'admin', 26, '', 'children', 100, 'Connect', 'Form/connect', 'main');
 INSERT INTO `menu` VALUES (93, 'billing', 1, '', 'children', 0, '', 'Eob/Payment', 'main');
+INSERT INTO `menu` VALUES (94, 'default', 39, '', 'children', 50, 'Change Password', 'User/password', 'main');
+INSERT INTO `menu` VALUES (95, 'patient', 46, '', 'children', 50, 'Change Password', 'User/password', 'main');
+INSERT INTO `menu` VALUES (96, 'billing', 49, '', 'children', 50, 'Change Password', 'User/password', 'main');
+INSERT INTO `menu` VALUES (97, 'admin', 59, '', 'children', 50, 'Change Password', 'User/password', 'main');
