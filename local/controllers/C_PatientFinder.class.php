@@ -19,9 +19,9 @@ class C_PatientFinder extends Controller {
 		$this->limit = 50;
 		
 		//remove the trail entries for this because it is a popup
-		$trail = $_SESSION['trail'];
-		if(is_array($trail)) array_shift($trail);
-		$_SESSION['trail'] = $trail;
+		//$trail = $_SESSION['trail'];
+		//if(is_array($trail)) array_shift($trail);
+		//$_SESSION['trail'] = $trail;
 	}
 
 	function default_action($form_name='') {

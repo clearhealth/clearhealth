@@ -131,6 +131,13 @@ class Encounter extends ORDataObject {
 		}
 	}
 	
+	function appointmentList_remoting($occurence_id,$patient_id) {
+		$this->set("patient_id",(int)$patient_id);
+		$ar = $this->appointmentList();
+		if (isset($ar[(int)$occurence_id])) return $ar[(int)$occurence_id];
+		return array();
+	}
+	
 	function appointmentList() {
 		$sql = "select b.name as building_name, b.id as building_id, r.name as room_name, r.id as room_id, o.id as occurence_id, concat_ws(' ',psn.first_name,psn.last_name) as provider_name, pvds.person_id as provider_id, "
 				." o.start as appointment_start "

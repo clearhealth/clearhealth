@@ -214,7 +214,7 @@ class C_Patient extends Controller {
 		$formDataGrid->pageSize = 10;
 		
 		$appointments = $encounter->appointmentList();
-		$appointmentArray = array();
+		$appointmentArray = array("" => "");
 		foreach($appointments as $appointment) {
 			$appointmentArray[$appointment['occurence_id']] = $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
 		}
@@ -274,7 +274,6 @@ class C_Patient extends Controller {
 		$this->encounter_id = $encounter->get('id');
 
 		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
-			echo "here" . $_POST['encounterDate']['date'];
 			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
 			$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$this->encounter_id);
 			$encounterDate->populate_array($_POST['encounterDate']);

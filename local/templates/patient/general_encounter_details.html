@@ -1,5 +1,6 @@
 <fieldset>
 	<legend>{l}Details{/l}</legend>
+	<input type="hidden" name="encounter[patient_id]" value="{$encounter->get("patient_id")}">
 	<table>
 		<tr>
 			<td><label>{l}Facility{/l}:</label></td>
@@ -25,7 +26,7 @@
 		</tr>
 		<tr>			
 			<td><label>{l}Appointment{/l}:</label></td>
-			<td>{html_options name="encounter[occurence_id]" options=$appointmentArray}
+			<td>{html_options name="encounter[occurence_id]" options=$appointmentArray onChange="populateEncounter(this.selectedIndex)"}
 			{foreach from=$appointmentlist item=appointment}
 			{/foreach}
 			</td>
@@ -45,3 +46,30 @@
 		</tr>
 	</table>
 </fieldset>
+{literal}
+<script language="javascript" type="text/javascript">
+function populateEncounter(selected) {
+	var oc_id = document.forms.encounter['encounter[occurence_id]'][selected].value;
+	var pat_id = document.forms.encounter['encounter[patient_id]'].value;
+	e = new encounter();
+	e.Sync();
+	results = e.appointmentlist_remoting(oc_id,pat_id);
+	treating_person = document.forms.encounter['encounter[treating_person_id]'];
+	building = document.forms.encounter['encounter[building_id]'];
+	
+	for (i=0;i<treating_person.length;i++) {
+		 if (treating_person[i].value == results['provider_id']) {
+		 	treating_person[i].selected = true;
+		 }
+	}
+	
+	for (i=0;i<building.length;i++) {
+		 if (building[i].value == results['building_id']) {
+		 	building[i].selected = true;
+		 }
+	}
+}
+
+</script>
+{/literal}
+

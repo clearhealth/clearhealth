@@ -17,6 +17,7 @@ require_once APP_ROOT. '/local/ordo/Report.class.php';
 require_once APP_ROOT. '/local/ordo/MenuReport.class.php';
 require_once APP_ROOT. '/local/ordo/Form.class.php';
 require_once APP_ROOT. '/local/ordo/MenuForm.class.php';
+require_once APP_ROOT. '/local/ordo/Encounter.class.php';
 
 // Create the PostOffice server
 $S = & new JPSpan_Server_PostOffice();
@@ -36,6 +37,10 @@ $S->addHandler(new FeeScheduleDatasource());
 $S->addHandler(new SuperbillDatasource());
 $S->addHandler(new IcdCodingDatasource());
 $S->addHandler(new CptCodingDatasource());
+$encounterHandler = new JPSpan_HandleDescription();
+$encounterHandler->Class = 'Encounter';
+$encounterHandler->methods = array('appointmentlist_remoting');
+$S->addHandler(new Encounter(), $encounterHandler);
 
 // used by C_Report connect action
 $S->addHandler(new Report());
