@@ -62,45 +62,59 @@ var C_PatientFinder = function find_remoting(searchString) {
 			</tr>
 			<tr>
 				<td><label>Salutation: </label></td>
-                          <td colspan="2">
-			  <input name="person[salutation]" size="5" value="{$person->get('salutation')}">
-			  &nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">
-			  &nbsp;&nbsp;Middle Initial: 
-			  <input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
-			  </td>
-                        </tr>
-				{if !$hide_type}
-                        <tr>
+				<td colspan="2">
+					<input name="person[salutation]" size="5" value="{$person->get('salutation')}">
+					&nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">
+					&nbsp;&nbsp;Middle Initial: 
+					<input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
+				</td>
+			</tr>
+			{if !$hide_type}
+	        <tr>
 				<td style="vertical-align:top;"><label>Type:</label></td>
 				<td>
 				  <select name="person[type]">
 					  <option></option>
 					  {html_options options=$person->getTypeList() selected=$person->get('type')}
 				  </select>
-			 </td>
-                        </tr>
-			 	{/if}
-                        <tr>
+				 </td>
+            </tr>
+		 	{/if}
+            <tr>
 				<td><label>Employer Name:</label> </td>
 				<td><input name="person[employer_name]" size="30" value="{$person->get('employer_name')}"></td>
-                        </tr>
+            </tr>
+            <tr>
 				<td><label>Gender:</label> </td>
-                          <td colspan="2">
-                          <select name="person[gender]">
-				  <option></option>
-				{html_options options=$person->getGenderList() selected=$person->get('gender')}
-                          </select>&nbsp;&nbsp;
-			  DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
-                          </td>
-                        </tr>
+				<td colspan="2">
+					<select name="person[gender]">
+						<option></option>
+						{html_options options=$person->getGenderList() selected=$person->get('gender')}
+					</select>&nbsp;&nbsp;
+			  		DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+				</td>
+			</tr>
+            <tr>
+				<td><label>Marital Status:</label> </td>
+				<td colspan="2">
+					<select name="person[marital_status]">
+						<option></option>
+						{html_options options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
+					</select>&nbsp;&nbsp;
+					Default Provider:
+					<select name="person[default_provider]">
+						<option></option>
+						{html_options options=$providers_array selected=$person->get('default_provider')}
+					</select>&nbsp;&nbsp;
+				</td>
+			</tr>
 			<tr>
 				<td></td>
 				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
 			</tr>
-                      </tbody>
-
-                    </table>
-                    </fieldset>
+			</tbody>
+		</table>
+		</fieldset>
 {clni_register_validation_rule id="last_name"}
 {clni_register_validation_rule id="identifier"}
 

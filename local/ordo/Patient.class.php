@@ -32,6 +32,8 @@ class Patient extends MergeDecorator {
 	var $person;
 	var $record_number = "";
 	var $employer_name = "";
+	var $default_provider = "";
+	var $marital_status = "";
 
 
 	/**
@@ -207,5 +209,18 @@ class Patient extends MergeDecorator {
 		$ret['record_number'] = $this->get('record_number');
 		return $ret;
 	}
+
+	function getMaritalStatusList() {
+		$list = $this->_load_enum('marital_status',false);
+		return array_flip($list);
+	}
+	
+	function get_print_marital_status() {
+		$list = array_flip($this->_load_enum('marital_status',false));
+		if(isset($list[$this->get("marital_status")])) {
+			return $list[$this->get("marital_status")];
+		}
+	}
+
 }
 ?>

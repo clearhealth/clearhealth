@@ -107,6 +107,7 @@ class C_Patient extends Controller {
 
 		$this->set('patient_id',$patient_id);
 
+		$user =& ORdataObject::factory('User');
 		$person =& ORdataObject::factory('Patient',$patient_id);
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
@@ -137,7 +138,7 @@ class C_Patient extends Controller {
 		
 		$patientStatistics =& ORDataObject::factory('PatientStatistics',$this->patient_statistics_id);
 		
-
+		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
