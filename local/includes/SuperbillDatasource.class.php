@@ -1,9 +1,9 @@
 <?php
-require_once APP_ROOT ."/local/includes/FeeScheduleDatasource.class.php";
+require_once CELLINI_ROOT ."/includes/Datasource_editable.class.php";
 
 class SuperbillDatasource extends Datasource_editable {
 
-	var $where = array('code_type'=>3);
+	var $where = array("code_type"=> array(2,3));
 
 	var $primaryKeyField = 'superbill_data_id';
 
@@ -36,16 +36,31 @@ class SuperbillDatasource extends Datasource_editable {
 		$where = "";
 		$first = true;
 		foreach($this->where as $col => $value) {
+			
 			if (!$first) {
 				$where .= " and ";
 			}
+			if (is_array($value)) {
+				$parts = array();
+				
+				foreach($value as $val) {
+					$parts[] .= " $col = ".$this->_db->qstr("$val");
+				}
+				$where .= " (" . implode(" OR ", $parts) . ") ";
+			}
+			else {
+				$where .= " $col = ".$this->_db->qstr($value);
+			}
 			$first = false;
-
-			$where .= " $col = ".$this->_db->qstr($value);
 		}
 
 		foreach($this->whereFilter as $col => $value) {
-			$where .= " and $col like ".$this->_db->qstr("%$value%");
+			if ($col == "code") {
+				$where .= " and $col like ".$this->_db->qstr("$value%");
+			}
+			else {
+				$where .= " and $col like ".$this->_db->qstr("%$value%");
+			}
 		}
 		$this->_query['where'] = "$where";
 		parent::prepare();
