@@ -199,13 +199,12 @@ class C_Patient extends Controller {
 			$this->set('encounter_id',$encounter_id);
 		}
 		if ($patient_id > 0) {
-			$this->set("patient_id",$patient_id);	
+			$this->set('patient_id',$patient_id);
 		}
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
-		$this->set('external_id',$encounter_id);
-
+		$this->set('encounter_id',$encounter_id);
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$person =& ORDataObject::factory('Person');
 		$building =& ORDataObject::factory('Building');
@@ -260,7 +259,7 @@ class C_Patient extends Controller {
 		//if an appointment id is supplied the request is coming from the calendar and so prepopulate the defaults
 		if ($appointment_id > 0) {
 			$encounter->set("occurence_id",$appointment_id);
-			$encounter->set("patient_id",$appointment_id);
+			$encounter->set("patient_id",$this->get("patient_id"));
 			if (isset($appointments[$appointment_id])) {
 				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
 			}
@@ -301,7 +300,9 @@ class C_Patient extends Controller {
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
 			// todo: get this without hard coding in the report and template id
-			$this->assign('EXIT_REPORT',Cellini::link('report',true,true)."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
+			$exit_base_link = str_replace("main","PDF",Cellini::link('report',true,true));
+			
+			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
 		}
 
 
