@@ -30,7 +30,7 @@ class Encounter extends ORDataObject {
 	var $treating_person_id		= '';
 	var $timestamp			= '';
 	var $last_change_user_id	= '';
-	var $status			= '';
+	var $status			= 'open';
 	var $occurence_id		= '';
 	/**#@-*/
 
@@ -84,6 +84,10 @@ class Encounter extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function set_date_of_treatment($date) {
+		$this->date_of_treatment = $this->_mysqlDate($date);
+	}
+
 	/**#@-*/
 
 	
@@ -101,5 +105,28 @@ class Encounter extends ORDataObject {
 		$ds->registerFilter('encounter_reason',array(&$this,'lookupEncounterReason'));
 		return $ds;
 	}
+
+	/**#@+
+	 * Enumeration getters
+	 */
+	function getEncounterReasonList() {
+		$list = $this->_load_enum('encounter_reason',false);
+		return array_flip($list);
+	}
+	/**#@-*/
+
+	var $erCache = false;
+	/**
+	 * Cached lookup for encounter_reason
+	 */
+	function lookupEncounterReason($id) {
+		if ($this->_erCache === false) {
+			$this->_erCache = $this->getEncounterReason();
+		}
+		if (isset($this->_erCache[$id])) {
+			return $this->_erCache[$id];
+		}
+	}
+
 }
 ?>

@@ -146,6 +146,36 @@ class C_Patient extends Controller {
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_list.html"));
 	}
 
+	/**
+	 * Edit/Add an encounter
+	 */
+	function encounter_action_edit($encounter_id = 0) {
+		if (isset($this->encounter_id)) {
+			$encounter_id = $this->encounter_id;
+		}
+		if ($encounter_id > 0) {
+			$this->set('encounter_id',$encounter_id);
+		}
+
+		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
+		$person =& ORDataObject::factory('Person');
+		$building =& ORDataObject::factory('Building');
+
+		$this->assign_by_ref('encounter',$encounter);
+		$this->assign_by_ref('person',$person);
+		$this->assign_by_ref('building',$building);
+
+		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
+
+		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
+	}
+
+	function encounter_action_process($encounter_id) {
+		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
+		$encounter->populate_array($_POST['encounter']);
+		$encounter->persist();
+		$this->encounter_id = $encounter->get('id');
+	}
 
 }
 ?>

@@ -338,7 +338,7 @@ class Person extends ORDataObject {
 	 * @param	string	$type The string value of the wanted type from the person type enumeration
 	 */
 	function getPersonList($type) {
-		$this->nameHistory->set('person_id',$this->get('person_id'));
+		//$this->nameHistory->set('person_id',$this->get('person_id'));
 
 		$types = $this->getTypeList();
 		$id = (int)array_search($type,$types);

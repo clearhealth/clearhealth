@@ -206,6 +206,16 @@ class Building extends ORDataObject{
 		return false;
 	}
 
+	function getBuildingList() {
+		$res = $this->_execute("select id, name from $this->_prefix$this->_table order by name");
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['id']] = $res->fields['name'];
+			$res->moveNext();
+		}
+		return $ret;
+	}
+
 
 } // end of Class
 

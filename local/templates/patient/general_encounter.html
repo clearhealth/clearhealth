@@ -1,0 +1,43 @@
+{clni_form action=$FORM_ACTION process=$PROCESS}
+	<table>
+		<tr>
+			<td><label>Date of Treatment:</label></td>
+			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment')}</td>
+			<td><label>Status:</label></td>
+			<td>{$encounter->get('status')} 
+				{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
+				<input type="submit" name="encounter[close]" value="Close">
+				{/if}
+				{if $encounter->get('status') == 'closed'}
+				<input type="submit" name="encounter[bill]" value="Bill">
+				{/if}
+			</td>
+		</tr>
+		<tr>
+			<td><label>Encounter Reason:</label></td>
+			<td><select name="encounter[encounter_reason]">
+					<option></option>
+					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
+				</select>
+			</td>
+
+			<td><label>Treating Person:</label></td>
+			<td><select name="encounter[treating_person_id]">
+					{html_options options=$person->getPersonList('Provider') selected=$encounter->get('treating_person_id')}
+				</select>
+			</tr>
+		</tr>
+		<tr>
+			<td><label>Building:</label></td>
+			<td><select name="encounter[building_id]">
+					<option></option>
+					{html_options options=$building->getBuildingList() selected=$encounter->get('building_id')}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter"></td>
+		</tr>
+	</table>
+</form>
