@@ -81,7 +81,7 @@ class CodingData extends ORDataObject {
 
 	/**#@-*/
 	function getModifierList() {
-		$list = $this->_load_enum('code_modifier',false);
+		$list = $this->_load_enum('code_modifier');
 		return array_flip($list);
 	}
 
