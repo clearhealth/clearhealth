@@ -7,6 +7,7 @@ body {
 #header {
 	background-color: #ccc;
 	position: relative;
+	z-index: 2;
 }
 
 #header h1 {
@@ -27,7 +28,6 @@ div#nav {
 	left: 0px;
 	height: 25px
 	vertical-align: bottom;
-	z-index:10;
 }
 
 div#nav div.section {
