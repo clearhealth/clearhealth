@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once APP_ROOT.'/local/ordo/Person.class.php';
+require_once CELLINI_ROOT.'/ordo/MergeDecorator.class.php';
 /**#@-*/
 
 /**
@@ -17,20 +17,12 @@ require_once APP_ROOT.'/local/ordo/Person.class.php';
  *
  * @package	com.uversainc.freestand
  */
-class Patient extends ORDataObject {
+class Patient extends MergeDecorator {
 
 	/**#@+
 	 * Fields of table: Patient mapped to class members
 	 */
-	var $id			= '';
-	var $ssn		= '';
-	var $date_hired		= '';
-	var $date_terminated	= '';
-	var $date_approved	= null;
-	var $approved_by	= null;
-	var $num_complaints	= '';
-	var $num_warnings	= '';
-	var $department		= '';
+	var $id = "";
 	/**#@-*/
 
 	/**
@@ -47,14 +39,15 @@ class Patient extends ORDataObject {
 		parent::ORDataObject($db);
 		$this->_table = 'patient';
 		$this->_sequence_name = 'sequences';
+		$this->merge('person',ORDataObject::factory('Person'));
 	}
 
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Patient with this
 	 */
 	function setup($id = 0) {
+		$this->person->set('id',$id);
 		$this->set('id',$id);
-		$this->person =& ORDataObject::factory('Person',$id);
 		if ($id > 0) {
 			$this->populate();
 		}
@@ -64,11 +57,11 @@ class Patient extends ORDataObject {
 	 * Persist the data
 	 */
 	function persist() {
-		if (isset($this->person)) {
-			$this->person->persist();
-			$this->id = $this->person->get('person_id');
+		$this->mergePersist('person_id');
+		if ($this->get('id') == 0) {
+			$this->set('id',$this->person->get('id'));
 		}
-		//parent::persist();
+		parent::persist();
 	}
 
 	/**
@@ -76,7 +69,7 @@ class Patient extends ORDataObject {
 	 */
 	function populate() {
 		parent::populate('person_id');
-		$this->person->populate();
+		$this->mergePopulate('person_id');
 	}
 
 	/**#@+
@@ -98,30 +91,6 @@ class Patient extends ORDataObject {
 		$this->id = $id;
 	}
 
-	/**
-	 * In this app we only have one type
-	 */
-	function get_type() {
-		$types = $this->get('types');
-		if (count($types) > 0) {
-			return array_shift($types);
-		}
-	}
-
-	/**
-	 * set the single type
-	 */
-	function set_type($type) {
-		$this->person->types = array();
-		$this->set('types',array($type=>$type));
-	}
-
-	/**
-	 * format date
-	 */
-	function set_date_hired($date) {
-		$this->date_hired = $this->_mysqlDate($date);
-	}
 
 	/**
 	 * Setup employer relationship
@@ -172,37 +141,20 @@ class Patient extends ORDataObject {
 	function &address() {
 		return $this->person->address();
 	}
+	function &nameHistoryList() {
+		return $this->person->nameHistoryList();
+	}
+	function &identifierList() {
+		return $this->person->identifierList();
+	}
 	/**#@-*/
-
-	/**
-	 * main get method that hits person as well
-	 */
-	function get($key) {
-		if ($this->exists($key)) {
-			return parent::get($key);
-		}
-		else {
-			return $this->person->get($key);
-		}
-	}
-
-	/**
-	 * main set method that hits person as well
-	 */
-	function set($key,$value) {
-		if ($this->exists($key)) {
-			return parent::set($key,$value);
-		}
-		else {
-			return $this->person->set($key,$value);
-		}
-	}
 
 	/**
 	 * Return a datasource of all patients
 	 *
 	 */
-	function &patientList($branch_id = false) {
+	function &patientList($company_id = 0) {
+		settype($company_id,'int');
 		$ds =& new Datasource_sql();
 		$sql = array(
 			'cols' 	=> "p.person_id, concat_ws(' ',first_name,last_name) name, n.number phone, c.number cell, email, 'link' link ",
@@ -215,86 +167,13 @@ class Patient extends ORDataObject {
 			'groupby' => 'person_id',
 			'orderby' => 'last_name, first_name'
 			);
-		$cols = array('name' => 'Name','phone' => 'Phone','cell'=>'Cell', 'date_hired' => 'Date Hired');
+		$cols = array('name' => 'Name','phone' => 'Phone');
 
-		if ($branch_id > 0) {
-			$sql['where'] = "pc.company_id = $branch_id";
+		if ($company_id > 0) {
+			$sql['where'] = "pc.company_id = $company_id";
 		}
 		$ds->setup($this->_db,$sql,$cols);
 		return $ds;
-	}
-
-	/**
-	 * Return a datasource of all patients who haven't been approved
-	 *
-	 */
-	function &approveList() {
-		$ds =& new Datasource_sql();
-		$ds->setup($this->_db,array(
-				'cols' 	=> "p.person_id, concat_ws(' ',first_name,last_name) name",
-				'from' 	=> "$this->_table p inner join person e using(person_id) ",
-				'orderby' => 'last_name, first_name',
-				'where' => 'date_approved is null'
-			),
-			array('name' => 'Name'));
-		return $ds;
-	}
-
-	/**
-	 * Approve the current account
-	 */
-	function approve() {
-		$this->set('date_approved',date('Y-m-d'));
-		$me =& Me::getInstance();
-		$this->set('approved_by',$me->get_id());
-		$this->persist();
-	}
-
-	/**
-	 * Get the manager of the current patient
-	 */
-	function getManagerId() {
-		$lookup = array_flip($this->getTypeList());
-
-		$type = "Branch Manager";
-		
-		$type_id = 0;
-		if (isset($lookup[$type])) {
-			$type_id = $lookup[$type];
-		}
-		$res = $this->_execute("select m.person_id from person e 
-					inner join person_company epc using(person_id) 
-					inner join person_company mpc using(company_id)
-					inner join person m using(person_id)
-					inner join person_type mpt using(person_id)
-					where mpt.person_type = $type_id");
-		if (isset($res->fields['person_id'])) {
-			return $res->fields['person_id'];
-		}
-		return 1;
-	}
-
-	/**
-	 * Get the manager of a branch
-	 */
-	function &managerFromBranchId($branch_id) {
-		settype($branch_id,'int');
-
-		$manager =& ORDataObject::factory('Patient');
-		$lookup = array_flip($manager->getTypeList());
-
-		$type = "Branch Manager";
-		
-		$type_id = 0;
-		if (isset($lookup[$type])) {
-			$type_id = $lookup[$type];
-		}
-		$res = $manager->_execute("select m.person_id from person m inner join person_company pc using(person_id) inner join person_type pt using(person_id)
-						where company_id = $branch_id and pt.person_type = $type_id");
-		if (isset($res->fields['person_id'])) {
-			$manager->setup($res->fields['person_id']);
-		}
-		return $manager;
 	}
 }
 ?>

@@ -41,6 +41,8 @@ class Person extends ORDataObject {
 	var $identifier_type	= '';
 	/**#@-*/
 
+	var $nameHistory = false;
+
 	/**#@+
 	 * Lookup cache
 	 */
@@ -104,6 +106,10 @@ class Person extends ORDataObject {
 			$this->_types = false;
 
 		}
+
+		if ($this->nameHistory !== false) {
+			$this->nameHistory->persist();
+		}
 	}
 
 	/**
@@ -164,7 +170,53 @@ class Person extends ORDataObject {
 		$this->date_of_birth = $this->_mysqlDate($date);
 	}
 
+	/**
+	 * When we only have a single type use this
+	 */
+	function get_type() {
+		$types = $this->get('types');
+		if (count($types) > 0) {
+			return array_shift($types);
+		}
+	}
+
+	/**
+	 * set the single type
+	 */
+	function set_type($type) {
+		$this->person->types = array();
+		$this->set('types',array($type=>$type));
+	}
 	/**#@-*/
+
+	/**#@+
+	 * Create a name history record when the name is changed
+	 */
+	function set_last_name($name) {
+		$this->_nameHistory('last_name',$name);
+		$this->last_name = $name;
+	}
+	function set_first_name($name) {
+		$this->_nameHistory('first_name',$name);
+		$this->first_name = $name;
+	}
+	function set_middle_name($name) {
+		$this->_nameHistory('middle_name',$name);
+		$this->middle_name = $name;
+	}
+	/**#@-*/
+
+	function _nameHistory($field,$newValue) {
+		if ($this->_populated && !empty($this->$field) && $this->$field !== $newValue) {
+			if ($this->nameHistory === false) {
+				$this->nameHistory =& ORDataObject::factory('NameHistory');
+				$this->nameHistory->set('update_date',date('Y-m-d'));
+				$this->nameHistory->set('person_id',$this->get('person_id'));
+			}
+			$this->nameHistory->set($field,$this->$field);
+		}
+	}
+
 
 	/**#@+
 	 * Enumeration getters
@@ -253,6 +305,7 @@ class Person extends ORDataObject {
 	 * @param	string	$type The string value of the wanted type from the person type enumeration
 	 */
 	function getPersonList($type) {
+		$this->nameHistory->set('person_id',$this->get('person_id'));
 
 		$types = $this->getTypeList();
 		$id = (int)array_search($type,$types);
@@ -356,6 +409,17 @@ class Person extends ORDataObject {
 			return $addr->get('number');
 		}
 		return $addr;
+	}
+
+	
+	function &nameHistoryList() {
+		$nh =& ORDataOBject::factory('NameHistory');
+		return $nh->nameHistoryList($this->get('id'));
+	}
+
+	function &identifierList() {
+		$i =& ORDataOBject::factory('Identifier');
+		return $i->identifierList($this->get('id'));
 	}
 }
 ?>

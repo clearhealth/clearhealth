@@ -1,0 +1,11 @@
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+	{include file="contacts/general_company.html"}
+	
+		    {if $company->get('id') > 0}
+		    {assign var="parent" value=$company}
+		    {include file="contacts/general_phone.html"}
+		    {include file="contacts/general_address.html"}
+		    {*{include file="contacts/general_related_companies.html"}*}
+		    {/if}
+</form>
+

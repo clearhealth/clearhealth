@@ -16,7 +16,8 @@ class M_Patient extends Manager {
 	function process_update($id =0) {
 
 		$patient =& ORdataObject::factory('Patient',$id);
-		$patient->populate_array($_POST);
+		$patient->populate_array($_POST['person']);
+
 		$patient->persist();
 		$this->controller->patient_id = $patient->get('id');
 
@@ -68,6 +69,9 @@ class M_Patient extends Manager {
 		if (isset($_POST['address'])) {
 			$this->process_address_update($this->controller->patient_id,$_POST['address']);
 		}
+		if (isset($_POST['identifier'])) {
+			$this->process_identifier_update($this->controller->patient_id,$_POST['identifier']);
+		}
 	}
 
 	/**
@@ -88,6 +92,23 @@ class M_Patient extends Manager {
 			$this->controller->number_id = $number->get('id');
 
 			$this->messages->addMessage('Number Updated');
+		}
+	}
+
+	/**
+	 * Handle updating an identifier 
+	 */
+	function process_identifier_update($patient_id,$data) {
+		var_dump($data);
+		if (!empty($data['identifier'])) {
+			$id = (int)$data['identifier_id'];
+			var_dump($patient_id);
+			$identifier =& ORDataObject::factory('Identifier',$id,$patient_id);
+			$identifier->populate_array($data);
+			$identifier->persist();
+			$this->controller->identifier_id = $identifier->get('id');
+
+			$this->messages->addMessage('Secondary Identifier Updated');
 		}
 	}
 
@@ -127,6 +148,13 @@ class M_Patient extends Manager {
 	 */
 	function process_editNumber($patient_id,$number_id) {
 		$this->controller->number_id = $number_id;
+	}
+
+	/**
+	 * Setup for editing an identifier
+	 */
+	function process_editIdentifier($patient_id,$identifier_id) {
+		$this->controller->identifier_id = $identifier_id;
 	}
 
 	/**
@@ -191,6 +219,16 @@ class M_Patient extends Manager {
 		$complaint =& ORDataObject::factory('complaint');
 		$complaint->populate_array($_POST['complaint']);
 		$complaint->persist();
+	}
+
+	
+	/**
+	 * Delete an identifier
+	 */
+	function process_deleteIdentifier($patient_id,$identifier_id) {
+		$identifier =& ORDataObject::factory('Identifier',$identifier_id,$patient_id);
+		$identifier->drop();
+		$this->messages->addmessage('Secondary Identifier Deleted');
 	}
 }
 ?>

@@ -1,0 +1,42 @@
+	<fieldset>
+		<fieldset class="radio" id="details">
+			<legend>Company Details {if $company->get('id') > 0}{clni_section_links name="details"}{/if}</legend>
+                    <table>
+			<tbody>
+                    <tr>
+			    <td><label>Name:</label> </td>
+			    <td><input name="name" size="20" value="{$company->get('name')}" tabindex="1"></td>
+			    <td><label>Initials:</label> </td>
+			    <td><input name="initials" size="20" value="{$company->get('initials')}" tabindex="2"></td>
+		  </tr>
+		  <tr>
+			  {*	  <td><label>Type:</label> </td>
+			  <td>
+                          <select multiple="multiple" size="4" name="types[]" tabindex="3">
+				  {html_options options=$company->getTypeList() selected=$company->get('types')}
+			  </select>
+		  </td>*}
+				<td><label>Email:</label> </td>
+				<td><input name="email" size="20" value="{$company->get('email')}" tabindex="4"></td>
+				<td><label>Website:</label> </td>
+				<td><input name="url" size="20" value="{$company->get('url')}" tabindex="4"></td>
+                        </tr>
+                        <tr>
+				<td style="vertical-align: top;"><label>Description:</label> </td>
+			  <td colspan=3>
+		<textarea name="description" rows="3" cols="35" wrap="virtual" tabindex="5">{$company->get('description')}</textarea>
+			  </td>
+                        </tr>
+                        <tr>
+				<td><label>Notes:</label> </td>
+			  <td colspan=3>
+				  <textarea name="notes" rows="3" cols="35" wrap="virtual" tabindex="6">{$company->get('notes')}</textarea>
+			  </td>
+                        </tr>
+                        <tr>
+				<td colspan="3"><input name="label" tabindex="7" value="{if $company->get('company_id') > 0}Update{else}Add{/if}" type="submit"></td>
+                        </tr>
+                      </tbody>
+
+                    </table>
+                    </fieldset>

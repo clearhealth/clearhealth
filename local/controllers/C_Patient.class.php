@@ -8,6 +8,8 @@ require_once CELLINI_ROOT."/includes/Grid.class.php";
 class C_Patient extends Controller {
 
 	var $number_id = 0;
+	var $address_id = 0;
+	var $identifier_id = 0;
 
 	/**
 	 * Edit/Add an Patient
@@ -18,35 +20,29 @@ class C_Patient extends Controller {
 			$patient_id = $this->patient_id;
 		}
 
-		$number_id = $this->number_id;
-
-		$address_id = 0;
-		if (isset($this->address_id)) {
-			$address_id = $this->address_id;
-		}
-
 		$person =& ORdataObject::factory('Patient',$patient_id);
-		$number =& ORDataObject::factory('PersonNumber',$number_id,$patient_id);
-		$address =& ORDataObject::factory('PersonAddress',$address_id,$patient_id);
+		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
+		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
+		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$patient_id);
 
-		ORDataObject::factory_include('User');
-		$u = new User();
-		$user =& $u->fromPersonId($patient_id);
-
-		if (!$person->get('type') > 0) {
-			$lookup = array_flip($person->getTypeList());
-			$person->set('types',array($lookup['Loan Officer']));
-		}
+		$nameHistoryGrid =& new cGrid($person->nameHistoryList());
+		$identifierGrid =& new cGrid($person->identifierList());
+		$identifierGrid->registerTemplate('identifier','<a href="'.Cellini::ManagerLink('editIdentifier',$patient_id).'id={$identifier_id}&process=true">{$identifier}</a>');
+		$identifierGrid->registerTemplate('actions','<a href="'.Cellini::ManagerLink('deleteIdentifier',$patient_id).'id={$identifier_id}&process=true">delete</a>');
+		$identifierGrid->setLabel('actions',false);
 
 		$this->assign_by_ref('person',$person);
-		$this->assign_by_ref('user',$user);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
+		$this->assign_by_ref('identifier',$identifier);
+		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
+		$this->assign_by_ref('identifierGrid',$identifierGrid);
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$patient_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$patient_id));
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$patient_id));
 		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$patient_id));
+		$this->assign('hide_type',true);
 
 		$this->assign('now',date('Y-m-d'));
 
@@ -54,7 +50,7 @@ class C_Patient extends Controller {
 	}
 
 	/**
-	 * List Branches
+	 * List Patients
 	 */
 	function list_action_view() {
 		$person =& ORDataObject::factory('Patient');

@@ -1,0 +1,23 @@
+	<fieldset class="radio" id="identifier">
+		<legend>Secondary Identifiers
+			{clni_section_links name="identifier"}
+			</legend>
+
+		{$identifierGrid->render()}
+		{if $identifierGrid->empty}
+		<p>No Secondary Identifiers have been added</p>
+		{/if}
+
+		<table>
+			<tr>
+				<td><input name="identifier[identifier]" value="{$identifier->get('identifier')}"></td>
+				<td><select name="identifier[identifier_type]">
+						{html_options options=$identifier->getIdentifierTypeList() selected=$identifier->get('identifier_type')}
+				</select></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="{if $identifier->get('id') > 0}Update{else}Add{/if} Identifier"></td>
+			</tr>
+		</table>
+		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
+	</fieldset>
