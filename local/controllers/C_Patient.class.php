@@ -180,7 +180,7 @@ class C_Patient extends Controller {
 	/**
 	 * Edit/Add an encounter
 	 */
-	function encounter_action_edit($encounter_id = 0) {
+	function encounter_action_edit($encounter_id = 0,$appointment_id = 0) {
 		settype($encounter_id,'int');
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
@@ -219,11 +219,11 @@ class C_Patient extends Controller {
 		$formDataGrid->pageSize = 10;
 		
 		$appointments = $encounter->appointmentList();
-		$appointmentArray = array("" => "");
+		$appointmentArray = array("" => " ");
 		foreach($appointments as $appointment) {
-			$appointmentArray[$appointment['occurence_id']] = $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
+			$appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
 		}
-
+		
 		$menu = Menu::getInstance();
 		$tmp = $menu->getMenuData('patient',91);
 
@@ -232,6 +232,17 @@ class C_Patient extends Controller {
 			foreach($tmp['forms'] as $form) {
 				$formList[$form['form_id']] = $form['title'];
 			}	
+		}
+		
+		//if an appointment id is supplied the request is coming from the calendar and so prepopulate the defaults
+		if ($appointment_id > 0) {
+			$encounter->set("occurence_id",$appointment_id);
+			if (isset($appointments[$appointment_id])) {
+				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
+			}
+			if (isset($appointments[$appointment_id])) {
+				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
+			}
 		}
 
 		$this->assign_by_ref('encounter',$encounter);
@@ -249,7 +260,7 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
 		$this->assign_by_ref('appointmentList',$appointments);
 		$this->assign_by_ref('appointmentArray',$appointmentArray);
-
+		
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 
