@@ -15,6 +15,10 @@ class C_Admin extends Controller {
 		return $this->fetch($GLOBALS['frame']['config']['template_dir'] ."/default/" . $this->template_mod . "_default.html");
 	}
 
+	function acl_action_edit() {
+		return "<iframe src='{$this->base_dir}cellini/lib/phpgacl/admin/index.php' width='800px' height='700px'></iframe>";
+	}
+
 
 }
 
