@@ -10,6 +10,7 @@
  * Required Libs
  */
 require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
+require_once CELLINI_ROOT.'/includes/Datasource_sql.class.php';
 /**#@-*/
 
 /**
@@ -47,6 +48,21 @@ class FeeSchedule extends ORDataObject {
 			$this->set('id',$id);
 			$this->populate();
 		}
+	}
+
+	/**
+	 * List all FeeScheduls
+	 */
+	function listFeeSchedules() {
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,array(
+				'cols' 	=> "fee_schedule_id, name, label, description",
+				'from' 	=> "$this->_table f ",
+				'orderby' => 'label'
+
+			),
+			array('label' => 'Name','description'=> 'Description'));
+		return $ds;
 	}
 
 	/**

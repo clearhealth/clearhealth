@@ -8,6 +8,7 @@ require_once JPSPAN . 'Server/PostOffice.php';
 
 // Some class you've written...
 require_once APP_ROOT. '/local/controllers/C_PatientFinder.class.php';
+require_once APP_ROOT. '/local/includes/FeeScheduleDatasource.class.php';
 
 // Create the PostOffice server
 $S = & new JPSpan_Server_PostOffice();
@@ -17,6 +18,9 @@ $handle_desc = new JPSpan_HandleDescription();
 $handle_desc->Class = 'C_PatientFinder';
 $handle_desc->methods = array('find_remoting');
 $S->addHandler(new C_PatientFinder(), $handle_desc);
+$S->addHandler(new FeeScheduleDatasource());
+
+
 
 // This allows the JavaScript to be seen by
 // just adding ?client to the end of the

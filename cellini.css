@@ -39,6 +39,9 @@ table.grid td {
 
 table.grid tr.alt td { background-color: #ddd;
 }
+
+table.grid tr.waiting td { background-color: #aaa;
+}
 table.grid a.orderLink {
 	color: #ddd;
 }
@@ -49,4 +52,18 @@ table.grid a.orderLink:hover {
 /* Form rules */
 .clniAlert {
 	background-color: red;
+}
+
+div.waiting {
+	display: none;
+}
+div.waitingActive {
+	display: block;
+	position: absolute;
+	text-align: center;
+	vertical-align: center;
+	width: 100%;
+	background-color: white;
+	border: solid 2px black;
+	font-weight: bold;
 }
