@@ -1,0 +1,20 @@
+	<fieldset class="radio" id="insurer">
+		<legend>Generate Claim</legend>
+		<table>
+			<tr>
+				<td><label>Insurance Program:</label></td>
+				<td>{html_options name=sendClaim[insurance_program_id] options=$program_array}</td>
+				<td><label>Claim Format:</label></td>
+				<td>{html_options name=sendClaim[claim_type] options=$claim_type_array}</td>
+			</tr>
+			<tr>
+				<td><label>Payment Type:</label></td>
+				<td>{html_options name=sendClaim[payment_type] options=$payment_type_array}</td>
+				<td><label>Amount Paid:</label></td>
+				<td><input name="" type="text" value=""></td>
+			</tr>
+			<tr>
+			<td><input type="submit" name="bill" value="Bill"></td>
+			</tr>
+		</table>
+	</fieldset>
