@@ -100,7 +100,7 @@ class C_Eob extends Controller {
 	
 			// update claim total
 			$claim =& ORDataObject::factory('ClearhealthClaim',$claim_id);
-			$claim->set('total_paid',$claim->get('total_paid',$total_paid));
+			$claim->set('total_paid',$claim->get('total_paid')+$total_paid);
 			$claim->persist();
 		}
 	}
