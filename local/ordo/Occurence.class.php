@@ -313,6 +313,11 @@ class Occurence extends ORDataObject{
 		}
 		return "";	
 	}
+
+	function get_delete_message() {
+		$message = "Deleting occurence #".$this->_db->qstr($this->id);
+		return $message;
+	}
 	
 	function delete() {
 		$sql = "DELETE from " . $this->_prefix . $this->_table . " where id=" . $this->_db->qstr($this->id);

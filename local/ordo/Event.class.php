@@ -170,7 +170,7 @@ class Event extends ORDataObject{
 				if (!empty($filter)) {
 					switch($type) {
 						case 'user': 
-							$filter_sql .= " AND (u.id = " . $e->_db->qstr($filter) . "  OR c.schedule_code = 'ADM')";
+							$filter_sql .= " AND (u.user_id = " . $e->_db->qstr($filter) . "  OR c.schedule_code = 'ADM')";
 							break;
 						case 'location':
 							$filter_sql .= " AND o.location_id = " . $e->_db->qstr($filter) . " ";
@@ -187,8 +187,8 @@ class Event extends ORDataObject{
 		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, "
 		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(DOB, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(DOB, '00-%m-%d')) AS age"
 		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
-		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."users as u on u.id= o.user_id"
-		." LEFT JOIN ".$e->_prefix."users as u2 on u2.id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
+		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
+		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
 		." WHERE o.start BETWEEN '$start'  AND '$end' AND (c.schedule_code != 'NS' OR c.schedule_code IS NULL) $foreign_id $code_filter $filter_sql ORDER BY schedule_sort DESC, o.start, o.end";
 		//echo $sql . "<br>";
 	
@@ -212,8 +212,8 @@ class Event extends ORDataObject{
 		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, "
 		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(DOB, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(DOB, '00-%m-%d')) AS age"
 		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
-		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."users as u on u.id= o.user_id"
-		." LEFT JOIN ".$e->_prefix."users as u2 on u2.id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
+		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
+		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
 		." WHERE $where_sql ORDER BY o.start";
 		//echo $sql;
 	
