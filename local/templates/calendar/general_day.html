@@ -1,11 +1,9 @@
 <script language="javascript" src="{$base_dir}js/calendar.js"></script>
-<table CELLSPACING="0" CELLPADDING="3" border="0">
-<tr>
-	<td>{$messages->render()}</td>
-</tr>
-<tr>
-<td>
+	<div>
+		{$messages->render()}
+	</div>
 	<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<div style="float: left">
 <table  border="0" cellspacing="0" cellpadding="0" class="calborder">
 	<tr>
 		<td colspan="20">
@@ -112,8 +110,7 @@
 	{/foreach}
 </tr>	
 </table>
-</td>
-<td style="padding-left:10px;" valign="top">{$sidebar}</td>
-
-</tr>
-</table>
+</div>
+<div style="float: left; margin-left: 15px;">
+{$sidebar}
+</div>
