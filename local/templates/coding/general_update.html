@@ -38,7 +38,7 @@ function captureEnter (field, event) {
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
 						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" autofield="parent_id"
 							name="parent_code" id="parent_code" SIZE="35" autocomplete="off" value="{$parent_code->getCodeDesc()}">
-						<select name="modifier" STYLE="z-index: 1;">
+						<select name="modifier" STYLE="z-index: 1;" id="modifier">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
 						<input type="button" name="add_cpt" value="Add CPT" onClick="addCPTCode()">
@@ -189,7 +189,7 @@ function clni_rule_hasicd(element) {
 	return true;
 }
 function clni_rule_hascpt(element) {
-	if (element.value > 0) {
+	if (document.getElementById('parent_id').value > 0) {
 		return true;
 	}
 	var childDiv = document.getElementById('cptlist');
@@ -204,6 +204,8 @@ function addCPTCode() {
 	var listDiv = document.getElementById('cptlist');
 	var cptCode = document.getElementById('parent_id');
 	var cptText = document.getElementById('parent_code');
+	var units = document.getElementById('units');
+	var modfier = document.getElementById('modifier');
 
 	if (cptCode.value == "") {
 		clni_notify_alert(cptText);
@@ -213,9 +215,20 @@ function addCPTCode() {
 		clni_notify_alert_reset(cptText);
 	}
 
-	listDiv.innerHTML = listDiv.innerHTML + '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + ']" value="' + cptCode.value  + '">' + cptText.value  + '<BR>';
+	var modStr = "";
+	if (modifier.value > 0) {
+		modStr = ' ('+modifier.options[modifier.selectedIndex].text+')';
+	}
+
+	listDiv.innerHTML = listDiv.innerHTML  
+		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][code]" value="' + cptCode.value  + '">' 
+		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][modifier]" value="' + modifier.value  + '">' 
+		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][units]" value="' + units.value  + '">' 
+		+ cptText.value + modStr + ' - Units: '+ units.value +'<BR>';
 	cptCode.value = '';
 	cptText.value = '';
+	units.value = '1.00';
+	modifier.selectedIndex = 0;
 	cptText.focus();
 }
 </script>

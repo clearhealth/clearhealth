@@ -91,23 +91,36 @@ class C_Coding extends Controller {
 		}
 
 
+		if (!isset($_POST['parent_codes'])) {
+			$_POST['parent_codes'] = array();
+		}
+		// add current code in if needed
+		if (intval($_POST['parent_id']) > 0) {
+			$_POST['parent_codes'][$_POST['parent_id']]['code'] = $_POST['parent_id'];
+			$_POST['parent_codes'][$_POST['parent_id']]['units'] = $_POST['units'];
+			$_POST['parent_codes'][$_POST['parent_id']]['modifier'] = $_POST['modifier'];
+		}
 
-					
-		$code_data =& ORdataObject::factory('CodingData');
-		$code_data->populate_array($_POST);
-		$code_data->clearChildCodes($_POST['foreign_id'], $_POST['parent_id']);
-		$code_data->set('fee',$feeSchedule->getFeeFromCodeId($_POST['parent_id']));
+		foreach($_POST['parent_codes'] as $parent) {
+			$parent['parent_id'] = $parent['code'];
+			unset($code_data);
+			$code_data =& ORdataObject::factory('CodingData');
+			$code_data->populate_array($parent);
+			$code_data->set('foreign_id',$_POST['foreign_id']);
+			$code_data->clearChildCodes($_POST['foreign_id'], $parent['parent_id']);
+			$code_data->set('fee',$feeSchedule->getFeeFromCodeId($parent['parent_id']));
 		
-		if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
-			foreach($_POST['child_codes'] as $code_id){
-				if(intval($code_id) == 0)
-					continue;
-					
-				$code_data->set("id", 0);
-				$code_data->set('code_id', $code_id);
-				$code_data->persist();
-				//var_dump($code_data);
-			}	
+			if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
+				foreach($_POST['child_codes'] as $code_id){
+					if(intval($code_id) == 0)
+						continue;
+						
+					$code_data->set("id", 0);
+					$code_data->set('code_id', $code_id);
+					$code_data->persist();
+					//var_dump($code_data);
+				}	
+			}
 		}
 		
 		//return $this->update_action($_POST['foreign_id']);
