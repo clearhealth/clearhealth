@@ -112,7 +112,7 @@
 					{/if}
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" {if $subscriberIsAPatient}checked{/if}>
-					<label class="inline" for="rscs">Select Current Patient</label>
+					<label class="inline" for="rscs">Search Persons</label>
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn" {if !$subscriberIsAPatient}checked{/if}>
 					<label class="inline" for="rscn">{if $subscriberIsAPatient}New{else}Update{/if} Subscriber</label>
@@ -122,7 +122,9 @@
 							<tr>
 								<td><label>Search:</label></td>
 								<td>
-									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}>
+									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}><br>
+<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
+					class="AutoCompleteBackground"></div></div>
 								</td>
 							</tr>
 						</table>
@@ -140,9 +142,12 @@
 								<td colspan=2><label>Last Name:</label></td>
 								<td colspan=2><input name="newSubscriber[last_name]" value="{$subscriber->get('last_name')}" onChange="userEntered = true;"></td>
 							</tr>
-							<tr>
+							<!--<tr>
 								<td colspan=2><label>Phone #:</label></td>
 								<td colspan=2><input name="newSubscriber[number]" value="{$subscriberNumber}" onChange="userEntered = true;"></td>
+							<tr>-->
+								<td colspan=2><label>SSN:</label></td>
+								<td colspan=2><input name="newSubscriber[identifier]" value="{$subscriber->get("identifier")}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
 								<td valign="top" colspan=2><label>Address:</label></td>
@@ -174,8 +179,6 @@
 			</tr>
 		</table>
 	</fieldset>
-<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
-					class="AutoCompleteBackground"></div></div>
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
 var ac = new AutoComplete(
