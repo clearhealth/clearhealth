@@ -61,7 +61,7 @@ class CodingData extends ORDataObject {
 						." and parent_id = ".(int)$this->get('parent_id'));
 			if ($res && !$res->EOF) {
 				$this->set('code_order',($res->fields['c']+1));
-				var_dump($this->get('code_order'));
+				//var_dump($this->get('code_order'));
 			}
 		}
 
