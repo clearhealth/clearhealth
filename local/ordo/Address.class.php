@@ -1,170 +1,249 @@
 <?php
-/************************************************************************
-  			address.php - Copyright duhlman
 
-/usr/share/apps/umbrello/headings/heading.php
+require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
 
-This file was generated on %date% at %time%
-The original location of this file is /home/duhlman/uml-generated-code/prescription.php
-**************************************************************************/
-
-require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
 /**
- * class Address
- *
- */
-class Address extends ORDataObject{
-	var $id;
-	var $foreign_id;
-	var $line1;
-	var $line2;
-	var $city;
-	var $state;
-	var $zip;
-	var $plus_four;
-	var $type;
-	var $country;
+*	This class is a data model object for representation of address information.
+*
+*/
+class Address extends ORDataObject {
 
-	/**
-	 * Constructor sets all Address attributes to their default value
-	 */
-	function Address($id = "", $foreign_id = "")	{
-		//call the parent constructor so we have a _db to work with
-		parent::ORDataObject();
-		$this->id = $id;
-		$this->foreign_id = $foreign_id;
-		$this->_table = "addresses";
-		$this->line1 = "";
-		$this->line2 = "";
-		$this->city = "";
-		$this->state = "";
-		$this->zip = "";
-		$this->plus_four = "";
-		$this->type = "main";
-		$this->country = "USA";
-		if ($id != "") {
+	var $id			= '';
+	var $name		= '';
+	var $line1		= '';
+	var $line2		= '';
+	var $city		= '';
+	var $region		= '';
+	var $province		= '';
+	var $county		= '';
+	var $state		= '';
+	var $postal_code	= '';
+	var $notes		= '';
+	var $type		= '';
+
+	var $_parent = false;
+
+
+	function Address($db = null) {
+		parent::ORDataObject($db);	
+		$this->_table = "address";
+		$this->_sequence_name = "sequences";	
+		$this->groups = array();
+	}
+	function setup($id = 0,$parent = false, $parent_type = "person") {
+		if ($id !== 0) {
+			$this->id = $id;
 			$this->populate();
 		}
 
-
-	}
-	function factory_address($foreign_id = "",$type='') {
-		if (empty($foreign_id)) {
-			 $foreign_id= "like '%'";
-		}
-		else {
-			$foreign_id= " = '" . mysql_real_escape_string(strval($foreign_id)) . "'";
-		}
-		$as = array();
-		$a = new Address();
-		$sql = "SELECT id FROM  " . $a->_prefix . $a->_table . " WHERE foreign_id " .$foreign_id . " and type='$type'";
-		//echo $sql . "<bR />";
-		$results = $this->_db->Execute($sql) or die ("Database Error: " . $this->_db->ErrorMsg());
-		while (!$results->EOF) {
-			$as[] = new Address($results->fields['id']);
-			$results->MoveNext();
-		}
-		
-		if (isset($as[0])) {
-			return $as[0];
-		}
-		else {
-			return "";
+		if ($parent !== false) {
+			if (!is_array($parent)) {
+				$parent = array($parent => array($parent_type."_id"=>$parent));
+			}
+			$this->_parent = $parent;
 		}
 	}
 
-	function toString($html = false) {
-		$string .= "\n"
-		. "ID: " . $this->id."\n"
-		. "FID: " . $this->foreign_id."\n"
-		.$this->line1 . "\n"
-		.$this->line2 . "\n"
-		.$this->city . ", " . strtoupper($this->state) . " " . $this->zip . "-" . $this->plus_four. "\n"
-		.$this->country. "\n";
+	/**
+	* Pull data for this record from the database
+	*/
+	function populate() {
+		parent::populate('address_id');
 
-		if ($html) {
-			return nl2br($string);
-		}
-		else {
-			return $string;
+		if (isset($this->_relation)) {
+			$sql = "select address_type from $this->_relation where address_id = ".(int)$this->id;
+			$this->set_type($this->_db->getOne($sql));
 		}
 	}
 
-	function set_id($id) {
-		$this->id = $id;
-	}
-	function get_id() {
-		return $this->id;
-	}
-	function set_foreign_id($fid) {
-		$this->foreign_id = $fid;
-	}
-	function get_foreign_id() {
-		return $this->foreign_id;
-	}
-	function set_line1($line1) {
-		$this->line1 = $line1;
-	}
-	function get_line1() {
-		return $this->line1;
-	}
-	function set_line2($line2) {
-		$this->line2 = $line2;
-	}
-	function get_line2() {
-		return $this->line2;
-	}
-	function get_lines_display() {
-		$string .= $this->get_line1();
-		$string .= " " . $this->get_line2();
-		return $string;
-	}
-	function set_city($city) {
-		$this->city = $city;
-	}
-	function get_city() {
-		return $this->city;
-	}
-	function set_state($state) {
-		$this->state = strtoupper($state);
-	}
-	function get_state() {
-		return $this->state;
-	}
-	function set_zip($zip) {
-		$this->zip = $zip;
-	}
-	function get_zip() {
-		return $this->zip;
-	}
-	function set_plus_four($plus_four) {
-		$this->plus_four = $plus_four;
-	}
-	function get_plus_four() {
-		return $this->plus_four;
-	}
-	function set_type($value) {
-		$this->type = $value;
-	}
-	function get_type() {
-		return $this->type;
-	}
-	function set_country($country) {
-		$this->country = $country;
-	}
-	function get_country() {
-		return $this->country;
-	}
-	function persist($fid ="") {
-		if (!empty($fid)) {
-			$this->foreign_id = $fid;
-		}
+	/**
+	* Store data to the database
+	*/
+	function persist() {
 		parent::persist();
+
+		if ($this->_parent !== false) {
+			$addresses = $this->_db->getAssoc("select address_id,address_id $this->_table from $this->_relation where address_id =".(int)$this->id);
+			foreach($addresses as $address) {
+				if (!isset($this->_parent[$address])) {
+					// delete
+					$this->_execute("delete from $this->_relation where address_id =".(int)$this->id
+					." and $this->_fkey = $address");
+				}
+			}
+			foreach($this->_parent as $id => $val) {
+				if (!isset($addresses[$id])) {
+					// add
+					$sql = "replace into $this->_relation values(".(int)$id.",".(int)$this->id.",".(int)$this->get_type().")";
+					$this->_execute($sql);
+				}
+			}
+		}
 	}
 
-} // end of Address
-/*
-$a = new Address("0");
+	/**
+	* Delete this record
+	*/
+	function drop()
+	{
+		$this->_execute("delete from {$this->_prefix}$this->_relation where address_id = ". (int)$this->id);
+		$this->_execute("delete from {$this->_prefix}$this->_table where address_id = ". (int)$this->id);
+	}
 
-echo $a->toString(true);*/
+	function addressList($parent_id) {
+		$sql ="select * from $this->_table inner join $this->_relation using(address_id) where $this->_fkey = ".(int)$parent_id;
+		$res = $this->_execute($sql);
+
+		$regionl = $this->getRegionList();
+		$countyl = $this->getCountyList();
+		$statel = $this->getStateList();
+		$typel = $this->getTypeList();
+
+		while($res && !$res->EOF) {
+			$res->fields['county'] = $countyl[$res->fields['county']];
+			$res->fields['state'] = $statel[$res->fields['state']];
+			$res->fields['region'] = $regionl[$res->fields['region']];
+
+			$res->fields['type'] = $typel[$res->fields['address_type']];
+
+			$list[$res->fields['address_id']] = $res->fields;
+			$res->MoveNext();
+		}
+		return $list;
+	}
+
+
+    /**#@+
+    *	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
+    */
+    function get_address_id() {
+    	return $this->id;	
+    }
+    function set_address_id($id) {
+    	$this->id = $id;	
+    }
+
+    function get_name() {
+    	return $this->name;	
+    }
+    function set_name($n) {
+    	$this->name = $n;
+    }
+    
+    function get_line1() {
+    	return $this->line1;	
+    }
+    function set_line1($l) {
+    	$this->line1 = $l;
+    }
+
+    function get_line2() {
+    	return $this->line2;	
+    }
+    function set_line2($l) {
+    	$this->line2 = $l;
+    }
+
+    function get_city() {
+    	return $this->city;	
+    }
+    function set_city($c) {
+    	$this->city = $c;
+    }
+
+    function get_region() {
+    	return $this->region;	
+    }
+    function set_region($r) {
+	    $this->region = $r;
+    }
+    function getRegionList() {
+	    $list = $this->_load_enum('region',true);
+	    return array_flip($list);
+    }
+
+    function get_county() {
+    	return $this->county;	
+    }
+    function set_county($c) {
+    	$this->county = $c;
+    }
+    function getCountyList() {
+	    $list = $this->_load_enum('county',true);
+	    return array_flip($list);
+    }
+
+    function get_state($map = false) {
+	    if ($map) {
+		    $list = $this->getStateList();
+		    if (isset($list[$this->state])) {
+			    return $list[$this->state];
+		    }
+	    }
+    	return $this->state;	
+    }
+    function set_state($s) {
+    	$this->state = $s;
+    }
+    function getStateList() {
+	    $list = $this->_load_enum('state',false);
+	    return array_flip($list);
+    }
+
+    function get_postal_code() {
+    	return $this->postal_code;	
+    }
+    function set_postal_code($c) {
+    	$this->postal_code = $c;
+    }
+
+    function get_notes() {
+    	return $this->notes;	
+    }
+    function set_notes($n) {
+    	$this->notes = $n;
+    }
+
+    function get_type() {
+	    return $this->type;
+    }
+    function set_type($t) {
+	    $this->type = $t;
+    }
+    function getTypeList() {
+	    $list = $this->_load_enum('address_type',true);
+	    return array_flip($list);
+    }
+
+
+    var $_acache = false;
+    var $_acache_state = false;
+    /**
+     * Return a text formated address from an id
+     *
+     * Uses a cache
+     *
+     * @todo figure out of this approach scales properly 
+     */
+    function lookup($id) {
+	    if ($this->_acache == false) {
+		    $res = $this->_execute("select * from $this->_table");
+		    $this->_acache = array();
+		    while(!$res->EOF) {
+			    $this->_acache[$res->fields['address_id']] = $res->fields;
+			    $res->moveNext();
+		    }
+
+		    $this->_acache_state = $this->getStateList();
+	    }
+	    if (isset($this->_acache[$id])) {
+		    $row = $this->_acache[$id];
+		    $state = "";
+		    if (isseT($this->_acache_state[$row['state']])) {
+			    $state = $this->_acache_state[$row['state']];
+		    }
+		    return "<div class='address'>$row[line1]\n$row[line2]\n<br>$row[city], $state $row[postal_code]</div>";
+	    }
+    }
+} 
 ?>
