@@ -86,9 +86,10 @@ class C_Patient extends Controller {
 			$this->assign('ENCOUNTER_ACTION',Cellini::link('encounter'));
 			$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
-			
+			$this->assign('NO_PATIENT', false);			
 		}
 		else {
+			$this->assign('NO_PATIENT', true);
 			$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');	
 		}
 		
