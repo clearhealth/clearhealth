@@ -24,7 +24,7 @@ function captureEnter (field, event) {
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
 <fieldset id="coding_data">
 <legend>Edit Coding Data</legend>
-<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><IFRAME style="DISPLAY: none; LEFT: 0px; POSITION: absolute; TOP: 0px" src="javascript:false;" frameBorder="0" scrolling="no"></IFRAME><div class="AutoCompleteBackground"></div></div>
+<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 <table>
 	<tr>
 		<td valign="top">
@@ -37,16 +37,13 @@ function captureEnter (field, event) {
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
 						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
 							name="parent_code" id="parent_code" SIZE="35" autocomplete="off" value="{$parent_code->getCodeDesc()}">
-					</td>
-				</tr>
-				<tr>
-					<td valign="top">
-						<label>Modifier:</label>
-					</td>
-					<td valign="top">
 						<select name="modifier" STYLE="z-index: 1;">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" valign="top">
 					<label style="display:inline;">Units: </label></b> <input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
 					&nbsp;<label style="display:inline;">SuperBill</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
 					</td>
