@@ -72,6 +72,9 @@ class M_Patient extends Manager {
 		if (isset($_POST['identifier'])) {
 			$this->process_identifier_update($this->controller->patient_id,$_POST['identifier']);
 		}
+		if (isset($_POST['insuredRelationship'])) {
+			$this->process_insuredRelationship_update($this->controller->patient_id,$_POST['insuredRelationship']);
+		}
 	}
 
 	/**
@@ -99,10 +102,8 @@ class M_Patient extends Manager {
 	 * Handle updating an identifier 
 	 */
 	function process_identifier_update($patient_id,$data) {
-		var_dump($data);
 		if (!empty($data['identifier'])) {
 			$id = (int)$data['identifier_id'];
-			var_dump($patient_id);
 			$identifier =& ORDataObject::factory('Identifier',$id,$patient_id);
 			$identifier->populate_array($data);
 			$identifier->persist();
@@ -111,6 +112,23 @@ class M_Patient extends Manager {
 			$this->messages->addMessage('Secondary Identifier Updated');
 		}
 	}
+
+	/**
+	 * Handle updating an insurer relationship 
+	 */
+	function process_insuredRelationship_update($patient_id,$data) {
+		if (!empty($data['group_name']) || !empty($data['group_number'])) {
+			var_dump($data);
+			$id = (int)$data['insured_relationship_id'];
+			$ir =& ORDataObject::factory('InsuredRelationship',$id,$patient_id);
+			$ir->populate_array($data);
+			$ir->persist();
+			$this->controller->insured_relationship_id = $id->get('id');
+
+			$this->messages->addMessage('Insurer Updated');
+		}
+	}
+
 
 	/**
 	 * Handle updating an address

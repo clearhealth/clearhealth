@@ -10,6 +10,7 @@ class C_Patient extends Controller {
 	var $number_id = 0;
 	var $address_id = 0;
 	var $identifier_id = 0;
+	var $insured_relationship_id = 0;
 
 	/**
 	 * Edit/Add an Patient
@@ -31,12 +32,18 @@ class C_Patient extends Controller {
 		$identifierGrid->registerTemplate('actions','<a href="'.Cellini::ManagerLink('deleteIdentifier',$patient_id).'id={$identifier_id}&process=true">delete</a>');
 		$identifierGrid->setLabel('actions',false);
 
+		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
+		$insuredRelationshipGrid =& new cGrid($person->insuredRelationshipList());
+		
+
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
 		$this->assign_by_ref('identifier',$identifier);
 		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
+		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
+		$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$patient_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$patient_id));
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));

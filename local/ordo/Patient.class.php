@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: Patient
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,8 @@ require_once CELLINI_ROOT.'/ordo/MergeDecorator.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: Patient
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
+ * @todo: add release_of_information_code
  */
 class Patient extends MergeDecorator {
 
@@ -146,6 +147,9 @@ class Patient extends MergeDecorator {
 	}
 	function &identifierList() {
 		return $this->person->identifierList();
+	}
+	function &insuredRelationshipList() {
+		return $this->person->insuredRelationshipList();
 	}
 	/**#@-*/
 

@@ -1,0 +1,48 @@
+	<fieldset class="radio" id="insurer">
+		<legend>Insurers</legend>
+
+		{$insuredRelationshipGrid->render()}
+		{if $insuredRelationshipGrid->empty}
+		<p>Patient has no Insurers Assigned</p>
+		{/if}
+
+		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
+		<table>
+			<tr>
+				<td><label>Insurance Program:</label></td>
+				<td><select name="insuredRelationship[insurance_program_id]">
+						{html_options options=$insuredRelationship->getInsurerList() selected=$insuredRelationship->get('insurance_program_id')}
+					</select>
+				</td>
+			<tr>
+				<td><label>Group Name:</label></td>
+				<td><input name="insuredRelationship[group_name]" value="{$insuredRelationship->get('group_name')}"></td>
+			</tr>
+			<tr>
+				<td><label>Group Number:</label></td>
+				<td><input name="insuredRelationship[group_number]" value="{$insuredRelationship->get('group_number')}"></td>
+			</tr>
+			<tr>
+				<td><label>Assigning:</label></td>
+				<td><select name="insuredRelationsip[assigning]">
+						{html_options options=$insuredRelationship->getAssigningList() selected=$insuredRelationship->get('assigning')}
+					</select></td>
+			</tr>
+			<tr>
+				<td><label>Co-Pay:</label></td>
+				<td><input name="insuredRelationship[copay]" value="{$insuredRelationship->get('copay')}"></td>
+			</tr>
+			<tr>
+				<td><label>Subscriber:</label></td>
+				<td><select name="subscriber_to_patient_relationship">
+					{html_options options=$insuredRelationship->getSubscriberToPatientRelationshipList() 
+						selected=$insuredRelationship->get('subscriber_to_patient_relationship')}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Insurer"></td>
+			</tr>
+		</table>
+	</fieldset>

@@ -10,6 +10,7 @@ class C_Insurance extends Controller {
 	var $number_id = 0;
 	var $address_id = 0;
 	var $identifier_id = 0;
+	var $insured_relationship_id = 0;
 
 	/**
 	 * Edit/Add an Insurance Company

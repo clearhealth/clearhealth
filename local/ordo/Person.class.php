@@ -421,5 +421,10 @@ class Person extends ORDataObject {
 		$i =& ORDataOBject::factory('Identifier');
 		return $i->identifierList($this->get('id'));
 	}
+
+	function &insuredRelationshipList() {
+		$ir =& ORDataObject::Factory('InsuredRelationship');
+		return $ir->insuredRelationshipList($this->get('id'));
+	}
 }
 ?>
