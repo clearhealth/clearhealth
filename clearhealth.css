@@ -81,3 +81,7 @@ div#nav a {
 div.clear {
 	clear: both;
 }
+
+.gridInput {
+	width: 30pt;
+}

@@ -54,7 +54,7 @@ class FeeScheduleData extends ORDataObject {
 	 * Populate the class from the db
 	 */
 	function populate() {
-		parent::populate('field_id');
+		parent::populate('code_id');
 	}
 
 	/**#@+
@@ -65,14 +65,14 @@ class FeeScheduleData extends ORDataObject {
 	/**
 	 * Getter for Primary Key: field_id
 	 */
-	function get_field_id() {
+	function get_code_id() {
 		return $this->id;
 	}
 
 	/**
 	 * Setter for Primary Key: field_id
 	 */
-	function set_field_id($id)  {
+	function set_code_id($id)  {
 		$this->id = $id;
 	}
 

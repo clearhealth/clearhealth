@@ -50,7 +50,7 @@ class C_FeeSchedule extends Controller {
 		$ds =& new FeeScheduleDatasource();
 		$renderer = new Grid_Renderer_JS();
 		$grid =& new cGrid($ds,$renderer);
-		$grid->pageSize = 30;
+		//$grid->pageSize = 30;
 
 		$this->assign_by_ref('grid',$grid);
 

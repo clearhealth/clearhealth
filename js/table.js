@@ -32,6 +32,12 @@ function clniTable(tableId,dataObject) {
 			alert('[Client Error] '+e.name+': '+e.message);
 		}
 	}
+
+	this.meta = this.dataObject.getmeta();
+	this.editableMap = this.meta.editableMap;
+	this.updateKey = this.meta._updateKey;
+
+	this.tableBody.grid = this;
 }
 
 clniTable.prototype.render = function() {
@@ -62,6 +68,18 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 		for(var i = 0; i < this.renderMap.length; i++) { 
 			var field = this.renderMap[i];
 			var cell = document.createElement('td');
+
+			if (this.editableMap[field]) {
+				cell.onclick = makeEditable;
+				cell.style.border = "solid 1px black";
+
+				cell.rowNum = rowNum;
+				cell.field = field;
+				cell.updateKey = this.data[rowNum][this.updateKey];
+			}
+			if (this.data[rowNum][field] == null) {
+				this.data[rowNum][field] = " ";
+			}
 			cell.appendChild(document.createTextNode(this.data[rowNum][field]));
 			cell.key = field;
 			row.appendChild(cell);
@@ -179,6 +197,12 @@ clniTable.prototype.bulkFetch = function(start,rows) {
 	}
 }
 
+clniTable.prototype.store = function(cell) {
+	this.dataObject.Sync();
+	var status = this.dataObject.updatefield(cell.updateKey,cell.field,cell.firstChild.value,cell.column);
+	this.data[cell.rowNum][cell.field] = cell.firstChild.value;
+}
+
 clniTable.prototype.moveWindow = function(newRow) {
 	if (newRow >= 0 && newRow < this.dataRows) {
 		// if were scrolling down append rows to get back to window size
@@ -240,6 +264,43 @@ clniTableDataHandler.prototype.fetchbulk = function(result) {
 	for(var i =0; i < result.length; i++) {
 		if (!this.parent.data[this.prefetchRow+i]) {
 			this.parent.data[this.prefetchRow+i] = result[i];
+		}
+	}
+}
+
+// right now were just making stuff input boxes
+// you can only have 1 editable element at a time
+// todo: should we update the data for the field when we make it editable
+function makeEditable() {
+	if (!this.editing) {
+		closeEditable(this.parentNode.parentNode);
+		input = document.createElement('input');
+		input.type = 'text';
+		input.className = 'gridInput';
+		input.value = this.firstChild.nodeValue;
+
+		this.removeChild(this.firstChild);
+		this.appendChild(input);
+		this.parentNode.editing = true;
+		this.editing = true;
+	}
+}
+
+function closeEditable(tableBody) {
+	for(var i =0; i < tableBody.rows.length; i++) {
+		if (tableBody.rows.item(i).editing) {
+			tableBody.rows.item(i).editing = false;
+			for(var c = 0; c < tableBody.rows.item(i).cells.length; c++) {
+				if (tableBody.rows.item(i).cells[c].editing) {
+					cell = tableBody.rows.item(i).cells[c];
+					cell.editing = false;
+
+					cell.appendChild(document.createTextNode(cell.firstChild.value));
+					tableBody.grid.store(cell);
+					cell.removeChild(cell.firstChild);
+					
+				}
+			}
 		}
 	}
 }
