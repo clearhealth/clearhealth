@@ -22,6 +22,11 @@ class Datasource_AccountHistory extends Datasource {
 	var $_res = false;
 	var $_numRows = false;
 	var $_valid = false;
+	var $filters = false;
+
+	function Datasource_AccountHistory($filters = false) {
+		$this->filters = $filters;
+	}
 
 	/**
 	 * Set the person to get account history for and pull in the person's data
@@ -31,7 +36,7 @@ class Datasource_AccountHistory extends Datasource {
 		$this->person_id = $person_id;
 
 		$claim =& ORDataObject::factory('ClearhealthClaim');
-		$this->claims = $claim->claimList($person_id,true);
+		$this->claims = $claim->claimList($person_id,true,$this->filters);
 		$this->_labels = array ( 
 			'identifier' 	=> 'Id', 
 			'date_of_treatment' => 'Date', 

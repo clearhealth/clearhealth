@@ -8,9 +8,17 @@ require_once APP_ROOT."/local/includes/Grid_Renderer_AccountHistory.class.php";
 
 class C_Account extends Controller {
 
+	var $filters = "";
+
 	function C_Account ($template_mod = "general") {
 		parent::Controller();
 		$this->template_mod = $template_mod;
+
+		if (!isset($_SESSION['clearhealth']['filters'][get_class($this)])) {
+			$_SESSION['clearhealth']['filters'][get_class($this)] = array();
+		}
+		$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)];
+		$this->assign("filters",$this->filters);
 	}
 
 	function default_action() {
@@ -20,7 +28,7 @@ class C_Account extends Controller {
 		
 		$hds =& new Datasource_AccountHistory();
 		$hds->setup($patient_id);
-		$renderer =& new Grid_Renderer_AccountHistory();
+		$renderer =& new Grid_Renderer_AccountHistory($this->filters);
 		$history_grid =& new cGrid($hds,$renderer);
 		$this->assign_by_ref("history_grid",$history_grid);
 		
