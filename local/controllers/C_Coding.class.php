@@ -5,6 +5,7 @@ require_once APP_ROOT ."/local/includes/CodingDatasource.class.php";
 class C_Coding extends Controller {
 	var $foreign_id = 0;
 	var $parent_id = 0;
+	var $superbill = 1;
 	
 	function C_Coding($template_mod = "general") {
 		parent::Controller();
@@ -40,6 +41,10 @@ class C_Coding extends Controller {
 		}
 		//var_dump($code_data);
 		
+		if ($this->superbill == 1) {
+			$this->assign("superbill", 1);
+		}
+		
 		$this->assign("EDIT_LINK", Cellini::link("update", true, true, $foreign_id));
 		$this->assign_by_ref("parent_code", $parent_code);
 		$this->assign("foreign_id", $foreign_id);
@@ -56,6 +61,7 @@ class C_Coding extends Controller {
 
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
+		$this->superbill = $_POST['superbill'];
 		
 		//var_dump($_POST);
 
@@ -145,11 +151,11 @@ class C_Coding extends Controller {
 		$_POST['process'] = "";
 	}
 
-	function icd_search($search_string) {
+	function icd_search($search_string,$superbill = 0) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
 		$_POST['searchtype'] = 'icd';
-		$_POST['superbill'] = 0;
+		$_POST['superbill'] = $superbill;
  		
 		$this->find_action_process();
 		
@@ -159,11 +165,11 @@ class C_Coding extends Controller {
 		return null;
 	}
 	
-	function cpt_search($search_string) {
+	function cpt_search($search_string,$superbill = 0) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
 		$_POST['searchtype'] = 'cpt';
-		$_POST['superbill'] = 0;
+		$_POST['superbill'] = $superbill;
 		
 		$this->find_action_process();
 		
