@@ -73,8 +73,8 @@ class ORDataObject {
 		return true;
 	}
 
-	function populate() {
-		$sql = "SELECT * from " . $this->_prefix  . $this->_table . " WHERE id = '" . mysql_real_escape_string(strval($this->id))  . "'";
+	function populate($id = "id") {
+		$sql = "SELECT * from " . $this->_prefix  . $this->_table . " WHERE $id = '" . mysql_real_escape_string(strval($this->id))  . "'";
 		$db = $this->_db;
 		$results = $db->Execute($sql);
 		if ($results && !$results->EOF) {
