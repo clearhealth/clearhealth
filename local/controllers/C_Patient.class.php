@@ -12,6 +12,9 @@ class C_Patient extends Controller {
 	var $identifier_id = 0;
 	var $insured_relationship_id = 0;
 
+	function dashboard_action() {
+	}
+
 	/**
 	 * Edit/Add an Patient
 	 *
