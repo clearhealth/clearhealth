@@ -63,6 +63,41 @@ class M_User extends M_Patient {
 					}
 				}
 			}
+
+			if($t_list[$person->get('type')] === "Provider") {
+				// create default ps schedule if no ps schedule exists
+
+				ORDataObject::factory_include('Schedule');
+				$schedules = Schedule::fromUserId($u->get('id'));
+
+				if (count($schedules) == 0) {
+					// get the default practice
+					ORDataObject::factory_include('Practice');
+					$practices = Practice::practices_factory();
+					$practice_id = $practices[0]->get('id');
+
+					// create a ps schedule for the provider
+					$schedule =& ORDataObject::factory('Schedule');
+					$schedule->set('user_id',$u->get('id'));
+					$schedule->set('schedule_code','PS');
+					$schedule->set('name',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
+					$schedule->set('practice',$practice_id);
+					$schedule->persist();
+
+					// create an event for each room
+					ORDataObject::factory_include('Room');
+					$rooms = Room::rooms_factory();
+					foreach($rooms as $room) {
+						unset($e);
+						$e =& ORDataObject::factory('Event');
+						$e->set('title',$room->get('name'));
+						$e->set('foreign_id',$schedule->get('id'));
+						$e->persist();
+					}
+					$this->messages->addMessage('Default Schedule Created');
+
+				}
+			}
 			
 
 			$this->messages->addMessage('Login Information Updated');

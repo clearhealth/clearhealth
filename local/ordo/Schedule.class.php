@@ -88,9 +88,32 @@ class Schedule extends ORDataObject{
 		}
 	}
 	
+
+	function setup($id = "") {
+		if ($id > 0) {
+			$this->set('id',$id);
+			$this->populate();
+		}
+		
+	}
 	function populate() {
 		parent::populate();
 		$this->events = Event::events_factory($this->id);
+	}
+
+	function fromUserId($user_id) {
+		settype($user_id,'int');
+
+		$s =& ORDataObject::factory('Schedule');
+
+		$ret = array();
+
+		$res = $s->_execute("select id from $s->_prefix$s->_table where user_id = $user_id");
+		while($res && !$res->EOF) {
+			$ret[] = ORDataObject::factory('Schedule',$res->fields['id']);
+			$res->MoveNext();
+		}
+		return $ret;
 	}
 
 	function persist() {
