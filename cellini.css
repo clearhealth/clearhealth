@@ -69,15 +69,13 @@ div.waitingActive {
 }
 
 /* Auto complete rules */
-.autoCompleteBackground
+.AutoCompleteBackground
 {
         background-color: white;
 }
-.autoCompleteHighlight
-{
-        background-color: #CCCCCC;
+.AutoCompleteHighlight {
+        background-color: #CCCCCC !important;
 }
-.autoCompleteMatchingText
-{
-        background-color: yellow;
+.AutoCompleteMatchingText {
+        background-color: yellow !important;
 }
