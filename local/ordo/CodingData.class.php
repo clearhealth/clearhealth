@@ -29,8 +29,8 @@ class CodingData extends ORDataObject {
 	var $modifier		= '';
 	var $units		= '1.00';
 	var $fee		= '';
-	var $primary_free	= 0;
-	var $code_order		= 0;
+	var $primary_code	= '';
+	var $code_order		= '';
 	/**#@-*/
 
 	var $_parentCode 	= null;
@@ -56,10 +56,12 @@ class CodingData extends ORDataObject {
 	}
 
 	function persist() {
-		if ($this->get('code_order') == 0) {
-			$res = $this->_execute("select count(*) +1 as c from $this->_table where foreign_id = ".(int)$this->get('foreign_id'));
+		if ($this->get('id') == 0) {
+			$res = $this->_execute("select count(*) c from $this->_table where foreign_id = ".(int)$this->get('foreign_id')
+						." and parent_id = ".(int)$this->get('parent_id'));
 			if ($res && !$res->EOF) {
-				$this->set('code_order',$res->fields['c']);
+				$this->set('code_order',($res->fields['c']+1));
+				var_dump($this->get('code_order'));
 			}
 		}
 
