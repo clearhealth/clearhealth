@@ -83,13 +83,13 @@ function captureEnter (field, event) {
 	</tr>
 	<tr>
 		<td colspan="2" align="right">
-			<input type="submit" name="saveCode" value="Save">
+			<input type="submit" name="saveCode" value="Add Claim Line">
   		</td>
 	</tr>
 </table>
 </fieldset>
 <fieldset class="radio" id="Code List">
-<legend>Code List</legend>
+<legend>Claim Lines</legend>
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.parent_id)}
 <A HREF="{$EDIT_LINK}parent_id={$code.parent_id}">{$code.description}</A><BR>
