@@ -1,7 +1,7 @@
 <?php
 
 require_once CELLINI_ROOT."/controllers/Controller.class.php";
-require_once APP_ROOT . "/local/controllers/C_Main.class.php";
+require_once CELLINI_ROOT . "/controllers/C_Main.class.php";
 require_once APP_ROOT . "/local/controllers/C_Schedule.class.php";
 
 require_once APP_ROOT . "/local/ordo/Practice.class.php";
@@ -22,7 +22,7 @@ class C_Location extends Controller {
 
 		$this->assign('EDIT_SCHEDULE_ACTION', Cellini::link('edit_schedule'));
 		$this->assign('DELETE_ACTION', Cellini::link('delete'));
-		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit_practice'));
+		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit', 'practice'));
 		$this->assign('EDIT_BUILDING_ACTION', Cellini::link('edit_building'));
 		$this->assign('EDIT_ROOM_ACTION', Cellini::link('edit_room'));
 		$this->assign('EDIT_EVENT_ACTION', Cellini::link('edit_event'));
@@ -33,13 +33,13 @@ class C_Location extends Controller {
 	}
 
 	function default_action() {
-		return $this->edit_action();
+		return $this->list_action();
 	}
 
 	function list_action() {
-		
+
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
-		
+
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
 		$s = new Practice();
@@ -48,42 +48,53 @@ class C_Location extends Controller {
 		$this->assign("buildings",$b->buildings_factory());
 		$r = new Room();
 		$this->assign("rooms",$r->rooms_factory());
-		
+
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_list.html");
 	}
-	
+
 	function schedule_list_action() {
-		
+
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
-		
+
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_schedule_list.html");
 	}
 
 	function edit_practice_action($id = "") {
-		
+
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
-		
+
 		if (is_numeric($id)) {
 			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
 		}
-		
-		
+
+
 		if (!is_object($this->location)) {
 			$this->location = new Practice($id);
 		}
-		
-		$this->assign("practice",$this->location);
+
+		$number =& ORDataObject::factory('PracticeNumber',0,$this->location->id);
+		$address =& ORDataObject::factory('PracticeAddress',0,$this->location->id);
+		$this->assign_by_ref("practice",$this->location);
+		$this->assign_by_ref("parent",$this->location);
+		$this->assign_by_ref("number",$number);
+		$this->assign_by_ref("address",$address);
+
+		$this->assign('FORM_ACTION',Cellini::managerLink('update',$this->location->id));
+		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$this->location->id));
+		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$this->location->id));
+		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$this->location->id));
+		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$this->location->id));
 
 		$this->assign("process",true);
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_practice.html");
 	}
-	
-		
-	function edit_practice_action_process() {
+
+
+	function edit_practice_action_process_old() {
 		if ($_POST['process'] != "true")
 			return;
 		if (is_numeric($_POST['id'])) {
@@ -91,24 +102,24 @@ class C_Location extends Controller {
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
-		}	
-			
+		}
+
 		$this->location = new Practice($_POST['id']);
 		parent::populate_object($this->location);
-		
+
 		$this->location->persist();
-		
+
 		$this->location->populate();
 		$_POST['process'] = "";
 	}
-	
+
 	function edit_building_action($id = "") {
-		
+
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
 		if (!is_object($this->location)) {
 			$this->location = new building($id);
 		}
-		
+
 		$this->assign("building",$this->location);
 		$s = new Practice();
 		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));

@@ -1,0 +1,43 @@
+	<fieldset class="radio" id="number">
+		<legend>Phone Numbers {clni_section_links name="number"}</legend>
+<table class="data" width="100%" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+                <th>Number</th><th>Type</th><th>Notes</th>
+        </tr>
+        {foreach from=$parent->get_numbers() item=row}
+	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
+		<td><a href="{$EDIT_NUMBER_ACTION}id={$row.number_id}&process=true">{$row.number}</a></td>
+		<td>{$row.number_type}</td>
+		<td>{$row.notes}</td>
+		<td><a onClick="return confirm('Delete Number {$row.number_type}:{$row.number}?')" href="{$DELETE_NUMBER_ACTION}id={$row.number_id}&process=true">delete</a></td>
+        </tr>
+        {foreachelse}
+        <tr>
+                <td colspan="3">No Phone Numbers</td>
+        </tr>
+        {/foreach}
+</table>
+		{if $number->get('id') > 0}
+		<input type="hidden" name="number[number_id]" value="{$number->get('id')}">
+		{/if}
+                    <table>
+                        <tr>
+				<td><label>Type: </label></td>
+                          <td><select name="number[number_type]" tabindex="20">
+				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
+				</select>
+			  </td>
+				<td><label>Number: </label></td>
+                          <td><input name="number[number]" size="14" value="{$number->get('number')}" tabindex="21"></td>
+                        </tr>
+                        <tr>
+				<td><label>Notes: </label></td>
+                          <td colspan="3"><textarea name="number[notes]" rows="4" cols="35" tabindex="22">{$number->get('notes')}</textarea></td>
+                        </tr>
+                        <tr>
+				<td></td><td><input type="submit" tabindex="23"{if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" tabindex="24">{else}value="Add">{/if}</td>
+
+                        </tr>
+		</table>
+	</fieldset>

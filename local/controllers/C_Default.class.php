@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php");
+require_once CELLINI_ROOT."/controllers/Controller.class.php";
 
 class C_Default extends Controller {
 

@@ -1,0 +1,28 @@
+{clni_form action=$FORM_ACTION }
+<input type="hidden" name="form_id" value="{$practice->id}" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Name</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="name" value="{$practice->name}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Website</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input TYPE="TEXT" NAME="website" SIZE="35" VALUE="{$practice->get_website()}"/>
+	</td>
+</tr>
+<tr>
+	{if empty($practice->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else}
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+</table>
+{include file="contacts/general_phone.html"}
+{include file="contacts/general_address.html"}
+<input type="hidden" name="id" value="{$practice->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>

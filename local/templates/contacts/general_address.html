@@ -1,0 +1,80 @@
+	<fieldset class="radio" id="address">
+		<legend>Addresses {clni_section_links name="address"}</legend>
+<table class="data" width="100%" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Region</th>
+        </tr>
+        {foreach from=$parent->get_addresses() item=row}
+	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
+		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
+		<td>{$row.type}</td>
+		<td class="address">{$row.line1}<br>{$row.line2}</td>
+		<td>{$row.city}</td>
+		<td>{$row.region}</td>
+		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
+        </tr>
+        {foreachelse}
+        <tr>
+                <td colspan="5">No Addresses</td>
+        </tr>
+        {/foreach}
+</table>
+		{if $address->get('address_id') > 0}
+		<input type="hidden" name="address[address_id]" value="{$address->get('address_id')}">
+		{/if}
+                    <table>
+                        <tr>
+				<td><label>Name:</label> </td>
+                          <td><input name="address[name]" size="20" value="{$address->get('name')}" tabindex="31"></td>
+			  <td><label>Type:</label> </td>
+			  <td>
+					<select name="address[type]" tabindex="31">
+						{html_options options=$address->getTypeList() selected=$address->get('type')}
+					</select>
+			  </td>
+                        </tr>
+                        <tr>
+				<td><label>Address:</label> </td>
+			  <td colspan="3">
+				  <input name="address[line1]" size="30" value="{$address->get('line1')}" tabindex="32"><br>
+				  <input name="address[line2]" size="30" value="{$address->get('line2')}" tabindex="32">
+			  </td>
+                        </tr>
+                        <tr>
+				<td><label>City:</label> </td>
+				<td><input name="address[city]" size="15" value="{$address->get('city')}" tabindex="33"></td>
+				<td><label>State:</label> </td>
+				<td>
+					<select name="address[state]" tabindex="34">
+					{html_options options=$address->getStateList() selected=$address->get('state')}
+					</select>
+				</td>	
+				<td><label>Zip:</label> </td>
+				<td><input name="address[postal_code]" size="10" value="{$address->get('postal_code')}" tabindex="35"></td>
+      </tr>
+				{*
+      <tr>
+				<td><label>County:</label> </td>
+				<td>
+					<select name="address[county]" tabindex="36">
+					{html_options options=$address->getCountyList() selected=$address->get('county')}
+					</select>
+				</td>
+				<td><label>Region:</label> </td>
+				<td>
+					<select name="address[region]" tabindex="37">
+					{html_options options=$address->getRegionList() selected=$address->get('region')}
+					</select>
+				</td>
+			</tr>
+				*}
+                        <tr>
+				<td><label>Notes:</label> </td>
+				<td colspan=3"><textarea name="address[notes]" rows="2" cols="35" tabindex="38">{$address->get('notes')}</textarea></td>
+                        </tr>
+                        <tr>
+				<td></td><td colspan="3"><input type="submit" tabindex="39"{if $address->get('address_id') > 0}value="Update"><input type="submit" value="Add as New" name="address[add_as_new]" tabindex="39">{else}value="Add">{/if}</td>
+                        </tr>
+		</table>
+	</fieldset>

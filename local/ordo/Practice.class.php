@@ -1,11 +1,12 @@
 <?php
-
-require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
-require_once APP_ROOT . "/local/ordo/PhoneNumber.class.php";
-require_once APP_ROOT . "/local/ordo/Address.class.php";
+require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
+ORdataObject::factory_include('Address');
+ORdataObject::factory_include('PracticeAddress');
+ORdataObject::factory_include('PersonNumber');
+ORdataObject::factory_include('PhoneNumber');
 
 /**
- * 
+ *
  */
  
 class Practice extends ORDataObject{
@@ -23,7 +24,7 @@ class Practice extends ORDataObject{
 	var $website;
 	
 	/**
-	 *	
+	 *
 	 *	@var phone_numbers
 	 */
 	var $phone_numbers;
@@ -59,42 +60,34 @@ class Practice extends ORDataObject{
 		$this->main_address->set_type("main");
 		$this->secondary_address = new Address();
 		$this->secondary_address->set_type("secondary");
-	
+
 		$this->_table = "practices";
-		
+
 		if ($id != "") {
 			$this->populate();
 		}
 	}
-	
+
 	function populate() {
 		parent::populate();
-		$this->main_address = Address::factory_address($this->id,"main");
-		$this->secondary_address = Address::factory_address($this->id,"secondary");
-		$this->phone_numbers = PhoneNumber::factory_phone_numbers($this->id);
 	}
 
 	function persist() {
 		parent::persist();
-		$this->main_address->persist($this->id);
-		$this->secondary_address->persist($this->id);
-		foreach ($this->phone_numbers as $phone) {
-			$phone->persist($this->id);
-		}
 	}
-	
+
 	/**
 	 * Convenience function to get an array of many objects
-	 * 
-	 * @param int $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned 
+	 *
+	 * @param int $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned
 	 */
 	function practices_factory() {
 		$practices = array();
-		
+
 		$s = new Practice();
 		$sql = "SELECT id FROM  " . $s->_prefix . $s->_table;
 		$result = $s->_Execute($sql);
-		
+
 		while ($result && !$result->EOF) {
 			$practices[] = new Practice($result->fields['id']);
 			$result->MoveNext();
@@ -102,7 +95,7 @@ class Practice extends ORDataObject{
 
 		return $practices;
 	}
-	
+
 	/**
 	 * Convenience function to generate string debug data about the object
 	 */
@@ -179,7 +172,7 @@ class Practice extends ORDataObject{
 	function set_fax($phone) {
 		$this->_set_number($phone, "fax");
 	}
-	
+
 	function _set_number($num, $type) {
 		$found = false;
 		for ($i=0;$i<count($this->phone_numbers);$i++) {
@@ -211,7 +204,7 @@ class Practice extends ORDataObject{
 		$this->main_address->set_state($state);
 	}
 	function set_main_zip($zip) {
-		$this->main_address->set_zip($zip);
+		$this->main_address->set_postal_code($zip);
 	}
 	
 	function set_secondary_address_line1($line) {
@@ -227,7 +220,7 @@ class Practice extends ORDataObject{
 		$this->secondary_address->set_state($state);
 	}
 	function set_secondary_zip($zip) {
-		$this->secondary_address->set_zip($zip);
+		$this->secondary_address->set_postal_code($zip);
 	}
 	
 	function get_delete_message() {
@@ -266,8 +259,25 @@ class Practice extends ORDataObject{
 		return false;
 	}
 	
-	
+	function get_addresses() {
+		$a = new PracticeAddress();
+		return $a->addressList($this->id);
+	}
 
+	function get_numbers() {
+		$p = new PersonNumber();
+		return $p->numberList($this->id);
+	}
+
+	/**
+	 * Called by factory with passed in parameters, you can specify the primary_key of Employee with this
+	 */
+	function setup($id = 0) {
+		$this->set('id',$id);
+		if ($id > 0) {
+			$this->populate();
+		}
+	}
 } // end of Class
 
 ?>

@@ -24,7 +24,11 @@
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >City, State Zip</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="25" name="main_city" value="{$practice->main_address->city}"/> , <input type="text" size="2" maxlength="2" name="main_state" value="{$practice->main_address->state}"/> <input type="text" size="5" name="main_zip" value="{$practice->main_address->zip}"/>
+		<input type="text" size="25" name="main_city" value="{$practice->main_address->city}"/> ,
+		<select name="main_state">
+		{html_options options=$practice->main_address->getStateList() selected=$practice->main_address->get_state()}
+		</select>
+		<input type="text" size="5" name="main_zip" value="{$practice->main_address->zip}"/>
 	</td>
 </tr>
 <tr>
@@ -72,15 +76,16 @@
 		<input TYPE="TEXT" NAME="fax" SIZE="12" VALUE="{$practice->get_fax()}"/>
 	</td>
 </tr>
-
 <tr>
 	{if empty($practice->id) }
 	<td><br /><input type="submit" value="Save" /></td>
-	{else} 
+	{else}
 	<td><br /><input type="submit" value="Update" /></td>
 	{/if}
 </tr>
 </table>
+{include file="contacts/general_phone.html"}
+{include file="contacts/general_address.html"}
 <input type="hidden" name="id" value="{$practice->id}" />
 <input type="hidden" name="process" value="{$PROCESS}" />
 </form>

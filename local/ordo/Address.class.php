@@ -25,9 +25,9 @@ class Address extends ORDataObject {
 
 
 	function Address($db = null) {
-		parent::ORDataObject($db);	
+		parent::ORDataObject($db);
 		$this->_table = "address";
-		$this->_sequence_name = "sequences";	
+		$this->_sequence_name = "sequences";
 		$this->groups = array();
 	}
 	function setup($id = 0,$parent = false, $parent_type = "person") {
@@ -99,6 +99,7 @@ class Address extends ORDataObject {
 		$statel = $this->getStateList();
 		$typel = $this->getTypeList();
 
+		$list = NULL;
 		while($res && !$res->EOF) {
 			$res->fields['county'] = $countyl[$res->fields['county']];
 			$res->fields['state'] = $statel[$res->fields['state']];
@@ -112,15 +113,11 @@ class Address extends ORDataObject {
 		return $list;
 	}
 
-	function factory_address() {
-	}
-
-
     /**#@+
     *	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
     */
     function get_address_id() {
-    	return $this->id;	
+    	return $this->id;
     }
     function set_address_id($id) {
     	$this->id = $id;	
@@ -132,13 +129,13 @@ class Address extends ORDataObject {
     function set_name($n) {
     	$this->name = $n;
     }
-    
+
     function get_line1() {
     	return $this->line1;	
     }
     function set_line1($l) {
     	$this->line1 = $l;
-    }
+	}
 
     function get_line2() {
     	return $this->line2;	
@@ -193,24 +190,24 @@ class Address extends ORDataObject {
 	    return array_flip($list);
     }
 
-    function get_postal_code() {
-    	return $this->postal_code;	
-    }
-    function set_postal_code($c) {
-    	$this->postal_code = $c;
-    }
+	function get_postal_code() {
+		return $this->postal_code;
+	}
+	function set_postal_code($c) {
+		$this->postal_code = $c;
+	}
 
-    function get_notes() {
-    	return $this->notes;	
-    }
-    function set_notes($n) {
-    	$this->notes = $n;
-    }
+	function get_notes() {
+		return $this->notes;
+	}
+	function set_notes($n) {
+		$this->notes = $n;
+	}
 
-    function get_type() {
-	    return $this->type;
-    }
-    function set_type($t) {
+	function get_type() {
+		return $this->type;
+	}
+	function set_type($t) {
 	    $this->type = $t;
     }
     function getTypeList() {
@@ -228,7 +225,7 @@ class Address extends ORDataObject {
      *
      * @todo figure out of this approach scales properly 
      */
-    function lookup($id) {
+	function lookup($id) {
 	    if ($this->_acache == false) {
 		    $res = $this->_execute("select * from $this->_table");
 		    $this->_acache = array();

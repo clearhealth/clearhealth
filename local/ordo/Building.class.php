@@ -1,7 +1,8 @@
 <?php
 
 require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
-
+ORdataObject::factory_include('Address');
+ORdataObject::factory_include('BuildingAddress');
 /**
  * 
  */
@@ -15,7 +16,7 @@ class Building extends ORDataObject{
 	 var $id;
 	
 	/**
-	 *	
+	 *
 	 *	@var description
 	 */
 	var $description;
@@ -33,13 +34,13 @@ class Building extends ORDataObject{
 	var $practice_id;
 	
 	/**
-	 *	
+	 *
 	 *	@var address
 	 */
 	var $address;
-	
-	
-	/**
+
+
+    /**
 	 * Constructor sets all attributes to their default value
 	 *  
 	 */
@@ -55,7 +56,7 @@ class Building extends ORDataObject{
 		$this->practice_id = "";
 		$this->address = new Address();
 		$this->address->set_type("main");
-	
+
 		$this->_table = "buildings";
 		
 		if ($id != "") {
@@ -65,7 +66,8 @@ class Building extends ORDataObject{
 	
 	function populate() {
 		parent::populate();
-		$this->address = Address::factory_address($this->id,"main");
+        $ba = new BuildingAddress();
+        $this->address = $ba->addressList($this->id);
 	}
 
 	function persist() {
@@ -91,7 +93,7 @@ class Building extends ORDataObject{
 		$d = new Building();
 		$sql = "SELECT id FROM  " . $d->_prefix . $d->_table . " WHERE practice_id " .$foreign_id ;
 		$result = $d->_Execute($sql);
-		
+
 		while ($result && !$result->EOF) {
 			$buildings[] = new Building($result->fields['id']);
 			$result->MoveNext();
