@@ -1,6 +1,6 @@
 body {
-	margin:0px 0px; padding:0px;
-	text-align:center;
+	margin:0px; padding:0px;
+	/*text-align:center;*/
 	background-color:#eee;
 }
 
@@ -21,11 +21,15 @@ body {
 	background-color: #ccc;
 	position: relative;
 	z-index: 2;
-	padding: 2px;
+	text-align: left;
+	left: 0px;
+	top: 0px;
+	height: 31pt;
 }
 
 #header h1 {
 	margin: 0px;
+	padding: 0px;
 	float: right;
 }
 	
@@ -38,16 +42,19 @@ body {
 
 div#nav {
 	position: absolute;
-	bottom: 0px;
+	top: 18pt;
 	left: 0px;
-	vertical-align: bottom;
+	margin: 0px;
+	padding: 0px;
 }
 
 div#nav div.section {
 	position: relative;
+	left: 10pt;
 	float: left;
-	margin-left: 10pt;
 	border: solid 1px #ccc;
+	margin: 0px;
+	margin-right: 10pt;
 }
 
 div#nav div.topLevel {
