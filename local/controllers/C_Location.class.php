@@ -369,7 +369,7 @@ class C_Location extends Controller {
 	
 	function delete_action($id = "",$object_class ="") {
 		
-		$action = "";
+		$action = "delete";
 		if($object_class == "occurence"){
 			$o = new Occurence($id);
 			$o->populate();
