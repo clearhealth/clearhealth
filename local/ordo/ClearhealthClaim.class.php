@@ -90,9 +90,11 @@ class ClearhealthClaim extends ORDataObject {
 		$labels = array('identifier' => 'Id','date_of_treatment' => 'Date', 'total_billed' => 'Billed','total_paid' => 'Paid', 'balance'=>'Balance');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "claim_id, identifier, date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, total_billed, total_paid, (total_billed - total_paid) as balance",
-				'from' 	=> "$this->_table inner join encounter as e using (encounter_id)",
-				'where' => " e.patient_id = $patient_id"
+				'cols' 	=> "chc.claim_id, chc.identifier, date_format(e.date_of_treatment,'%Y-%m-%d') date_of_treatment, chc.total_billed, chc.total_paid, "
+						. " (chc.total_billed - chc.total_paid) as balance, sum(pcl.writeoff) as writeoff",
+				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id",
+				'where' => " e.patient_id = $patient_id",
+				'groupby' => " chc.claim_id "
 			),
 			$labels
 		);
