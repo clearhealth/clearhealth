@@ -56,15 +56,30 @@ class Practice extends ORDataObject{
 		$this->website = "";
 		$this->addresses = array();
 		$this->phone_numbers = array();
-		$this->main_address = new Address();
-		$this->main_address->set_type("main");
-		$this->secondary_address = new Address();
-		$this->secondary_address->set_type("secondary");
+		$this->main_address = new PracticeAddress();
+		$tlist = array_flip($this->main_address->getTypeList());
+		$this->main_address->set_type($tlist["Main"]);
+		$this->secondary_address = new PracticeAddress();
+		$this->secondary_address->set_type($tlist["Secondary"]);
 
 		$this->_table = "practices";
 
 		if ($id != "") {
 			$this->populate();
+
+			$res = $this->_execute("select * from practice_address where practice_id = ".(int)$id);
+			while($res && !$res->EOF) {
+				switch ($res->fields['address_type']) { 
+					case $tlist['Main']:
+						$this->main_address->setup($res->fields['address_id'],$res->fields['practice_id']);
+						break;
+					case $tlist['Secondary']:
+						$this->secondary_address->setup($res->fields['address_id'],$res->fields['practice_id']);
+						break;
+				}
+				$res->MoveNext();
+
+			}
 		}
 	}
 
@@ -74,6 +89,14 @@ class Practice extends ORDataObject{
 
 	function persist() {
 		parent::persist();
+		if ($this->main_address->get('id') == 0) {
+			$this->main_address->setup(0,$this->get('id'));
+		}
+		if ($this->secondary_address->get('id') == 0) {
+			$this->secondary_address->setup(0,$this->get('id'));
+		}
+		$this->main_address->persist();
+		$this->secondary_address->persist();
 	}
 
 	/**
