@@ -27,6 +27,7 @@ class FeeScheduleData extends ORDataObject {
 	var $fee_schedule_id	= '';
 	var $data		= '';
 	var $formula		= '';
+	var $mapped_code		= '';
 	/**#@-*/
 
 
