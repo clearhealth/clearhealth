@@ -8,7 +8,7 @@
 	<table>
 		<tr>
 			<td><label>Payment Type:</label></td>
-			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type')}{$payment->get('payment_type')}</td>
+			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type')}</td>
 			<td><label>Amount Paid:</label></td>
 			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}"></td>
 		</tr>
