@@ -1,0 +1,101 @@
+<table class="columns">
+<tr>
+<td>
+	<fieldset class="radio" id="person" >
+	<legend>Patient {clni_section_links name="detail"}</legend>
+		<table align="left">
+			<tbody>
+	        <tr>
+				<td style="white-space: nowrap;"><label class="inline">{l}Name{/l}: </label> {$person->get('first_name')} {$person->get('last_name')}</td>
+	        </tr>
+			<tr>
+				<td style="white-space: nowrap;"><label class="inline">{l}Record Number{/l}: </label> {$person->get('record_number')}&nbsp;&nbsp;<label class="inline">({$person->get("print_identifier_type")}): </label>{$person->get('identifier')}</td>
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td><label class="inline">{l}Salutation{/l}: </label>
+				  {$person->get('salutation')}
+				  &nbsp;&nbsp;{l}Initials{/l}: {$person->get('initials')}
+				  &nbsp;&nbsp;{l}Middle Initial{/l}: {$person->get('middle_name')}
+			    </td>
+	        </tr>
+	        <tr>
+				<td><label class="inline">{l}Primary Email{/l}:</label>{$person->get('email')}</td>
+	        </tr>
+				<td><label class="inline">{l}Gender{/l}:</label>{$person->get('print_gender')}&nbsp;&nbsp;DOB: {$person->get('date_of_birth')}</td>
+			</tr>
+	        </tbody>
+		</table>
+	
+	{assign var="parent" value=$person}
+	<fieldset class="radio" id="number" align="right">
+	<legend>Phone Numbers {clni_section_links name="number"}</legend>
+	<table class="data" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
+        </tr>
+        {foreach from=$parent->get_numbers() item=row}
+			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
+			<td>{$row.number}</td>
+			<td>{$row.number_type}</td>
+			<td>{if !$row.active}DNC{/if}</td>
+			<td>{$row.notes}</td>
+        	</tr>
+        {foreachelse}
+        	<tr>
+        		<td colspan="3">No Phone Numbers</td>
+        	</tr>
+        {/foreach}
+	</table>
+	</fieldset>
+
+    <fieldset class="radio" id="address" align="right">
+		<legend>Addresses {clni_section_links name="address"}</legend>
+		<table class="data" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
+        </tr>
+        {foreach from=$parent->get_addresses() item=row}
+		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
+		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
+		<td>{$row.type}</td>
+		<td class="address">{$row.line1}<br>{$row.line2}</td>
+		<td>{$row.city}</td>
+		<td>{$row.postal_code}</td>
+		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
+        </tr>
+        {foreachelse}
+        <tr>
+                <td colspan="5">No Addresses</td>
+        </tr>
+        {/foreach}
+        </table>
+	</fieldset>
+	</fieldset>
+	</td>
+</tr>
+<tr>
+<td>	
+	<fieldset class="radio" id="insurer">
+		<legend>Insurers</legend>
+		{$insuredRelationshipGrid->render()}
+		{if $insuredRelationshipGrid->empty}
+			<p>Patient has no Insurers Assigned</p>
+		{/if}
+	</fieldset>
+	<fieldset class="radio" id="address">
+		<legend>Encounters {clni_section_links name="encounters"}</legend>
+	</fieldset>
+	<fieldset class="radio" id="address">
+		<legend>Forms {clni_section_links name="forms"}</legend>
+	</fieldset>
+	<fieldset class="radio" id="address">
+		<legend>Reports {clni_section_links name="reports"}</legend>
+	</fieldset>
+</td>
+</tr>
+</table>
+		    
+
