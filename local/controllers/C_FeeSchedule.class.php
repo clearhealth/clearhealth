@@ -24,9 +24,21 @@ class C_FeeSchedule extends Controller {
 		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
 		$this->assign_By_ref('feeSchedule',$feeSchedule);
 		$this->assign('FORM_ACTION',Cellini::link('edit',true,true,$fee_schedule_id));
+		$this->assign('DEFAULT_ACTION',Cellini::link('setdefault',true,true,$fee_schedule_id));
 		$this->assign('UPDATE_ACTION',Cellini::link('update',true,true,$fee_schedule_id));
 		
 		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_edit.html"));	
+	}
+
+	function setdefault_action($fee_schedule_id = 0) {
+		return $this->edit_action($fee_schedule_id);
+	}
+
+	function setdefault_action_process($fee_schedule_id) {
+		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+		$feeSchedule->setDefaultValue($_POST['default_value']);
+		$this->messages->addMessage('Default Value Set');
+
 	}
 
 	function edit_action_process($fee_schedule_id = 0) {

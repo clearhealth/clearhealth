@@ -175,5 +175,12 @@ class FeeSchedule extends ORDataObject {
 		}
 		return 0.00;
 	}
+
+	/**
+	 * Set a default value for every code of type 3
+	 */
+	function setDefaultValue($value) {
+		$this->_execute("replace into fee_schedule_data (code_id,revision_id,fee_schedule_id,data) select code_id, 1, ".$this->get('fee_schedule_id').", $value from codes where code_type = 3");
+	}
 }
 ?>
