@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 08, 2005 at 01:04 PM
+-- Generation Time: Mar 08, 2005 at 02:59 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -1542,50 +1542,50 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=39 ;
+) TYPE=InnoDB AUTO_INCREMENT=42 ;
 
 -- 
 -- Dumping data for table `menu`
 -- 
 
 INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '');
-INSERT INTO `menu` VALUES (2, 'default', 1, '', 'children', 200, 'Logout', 'Access/logout');
-INSERT INTO `menu` VALUES (3, 'default', 1, '', 'children', 190, 'Preferences', 'Preferences/list');
+INSERT INTO `menu` VALUES (2, 'default', 39, '', 'children', 100, 'Logout', 'Access/logout');
+INSERT INTO `menu` VALUES (3, 'default', 39, '', 'children', 10, 'Preferences', 'Preferences/list');
 INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 180, 'Reports', 'Report/list');
-INSERT INTO `menu` VALUES (5, 'default', 1, '', 'children', 10, 'Schedule/Location Management', 'Location/list');
-INSERT INTO `menu` VALUES (6, 'default', 1, '', 'children', 20, 'Schedule Calendar', 'Calendar/default');
-INSERT INTO `menu` VALUES (7, 'default', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule');
+INSERT INTO `menu` VALUES (5, 'admin', 1, '', 'children', 10, 'Schedule/Location Management', 'Location/list');
+INSERT INTO `menu` VALUES (7, 'admin', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule');
 INSERT INTO `menu` VALUES (8, 'default', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practive');
-INSERT INTO `menu` VALUES (9, 'default', 5, '', 'children', 30, 'Add New Building', 'Location/edit_building');
-INSERT INTO `menu` VALUES (10, 'default', 5, '', 'children', 40, 'Add New Room', 'Location/edit_room');
-INSERT INTO `menu` VALUES (11, 'default', 5, '', 'children', 50, 'Add New Room', 'Location/edit_room');
-INSERT INTO `menu` VALUES (12, 'default', 6, '', 'children', 40, 'Day', 'Calendar/day');
-INSERT INTO `menu` VALUES (13, 'default', 6, '', 'children', 20, 'Week', 'Calendar/week');
-INSERT INTO `menu` VALUES (14, 'default', 6, '', 'children', 30, 'Week Grid', 'Calendar/week_grid');
-INSERT INTO `menu` VALUES (15, 'default', 6, '', 'children', 10, 'Month', 'Calendar/month');
-INSERT INTO `menu` VALUES (16, 'default', 6, '', 'children', 60, 'Brief Day', 'Calendar/day_brief');
-INSERT INTO `menu` VALUES (17, 'default', 6, '', 'children', 70, 'Search', 'Calendar/search');
+INSERT INTO `menu` VALUES (9, 'admin', 5, '', 'children', 30, 'Add New Building', 'Location/edit_building');
+INSERT INTO `menu` VALUES (10, 'admin', 5, '', 'children', 40, 'Add New Room', 'Location/edit_room');
+INSERT INTO `menu` VALUES (11, 'admin', 5, '', 'children', 50, 'Add New Room', 'Location/edit_room');
+INSERT INTO `menu` VALUES (12, 'default', 1, '', 'children', 40, 'Day', 'Calendar/day');
+INSERT INTO `menu` VALUES (13, 'default', 1, '', 'children', 20, 'Week Brief', 'Calendar/week');
+INSERT INTO `menu` VALUES (14, 'default', 1, '', 'children', 30, 'Week', 'Calendar/week_grid');
+INSERT INTO `menu` VALUES (15, 'default', 1, '', 'children', 10, 'Month', 'Calendar/month');
+INSERT INTO `menu` VALUES (16, 'default', 1, '', 'children', 60, 'Brief Day', 'Calendar/day_brief');
+INSERT INTO `menu` VALUES (17, 'default', 1, '', 'children', 70, 'Search', 'Calendar/search');
 INSERT INTO `menu` VALUES (18, 'admin', 1, '', 'children', 150, 'Fee Schedule', 'FeeSchedule/default');
 INSERT INTO `menu` VALUES (19, 'admin', 18, '', 'children', 10, 'Add Fee Schedule', 'FeeSchedule/edit');
 INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit');
-INSERT INTO `menu` VALUES (21, 'admin', 1, '', 'children', 20, 'Users', 'User/list');
-INSERT INTO `menu` VALUES (22, 'admin', 21, '', 'children', 10, 'Add User', 'User/edit');
+INSERT INTO `menu` VALUES (21, 'admin', 40, '', 'children', 20, 'List Users', 'User/list');
+INSERT INTO `menu` VALUES (22, 'admin', 40, '', 'children', 30, 'Add User', 'User/edit');
 INSERT INTO `menu` VALUES (23, 'admin', 1, '', 'children', 10, 'Dashboard', 'Admin/default');
 INSERT INTO `menu` VALUES (24, 'admin', 1, '', 'children', 30, 'Enumeration', 'Enumeration/list');
 INSERT INTO `menu` VALUES (25, 'admin', 24, '', 'children', 10, 'Add Enumeration', 'Enumeration/edit');
-INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 100, 'Forms', 'Form/list');
+INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 20, 'Forms', 'Form/list');
 INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 10, 'Add Form', 'Form/edit');
 INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 20, 'View Form Data', 'Form/view');
-INSERT INTO `menu` VALUES (29, 'default', 1, '', 'children', 150, 'Forms', 'Form/fillout');
-INSERT INTO `menu` VALUES (30, 'default', 1, '', 'children', 100, 'Patients', 'Patient/list');
-INSERT INTO `menu` VALUES (31, 'default', 30, '', 'children', 10, 'Add Patient', 'Patient/edit');
-INSERT INTO `menu` VALUES (32, 'default', 1, '', 'children', 160, 'Insurance Companies', 'Insurance/list');
-INSERT INTO `menu` VALUES (33, 'default', 32, '', 'children', 10, 'Add Insurance Company', 'Insurance/edit');
-INSERT INTO `menu` VALUES (34, 'admin', 1, '', 'children', 100, 'Users', 'User/list');
-INSERT INTO `menu` VALUES (35, 'admin', 34, '', 'children', 10, 'Add User', 'User/edit');
-INSERT INTO `menu` VALUES (36, 'admin', 1, '', 'children', 100, 'Document Manager Categories', 'DocumentCategory/list');
-INSERT INTO `menu` VALUES (37, 'default', 1, '', 'children', 170, 'Documents', 'Document/list');
+INSERT INTO `menu` VALUES (29, 'patient', 1, '', 'children', 150, 'Forms', 'Form/fillout');
+INSERT INTO `menu` VALUES (30, 'patient', 1, '', 'children', 100, 'Patients', 'Patient/list');
+INSERT INTO `menu` VALUES (31, 'patient', 30, '', 'children', 10, 'Add Patient', 'Patient/edit');
+INSERT INTO `menu` VALUES (32, 'admin', 40, '', 'children', 160, 'List Insurance Companies', 'Insurance/list');
+INSERT INTO `menu` VALUES (33, 'admin', 40, '', 'children', 170, 'Add Insurance Company', 'Insurance/edit');
+INSERT INTO `menu` VALUES (36, 'admin', 1, '', 'children', 100, 'Document Categories', 'DocumentCategory/list');
+INSERT INTO `menu` VALUES (37, 'patient', 1, '', 'children', 170, 'Documents', 'Document/list');
 INSERT INTO `menu` VALUES (38, 'admin', 18, '', 'children', 20, 'Edit Superbill', 'Superbill/list');
+INSERT INTO `menu` VALUES (39, 'default', 1, '', 'children', 500, 'My Account', '');
+INSERT INTO `menu` VALUES (40, 'admin', 1, '', 'children', 10, 'Entities', '');
+INSERT INTO `menu` VALUES (41, 'billing', 1, '', 'children', 10, '??', 'billing/default');
 
 -- --------------------------------------------------------
 
@@ -2817,6 +2817,26 @@ INSERT INTO `storage_string` VALUES (807, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (808, '0', 'blah 45');
 INSERT INTO `storage_string` VALUES (809, 'test_string', 'Test');
 INSERT INTO `storage_string` VALUES (968, 'email', '');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `superbill_data`
+-- 
+
+DROP TABLE IF EXISTS `superbill_data`;
+CREATE TABLE `superbill_data` (
+  `superbill_data_id` int(11) NOT NULL default '0',
+  `superbill_id` int(11) NOT NULL default '0',
+  `code_id` int(11) NOT NULL default '0',
+  `status` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`superbill_data_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `superbill_data`
+-- 
+
 
 -- --------------------------------------------------------
 
