@@ -48,6 +48,7 @@ class C_FeeSchedule extends Controller {
 	function update_action($fee_schedule_id = 0) {
 
 		$ds =& new FeeScheduleDatasource();
+		$ds->reset();
 		if ($fee_schedule_id > 0) {
 			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
 			$ds->reset();
