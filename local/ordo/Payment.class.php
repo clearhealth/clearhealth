@@ -10,6 +10,7 @@
  * Required Libs
  */
 require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
+require_once CELLINI_ROOT."/includes/Datasource_sql.class.php";
 /**#@-*/
 
 /**
