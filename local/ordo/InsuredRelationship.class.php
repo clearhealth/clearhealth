@@ -63,7 +63,7 @@ class InsuredRelationship extends ORDataObject {
 	 * Populate the class from the db
 	 */
 	function populate() {
-		parent::populate('insured_relationshp_id');
+		parent::populate('insured_relationship_id');
 	}
 
 	/**#@+
@@ -92,11 +92,11 @@ class InsuredRelationship extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "insured_relationship_id, insurance_program_id, group_name, group_number, copay",
-				'from' 	=> "$this->_table ",
+				'cols' 	=> "ir.insured_relationship_id, ir.insurance_program_id, group_name, group_number, copay, ip.name as program, c.name as company",
+				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
 				'where' => " person_id = $person_id"
 			),
-			array('group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay'));
+			array('company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay'));
 		return $ds;
 	}
 

@@ -41,6 +41,7 @@ class PhoneNumber extends ORDataObject{
 		$this->prefix = "";
 		$this->number = "";
 		$this->type = TYPE_HOME;
+		
 		$this->_table = "phone_numbers";
 		if ($id != "") {
 			$this->populate();

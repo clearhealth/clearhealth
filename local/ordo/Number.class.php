@@ -12,6 +12,7 @@ class Number extends ORDataObject {
 	var $number_type;
 	var $notes;
 	var $number;
+	var $active = 1;
 
 	var $_parent = false;
 	var $_relation = "person_phone";
@@ -77,7 +78,7 @@ class Number extends ORDataObject {
 
 	function numberList($parent_id) {
 		$this->_phone_numbers = array();
-		$sql ="select pn.number_id, number, notes, number_type from $this->_table pn inner join $this->_relation using(number_id) where $this->_fkey = ".(int)$parent_id;
+		$sql ="select pn.number_id, number, notes, number_type, active from $this->_table pn inner join $this->_relation using(number_id) where $this->_fkey = ".(int)$parent_id;
 		$res = $this->_execute($sql);
 
 		$lookup = $this->getTypeList();
