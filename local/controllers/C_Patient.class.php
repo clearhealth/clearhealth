@@ -13,10 +13,44 @@ class C_Patient extends Controller {
 	var $insured_relationship_id = 0;
 	var $person_person_id = 0;
 
-	function dashboard_action() {
+	function C_Patient() {
+		parent::Controller();
+		$this->_load_controller_vars();	
+	}
+	
+	/**
+	 * Summary view showing patients forms, reports, encounters, summary
+	 * demographics, prescriptions documents
+	 *
+	 */
+	function dashboard_action($patient_id = "") {
 		if (isset($_SESSION['clearhealth']['active_user']) && $_SESSION['clearhealth']['active_user'] > 0) {
 
 		}
+		
+		if (is_numeric($patient_id) && $patient_id > 0) {
+			$this->set("patient_id",$patient_id);	
+		} 
+		
+		if (is_numeric($this->get("patient_id")) && $this->get("patient_id") > 0){
+			$p = ORDataObject::Factory("patient",$this->get("patient_id"));
+			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
+			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
+			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
+			$insuredRelationshipGrid =& new cGrid($p->insuredRelationshipList());
+			
+			$this->assign_by_ref("person",$p);
+			$this->assign_by_ref('number',$number);
+			$this->assign_by_ref('address',$address);
+			$this->assign_by_ref('insuredRelationship',$insuredRelationship);
+			$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
+			
+		}
+		else {
+			$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');	
+		}
+		
+		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_dashboard.html"));
 	}
 
 	/**
