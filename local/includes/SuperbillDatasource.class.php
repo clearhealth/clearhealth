@@ -31,5 +31,42 @@ class SuperbillDatasource extends Datasource_editable {
 		
 		$this->object =& ORDataObject::factory('SuperbillData');
 	}
+	
+	function prepare() {
+		$where = "";
+		$first = true;
+		foreach($this->where as $col => $value) {
+			if (!$first) {
+				$where .= " and ";
+			}
+			$first = false;
+
+			$where .= " $col = ".$this->_db->qstr($value);
+		}
+
+		foreach($this->whereFilter as $col => $value) {
+			$where .= " and $col like ".$this->_db->qstr("%$value%");
+		}
+		$this->_query['where'] = "$where";
+		parent::prepare();
+	}
+
+	function reset() {
+		$this->feeSessions = array();
+		$this->whereFilter = array();
+
+		$_SESSION[$this->session]['whereFilter'] = $this->whereFilter;
+		$this->meta = array('editableMap' => array());
+	}
+
+	function addFilter($field,$value) {
+		$this->whereFilter[$field] = $value;
+		$_SESSION[$this->session]['whereFilter'] = $this->whereFilter;
+	}
+	function dropFilter($field) {
+		unset($this->whereFilter[$field]);
+		$_SESSION[$this->session]['whereFilter'] = $this->whereFilter;
+	}
+	
 }
 ?>
