@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 02, 2005 at 02:08 PM
+-- Generation Time: Mar 03, 2005 at 02:00 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -539,7 +539,23 @@ INSERT INTO `fee_schedule_data` VALUES (9, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (13, 1, 711, 45.45, '');
 INSERT INTO `fee_schedule_data` VALUES (15, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (21, 1, 711, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (22, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (23, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '');
+INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (36, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (37, 1, 711, 34.12, '');
+INSERT INTO `fee_schedule_data` VALUES (38, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (39, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (40, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (42, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
 
 -- --------------------------------------------------------
 
@@ -1205,16 +1221,16 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=20 ;
+) TYPE=InnoDB AUTO_INCREMENT=26 ;
 
 -- 
 -- Dumping data for table `menu`
 -- 
 
-INSERT INTO `menu` VALUES (1, 'default', 1, '', 'children', 0, '', '');
+INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '');
 INSERT INTO `menu` VALUES (2, 'default', 1, '', 'children', 200, 'Logout', 'Access/logout');
 INSERT INTO `menu` VALUES (3, 'default', 1, '', 'children', 190, 'Preferences', 'Preferences/list');
-INSERT INTO `menu` VALUES (4, 'default', 1, '', 'children', 180, 'Reports', 'Reports/list');
+INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 180, 'Reports', 'Report/list');
 INSERT INTO `menu` VALUES (5, 'default', 1, '', 'children', 10, 'Schedule/Location Management', 'Location/list');
 INSERT INTO `menu` VALUES (6, 'default', 1, '', 'children', 20, 'Schedule Calendar', 'Calendar/default');
 INSERT INTO `menu` VALUES (7, 'default', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule');
@@ -1230,6 +1246,12 @@ INSERT INTO `menu` VALUES (16, 'default', 6, '', 'children', 60, 'Brief Day', 'C
 INSERT INTO `menu` VALUES (17, 'default', 6, '', 'children', 70, 'Search', 'Calendar/search');
 INSERT INTO `menu` VALUES (18, 'default', 1, '', 'children', 150, 'Fee Schedule', 'FeeSchedule/default');
 INSERT INTO `menu` VALUES (19, 'default', 18, '', 'children', 10, 'Add Fee Schedule', 'FeeSchedule/edit');
+INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit');
+INSERT INTO `menu` VALUES (21, 'admin', 1, '', 'children', 20, 'Users', 'User/list');
+INSERT INTO `menu` VALUES (22, 'admin', 21, '', 'children', 10, 'Add User', 'User/edit');
+INSERT INTO `menu` VALUES (23, 'admin', 1, '', 'children', 10, 'Dashboard', 'Admin/default');
+INSERT INTO `menu` VALUES (24, 'admin', 1, '', 'children', 30, 'Enumeration', 'Enumeration/list');
+INSERT INTO `menu` VALUES (25, 'admin', 24, '', 'children', 10, 'Add Enumeration', 'Enumeration/edit');
 
 -- --------------------------------------------------------
 
@@ -1527,6 +1549,7 @@ INSERT INTO `ownership` VALUES (787, 1);
 INSERT INTO `ownership` VALUES (788, 1);
 INSERT INTO `ownership` VALUES (789, 1);
 INSERT INTO `ownership` VALUES (790, 1);
+INSERT INTO `ownership` VALUES (791, 1);
 
 -- --------------------------------------------------------
 
@@ -1765,7 +1788,7 @@ CREATE TABLE `preferences` (
 -- 
 
 INSERT INTO `preferences` VALUES (9000, 'Defaults', '', 0, 1, 4);
-INSERT INTO `preferences` VALUES (9001, 'Special Event Color', '#123456', 9000, 2, 3);
+INSERT INTO `preferences` VALUES (9001, 'Special Event Color', '#123444', 9000, 2, 3);
 
 -- --------------------------------------------------------
 
@@ -1790,6 +1813,7 @@ CREATE TABLE `report_templates` (
 INSERT INTO `report_templates` VALUES (9, 8, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (10, 8, 'List View', 'no');
 INSERT INTO `report_templates` VALUES (11, 10, 'Default Template', 'yes');
+INSERT INTO `report_templates` VALUES (792, 791, 'Default Template', 'yes');
 
 -- --------------------------------------------------------
 
@@ -1806,13 +1830,14 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=9 ;
+) TYPE=InnoDB COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=792 ;
 
 -- 
 -- Dumping data for table `reports`
 -- 
 
 INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from users', '');
+INSERT INTO `reports` VALUES (791, '', '', 'Codes with Fee Schedule', 'select code, code_text, data as fee from codes c inner join fee_schedule_data fsd using(code_id)', 'Codes that have had a feed added to them');
 
 -- --------------------------------------------------------
 
@@ -1880,7 +1905,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (790);
+INSERT INTO `sequences` VALUES (792);
 
 -- --------------------------------------------------------
 
