@@ -50,7 +50,7 @@ class C_Patient extends Controller {
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($this->get('patient_id')));
 			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
-
+			
 			$menu = Menu::getInstance();
 			$tmp = $menu->getMenuData('patient',90);
 
@@ -207,6 +207,12 @@ class C_Patient extends Controller {
 		$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
 		$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 		$formDataGrid->pageSize = 10;
+		
+		$appointments = $encounter->appointmentList();
+		$appointmentArray = array();
+		foreach($appointments as $appointment) {
+			$appointmentArray[$appointment['occurence_id']] = $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
+		}
 
 		$menu = Menu::getInstance();
 		$tmp = $menu->getMenuData('patient',91);
@@ -229,6 +235,8 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('formList',$formList);
 		$this->assign_by_ref('payment',$payment);
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
+		$this->assign_by_ref('appointmentList',$appointments);
+		$this->assign_by_ref('appointmentArray',$appointmentArray);
 
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
