@@ -20,7 +20,7 @@ $config['document_manager']['type_type'] = false;
 $config['template_dir'] = APP_ROOT."/local/templates/";
 $GLOBALS['template_dir'] = APP_ROOT."/local/templates/";
 $config['openemr_db'] = 'openemr';
-$config['autoAcl'] = false;
+$config['autoAcl'] = true;
 
 $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 
