@@ -59,7 +59,12 @@ class C_Coding extends Controller {
 		
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
-		$this->superbill = $_POST['superbill'];
+		if (isset($_POST['superbill'])  {
+			$this->superbill = $_POST['superbill'];
+		}
+		else {
+			$this->super = "";
+		}	
 		
 
 		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
