@@ -41,10 +41,11 @@ body {
 }
 	
 #body {
-	width:100%;
+	width:98%;
 	margin:0px auto;
 	text-align:left;
-	padding:15px;
+	padding: 1%;
+	padding-top: 10px;
 }
 
 div#nav {
