@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 03, 2005 at 02:00 PM
+-- Generation Time: Mar 04, 2005 at 04:16 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -545,7 +545,7 @@ INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '');
 INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 0, '');
+INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 34, '');
 INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '');
@@ -578,6 +578,46 @@ CREATE TABLE `fee_schedule_revision` (
 -- 
 
 INSERT INTO `fee_schedule_revision` VALUES (1, 0, '2005-03-02 11:58:20', 'default');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `form`
+-- 
+
+DROP TABLE IF EXISTS `form`;
+CREATE TABLE `form` (
+  `form_id` int(11) NOT NULL default '0',
+  `name` varchar(100) NOT NULL default '',
+  `description` text NOT NULL,
+  PRIMARY KEY  (`form_id`)
+) TYPE=InnoDB;
+
+-- 
+-- Dumping data for table `form`
+-- 
+
+INSERT INTO `form` VALUES (800, 'Test Data', 'Some random data');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `form_data`
+-- 
+
+DROP TABLE IF EXISTS `form_data`;
+CREATE TABLE `form_data` (
+  `form_data_id` int(11) NOT NULL default '0',
+  `form_id` int(11) NOT NULL default '0',
+  `external_id` int(11) NOT NULL default '0',
+  `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`form_data_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `form_data`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -1221,7 +1261,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=26 ;
+) TYPE=InnoDB AUTO_INCREMENT=30 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1252,6 +1292,10 @@ INSERT INTO `menu` VALUES (22, 'admin', 21, '', 'children', 10, 'Add User', 'Use
 INSERT INTO `menu` VALUES (23, 'admin', 1, '', 'children', 10, 'Dashboard', 'Admin/default');
 INSERT INTO `menu` VALUES (24, 'admin', 1, '', 'children', 30, 'Enumeration', 'Enumeration/list');
 INSERT INTO `menu` VALUES (25, 'admin', 24, '', 'children', 10, 'Add Enumeration', 'Enumeration/edit');
+INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 100, 'Forms', 'Form/list');
+INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 10, 'Add Form', 'Form/edit');
+INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 20, 'View Form Data', 'Form/view');
+INSERT INTO `menu` VALUES (29, 'default', 1, '', 'children', 150, 'Forms', 'Form/fillout');
 
 -- --------------------------------------------------------
 
@@ -1550,6 +1594,14 @@ INSERT INTO `ownership` VALUES (788, 1);
 INSERT INTO `ownership` VALUES (789, 1);
 INSERT INTO `ownership` VALUES (790, 1);
 INSERT INTO `ownership` VALUES (791, 1);
+INSERT INTO `ownership` VALUES (793, 1);
+INSERT INTO `ownership` VALUES (794, 1);
+INSERT INTO `ownership` VALUES (795, 1);
+INSERT INTO `ownership` VALUES (796, 1);
+INSERT INTO `ownership` VALUES (797, 1);
+INSERT INTO `ownership` VALUES (798, 1);
+INSERT INTO `ownership` VALUES (799, 1);
+INSERT INTO `ownership` VALUES (800, 1);
 
 -- --------------------------------------------------------
 
@@ -1905,7 +1957,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (792);
+INSERT INTO `sequences` VALUES (800);
 
 -- --------------------------------------------------------
 
