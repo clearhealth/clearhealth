@@ -4,6 +4,7 @@ require_once CELLINI_ROOT."/controllers/Controller.class.php";
 require_once CELLINI_ROOT."/includes/Grid.class.php";
 require_once CELLINI_ROOT."/includes/Datasource_sql.class.php";
 require_once APP_ROOT."/local/includes/Datasource_AccountHistory.class.php";
+require_once APP_ROOT."/local/includes/Grid_Renderer_AccountHistory.class.php";
 
 class C_Account extends Controller {
 
@@ -19,7 +20,8 @@ class C_Account extends Controller {
 		
 		$hds =& new Datasource_AccountHistory();
 		$hds->setup($patient_id);
-		$history_grid =& new cGrid($hds);
+		$renderer =& new Grid_Renderer_AccountHistory();
+		$history_grid =& new cGrid($hds,$renderer);
 		$this->assign_by_ref("history_grid",$history_grid);
 		
 		return $this->fetch(Cellini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
