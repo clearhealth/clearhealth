@@ -27,6 +27,7 @@ class FeeSchedule extends ORDataObject {
 	var $name		= '';
 	var $label		= '';
 	var $description	= '';
+	var $priority = "";
 	/**#@-*/
 
 
@@ -80,6 +81,24 @@ class FeeSchedule extends ORDataObject {
 	function populate() {
 		parent::populate('fee_schedule_id');
 	}
+	
+	/**
+	 * Persist the class from to db
+	 */
+	function persist() {
+		//make this the default fee schedule with priority 1 if there isn't already a default fee schedule'
+		if ($this->get("fee_schedule_id") < 2 && $this->get("priority") == "") {
+			$sql = "SELECT COUNT(*) as count from $this->_table where priority = 1";
+			$result = $this->_execute($sql);
+			if ($result && !$result->EOF && $result->fields['count'] == 0) {
+				$this->set("priority",1);
+			}	
+		}
+		if ($this->get("priority") == "") {
+			$this->set("priority",2);	
+		}
+		return parent::persist();
+	}
 
 	/**#@+
 	 * Getters and Setters for Table: fee_schedule
@@ -107,24 +126,33 @@ class FeeSchedule extends ORDataObject {
 	 */
 	function &defaultFeeSchedule() {
 		$feeSchedule =& ORDataObject::Factory('FeeSchedule');
-
-		$res = $feeSchedule->_execute("select fee_schedule_id from $feeSchedule->_table limit 1");
-		if ($res && isseT($res->fields['fee_schedule_id'])) {
+		//priority of one is default
+		$res = $feeSchedule->_execute("select fee_schedule_id from $feeSchedule->_table where priority = 1 limit 1");
+		if ($res && isset($res->fields['fee_schedule_id'])) {
 			$feeSchedule->setup($res->fields['fee_schedule_id']);
 		}
 		return $feeSchedule;
 	}
-
+	
 	/**
 	 * Get the fee for a code
 	 */
 	function getFee($code) {
-		$res = $this->_execute("select data from fee_schedule_data fsd inner join codes c using(code_id) where code = ".$this->_quote($code).
-					" and fee_schedule_id = ".(int)$this->get('id'));
+					
+		$sql = "select "
+				." case when (fsd.data > 0) then fsd.data else fsdd.data end as data "
+				." from codes, fee_schedule fs "
+				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
+				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ")" 
+				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code =  " . $this->_quote($code)
+				." order by code";
+				
+		$res = $this->_execute($sql);
 		if ($res && isset($res->fields['data'])) {
 			return $res->fields['data'];
 		}
-		return 0;
+		
+		return 0.00;
 	}
 
 	/**
@@ -132,11 +160,20 @@ class FeeSchedule extends ORDataObject {
 	 */
 	function getFeeFromCodeId($code_id) {
 		settype($code_id,'int');
-		$res = $this->_execute("select data from fee_schedule_data fsd inner join codes c using(code_id) where c.code_id = $code_id and fee_schedule_id = ".(int)$this->get('id'));
+		
+		$sql = "select "
+				." case when (fsd.data > 0) then fsd.data else fsdd.data end as data "
+				." from codes, fee_schedule fs "
+				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
+				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
+				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code_id =  $code_id "
+				." order by code";
+		
+		$res = $this->_execute($sql);
 		if ($res && isset($res->fields['data'])) {
 			return $res->fields['data'];
 		}
-		return 0;
+		return 0.00;
 	}
 }
 ?>

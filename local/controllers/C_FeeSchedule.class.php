@@ -22,9 +22,10 @@ class C_FeeSchedule extends Controller {
 	function edit_action($fee_schedule_id = 0) {
 
 		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
-		$this->Assign_By_ref('feeSchedule',$feeSchedule);
+		$this->assign_By_ref('feeSchedule',$feeSchedule);
 		$this->assign('FORM_ACTION',Cellini::link('edit',true,true,$fee_schedule_id));
 		$this->assign('UPDATE_ACTION',Cellini::link('update',true,true,$fee_schedule_id));
+		
 		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_edit.html"));	
 	}
 
@@ -73,7 +74,15 @@ class C_FeeSchedule extends Controller {
 		//$grid->pageSize = 30;
 
 		$this->assign_by_ref('grid',$grid);
-
+		
+		/*echo "fee1 26761 S2095:" . $feeSchedule->getFeeFromCodeId("26761") . "<br>";
+		echo "fee2 26759 S2090: " . $feeSchedule->getFeeFromCodeId("26759") . "<br>";
+		
+		echo "fee3 S2095: " . $feeSchedule->getFee("S2095") . "<br>";
+		echo "fee4 S2053: " . $feeSchedule->getFee("S2053") . "<br>";
+		echo "fee4 S2052: " . $feeSchedule->getFee("S2052") . "<br>";
+		echo "fee4 S2085: " . $feeSchedule->getFee("S2085") . "<br>";*/
+		
 		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_update.html"));	
 	}
 }
