@@ -5,6 +5,7 @@
 	<p>Encounter has no extra people</p>
 	{/if}
 	<input type="hidden" name="encounterPerson[encounter_person_id]" value="{$encounterPerson->get('encounter_person_id')}">
+	{if $encounter->get('status') != 'closed'}
 	<table>
 		<tr>
 			<td>
@@ -28,6 +29,7 @@
 			</td>
 		</tr>
 	</table>
+	{/if}
 </fieldset>
 {literal}
 <script language="javascript" type="text/javascript">

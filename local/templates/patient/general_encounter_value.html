@@ -4,6 +4,7 @@
 	{if $encounterValueGrid->empty}
 	<p>Encounter has no extra information</p>
 	{/if}
+	{if $encounter->get('status') != 'closed'}
 	<input type="hidden" name="encounterValue[encounter_value_id]" value="{$encounterValue->get('encounter_value_id')}">
 	<table>
 		<tr>
@@ -22,4 +23,5 @@
 			</td>
 		</tr>
 	</table>
+	{/if}
 </fieldset>

@@ -22,6 +22,7 @@ function captureEnter (field, event) {
 
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
+{if $encounter->get('status') != 'closed'}
 <fieldset id="coding_data">
 <legend>Edit Claim Line</legend>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
@@ -88,6 +89,7 @@ function captureEnter (field, event) {
 	</tr>
 </table>
 </fieldset>
+{/if}
 <fieldset class="radio" id="Code List">
 <legend>Claim Lines</legend>
 {foreach from=$code_list item=code}

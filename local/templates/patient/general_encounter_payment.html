@@ -4,7 +4,8 @@
 	{if $paymentGrid->empty}
 	<p>Encounter has no payments</p>
 	{/if}
-	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">		
+	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
+	{if $encounter->get('status') != 'closed'}		
 	<table>
 		<tr>
 			<td><label>Payment Type:</label></td>
@@ -20,4 +21,5 @@
 			</td>
 		</tr>
 	</table>
+	{/if}
 </fieldset>

@@ -32,7 +32,7 @@
 			
 		</tr>
 		<tr>
-			<td><input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter"></td>
+			<td>{if $encounter->get('status') != 'closed'}<input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter">{/if}</td>
 			<td><label>{l}Status{/l}:</label></td>
 			<td> 
             	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}

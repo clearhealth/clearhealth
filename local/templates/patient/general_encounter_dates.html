@@ -5,6 +5,7 @@
 	<p>Encounter has no extra dates</p>
 	{/if}
 	<input type="hidden" name="encounterDate[encounter_date_id]" value="{$encounterDate->get('encounter_date_id')}">
+	{if $encounter->get('status') != 'closed'}
 	<table>
 		<tr>
 			<td>{clni_input_date name="encounterDate[date]" value=$encounterDate->get('date')}</td>
@@ -22,4 +23,5 @@
 			</td>
 		</tr>
 	</table>
+	{/if}
 </fieldset>
