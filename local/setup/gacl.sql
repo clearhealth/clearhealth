@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 29, 2005 at 10:41 PM
+-- Generation Time: Apr 04, 2005 at 02:11 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -484,6 +484,7 @@ INSERT INTO `gacl_axo` VALUES (64, 'resources', 'main_calendar', 1, 'Main Group 
 INSERT INTO `gacl_axo` VALUES (65, 'resources', 'main_billing', 2, 'Main Group Billing', 0);
 INSERT INTO `gacl_axo` VALUES (66, 'resources', 'main_patient', 3, 'Main Group Patient', 0);
 INSERT INTO `gacl_axo` VALUES (67, 'resources', 'main_admin', 4, 'Main Group Admin', 0);
+INSERT INTO `gacl_axo` VALUES (68, 'resources', 'account', 10, 'Section - Account', 0);
 
 -- --------------------------------------------------------
 
@@ -628,7 +629,7 @@ CREATE TABLE `gacl_axo_sections_seq` (
 -- Dumping data for table `gacl_axo_sections_seq`
 -- 
 
-INSERT INTO `gacl_axo_sections_seq` VALUES (22);
+INSERT INTO `gacl_axo_sections_seq` VALUES (23);
 
 -- --------------------------------------------------------
 
@@ -645,7 +646,7 @@ CREATE TABLE `gacl_axo_seq` (
 -- Dumping data for table `gacl_axo_seq`
 -- 
 
-INSERT INTO `gacl_axo_seq` VALUES (67);
+INSERT INTO `gacl_axo_seq` VALUES (68);
 
 -- --------------------------------------------------------
 
@@ -723,6 +724,7 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 64);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 65);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 66);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 67);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 68);
 
 -- --------------------------------------------------------
 
