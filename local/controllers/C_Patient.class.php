@@ -37,7 +37,7 @@ class C_Patient extends Controller {
 
 			$encounter =& ORDataObject::factory("Encounter");
 			$encounterGrid =& new cGrid($encounter->encounterList($this->get('patient_id')));
-			$encounterGrid->pageSize = 10;
+			$encounterGrid->pageSize = 5;
 
 			$formData =& ORDataObject::factory("FormData");
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($this->get('patient_id')));
