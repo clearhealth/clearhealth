@@ -59,8 +59,7 @@ class C_Coding extends Controller {
 		
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
-		if (isset($_POST['superbill']))
-	      	{
+		if (isset($_POST['superbill']))  {
 			$this->superbill = $_POST['superbill'];
 		}
 		else {
@@ -152,9 +151,17 @@ class C_Coding extends Controller {
 		}
 		
 		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') ";
+		$sql ="";	
+		if ($superbill  > 0 ) {
+			$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
+		}
+		else {
+			$sql = "SELECT c.code_id, c.code, c.code_text  FROM codes AS c ";
+		}
+
 		
-		$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
-		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
+		//$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
+		//." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
 	       
 		if ($search_type == "cpt") {
 			$sql .= "inner join fee_schedule_data fsd using (code_id) "; 
