@@ -7,7 +7,7 @@ class M_User extends M_Patient {
 	var $messageType = "User";
 
 	function process_update($id = 0) {
-		parent::process_update($id);
+		parent::process_update($id,true);
 		$this->controller->person_id = $this->controller->patient_id;
 		if (isset($_POST['user'])) {
 			$this->process_user_update($this->controller->person_id,$_POST['user']);

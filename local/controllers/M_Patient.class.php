@@ -15,12 +15,16 @@ class M_Patient extends Manager {
 	/**
 	 * Handle an update from an edit or an add
 	 */
-	function process_update($id =0) {
+	function process_update($id =0,$noPatient = false) {
 
-		$patient =& ORdataObject::factory('Patient',$id);
+		if ($noPatient) {
+			$patient =& ORdataObject::factory('Person',$id);
+		}
+		else {
+			$patient =& ORdataObject::factory('Patient',$id);
+		}
 		$patient->populate_array($_POST['person']);
-
-		$patient->persist();
+			$patient->persist();
 		$this->controller->patient_id = $patient->get('id');
 
 		/*
