@@ -53,6 +53,29 @@ class PaymentClaimline extends ORDataObject {
 			$this->populate();
 		}
 	}
+	
+	/**
+	 * Get datasource for paymentclaimlines from the db
+	 */
+	function paymentClaimlineList($patient_id) {
+		settype($foreign_id,'int');
+		if ($foreign_id == 0) $foreign_id = "NULL";
+		
+		$ds =& new Datasource_sql();
+
+		$labels = array('code' => 'Code','paid' => 'Paid', 'carry' => 'Due', 'writeoff' => 'Writeoff', 'payer_name' => 'Payer');
+
+		$ds->setup($this->_db,array(
+				'cols' 	=> " paid, carry, pcl.writeoff, code, ins.name as payer_name ",
+				'from' 	=> "$this->_table pcl inner join codes cds using (code_id) inner join payment p on p.payment_id=pcl.payment_id "
+						. " inner join clearhealth_claim chc on chc.claim_id = p.foreign_id inner join encounter e on e.encounter_id = chc.encounter_id "
+						. " inner join company ins on ins.company_id = p.payer_id ",
+				'where' => " patient_id = $patient_id"
+			),
+			$labels
+		);
+		return $ds;
+	}
 
 	/**
 	 * Populate the class from the db
