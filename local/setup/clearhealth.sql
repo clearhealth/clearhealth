@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 20, 2005 at 06:31 PM
+-- Generation Time: Mar 21, 2005 at 12:48 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -3092,6 +3092,7 @@ INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-07 00:00:00', 1110
 INSERT INTO `encounter` VALUES (8165, 1, 1707, 1123, '2005-03-18 00:00:00', 1120, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8184, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8214, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
+INSERT INTO `encounter` VALUES (17023, 1, 12491, 1123, '2005-03-21 00:00:00', 1110, '00000000000000', 0, 'open', 0);
 
 -- --------------------------------------------------------
 
@@ -3114,6 +3115,8 @@ CREATE TABLE `encounter_date` (
 -- 
 
 INSERT INTO `encounter_date` VALUES (2094, 2093, 1, '2005-03-07 00:00:00');
+INSERT INTO `encounter_date` VALUES (17024, 17023, 0, '2005-03-15 00:00:00');
+INSERT INTO `encounter_date` VALUES (17025, 17023, 0, '2005-03-15 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -3135,6 +3138,7 @@ CREATE TABLE `encounter_person` (
 -- Dumping data for table `encounter_person`
 -- 
 
+INSERT INTO `encounter_person` VALUES (17028, 17023, 1, 14153);
 
 -- --------------------------------------------------------
 
@@ -3158,6 +3162,7 @@ CREATE TABLE `encounter_value` (
 
 INSERT INTO `encounter_value` VALUES (8166, 8165, 0, 'test');
 INSERT INTO `encounter_value` VALUES (8167, 8165, 0, 'test');
+INSERT INTO `encounter_value` VALUES (17027, 17023, 0, 'blah');
 
 -- --------------------------------------------------------
 
@@ -16275,6 +16280,14 @@ INSERT INTO `ownership` VALUES (17017, 1);
 INSERT INTO `ownership` VALUES (17018, 1);
 INSERT INTO `ownership` VALUES (17019, 1);
 INSERT INTO `ownership` VALUES (17020, 1);
+INSERT INTO `ownership` VALUES (17021, 1);
+INSERT INTO `ownership` VALUES (17022, 1);
+INSERT INTO `ownership` VALUES (17023, 1);
+INSERT INTO `ownership` VALUES (17024, 1);
+INSERT INTO `ownership` VALUES (17025, 1);
+INSERT INTO `ownership` VALUES (17026, 1);
+INSERT INTO `ownership` VALUES (17027, 1);
+INSERT INTO `ownership` VALUES (17028, 1);
 
 -- --------------------------------------------------------
 
@@ -18690,6 +18703,7 @@ INSERT INTO `patient_statistics` VALUES (8052, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8053, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (17022, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -18719,6 +18733,7 @@ CREATE TABLE `payment` (
 INSERT INTO `payment` VALUES (6001, 2093, 1, 12.00, 0.00, 0, '00000000000000', 0, '0000-00-00');
 INSERT INTO `payment` VALUES (8178, 8171, 0, 12.00, 0.00, 1, '20050319195445', 1113, '0000-00-00');
 INSERT INTO `payment` VALUES (8180, 8171, 0, 10.00, 23.00, 1, '20050319201802', 1707, '2005-03-19');
+INSERT INTO `payment` VALUES (17026, 17023, 1, 12.00, 0.00, 0, '20050321115835', 0, '2005-03-21');
 
 -- --------------------------------------------------------
 
@@ -25902,6 +25917,7 @@ CREATE TABLE `person_person` (
 -- Dumping data for table `person_person`
 -- 
 
+INSERT INTO `person_person` VALUES (17021, 12491, 11576, 1);
 
 -- --------------------------------------------------------
 
@@ -28358,7 +28374,6 @@ CREATE TABLE `provider` (
 -- Dumping data for table `provider`
 -- 
 
-INSERT INTO `provider` VALUES (983, '', '', '');
 INSERT INTO `provider` VALUES (1110, '1233323J', '', '22342242');
 INSERT INTO `provider` VALUES (1120, '', '', '');
 
@@ -28618,7 +28633,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (17020);
+INSERT INTO `sequences` VALUES (17028);
 
 -- --------------------------------------------------------
 
@@ -29007,7 +29022,6 @@ CREATE TABLE `user` (
 -- 
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 0);
-INSERT INTO `user` VALUES (984, 'jeichorn', 'test', 'jei', '336666', 983, '', 0);
 INSERT INTO `user` VALUES (1111, 'jconrad', 'demo', 'jac', 'FF9966', 1110, 'no', 0);
 INSERT INTO `user` VALUES (1121, 'mminton', 'demo', 'mm', '99CCCC', 1120, 'no', 0);
 
