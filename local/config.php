@@ -20,4 +20,6 @@ $config['template_dir'] = APP_ROOT."/local/templates/";
 $GLOBALS['template_dir'] = APP_ROOT."/local/templates/";
 $config['openemr_db'] = 'openemr';
 $config['autoAcl'] = false;
+
+$config['user_forms_dir'] = APP_ROOT."/user/forms/";
 ?>

@@ -4,6 +4,19 @@ body {
 	background-color:#eee;
 }
 
+#sections {
+	position: absolute;
+	left: 5pt;
+	font-size: 14pt;
+}
+#sections a {
+	font-size: 14pt;
+}
+
+#sections a.selected {
+	font-weight: bold;
+}
+
 #header {
 	background-color: #ccc;
 	position: relative;
