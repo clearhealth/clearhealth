@@ -76,6 +76,7 @@
 <br>
 <h3 style="margin: 0px; padding:0px;">Make Payment</h3>
 {clni_form action=$FORM_ACTION process=$PROCESS}
+{if count($billList) > 0}
 <table class="grid">
 	<tr>
 		<th>Code</th><th>Amount<br> Billed</th><th>Current<br> Paid</th><th>Current<br> Writeoff</th><th>Payment<br> Amount</th><th>Carry</th><th>Payment<br> Writeoff</th>
@@ -106,4 +107,7 @@
 		<td><input type="submit" value="Record Payment"></td>
 	</tr>
 </table>
+{else}
+<p>There are no codes to add payments on for this claim.</p>
+{/if}
 </form>
