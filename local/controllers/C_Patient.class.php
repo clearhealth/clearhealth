@@ -279,7 +279,7 @@ class C_Patient extends Controller {
 		if ($encounter->get('status') === "closed") {
 			ORDataObject::factory_include('ClearhealthClaim');
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
-			$this->assign('FREEB_ACTION',Cellini::link('view','Claim','Freeb',$claim->get('id')));
+			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
 		}
 
