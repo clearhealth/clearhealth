@@ -1,5 +1,3 @@
-
-
 	<fieldset class="radio" id="relatedPeople">
 		<legend>Related People</legend>
 
@@ -22,8 +20,10 @@
 			</tr>
 			<tr>
 				<td>
-			G
-
+			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
+				autocomplete="off" value="{$personPerson->get('related_person_id')}">
+			<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
+					class="AutoCompleteBackground"></div></div>
 		</td>
 	</tr>
 	<tr>
