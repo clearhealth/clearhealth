@@ -12,7 +12,10 @@ $config['default_controller'] = "calendar";
 $config['default_action'] = "day";
 $config['use_menu'] = true;
 
-$config['documents']['repository'] = APP_ROOT."/user/documents/";
+$config['document_manager']['repository'] = APP_ROOT."/user/documents/";
+$config['document_manager']['documents_on_tree'] = true;
+$config['document_manager']['category_view'] = false;
+$config['document_manager']['type_type'] = false;
 
 $config['template_dir'] = APP_ROOT."/local/templates/";
 $GLOBALS['template_dir'] = APP_ROOT."/local/templates/";

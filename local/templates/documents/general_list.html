@@ -1,0 +1,45 @@
+{literal}
+ <style type="text/css" title="mystyles" media="all">
+<!--
+td {
+	font-size:8pt;
+	font-family:helvetica;
+}
+a {
+	font-size:8pt;
+	font-family:helvetica;
+}
+.treeMenuDefault {
+	font-style: italic;
+}
+		
+.treeMenuBold {
+	font-style: italic;
+	font-weight: bold;
+}
+
+-->
+</style>
+{/literal}
+<script src="{$base_dir}js/DocumentTreeMenu.js" language="JavaScript" type="text/javascript"></script>
+<form action="{$GROUP_ACTION}" method="post">
+	<input type="hidden" value="{$PROCESS}" name="process">
+</form>
+<table border=0 width="100%">
+	<tr>
+		<td height="20" valign="top">Document&nbsp;Categories<br>
+		&nbsp;&nbsp;&nbsp;<a href="#" onclick="javascript:objTreeMenu_1.collapseAll();return false;">collapse all</a>
+		</td>
+		<td width="25"></td>
+		<td valign="top" rowspan="2" width="100%">
+		{if $message}
+			{$message}<br>
+		{/if}
+		{$activity}
+		&nbsp;
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">{$tree_html}</td>
+	</tr>
+</table>
