@@ -1,13 +1,17 @@
 <div id="nav">
 	{if $me->get_id() == 0}
 		<ul class="quicknav">
-			<li><a href="{$TOP_ACTION}access/login">Login</a></li>
+			<li><a href="{$NAV_ACTION}main/access/login">Login</a></li>
 		</ul>
 	{else}
 {foreach from=$menu.$menu_group item=nav}
 	<div class="section">
 	{if $nav.action}
-		<div class="topLevel"><a href="{$TOP_ACTION}{$nav.action}">{$nav.title}</a></div>
+		{if $translate[$navc.prefix]}
+			<div class="topLevel"><a href="{$translate[$navc.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
+		{else}
+			<div class="topLevel"><a href="{$NAV_ACTION}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
+		{/if}
 	{else}
 	{$nav.title}
 	{/if}
@@ -15,14 +19,22 @@
 	{if $nav.children}
 	<ul class="quicknav">
 		{foreach item=navc from=$nav.children}
-			<li> <a href="{$TOP_ACTION}{$navc.action}">{$navc.title}</a></li>
+		{if $translate[$navc.prefix]}
+			<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+		{else}
+			<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+		{/if}
 		{/foreach}
 
 		{if $nav.more || $nav.reports}
 		<li><span style="color:rgb(0, 51, 204);">More</span><ul class="nav">
 			{foreach item=navc from=$nav.more}
 				{if $navc.action}
-				<li> <a href="{$TOP_ACTION}{$navc.action}">{$navc.title}</a></li>
+				{if $translate[$navc.prefix]}
+					<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+				{else}
+					<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+				{/if}
 				{else}
 				<li> {$navc.title}</li>
 				{/if}
@@ -30,7 +42,11 @@
 			{if $nav.reports}
 				<li style="border-bottom: dotted 1px black;"> Reports</li>
 				{foreach item=navc from=$nav.reports}
-					<li> <a href="{$TOP_ACTION}{$navc.action}">{$navc.title}</a></li>
+				{if $translate[$navc.prefix]}
+					<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+				{else}
+					<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+				{/if}
 				{/foreach}
 				{/if}
 				</ul></li>

@@ -23,4 +23,6 @@ $config['openemr_db'] = 'openemr';
 $config['autoAcl'] = false;
 
 $config['user_forms_dir'] = APP_ROOT."/user/forms/";
+
+$config['translate']['freeb2'] = "/freeb2/index.php/";
 ?>
