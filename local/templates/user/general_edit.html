@@ -5,17 +5,12 @@ var cp2 = new ColorPicker(); // DIV style
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users"}
 {assign var="detail_section_title" value="User Details"}
 <fieldset class="radio" id="person">
-	<legend>
-		{if $detail_section_title}
-			{$detail_section_title}
-		{else}
-			Individual Details
-		{/if} 
-		{clni_section_links name="detail"}
-	</legend>
-	<table>
-	<tbody>
-	<tr>
+		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
+			{clni_section_links name="detail"}
+			</legend>
+			<table>
+			<tbody>
+                        <tr>
 		<td><label>First Name: </label></td>
 		<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 		{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
@@ -33,11 +28,11 @@ var cp2 = new ColorPicker(); // DIV style
 		</td>
 	</tr>
 	<tr>
-		<td>Nickname:&nbsp;</td>
+				<td><label>Nickname: </label></td>
 		<td><input type="text" name="user[nickname]" size="15" value="{$user->get("nickname")}"></td>
 	</tr>
 	<tr>
-		<td>Color:&nbsp;</td>
+		 <td><a href="#" class="tooltip" {popup text="This is the color which will be the background of the user associated information on the calendar and elsewhere."}><label>{l}Color{/l}: </label></a></td>
 		<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">Pick</A></td>
 	</tr>
 	<tr>
