@@ -18,6 +18,8 @@ require_once CELLINI_ROOT.'/ordo/Base_User.class.php';
  * @package	com.uversainc.freestand
  */
 class User extends Base_User {
+	
+	var $default_location_id = "";
 
 	function User() {
 		parent::Base_User();
