@@ -196,7 +196,7 @@ function captureEnter (field, event) {
 		<td bgcolor="#FFFFFF" align="left">
 			<div style="padding: 5px;">
 			<form style="margin-bottom:0;" action="#" method="GET">
-			<select name="location" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=location/'+this.options[this.selectedIndex].value+'');">	
+			<select name="location" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=location/'+this.options[this.selectedIndex].value+'&process=true');">	
 			{html_options options=$rooms_practice_array selected=$selected_location}
 			</select>	
 			<br>
