@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
+-- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 19, 2005 at 08:33 PM
--- Server version: 4.0.23
--- PHP Version: 4.3.10
+-- Generation Time: Mar 20, 2005 at 01:01 AM
+-- Server version: 4.0.18
+-- PHP Version: 4.3.4
 -- 
 -- Database: `clearhealth`
 -- 
@@ -16,7 +16,6 @@
 -- Table structure for table `menu`
 -- 
 
-DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -87,7 +86,7 @@ INSERT INTO `menu` VALUES (60, 'admin', 59, '', 'children', 100, 'Logout', 'Acce
 INSERT INTO `menu` VALUES (61, 'admin', 59, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
 INSERT INTO `menu` VALUES (62, 'billing', 1, '', 'children', 100, 'Claims', '', 'freeb2');
 INSERT INTO `menu` VALUES (63, 'billing', 62, '', 'children', 10, 'List Claims', 'Claim/list', 'freeb2');
-INSERT INTO `menu` VALUES (64, 'billing', 62, '', 'children', 20, 'Add Claim', 'Claim/list', 'freeb2');
+INSERT INTO `menu` VALUES (64, 'billing', 62, '', 'children', 20, 'Add Claim', 'Claim/edit', 'freeb2');
 INSERT INTO `menu` VALUES (65, 'default', 1, '', 'children', 100, 'View', '', '');
 INSERT INTO `menu` VALUES (66, 'default', 1, '', 'children', 400, 'Help', '', '');
 INSERT INTO `menu` VALUES (67, 'patient', 30, '', 'children', 10, 'List Patients', 'Patient/list', 'main');
@@ -98,7 +97,7 @@ INSERT INTO `menu` VALUES (71, 'default', 66, '', 'children', 10, 'API Docs', 'D
 INSERT INTO `menu` VALUES (72, 'patient', 68, '', 'children', 5, 'Dashboard', 'Patient/dashboard', 'main');
 INSERT INTO `menu` VALUES (74, 'patient', 1, '', 'children', 500, 'Help', '', '');
 INSERT INTO `menu` VALUES (75, 'patient', 74, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
-INSERT INTO `menu` VALUES (76, 'billing', 1, '', 'children', 500, 'Help', '', '');
+INSERT INTO `menu` VALUES (76, 'billing', 1, '', 'children', 600, 'Help', '', '');
 INSERT INTO `menu` VALUES (77, 'billing', 76, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
 INSERT INTO `menu` VALUES (78, 'admin', 1, '', 'children', 1000, 'Help', '', '');
 INSERT INTO `menu` VALUES (79, 'admin', 78, '', 'children', 10, 'API Docs', 'Docs/api', 'main');
