@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 08, 2005 at 11:21 AM
+-- Generation Time: Mar 08, 2005 at 01:04 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -105,6 +105,53 @@ CREATE TABLE `buildings` (
 
 INSERT INTO `buildings` VALUES (12, '', 'Main Office', 2);
 INSERT INTO `buildings` VALUES (620, '', 'North County', 2);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `category`
+-- 
+
+DROP TABLE IF EXISTS `category`;
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL default '0',
+  `name` varchar(255) NOT NULL default '',
+  `value` varchar(255) NOT NULL default '',
+  `parent` int(11) NOT NULL default '0',
+  `lft` int(11) NOT NULL default '0',
+  `rght` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `parent` (`parent`),
+  KEY `lft` (`lft`,`rght`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `category`
+-- 
+
+INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
+INSERT INTO `category` VALUES (991, 'Test', '', 1, 0, 3);
+INSERT INTO `category` VALUES (992, 'Test2', '', 1, 4, 5);
+INSERT INTO `category` VALUES (993, 'Sub Category', '', 991, 1, 2);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `category_to_document`
+-- 
+
+DROP TABLE IF EXISTS `category_to_document`;
+CREATE TABLE `category_to_document` (
+  `category_id` int(11) NOT NULL default '0',
+  `document_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`category_id`,`document_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `category_to_document`
+-- 
+
+INSERT INTO `category_to_document` VALUES (993, 996);
 
 -- --------------------------------------------------------
 
@@ -475,6 +522,38 @@ INSERT INTO `countries` VALUES ('Zimbabwe', 'ZW', 'ZWE');
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `document`
+-- 
+
+DROP TABLE IF EXISTS `document`;
+CREATE TABLE `document` (
+  `id` int(11) NOT NULL default '0',
+  `name` varchar(50) NOT NULL default '',
+  `type` enum('file_url','blob','web_url') default NULL,
+  `size` int(11) default NULL,
+  `date` datetime default NULL,
+  `url` varchar(255) default NULL,
+  `mimetype` varchar(255) default NULL,
+  `pages` int(11) default NULL,
+  `owner` int(11) default NULL,
+  `revision` timestamp(14) NOT NULL,
+  `foreign_id` int(11) default NULL,
+  `group_id` int(11) NOT NULL default '1',
+  PRIMARY KEY  (`id`),
+  KEY `revision` (`revision`),
+  KEY `foreign_id` (`foreign_id`),
+  KEY `owner` (`owner`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `document`
+-- 
+
+INSERT INTO `document` VALUES (996, 'Sunset', '', 71189, '2005-03-08 12:51:19', 'file://C:\\sandbox\\clearhealth\\clearhealth\\trunk/user/documents/0/Sunset.jpg', 'image/jpeg', NULL, NULL, '20050308125119', 0, 1);
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `enumeration`
 -- 
 
@@ -765,7 +844,8 @@ CREATE TABLE `gacl_acl` (
 -- Dumping data for table `gacl_acl`
 -- 
 
-INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', '', 1109797209);
+INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', '', 1110310784);
+INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', '', 1110310727);
 
 -- --------------------------------------------------------
 
@@ -807,8 +887,8 @@ CREATE TABLE `gacl_acl_seq` (
 -- Dumping data for table `gacl_acl_seq`
 -- 
 
-INSERT INTO `gacl_acl_seq` VALUES (25);
-INSERT INTO `gacl_acl_seq` VALUES (25);
+INSERT INTO `gacl_acl_seq` VALUES (26);
+INSERT INTO `gacl_acl_seq` VALUES (26);
 
 -- --------------------------------------------------------
 
@@ -838,6 +918,7 @@ INSERT INTO `gacl_aco` VALUES (12, 'actions', 'edit', 11, 'edit', 0);
 INSERT INTO `gacl_aco` VALUES (13, 'actions', 'add', 12, 'add', 0);
 INSERT INTO `gacl_aco` VALUES (14, 'actions', 'delete', 13, 'delete', 0);
 INSERT INTO `gacl_aco` VALUES (16, 'actions', 'usage', 9, 'usage', 0);
+INSERT INTO `gacl_aco` VALUES (17, 'actions', 'uploadFile', 14, 'Upload A file', 0);
 
 -- --------------------------------------------------------
 
@@ -860,8 +941,10 @@ CREATE TABLE `gacl_aco_map` (
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'add');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'delete');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'uploadFile');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'usage');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'uploadFile');
 
 -- --------------------------------------------------------
 
@@ -920,8 +1003,8 @@ CREATE TABLE `gacl_aco_seq` (
 -- Dumping data for table `gacl_aco_seq`
 -- 
 
-INSERT INTO `gacl_aco_seq` VALUES (16);
-INSERT INTO `gacl_aco_seq` VALUES (16);
+INSERT INTO `gacl_aco_seq` VALUES (17);
+INSERT INTO `gacl_aco_seq` VALUES (17);
 
 -- --------------------------------------------------------
 
@@ -1012,6 +1095,7 @@ CREATE TABLE `gacl_aro_groups_map` (
 -- 
 
 INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (26, 12);
 
 -- --------------------------------------------------------
 
@@ -1458,7 +1542,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=36 ;
+) TYPE=InnoDB AUTO_INCREMENT=39 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1499,6 +1583,9 @@ INSERT INTO `menu` VALUES (32, 'default', 1, '', 'children', 160, 'Insurance Com
 INSERT INTO `menu` VALUES (33, 'default', 32, '', 'children', 10, 'Add Insurance Company', 'Insurance/edit');
 INSERT INTO `menu` VALUES (34, 'admin', 1, '', 'children', 100, 'Users', 'User/list');
 INSERT INTO `menu` VALUES (35, 'admin', 34, '', 'children', 10, 'Add User', 'User/edit');
+INSERT INTO `menu` VALUES (36, 'admin', 1, '', 'children', 100, 'Document Manager Categories', 'DocumentCategory/list');
+INSERT INTO `menu` VALUES (37, 'default', 1, '', 'children', 170, 'Documents', 'Document/list');
+INSERT INTO `menu` VALUES (38, 'admin', 18, '', 'children', 20, 'Edit Superbill', 'Superbill/list');
 
 -- --------------------------------------------------------
 
@@ -1522,6 +1609,32 @@ CREATE TABLE `name_history` (
 -- 
 
 INSERT INTO `name_history` VALUES (959, 955, 'Fred', 'Flinstone', 'Q', '2005-03-07');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `note`
+-- 
+
+DROP TABLE IF EXISTS `note`;
+CREATE TABLE `note` (
+  `id` int(11) NOT NULL default '0',
+  `foreign_id` int(11) NOT NULL default '0',
+  `note` varchar(255) default NULL,
+  `owner` int(11) default NULL,
+  `date` datetime default NULL,
+  `revision` timestamp(14) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `foreign_id` (`owner`),
+  KEY `foreign_id_2` (`foreign_id`),
+  KEY `date` (`date`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `note`
+-- 
+
+INSERT INTO `note` VALUES (997, 996, 'This is a note', NULL, '2005-03-08 12:52:38', '20050308125238');
 
 -- --------------------------------------------------------
 
@@ -1857,6 +1970,10 @@ INSERT INTO `ownership` VALUES (987, 1);
 INSERT INTO `ownership` VALUES (988, 1);
 INSERT INTO `ownership` VALUES (989, 1);
 INSERT INTO `ownership` VALUES (990, 1);
+INSERT INTO `ownership` VALUES (994, 1);
+INSERT INTO `ownership` VALUES (995, 1);
+INSERT INTO `ownership` VALUES (996, 1);
+INSERT INTO `ownership` VALUES (997, 1);
 INSERT INTO `ownership` VALUES (810, 5430);
 INSERT INTO `ownership` VALUES (811, 5430);
 INSERT INTO `ownership` VALUES (812, 5430);
@@ -2423,7 +2540,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (990);
+INSERT INTO `sequences` VALUES (997);
 
 -- --------------------------------------------------------
 
