@@ -43,15 +43,13 @@ class C_Eob extends Controller {
 		$i = 0;
 		foreach($codeList as $code) {
 			$billList[$i]['code'] = $code['code'];
-			$billList[$i]['code_id'] = $code['code_id'];
+			$billList[$i]['code_id'] = $code['parent_id'];
 			$billList[$i]['description'] = $code['description'];
 			$billList[$i]['amount'] = $code['fee'];
 			$billList[$i]['paid'] = 0;
 			$billList[$i]['writeoff'] = 0;
-			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['code_id']);
-			$billList[$i]['current_writeoff'] = $payment->totalWriteoffForCodeId($code['code_id']);
-
-
+			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['parent_id']);
+			$billList[$i]['current_writeoff'] = $payment->totalWriteoffForCodeId($code['parent_id']);
 			$billList[$i]['carry'] = $billList[$i]['amount'] - $billList[$i]['current_paid'] - $billList[$i]['current_writeoff'];
 
 			$i++;
@@ -82,6 +80,8 @@ class C_Eob extends Controller {
 
 		$total_paid = 0;
 		$total_writeoff = 0;
+
+		
 
 		if (isset($_POST['bill']) && count($_POST['bill']) > 0) {
 			foreach($_POST['bill'] as $line) {
