@@ -1,3 +1,30 @@
+<fieldset>
+<legend>Filter</legend>
+{clni_form action=$FILTER_ACTION process=$PROCESS}
+{*<div style="float:left;margin-left:10px;">
+	<label>{l}Status{/l}: </label>{html_options name="filter[status]" options=$claim->statusList() selected=$filters.status]}
+</div>*}
+<div style="float:left;margin-left:10px;">
+	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start} to {clni_input_date name="filter[end]" value=$filters.end}
+</div>
+{*
+<div style="float:left;margin-left:10px;">
+	<label>{l}Name{/l}: </label>{clni_input type="string" name="filter[name]" value=$filters.name}
+</div>
+<div style="float:left;margin-left:10px;">
+	<label>{l}Facility{/l}: </label>{html_options name="filter[facility]" options=$claim->facilityList() selected=$filters.facility}
+</div>
+<div style="float:left;margin-left:10px;">
+	<label>{l}Id{/l}: </label>{clni_input type="string" name="filter[claim_identifier]" value=$filters.claim_identifier}
+</div>
+<div style="float:left;margin-left:10px;">
+	<label>{l}Payer{/l}: </label> {clni_input type="string" name="filter[payer]" value=$filters.payer}
+</div>*}
+<div style="float:left;margin-left:10px;">
+	{clni_input type="submit" name="filter_submit" value="Filter"}
+</div>
+</form>
+</fieldset>
 <fieldset class="radio" id="account_history">
 	<legend>Account History</legend>
 	{$history_grid->render()}
