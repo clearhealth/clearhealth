@@ -56,8 +56,7 @@ class C_Eob extends Controller {
 
 			$i++;
 		}
-
-
+		
 		$this->assign_by_ref('claim',$claim);
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('patient',$patient);
@@ -84,24 +83,25 @@ class C_Eob extends Controller {
 		$total_paid = 0;
 		$total_writeoff = 0;
 
-		foreach($_POST['bill'] as $line) {
-			unset($pcl);
-			$pcl =& ORDataObject::factory('PaymentClaimline',0,$payment_id);
-			$pcl->populate_array($line);
-			$pcl->persist();
-			$total_paid += $pcl->get('paid');
-			$total_writeoff += $pcl->get('writeoff');
+		if (isset($_POST['bill']) && count($_POST['bill']) > 0) {
+			foreach($_POST['bill'] as $line) {
+				unset($pcl);
+				$pcl =& ORDataObject::factory('PaymentClaimline',0,$payment_id);
+				$pcl->populate_array($line);
+				$pcl->persist();
+				$total_paid += $pcl->get('paid');
+				$total_writeoff += $pcl->get('writeoff');
+			}
+
+			$payment->set('amount',$total_paid);
+			$payment->set('writeoff',$total_writeoff);
+			$payment->persist();
+	
+			// update claim total
+			$claim =& ORDataObject::factory('ClearhealthClaim',$claim_id);
+			$claim->set('total_paid',$claim->get('total_paid',$total_paid));
+			$claim->persist();
 		}
-
-		$payment->set('amount',$total_paid);
-		$payment->set('writeoff',$total_writeoff);
-		$payment->persist();
-
-		// update claim total
-		$claim =& ORDataObject::factory('ClearhealthClaim',$claim_id);
-		$claim->set('total_paid',$claim->get('total_paid',$total_paid));
-		$claim->persist();
-
 	}
 }
 ?>
