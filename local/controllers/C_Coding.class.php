@@ -59,7 +59,8 @@ class C_Coding extends Controller {
 		
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
-		if (isset($_POST['superbill'])  {
+		if (isset($_POST['superbill']))
+	      	{
 			$this->superbill = $_POST['superbill'];
 		}
 		else {
@@ -150,14 +151,20 @@ class C_Coding extends Controller {
 			$where .= " sbd.superbill_id = $superbill AND ";
 		}
 		
-		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') AND fsd.data > 0";
+		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') ";
 		
 		$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
-		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id inner join fee_schedule_data fsd using (code_id) "
-		." $where limit 30";
+		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
+	       
+		if ($search_type == "cpt") {
+			$sql .= "inner join fee_schedule_data fsd using (code_id) "; 
+			$where .= " AND fsd.data > 0";
+		}
+		$sql .= " $where limit 30";
 		
 		//print($sql);
 		$result_array = $this->_db->GetAll($sql);
+		
 		for($i=0; $i<count($result_array); $i++){
 			$result_array[$i]['string'] = $result_array[$i]['code'] . " : " . $result_array[$i]['code_text']; 	
 			$result_array[$i]['id'] = $result_array[$i]['code_id'];
