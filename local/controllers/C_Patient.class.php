@@ -283,7 +283,7 @@ class C_Patient extends Controller {
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
 			// todo: get this without hard coding in the report and template id
-			$this->assign('EXIT_REPORT',Cellini::link('report',true,true)."report_id=1705&template_id=1707&encounter_id=".$encounter->get('id'));
+			$this->assign('EXIT_REPORT',Cellini::link('report',true,true)."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
 		}
 
 
