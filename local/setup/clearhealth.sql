@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 14, 2005 at 05:54 PM
+-- Generation Time: Mar 15, 2005 at 08:23 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -602,6 +602,7 @@ CREATE TABLE `encounter` (
 -- Dumping data for table `encounter`
 -- 
 
+INSERT INTO `encounter` VALUES (2093, 1, 1707, 1123, '2005-03-15 00:00:00', 1110, '00000000000000', 0, 'open', 0);
 
 -- --------------------------------------------------------
 
@@ -613,7 +614,7 @@ DROP TABLE IF EXISTS `encounter_date`;
 CREATE TABLE `encounter_date` (
   `encounter_date_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
-  `title` varchar(255) NOT NULL default '',
+  `date_type` int(11) NOT NULL default '0',
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`encounter_date_id`),
   KEY `encounter_id` (`encounter_id`)
@@ -621,6 +622,28 @@ CREATE TABLE `encounter_date` (
 
 -- 
 -- Dumping data for table `encounter_date`
+-- 
+
+INSERT INTO `encounter_date` VALUES (2094, 2093, 1, '2005-03-07 00:00:00');
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `encounter_person`
+-- 
+
+DROP TABLE IF EXISTS `encounter_person`;
+CREATE TABLE `encounter_person` (
+  `encounter_person_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `person_type` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`encounter_person_id`),
+  KEY `encounter_id` (`encounter_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `encounter_person`
 -- 
 
 
@@ -3847,6 +3870,34 @@ INSERT INTO `ownership` VALUES (2063, 1);
 INSERT INTO `ownership` VALUES (2064, 1);
 INSERT INTO `ownership` VALUES (2065, 1);
 INSERT INTO `ownership` VALUES (2066, 1);
+INSERT INTO `ownership` VALUES (2067, 1);
+INSERT INTO `ownership` VALUES (2068, 1);
+INSERT INTO `ownership` VALUES (2069, 1);
+INSERT INTO `ownership` VALUES (2070, 1);
+INSERT INTO `ownership` VALUES (2071, 1);
+INSERT INTO `ownership` VALUES (2072, 1);
+INSERT INTO `ownership` VALUES (2073, 1);
+INSERT INTO `ownership` VALUES (2074, 1);
+INSERT INTO `ownership` VALUES (2075, 1);
+INSERT INTO `ownership` VALUES (2076, 1);
+INSERT INTO `ownership` VALUES (2077, 1);
+INSERT INTO `ownership` VALUES (2078, 1);
+INSERT INTO `ownership` VALUES (2079, 1);
+INSERT INTO `ownership` VALUES (2080, 1);
+INSERT INTO `ownership` VALUES (2081, 1);
+INSERT INTO `ownership` VALUES (2082, 1);
+INSERT INTO `ownership` VALUES (2083, 1);
+INSERT INTO `ownership` VALUES (2084, 1);
+INSERT INTO `ownership` VALUES (2085, 1);
+INSERT INTO `ownership` VALUES (2086, 1);
+INSERT INTO `ownership` VALUES (2087, 1);
+INSERT INTO `ownership` VALUES (2088, 1);
+INSERT INTO `ownership` VALUES (2089, 1);
+INSERT INTO `ownership` VALUES (2090, 1);
+INSERT INTO `ownership` VALUES (2091, 1);
+INSERT INTO `ownership` VALUES (2092, 1);
+INSERT INTO `ownership` VALUES (2093, 1);
+INSERT INTO `ownership` VALUES (2094, 1);
 
 -- --------------------------------------------------------
 
@@ -4358,7 +4409,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (2066);
+INSERT INTO `sequences` VALUES (2094);
 
 -- --------------------------------------------------------
 
