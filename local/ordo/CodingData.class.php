@@ -22,12 +22,12 @@ class CodingData extends ORDataObject {
 	/**#@+
 	 * Fields of table: coding_data mapped to class members
 	 */
-	var $id				= '';
+	var $id			= '';
 	var $foreign_id		= '';
 	var $parent_id		= '';
 	var $code_id		= '';
 	var $modifier		= '';
-	var $units			= '1.00';
+	var $units		= '1.00';
 	var $fee		= '';
 	/**#@-*/
 
@@ -94,7 +94,7 @@ class CodingData extends ORDataObject {
 		$parent_id = intval($parent_id);
 		$sql = "
 			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code  
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee 
 			FROM coding_data AS cd
 			LEFT JOIN codes AS c ON cd.code_id = c.code_id 
 			WHERE parent_id = $parent_id
@@ -124,7 +124,7 @@ class CodingData extends ORDataObject {
 		$foreign_id = intval($foreign_id);
 		$sql = "
 			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code  
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee  
 			FROM coding_data AS cd
 			LEFT JOIN codes AS c ON cd.parent_id = c.code_id 
 			WHERE foreign_id = $foreign_id

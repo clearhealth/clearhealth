@@ -13,8 +13,8 @@ class C_Eob extends Controller {
 		$codingData =& ORDataOBject::Factory('CodingData');
 		$codeList = $codingData->getCodeList($claim->get('encounter_id'));
 
-		ORdataObject::Factory_include('FeeSchedule');
-		$feeSchedule = FeeSchedule::defaultFeeSchedule();
+		//ORdataObject::Factory_include('FeeSchedule');
+		//$feeSchedule = FeeSchedule::defaultFeeSchedule();
 
 		$company =& ORDataObject::Factory('Company');
 
@@ -45,7 +45,7 @@ class C_Eob extends Controller {
 			$billList[$i]['code'] = $code['code'];
 			$billList[$i]['code_id'] = $code['code_id'];
 			$billList[$i]['description'] = $code['description'];
-			$billList[$i]['amount'] = $feeSchedule->getFee($code['code']);
+			$billList[$i]['amount'] = $code['fee'];
 			$billList[$i]['paid'] = 0;
 			$billList[$i]['writeoff'] = 0;
 			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['code_id']);
