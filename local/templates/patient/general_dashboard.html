@@ -109,8 +109,8 @@
 	<td>
 	<fieldset class="radio" id="encounters">
 		<legend>Account Information {clni_section_links name="account_information"}</legend>
-		<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>
-		{if count($accountStatus > 0)}
+		<!--<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>-->
+		{if count($accountStatus) > 0}
 		<table>
 			<tr>
 				<td><label>{l}Total Paid{/l}: </label></td><td>{$accountStatus.total_paid}</td>
