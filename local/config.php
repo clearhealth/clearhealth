@@ -3,7 +3,7 @@ $config['debug'] = false;
 $config['db_type'] = "mysql";
 $config['db_host'] = "localhost";
 $config['db_user'] = "root";
-$config['db_password'] = "";
+$config['db_password'] = "root";
 $config['db_name'] = "clearhealth";
 $config['db_table_prefix'] = "";
 $config['require_login'] = true;
@@ -33,6 +33,7 @@ $config['app_name'] = "clearhealth";
 
 $config['freeb2_wsdl'] = "http://localhost/freeb2/soap_gateway.php?wsdl";
 $GLOBALS['C_ALL']['freeb2_dir'] = "/freeb2/index.php/";
+$GLOBALS['C_ALL']['emr_dir'] = "/clearhealth/index.php/";
 
-//$config['htmldoc'] = "\"C:\Program Files\HTMLDOC\htmldoc.exe\"";
+$config['htmldoc'] = "/usr/bin/htmldoc";
 ?>

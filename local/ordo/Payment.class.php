@@ -86,8 +86,8 @@ class Payment extends ORDataObject {
 	 */
 	function paymentList($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
+		if ($foreign_id == 0) $foreign_id = "NULL";
 		
-
 		$ds =& new Datasource_sql();
 
 		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
@@ -113,6 +113,7 @@ class Payment extends ORDataObject {
 	 */
 	function paymentsFromEncounterId($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
+		if ($foreign_id == 0) $foreign_id ="NULL";
 		
 		$ds =& new Datasource_sql();
 
@@ -133,7 +134,6 @@ class Payment extends ORDataObject {
 		$ds->registerFilter('payment_type',array(&$this,'lookupPaymentType'));
 		return $ds;
 	}
-	
 	
 	
 	/**#@+

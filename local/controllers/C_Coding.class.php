@@ -15,9 +15,8 @@ class C_Coding extends Controller {
 	function update_action_edit($foreign_id = 0, $parent_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
-		if($parent_id == 0)
-			$parent_id = $this->parent_id;
-
+		//if($parent_id == 0)
+		//	$parent_id = $this->parent_id;
 			
 		$code_data =& ORDataObject::factory('CodingData');
 		$parent_code =& ORDataObject::factory('Code', $parent_id);
@@ -42,9 +41,15 @@ class C_Coding extends Controller {
 		}
 		
 		$this->assign("EDIT_LINK", Cellini::link("update", true, true, $foreign_id));
-		$this->assign_by_ref("parent_code", $parent_code);
+		if ($parent_id > 0) {
+			$this->assign_by_ref("parent_code", $parent_code);
+			$this->assign("parent_id", $parent_id);
+		}
+		else {
+			$this->assign_by_ref("parent_code", ORDataObject::factory('Code'));
+		}
 		$this->assign("foreign_id", $foreign_id);
-		$this->assign("parent_id", $parent_id);
+		
 		$this->assign_by_ref("code_data", $code_data);
 		$this->assign_by_ref("child_codes", $child_codes);
 		$this->assign_by_ref("code_list", $code_list);

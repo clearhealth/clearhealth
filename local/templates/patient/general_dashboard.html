@@ -1,9 +1,56 @@
 {if !$NO_PATIENT }
-<table class="columns">
+<table class="columns" border="0">
 <tr>
-<td>
+<td colspan="2">
 	<fieldset class="radio" id="person" >
 	<legend>Patient {clni_section_links name="detail"}</legend>
+		{assign var="parent" value=$person}
+	<div style="float: right">
+	<fieldset class="radio" id="number" style="vertical-align:top;">
+	<legend>Phone Numbers {clni_section_links name="number"}</legend>
+	<table class="data" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
+        </tr>
+        {foreach from=$parent->get_numbers() item=row}
+			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
+			<td>{$row.number}</td>
+			<td>{$row.number_type}</td>
+			<td>{if !$row.active}DNC{/if}</td>
+			<td>{$row.notes}</td>
+        	</tr>
+        {foreachelse}
+        	<tr>
+        		<td colspan="3">No Phone Numbers</td>
+        	</tr>
+        {/foreach}
+	</table>
+	</fieldset>
+    <fieldset class="radio" id="address" style="vertical-align:top;">
+		<legend>Addresses {clni_section_links name="address"}</legend>
+		<table class="data" border="0" cellspacing="1" cellpadding="0">
+        {$pager}
+        <tr bgcolor="EFEFEF">
+		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
+        </tr>
+        {foreach from=$parent->get_addresses() item=row}
+		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
+		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
+		<td>{$row.type}</td>
+		<td class="address">{$row.line1}<br>{$row.line2}</td>
+		<td>{$row.city}</td>
+		<td>{$row.postal_code}</td>
+		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
+        </tr>
+        {foreachelse}
+        <tr>
+                <td colspan="5">No Addresses</td>
+        </tr>
+        {/foreach}
+        </table>
+	</fieldset>
+</div>
 		<table align="left">
 			<tbody>
 	        <tr>
@@ -31,59 +78,11 @@
 			</tr>
 	        </tbody>
 		</table>
-	
-	{assign var="parent" value=$person}
-	<div style="float: right">
-	<fieldset class="radio" id="number">
-	<legend>Phone Numbers {clni_section_links name="number"}</legend>
-	<table class="data" border="0" cellspacing="1" cellpadding="0">
-        {$pager}
-        <tr bgcolor="EFEFEF">
-		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
-        </tr>
-        {foreach from=$parent->get_numbers() item=row}
-			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
-			<td>{$row.number}</td>
-			<td>{$row.number_type}</td>
-			<td>{if !$row.active}DNC{/if}</td>
-			<td>{$row.notes}</td>
-        	</tr>
-        {foreachelse}
-        	<tr>
-        		<td colspan="3">No Phone Numbers</td>
-        	</tr>
-        {/foreach}
-	</table>
-	</fieldset>
-    <fieldset class="radio" id="address">
-		<legend>Addresses {clni_section_links name="address"}</legend>
-		<table class="data" border="0" cellspacing="1" cellpadding="0">
-        {$pager}
-        <tr bgcolor="EFEFEF">
-		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
-        </tr>
-        {foreach from=$parent->get_addresses() item=row}
-		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
-		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
-		<td>{$row.type}</td>
-		<td class="address">{$row.line1}<br>{$row.line2}</td>
-		<td>{$row.city}</td>
-		<td>{$row.postal_code}</td>
-		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
-        </tr>
-        {foreachelse}
-        <tr>
-                <td colspan="5">No Addresses</td>
-        </tr>
-        {/foreach}
-        </table>
-	</fieldset>
-</div>
 	</fieldset>
 	</td>
-</tr>
-<tr>
-<td>	
+	</tr>
+	<tr>
+	<td>	
 	<fieldset class="radio" id="insurer">
 		<legend>Insurers</legend>
 		{$insuredRelationshipGrid->render()}
@@ -99,6 +98,34 @@
 		{/if}
 		<p><a href="{$ENCOUNTER_ACTION}">Add Encounter</a></p>
 	</fieldset>
+	<fieldset class="radio" id="address">
+		<legend>Reports {clni_section_links name="reports"}</legend>
+		{$reportGrid->render()}
+		{if $reportGrid->empty}
+		<p>No Reports have been connected to the dashboard</p>
+		{/if}
+	</fieldset>
+	</td>
+	<td>
+	<fieldset class="radio" id="encounters">
+		<legend>Account Information {clni_section_links name="account_information"}</legend>
+		<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>
+		{if count($accountStatus > 0)}
+		<table>
+			<tr>
+				<td><label>{l}Total Paid{/l}: </label></td><td>{$accountStatus.total_paid}</td>
+			</tr>
+			<tr>
+				<td><label>{l}Total Billed{/l}: </label></td><td>{$accountStatus.total_billed}</td>
+			</tr>
+			<tr>
+				<td><label>{l}Balance{/l}: </label></td><td>{$accountStatus.total_balance}</td>
+			</tr>
+		</table>
+		{else}
+		<p>No Account Information</p>
+		{/if}
+	</fieldset>
 	<fieldset class="radio" id="forms">
 		<legend>Forms {clni_section_links name="forms"}</legend>
 		{$formDataGrid->render()}
@@ -110,13 +137,6 @@
 					{html_options options=$formList}
 				</select>
 				</p>
-	</fieldset>
-	<fieldset class="radio" id="address">
-		<legend>Reports {clni_section_links name="reports"}</legend>
-		{$reportGrid->render()}
-		{if $reportGrid->empty}
-		<p>No Reports have been connected to the dashboard</p>
-		{/if}
 	</fieldset>
 </td>
 </tr>

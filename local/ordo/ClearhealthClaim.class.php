@@ -62,6 +62,20 @@ class ClearhealthClaim extends ORDataObject {
 		return $claim;
 
 	}
+	
+	function accountStatus($patient_id) {
+		$status = array();
+		$sql = "SELECT sum(total_billed) as total_billed, sum(total_paid) as total_paid, (total_billed - total_paid) as total_balance "
+				." FROM encounter e inner join clearhealth_claim using (encounter_id) where patient_id = " . (int)$patient_id . " group by e.patient_id";
+		
+		$res = $this->_execute($sql);
+		if ($res && !$res->EOF) {
+			$status['total_billed'] = $res->fields['total_billed'];
+			$status['total_paid'] = $res->fields['total_paid'];
+			$status['total_balance'] = $res->fields['total_balance'];
+		}
+		return $status;
+	}
 
 	/**
 	 * Populate the class from the db

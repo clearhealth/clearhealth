@@ -75,6 +75,8 @@ class C_Patient extends Controller {
 			$reportGrid->name = "reportGrid";
 			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 			
+			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
+			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
 			
 			$this->assign_by_ref("person",$p);
 			$this->assign_by_ref('number',$number);
@@ -84,6 +86,7 @@ class C_Patient extends Controller {
 			$this->assign_by_ref('encounterGrid',$encounterGrid);
 			$this->assign_by_ref('formDataGrid',$formDataGrid);
 			$this->assign_by_ref('reportGrid',$reportGrid);
+			$this->assign_by_ref('accountStatus',$accountStatus);
 
 			$this->assign('formList',$formList);
 
@@ -425,6 +428,10 @@ class C_Patient extends Controller {
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
 
+		//create totals paid as of now and total billed
+		$total_paid = 0.00;
+		$total_billed = 0.00;
+		
 		// create claim entity on clearhealh side
 		$claim =& ORDataObject::Factory('ClearhealthClaim');
 		$claim->set('encounter_id',$encounter->get('id'));
@@ -436,14 +443,11 @@ class C_Patient extends Controller {
 			$pmnt->populate_array($payment_info);
 			$pmnt->set("foreign_id",$claim->get("claim_id"));
 			$pmnt->persist();
+			$total_paid += $payment_info['amount'];
 		}
 
 		// generate a claim identifier from patient and encounter info
 		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'_'.$encounter->get('id');
-
-		// store id in clearhealth
-		$claim->set('identifier',$claim_identifier);
-		$claim->persist();
 
 		// open the claim
 		if (!$freeb2->openClaim($claim_identifier)) {
@@ -459,6 +463,7 @@ class C_Patient extends Controller {
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
 			$cliamline['amount'] = $data['fee'];
+			$total_billed += $data['fee'];
 			$claimline['diagnoses'] = array();
 			
 
@@ -470,6 +475,12 @@ class C_Patient extends Controller {
 				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
 			}
 		}
+
+		// store id in clearhealth
+		$claim->set('identifier',$claim_identifier);
+		$claim->set("total_paid",$total_paid);
+		$claim->set('total_billed',$total_billed);
+		$claim->persist();
 
 		// register patient data
 		$patientData = $this->_cleanDataArray($patient->toArray());
@@ -515,7 +526,6 @@ class C_Patient extends Controller {
 		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
 			trigger_error("Unable to register practice data - ".$freeb2->claimLastError($claim_identifier));
 		}
-
 
 		// register treating facility
 		$facilityData = $this->_cleanDataArray($facility->toArray());
