@@ -57,6 +57,12 @@ class Schedule extends ORDataObject{
 	 */
 	var $user_id;
 	
+	/**
+	 *	
+	 *	@var user_id
+	 */
+	var $room_id;
+	
 	
 	/**
 	 * Constructor sets all attributes to their default value
@@ -192,6 +198,13 @@ class Schedule extends ORDataObject{
 	}
 	function get_user_id() {
 		return $this->user_id;
+	}
+	
+	function set_room_id($value) {
+		$this->room_id = $value;
+	}
+	function get_room_id() {
+		return $this->room_id;
 	}
 	
 	function get_events() {

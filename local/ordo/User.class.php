@@ -35,7 +35,7 @@ class User extends Base_User {
 					}
                 }
                 $sql .= " order by u.username";
-                echo $sql;                                                              
+                                                           
                 $results = $this->_db->Execute($sql) or die ("Database Error: " . $this->_db->ErrorMsg());
                 while ($results && !$results->EOF) {
                         $tu = new User("","");

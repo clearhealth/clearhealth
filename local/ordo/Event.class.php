@@ -184,9 +184,10 @@ class Event extends ORDataObject{
 		$sql = "SELECT o.*,e.*,c.*, o.id as occurence_id, c.id as schedule_id, UNIX_TIMESTAMP(o.start) as start_ts,UNIX_TIMESTAMP(o.end) as end_ts, "
 		." UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) as start_day, b.name as building, r.name as room, IF(schedule_code = 'PS',1,0) as schedule_sort,"
 		." u.color as color, u.nickname as nickname, u2.nickname as last_change_nickname, pd.lname as p_lastname, pd.fname as p_firstname, DATE_FORMAT(pd.DOB,'%m/%d/%Y') as dob, " 
-		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, "
+		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, rm.name as room_name, "
 		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(DOB, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(DOB, '00-%m-%d')) AS age"
 		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
+		." LEFT JOIN rooms as rm on c.room_id=rm.id "
 		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
 		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
 		." WHERE o.start BETWEEN '$start'  AND '$end' AND (c.schedule_code != 'NS' OR c.schedule_code IS NULL) $foreign_id $code_filter $filter_sql ORDER BY schedule_sort DESC, o.start, o.end";
@@ -209,9 +210,10 @@ class Event extends ORDataObject{
 		$sql = "SELECT o.*,e.*,c.*, o.id as occurence_id, c.id as schedule_id, UNIX_TIMESTAMP(o.start) as start_ts,UNIX_TIMESTAMP(o.end) as end_ts, "
 		." UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) as start_day, b.name as building, r.name as room, IF(schedule_code = 'PS',1,0) as schedule_sort,"
 		." u.color as color, u.nickname as nickname, u2.nickname as last_change_nickname, pd.lname as p_lastname, pd.fname as p_firstname, DATE_FORMAT(pd.DOB,'%m/%d/%Y') as dob, " 
-		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, "
+		." pd.pid as p_record_number, pd.pubpid as p_patient_number, pd.phone_home as p_phone, rm.name as room_name, "
 		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(DOB, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(DOB, '00-%m-%d')) AS age"
 		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
+		." LEFT JOIN rooms as rm on c.room_id=rm.id "
 		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
 		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id LEFT JOIN `".$GLOBALS['frame']['config']['openemr_db']."`.patient_data as pd on pd.id = o.external_id "
 		." WHERE $where_sql ORDER BY o.start";
@@ -283,7 +285,16 @@ class Event extends ORDataObject{
 					$result->fields['duration_increments'] = 1;
 					$result->fields['first_inc'] = true;
 					$events[$key][] = $result->fields;
-					break;	
+					break;
+				case "find_first":
+					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
+					//echo "end ts " . date("Y-m-d H:i",$result->fields['end_ts']) . " start ts " .date("Y-m-d H:i",$result->fields['start_ts']) . " di " . ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900) . "<br>";
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$events[] = $key2;
+					for($i=1;$i<$di;$i++) {	
+						$events[] = $key2+($i*900);
+					}
+					break;
 			}
 			
 			$result->MoveNext();
