@@ -199,7 +199,7 @@ function captureEnter (field, event) {
 			{html_options options=$rooms_practice_array selected=$selected_location}
 			</select>	
 			<br>
-			<select name="provider" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=user/'+this.options[this.selectedIndex].value+'');">
+			<select name="provider" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=user/'+this.options[this.selectedIndex].value+'&process=true');">
 			<option value="">All Providers</option>		
 			{html_options options=$users_array selected=$selected_user}
 			</select>
