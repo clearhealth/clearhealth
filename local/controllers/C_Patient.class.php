@@ -160,15 +160,16 @@ class C_Patient extends Controller {
 	 * Edit/Add an encounter
 	 */
 	function encounter_action_edit($encounter_id = 0) {
+		settype($encounter_id,'int');
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
 		}
 		if ($encounter_id > 0) {
 			$this->set('encounter_id',$encounter_id);
 		}
-		if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
-			$encounter_id = $this->get('encounter_id');
-		}	
+		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
+		//	$encounter_id = $this->get('encounter_id');
+		//}	
 		$this->set('external_id',$encounter_id);
 
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
