@@ -45,20 +45,32 @@ a {
 <link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
 {if $menu_group === "default"}
-	{assign var="section_name" value="Front Office"}
+	{assign var="section_name" value="Calendar"}
+	{assign var="bgcolor" value="#CCCCCC"}
+{/if}
+{if $menu_group === "patient"}
+	{assign var="section_name" value="Patient"}
+	{assign var="bgcolor" value="#CCCC33"}
+{/if}
+{if $menu_group === "billing"}
+	{assign var="section_name" value="Billing"}
+	{assign var="bgcolor" value="#CCCC00"}
 {/if}
 {if $menu_group === "admin"}
 	{assign var="section_name" value="Administration"}
+	{assign var="bgcolor" value="#CCCCFF"}
 {/if}
 <title>ClearHealth® : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
 </head>
 <body>
-	<div id="header" {if $menu_group === "admin"}style="background-color: #CCCCFF"{/if}>
+	<div id="header" style="background-color: {$bgcolor}">
 	<h1>ClearHealth<sup>®</sup></h1>
 	{if $me->get_id() > 0}
 	<div id="sections">
-		<a href="{$base_dir}index.php/main/default" {if $menu_group == "default"}class="selected"{/if}>Front Office</a> &middot;
-		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Administration</a>
+		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selected"{/if}>Calendar</a> &middot;
+		<a href="{$base_dir}index.php/main/patient/dashboard" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
+		<a href="{$base_dir}index.php/main/billing/default" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;
+		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
 	</div>
 	{/if}
 	{include file="main/general_menu.html"}
