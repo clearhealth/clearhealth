@@ -11,7 +11,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 	var $revision_id = 1;
 	var $feeSessions = array();
 
-	var $meta = array('editableMap' => array(),'passAlong'=>array('code_id'=>'code_id'));
+	var $meta = array('editableMap' => array(),'passAlong'=>array('code_id'=>'code_id','fee_schedule_id' => 'fee_schedule_id'));
 
 	function FeeScheduleDatasource($session_array = "fsd") {
 		$this->session = $session_array;
@@ -31,17 +31,26 @@ class FeeScheduleDatasource extends Datasource_editable {
 
 		$this->object =& ORDataObject::factory('FeeScheduleData');
 
+		$this->_init_feeSessions();
+	}
+	
+	function _init_feeSessions() {
 		$cols = 'c.code_id, code, code_text';
 		$labels = array( 'code' => 'Code', 'code_text' => 'Code name');
 		$from = 'codes c ';
-		foreach($this->feeSessions as $field => $data) {
-			$cols .= ", `fsd_$field`.data as `$field`";
+		$csessions = $this->feeSessions;
+		foreach($csessions as $field => $data) {
+			$cols .= ", `fsd_$field`.data as `$field`, `fsd_$field`.mapped_code as `" . $field . "_mapped_code`";
 			$labels[$field] = $data['label'];
+			$labels[$field . "_mapped_code"] = "Mapped Code";
 			$from .= " left join fee_schedule_data `fsd_$field` using(code_id)";
 			$this->meta['editableMap'][$field] = $field;
+			$this->meta['editableMap'][$field ."_mapped_code"] = $field . "_mapped_code";
+			
 			$this->where["fsd_$field.fee_schedule_id"] = $data['id'];
+			$this->feeSessions[$field . "_mapped_code" ] = array('id'=>$data['id'],'label'=>"Mapped Code");
 		}
-
+		
 		$this->setup(
 			$GLOBALS['config']['adodb']['db'],
 			array(
@@ -49,7 +58,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 				'from' => $from
 			),
 			$labels
-		);
+			);	
 	}
 
 	/**
@@ -57,7 +66,12 @@ class FeeScheduleDatasource extends Datasource_editable {
 	 */
 	function updateField($primaryKey,$field,$value,$passAlong) {
 		$this->object->set('fee_schedule_id',$this->feeSessions[$field]['id']);
-		$field = 'data';
+		if (substr($field,-11) === "mapped_code" ) {
+			$field = "mapped_code";	
+		}
+		else {
+			$field = 'data';			
+		}
 		return parent::updateField($primaryKey,$field,$value,$passAlong);
 	}
 
@@ -98,7 +112,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 	function reset() {
 		$this->feeSessions = array();
 		$this->whereFilter = array();
-
+		
 		$_SESSION[$this->session]['whereFilter'] = $this->whereFilter;
 		$_SESSION[$this->session]['feeSessions'] = $this->feeSessions;
 		$this->meta = array('editableMap' => array());
