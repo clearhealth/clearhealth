@@ -27,7 +27,7 @@ function captureEnter (field, event) {
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 <table>
 	<tr>
-		<td>
+		<td valign="top">
 			<table>
 				<tr>
 					<td valign="top">
@@ -66,9 +66,14 @@ function captureEnter (field, event) {
 						<input type="button" name="add_code" value="Add ICD" onClick="addICDCode()">
 						
 						<div id="child_codes">
-			  			{foreach from=$child_codes item=code}
-						<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
+			  			{foreach name="icd_list" from=$child_codes item=code}
+			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
+			  			{if $smart.foreach.icd_list.first}
+						<strong>{$code.description}</strong><BR>
+						{else}
 						{$code.description}<BR>
+						{/if}
+						
 						{/foreach}
 						</div>
 					</td>
@@ -150,7 +155,12 @@ function addICDCode(){
 	var childDiv = document.getElementById('child_codes');
 	var icdCode = document.getElementById('child_id');
 	var icdCodeText = document.getElementById('child_code');
-	childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<BR>';
+	if (childDiv.childNodes.length == 1) {
+		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><BR>';
+	}
+	else {
+		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<BR>';
+	}
 	icdCode.value = '';
 	icdCodeText.value = '';
 	icdCodeText.focus();
