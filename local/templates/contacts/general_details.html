@@ -31,24 +31,20 @@
 			  <input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
 			  </td>
                         </tr>
+				{if !$hide_type}
                         <tr>
-				<td><label>Title:</label> </td>
-				<td colspan="2"><input name="person[title]" size="20" value="{$person->get('title')}"></td>
-				{if $hide_type}
-				<td rowspan="2"></td>
-				{else}
-			  <td rowspan="2" style="vertical-align:top;">
-				  Type:<br />
-				  <select name="person[type]" style="margin-top:4px;">
+				<td style="vertical-align:top;"><label>Type:</label></td>
+				<td>
+				  <select name="person[type]">
 					  <option></option>
 					  {html_options options=$person->getTypeList() selected=$person->get('type')}
 				  </select>
 			 </td>
-			 	{/if}
                         </tr>
+			 	{/if}
                         <tr>
 				<td><label>Primary Email:</label> </td>
-				<td colspan="2"><input name="person[email]" size="30" value="{$person->get('email')}"></td>
+				<td><input name="person[email]" size="30" value="{$person->get('email')}"></td>
                         </tr>
                         <tr>
 				<td><label>Secondary Email:</label> </td>
