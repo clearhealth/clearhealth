@@ -294,12 +294,12 @@ class Occurence extends ORDataObject{
 			preg_match("/([0-9]{1,2})-([0-9]{1,2})-([0-9]{2,4})/",$value,$matches);
 			if (count($matches) == 4) {
 				$this->date = $matches[3] . "-" . $matches[1] . "-" . $matches[2];
-			}	
+			}
 		}
-		elseif (strpos($value,"-") == 2 && 	preg_match("/([0-9]{4})-([0-9]{1,2})\/([0-9]{1,2})/",$value,$matches)) {
-			preg_match("/([0-9]{4})-([0-9]{1,2})\/([0-9]{1,2})/",$value,$matches);
+		elseif (strpos($value,"-") == 4 && 	preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/",$value,$matches)) {
+			preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/",$value,$matches);
 			if (count($matches) == 4) {
-				$this->date = $matches[3] . "-" . $matches[1] . "-" . $matches[2];	
+				$this->date = $matches[1] . "-" . $matches[2] . "-" . $matches[3];
 			}
 		}
 	}
