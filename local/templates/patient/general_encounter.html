@@ -1,4 +1,28 @@
+<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+<SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete.js"></script>
+{literal}
+<script language="javascript">
+function captureEnter (field, event) {
+		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+		if (keyCode == 13) {
+			var i;
+			for (i = 0; i < field.form.elements.length; i++)
+				if (field == field.form.elements[i])
+					break;
+			i = (i + 1) % field.form.elements.length;
+			field.form.elements[i].focus();
+			return false;
+		} 
+		else
+		return true;
+	}      
+
+</script>
+{/literal}
+
 {clni_form action=$FORM_ACTION process=$PROCESS}
+<fieldset>
+	<legend>Encounter</legend>
 	<table>
 		<tr>
 			<td><label>Facility:</label></td>
@@ -15,10 +39,9 @@
 		</tr>
 		<tr>
 			<td><label>Date of Treatment:</label></td>
-			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment')}</td>
+			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment') id="date_of_treatment"}</td>
 			<td><label>Encounter Reason:</label></td>
 			<td><select name="encounter[encounter_reason]">
-					<option></option>
 					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
 				</select>
 			</td>
@@ -36,4 +59,79 @@
 			</td>
 		</tr>
 	</table>
+</fieldset>
+<fieldset>
+	<legend>Encounter Dates</legend>
+	{$encounterDateGrid->render()}
+	{if $encounterDateGrid->empty}
+	<p>Encounter has no extra dates</p>
+	{/if}
+	<input type="hidden" name="encounterDate[encounter_date_id]" value="{$encounterDate->get('encounter_date_id')}">
+	<table>
+		<tr>
+			<td>{clni_input_date name="encounterDate[date]" value=$encounterDate->get('date')}</td>
+			<td><select name="encounterDate[date_type]">
+					<option>Select Date Type</option>
+					{html_options options=$encounterDate->getDateTypeList() selected=$encounterDate->get('date_type')}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="{if $encounterDate->get('id') > 0}Update{else}Add{/if} Date"></td>
+			<td>
+			</td>
+		</tr>
+	</table>
+</fieldset>
+<fieldset>
+	<legend>Encounter people</legend>
+	{$encounterPersonGrid->render()}
+	{if $encounterPersonGrid->empty}
+	<p>Encounter has no extra people</p>
+	{/if}
+	<input type="hidden" name="encounterPerson[encounter_person_id]" value="{$encounterPerson->get('encounter_person_id')}" id="person_id_1">
+	<table>
+		<tr>
+			<td>
+				<input type="hidden" name="encounterPerson[person_id]" value="{$encounterPerson->get('person_id')}">
+			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
+				autocomplete="off" value="{$encounterPerson->get('person_id')}">
+			<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
+					class="AutoCompleteBackground"></div></div>
+			</td>
+			<td><select name="encounterPerson[person_type]">
+					<option>Select Person Type</option>
+					{html_options options=$encounterPerson->getPersonTypeList() selected=$encounterPerson->get('person_type')}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="submit" value="{if $encounterPerson->get('id') > 0}Update{else}Add{/if} Person"></td>
+			<td>
+			</td>
+		</tr>
+	</table>
+</fieldset>
 </form>
+{clni_register_validation_rule id="date_of_treatment"}
+
+{literal}
+<script language="javascript" type="text/javascript">
+var C_PatientFinder = function find_remoting(searchString) {
+        var h = new c_patientfinder(this.dataHandler);
+        h.Sync();
+                                                                                
+        var results = h.find_remoting(searchString);
+        return results;
+}
+
+var ac = new AutoComplete(
+	C_PatientFinder,
+	'person_name_1',
+	'person_id_1',
+	'acDiv_1',
+	true,
+	325
+);
+</script>
+{/literal}

@@ -98,11 +98,11 @@ class Encounter extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
+				'cols' 	=> "date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
 				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
 				'where' => " patient_id = $patient_id"
 			),
-			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status','encounter_id' => "Encounter Id"));
+			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'/*,'encounter_id' => "Encounter Id"*/));
 
 		$ds->registerFilter('encounter_reason',array(&$this,'lookupEncounterReason'));
 		//echo $ds->preview();

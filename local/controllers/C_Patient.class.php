@@ -12,6 +12,8 @@ class C_Patient extends Controller {
 	var $identifier_id = 0;
 	var $insured_relationship_id = 0;
 	var $person_person_id = 0;
+	var $encounter_date_id = 0;
+	var $encounter_person_id = 0;
 
 	function C_Patient() {
 		parent::Controller();
@@ -37,6 +39,7 @@ class C_Patient extends Controller {
 
 			$encounter =& ORDataObject::factory("Encounter");
 			$encounterGrid =& new cGrid($encounter->encounterList($this->get('patient_id')));
+			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Cellini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
 
 			$formData =& ORDataObject::factory("FormData");
@@ -161,9 +164,21 @@ class C_Patient extends Controller {
 		$person =& ORDataObject::factory('Person');
 		$building =& ORDataObject::factory('Building');
 
+		$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$encounter_id);
+		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
+		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate').'id={$encounter_date_id}">{$date}</a>');
+
+		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
+		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
+		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson').'id={$encounter_person_id}">{$person}</a>');
+
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
+		$this->assign_by_ref('encounterDate',$encounterDate);
+		$this->assign_by_ref('encounterDateGrid',$encounterDateGrid);
+		$this->assign_by_ref('encounterPerson',$encounterPerson);
+		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
 
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 
@@ -175,6 +190,21 @@ class C_Patient extends Controller {
 		$encounter->populate_array($_POST['encounter']);
 		$encounter->persist();
 		$this->encounter_id = $encounter->get('id');
+
+		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
+			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
+			$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$this->encounter_id);
+			$encounterDate->populate_array($_POST['encounterDate']);
+			$encounterDate->persist();
+			$this->encounter_date_id = $encounterDate->get('id');
+		}
+		if (isset($_POST['encounterPerson']) && !empty($_POST['encounterPerson']['person_id'])) {
+			$this->encounter_person_id = $_POST['encounterPerson']['encounter_person_id'];
+			$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$this->encounter_id);
+			$encounterPerson->populate_array($_POST['encounterPerson']);
+			$encounterPerson->persist();
+			$this->encounter_person_id = $encounterPerson->get('id');
+		}
 	}
 
 }

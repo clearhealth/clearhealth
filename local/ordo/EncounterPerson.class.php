@@ -1,6 +1,6 @@
 <?php
 /**
- * Object Relational Persistence Mapping Class for table: encounter_dates
+ * Object Relational Persistence Mapping Class for table: encounter_person
  *
  * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
@@ -13,19 +13,19 @@ require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
 /**#@-*/
 
 /**
- * Object Relational Persistence Mapping Class for table: encounter_date
+ * Object Relational Persistence Mapping Class for table: encounter_person
  *
  * @package	com.uversainc.clearhealth
  */
-class EncounterDate extends ORDataObject {
+class EncounterPerson extends ORDataObject {
 
 	/**#@+
-	 * Fields of table: encounter_date mapped to class members
+	 * Fields of table: encounter_person mapped to class members
 	 */
 	var $id			= '';
 	var $encounter_id	= '';
-	var $date_type		= '';
-	var $date		= '';
+	var $person_type	= '';
+	var $person_id		= '';
 	/**#@-*/
 
 
@@ -33,9 +33,9 @@ class EncounterDate extends ORDataObject {
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
-	function EncounterDate($db = null) {
+	function EncounterPerson($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter_date';
+		$this->_table = 'encounter_person';
 		$this->_sequence_name = 'sequences';	
 	}
 
@@ -56,66 +56,62 @@ class EncounterDate extends ORDataObject {
 	 * Populate the class from the db
 	 */
 	function populate() {
-		parent::populate('encounter_date_id');
+		parent::populate('encounter_person_id');
 	}
 
 	/**#@+
-	 * Getters and Setters for Table: encounter_date
+	 * Getters and Setters for Table: encounter_person
 	 */
 
 	
 	/**
-	 * Getter for Primary Key: encounter_date_id
+	 * Getter for Primary Key: encounter_person_id
 	 */
-	function get_encounter_date_id() {
+	function get_encounter_person_id() {
 		return $this->id;
 	}
 
 	/**
-	 * Setter for Primary Key: encounter_date_id
+	 * Setter for Primary Key: encounter_person_id
 	 */
-	function set_encounter_date_id($id)  {
+	function set_encounter_person_id($id)  {
 		$this->id = $id;
-	}
-
-	function set_date($date) {
-		$this->date = $this->_mysqlDate($date);
 	}
 
 	/**#@-*/
 
-	function encounterDateList($encounter_id) {
+	function encounterPersonList($encounter_id) {
 		settype($encounter_id,'int');
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "encounter_date_id, `date`, date_type",
-				'from' 	=> "$this->_table ",
+				'cols' 	=> "encounter_person_id, concat_ws(' ',first_name,last_name) person, person_type",
+				'from' 	=> "$this->_table inner join person using(person_id)",
 				'where' => " encounter_id = $encounter_id"
 			),
-			array('date' => 'Date','date_type' => 'Title')
+			array('person' => 'Person','person_type' => 'Title')
 		);
 
-		$ds->registerFilter('date_type',array(&$this,'lookupDateType'));
+		$ds->registerFilter('person_type',array(&$this,'lookupPersonType'));
 		return $ds;
 	}
 
 	/**#@+
 	 * Enumeration getters
 	 */
-	function getDateTypeList() {
-		$list = $this->_load_enum('encounter_date_type',false);
+	function getPersonTypeList() {
+		$list = $this->_load_enum('encounter_person_type',false);
 		return array_flip($list);
 	}
 	/**#@-*/
 
 	var $_edCache = false;
 	/**
-	 * Cached lookup for date_type
+	 * Cached lookup for person_type
 	 */
-	function lookupDateType($id) {
+	function lookupPersonType($id) {
 		if ($this->_edCache === false) {
-			$this->_edCache = $this->getDateTypeList();
+			$this->_edCache = $this->getPersonTypeList();
 		}
 		if (isset($this->_edCache[$id])) {
 			return $this->_edCache[$id];
