@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1
+-- version 2.6.1-rc2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 10, 2005 at 03:02 AM
--- Server version: 4.0.18
--- PHP Version: 4.3.4
+-- Generation Time: Mar 10, 2005 at 10:06 AM
+-- Server version: 4.0.23
+-- PHP Version: 4.3.10
 -- 
 -- Database: `clearhealth`
 -- 
@@ -16,6 +16,7 @@
 -- Table structure for table `menu`
 -- 
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -27,7 +28,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=86 ;
+) TYPE=MyISAM AUTO_INCREMENT=87 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -104,3 +105,4 @@ INSERT INTO `menu` VALUES (79, 'admin', 78, '', 'children', 10, 'API Docs', 'Doc
 INSERT INTO `menu` VALUES (83, 'admin', 5, '', 'children', 5, 'List Schedules/Facilities', 'Location/list', 'main');
 INSERT INTO `menu` VALUES (84, 'admin', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practice', 'main');
 INSERT INTO `menu` VALUES (85, 'admin', 4, '', 'children', 5, 'List Reports', 'Report/list', 'main');
+INSERT INTO `menu` VALUES (86, 'admin', 1, '', 'children', 900, '', 'Admin/default', 'main');
