@@ -32,7 +32,8 @@
 		</table>
 	
 	{assign var="parent" value=$person}
-	<fieldset class="radio" id="number" align="right">
+	<div style="float: right">
+	<fieldset class="radio" id="number">
 	<legend>Phone Numbers {clni_section_links name="number"}</legend>
 	<table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
@@ -53,8 +54,7 @@
         {/foreach}
 	</table>
 	</fieldset>
-
-    <fieldset class="radio" id="address" align="right">
+    <fieldset class="radio" id="address">
 		<legend>Addresses {clni_section_links name="address"}</legend>
 		<table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
@@ -77,6 +77,7 @@
         {/foreach}
         </table>
 	</fieldset>
+</div>
 	</fieldset>
 	</td>
 </tr>
