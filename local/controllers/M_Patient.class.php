@@ -241,6 +241,13 @@ class M_Patient extends Manager {
 	}
 
 	/**
+	 * Setup for editing an encounter value
+	 */
+	function process_editEncounterValue($patient_id,$encounter_value_id) {
+		$this->controller->encounter_value_id = $encounter_value_id;
+	}
+
+	/**
 	 * Setup for editing an encounter person
 	 */
 	function process_editEncounterPerson($patient_id,$encounter_person_id) {

@@ -14,6 +14,7 @@ class C_Patient extends Controller {
 	var $insured_relationship_id = 0;
 	var $person_person_id = 0;
 	var $encounter_date_id = 0;
+	var $encounter_value_id = 0;
 	var $encounter_person_id = 0;
 	var $payment_id = 0;
 	var $patient_statistics_id = 0;
@@ -200,6 +201,10 @@ class C_Patient extends Controller {
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
 
+		$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$encounter_id);
+		$encounterValueGrid = new cGrid($encounterValue->encounterValueList($encounter_id));
+		$encounterValueGrid->registerTemplate('value','<a href="'.Cellini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
+
 		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
@@ -236,6 +241,8 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('encounterDateGrid',$encounterDateGrid);
 		$this->assign_by_ref('encounterPerson',$encounterPerson);
 		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
+		$this->assign_by_ref('encounterValue',$encounterValue);
+		$this->assign_by_ref('encounterValueGrid',$encounterValueGrid);
 		$this->assign_by_ref('formDataGrid',$formDataGrid);
 		$this->assign_by_ref('formList',$formList);
 		$this->assign_by_ref('payment',$payment);
@@ -280,6 +287,13 @@ class C_Patient extends Controller {
 			$encounterDate->persist();
 			$this->encounter_date_id = $encounterDate->get('id');
 		}
+		if (isset($_POST['encounterValue']) && !empty($_POST['encounterValue']['value'])) {
+			$this->encounter_value_id = $_POST['encounterValue']['encounter_value_id'];
+			$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$this->encounter_id);
+			$encounterValue->populate_array($_POST['encounterValue']);
+			$encounterValue->persist();
+			$this->encounter_value_id = $encounterValue->get('id');
+		}
 		if (isset($_POST['encounterPerson']) && !empty($_POST['encounterPerson']['person_id'])) {
 			$this->encounter_person_id = $_POST['encounterPerson']['encounter_person_id'];
 			$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$this->encounter_id);
@@ -297,10 +311,7 @@ class C_Patient extends Controller {
 
 		if ($encounter->get('status') === "closed") {
 			$this->_generateClaim($encounter);
-			$encounter->set('status','open');
-			$encounter->persist();
 		}
-		
 	}
 
 	function _movePayer($program_order,$row) {

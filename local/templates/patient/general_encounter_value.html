@@ -1,0 +1,21 @@
+<fieldset>
+	<legend>Other Encounter Information</legend>
+	{$encounterValueGrid->render()}
+	{if $encounterValueGrid->empty}
+	<p>Encounter has no extra information</p>
+	{/if}
+	<input type="hidden" name="encounterValue[encounter_value_id]" value="{$encounterValue->get('encounter_value_id')}">
+	<table>
+		<tr>
+			<td><input name="encounterValue[value]" value="{$encounterValue->get('value')}"></td>
+			<td><select name="encounterValue[value_type]">
+					<option>Select Value Type</option>
+					{html_options options=$encounterValue->getValueTypeList() selected=$encounterValue->get('value_type')}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="{if $encounterValue->get('id') > 0}Upvalue{else}Add{/if} Value"></td>
+		</tr>
+	</table>
+</fieldset>
