@@ -78,6 +78,9 @@ class M_Patient extends Manager {
 		if (isset($_POST['personPerson'])) {
 			$this->process_personPerson_update($this->controller->patient_id,$_POST['personPerson']);
 		}
+		if (isset($_POST['patientStatistics'])) {
+			$this->process_patientStatistics_update($this->controller->patient_statistics_id,$_POST['patientStatistics']);
+		}
 	}
 
 	/**
@@ -128,6 +131,21 @@ class M_Patient extends Manager {
 			$this->controller->person_person_id = $identifier->get('id');
 
 			$this->messages->addMessage('Relationship Updated');
+		}
+	}
+	
+	/**
+	 * Handle updating patient statistics
+	 */
+	function process_patientStatistics_update($patient_id,$data) {
+		if (count($data) > 0) {
+			$id = (int)$data['patient_statistics_id'];
+			$patientStatistics =& ORDataObject::factory('PatientStatistics',$id,$patient_id);
+			$patientStatistics->populate_array($data);
+			$patientStatistics->persist();
+			$this->controller->patient_statistics_id = $patientStatistics->get('id');
+
+			$this->messages->addMessage('Statistics Updated');
 		}
 	}
 
