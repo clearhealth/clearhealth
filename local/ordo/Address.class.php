@@ -112,6 +112,9 @@ class Address extends ORDataObject {
 		return $list;
 	}
 
+	function factory_address() {
+	}
+
 
     /**#@+
     *	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
