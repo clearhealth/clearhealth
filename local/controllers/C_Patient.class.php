@@ -91,6 +91,7 @@ class C_Patient extends Controller {
 			$this->assign('formList',$formList);
 
 			$this->assign('ENCOUNTER_ACTION',Cellini::link('encounter'));
+			$this->assign('ACCOUNT_ACTION',Cellini::link('history','account',true,$this->get("patient_id")));
 			$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
 			$this->assign('NO_PATIENT', false);			
