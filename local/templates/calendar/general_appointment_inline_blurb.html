@@ -28,7 +28,7 @@
 					<a href="{$EVENT_DELETE_ACTION}id={$ev.occurence_id}&object=occurence&process=1">del</a>, 
 					<a href="{$UPDATE_SCHEDULE_ACTION}id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, 
 					<a href="{$UPDATE_SCHEDULE_ACTION}id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">can</a>,
-					<a href="{link action="encounter" controller="Patient" defaultArg="0"}occurence_id={$ev.occurence_id}">enc</a>
+					<a href="{link action="encounter" controller="Patient" defaultArg="0"}occurence_id={$ev.occurence_id}&patient_id={$ev.person_id}">enc</a>
 					{/if}
 				{else}
 					<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.schedule_code}</a> 
