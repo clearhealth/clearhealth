@@ -90,7 +90,7 @@ class ClearhealthClaim extends ORDataObject {
 		$labels = array('identifier' => 'Id','date_of_treatment' => 'Date', 'total_billed' => 'Billed','total_paid' => 'Paid', 'balance'=>'Balance');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "identifier, date_of_treatment, total_billed, total_paid, (total_billed - total_paid) as balance",
+				'cols' 	=> "claim_id, identifier, date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, total_billed, total_paid, (total_billed - total_paid) as balance",
 				'from' 	=> "$this->_table inner join encounter as e using (encounter_id)",
 				'where' => " e.patient_id = $patient_id"
 			),

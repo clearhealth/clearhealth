@@ -450,7 +450,7 @@ class C_Patient extends Controller {
 		}
 
 		// generate a claim identifier from patient and encounter info
-		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'_'.$encounter->get('id');
+		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'-'.$encounter->get('id');
 
 		// open the claim
 		if (!$freeb2->openClaim($claim_identifier)) {
@@ -458,7 +458,6 @@ class C_Patient extends Controller {
 		}
 		
 		// add claimlines
-		// fixme: put an amount here
 		foreach($codes as $parent => $data) {
 			$claimline = array();
 			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
