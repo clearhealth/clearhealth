@@ -104,6 +104,7 @@ class Encounter extends ORDataObject {
 			),
 			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'/*,'encounter_id' => "Encounter Id"*/));
 
+		$ds->orderHints['building'] = 'b.name';
 		$ds->registerFilter('encounter_reason',array(&$this,'lookupEncounterReason'));
 		//echo $ds->preview();
 		return $ds;
