@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 28, 2005 at 03:00 PM
+-- Generation Time: Mar 28, 2005 at 05:46 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -2654,6 +2654,7 @@ INSERT INTO `coding_data` VALUES (8189, 8184, 26759, 3, 1, 1.00, 0.00);
 INSERT INTO `coding_data` VALUES (8213, 8184, 26761, 134, 1, 1.00, 45.00);
 INSERT INTO `coding_data` VALUES (8212, 8184, 26761, 1, 1, 1.00, 45.00);
 INSERT INTO `coding_data` VALUES (8215, 8214, 26761, 3, 1, 1.00, 45.00);
+INSERT INTO `coding_data` VALUES (17043, 17034, 26751, 13, 1, 1.00, 0.00);
 
 -- --------------------------------------------------------
 
@@ -3093,6 +3094,8 @@ INSERT INTO `encounter` VALUES (8165, 1, 1707, 1123, '2005-03-18 00:00:00', 1120
 INSERT INTO `encounter` VALUES (8184, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (8214, 1, 1707, 1123, '2005-03-20 00:00:00', 1110, '00000000000000', 0, 'closed', 0);
 INSERT INTO `encounter` VALUES (17023, 1, 12491, 1123, '2005-03-21 00:00:00', 1110, '00000000000000', 0, 'open', 0);
+INSERT INTO `encounter` VALUES (17034, 1, 16271, 1123, '2005-03-28 00:00:00', 1110, '00000000000000', 0, 'open', 0);
+INSERT INTO `encounter` VALUES (17035, 1, 16271, 1123, '2005-03-28 00:00:00', 1110, '00000000000000', 0, 'open', 0);
 
 -- --------------------------------------------------------
 
@@ -3456,7 +3459,7 @@ CREATE TABLE `fee_schedule` (
 
 INSERT INTO `fee_schedule` VALUES (2053, 'test', 'test', 'test', 2);
 INSERT INTO `fee_schedule` VALUES (17029, 'test2', 'Another Testing Fee Schedule', 'blah', 2);
-INSERT INTO `fee_schedule` VALUES (17030, 'medicare_cal', 'Medicare-cal', '', 2);
+INSERT INTO `fee_schedule` VALUES (17030, 'medicare_cal', 'Medicare-cal', '', 1);
 
 -- --------------------------------------------------------
 
@@ -3615,10 +3618,13 @@ CREATE TABLE `gacl_acl` (
 -- Dumping data for table `gacl_acl`
 -- 
 
-INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', '', 1110310784);
-INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', '', 1110310727);
-INSERT INTO `gacl_acl` VALUES (27, 'user', 1, 1, '', '', 1110340743);
-INSERT INTO `gacl_acl` VALUES (28, 'user', 1, 1, '', '', 1110342647);
+INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', 'Give Superadmn and Supervisors access to everything', 1112056945);
+INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', 'Give Super Admin and Supervisor access to everything even when no resource is selected', 1112056973);
+INSERT INTO `gacl_acl` VALUES (30, 'user', 1, 1, '', 'Give Calendar users and Supervisors access to basic calendar functions', 1112057001);
+INSERT INTO `gacl_acl` VALUES (29, 'user', 0, 1, '', 'Deny Supervisors access to some system wide configuration sections', 1112057023);
+INSERT INTO `gacl_acl` VALUES (31, 'user', 1, 1, '', 'Give Calendar supervisors the ability to double book', 1112057044);
+INSERT INTO `gacl_acl` VALUES (32, 'user', 1, 1, '', 'Give billing users basic access to those sections', 1112057123);
+INSERT INTO `gacl_acl` VALUES (33, 'user', 1, 1, '', 'Give all users of the system access to basic app sections', 1112057091);
 
 -- --------------------------------------------------------
 
@@ -3660,8 +3666,8 @@ CREATE TABLE `gacl_acl_seq` (
 -- Dumping data for table `gacl_acl_seq`
 -- 
 
-INSERT INTO `gacl_acl_seq` VALUES (28);
-INSERT INTO `gacl_acl_seq` VALUES (28);
+INSERT INTO `gacl_acl_seq` VALUES (34);
+INSERT INTO `gacl_acl_seq` VALUES (34);
 
 -- --------------------------------------------------------
 
@@ -3694,6 +3700,7 @@ INSERT INTO `gacl_aco` VALUES (16, 'actions', 'usage', 9, 'usage', 0);
 INSERT INTO `gacl_aco` VALUES (17, 'actions', 'uploadFile', 14, 'Upload A file', 0);
 INSERT INTO `gacl_aco` VALUES (18, 'actions', 'delete_owner', 15, 'Delete Owner', 0);
 INSERT INTO `gacl_aco` VALUES (19, 'actions', 'edit_owner', 16, 'Edit Owner', 0);
+INSERT INTO `gacl_aco` VALUES (20, 'actions', 'double_book', 17, 'Double Book Apointment', 0);
 
 -- --------------------------------------------------------
 
@@ -3715,13 +3722,35 @@ CREATE TABLE `gacl_aco_map` (
 
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'add');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'delete_owner');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'edit_owner');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'uploadFile');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'usage');
 INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'edit_owner');
 INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'uploadFile');
-INSERT INTO `gacl_aco_map` VALUES (27, 'actions', 'delete_owner');
-INSERT INTO `gacl_aco_map` VALUES (28, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (29, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (29, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (30, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (30, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (30, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (30, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (30, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (31, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'view');
 
 -- --------------------------------------------------------
 
@@ -3780,8 +3809,8 @@ CREATE TABLE `gacl_aco_seq` (
 -- Dumping data for table `gacl_aco_seq`
 -- 
 
-INSERT INTO `gacl_aco_seq` VALUES (19);
-INSERT INTO `gacl_aco_seq` VALUES (19);
+INSERT INTO `gacl_aco_seq` VALUES (20);
+INSERT INTO `gacl_aco_seq` VALUES (20);
 
 -- --------------------------------------------------------
 
@@ -3807,9 +3836,7 @@ CREATE TABLE `gacl_aro` (
 -- 
 
 INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
-INSERT INTO `gacl_aro` VALUES (23, 'users', 'jeichorn', 100, 'jeichorn', 1);
-INSERT INTO `gacl_aro` VALUES (24, 'users', 'jconrad', 100, 'jconrad', 1);
-INSERT INTO `gacl_aro` VALUES (25, 'users', 'mminton', 100, 'mminton', 1);
+INSERT INTO `gacl_aro` VALUES (26, 'users', 'jconrad', 1111, 'jconrad', 1);
 
 -- --------------------------------------------------------
 
@@ -3835,8 +3862,17 @@ CREATE TABLE `gacl_aro_groups` (
 -- Dumping data for table `gacl_aro_groups`
 -- 
 
-INSERT INTO `gacl_aro_groups` VALUES (10, 0, 1, 4, 'Root', 'root');
-INSERT INTO `gacl_aro_groups` VALUES (12, 10, 2, 3, 'System Admin', 'admin');
+INSERT INTO `gacl_aro_groups` VALUES (10, 0, 1, 22, 'Root', 'root');
+INSERT INTO `gacl_aro_groups` VALUES (12, 23, 11, 12, 'System Admin', 'admin');
+INSERT INTO `gacl_aro_groups` VALUES (19, 10, 2, 9, 'User Types', 'users');
+INSERT INTO `gacl_aro_groups` VALUES (20, 19, 3, 4, 'Provider', 'provider');
+INSERT INTO `gacl_aro_groups` VALUES (21, 19, 5, 6, 'Mid-level', 'mid-level');
+INSERT INTO `gacl_aro_groups` VALUES (22, 19, 7, 8, 'Staff', 'staff');
+INSERT INTO `gacl_aro_groups` VALUES (23, 10, 10, 21, 'Roles', 'roles');
+INSERT INTO `gacl_aro_groups` VALUES (24, 23, 13, 14, 'Supervisor', 'supervisor');
+INSERT INTO `gacl_aro_groups` VALUES (26, 23, 15, 16, 'Calendar Supervisor', 'calendar_supervisor');
+INSERT INTO `gacl_aro_groups` VALUES (27, 23, 17, 18, 'Calendar User', 'calendar_user');
+INSERT INTO `gacl_aro_groups` VALUES (28, 23, 19, 20, 'Billing User', 'billing_user');
 
 -- --------------------------------------------------------
 
@@ -3853,8 +3889,8 @@ CREATE TABLE `gacl_aro_groups_id_seq` (
 -- Dumping data for table `gacl_aro_groups_id_seq`
 -- 
 
-INSERT INTO `gacl_aro_groups_id_seq` VALUES (17);
-INSERT INTO `gacl_aro_groups_id_seq` VALUES (17);
+INSERT INTO `gacl_aro_groups_id_seq` VALUES (28);
+INSERT INTO `gacl_aro_groups_id_seq` VALUES (28);
 
 -- --------------------------------------------------------
 
@@ -3874,9 +3910,17 @@ CREATE TABLE `gacl_aro_groups_map` (
 -- 
 
 INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (24, 24);
 INSERT INTO `gacl_aro_groups_map` VALUES (26, 12);
-INSERT INTO `gacl_aro_groups_map` VALUES (27, 12);
-INSERT INTO `gacl_aro_groups_map` VALUES (28, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (26, 24);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 24);
+INSERT INTO `gacl_aro_groups_map` VALUES (30, 26);
+INSERT INTO `gacl_aro_groups_map` VALUES (30, 27);
+INSERT INTO `gacl_aro_groups_map` VALUES (31, 26);
+INSERT INTO `gacl_aro_groups_map` VALUES (32, 28);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 22);
 
 -- --------------------------------------------------------
 
@@ -3954,8 +3998,8 @@ CREATE TABLE `gacl_aro_seq` (
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (25);
-INSERT INTO `gacl_aro_seq` VALUES (25);
+INSERT INTO `gacl_aro_seq` VALUES (26);
+INSERT INTO `gacl_aro_seq` VALUES (26);
 
 -- --------------------------------------------------------
 
@@ -4006,6 +4050,10 @@ INSERT INTO `gacl_axo` VALUES (54, 'resources', 'event', 10, 'Section - Event', 
 INSERT INTO `gacl_axo` VALUES (55, 'resources', 'occurence', 10, 'Section - Occurence', 0);
 INSERT INTO `gacl_axo` VALUES (56, 'resources', 'building', 10, 'Building', 0);
 INSERT INTO `gacl_axo` VALUES (57, 'resources', 'room', 10, 'room', 0);
+INSERT INTO `gacl_axo` VALUES (58, 'resources', 'pdf', 10, 'Section - PDF', 0);
+INSERT INTO `gacl_axo` VALUES (59, 'resources', 'coding', 10, 'Section - Coding', 0);
+INSERT INTO `gacl_axo` VALUES (60, 'resources', 'docs', 10, 'Section - Docs', 0);
+INSERT INTO `gacl_axo` VALUES (61, 'resources', 'eob', 10, 'Section - Eob', 0);
 
 -- --------------------------------------------------------
 
@@ -4069,8 +4117,6 @@ CREATE TABLE `gacl_axo_groups_map` (
 -- 
 
 INSERT INTO `gacl_axo_groups_map` VALUES (24, 11);
-INSERT INTO `gacl_axo_groups_map` VALUES (27, 11);
-INSERT INTO `gacl_axo_groups_map` VALUES (28, 11);
 
 -- --------------------------------------------------------
 
@@ -4090,6 +4136,24 @@ CREATE TABLE `gacl_axo_map` (
 -- Dumping data for table `gacl_axo_map`
 -- 
 
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'documentcategory');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'enumeration');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'feeschedule');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'form');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'report');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'superbill');
+INSERT INTO `gacl_axo_map` VALUES (29, 'resources', 'user');
+INSERT INTO `gacl_axo_map` VALUES (30, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (31, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'billing');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'document');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'eob');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'access');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'default');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'docs');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'pdf');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'preferences');
 
 -- --------------------------------------------------------
 
@@ -4130,7 +4194,7 @@ CREATE TABLE `gacl_axo_sections_seq` (
 -- Dumping data for table `gacl_axo_sections_seq`
 -- 
 
-INSERT INTO `gacl_axo_sections_seq` VALUES (20);
+INSERT INTO `gacl_axo_sections_seq` VALUES (21);
 
 -- --------------------------------------------------------
 
@@ -4147,7 +4211,7 @@ CREATE TABLE `gacl_axo_seq` (
 -- Dumping data for table `gacl_axo_seq`
 -- 
 
-INSERT INTO `gacl_axo_seq` VALUES (57);
+INSERT INTO `gacl_axo_seq` VALUES (61);
 
 -- --------------------------------------------------------
 
@@ -4167,6 +4231,7 @@ CREATE TABLE `gacl_groups_aro_map` (
 -- 
 
 INSERT INTO `gacl_groups_aro_map` VALUES (12, 15);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 26);
 
 -- --------------------------------------------------------
 
@@ -4212,6 +4277,10 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 54);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 55);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 56);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 57);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 58);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 59);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 60);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 61);
 
 -- --------------------------------------------------------
 
@@ -4315,12 +4384,12 @@ CREATE TABLE `insurance_program` (
 -- Dumping data for table `insurance_program`
 -- 
 
-INSERT INTO `insurance_program` VALUES (1114, 2, 1113, 'Professional Care', 0);
+INSERT INTO `insurance_program` VALUES (1114, 1, 1113, 'Professional Care', 2053);
 INSERT INTO `insurance_program` VALUES (2050, 1, 2049, 'Health America', 0);
 INSERT INTO `insurance_program` VALUES (8463, 1, 8462, 'test', 0);
 INSERT INTO `insurance_program` VALUES (8504, 1, 8503, 'CHDP', 0);
 INSERT INTO `insurance_program` VALUES (8505, 1, 8503, 'EAPC', 0);
-INSERT INTO `insurance_program` VALUES (8518, 1, 1113, 'Another Program', 8519);
+INSERT INTO `insurance_program` VALUES (8518, 1, 1113, 'Another Program', 17030);
 
 -- --------------------------------------------------------
 
@@ -4353,6 +4422,7 @@ INSERT INTO `insured_relationship` VALUES (2048, 1114, 1110, 0, 0, 35.00, 0, '12
 INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '345545', '2345534', 0, 0);
 INSERT INTO `insured_relationship` VALUES (8045, 2050, 1707, 1707, 1, 13.00, 0, 'ABC', '111-AB4567', 0, 2);
 INSERT INTO `insured_relationship` VALUES (8049, 1114, 1707, 1707, 1, 45.00, 0, '456', 'blah blah', 0, 3);
+INSERT INTO `insured_relationship` VALUES (17036, 8518, 16271, 16271, 1, 15.00, 0, 'test123', '1234', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -16325,6 +16395,16 @@ INSERT INTO `ownership` VALUES (17030, 1);
 INSERT INTO `ownership` VALUES (17031, 1);
 INSERT INTO `ownership` VALUES (17032, 1);
 INSERT INTO `ownership` VALUES (17033, 1);
+INSERT INTO `ownership` VALUES (17034, 1);
+INSERT INTO `ownership` VALUES (17035, 1);
+INSERT INTO `ownership` VALUES (17036, 1);
+INSERT INTO `ownership` VALUES (17037, 1);
+INSERT INTO `ownership` VALUES (17038, 1);
+INSERT INTO `ownership` VALUES (17039, 1);
+INSERT INTO `ownership` VALUES (17040, 1);
+INSERT INTO `ownership` VALUES (17041, 1);
+INSERT INTO `ownership` VALUES (17042, 1);
+INSERT INTO `ownership` VALUES (17043, 1);
 
 -- --------------------------------------------------------
 
@@ -18742,6 +18822,7 @@ INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (8067, 1, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (17022, 0, 0, 0, 0, 0);
 INSERT INTO `patient_statistics` VALUES (17032, 0, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (17037, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -28672,7 +28753,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (17033);
+INSERT INTO `sequences` VALUES (17043);
 
 -- --------------------------------------------------------
 
