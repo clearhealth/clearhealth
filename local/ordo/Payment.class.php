@@ -103,10 +103,38 @@ class Payment extends ORDataObject {
 			),
 			$labels
 		);
-
 		$ds->registerFilter('payment_type',array(&$this,'lookupPaymentType'));
 		return $ds;
 	}
+	
+	/**
+	 * Get datasource for payments from the db for a specific encounter
+	 */
+	function paymentsFromEncounterId($foreign_id,$extraCols = false) {
+		settype($foreign_id,'int');
+		
+
+		$ds =& new Datasource_sql();
+
+		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
+		if ($extraCols) {
+			$labels['writeoff'] = "Write Off";
+			$labels['payer_id'] = "Payer";
+			$ds->registerFilter('payer_id',array(&$this,'lookupPayer'));
+		}
+
+		$ds->setup($this->_db,array(
+				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
+				'from' 	=> "$this->_table ",
+				'where' => " encounter_id = $foreign_id"
+			),
+			$labels
+		);
+		$ds->registerFilter('payment_type',array(&$this,'lookupPaymentType'));
+		return $ds;
+	}
+	
+	
 	
 	/**#@+
 	 * Enumeration getters
