@@ -31,6 +31,7 @@ class Patient extends MergeDecorator {
 	 */
 	var $person;
 	var $record_number = "";
+	var $employer_name = "";
 
 
 	/**
