@@ -89,7 +89,7 @@ class EncounterDate extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "encounter_date_id, `date`, date_type",
+				'cols' 	=> "encounter_date_id, date_format(`date`,'%Y-%m-%d') `date`, date_type",
 				'from' 	=> "$this->_table ",
 				'where' => " encounter_id = $encounter_id"
 			),
