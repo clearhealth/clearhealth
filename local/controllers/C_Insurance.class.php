@@ -24,17 +24,21 @@ class C_Insurance extends Controller {
 		$company =& ORdataObject::factory('Company',$company_id);
 		$number =& ORDataObject::factory('CompanyNumber',$this->number_id,$company_id);
 		$address =& ORDataObject::factory('CompanyAddress',$this->address_id,$company_id);
+		
 
 		$insuranceProgram =& ORDataObject::factory('InsuranceProgram',$this->insurance_program_id);
 		$ds =& $insuranceProgram->detailedProgramList($company_id);
 		$ds->registerTemplate('name','<a href="'.Cellini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
 		$insuranceProgramGrid =& new cGrid($ds);
+		
+		$feeSchedule =& ORDataObject::factory('FeeSchedule',$insuranceProgram->get("fee_schedule_id"));
 
 		$this->assign_by_ref('company',$company);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 		$this->assign_by_ref('insuranceProgramGrid',$insuranceProgramGrid);
+		$this->assign_by_ref('feeSchedule',$feeSchedule);
 
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$company_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$company_id));

@@ -64,6 +64,15 @@ class FeeSchedule extends ORDataObject {
 			array('label' => 'Name','description'=> 'Description'));
 		return $ds;
 	}
+	
+	/**
+	 * Return an array suitable for populating a drop down
+	 */
+	function toArray() {
+		$ar = $this->listFeeSchedules();
+		return $ar->toArray("fee_schedule_id","label");
+		
+	}
 
 	/**
 	 * Populate the class from the db

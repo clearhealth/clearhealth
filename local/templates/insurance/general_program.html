@@ -19,6 +19,13 @@
 			</td>
 		</tr>
 		<tr>
+			<td><label>Fee Schedule:</label></td>
+			<td><select name="insuranceProgram[fee_schedule_id]">
+					{html_options options=$feeSchedule->toArray() selected=$insuranceProgram->get('fee_schedule_id')}
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td></td>
 			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program">
 				{if $insuranceProgram->get('id') > 0}

@@ -26,6 +26,7 @@ class InsuranceProgram extends ORDataObject {
 	var $payer_type		= '';
 	var $company_id		= '';
 	var $name		= '';
+	var $fee_schedule_id = "";
 	/**#@-*/
 
 
@@ -100,7 +101,7 @@ class InsuranceProgram extends ORDataObject {
 	}
 
 	function programList() {
-		$sql = "select insurance_program_id, concat_ws('->',c.name,ip.name) as name from $this->_table ip inner join company c using(company_id) ";
+		$sql = "select insurance_program_id, concat_ws('->',c.name,ip.name) as name from $this->_table ip inner join company c using(company_id)";
 		$res = $this->_execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
@@ -115,11 +116,11 @@ class InsuranceProgram extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "name, payer_type, insurance_program_id",
-				'from' 	=> "$this->_table",
+				'cols' 	=> "ip.name, payer_type, fsd.label as fee_schedule_name, insurance_program_id",
+				'from' 	=> "$this->_table ip left join fee_schedule fsd using (fee_schedule_id)",
 				'where' => " company_id = $company_id"
 			),
-			array('name' => 'Program Name','payer_type' => 'Payer Type'));
+			array('name' => 'Program Name','payer_type' => 'Payer Type', 'fee_schedule_name' => 'Fee Schedule'));
 
 		$ds->registerFilter('payer_type',array(&$this,'lookupPayerType'));
 		return $ds;
