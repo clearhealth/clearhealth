@@ -38,7 +38,9 @@
             	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
             		<input type="submit" name="encounter[close]" value="Close">
             	{elseif $encounter->get('status') == 'closed'}
-            		<a href="{php}echo Cellini::link("sendclaim","billing");{/php}encounter_id={$encounter->get("encounter_id")}">jump to claim</a>
+		{*<a href="{php}echo Cellini::link("sendclaim","billing");{/php}encounter_id={$encounter->get("encounter_id")}">jump to claim</a>*}
+			<a href="{$PAYMENT_ACTION}">Make a Payment</a>
+			<a href="{$FREEB_ACTION}">View Claim</a>
         		{else}
             		open
             	{/if}
