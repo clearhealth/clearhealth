@@ -73,6 +73,23 @@ class FormData extends ORDataObject {
 		return $ds;
 	}
 
+	/**
+	 * Get a ds with data for an external_id
+	 */
+	function &dataListByExternalId($external_id) {
+		settype($patient_id,'int');
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,array(
+				'cols' 	=> "last_edit, f.name, form_data_id, external_id",
+				'from' 	=> "$this->_table d inner join form f using(form_id)",
+				'orderby' => 'f.name',
+				'where' => "external_id = $external_id"
+			),
+			array('name' => 'Form Name','last_edit'=>'Last Edit'));
+		return $ds;
+	}
+
+
 	/**#@+
 	 * Getters and Setters for Table: form_data
 	 */

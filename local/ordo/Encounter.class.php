@@ -48,7 +48,10 @@ class Encounter extends ORDataObject {
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Encounter with this
 	 */
-	function setup($id = 0) {
+	function setup($id = 0,$patient_id=0) {
+		if ($patient_id > 0) {
+			$this->set('patient_id',$patient_id);
+		}
 		if ($id > 0) {
 			$this->set('id',$id);
 			$this->populate();
@@ -82,5 +85,21 @@ class Encounter extends ORDataObject {
 	}
 
 	/**#@-*/
+
+	
+	function encounterList($patient_id) {
+		settype($patient_id,'int');
+
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,array(
+				'cols' 	=> "date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
+				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
+				'where' => " patient_id = $patient_id"
+			),
+			array('data_of_treatment' => 'Data of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'));
+
+		$ds->registerFilter('encounter_reason',array(&$this,'lookupEncounterReason'));
+		return $ds;
+	}
 }
 ?>

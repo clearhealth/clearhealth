@@ -117,6 +117,7 @@ class C_Form extends Controller {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
+			$data->set('external_id',$this->get('patient_id','c_patient'));
 			$data->set('last_edit',date('Y-m-d H:i:s'));
 			$data->persist();
 			$this->messages->addMessage('Form Updated');
@@ -131,6 +132,22 @@ class C_Form extends Controller {
 		$this->Assign_by_ref('form',$form);
 
 		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_data.html"));
+	}
+
+	/**
+	* Connect a report to the menu all reports
+	*/
+	function connect_action_edit() {
+		$this->assign("FORM_ACTION", Cellini::link('connect'));
+		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
+
+		$menu = Menu::getInstance();
+		$this->assign_by_ref('menu',$menu);
+
+		$form =& ORDataObject::factory('Form');
+		$this->assign_by_ref('form',$form);
+
+		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_connect.html"));
 	}
 
 }

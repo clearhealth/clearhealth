@@ -17,6 +17,13 @@ body {
 	font-weight: bold;
 }
 
+#selectedItem {
+	position: relative;
+	left: 110%;
+	top: -16pt;
+	font-size: 12pt;
+}
+
 #header {
 	background-color: #ccc;
 	position: relative;
@@ -145,3 +152,4 @@ table td label {
 table td label.inline {
 	display: inline;
 }
+

@@ -24,6 +24,10 @@
 	        </tr>
 				<td><label class="inline">{l}Gender{/l}:</label>{$person->get('print_gender')}&nbsp;&nbsp;DOB: {$person->get('date_of_birth')}</td>
 			</tr>
+			<tr>
+				<td><a href="{$EDIT_ACTION}">Edit</a></td>
+				<td></td>
+			</tr>
 	        </tbody>
 		</table>
 	
@@ -85,11 +89,25 @@
 			<p>Patient has no Insurers Assigned</p>
 		{/if}
 	</fieldset>
-	<fieldset class="radio" id="address">
+	<fieldset class="radio" id="encounters">
 		<legend>Encounters {clni_section_links name="encounters"}</legend>
+		{$encounterGrid->render()}
+		{if $encounterGrid->empty}
+			<p>Patient has no Encounters</p>
+		{/if}
+		<p><a href="{$ENCOUNTER_ACTION}">Add Encounter</a></p>
 	</fieldset>
-	<fieldset class="radio" id="address">
+	<fieldset class="radio" id="forms">
 		<legend>Forms {clni_section_links name="forms"}</legend>
+		{$formDataGrid->render()}
+		{if $formDataGrid->empty}
+		<p>Patient has no completed forms</p>
+		{/if}
+		<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value; {literal}}{/literal}">
+					<option value="0"></option>
+					{html_options options=$formList}
+				</select>
+				</p>
 	</fieldset>
 	<fieldset class="radio" id="address">
 		<legend>Reports {clni_section_links name="reports"}</legend>

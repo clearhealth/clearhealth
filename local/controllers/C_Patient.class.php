@@ -24,10 +24,6 @@ class C_Patient extends Controller {
 	 *
 	 */
 	function dashboard_action($patient_id = "") {
-		if (isset($_SESSION['clearhealth']['active_user']) && $_SESSION['clearhealth']['active_user'] > 0) {
-
-		}
-		
 		if (is_numeric($patient_id) && $patient_id > 0) {
 			$this->set("patient_id",$patient_id);	
 		} 
@@ -38,12 +34,39 @@ class C_Patient extends Controller {
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
 			$insuredRelationshipGrid =& new cGrid($p->insuredRelationshipList());
+
+			$encounter =& ORDataObject::factory("Encounter");
+			$encounterGrid =& new cGrid($encounter->encounterList($this->get('patient_id')));
+			$encounterGrid->pageSize = 10;
+
+			$formData =& ORDataObject::factory("FormData");
+			$formDataGrid =& new cGrid($formData->dataListByExternalId($this->get('patient_id')));
+			$formDataGrid->pageSize = 10;
+
+			$menu = Menu::getInstance();
+			$tmp = $menu->getMenuData('patient',90);
+
+			$formList = array();
+			if (isset($tmp['forms'])) {
+				foreach($tmp['forms'] as $form) {
+					$formList[$form['form_id']] = $form['title'];
+				}	
+			}
+			
 			
 			$this->assign_by_ref("person",$p);
 			$this->assign_by_ref('number',$number);
 			$this->assign_by_ref('address',$address);
 			$this->assign_by_ref('insuredRelationship',$insuredRelationship);
 			$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
+			$this->assign_by_ref('encounterGrid',$encounterGrid);
+			$this->assign_by_ref('formDataGrid',$formDataGrid);
+
+			$this->assign('formList',$formList);
+
+			$this->assign('ENCOUNTER_ACTION',Cellini::link('encounter'));
+			$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
+			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
 			
 		}
 		else {
@@ -61,6 +84,8 @@ class C_Patient extends Controller {
 		if (isset($this->patient_id)) {
 			$patient_id = $this->patient_id;
 		}
+
+		$this->set('patient_id',$patient_id);
 
 		$person =& ORdataObject::factory('Patient',$patient_id);
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
@@ -113,7 +138,7 @@ class C_Patient extends Controller {
 		$person =& ORDataObject::factory('Patient');
 
 		$ds =& $person->patientList();
-		$ds->template['name'] = "<a href='".Cellini::link('edit')."id={\$person_id}'>{\$name}</a>";
+		$ds->template['name'] = "<a href='".Cellini::link('dashboard')."id={\$person_id}'>{\$name}</a>";
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);

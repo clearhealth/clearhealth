@@ -67,6 +67,12 @@ a {
 		<a href="{$base_dir}index.php/main/PatientFinder/find" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
 		<a href="{$base_dir}index.php/main/billing/default" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;
 		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
+
+		<div id="selectedItem">
+			{if $selectedPatient}
+			Selected Patient: <b>{$selectedPatient->get('first_name')} {$selectedPatient->get('last_name')} #{$selectedPatient->get('record_number')}</b>
+			{/if}
+		</div>
 	</div>
 	{/if}
 	{include file="main/general_menu.html"}

@@ -64,10 +64,35 @@ class Form extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "f.form_id, f.name, f.description",
 				'from' 	=> "$this->_table f",
-				'orderby' => 'a.name',
+				'orderby' => 'f.name',
 			),
 			array('name'=>'Name','description'=>'Description'));
 		return $ds;
+	}
+
+	/**
+	 * Get a simple form list
+	 */
+	function simpleFormList($objects = false) {
+		$res = $this->_execute("select form_id, name from $this->_table order by name");
+
+		$ret = array();
+
+		while($res && !$res->EOF) {
+			if ($objects) {
+				unset($o);
+				$o = new stdClass();
+				foreach($res->fields as $key => $val) {
+					$o->$key = $val;
+				}
+				$ret[] = $o;
+			}
+			else {
+				$ret[$res->fields['form_id']] = $res->fields['name'];
+			}
+			$res->moveNext();
+		}
+		return $ret;
 	}
 
 	/**#@+

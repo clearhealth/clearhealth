@@ -1,4 +1,5 @@
 <?php
+// todo: reduce the number of classes were handling to decrease the size of the javascript were generating (doesn't matter all that much in the local server case)
 require_once "cellini/bootstrap.php";
 // Including this sets up the JPSPAN constant
 require_once CELLINI_ROOT . '/lib/jpspan/JPSpan.php';
@@ -14,6 +15,8 @@ require_once APP_ROOT. '/local/includes/SuperbillDatasource.class.php';
 require_once APP_ROOT. '/local/includes/CodingDatasource.class.php';
 require_once APP_ROOT. '/local/ordo/Report.class.php';
 require_once APP_ROOT. '/local/ordo/MenuReport.class.php';
+require_once APP_ROOT. '/local/ordo/Form.class.php';
+require_once APP_ROOT. '/local/ordo/MenuForm.class.php';
 
 // Create the PostOffice server
 $S = & new JPSpan_Server_PostOffice();
@@ -33,8 +36,13 @@ $S->addHandler(new FeeScheduleDatasource());
 $S->addHandler(new SuperbillDatasource());
 $S->addHandler(new IcdCodingDatasource());
 $S->addHandler(new CptCodingDatasource());
+
+// used by C_Report connect action
 $S->addHandler(new Report());
 $S->addHandler(new MenuReport());
+
+// used by C_Form connect action
+$S->addHandler(new MenuForm());
 
 
 
