@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 08, 2005 at 03:24 PM
+-- Generation Time: Mar 08, 2005 at 03:28 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -1542,7 +1542,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=62 ;
+) TYPE=InnoDB AUTO_INCREMENT=63 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1589,6 +1589,7 @@ INSERT INTO `menu` VALUES (41, 'billing', 1, '', 'children', 10, 'dashboard', 'b
 INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', 'Billing/reports');
 INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 300, 'Reports', 'Calendar/Reports');
 INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', 'Patient/reports');
+INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 50, 'Billing', '');
 INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 500, 'My Account', '');
 INSERT INTO `menu` VALUES (47, 'patient', 46, '', 'children', 100, 'Logout', 'Access/logout');
 INSERT INTO `menu` VALUES (48, 'patient', 46, '', 'children', 10, 'Preferences', 'Preferences/list');
