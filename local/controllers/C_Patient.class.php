@@ -398,7 +398,11 @@ class C_Patient extends Controller {
 		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
 		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
 		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
-
+		$payment =& ORDataObject::factory('Payment');
+		$payment_ds = $payment->paymentsFromEncounterId($encounter->get('id'));
+		$payment_ds->clearFilters();
+		$payments = $payment_ds->toArray();
+		
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
 
@@ -406,6 +410,14 @@ class C_Patient extends Controller {
 		$claim =& ORDataObject::Factory('ClearhealthClaim');
 		$claim->set('encounter_id',$encounter->get('id'));
 		$claim->persist();
+		
+		//set the existing payments on the encounter to be part of this claim
+		foreach ($payments as $payment_info) {
+			$pmnt = ORDataObject::factory("Payment");
+			$pmnt->populate_array($payment_info);
+			$pmnt->set("foreign_id",$claim->get("claim_id"));
+			$pmnt->persist();
+		}
 
 		// generate a claim identifier from patient and encounter info
 		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'_'.$encounter->get('id');
@@ -427,7 +439,7 @@ class C_Patient extends Controller {
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
-			$cliamline['amount'] = 1;
+			$cliamline['amount'] = $data['fee'];
 			$claimline['diagnoses'] = array();
 			
 
@@ -439,7 +451,6 @@ class C_Patient extends Controller {
 				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
 			}
 		}
-		
 
 		// register patient data
 		$patientData = $this->_cleanDataArray($patient->toArray());
