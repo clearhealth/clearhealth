@@ -25,13 +25,14 @@ class InsuredRelationship extends ORDataObject {
 	var $id					= '';
 	var $insurance_program_id		= '';
 	var $person_id				= '';
-	var $subsciber_id			= '';
+	var $subscriber_id			= '';
 	var $subscriber_to_patient_relationship	= '';
 	var $copay				= '';
 	var $assigning				= '';
 	var $group_name				= '';
 	var $group_number			= '';
 	var $default_provider			= '';
+	var $program_order			= '';
 	/**#@-*/
 
 
@@ -85,6 +86,17 @@ class InsuredRelationship extends ORDataObject {
 		$this->id = $id;
 	}
 
+	/**
+	 * automatically sets person_id to the current patient when the relationship is Self
+	 * for this to work person_id has to be set befor the relationship
+	 */
+	function set_subscriber_to_patient_relationship($val) {
+		if ($this->lookupSubscriberRelationship($val) === "Self") {
+			$this->set('subscriber_id',$this->get('person_id'));
+		}
+		$this->subscriber_to_patient_relationship = $val;
+	}
+
 	/**#@-*/
 
 	function insuredRelationshipList($person_id) {
@@ -92,11 +104,12 @@ class InsuredRelationship extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "ir.insured_relationship_id, ir.insurance_program_id, group_name, group_number, copay, ip.name as program, c.name as company",
+				'cols' 	=> "ir.insured_relationship_id, ir.insurance_program_id, group_name, group_number, copay, ip.name as program, c.name as company, program_order, subscriber_to_patient_relationship subscriber_relationship",
 				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
 				'where' => " person_id = $person_id"
 			),
-			array('company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay'));
+			array('company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay', 'subscriber_relationship' => 'Subscriber'));
+		$ds->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
 		return $ds;
 	}
 
@@ -118,6 +131,19 @@ class InsuredRelationship extends ORDataObject {
 	function getSubscriberToPatientRelationshiplist() {
 		$list = $this->_load_enum('subscriber_to_patient_relationship',false);
 		return array_flip($list);
+	}
+
+	var $_Cache = false;
+	/**
+	 * Cached lookup for person_type
+	 */
+	function lookupSubscriberRelationship($id) {
+		if ($this->_Cache === false) {
+			$this->_Cache = $this->getSubscriberToPatientRelationshiplist();
+		}
+		if (isset($this->_Cache[$id])) {
+			return $this->_Cache[$id];
+		}
 	}
 }
 ?>

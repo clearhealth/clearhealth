@@ -112,6 +112,9 @@ class C_Patient extends Controller {
 
 		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
 		$insuredRelationshipGrid =& new cGrid($person->insuredRelationshipList());
+		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Cellini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
+
+		$subscriber =& ORDataObject::factory('Patient',$insuredRelationship->get('subscriber_id'));
 
 		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
@@ -134,6 +137,7 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('personPerson',$personPerson);
 		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->assign_by_ref('patientStatistics',$patientStatistics);
+		$this->assign_by_ref('subscriber',$subscriber);
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$patient_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$patient_id));
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));

@@ -106,6 +106,10 @@ class Patient extends MergeDecorator {
 		$this->id = $id;
 	}
 
+	function get_search_name() {
+		return $this->get('last_name').", ".$this->get('first_name')." #".$this->get('record_number');
+	}
+
 
 	/**
 	 * Setup employer relationship
@@ -164,6 +168,9 @@ class Patient extends MergeDecorator {
 	}
 	function &insuredRelationshipList() {
 		return $this->person->insuredRelationshipList();
+	}
+	function lookupType($id) {
+		return $this->person->lookupType($id);
 	}
 	/**#@-*/
 

@@ -1,26 +1,71 @@
 {literal}
 <script type="text/javascript">
+	var userEntered = false;
+	var first = true;
 	function selectSubscriber(select) {
-		if (select.options[select.selectedIndex] != "Self") {
+		if (select.options[select.selectedIndex].text == "Self") {
+			var section = document.getElementById('subscriber');
+			_disable(section);
+			section.style.display = 'none';
+		}
+		else {
 			document.getElementById('subscriber').style.display = "block";
+
+			if (!first) {
+				document.getElementById('rscn').checked = false;
+				document.getElementById('rscs').checked = true;
+				swapSubscriber('search');
+
+			}
+			else if (first) {
+				if (document.getElementById('rscn').checked) {
+					swapSubscriber('new');
+				}
+				if (document.getElementById('rscs').checked) {
+					swapSubscriber('search');
+				}
+			}
 		}
 	}
 
 	function swapSubscriber(type) {
-		document.getElementById('searchSubscriber').style.display = 'none';
-		document.getElementById('newSubscriber').style.display = 'none';
-		document.getElementById(type+'Subscriber').style.display = 'block';
+		_disable(document.getElementById('subscriber'));
+		_setDisabled(document.getElementById(type+'Subscriber'),'input',false);
+		_setDisabled(document.getElementById(type+'Subscriber'),'select',false);
+
+		if (!userEntered && !first) {
+			// clear values from new subscriber
+			inputs = document.getElementById('newSubscriber').getElementsByTagName('input');
+			for(var i = 0; i < inputs.length; i++) {
+				inputs[i].value = "";
+			}
+		}
+		first = false;
+	}
+
+	function _disable(section) {
+		_setDisabled(section,'input',true);
+		_setDisabled(section,'select',true);
+		document.getElementById('rscn').disabled = false;
+		document.getElementById('rscs').disabled = false;
+	}
+
+	function _setDisabled(el,tagName,value) {
+		var els = el.getElementsByTagName(tagName);
+		for(var i = 0; i < els.length; i++) {
+			els[i].disabled = value;
+		}
 	}
 
 
 </script>
 {/literal}
 	<fieldset class="radio" id="insurer">
-		<legend>Insurers</legend>
+		<legend>Payers</legend>
 
 		{$insuredRelationshipGrid->render()}
 		{if $insuredRelationshipGrid->empty}
-		<p>Patient has no Insurers Assigned</p>
+		<p>Patient has no Payers Assigned</p>
 		{/if}
 
 		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
@@ -51,7 +96,7 @@
 			</tr>
 			<tr>
 				<td><label>Subscriber:</label></td>
-				<td><select name="subscriber_to_patient_relationship" onchange="selectSubscriber(this)">
+				<td><select name="insuredRelationship[subscriber_to_patient_relationship]" onchange="selectSubscriber(this)" id="subscriberRelationship">
 					{html_options options=$insuredRelationship->getSubscriberToPatientRelationshipList() 
 						selected=$insuredRelationship->get('subscriber_to_patient_relationship')}
 					</select>
@@ -61,52 +106,59 @@
 				<td colspan="2">
 				<fieldset id="subscriber" style="display:none">
 					<legend>Subscriber</legend>
-					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" checked>
+					{assign var="subscriberIsAPatient" value=false}
+					{if $subscriber->lookupType($subscriber->get('type')) !== "Subscriber"}
+						{assign var="subscriberIsAPatient" value=true}
+					{/if}
+
+					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" {if $subscriberIsAPatient}checked{/if}>
 					<label class="inline" for="rscs">Select Current Patient</label>
 
-					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn">
-					<label class="inline" for="rscn">Enter New</label>
+					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn" {if !$subscriberIsAPatient}checked{/if}>
+					<label class="inline" for="rscn">{if $subscriberIsAPatient}New{else}Update{/if} Subscriber</label>
 					<div id="searchSubscriber">
-						<input type="hidden" name="searchSubscriber[person_id]" id="subscriber_id">
+						<input type="hidden" name="searchSubscriber[person_id]" id="subscriber_id" value="{$subscriber->get('id')}">
 						<table>
 							<tr>
 								<td><label>Search:</label></td>
 								<td>
-			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off">
+									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}>
 								</td>
 							</tr>
 						</table>
 					</div>
-					<div id="newSubscriber" style="display: none;">
+					{assign var=subscriberNumber value=$subscriber->numberByType('Home',true)}
+					{assign var=subscriberAddress value=$subscriber->address()}
+					<div id="newSubscriber">
+						<input name="newSubscriber[person_id]" type="hidden" value="{$subscriber->get('id')}">
 						<table>
 							<tr>
 								<td colspan=2><label>First Name:</label></td>
-								<td colspan=2><input name="newSubscriber[first_name]"></td>
+								<td colspan=2><input name="newSubscriber[first_name]" value="{$subscriber->get('first_name')}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
 								<td colspan=2><label>Last Name:</label></td>
-								<td colspan=2><input name="newSubscriber[last_name]"></td>
+								<td colspan=2><input name="newSubscriber[last_name]" value="{$subscriber->get('last_name')}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
 								<td colspan=2><label>Phone #:</label></td>
-								<td colspan=2><input name="newSubscriber[number]"></td>
+								<td colspan=2><input name="newSubscriber[number]" value="{$subscriberNumber}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
 								<td valign="top" colspan=2><label>Address:</label></td>
-								<td colspan=2><input name="newSubscriber[address1]" size=30><br>
-								<input name="newSubscriber[address2]" size=30>
+								<td colspan=2><input name="newSubscriber[line1]" size=30 value="{$subscriberAddress->get('line1')}" onChange="userEntered = true;"><br>
+									<input name="newSubscriber[line2]" size=30 value="{$subscriberAddress->get('line2')}" onChange="userEntered = true;">
 								</td>
 							</tr>
 							<tr>
 								<td><label>City:</label> </td>
-								<td><input name="newSubscriber[city]" size="15"></td>
+								<td><input name="newSubscriber[city]" size="15" value="{$subscriberAddress->get('city')}" onChange="userEntered = true;"></td>
 								<td>
-									<select name="newSubscriber[state]">
-									{html_options options=$address->getStateList()}
+									<select name="newSubscriber[state]" onChange="userEntered = true;">
+										{html_options options=$address->getStateList() selected=$subscriberAddress->get('state')}
 									</select>
 								</td>	
-								<td><label class="inline">Zip:</label> 
-								<input name="newSubscriber[postal_code]" size="10"></td>
+								<td><label class="inline">Zip:</label><input name="newSubscriber[postal_code]" size="10" value="{$subscriberAddress->get('postal_code')}" onChange="userEntered = true;"></td>
 						      </tr>
 					      </table>
 					</div>
@@ -116,13 +168,14 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Insurer"></td>
+				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Payer"></td>
 			</tr>
 		</table>
 	</fieldset>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
 					class="AutoCompleteBackground"></div></div>
 <script language="javascript" type="text/javascript">
+selectSubscriber(document.getElementById('subscriberRelationship'));
 var ac = new AutoComplete(
 	C_PatientFinder,
 	'subscriber_name',

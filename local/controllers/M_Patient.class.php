@@ -157,10 +157,27 @@ class M_Patient extends Manager {
 			$id = (int)$data['insured_relationship_id'];
 			$ir =& ORDataObject::factory('InsuredRelationship',$id,$patient_id);
 			$ir->populate_array($data);
+
+			if (isseT($_POST['searchSubscriber'])) {
+				$ir->set('subscriber_id',$_POST['searchSubscriber']['person_id']);
+			}
+			if (isset($_POST['newSubscriber'])) {
+				$person =& ORDataObject::factory('Person',$_POST['newSubscriber']['person_id']);
+				$person->set('type',$person->idFromType('Subscriber'));
+				$person->populate_array($_POST['newSubscriber']);
+				$person->persist();
+				$address =& $person->address();
+				$address->populate_array($_POST['newSubscriber']);
+				$address->persist();
+				$number =& $person->numberByType('Home');
+				$number->populate_array($_POST['newSubscriber']);
+				$number->persist();
+				$ir->set('subscriber_id',$person->get('id'));
+			}
 			$ir->persist();
 			$this->controller->insured_relationship_id = $ir->get('id');
 
-			$this->messages->addMessage('Insurer Updated');
+			$this->messages->addMessage('Payer Updated');
 		}
 	}
 
@@ -281,6 +298,13 @@ class M_Patient extends Manager {
 	 */
 	function process_editAddress($patient_id,$address_id) {
 		$this->controller->address_id = $address_id;
+	}
+
+	/**
+	 * Setup for editing an insured relatioship
+	 */
+	function process_editInsuredRelationship($patient_id,$insured_relationship_id) {
+		$this->controller->insured_relationship_id = $insured_relationship_id;
 	}
 
 	/**

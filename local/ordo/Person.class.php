@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -16,7 +16,7 @@ require_once CELLINI_ROOT.'/includes/Datasource_sql.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class Person extends ORDataObject {
 
@@ -468,6 +468,12 @@ class Person extends ORDataObject {
 		if (isset($this->_tCache[$id])) {
 			return $this->_tCache[$id];
 		}
+	}
+	function idFromType($type) {
+		if ($this->_tCache === false) {
+			$this->_tCache = $this->getTypeList();
+		}
+		return array_search($type,$this->_tCache);
 	}
 }
 ?>
