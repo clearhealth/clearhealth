@@ -27,4 +27,6 @@ $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 $config['translate']['freeb2'] = "/freeb2/index.php/";
 
 $config['menu']['attachReports'] = true;
+
+$config['app_name'] = "clearhealth";
 ?>
