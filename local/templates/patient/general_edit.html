@@ -32,21 +32,21 @@ function captureEnter (field, event) {
 			<tbody>
                         <tr>
                         <tr>
-				<td><label>First Name: </label></td>
+				<td><label>{l}First Name{/l}: </label></td>
 				<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
                         </tr>
 			<tr>
-				<td><label>Last Name: </label></td>
+				<td><label>{l}Last Name{/l}: </label></td>
 				<td colspan=2><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
 			</tr>
 			<tr>
-				<td><label>Record Number: </label></td>
+				<td><label>{l}Record Number{/l}: </label></td>
 				<td colspan="2"><input id="record_number" name="person[record_number]" size="20" value="{$person->get('record_number')}">
 				</td>
 			</tr>
 			<tr>
-				<td><label>Identifier: </label></td>
+				<td><label>{l}Identifier{/l}: </label></td>
 				<td colspan="2"><input id="identifier" name="person[identifier]" size="20" value="{$person->get('identifier')}">
 					<select name="person[identifier_type]">
 						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}

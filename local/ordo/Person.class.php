@@ -228,14 +228,28 @@ class Person extends ORDataObject {
 		return array_flip($list);
 	}
 
-	function getIdentifierTypeList() {
+	function getIdentifierTypeList($index = "") {
 		$list = $this->_load_enum('identifier_type',false);
 		return array_flip($list);
+	}
+	
+	function get_print_identifier_type() {
+		$list = array_flip($this->_load_enum('identifier_type',false));
+		if(isset($list[$this->get("identifier_type")])) {
+			return $list[$this->get("identifier_type")];
+		}
 	}
 
 	function getGenderList() {
 		$list = $this->_load_enum('gender',false);
 		return array_flip($list);
+	}
+	
+	function get_print_gender() {
+		$list = array_flip($this->_load_enum('gender',false));
+		if(isset($list[$this->get("gender")])) {
+			return $list[$this->get("gender")];
+		}
 	}
 
 	/**#@-*/
