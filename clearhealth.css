@@ -101,3 +101,15 @@ div.clear {
 .gridInput {
 	width: 30pt;
 }
+div#header.sectionCalendar {
+	background-color: #FFFFE6;
+}
+div#header.sectionPatient  {
+	background-color: #BFCFFF;
+}
+div#header.sectionBilling  {
+	background-color: #E6FFBF;
+}
+div#header.sectionAdministration  {
+	background-color: #FFDFBF;
+}

@@ -46,24 +46,20 @@ a {
 <link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
 {if $menu_group === "default"}
 	{assign var="section_name" value="Calendar"}
-	{assign var="bgcolor" value="#FFFFE6"}
 {/if}
 {if $menu_group === "patient"}
 	{assign var="section_name" value="Patient"}
-	{assign var="bgcolor" value="#BFCFFF"}
 {/if}
 {if $menu_group === "billing"}
 	{assign var="section_name" value="Billing"}
-	{assign var="bgcolor" value="#E6FFBF"}
 {/if}
 {if $menu_group === "admin"}
 	{assign var="section_name" value="Administration"}
-	{assign var="bgcolor" value="#FFDFBF"}
 {/if}
 <title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
 </head>
 <body>
-	<div id="header" style="background-color: {$bgcolor}">
+	<div id="header" class="section{$section_name}">
 	<h1>ClearHealth</h1>
 	{if $me->get_id() > 0}
 	<div id="sections">
