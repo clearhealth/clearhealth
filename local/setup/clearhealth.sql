@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 17, 2005 at 10:09 AM
+-- Generation Time: Mar 18, 2005 at 09:22 AM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 
@@ -42,6 +42,14 @@ CREATE TABLE `address` (
 -- 
 
 INSERT INTO `address` VALUES (1124, '', '1 main st.', '', '', 0, 0, 0, '', '');
+INSERT INTO `address` VALUES (8012, '', '1234 Some Street', '', 'Some City', 0, 0, 5, '12345', 'Some House');
+INSERT INTO `address` VALUES (8016, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8020, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8024, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8028, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8032, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8036, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
+INSERT INTO `address` VALUES (8040, '', '123 A Street', '', 'Los Angeles', 0, 0, 5, '90008', '');
 
 -- --------------------------------------------------------
 
@@ -644,6 +652,27 @@ CREATE TABLE `encounter_person` (
 
 -- 
 -- Dumping data for table `encounter_person`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `encounter_value`
+-- 
+
+DROP TABLE IF EXISTS `encounter_value`;
+CREATE TABLE `encounter_value` (
+  `encounter_value_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `value_type` int(11) NOT NULL default '0',
+  `value` varchar(255) NOT NULL default '0',
+  PRIMARY KEY  (`encounter_value_id`),
+  KEY `encounter_id` (`encounter_id`)
+) TYPE=MyISAM;
+
+-- 
+-- Dumping data for table `encounter_value`
 -- 
 
 
@@ -1531,13 +1560,14 @@ CREATE TABLE `insured_relationship` (
   `insured_relationship_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
-  `subsciber_id` int(11) NOT NULL default '0',
+  `subscriber_id` int(11) NOT NULL default '0',
   `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
   `copay` float(11,2) NOT NULL default '0.00',
   `assigning` int(11) NOT NULL default '0',
   `group_name` varchar(100) NOT NULL default '',
   `group_number` varchar(100) NOT NULL default '',
   `default_provider` int(11) NOT NULL default '0',
+  `program_order` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insured_relationship_id`)
 ) TYPE=MyISAM;
 
@@ -1545,9 +1575,11 @@ CREATE TABLE `insured_relationship` (
 -- Dumping data for table `insured_relationship`
 -- 
 
-INSERT INTO `insured_relationship` VALUES (1708, 1114, 1707, 0, 0, 25.00, 0, '123', '111-1232323', 0);
-INSERT INTO `insured_relationship` VALUES (2048, 1114, 1110, 0, 0, 35.00, 0, '1234', '1234', 0);
-INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '345545', '2345534', 0);
+INSERT INTO `insured_relationship` VALUES (1708, 1114, 1707, 8039, 2, 25.00, 0, '123', '111-1232323', 0, 1);
+INSERT INTO `insured_relationship` VALUES (2048, 1114, 1110, 0, 0, 35.00, 0, '1234', '1234', 0, 0);
+INSERT INTO `insured_relationship` VALUES (2051, 2050, 1110, 0, 0, 35.00, 0, '345545', '2345534', 0, 0);
+INSERT INTO `insured_relationship` VALUES (8045, 2050, 1707, 1707, 1, 13.00, 0, 'ABC', '111-AB4567', 0, 2);
+INSERT INTO `insured_relationship` VALUES (8049, 1114, 1707, 1707, 1, 45.00, 0, '456', 'blah blah', 0, 3);
 
 -- --------------------------------------------------------
 
@@ -1624,6 +1656,8 @@ CREATE TABLE `name_history` (
 
 INSERT INTO `name_history` VALUES (1712, 1711, 'nancy', 'jones', '', '2005-03-10');
 INSERT INTO `name_history` VALUES (1713, 1711, 'nancy', 'jones3', '', '2005-03-10');
+INSERT INTO `name_history` VALUES (8042, 8039, 'Random', 'Person2', '', '2005-03-17');
+INSERT INTO `name_history` VALUES (8044, 8039, 'Random', 'Person3', '', '2005-03-17');
 
 -- --------------------------------------------------------
 
@@ -1674,6 +1708,13 @@ CREATE TABLE `number` (
 INSERT INTO `number` VALUES (1115, 1, '', '555-555-5555', 1);
 INSERT INTO `number` VALUES (1709, 4, '', '555-555-5551', 1);
 INSERT INTO `number` VALUES (2056, 1, '', '555-555-5555', 1);
+INSERT INTO `number` VALUES (8017, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8021, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8025, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8029, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8033, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8037, 0, '', '123-123-4567', 1);
+INSERT INTO `number` VALUES (8041, 0, '', '123-123-4567', 1);
 
 -- --------------------------------------------------------
 
@@ -3898,6 +3939,60 @@ INSERT INTO `ownership` VALUES (2091, 1);
 INSERT INTO `ownership` VALUES (2092, 1);
 INSERT INTO `ownership` VALUES (2093, 1);
 INSERT INTO `ownership` VALUES (2094, 1);
+INSERT INTO `ownership` VALUES (8001, 1);
+INSERT INTO `ownership` VALUES (8002, 1);
+INSERT INTO `ownership` VALUES (8003, 1);
+INSERT INTO `ownership` VALUES (8004, 1);
+INSERT INTO `ownership` VALUES (8005, 1);
+INSERT INTO `ownership` VALUES (8006, 1);
+INSERT INTO `ownership` VALUES (8007, 1);
+INSERT INTO `ownership` VALUES (8008, 1);
+INSERT INTO `ownership` VALUES (8009, 1);
+INSERT INTO `ownership` VALUES (8010, 1);
+INSERT INTO `ownership` VALUES (8011, 1);
+INSERT INTO `ownership` VALUES (8012, 1);
+INSERT INTO `ownership` VALUES (8013, 1);
+INSERT INTO `ownership` VALUES (8014, 1);
+INSERT INTO `ownership` VALUES (8015, 1);
+INSERT INTO `ownership` VALUES (8016, 1);
+INSERT INTO `ownership` VALUES (8017, 1);
+INSERT INTO `ownership` VALUES (8018, 1);
+INSERT INTO `ownership` VALUES (8019, 1);
+INSERT INTO `ownership` VALUES (8020, 1);
+INSERT INTO `ownership` VALUES (8021, 1);
+INSERT INTO `ownership` VALUES (8022, 1);
+INSERT INTO `ownership` VALUES (8023, 1);
+INSERT INTO `ownership` VALUES (8024, 1);
+INSERT INTO `ownership` VALUES (8025, 1);
+INSERT INTO `ownership` VALUES (8026, 1);
+INSERT INTO `ownership` VALUES (8027, 1);
+INSERT INTO `ownership` VALUES (8028, 1);
+INSERT INTO `ownership` VALUES (8029, 1);
+INSERT INTO `ownership` VALUES (8030, 1);
+INSERT INTO `ownership` VALUES (8031, 1);
+INSERT INTO `ownership` VALUES (8032, 1);
+INSERT INTO `ownership` VALUES (8033, 1);
+INSERT INTO `ownership` VALUES (8034, 1);
+INSERT INTO `ownership` VALUES (8035, 1);
+INSERT INTO `ownership` VALUES (8036, 1);
+INSERT INTO `ownership` VALUES (8037, 1);
+INSERT INTO `ownership` VALUES (8038, 1);
+INSERT INTO `ownership` VALUES (8039, 1);
+INSERT INTO `ownership` VALUES (8040, 1);
+INSERT INTO `ownership` VALUES (8041, 1);
+INSERT INTO `ownership` VALUES (8042, 1);
+INSERT INTO `ownership` VALUES (8043, 1);
+INSERT INTO `ownership` VALUES (8044, 1);
+INSERT INTO `ownership` VALUES (8045, 1);
+INSERT INTO `ownership` VALUES (8046, 1);
+INSERT INTO `ownership` VALUES (8047, 1);
+INSERT INTO `ownership` VALUES (8048, 1);
+INSERT INTO `ownership` VALUES (8049, 1);
+INSERT INTO `ownership` VALUES (8050, 1);
+INSERT INTO `ownership` VALUES (8051, 1);
+INSERT INTO `ownership` VALUES (8052, 1);
+INSERT INTO `ownership` VALUES (8053, 1);
+INSERT INTO `ownership` VALUES (8054, 1);
 
 -- --------------------------------------------------------
 
@@ -3945,6 +4040,33 @@ CREATE TABLE `patient_statistics` (
 -- Dumping data for table `patient_statistics`
 -- 
 
+INSERT INTO `patient_statistics` VALUES (8001, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8002, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8003, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8004, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8005, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8006, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8007, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8008, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8009, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8010, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8011, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8013, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8014, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8018, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8022, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8026, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8030, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8034, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8038, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8043, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8046, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8048, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8050, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8051, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8052, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8053, 1, 0, 0, 0, 0);
+INSERT INTO `patient_statistics` VALUES (8054, 1, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -4005,6 +4127,7 @@ INSERT INTO `person` VALUES (1110, '', 'Conrad', 'Joe', '', 0, '', '0000-00-00',
 INSERT INTO `person` VALUES (1120, '', 'Minton', 'Michelle', '', 0, '', '0000-00-00', '', '', '', '', '', '', '234-44-4543', 1);
 INSERT INTO `person` VALUES (1707, '', 'Jones', 'Nancy', '', 2, '', '1955-07-16', '', '', '', '', '', '', '123-34-3432', 1);
 INSERT INTO `person` VALUES (1711, '', 'smith-jones', 'nancy', '', 2, '', '0000-00-00', '', '', '', '', '', '', '123-32-2323', 1);
+INSERT INTO `person` VALUES (8039, '', 'Person', 'Random', '', 0, '', '0000-00-00', '', '', '', '', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -4026,6 +4149,14 @@ CREATE TABLE `person_address` (
 -- Dumping data for table `person_address`
 -- 
 
+INSERT INTO `person_address` VALUES (1110, 8012, 1);
+INSERT INTO `person_address` VALUES (8015, 8016, 0);
+INSERT INTO `person_address` VALUES (8019, 8020, 0);
+INSERT INTO `person_address` VALUES (8023, 8024, 0);
+INSERT INTO `person_address` VALUES (8027, 8028, 0);
+INSERT INTO `person_address` VALUES (8031, 8032, 0);
+INSERT INTO `person_address` VALUES (8035, 8036, 0);
+INSERT INTO `person_address` VALUES (8039, 8040, 0);
 
 -- --------------------------------------------------------
 
@@ -4069,6 +4200,13 @@ CREATE TABLE `person_number` (
 
 INSERT INTO `person_number` VALUES (1110, 2056);
 INSERT INTO `person_number` VALUES (1707, 1709);
+INSERT INTO `person_number` VALUES (8015, 8017);
+INSERT INTO `person_number` VALUES (8019, 8021);
+INSERT INTO `person_number` VALUES (8023, 8025);
+INSERT INTO `person_number` VALUES (8027, 8029);
+INSERT INTO `person_number` VALUES (8031, 8033);
+INSERT INTO `person_number` VALUES (8035, 8037);
+INSERT INTO `person_number` VALUES (8039, 8041);
 
 -- --------------------------------------------------------
 
@@ -4112,6 +4250,13 @@ CREATE TABLE `person_type` (
 
 INSERT INTO `person_type` VALUES (1110, 2);
 INSERT INTO `person_type` VALUES (1120, 2);
+INSERT INTO `person_type` VALUES (8015, 0);
+INSERT INTO `person_type` VALUES (8019, 0);
+INSERT INTO `person_type` VALUES (8023, 0);
+INSERT INTO `person_type` VALUES (8027, 0);
+INSERT INTO `person_type` VALUES (8031, 5);
+INSERT INTO `person_type` VALUES (8035, 5);
+INSERT INTO `person_type` VALUES (8039, 5);
 
 -- --------------------------------------------------------
 
@@ -4455,7 +4600,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (8000);
+INSERT INTO `sequences` VALUES (8054);
 
 -- --------------------------------------------------------
 
