@@ -28,12 +28,15 @@ class C_Calendar extends CalendarController {
 		$this->template_mod = $template_mod;
 		$this->assign("FORM_ACTION", Cellini::link(true) . $_SERVER['QUERY_STRING']);
 		$this->assign("TOP_ACTION", Cellini::link(true));
-		$this->assign("APPOINTMENT_ACTION",$this->_link("",false,array("date")));
-
+		
+		$current_link = Cellini::link(true);
+		if (isset($_GET['date'])) $current_link .=  "date=" . $_GET['date'] . "&";
+		$this->assign("APPOINTMENT_ACTION",$current_link);
 		$this->assign('DAY_ACTION', Cellini::link('day'));
 
 		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter','today')."process=true&");
 		$this->assign_by_ref("CONTROLLER", $this);
+		$this->assign('DELETE_ACTION', Cellini::link('delete','Location'));
 		
 		$this->_setupFilterDisplay();
 	}
@@ -253,7 +256,7 @@ class C_Calendar extends CalendarController {
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_week_grid.html");
 	}
 
-	function day_action($date="") {
+	function day_action($date="",$start="",$end="") {
 		$this->sec_obj->acl_qcheck("usage",$this->_me,"","calendar",$this,false);
 	
 		if (empty($date)){
@@ -312,7 +315,7 @@ class C_Calendar extends CalendarController {
 		$this->assign_by_ref("DayGrid",$DayGrid);
 		$this->assign_by_ref("DayArray",$DayArray);
 		
-		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day");
+		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day","calendar",$start,$end);
 		$this->assign_by_ref("sidebar",$sidebar);
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day.html");
@@ -359,14 +362,13 @@ class C_Calendar extends CalendarController {
 		
 		$this->assign("DAY_NEXT_ACTION", $this->_link("day_brief",true) . "date=$ndate");
 		$this->assign("DAY_PREV_ACTION", $this->_link("day_brief",true) . "date=$pdate");
-		
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day_brief");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day_brief.html");
 	}
 	
-	function sidebar_action($date = "",$view="week_grid",$controller="calendar") {
+	function sidebar_action($date = "",$view="week_grid",$controller="calendar",$start="",$end="") {
 		
 		if ($this->_print_view) return ""; 
 		
@@ -387,7 +389,7 @@ class C_Calendar extends CalendarController {
 		$week_select = array();
 		$month_select = array();
 		
-		$tw = new Calendar_Week($year,$month,$day,1);
+		$tw = new Calendar_Week($year,$month,$day,0);
 		$tw->build();
 		$twa = $tw->fetchall();
 		$first = array_shift($twa);
@@ -445,9 +447,9 @@ class C_Calendar extends CalendarController {
                 if(count($pa) > 0) {
 		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
 		}
-
+		
 		$u = new User(null,null);
-		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","_username"));
+		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
 		if (isset($_SESSION['calendar']['filters']['user'])) {
 			$this->assign("selected_user",$_SESSION['calendar']['filters']['user']);
 		}
@@ -462,12 +464,14 @@ class C_Calendar extends CalendarController {
 		}
 		else {
 			$oc = new Occurence();
-			$oc->start = "";
-			$oc->end = "";
+			$oc->date = $date;
+			$oc->start = $start;
+			$oc->end = $end;
 			$this->assign("edit_oc",$oc);
 		}
 		$this->assign_by_ref("sidebar_months",$months);
 		$this->assign("LINK_BASE",$this->_link($view,true));
+		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_sidebar.html");
 	}
 	
@@ -512,10 +516,15 @@ class C_Calendar extends CalendarController {
 
 		$this->assign('search',$_POST);
 		$u = new User(null,null);
-		$this->assign("providers",$this->utility_array($u->users_factory("provider"),"id","_username"));
+		$this->assign("providers",$this->utility_array($u->users_factory("provider"),"id","username"));
 
-		$b = new Building();
-		$this->assign("facility",$this->utility_array($b->buildings_factory(),"id","name"));
+		$p = new Practice();
+		$pa = $p->practices_factory();
+		$r = new Room();
+		
+        if(count($pa) > 0) {
+			$this->assign("facility",$r->rooms_practice_factory($pa[0]->get_id(),false));
+        }
 
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_search.html");
 	}
@@ -523,6 +532,30 @@ class C_Calendar extends CalendarController {
 	function search_action_process() {
 		$e = new Event();
 		$where = array();
+		if (isset($_POST['find_first']) && $_POST['find_first'] == 1 && isset($_POST['provider']) && $_POST['facility']) {
+			$sql = "SELECT o.start, o.end from schedules s LEFT JOIN events e on e.foreign_id = s.id LEFT JOIN occurences o on o.event_id = e.id "
+				." WHERE s.schedule_code = 'PS' and s.user_id =" .(int)$_POST['provider'];
+				 
+				$ff_sql = " c.schedule_code = 'PS' and c.user_id =" .(int)$_POST['provider'] . " and o.start BETWEEN '".$e->_mysqlDate($_POST['from'])."' and '"
+				.	$e->_mysqlDate($_POST['to'])."' and o.location_id =" . (int)$_POST['facility'];
+				$events = $e->get_events($ff_sql,'find_first');
+				//var_dump($events);
+				
+				$ff_sql = " (c.schedule_code != 'PS' or c.schedule_code IS NULL) AND o.user_id = " .(int)$_POST['provider'] . " and o.start BETWEEN '"
+				.$e->_mysqlDate($_POST['from'])."' and '".	$e->_mysqlDate($_POST['to'])."' and o.location_id =" . (int)$_POST['facility'];
+				$events2 = $e->get_events($ff_sql,'find_first');
+				//var_dump($events);
+				//var_dump($events2);
+				$ffevents = array_diff($events,$events2);
+				//var_dump($ffevents);
+				$this->assign("free_time", $ffevents);
+				$this->assign("APPOINTMENT_ACTION",Cellini::link("day"));
+				return;
+				/*foreach($ffevents as $free) {
+					echo date("m/d/Y", $free) . " from " . date("H:i", $free)  . " to " . date("H:i", $free + 900) . "<br>";	
+				}*/
+				
+		}
 		foreach($_POST as $key => $val) {
 			if (empty($val)) {
 				$key = "noop";
@@ -551,7 +584,7 @@ class C_Calendar extends CalendarController {
 					$where[] = 'o.location_id = '.(int)$val;
 				break;
 				case "reason":
-					$where[] = 'o.notes = '.$e->_quote($val);
+					$where[] = "o.notes like '%".str_replace("'","",$e->_quote($val)) . "%'";
 				break;
 				case "schedule_code":
 					$where[] = 'schedule_code = '.$e->_quote($val);
@@ -559,7 +592,7 @@ class C_Calendar extends CalendarController {
 			}	
 		}
 
-		$wsql = implode(' or ',$where);
+		$wsql = implode(' and ',$where);
 		$events = $e->get_events($wsql,'week');
 		
 		$this->assign('events',$events);

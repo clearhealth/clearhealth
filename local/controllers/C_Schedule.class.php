@@ -29,6 +29,7 @@ class C_Schedule extends CalendarController {
 		return "";
 	}
 	
+	//args coming in is usually _POST
 	function confirm_action($args) {
 		
 		if (empty($args)){
@@ -37,6 +38,7 @@ class C_Schedule extends CalendarController {
 
 		$this->assign("user_id",$args['user_id']);
 		$this->assign("location_id",$args['location_id']);
+		$this->assign("occurence_id",$args['occurence_id']);
 		$this->assign("date",$args['date']);
 		$this->assign("external_id",$args['external_id']);
 		$this->assign("start_time",$args['start_time']);
@@ -53,44 +55,43 @@ class C_Schedule extends CalendarController {
 			return;
 		
 		if (isset($_POST['cancel'])) {
-			$trail = array_reverse($_SESSION['trail']);
-			$location = "";
-			//print_r($trail);
-
-			$action = true;
-			$controller = true;
-			$section = true;
-			$qs = "";
-
+			$location = Cellini::link('list','location');
+			$trail = $_SESSION['trail'];
 			foreach($trail as $stop) {
-				
-				if (!isset($stop['edit_appointment']) && $stop['action'] != "edit_appointment" &&
-					!isset($stop['confirm']) && $stop['action'] != "confirm") 
-				{
-					$section = array_shift($stop);
-					$controller = array_shift($stop);
-					$action = array_shift($stop);
-
-					foreach($stop as $key => $val) {
-						$qs .= "$key=$val&";
+					if (!isset($stop['edit_appointment']) && $stop['action'] != "edit_appointment" &&
+						!isset($stop['confirm']) && $stop['action'] != "confirm") {
+						if (isset($stop['main'])) array_shift($stop);
+						$aks = array_keys($stop);
+						$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+						unset($stop[$aks[0]]);
+						unset($stop[$aks[1]]);
+						foreach ($stop as $qn => $qi) {
+						//they were coming from editing this appointment which they are now cancelling, don't send this and put them back in to edit mode
+						if ($qn === "appointment_id") continue;
+						$location .= "$qn";
+						if (!empty($qi)) $location .= "=$qi";
+							$location .="&";
+						}
+						break;
 					}
-				}
 			}
-			
-			header("Location: " . Cellini::link($action,$controller,$section).$qs);
+			header("Location: " . $location);
 			exit;
 		}
 	
 		$string = "";
 		$cl = new C_Location();
-		
-		$cl->edit_appointment_action_process($_POST,true);
+		$cl->edit_appointment_action_process($_POST['occurence_id'],true);
 	
 		$this->_state = false;
 		return $string;
 	}
 	
-	function check_availability($start, $end, $provider_id, $location_id="") {
+	function check_availability($oc, $event) {
+		$start = $oc->get_start();
+		$end = $oc->get_end();
+		$provider_id = $oc->get_user_id();
+		$location_id = $oc->get_location_id();
 		$db = $GLOBALS['frame']['adodb']['db'];
 		
 		if (empty($start) || empty($end) || empty($provider_id)){
@@ -138,7 +139,7 @@ class C_Schedule extends CalendarController {
 		}
 		
 		$sql = 	"SELECT o.id FROM occurences as o LEFT JOIN `events` as e on e.id=o.event_id LEFT JOIN schedules as s on s.id=e.foreign_id ".
-				"WHERE (((s.schedule_code != 'PS' OR s.schedule_code IS NULL) and o.user_id =" . $db->qstr($provider_id) . ") OR s.schedule_code = 'ADM') AND " .
+				"WHERE ((((s.schedule_code != 'PS' AND s.schedule_code != 'NS') OR s.schedule_code IS NULL) and o.user_id =" . $db->qstr($provider_id) . ") OR s.schedule_code = 'ADM') AND " .
 				"(('$sdate' <= `start` AND '$edate' >= `end`) OR ".
 				"('$edate' > `start` AND '$edate' <= `end`) OR ".
 				"('$sdate' >= `start` AND '$sdate' < `end`)) "; 

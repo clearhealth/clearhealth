@@ -64,13 +64,12 @@ class C_PersonSchedule extends CalendarController {
 		if (!is_object($this->schedule)) {
 			$this->schedule = new Event($id);
 		}
-	
-		if (empty($date)){
-			$year = date('Y');
-			$month = date('n');
-			$day = date('d');
-		}
-		else {
+		
+		$year = date('Y');
+		$month = date('n');
+		$day = date('d');
+		
+		if (!empty($date)) {
 			$year = date('Y', strtotime($date));
 			$month = date('n', strtotime($date));
 			$day = date('d', strtotime($date));
@@ -137,11 +136,13 @@ class C_PersonSchedule extends CalendarController {
 		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
 		$this->assign("process",true);
 		$this->assign("EVENT_ACTION", $this->_link("edit_event",true) . "id=$id");
+		$this->assign("DELETE_ACTION", $this->_link("delete",true));
 		$this->assign("OCCURENCE_ACTION", $this->_link("edit_occurence",true) . "id=$id&date=$date");
 		$this->assign("WEEK_NEXT_ACTION", $this->_link("edit_schedule",true) . "id=$id&date=$ndate");
 		$this->assign("WEEK_PREV_ACTION", $this->_link("edit_schedule",true) . "id=$id&date=$pdate");
 		
-		$sidebar = $this->sidebar_action($month."/".$day."/".$year);
+		$this->assign("LINK_BASE",$this->_link('edit_schedule',true));
+		$sidebar = $this->sidebar_action($month."/".$day."/".$year,$id);
 		$this->assign_by_ref("sidebar",$sidebar);
 		
 		return $this->fetch($GLOBALS['template_dir'] . "person_schedules/" . $this->template_mod . "_edit_schedule.html");
@@ -150,23 +151,23 @@ class C_PersonSchedule extends CalendarController {
 	function edit_schedule_action_process() {
 		if ($_POST['process'] != "true")
 			return;
-		
+
+		$id = 0;
+		if (isset($_POST['id'])) $id = $_POST['id'];
 		$errors = 0;
 		
-		
-		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
-		$this->schedule = new Event($_POST['id']);
+		$this->schedule = new Event($id);
 		parent::populate_object($this->schedule);
 		$this->schedule->persist();
 		$this->schedule->populate();
 		$location_id = 0;
-		if (is_numeric($_POST['location_id'])) {
+		if (isset($_POST['location_id']) && is_numeric($_POST['location_id'])) {
 			$location_id = $_POST['location_id'];
 		}
 		
 		$oc_template = array();
-		if (is_array($_POST['times'])) {
+		if (isset($_POST['times']) && is_array($_POST['times'])) {
 			$oc_template = $_POST['times'];
 		}
 		else {
@@ -179,8 +180,11 @@ class C_PersonSchedule extends CalendarController {
 			$errors++;	
 		}
 		
-		$sdts = strtotime($_POST['starting_date']);
-		$edts = strtotime($_POST['ending_date'] . " +1 day");
+		
+		$sdts = 0;
+		$edts = 0;
+		if (isset($_POST['starting_date'])) $sdts = strtotime($_POST['starting_date']);
+		if (isset($_POST['ending_date']))$edts = strtotime($_POST['ending_date'] . " +1 day");
 		
 		if ($sdts > $edts) {
 			$this->messages->addMessage("The dates provided for were invalid, its starting date must be before its ending date. The schedule could not be changed.");
@@ -303,29 +307,37 @@ class C_PersonSchedule extends CalendarController {
 		}
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
-		$this->assign("DELETE_ACTION", $this->_link("delete",true) . "id=$id&object_class=$object_class");
+		//$this->assign("DELETE_ACTION", $this->_link("delete",true) . "id=$id&object_class=$object_class");
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");
 	}
 	
 	function delete_action_process($id = "",$object_class ="") {
+		
 		$this->sec_obj->acl_qcheck("delete",$this->_me,"",$object_class,$this,false);
 		
-		if ($_POST['process'] == true && (isset($_POST['cancel']) || $_GET['cancel'])) {
-			$location = "main&location&action=list";
+		if ($_POST['process'] == true && (isset($_POST['cancel']) || isset($_GET['cancel']))) {
+			$location = Cellini::link('list','location');
 			$trail = $_SESSION['trail'];
 			foreach($trail as $stop) {
 				if (!isset($stop['delete']) && $stop['action'] != "delete") {
-					$location = "";
-					foreach ($stop as $qn => $qi) {	
-						$location .= "$qn";
-						if (!empty($qi)) $location .= "=$qi";
+					if (isset($stop['main'])) array_shift($stop);
+					$aks = array_keys($stop);
+					$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+					unset($stop[$aks[0]]);
+					unset($stop[$aks[1]]);
+					foreach ($stop as $qn => $qi) {
+					$location .= "$qn";
+					if (!empty($qi)) $location .= "=$qi";
 						$location .="&";
 					}
 					break;
 				}
 			}
+		
 			
-			header("Location: controller.php?$location");
+			echo $location . "<br>";
+			exit;
+			header("Location: $location");
 			return;
 		}
 		elseif ($_POST['process'] != "true" && (isset($_POST['delete']) || $_GET['delete'])) {
@@ -363,11 +375,15 @@ class C_PersonSchedule extends CalendarController {
 			$this->_state = false;
 			return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");	
 		}
-		$location = "main&location&action=list";
+		$location = Cellini::link('list','location');
 		$trail = $_SESSION['trail'];
 		foreach($trail as $stop) {
 			if (!isset($stop['delete']) && $stop['action'] != "delete") {
-				$location = "";
+				if (isset($stop['main'])) array_shift($stop);
+				$aks = array_keys($stop);
+				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+				unset($stop[$aks[0]]);
+				unset($stop[$aks[1]]);
 				foreach ($stop as $qn => $qi) {
 					$location .= "$qn";
 					if (!empty($qi)) $location .= "=$qi";
@@ -376,11 +392,11 @@ class C_PersonSchedule extends CalendarController {
 				break;
 			}
 		}
-	
-		header("Location: controller.php?$location");
+
+		header("Location: $location");
 		return;
 	}
-	function sidebar_action($date = "",$controller="calendar",$view="edit_schedule") {
+	function sidebar_action($date = "",$id="") {
 		$this->sec_obj->acl_qcheck("usage",$this->_me,"","calendar",$this,false);
 		if (empty($date)){
 			$year = date('Y');
@@ -396,7 +412,7 @@ class C_PersonSchedule extends CalendarController {
 		$week_select = array();
 		$month_select = array();
 		
-		$tw = new Calendar_Week($year,$month,$day,1);
+		$tw = new Calendar_Week($year,$month,$day,0);
 		$tw->build();
 		$twa = $tw->fetchall();
 		$first = array_shift($twa);
@@ -442,7 +458,7 @@ class C_PersonSchedule extends CalendarController {
 		$tmonth->build(array(new Calendar_Day(date("Y"),date("m"),date("d"))));
 		//$pmonth = new Calendar_Month_WeekDays(date("Y",$tmonth->prevMonth("timestamp")),$tmonth->prevMonth("int"));
 		//$pmonth->build();
-		$nmonth = new Calendar_Month_WeekDays(date("Y",$tmonth->nextMonth("timestamp")),$tmonth->nextMonth("int"));
+		$nmonth = new Calendar_Month_WeekDays(date("Y",$tmonth->nextMonth("timestamp")),$tmonth->nextMonth("int"),0);
 		$nmonth->build();
 		$months = array($tmonth, $nmonth);
 		
@@ -454,7 +470,7 @@ class C_PersonSchedule extends CalendarController {
 		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
 		
 		$u = new User(null,null);
-		$this->assign("users_array",$this->utility_array($u->users_factory(),"id","_username"));
+		$this->assign("users_array",$this->utility_array($u->users_factory(),"id","username"));
 		if (isset($_SESSION['calendar']['filters']['user'])) {
 			$this->assign("selected_user",$_SESSION['calendar']['filters']['user']);
 		}
@@ -463,6 +479,7 @@ class C_PersonSchedule extends CalendarController {
 		}
 		
 		$this->assign_by_ref("sidebar_months",$months);
+		$this->assign("LINK_BASE",$this->_link('edit_schedule',true) . "id=" . $id . "&");
 		 
 		return $this->fetch($GLOBALS['template_dir'] . "person_schedules/" . $this->template_mod . "_sidebar.html");
 	}

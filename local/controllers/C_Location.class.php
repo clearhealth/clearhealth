@@ -1,7 +1,7 @@
 <?php
 
 require_once CELLINI_ROOT."/controllers/Controller.class.php";
-require_once CELLINI_ROOT . "/controllers/C_Main.class.php";
+//require_once APP_ROOT . "/local/controllers/C_Main.class.php";
 require_once APP_ROOT . "/local/controllers/C_Schedule.class.php";
 
 require_once APP_ROOT . "/local/ordo/Practice.class.php";
@@ -22,24 +22,24 @@ class C_Location extends Controller {
 
 		$this->assign('EDIT_SCHEDULE_ACTION', Cellini::link('edit_schedule'));
 		$this->assign('DELETE_ACTION', Cellini::link('delete'));
-		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit', 'practice'));
+		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit_practice'));
 		$this->assign('EDIT_BUILDING_ACTION', Cellini::link('edit_building'));
 		$this->assign('EDIT_ROOM_ACTION', Cellini::link('edit_room'));
 		$this->assign('EDIT_EVENT_ACTION', Cellini::link('edit_event'));
-		$this->assign('EDIT_WIZARD_ACTION', Cellini::link('edit_event','personSchedule'));
+		$this->assign('EDIT_WIZARD_ACTION', Cellini::link('edit_schedule','personSchedule'));
 		$this->assign('SCHEDULE_LIST_ACTION', Cellini::link('schedule_list'));
 		$this->assign('UPDATE_SCHEDULE_ACTION', Cellini::link('update_schedule'));
 		$this->assign('EDIT_TIMEPLACE_ACTION', Cellini::link('edit_timeplace'));
 	}
 
 	function default_action() {
-		return $this->list_action();
+		return $this->edit_action();
 	}
 
 	function list_action() {
-
+		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
-
+		
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
 		$s = new Practice();
@@ -48,53 +48,42 @@ class C_Location extends Controller {
 		$this->assign("buildings",$b->buildings_factory());
 		$r = new Room();
 		$this->assign("rooms",$r->rooms_factory());
-
+		
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_list.html");
 	}
-
+	
 	function schedule_list_action() {
-
+		
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
-
+		
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_schedule_list.html");
 	}
 
 	function edit_practice_action($id = "") {
-
+		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
-
+		
 		if (is_numeric($id)) {
 			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
 		}
-
-
+		
+		
 		if (!is_object($this->location)) {
 			$this->location = new Practice($id);
 		}
-
-		$number =& ORDataObject::factory('PracticeNumber',0,$this->location->id);
-		$address =& ORDataObject::factory('PracticeAddress',0,$this->location->id);
-		$this->assign_by_ref("practice",$this->location);
-		$this->assign_by_ref("parent",$this->location);
-		$this->assign_by_ref("number",$number);
-		$this->assign_by_ref("address",$address);
-
-		$this->assign('FORM_ACTION',Cellini::managerLink('update',$this->location->id));
-		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$this->location->id));
-		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$this->location->id));
-		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$this->location->id));
-		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$this->location->id));
+		
+		$this->assign("practice",$this->location);
 
 		$this->assign("process",true);
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_practice.html");
 	}
-
-
-	function edit_practice_action_process_old() {
+	
+		
+	function edit_practice_action_process() {
 		if ($_POST['process'] != "true")
 			return;
 		if (is_numeric($_POST['id'])) {
@@ -102,24 +91,24 @@ class C_Location extends Controller {
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
-		}
-
+		}	
+			
 		$this->location = new Practice($_POST['id']);
 		parent::populate_object($this->location);
-
+		
 		$this->location->persist();
-
+		
 		$this->location->populate();
 		$_POST['process'] = "";
 	}
-
+	
 	function edit_building_action($id = "") {
-
+		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
 		if (!is_object($this->location)) {
 			$this->location = new building($id);
 		}
-
+		
 		$this->assign("building",$this->location);
 		$s = new Practice();
 		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
@@ -185,8 +174,15 @@ class C_Location extends Controller {
 		$s = new Practice();
 		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
 		
+		$pa = $s->practices_factory();
+		$r = new Room();
+		
+		if(count($pa) > 0) {
+			$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
+		}
+		
 		$u = new User(null,null);
-		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","_username"));
+		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
 		
 		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
 		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
@@ -269,7 +265,7 @@ class C_Location extends Controller {
 		}
 		else {
 			$this->event = new event($event_id);
-			$this->event->populate_array($_POST);;
+			$this->event->populate_array($_POST);
 		}
 		
 		parent::populate_object($oc);
@@ -277,7 +273,7 @@ class C_Location extends Controller {
 		$cs = new C_Schedule();
 		//check for availability of provider
 		if (is_numeric($oc->get_user_id())) {
-			$availability = $cs->check_availability($oc->get_start(),$oc->get_end(), $oc->get_user_id(), $oc->get_location_id());
+			$availability = $cs->check_availability($oc, $this->event);
 			if ($availability) {
 				//echo "this event is within providers schedule<br>";	
 			}
@@ -291,9 +287,9 @@ class C_Location extends Controller {
 			$double = $cs->check_double_book($oc,$this->event);
 			if ($double) {
 			if(!$this->sec_obj->acl_qcheck("add_double",$this->_me,"","event",$this,true)) {
-			echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
-exit;
-                	}
+				echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
+				exit;
+            }
 				//echo "this event is double booking<br>";	
 			}
 			else {
@@ -316,13 +312,10 @@ exit;
 		$this->location = null;
 		$trail = $_SESSION['trail'];
 
-		$action = true;
-		$controller = true;
-		$section = true;
-		$qs = "";
+		$location = Cellini::link('list','location');
+		$trail = $_SESSION['trail'];
 		foreach($trail as $stop) {
-				
-			if (!isset($stop['edit_appointment']) && 
+				if (!isset($stop['edit_appointment']) && 
 				$stop['action'] != "edit_appointment" &&
 				!isset($stop['confirm']) && 
 				$stop['action'] != "confirm" &&
@@ -331,20 +324,25 @@ exit;
 				!isset($stop['appointment_popup']) && 
 				$stop['action'] != "appointment_popup"
 				) {
-					
-					$section = array_shift($stop);
-					$controller = array_shift($stop);
-					$action = array_shift($stop);
+				
 
-					foreach($stop as $key => $val) {
-						$qs .= "$key=$val&";
-					}
+				if (isset($stop['main'])) array_shift($stop);
+				$aks = array_keys($stop);
+				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+				unset($stop[$aks[0]]);
+				unset($stop[$aks[1]]);
+				foreach ($stop as $qn => $qi) {
+				//they were coming from editing this appointment which they are now done doing, don't send this and put them back in to edit mode
+				if ($qn === "appointment_id") continue;
+				$location .= "$qn";
+				if (!empty($qi)) $location .= "=$qi";
+					$location .="&";
+				}
+				break;
 			}
 		}
-		//echo $location;
-		header("Location: " . Cellini::link($action,$controller,$section).$qs);
+		header("Location: " . $location);
 		exit;
-		return $this->edit_schedule_action($schedule_id);
 	}
 	
 	
@@ -480,13 +478,12 @@ exit;
 				}
 			}
 		}
-	
 		header("Location: ".Cellini::link($action,$controller,$section).$qs);
 		exit;
 	}
 
 	function update_schedule_action_process($id = "",$schedule_code ="",$group_name ="") {
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"",$object_class,$this,false);
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","occurence",$this,false);
 	
 		if ($_POST['process'] != "true") {
 			return;
@@ -517,25 +514,27 @@ exit;
 			}	
 			
 		}
-		$this->assign("messages", $messages);
-		$location = "main&location&action=list";
+
+		$location = Cellini::link('list','location');
 		$trail = $_SESSION['trail'];
 		foreach($trail as $stop) {
 			if (!isset($stop['update_schedule']) && $stop['action'] != "update_schedule") {
-				$location = "";
+				if (isset($stop['main'])) array_shift($stop);
+				$aks = array_keys($stop);
+				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+				unset($stop[$aks[0]]);
+				unset($stop[$aks[1]]);
 				foreach ($stop as $qn => $qi) {
 					$location .= "$qn";
 					if (!empty($qi)) $location .= "=$qi";
-					$location .="&";
+						$location .="&";
 				}
 				break;
 			}
 		}
-	
-		header("Location: controller.php?$location");
+		// Redirect them to the screen they were previously on.
+		header("Location: $location");
 		return;
 	}
-	
 }
-
 ?>
