@@ -120,6 +120,7 @@ class Datasource_AccountHistory extends Datasource {
 				//var_dump($this->_res->fields);
 				$this->_res->fields['date_of_treatment'] = $this->_res->fields['payment_date'];
 				$this->_res->fields['identifier'] = 'copay';
+				$this->_res->fields['writeoff'] = '';
 				$this->_valid = $this->payments[$claim_id]->valid();
 			}
 		}
