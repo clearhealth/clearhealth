@@ -6,10 +6,9 @@ function clniTable(tableId,dataObject) {
 	this.tableId = tableId;
 	this.dataObject = dataObject;
 	this.windowSize = 30;
-	this.prefetchSize = 10;
+	this.prefetchSize = 40;
 
 	this.data = Array();
-	this.firstData = 0;
 	this.dataRows = -1;
 
 	this.windowRow = 0;
@@ -20,8 +19,6 @@ function clniTable(tableId,dataObject) {
 	this.renderMap = this.dataObject.getrendermap();
 
 	this.indexCol = 1;
-
-	this.waitingForData = 0;
 
 	// error handling
 	this.dataObject.clientErrorFunc = function(e) {
@@ -107,6 +104,7 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 		}
 	}
 	else {
+		//alert('waiting on data for row:' + row.index);
 		row.className = "waiting";
 		for(var i = 0; i < this.renderMap.length; i++) { 
 			var field = this.renderMap[i];
@@ -114,6 +112,7 @@ clniTable.prototype._renderRow = function(rowNum,row) {
 			cell.key = field;
 			row.appendChild(cell);
 		}
+		this.fillFetch();
 	}
 }
 
@@ -141,6 +140,7 @@ clniTable.prototype.prependRow = function(rowNum) {
 }
 
 clniTable.prototype.updateRow = function(row) {
+	//alert('updateRow: '+row.index);
 	var nrow = document.createElement('tr');
 
 	this._renderRow(row.index,nrow);
@@ -150,28 +150,36 @@ clniTable.prototype.updateRow = function(row) {
 
 clniTable.prototype.fetchRow = function(rowNum) {
 	if(!this.data[rowNum]) {
-		this.dataObject.Sync();
-		this.data[rowNum] = this.dataObject.fetchrow(rowNum);
-
-		this.waitingForData++;
+		if (!this.dataObject.__client.callInProgress()) {
+			this.dataObject.Sync();
+			this.data[rowNum] = this.dataObject.fetchrow(rowNum);
+		}
 	}
 }
 
+// fixme: i have a bug where i don't update 1 row
 clniTable.prototype.fillFetch = function() {
 		document.getElementById(this.tableBody.parentNode.id+"_waiting").className = "waitingActive";
 
 		for(var i = 0; i < this.tableBody.rows.length; i++) {
 			var row = this.tableBody.rows.item(i);
 			if (row.className == "waiting") {
-				while(this.dataObject.__client.callInProgress()) {
-					this.dataObject.__client.abort(this.dataObject.__client);
+				if (this.data[row.index]) {
+					this.updateRow(row);
 				}
-				this.fetchRow(row.index);
-				this.updateRow(row);
+				else {
+					if (this.__callState == "async") {
+						while(this.dataObject.__client.callInProgress()) {
+							this.dataObject.__client.abort(this.dataObject.__client);
+						}
+					}
+					//alert('bulkFetch: '+row.index);
+					this.bulkFetch(row.index,this.windowSize);
+					this.updateRow(row);
+				}
 			}
 		}
 
-		this.waitingForData = 0;
 		document.getElementById(this.tableBody.parentNode.id+"_waiting").className = "waiting";
 }
 
@@ -181,9 +189,6 @@ clniTable.prototype.fillFetch = function() {
 clniTable.prototype.prefetchRow = function(rowNum) {
 	if (rowNum < 0) {
 		rowNum = 0;
-	}
-	if (this.waitingForData > 2) {
-		this.fillFetch();
 	}
 	if (!this.data[rowNum]) {
 		this.callback.prefetchRow = rowNum;
@@ -196,8 +201,8 @@ clniTable.prototype.prefetchRow = function(rowNum) {
  * does prefetch in bulk
  */
 clniTable.prototype.prefetch = function(rowNum) {
-	if (this.waitingForData > 0) {
-		this.fillFetch();
+	if (rowNum < 0) {
+		rowNum = 0;
 	}
 	if (!this.data[rowNum]) {
 		this.callback.prefetchRow = rowNum;
@@ -212,6 +217,7 @@ clniTable.prototype.numRows = function() {
 }
 
 clniTable.prototype.bulkFetch = function(start,rows) {
+	this.dataObject.Sync();
 	d = this.dataObject.fetchbulk(start,rows);
 	if (d) {
 		for(var i = 0; i < d.length; i++) {
@@ -268,48 +274,47 @@ clniTable.prototype.moveWindow = function(newRow) {
 		if (newRow > this.windowRow) {
 			// drop rows from the front of the window
 			for(var i = this.windowRow; i < newRow; i++) {
-				this.dropRow(i-this.windowRow);
+				this.dropRow(0);
 			}
 
 			// append rows to the back, doing a fetch call to make sure the data exists
 			for(var i = (this.windowRow + this.windowSize); i < (newRow + this.windowSize); i++) {
-				this.fetchRow(i);
+				//this.fetchRow(i);
 				this.appendRow(i);
 			}
 		}
 		else if (newRow < this.windowRow) {
 			// prepend rows onto the front
-			for(var i = newRow; i < this.windowRow; i++) {
-				this.fetchRow(i);
+			for(var i = this.windowRow-1; i >= newRow; i--) {
+				//this.fetchRow(i);
 				this.prependRow(i);
 			}
 
 			// drop rows from the back of the window
 			for(var i = (this.windowRow+this.windowSize); i > (newRow+this.windowSize); i--) {
-				this.dropRow((i-this.windowRow));
+				this.dropRow(this.windowSize);
 			}
 		}
 
-		this.fetchRow(newRow);
+		//this.fetchRow(newRow);
 
 		this.windowRow = newRow;
 	}
 }
 
 clniTable.prototype.up = function() {
-	if (this.windowRow % 3 == 0) {
-		this.prefetch(this.windowRow-this.prefetchSize); 
+	var newRow = this.windowRow-20;
+	if (newRow < 0) {
+		newRow = 0;
 	}
-	this.moveWindow(this.windowRow-1);
+	this.prefetch(newRow-this.prefetchSize); 
+	this.moveWindow(newRow);
 }
 
 clniTable.prototype.down = function() {
-	// prefetch the next group
-	// we only prefetch every 3 rows to limit traffic
-	if (this.windowRow % 3 == 0) {
-		this.prefetch(this.windowRow+this.windowSize+this.prefetchSize); 
-	}
-	this.moveWindow(this.windowRow+1);
+	var newRow = this.windowRow+20;
+	this.prefetch(this.windowRow+this.windowSize+this.prefetchSize); 
+	this.moveWindow(newRow);
 }
 
 function clniTableDataHandler(parent) {

@@ -4,40 +4,6 @@
 	<tr>
 		<td>
 {literal}
-<form action="javascript:{}" onSubmit="filterIcdGrid(this)">
-	<b>Filter ICD9 Codes</b>
-	<table>
-		<tr>
-			<td><label>Code:</label></td>
-			<td><input id="icd_code" size=10></td>
-			<td><label>Code name:</label></td>
-			<td><input id="icd_code_text" size=10></td>
-			<td><input type="submit" value="Filter"></td>
-		</tr>
-	</table>
-</form>
-<script type="text/javascript">
-	function filterIcdGrid(form) {
-		if (form.icd_code.value != "") {
-			o_gicd.addFilter('code',form.icd_code.value);
-		}
-		else {
-			o_gicd.dropFilter('code');
-		}
-		if (form.icd_code_text.value != "") {
-			o_gicd.addFilter('code_text',form.icd_code_text.value);
-		}
-		else {
-			o_gicd.dropFilter('code_text');
-		}
-		o_gicd.filter();
-	}
-</script>
-{/literal}
-
-		</td>
-		<td>
-{literal}
 <form action="javascript:{}" onSubmit="filterCptGrid(this)">
 	<b>Filter CPT Codes</b>
 	<table>
@@ -68,6 +34,38 @@
 	}
 </script>
 		</td>
+		<td>
+<form action="javascript:{}" onSubmit="filterIcdGrid(this)">
+	<b>Filter ICD9 Codes</b>
+	<table>
+		<tr>
+			<td><label>Code:</label></td>
+			<td><input id="icd_code" size=10></td>
+			<td><label>Code name:</label></td>
+			<td><input id="icd_code_text" size=10></td>
+			<td><input type="submit" value="Filter"></td>
+		</tr>
+	</table>
+</form>
+<script type="text/javascript">
+	function filterIcdGrid(form) {
+		if (form.icd_code.value != "") {
+			o_gicd.addFilter('code',form.icd_code.value);
+		}
+		else {
+			o_gicd.dropFilter('code');
+		}
+		if (form.icd_code_text.value != "") {
+			o_gicd.addFilter('code_text',form.icd_code_text.value);
+		}
+		else {
+			o_gicd.dropFilter('code_text');
+		}
+		o_gicd.filter();
+	}
+</script>
+
+		</td>
 		<td rowspan="3">
 			<div id="storedCodes" style="border: solid 1px black;"><div></div></div>
 		</td>
@@ -82,10 +80,10 @@
 {/literal}
 	<tr>
 		<td>
-			{$icd->render()}
+			{$cpt->render()}
 		</td>
 		<td align="left">
-			{$cpt->render()}
+			{$icd->render()}
 		</td>
 	</tr>
 </table>
