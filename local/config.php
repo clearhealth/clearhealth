@@ -32,4 +32,5 @@ $config['menu']['attachForms'] = true;
 $config['app_name'] = "clearhealth";
 
 $config['freeb2_wsdl'] = "http://localhost/freeb2/soap_gateway.php?wsdl";
+$GLOBALS['C_ALL']['freeb2_dir'] = "/freeb2/index.php/";
 ?>
