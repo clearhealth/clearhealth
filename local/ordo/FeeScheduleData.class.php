@@ -34,7 +34,7 @@ class FeeScheduleData extends ORDataObject {
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
-	function Fee_schedule_data($db = null) {
+	function FeeScheduleData($db = null) {
 		parent::ORDataObject($db);	
 		$this->_table = 'fee_schedule_data';
 		$this->_sequence_name = 'sequences';	

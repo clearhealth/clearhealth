@@ -22,9 +22,9 @@ class FeeScheduleRevision extends ORDataObject {
 	/**#@+
 	 * Fields of table: fee_schedule_revision mapped to class members
 	 */
-	var $id		= '';
+	var $id			= '';
 	var $user_id		= '';
-	var $update_time		= '';
+	var $update_time	= '';
 	var $name		= '';
 	/**#@-*/
 
@@ -33,7 +33,7 @@ class FeeScheduleRevision extends ORDataObject {
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
-	function Fee_schedule_revision($db = null) {
+	function FeeScheduleRevision($db = null) {
 		parent::ORDataObject($db);	
 		$this->_table = 'fee_schedule_revision';
 		$this->_sequence_name = 'sequences';	
