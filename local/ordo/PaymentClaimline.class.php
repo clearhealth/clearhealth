@@ -61,7 +61,7 @@ class PaymentClaimline extends ORDataObject {
 		$fwhere = "";
 		if ($foreign_id !== false) {
 			settype($foreign_id,'int');
-			$fwhere = " and foreign_id = $foreign_id ";
+			$fwhere = " and p.foreign_id = $foreign_id ";
 		}
 		
 		$ds =& new Datasource_sql();
@@ -69,10 +69,11 @@ class PaymentClaimline extends ORDataObject {
 		$labels = array('code' => 'Code','paid' => 'Paid', 'carry' => 'Due', 'writeoff' => 'Writeoff', 'payer_name' => 'Payer');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> " paid, carry, pcl.writeoff, code, ins.name as payer_name, date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment",
+				'cols' 	=> " paid, carry, pcl.writeoff, code, ins.name as payer_name, date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, cd.fee",
 				'from' 	=> "$this->_table pcl inner join codes cds using (code_id) inner join payment p on p.payment_id=pcl.payment_id "
 						. " inner join clearhealth_claim chc on chc.claim_id = p.foreign_id "
 						. " inner join encounter e on e.encounter_id = chc.encounter_id "
+						. " inner join coding_data cd on cd.foreign_id = e.encounter_id "
 						. " inner join company ins on ins.company_id = p.payer_id ",
 				'where' => " patient_id = $patient_id $fwhere"
 			),
