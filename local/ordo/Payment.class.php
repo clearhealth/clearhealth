@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: payment
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,16 +15,16 @@ require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: payment
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class Payment extends ORDataObject {
 
 	/**#@+
 	 * Fields of table: payment mapped to class members
 	 */
-	var $id		= '';
+	var $id			= '';
 	var $foreign_id		= '';
-	var $payment_type		= '';
+	var $payment_type	= '';
 	var $amount		= '';
 	var $user_id		= '';
 	/**#@-*/
