@@ -67,3 +67,17 @@ div.waitingActive {
 	border: solid 2px black;
 	font-weight: bold;
 }
+
+/* Auto complete rules */
+.autoCompleteBackground
+{
+        background-color: white;
+}
+.autoCompleteHighlight
+{
+        background-color: #CCCCCC;
+}
+.autoCompleteMatchingText
+{
+        background-color: yellow;
+}

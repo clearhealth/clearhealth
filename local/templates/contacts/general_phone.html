@@ -24,19 +24,19 @@
                     <table>
                         <tr>
 				<td><label>Type: </label></td>
-                          <td><select name="number[number_type]" tabindex="20">
+                          <td><select name="number[number_type]" >
 				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
 				</select>
 			  </td>
 				<td><label>Number: </label></td>
-                          <td><input name="number[number]" size="14" value="{$number->get('number')}" tabindex="21"></td>
+                          <td><input name="number[number]" size="14" value="{$number->get('number')}" ></td>
                         </tr>
                         <tr>
 				<td><label>Notes: </label></td>
-                          <td colspan="3"><textarea name="number[notes]" rows="4" cols="35" tabindex="22">{$number->get('notes')}</textarea></td>
+                          <td colspan="3"><textarea name="number[notes]" rows="3" cols="35" >{$number->get('notes')}</textarea></td>
                         </tr>
                         <tr>
-				<td></td><td><input type="submit" tabindex="23"{if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" tabindex="24">{else}value="Add">{/if}</td>
+				<td></td><td><input type="submit" {if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" >{else}value="Add">{/if}</td>
 
                         </tr>
 		</table>

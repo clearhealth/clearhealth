@@ -1,0 +1,54 @@
+	<fieldset class="radio" id="relatedPeople">
+		<legend>Related People</legend>
+
+		{$personPersonGrid->render()}
+		{if $personPersonGrid->empty}
+		<p>This Patient isn't related to anyone</p>
+		{/if}
+
+		<input type="hidden" value="{$personPerson->get('id')}" name="personPerson[person_person_id]">
+		<input type="hidden" value="{$personPerson->get('person_id')}" name="personPerson[person_id]">
+		<table>
+			<tr>
+				<td>
+		<i>{$person->get('first_name')} {$person->get('last_name')}</i> is a
+				<select name="personPerson[relation_type]">
+					{html_options options=$personPerson->getRelationTypeList() selected=$personPerson->get('relation_type')}
+				</select>
+				of
+			<input type="hidden" name="personPerson[related_person_id]" id="person_id_1" value="{$personPerson->get('related_person_id')}">
+				</td>
+				<td>
+			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
+				autocomplete="off" value="{$personPerson->get('related_person_id')}">
+			<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
+					class="AutoCompleteBackground"></div></div>
+
+		</td>
+		<td>
+			<input type="submit" value="{if $personPerson->get('id') > 0}Update{else}Add{/if} Relationship">
+			</td>
+		</tr>
+		</table>
+	</fieldset>
+
+{literal}
+<script language="javascript" type="text/javascript">
+var C_PatientFinder = function find_remoting(searchString) {
+        var h = new c_patientfinder(this.dataHandler);
+        h.Sync();
+                                                                                
+        var results = h.find_remoting(searchString);
+        return results;
+}
+
+var ac = new AutoComplete(
+	C_PatientFinder,
+	'person_name_1',
+	'person_id_1',
+	'acDiv_1',
+	true,
+	325
+);
+</script>
+{/literal}

@@ -13,6 +13,9 @@ class C_Patient extends Controller {
 	var $insured_relationship_id = 0;
 
 	function dashboard_action() {
+		if (isset($_SESSION['clearhealth']['active_user']) && $_SESSION['clearhealth']['active_user'] > 0) {
+
+		}
 	}
 
 	/**
@@ -40,6 +43,9 @@ class C_Patient extends Controller {
 
 		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
+
+		$personPerson =& ORDataObject::factory('PersonPerson');
+		$personPersonGrid = new cGrid($personPerson->relatedList($patient_id));
 		
 
 		$this->assign_by_ref('person',$person);
@@ -50,6 +56,8 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
 		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
 		$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
+		$this->assign_by_ref('personPerson',$personPerson);
+		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$patient_id));
 		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$patient_id));
 		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
