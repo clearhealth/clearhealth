@@ -123,7 +123,7 @@ class C_Coding extends Controller {
 		
 		$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
 		." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id "
-		." $where ";
+		." $where limit 30";
 		
 		//print($sql);
 		$result_array = $this->_db->GetAll($sql);
