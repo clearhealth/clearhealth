@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1
+-- version 2.6.1-pl3
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 09, 2005 at 04:43 PM
+-- Generation Time: Mar 12, 2005 at 06:09 PM
 -- Server version: 4.0.18
 -- PHP Version: 4.3.4
 
@@ -169,9 +169,11 @@ INSERT INTO `category_to_document` VALUES (993, 996);
 DROP TABLE IF EXISTS `coding_data`;
 CREATE TABLE `coding_data` (
   `coding_data_id` int(11) NOT NULL default '0',
-  `encounter_id` int(11) NOT NULL default '0',
+  `foreign_id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
+  `modifier` int(11) NOT NULL default '0',
+  `units` float(5,2) NOT NULL default '1.00',
   PRIMARY KEY  (`coding_data_id`)
 ) TYPE=MyISAM;
 
@@ -1021,6 +1023,7 @@ CREATE TABLE `gacl_aro` (
 
 INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
 INSERT INTO `gacl_aro` VALUES (23, 'users', 'jeichorn', 100, 'jeichorn', 1);
+INSERT INTO `gacl_aro` VALUES (24, 'users', 'cpowers', 100, 'cpowers', 1);
 
 -- --------------------------------------------------------
 
@@ -1165,8 +1168,8 @@ CREATE TABLE `gacl_aro_seq` (
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (23);
-INSERT INTO `gacl_aro_seq` VALUES (23);
+INSERT INTO `gacl_aro_seq` VALUES (24);
+INSERT INTO `gacl_aro_seq` VALUES (24);
 
 -- --------------------------------------------------------
 
@@ -2231,6 +2234,8 @@ INSERT INTO `ownership` VALUES (1080, 1);
 INSERT INTO `ownership` VALUES (1081, 1);
 INSERT INTO `ownership` VALUES (1082, 1);
 INSERT INTO `ownership` VALUES (1083, 1);
+INSERT INTO `ownership` VALUES (1084, 1);
+INSERT INTO `ownership` VALUES (1085, 1);
 
 -- --------------------------------------------------------
 
@@ -2262,6 +2267,7 @@ INSERT INTO `patient` VALUES (1076, 0, 0, 8);
 INSERT INTO `patient` VALUES (1077, 0, 0, 9);
 INSERT INTO `patient` VALUES (1078, 0, 0, 10);
 INSERT INTO `patient` VALUES (1079, 0, 0, 11);
+INSERT INTO `patient` VALUES (1084, 0, 0, 12);
 
 -- --------------------------------------------------------
 
@@ -2301,6 +2307,7 @@ INSERT INTO `person` VALUES (1076, '', 'Doe', 'Michael', '', 0, '', '0000-00-00'
 INSERT INTO `person` VALUES (1077, '', 'Doe', 'Chris', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
 INSERT INTO `person` VALUES (1078, '', 'Doe', 'Morton', '', 0, '', '0000-00-00', '', '', '', '', '', '', '123', 1);
 INSERT INTO `person` VALUES (1079, '', 'Doe', 'Jonathan', '', 0, '', '0000-00-00', '', '', '', '', '', '', '1231214', 1);
+INSERT INTO `person` VALUES (1084, '', 'Cory', 'Powers', '', 0, '', '0000-00-00', '', '', '', 'cory@uversainc.com', '', '', '111-11-1111', 1);
 
 -- --------------------------------------------------------
 
@@ -2413,6 +2420,7 @@ CREATE TABLE `person_type` (
 -- 
 
 INSERT INTO `person_type` VALUES (983, 2);
+INSERT INTO `person_type` VALUES (1084, 4);
 
 -- --------------------------------------------------------
 
@@ -2551,7 +2559,7 @@ CREATE TABLE `record_sequence` (
 -- Dumping data for table `record_sequence`
 -- 
 
-INSERT INTO `record_sequence` VALUES (11);
+INSERT INTO `record_sequence` VALUES (12);
 
 -- --------------------------------------------------------
 
@@ -2599,7 +2607,7 @@ CREATE TABLE `reports` (
 -- Dumping data for table `reports`
 -- 
 
-INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from users', '');
+INSERT INTO `reports` VALUES (8, '', '', 'User List', 'select * from user', '');
 INSERT INTO `reports` VALUES (791, '', '', 'Codes with Fee Schedule', 'select code, code_text, data as fee from codes c inner join fee_schedule_data fsd using(code_id)', 'Codes that have had a feed added to them');
 
 -- --------------------------------------------------------
@@ -2671,7 +2679,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (1083);
+INSERT INTO `sequences` VALUES (1085);
 
 -- --------------------------------------------------------
 
@@ -3010,6 +3018,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 0);
 INSERT INTO `user` VALUES (984, 'jeichorn', 'test', 'jei', '336666', 983, '', 0);
+INSERT INTO `user` VALUES (1085, 'cpowers', 'bam2.6', 'Cory', 'CC3366', 1084, 'no', 0);
 
 -- --------------------------------------------------------
 
