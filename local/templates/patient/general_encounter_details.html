@@ -26,11 +26,11 @@
 			<td><input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter"></td>
 			<td><label>Status:</label></td>
 			<td> 
-				{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
-				<input type="submit" name="encounter[close]" value="Close">
-				{elseif $encounter->get('status') == 'closed'}
-				<input type="submit" name="encounter[bill]" value="Bill">
-				{/if}
+                                {if $encounter->get('status') == 'open' && $encounter->get('id') > 0}^M
+                                <input type="submit" name="encounter[close]" value="Close">
+                                {elseif $encounter->get('status') == 'closed'}                                <a href="{php}echo Cellini::link("sendclaim","billing");{/php}encounter_id={$encounter->get("encounter_id")}">jump to claim</a>
+                                {/if}
 			</td>
 		</tr>
 	</table>
+
