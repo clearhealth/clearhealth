@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 14, 2005 at 11:27 AM
+-- Generation Time: Mar 14, 2005 at 12:57 PM
 -- Server version: 4.0.23
 -- PHP Version: 4.3.10
 -- 
@@ -16,7 +16,6 @@
 -- Table structure for table `menu`
 -- 
 
-DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -74,7 +73,7 @@ INSERT INTO `menu` VALUES (81, 'admin', 1, '', 'children', 700, 'System', '', ''
 INSERT INTO `menu` VALUES (73, 'billing', 62, '', 'children', 30, 'Search', 'Claim/search', 'freeb2');
 INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', '', 'main/Billing');
 INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 200, 'Reports', '', 'main/Calendar');
-INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', 'Patient/reports', 'main');
+INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', '', 'main/Patient');
 INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 300, 'Billing', '', 'main');
 INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 400, 'My Account', '', 'main');
 INSERT INTO `menu` VALUES (47, 'patient', 46, '', 'children', 100, 'Logout', 'Access/logout', 'main');
