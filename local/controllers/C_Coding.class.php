@@ -12,11 +12,7 @@ class C_Coding extends Controller {
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
 	}
 
-	function list_action() {
-		return $this->update_action(1);
-	}
-	
-	function update_action($foreign_id = 0, $parent_id = 0) {
+	function update_action_edit($foreign_id = 0, $parent_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
 		if($parent_id == 0)
@@ -65,8 +61,26 @@ class C_Coding extends Controller {
 		
 		//var_dump($_POST);
 
-		ORdataObject::Factory_include('FeeSchedule');
-		$feeSchedule = FeeSchedule::defaultFeeSchedule();
+		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
+
+		// get the patients primary insured relationship
+		ORDataobject::factory_include('InsuredRelationship');
+		$irs =& InsuredRelationship::fromPersonId($encounter->get('patient_id'));
+		if (isset($irs[0])) {
+			$ir =& $irs[0];
+			// get the fee schedule from that insurance_program_id
+
+			$ip =& ORDataObject::factory('InsuranceProgram',$ir->get('insurance_program_id'));
+			$feeSchedule =& ORDataObject::factory('FeeSchedule',$ip->get('fee_schedule_id')); 
+		}
+		else {
+			// patient has no payers just grab the default fee schedule
+			ORdataObject::Factory_include('FeeSchedule');
+			$feeSchedule =& FeeSchedule::defaultFeeSchedule();
+		}
+
+
+
 					
 		$code_data =& ORdataObject::factory('CodingData');
 		$code_data->populate_array($_POST);

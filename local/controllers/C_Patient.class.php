@@ -272,7 +272,7 @@ class C_Patient extends Controller {
 
 		if ($encounter_id > 0 /*&& $encounter->get('status') !== "closed"*/) {
 			$this->coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
-			$codingHtml = $this->coding->update_action($encounter_id,$this->coding_parent_id);
+			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_parent_id);
 			$this->assign('codingHtml',$codingHtml);
 		}
 
