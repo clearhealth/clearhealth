@@ -71,6 +71,7 @@ class C_Coding extends Controller {
 		$code_data =& ORdataObject::factory('CodingData');
 		$code_data->populate_array($_POST);
 		$code_data->clearChildCodes($_POST['foreign_id'], $_POST['parent_id']);
+		$code_data->set('fee',$feeSchedule->getFeeFromCodeId($_POST['parent_id']));
 		
 		if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
 			foreach($_POST['child_codes'] as $code_id){
@@ -78,9 +79,7 @@ class C_Coding extends Controller {
 					continue;
 					
 				$code_data->set("id", 0);
-				var_dump($feeSchedule->getFeeFromCodeId($code_id));
 				$code_data->set('code_id', $code_id);
-				$code_data->set('fee',$feeSchedule->getFeeFromCodeId($code_id));
 				$code_data->persist();
 				//var_dump($code_data);
 			}	

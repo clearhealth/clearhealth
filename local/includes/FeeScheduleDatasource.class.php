@@ -11,7 +11,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 	var $revision_id = 1;
 	var $feeSessions = array();
 
-	var $meta = array('editableMap' => array());
+	var $meta = array('editableMap' => array(),'passAlong'=>array('code_id'=>'code_id'));
 
 	function FeeScheduleDatasource($session_array = "fsd") {
 		$this->session = $session_array;
@@ -32,7 +32,7 @@ class FeeScheduleDatasource extends Datasource_editable {
 		$this->object =& ORDataObject::factory('FeeScheduleData');
 
 		$cols = 'c.code_id, code, code_text';
-		$labels = array( 'code' => 'Code', 'code_text' => 'Code name');
+		$labels = array( 'code_id' => 'Code Id', 'code' => 'Code', 'code_text' => 'Code name');
 		$from = 'codes c ';
 		foreach($this->feeSessions as $field => $data) {
 			$cols .= ", fsd_$field.data as $field";

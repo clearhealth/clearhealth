@@ -28,6 +28,7 @@ class CodingData extends ORDataObject {
 	var $code_id		= '';
 	var $modifier		= '';
 	var $units			= '1.00';
+	var $fee		= '';
 	/**#@-*/
 
 	var $_parentCode 	= null;
