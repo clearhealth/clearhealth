@@ -266,10 +266,17 @@ class C_Patient extends Controller {
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 
-		if ($encounter_id > 0) {
+		if ($encounter_id > 0 && $encounter->get('status') !== "closed") {
 			$this->coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 			$codingHtml = $this->coding->update_action($encounter_id,$this->coding_parent_id);
 			$this->assign('codingHtml',$codingHtml);
+		}
+
+		if ($encounter->get('status') === "closed") {
+			ORDataObject::factory_include('ClearhealthClaim');
+			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
+			$this->assign('FREEB_ACTION',Cellini::link('view','Claim','Freeb',$claim->get('id')));
+			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
 		}
 
 

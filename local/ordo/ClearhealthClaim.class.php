@@ -48,6 +48,19 @@ class ClearhealthClaim extends ORDataObject {
 		}
 	}
 
+	function fromEncounterId($encounter_id) {
+		settype($encounter_id,'int');
+
+		$claim =& ORDataOBject::factory('ClearhealthClaim');
+
+		$res = $claim->_execute("select claim_id from $claim->_table where encounter_id = $encounter_id");
+		if ($res && isset($res->fields['claim_id'])) {
+			$claim->setup($res->fields['claim_id']);
+		}
+		return $claim;
+
+	}
+
 	/**
 	 * Populate the class from the db
 	 */
