@@ -1,3 +1,20 @@
+{literal}
+<script type="text/javascript">
+	function selectSubscriber(select) {
+		if (select.options[select.selectedIndex] != "Self") {
+			document.getElementById('subscriber').style.display = "block";
+		}
+	}
+
+	function swapSubscriber(type) {
+		document.getElementById('searchSubscriber').style.display = 'none';
+		document.getElementById('newSubscriber').style.display = 'none';
+		document.getElementById(type+'Subscriber').style.display = 'block';
+	}
+
+
+</script>
+{/literal}
 	<fieldset class="radio" id="insurer">
 		<legend>Insurers</legend>
 
@@ -34,11 +51,68 @@
 			</tr>
 			<tr>
 				<td><label>Subscriber:</label></td>
-				<td><select name="subscriber_to_patient_relationship">
+				<td><select name="subscriber_to_patient_relationship" onchange="selectSubscriber(this)">
 					{html_options options=$insuredRelationship->getSubscriberToPatientRelationshipList() 
 						selected=$insuredRelationship->get('subscriber_to_patient_relationship')}
 					</select>
 				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<fieldset id="subscriber" style="display:none">
+					<legend>Subscriber</legend>
+					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" checked>
+					<label class="inline" for="rscs">Select Current Patient</label>
+
+					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn">
+					<label class="inline" for="rscn">Enter New</label>
+					<div id="searchSubscriber">
+						<input type="hidden" name="searchSubscriber[person_id]" id="subscriber_id">
+						<table>
+							<tr>
+								<td><label>Search:</label></td>
+								<td>
+			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="newSubscriber" style="display: none;">
+						<table>
+							<tr>
+								<td colspan=2><label>First Name:</label></td>
+								<td colspan=2><input name="newSubscriber[first_name]"></td>
+							</tr>
+							<tr>
+								<td colspan=2><label>Last Name:</label></td>
+								<td colspan=2><input name="newSubscriber[last_name]"></td>
+							</tr>
+							<tr>
+								<td colspan=2><label>Phone #:</label></td>
+								<td colspan=2><input name="newSubscriber[number]"></td>
+							</tr>
+							<tr>
+								<td valign="top" colspan=2><label>Address:</label></td>
+								<td colspan=2><input name="newSubscriber[address1]" size=30><br>
+								<input name="newSubscriber[address2]" size=30>
+								</td>
+							</tr>
+							<tr>
+								<td><label>City:</label> </td>
+								<td><input name="newSubscriber[city]" size="15"></td>
+								<td>
+									<select name="newSubscriber[state]">
+									{html_options options=$address->getStateList()}
+									</select>
+								</td>	
+								<td><label class="inline">Zip:</label> 
+								<input name="newSubscriber[postal_code]" size="10"></td>
+						      </tr>
+					      </table>
+					</div>
+
+				</fieldset>
+			</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -46,3 +120,15 @@
 			</tr>
 		</table>
 	</fieldset>
+<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
+					class="AutoCompleteBackground"></div></div>
+<script language="javascript" type="text/javascript">
+var ac = new AutoComplete(
+	C_PatientFinder,
+	'subscriber_name',
+	'subscriber_id',
+	'acDiv',
+	true,
+	325
+);
+</script>
