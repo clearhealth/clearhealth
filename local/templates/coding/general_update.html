@@ -44,7 +44,7 @@ function captureEnter (field, event) {
 						<label>Modifier:</label>
 					</td>
 					<td valign="top">
-						<select name="modifier">
+						<select name="modifier" STYLE="z-index: 1;">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
 					<label style="display:inline;">Units: </label></b> <input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
