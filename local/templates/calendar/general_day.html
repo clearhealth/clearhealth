@@ -86,15 +86,9 @@
 		{/if}
 	
 		{foreach name=evs from=$events.$time item=ev}
-		{if $ev.schedule_code eq ADM}
-			{assign var=color value="FFFF13"}
-			{else}
-			{assign var=color value=$ev.color}
-		{/if}
 			{assign var=inlineBlurb value=1}
 			{assign var=ev_edit value=1}
 			{include file="calendar/general_appointment_inline_blurb.html"}
-
 		{/foreach}
 		
 		{if isset($tablemap.$time)}

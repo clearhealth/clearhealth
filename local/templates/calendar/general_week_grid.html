@@ -108,50 +108,9 @@
 		{/if}
 	
 		{foreach name=evs from=$events.$this_days_time item=ev}
-		{if $ev.schedule_code eq ADM}
-			{assign var=color value="FFFF13"}
-			{else}
-			{assign var=color value=$ev.color}
-		{/if}
-			
-			<td colspan="1"  rowspan="{$tablemap2[$ev.occurence_id]}"  class="eventbg2_1" valign="top" style="background-color:#{$color};">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td height="13" class="eventborder"><span class="eventfont">{$ev.start_ts|date_format:"%I:%M%p"}&nbsp;-&nbsp;{$ev.end_ts|date_format:"%I:%M%p"} {$ev.nickname}</span></td>
-					</tr>
-					<tr>
-					<td colspan="1" valign="top" >
-						<table width="100%" border="0" cellpadding="0" cellspacing="0" >
-							<tr>
-							<td class="eventbg_1">
-								{if $ev.p_record_number > 0}
-								<b><a href="{$PATIENT_EDIT_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
-								{if $ev.notes}
-								<br>
-								{$ev.notes}
-								{/if}
-								<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>, 
-								<!-- <a href="controller.php?location&delete&id={$ev.occurence_id}&object=occurence&process=1">delete</a>, <a href="controller.php?location&update_schedule&id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, <a href="controller.php?location&update_schedule&id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a> -->
-								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a>, 
-								<a href="{$UPDATE_SCHEDULE_ACTION}&id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, 
-								<a href="{$UPDATE_SCHEDULE_ACTION}&id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a>
-
-								{else}
-								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.schedule_code}</a> 
-								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.title}</a>
-
-								<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>, 
-								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a><br>
-								{$ev.notes}
-								{/if}
-								<br>{$ev.last_change_nickname}-{$ev.last_change|date_format:"%m/%d/%Y"}  
-							</td>
-							</tr>
-						</table>
-					</td>
-					</tr>
-				</table>
-			</td>
+			{assign var=inlineBlurb value=1}
+			{assign var=ev_edit value=1}
+			{include file="calendar/general_appointment_inline_blurb.html"}
 		{/foreach}
 		
 		{if isset($tablemap.$this_days_time)}

@@ -2,7 +2,12 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 {/if}
-	<td colspan="1"  rowspan="{$tablemap2[$ev.occurence_id]}"  class="eventbg2_1" valign="top" style="background-color:#{$ev.color};">
+{if $ev.schedule_code eq ADM}
+	{assign var=color value="FFFF13"}
+{else}
+	{assign var=color value=$ev.color}
+{/if}
+	<td colspan="1"  rowspan="{$tablemap2[$ev.occurence_id]}"  class="eventbg2_1" valign="top" style="background-color:#{$color};">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td height="13" class="eventborder"><span class="eventfont">{$ev.start_ts|date_format:"%I:%M%p"}&nbsp;-&nbsp;{$ev.end_ts|date_format:"%I:%M%p"} {$ev.nickname}</span></td>
@@ -13,16 +18,17 @@
 		<tr>
 			<td class="eventbg_1">
 				{if $ev.p_record_number > 0}
-					<b><a href="{$PATIENT_EDIT_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
+					<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
 					{if $ev.notes}
 					<br>
 					{$ev.notes}
 					{/if}
 					{if $ev_edit == true}
 					<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>,
-					<a href="{$EVENT_DELETE_ACTION}id={$ev.occurence_id}&object=occurence&process=1">delete</a>, 
+					<a href="{$EVENT_DELETE_ACTION}id={$ev.occurence_id}&object=occurence&process=1">del</a>, 
 					<a href="{$UPDATE_SCHEDULE_ACTION}id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, 
-					<a href="{$UPDATE_SCHEDULE_ACTION}id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a>
+					<a href="{$UPDATE_SCHEDULE_ACTION}id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">can</a>,
+					<a href="{link action="encounter" controller="Patient" defaultArg="0"}occurence_id={$ev.occurence_id}">enc</a>
 					{/if}
 				{else}
 					<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.schedule_code}</a> 

@@ -5,13 +5,12 @@
 		<tr>
 			<td><label>{l}Facility{/l}:</label></td>
 			<td><select name="encounter[building_id]">
-					<option></option>
 					{html_options options=$building->getBuildingList() selected=$encounter->get('building_id')}
 				</select>
 			</td>
 			<td><label>{l}Treating Provider{/l}:</label></td>
 			<td><select name="encounter[treating_person_id]">
-					{html_options options=$person->getPersonList('Provider') selected=$encounter->get('treating_person_id')}
+					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('treating_person_id')}
 				</select>
 			</td>
 		</tr>
@@ -26,23 +25,24 @@
 		</tr>
 		<tr>			
 			<td><label>{l}Appointment{/l}:</label></td>
-			<td>{html_options name="encounter[occurence_id]" options=$appointmentArray onChange="populateEncounter(this.selectedIndex)"}
+			<td colspan="3">{html_options name="encounter[occurence_id]" options=$appointmentArray selected=$encounter->get("occurence_id") onChange="populateEncounter(this.selectedIndex)"}
 			{foreach from=$appointmentlist item=appointment}
 			{/foreach}
 			</td>
-			<td><label>{l}Status{/l}:</label></td>
-			<td> 
-                                {if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
-                                <input type="submit" name="encounter[close]" value="Close">
-                                {elseif $encounter->get('status') == 'closed'}
-                                <a href="{php}echo Cellini::link("sendclaim","billing");{/php}encounter_id={$encounter->get("encounter_id")}">jump to claim</a>
-                                {else}
-                                open
-                                {/if}
-			</td>
+			
 		</tr>
 		<tr>
 			<td><input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter"></td>
+			<td><label>{l}Status{/l}:</label></td>
+			<td> 
+            	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
+            		<input type="submit" name="encounter[close]" value="Close">
+            	{elseif $encounter->get('status') == 'closed'}
+            		<a href="{php}echo Cellini::link("sendclaim","billing");{/php}encounter_id={$encounter->get("encounter_id")}">jump to claim</a>
+        		{else}
+            		open
+            	{/if}
+			</td>
 		</tr>
 	</table>
 </fieldset>
