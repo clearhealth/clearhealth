@@ -12,7 +12,8 @@
 	{else}
 {foreach from=$menu.$menu_group item=nav}
 	{if $nav.display_order > 0}
-	<div class="section">
+	
+	<div class="section" {if $nav.title eq "My Account"}style="position:fixed; left:450px;"{/if}  {if $nav.title eq "Help"}style="position:fixed; left:520px;"{/if}>
 	{if $nav.action}
 		{if $translate[$nav.prefix]}
 			<div class="topLevel"><a href="{$translate[$nav.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
