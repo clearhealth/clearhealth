@@ -118,5 +118,10 @@
 <div id="payments">
 	<h4>Payment History</h4>
 	{$payment_history_grid->setPageSize(false)}
+	{php}
+	// todo: make a non hackish way to do this
+	$p =& ORDataObject::factory('Payment');
+	$this->_tpl_vars['payment_history_ds']->registerFilter('payment_type',array(&$p,'lookupPaymentType'));
+	{/php}
 	{$payment_history_grid->render()}
 </div>
