@@ -33,10 +33,9 @@ class Datasource_AccountHistory extends Datasource {
 		$claim =& ORDataObject::factory('ClearhealthClaim');
 		$this->claims = $claim->claimList($person_id,true);
 		$this->_labels = array ( 
-			'type' => 'type', 
-			'date_of_treatment' => 'Date', 
 			'identifier' 	=> 'Id', 
-			/*'payer_name'	=> "Payer",*/
+			'date_of_treatment' => 'Date', 
+			'payer_name'	=> "Payer",
 			'total_billed' 	=> 'Billed', 
 			'total_paid' 	=> 'Paid', 
 			'writeoff'	=> 'Write Off',
@@ -94,7 +93,8 @@ class Datasource_AccountHistory extends Datasource {
 				$this->_res = $this->lines[$claim_id]->_res;
 				$this->_res->fields['total_paid'] = $this->_res->fields['paid'];
 				$this->_res->fields['balance'] = $this->_res->fields['carry'];
-				$this->_res->fields['type'] = 'Claimline Payment';
+				$this->_res->fields['identifier'] = $this->_res->fields['code'];
+				$this->_res->fields['total_billed'] = $this->_res->fields['fee'];
 				$this->_valid = $this->lines[$claim_id]->valid();
 			}
 		}
@@ -114,7 +114,7 @@ class Datasource_AccountHistory extends Datasource {
 			//	$this->_res->fields['balance'] = $this->_res->fields['carry'];
 				//var_dump($this->_res->fields);
 				$this->_res->fields['date_of_treatment'] = $this->_res->fields['payment_date'];
-				$this->_res->fields['type'] = 'Payment';
+				$this->_res->fields['identifier'] = 'copay';
 				$this->_valid = $this->payments[$claim_id]->valid();
 			}
 		}
