@@ -23,7 +23,7 @@ function captureEnter (field, event) {
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
 <fieldset id="coding_data">
-<legend>Edit Coding Data</legend>
+<legend>Edit Claim Line</legend>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 <table>
 	<tr>
@@ -43,9 +43,12 @@ function captureEnter (field, event) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" valign="top">
-					<label style="display:inline;">Units: </label></b> <input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
-					&nbsp;<label style="display:inline;">SuperBill</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
+					<td valign="top">
+						<label style="display:inline;">Units: </label></b>
+					</td>
+					<td>
+						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
+						&nbsp;<label style="display:inline;">SuperBill</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
 					</td>
 				</tr>
 			</table>
