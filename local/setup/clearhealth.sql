@@ -2980,6 +2980,7 @@ CREATE TABLE `user` (
   `color` varchar(255) NOT NULL default '',
   `person_id` int(11) default NULL,
   `disabled` enum('yes','no') NOT NULL default 'yes',
+  `default_location_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
@@ -2989,8 +2990,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 -- 
 
-INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no');
-INSERT INTO `user` VALUES (984, 'jeichorn', 'test', '', '', 983, '');
+INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no',0);
+INSERT INTO `user` VALUES (984, 'jeichorn', 'test', '', '', 983, '',0);
 
 -- --------------------------------------------------------
 
