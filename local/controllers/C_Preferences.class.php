@@ -25,8 +25,8 @@ class C_Preferences extends Controller {
 	}
 	
 	function list_action() {
-		$dprefs = unserialize($_SESSION['prefs']['default']);
-		$uprefs = unserialize($_SESSION['prefs']['user']);
+		$dprefs = $_SESSION['prefs']['default'];
+		$uprefs = $_SESSION['prefs']['user'];
 		
 		$prefs = $dprefs->tree;
 		if (count($uprefs->tree) > 0) {
@@ -41,7 +41,7 @@ class C_Preferences extends Controller {
  		$this->_last_node = null;
  		$rnode = $this->_array_recurse($dprefs->tree, $dprefs);
 		$menu->addItem($rnode);
-		$treeMenu = &new HTML_TreeMenu_DHTML($menu, array('images' => 'images', 'defaultClass' => 'treeMenuDefault'));
+		$treeMenu = &new HTML_TreeMenu_DHTML($menu, array('images' => $this->base_dir.'images/stock', 'defaultClass' => 'treeMenuDefault'));
 		
 		$this->assign("tree_html",$treeMenu->toHTML());
 		return $this->fetch($GLOBALS['template_dir'] . "preferences/" . $this->template_mod . "_list.html");
@@ -145,28 +145,28 @@ class C_Preferences extends Controller {
  			$result = $db->Execute($sql);
  			if ($result) {
  				$this->_load_prefs();
- 				$this->assign("messages", "The node was successfully updated.<br>");	
+				$this->messages->addMessage('',"The node was successfully updated.<br>");	
  				$this->_state = false;
  				return $this->list_action();
  			}
  			else {
- 				$this->assign("messages", "There was a problem with the database while updating the node.<br>");		
+				$this->messages->addMessage("", "There was a problem with the database while updating the node.<br>");		
  			}		
  		}
  		else {
- 			$this->assign("messages", "An invalid node id was specified.<br>");	
+			$this->message->addMessage("", "An invalid node id was specified.<br>");	
  		}
  	}
  	
  	function _load_prefs() {
  		
- 		$me = unserialize($_SESSION['frame']['me']);
+ 		$me =& Me::getInstance();
 		
 		$ct = new PreferenceTree("9000");
-		$_SESSION['prefs']['default'] = serialize($ct);
+		$_SESSION['prefs']['default'] = $ct;
 		
 		$ct = new PreferenceTree($me->get_user_id());
-		$_SESSION['prefs']['user'] = serialize($ct);	
+		$_SESSION['prefs']['user'] = $ct;	
  	}
 }
 
