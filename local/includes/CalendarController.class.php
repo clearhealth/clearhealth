@@ -46,10 +46,13 @@ class CalendarController extends Controller {
 		$week_table_map['maxcols'] = array();
 		if (!is_array($days_events)) $days_events = array();
 		foreach ($days_events as $day_ts => $events) {
+			
+			if (isset($incs[$day_ts]))  {
 			$map = $this->build_table_map($incs[$day_ts], $events);
 			$week_table_map['tablemap'][$day_ts] = $map['tablemap'];
 			$week_table_map['tablemap2'][$day_ts] = $map['tablemap2'];
 			$week_table_map['maxcols'][$day_ts] = $map['maxcols'];
+			}
 		}
 		return $week_table_map;		
 	}
