@@ -27,7 +27,7 @@ class PatientStatistics extends ORDataObject {
 	var $race		= '';
 	var $income		= '';
 	var $language		= '';
-	var $migrant		= '';
+	var $migrant_status		= '';
 	/**#@-*/
 
 
@@ -62,23 +62,23 @@ class PatientStatistics extends ORDataObject {
 	 * Enumeration getters
 	 */
 	function getEthnicityList() {
-		$list = $this->_load_enum('ethnicity',false);
+		$list = $this->_load_enum('ethnicity');
 		return array_flip($list);
 	}
 	function getRaceList() {
-		$list = $this->_load_enum('race',false);
+		$list = $this->_load_enum('race');
 		return array_flip($list);
 	}
 	function getIncomeList() {
-		$list = $this->_load_enum('income',false);
+		$list = $this->_load_enum('income');
 		return array_flip($list);
 	}
 	function getLanguageList() {
-		$list = $this->_load_enum('language',false);
+		$list = $this->_load_enum('language');
 		return array_flip($list);
 	}
-	function getMigrantList() {
-		$list = $this->_load_enum('migrant',false);
+	function getMigrantStatusList() {
+		$list = $this->_load_enum('migrant_status');
 		return array_flip($list);
 	}
 	/**#@-*/
@@ -123,12 +123,12 @@ class PatientStatistics extends ORDataObject {
 		}
 	}
 	
-	function lookupMigrantType($id) {
-		if (isset($this->_edCache['migrant'])) {
-			$this->_edCache['migrant'] = $this->getMigrantList();
+	function lookupMigrantStatusType($id) {
+		if (isset($this->_edCache['migrant_status'])) {
+			$this->_edCache['migrant_status'] = $this->getMigrantStatusList();
 		}
-		if (isset($this->_edCache['migrant'][$id])) {
-			return $this->_edCache['migrant'][$id];
+		if (isset($this->_edCache['migrant_status'][$id])) {
+			return $this->_edCache['migrant_status'][$id];
 		}
 	}	
 
