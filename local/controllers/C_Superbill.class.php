@@ -6,7 +6,6 @@ class C_Superbill extends Controller {
 
 	function list_action() {
 		$sbd =& ORDataObject::factory('SuperbillData');
-		$ds->reset();
 		$ds =& $sbd->superbillList();
 		$ds->template['superbill_id'] = "<a href='".Cellini::link('update')."id={\$superbill_id}'>{\$superbill_id}</a>";
 		$grid =& new cGrid($ds);
