@@ -1,6 +1,7 @@
 <?php
 require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
 require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
 
 /**
  * Controller for the Freestand Branch stuff
@@ -16,10 +17,14 @@ class C_Patient extends Controller {
 	var $encounter_person_id = 0;
 	var $payment_id = 0;
 	var $patient_statistics_id = 0;
+	var $coding;
+	var $coding_parent_id = 0;
 
 	function C_Patient() {
 		parent::Controller();
 		$this->_load_controller_vars();	
+
+		$this->coding = new C_Coding();
 	}
 	
 	/**
@@ -242,10 +247,8 @@ class C_Patient extends Controller {
 		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 
 		if ($encounter_id > 0) {
-			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
-			$coding = new C_Coding();
-			$coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
-			$codingHtml = $coding->update_action($encounter_id);
+			$this->coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
+			$codingHtml = $this->coding->update_action($encounter_id,$this->coding_parent_id);
 			$this->assign('codingHtml',$codingHtml);
 		}
 
@@ -256,9 +259,7 @@ class C_Patient extends Controller {
 	function encounter_action_process($encounter_id=0) {
 		
 		if (isset($_POST['saveCode'])) {
-			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
-			$coding = new C_Coding();
-			$coding->update_action_process();
+			$this->coding->update_action_process();
 			return;
 		}
 
@@ -315,6 +316,11 @@ class C_Patient extends Controller {
 		}
 		$ret .=$program_order;
 		return $ret;
+	}
+
+	function update_action($foreign_id = 0, $parent_id = 0) {
+		$this->coding_parent_id = $parent_id;
+		return $this->encounter_action_edit($this->get('encounter_id'));
 	}
 }
 ?>
