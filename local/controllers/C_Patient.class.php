@@ -159,6 +159,9 @@ class C_Patient extends Controller {
 		if ($encounter_id > 0) {
 			$this->set('encounter_id',$encounter_id);
 		}
+		if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
+			$encounter_id = $this->get('encounter_id');
+		}	
 
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$person =& ORDataObject::factory('Person');
@@ -182,10 +185,25 @@ class C_Patient extends Controller {
 
 		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
 
+		if ($encounter_id > 0) {
+			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
+			$coding = new C_Coding();
+			$codingHtml = $coding->update_action($encounter_id);
+			$this->assign('codingHtml',$codingHtml);
+		}
+
+
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
 	}
 
-	function encounter_action_process($encounter_id) {
+	function encounter_action_process($encounter_id=0) {
+		if (isset($_POST['saveCode'])) {
+			require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
+			$coding = new C_Coding();
+			$coding->update_action_process();
+			return;
+		}
+
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$encounter->populate_array($_POST['encounter']);
 		$encounter->persist();
