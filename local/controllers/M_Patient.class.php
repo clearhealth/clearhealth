@@ -177,6 +177,12 @@ class M_Patient extends Manager {
 		}
 	}
 
+	/**
+	 * Setup for editing a person relationship
+	 */
+	function process_editPersonPerson($patient_id,$person_person_id) {
+		$this->controller->person_person_id = $person_person_id;
+	}
 
 	/**
 	 * Setup for editing a phone number

@@ -11,6 +11,7 @@ class C_Patient extends Controller {
 	var $address_id = 0;
 	var $identifier_id = 0;
 	var $insured_relationship_id = 0;
+	var $person_person_id = 0;
 
 	function dashboard_action() {
 		if (isset($_SESSION['clearhealth']['active_user']) && $_SESSION['clearhealth']['active_user'] > 0) {
@@ -44,8 +45,9 @@ class C_Patient extends Controller {
 		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 
-		$personPerson =& ORDataObject::factory('PersonPerson');
+		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id);
 		$personPersonGrid = new cGrid($personPerson->relatedList($patient_id));
+		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Cellini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
 		
 
 		$this->assign_by_ref('person',$person);

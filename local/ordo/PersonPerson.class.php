@@ -104,12 +104,12 @@ class PersonPerson extends ORDataObject {
 			'union' => 
 			array(
 				array(
-				'cols' 	=> "concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
+				'cols' 	=> "t.person_person_id, concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
 				'from' 	=> "$this->_table t inner join person p on p.person_id = t.person_id inner join person r on r.person_id = t.related_person_id",
 				'where'	=> "t.person_id = $person_id",
 				),
 				array(
-				'cols' 	=> "concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
+				'cols' 	=> "t.person_person_id, concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
 				'from' 	=> "$this->_table t inner join person r on p.person_id = t.person_id inner join person p on r.person_id = t.related_person_id",
 				'where'	=> "t.related_person_id = $person_id",
 				)
