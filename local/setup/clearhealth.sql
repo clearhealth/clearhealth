@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
+-- version 2.6.1-pl2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 04, 2005 at 04:27 PM
+-- Generation Time: Mar 04, 2005 at 05:14 PM
 -- Server version: 4.0.23
--- PHP Version: 4.3.10
+-- PHP Version: 4.3.10-2
 -- 
 -- Database: `clearhealth`
 -- 
@@ -16,7 +16,6 @@
 -- Table structure for table `address`
 -- 
 
-DROP TABLE IF EXISTS `address`;
 CREATE TABLE `address` (
   `address_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -51,7 +50,6 @@ INSERT INTO `address` VALUES (783, 'Other', '323 Soth St', '', 'Mesa', 0, 0, 2, 
 -- Table structure for table `adodbseq`
 -- 
 
-DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -68,7 +66,6 @@ INSERT INTO `adodbseq` VALUES (1);
 -- Table structure for table `building_address`
 -- 
 
-DROP TABLE IF EXISTS `building_address`;
 CREATE TABLE `building_address` (
   `building_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -89,7 +86,6 @@ CREATE TABLE `building_address` (
 -- Table structure for table `buildings`
 -- 
 
-DROP TABLE IF EXISTS `buildings`;
 CREATE TABLE `buildings` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -111,7 +107,6 @@ INSERT INTO `buildings` VALUES (620, '', 'North County', 2);
 -- Table structure for table `countries`
 -- 
 
-DROP TABLE IF EXISTS `countries`;
 CREATE TABLE `countries` (
   `countries_name` varchar(64) NOT NULL default '',
   `countries_iso_code_2` char(2) NOT NULL default '',
@@ -370,7 +365,6 @@ INSERT INTO `countries` VALUES ('Zimbabwe', 'ZW', 'ZWE');
 -- Table structure for table `enumeration`
 -- 
 
-DROP TABLE IF EXISTS `enumeration`;
 CREATE TABLE `enumeration` (
   `name` varchar(20) NOT NULL default '',
   `title` varchar(100) NOT NULL default '',
@@ -385,6 +379,7 @@ CREATE TABLE `enumeration` (
   `person_type` enum('Loan Officer','Branch Manager','Administrator','Human Resources') NOT NULL default 'Loan Officer',
   `state` enum('Alaska','Arizona','California') NOT NULL default 'Alaska',
   `group_list` enum('All','Arizona','California') NOT NULL default 'All',
+  `identifier_type` enum('SSN','EIN') NOT NULL default 'SSN',
   PRIMARY KEY  (`name`)
 ) TYPE=MyISAM COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
 
@@ -392,16 +387,17 @@ CREATE TABLE `enumeration` (
 -- Dumping data for table `enumeration`
 -- 
 
-INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
-INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All');
+INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
+INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Main', 'Good', 'Branch', 'Main', 'New', 'Loan Officer', 'Alaska', 'All', 'SSN');
 
 -- --------------------------------------------------------
 
@@ -409,7 +405,6 @@ INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Prim
 -- Table structure for table `events`
 -- 
 
-DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
@@ -491,7 +486,6 @@ INSERT INTO `events` VALUES (702, '', '', '', '', '', 0);
 -- Table structure for table `fee_schedule`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule`;
 CREATE TABLE `fee_schedule` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -513,7 +507,6 @@ INSERT INTO `fee_schedule` VALUES (711, 'test', 'Test', 'My Test Schedule');
 -- Table structure for table `fee_schedule_data`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule_data`;
 CREATE TABLE `fee_schedule_data` (
   `code_id` int(11) NOT NULL default '0',
   `revision_id` int(11) NOT NULL default '0',
@@ -545,7 +538,7 @@ INSERT INTO `fee_schedule_data` VALUES (24, 1, 711, 45, '');
 INSERT INTO `fee_schedule_data` VALUES (25, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (26, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (27, 1, 711, 0, '');
-INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 34, '');
+INSERT INTO `fee_schedule_data` VALUES (28, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (29, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (30, 1, 711, 0, '');
 INSERT INTO `fee_schedule_data` VALUES (35, 1, 711, 0, '');
@@ -563,7 +556,6 @@ INSERT INTO `fee_schedule_data` VALUES (45, 1, 711, 0, '');
 -- Table structure for table `fee_schedule_revision`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule_revision`;
 CREATE TABLE `fee_schedule_revision` (
   `revision_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -582,51 +574,9 @@ INSERT INTO `fee_schedule_revision` VALUES (1, 0, '2005-03-02 11:58:20', 'defaul
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `form`
--- 
-
-DROP TABLE IF EXISTS `form`;
-CREATE TABLE `form` (
-  `form_id` int(11) NOT NULL default '0',
-  `name` varchar(100) NOT NULL default '',
-  `description` text NOT NULL,
-  PRIMARY KEY  (`form_id`)
-) TYPE=InnoDB;
-
--- 
--- Dumping data for table `form`
--- 
-
-INSERT INTO `form` VALUES (800, 'Test Data', 'Some random data');
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `form_data`
--- 
-
-DROP TABLE IF EXISTS `form_data`;
-CREATE TABLE `form_data` (
-  `form_data_id` int(11) NOT NULL default '0',
-  `form_id` int(11) NOT NULL default '0',
-  `external_id` int(11) NOT NULL default '0',
-  `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`form_data_id`)
-) TYPE=MyISAM;
-
--- 
--- Dumping data for table `form_data`
--- 
-
-INSERT INTO `form_data` VALUES (801, 800, 0, '0000-00-00 00:00:00');
-
--- --------------------------------------------------------
-
--- 
 -- Table structure for table `gacl_acl`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl`;
 CREATE TABLE `gacl_acl` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default 'system',
@@ -653,7 +603,6 @@ INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', '', 1109797209);
 -- Table structure for table `gacl_acl_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl_sections`;
 CREATE TABLE `gacl_acl_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -678,7 +627,6 @@ INSERT INTO `gacl_acl_sections` VALUES (2, 'user', 2, 'User', 0);
 -- Table structure for table `gacl_acl_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -696,7 +644,6 @@ INSERT INTO `gacl_acl_seq` VALUES (25);
 -- Table structure for table `gacl_aco`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco`;
 CREATE TABLE `gacl_aco` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -725,7 +672,6 @@ INSERT INTO `gacl_aco` VALUES (16, 'actions', 'usage', 9, 'usage', 0);
 -- Table structure for table `gacl_aco_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_map`;
 CREATE TABLE `gacl_aco_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -749,7 +695,6 @@ INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'view');
 -- Table structure for table `gacl_aco_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections`;
 CREATE TABLE `gacl_aco_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -773,7 +718,6 @@ INSERT INTO `gacl_aco_sections` VALUES (11, 'actions', 10, 'Actions', 0);
 -- Table structure for table `gacl_aco_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -791,7 +735,6 @@ INSERT INTO `gacl_aco_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aco_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -809,7 +752,6 @@ INSERT INTO `gacl_aco_seq` VALUES (16);
 -- Table structure for table `gacl_aro`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -834,7 +776,6 @@ INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
 -- Table structure for table `gacl_aro_groups`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups`;
 CREATE TABLE `gacl_aro_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -861,7 +802,6 @@ INSERT INTO `gacl_aro_groups` VALUES (12, 10, 2, 3, 'System Admin', 'admin');
 -- Table structure for table `gacl_aro_groups_id_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -879,7 +819,6 @@ INSERT INTO `gacl_aro_groups_id_seq` VALUES (17);
 -- Table structure for table `gacl_aro_groups_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_map`;
 CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -898,7 +837,6 @@ INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
 -- Table structure for table `gacl_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_map`;
 CREATE TABLE `gacl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -917,7 +855,6 @@ CREATE TABLE `gacl_aro_map` (
 -- Table structure for table `gacl_aro_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections`;
 CREATE TABLE `gacl_aro_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -941,7 +878,6 @@ INSERT INTO `gacl_aro_sections` VALUES (10, 'users', 10, 'Users', 0);
 -- Table structure for table `gacl_aro_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -959,7 +895,6 @@ INSERT INTO `gacl_aro_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aro_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -977,7 +912,6 @@ INSERT INTO `gacl_aro_seq` VALUES (22);
 -- Table structure for table `gacl_axo`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo`;
 CREATE TABLE `gacl_axo` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1016,7 +950,6 @@ INSERT INTO `gacl_axo` VALUES (46, 'resources', 'schedule', 10, 'Section - Sched
 -- Table structure for table `gacl_axo_groups`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups`;
 CREATE TABLE `gacl_axo_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -1043,7 +976,6 @@ INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sectio
 -- Table structure for table `gacl_axo_groups_id_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1060,7 +992,6 @@ INSERT INTO `gacl_axo_groups_id_seq` VALUES (11);
 -- Table structure for table `gacl_axo_groups_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_map`;
 CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -1079,7 +1010,6 @@ INSERT INTO `gacl_axo_groups_map` VALUES (24, 11);
 -- Table structure for table `gacl_axo_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_map`;
 CREATE TABLE `gacl_axo_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1098,7 +1028,6 @@ CREATE TABLE `gacl_axo_map` (
 -- Table structure for table `gacl_axo_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections`;
 CREATE TABLE `gacl_axo_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1122,7 +1051,6 @@ INSERT INTO `gacl_axo_sections` VALUES (0, 'resources', 10, 'Resources', 0);
 -- Table structure for table `gacl_axo_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1139,7 +1067,6 @@ INSERT INTO `gacl_axo_sections_seq` VALUES (19);
 -- Table structure for table `gacl_axo_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
@@ -1156,7 +1083,6 @@ INSERT INTO `gacl_axo_seq` VALUES (46);
 -- Table structure for table `gacl_groups_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_groups_aro_map`;
 CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
@@ -1175,7 +1101,6 @@ INSERT INTO `gacl_groups_aro_map` VALUES (12, 15);
 -- Table structure for table `gacl_groups_axo_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_groups_axo_map`;
 CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
@@ -1209,7 +1134,6 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 46);
 -- Table structure for table `gacl_phpgacl`
 -- 
 
-DROP TABLE IF EXISTS `gacl_phpgacl`;
 CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
@@ -1229,7 +1153,6 @@ INSERT INTO `gacl_phpgacl` VALUES ('schema_version', '2.1');
 -- Table structure for table `groups`
 -- 
 
-DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -1251,7 +1174,6 @@ INSERT INTO `groups` VALUES (0, 'provider');
 -- Table structure for table `menu`
 -- 
 
-DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -1262,7 +1184,7 @@ CREATE TABLE `menu` (
   `title` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`menu_id`)
-) TYPE=InnoDB AUTO_INCREMENT=30 ;
+) TYPE=InnoDB AUTO_INCREMENT=28 ;
 
 -- 
 -- Dumping data for table `menu`
@@ -1293,10 +1215,8 @@ INSERT INTO `menu` VALUES (22, 'admin', 21, '', 'children', 10, 'Add User', 'Use
 INSERT INTO `menu` VALUES (23, 'admin', 1, '', 'children', 10, 'Dashboard', 'Admin/default');
 INSERT INTO `menu` VALUES (24, 'admin', 1, '', 'children', 30, 'Enumeration', 'Enumeration/list');
 INSERT INTO `menu` VALUES (25, 'admin', 24, '', 'children', 10, 'Add Enumeration', 'Enumeration/edit');
-INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 100, 'Forms', 'Form/list');
-INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 10, 'Add Form', 'Form/edit');
-INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 20, 'View Form Data', 'Form/view');
-INSERT INTO `menu` VALUES (29, 'default', 1, '', 'children', 150, 'Forms', 'Form/fillout');
+INSERT INTO `menu` VALUES (26, 'default', 1, '', 'children', 10, 'Patients', 'Patient/List');
+INSERT INTO `menu` VALUES (27, 'default', 26, '', 'children', 10, 'Add Patient', 'Patient/Edit');
 
 -- --------------------------------------------------------
 
@@ -1304,7 +1224,6 @@ INSERT INTO `menu` VALUES (29, 'default', 1, '', 'children', 150, 'Forms', 'Form
 -- Table structure for table `number`
 -- 
 
-DROP TABLE IF EXISTS `number`;
 CREATE TABLE `number` (
   `number_id` int(11) NOT NULL default '0',
   `number_type` int(11) NOT NULL default '0',
@@ -1318,6 +1237,8 @@ CREATE TABLE `number` (
 -- 
 
 INSERT INTO `number` VALUES (784, 1, '', '480-361-1331');
+INSERT INTO `number` VALUES (793, 1, '', '480-361-1331');
+INSERT INTO `number` VALUES (794, 1, '', '480-361-1331');
 
 -- --------------------------------------------------------
 
@@ -1325,7 +1246,6 @@ INSERT INTO `number` VALUES (784, 1, '', '480-361-1331');
 -- Table structure for table `occurences`
 -- 
 
-DROP TABLE IF EXISTS `occurences`;
 CREATE TABLE `occurences` (
   `id` int(11) NOT NULL default '0',
   `event_id` int(11) NOT NULL default '0',
@@ -1429,7 +1349,6 @@ INSERT INTO `occurences` VALUES (701, 700, '2005-02-18 09:00:00', '2005-02-18 10
 -- Table structure for table `ownership`
 -- 
 
-DROP TABLE IF EXISTS `ownership`;
 CREATE TABLE `ownership` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -1597,13 +1516,6 @@ INSERT INTO `ownership` VALUES (790, 1);
 INSERT INTO `ownership` VALUES (791, 1);
 INSERT INTO `ownership` VALUES (793, 1);
 INSERT INTO `ownership` VALUES (794, 1);
-INSERT INTO `ownership` VALUES (795, 1);
-INSERT INTO `ownership` VALUES (796, 1);
-INSERT INTO `ownership` VALUES (797, 1);
-INSERT INTO `ownership` VALUES (798, 1);
-INSERT INTO `ownership` VALUES (799, 1);
-INSERT INTO `ownership` VALUES (800, 1);
-INSERT INTO `ownership` VALUES (801, 1);
 
 -- --------------------------------------------------------
 
@@ -1611,7 +1523,6 @@ INSERT INTO `ownership` VALUES (801, 1);
 -- Table structure for table `patient`
 -- 
 
-DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
@@ -1632,7 +1543,6 @@ INSERT INTO `patient` VALUES (790);
 -- Table structure for table `person`
 -- 
 
-DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL default '0',
   `salutation` varchar(20) NOT NULL default '',
@@ -1648,6 +1558,8 @@ CREATE TABLE `person` (
   `email` varchar(100) NOT NULL default '',
   `secondary_email` varchar(100) NOT NULL default '',
   `has_photo` enum('0','1') NOT NULL default '0',
+  `identifier` varchar(100) NOT NULL default '',
+  `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=InnoDB COMMENT='A person in the system';
 
@@ -1655,10 +1567,10 @@ CREATE TABLE `person` (
 -- Dumping data for table `person`
 -- 
 
-INSERT INTO `person` VALUES (786, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '');
-INSERT INTO `person` VALUES (787, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '');
-INSERT INTO `person` VALUES (789, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '');
-INSERT INTO `person` VALUES (790, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '');
+INSERT INTO `person` VALUES (786, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '', '111-45-1111', 1);
+INSERT INTO `person` VALUES (787, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '', '', 0);
+INSERT INTO `person` VALUES (789, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '', '', 0);
+INSERT INTO `person` VALUES (790, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-03-04', '', 'Head Hauncho', '', 'cory@uversainc.com', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -1666,7 +1578,6 @@ INSERT INTO `person` VALUES (790, 'Mr.', 'Powers', 'Cory', 'M', 1, 'CMP', '2005-
 -- Table structure for table `person_address`
 -- 
 
-DROP TABLE IF EXISTS `person_address`;
 CREATE TABLE `person_address` (
   `person_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -1687,7 +1598,6 @@ CREATE TABLE `person_address` (
 -- Table structure for table `person_company`
 -- 
 
-DROP TABLE IF EXISTS `person_company`;
 CREATE TABLE `person_company` (
   `person_id` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
@@ -1708,7 +1618,6 @@ CREATE TABLE `person_company` (
 -- Table structure for table `person_number`
 -- 
 
-DROP TABLE IF EXISTS `person_number`;
 CREATE TABLE `person_number` (
   `person_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -1722,6 +1631,8 @@ CREATE TABLE `person_number` (
 -- 
 
 INSERT INTO `person_number` VALUES (2, 784);
+INSERT INTO `person_number` VALUES (786, 793);
+INSERT INTO `person_number` VALUES (786, 794);
 
 -- --------------------------------------------------------
 
@@ -1729,7 +1640,6 @@ INSERT INTO `person_number` VALUES (2, 784);
 -- Table structure for table `person_person`
 -- 
 
-DROP TABLE IF EXISTS `person_person`;
 CREATE TABLE `person_person` (
   `person_id` int(11) NOT NULL default '0',
   `related_person_id` int(11) NOT NULL default '0',
@@ -1750,7 +1660,6 @@ CREATE TABLE `person_person` (
 -- Table structure for table `person_type`
 -- 
 
-DROP TABLE IF EXISTS `person_type`;
 CREATE TABLE `person_type` (
   `person_id` int(11) NOT NULL default '0',
   `person_type` int(11) NOT NULL default '0',
@@ -1763,7 +1672,7 @@ CREATE TABLE `person_type` (
 -- Dumping data for table `person_type`
 -- 
 
-INSERT INTO `person_type` VALUES (786, 1);
+INSERT INTO `person_type` VALUES (786, 2);
 INSERT INTO `person_type` VALUES (787, 1);
 INSERT INTO `person_type` VALUES (789, 1);
 INSERT INTO `person_type` VALUES (790, 1);
@@ -1774,7 +1683,6 @@ INSERT INTO `person_type` VALUES (790, 1);
 -- Table structure for table `practice_address`
 -- 
 
-DROP TABLE IF EXISTS `practice_address`;
 CREATE TABLE `practice_address` (
   `practice_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -1802,7 +1710,6 @@ INSERT INTO `practice_address` VALUES (2, 783, 2);
 -- Table structure for table `practices`
 -- 
 
-DROP TABLE IF EXISTS `practices`;
 CREATE TABLE `practices` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -1824,7 +1731,6 @@ INSERT INTO `practices` VALUES (753, '', '');
 -- Table structure for table `preferences`
 -- 
 
-DROP TABLE IF EXISTS `preferences`;
 CREATE TABLE `preferences` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -1850,7 +1756,6 @@ INSERT INTO `preferences` VALUES (9001, 'Special Event Color', '#123444', 9000, 
 -- Table structure for table `report_templates`
 -- 
 
-DROP TABLE IF EXISTS `report_templates`;
 CREATE TABLE `report_templates` (
   `report_template_id` int(11) NOT NULL default '0',
   `report_id` int(11) NOT NULL default '0',
@@ -1875,7 +1780,6 @@ INSERT INTO `report_templates` VALUES (792, 791, 'Default Template', 'yes');
 -- Table structure for table `reports`
 -- 
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE `reports` (
   `id` int(11) NOT NULL auto_increment,
   `dbase` varchar(255) NOT NULL default '',
@@ -1899,7 +1803,6 @@ INSERT INTO `reports` VALUES (791, '', '', 'Codes with Fee Schedule', 'select co
 -- Table structure for table `rooms`
 -- 
 
-DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -1922,7 +1825,6 @@ INSERT INTO `rooms` VALUES (622, '', 0, 620, 'Exam 1');
 -- Table structure for table `schedules`
 -- 
 
-DROP TABLE IF EXISTS `schedules`;
 CREATE TABLE `schedules` (
   `id` int(11) NOT NULL default '0',
   `schedule_code` varchar(255) NOT NULL default '',
@@ -1949,7 +1851,6 @@ INSERT INTO `schedules` VALUES (662, 'PS', 'Test Schedule', '', '', 2, 306);
 -- Table structure for table `sequences`
 -- 
 
-DROP TABLE IF EXISTS `sequences`;
 CREATE TABLE `sequences` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -1959,7 +1860,7 @@ CREATE TABLE `sequences` (
 -- Dumping data for table `sequences`
 -- 
 
-INSERT INTO `sequences` VALUES (801);
+INSERT INTO `sequences` VALUES (794);
 
 -- --------------------------------------------------------
 
@@ -1967,7 +1868,6 @@ INSERT INTO `sequences` VALUES (801);
 -- Table structure for table `states`
 -- 
 
-DROP TABLE IF EXISTS `states`;
 CREATE TABLE `states` (
   `zone_code` varchar(32) NOT NULL default '',
   `zone_name` varchar(32) NOT NULL default '',
@@ -2166,67 +2066,9 @@ INSERT INTO `states` VALUES ('Zaragoza', 'Zaragoza', 'ESP');
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `storage_date`
--- 
-
-DROP TABLE IF EXISTS `storage_date`;
-CREATE TABLE `storage_date` (
-  `foreign_key` int(11) NOT NULL default '0',
-  `value_key` varchar(50) NOT NULL default '',
-  `value` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to store date values';
-
--- 
--- Dumping data for table `storage_date`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `storage_int`
--- 
-
-DROP TABLE IF EXISTS `storage_int`;
-CREATE TABLE `storage_int` (
-  `foreign_key` int(11) NOT NULL default '0',
-  `value_key` varchar(50) NOT NULL default '',
-  `value` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to store integer values (also boolean)';
-
--- 
--- Dumping data for table `storage_int`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `storage_string`
--- 
-
-DROP TABLE IF EXISTS `storage_string`;
-CREATE TABLE `storage_string` (
-  `foreign_key` int(11) NOT NULL default '0',
-  `value_key` varchar(50) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=InnoDB COMMENT='Generic way to string values';
-
--- 
--- Dumping data for table `storage_string`
--- 
-
-
--- --------------------------------------------------------
-
--- 
 -- Table structure for table `user`
 -- 
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL default '0',
   `username` varchar(55) NOT NULL default '',
@@ -2253,7 +2095,6 @@ INSERT INTO `user` VALUES (788, '', '', '', '', 787, '');
 -- Table structure for table `users`
 -- 
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL default '0',
   `username` varchar(55) NOT NULL default '',
@@ -2277,7 +2118,6 @@ INSERT INTO `users` VALUES (306, 'jnelson', 'test', 'jhn', 'BBFFAA');
 -- Table structure for table `users_groups`
 -- 
 
-DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE `users_groups` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
