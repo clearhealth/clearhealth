@@ -1,0 +1,177 @@
+<script language="javascript" src="{$base_dir}js/calendar.js"></script>
+<table CELLSPACING="0" CELLPADDING="3" border="0">
+<tr>
+	<td>{$messages->render()}</td>
+</tr>
+<tr>
+<td>
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<table border="0" cellspacing="0" cellpadding="0" class="calborder">
+	<tr>
+		<td colspan="35">
+			<table width="100%">
+			<tr>
+				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
+				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
+      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a>
+      			<div style="float:right">
+      			<a href="{$CONTROLLER->_link("day",true)}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
+      			<a href="{$CONTROLLER->_link("week_grid",true)}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
+      			<a href="{$CONTROLLER->_link("month",true)}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
+      			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
+      			</div>
+      			</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td width="70" colspan="1" valign="top" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;</td>
+		<td width="460" valign="top" colspan="28" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;
+		{if $users_filter}
+			Showing Users: {$users_filter}&nbsp;&nbsp;
+		{/if}
+		
+		{if $locations_filter}
+			Showing Locations: {$locations_filter}&nbsp;&nbsp;
+		{/if}
+		</td>
+	</tr>
+	<tr>				
+		<td width="70" colspan="1" valign="top" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;</td>				
+		{foreach from=$WeekGridArray item=Day}
+    		{assign var=dts value=$Day->gettimestamp()}
+    		<td width="70" colspan="{$week_maxcols.$dts+$week_smaxcols.$dts}" valign="top" align="center" class="dateback" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;">
+    		<img src="{$base_dir}images/spacer.gif" width="70" height="1"><br>
+    		<span class="V9"><a class="psf" href="{$DAY_ACTION}&date={$Day->thisMonth()}/{$Day->thisDay()}/{$Day->thisYear()}">{$Day->gettimestamp()|date_format:"%a, %b %d"}</a></span></td>
+    	{/foreach}
+    </tr>
+    
+	{foreach name=inc_count from=$header_increment key=time item=inc}
+	<tr>
+	{if $inc%2 eq 1 or $inc eq 1}
+		<td rowspan="2" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
+		{assign var=week_border value="weekborder"}
+	{else}
+		{assign var=week_border value="weekborder2"}
+	{/if}	
+
+	{foreach from=$WeekGridArray item=Day}
+		{assign var=dts value=$Day->gettimestamp()}
+		{assign var=this_days_time value=$time+$dts}
+		
+    	{assign var=tablemap value=$week_tablemap.$dts}
+    	{assign var=tablemap2 value=$week_tablemap2.$dts}
+    	{assign var=maxcols value=$week_maxcols.$dts}
+    	
+    	{assign var=stablemap value=$week_stablemap.$dts}
+    	{assign var=stablemap2 value=$week_stablemap2.$dts}
+    	{assign var=smaxcols value=$week_smaxcols.$dts}
+    	
+    	{assign var=events value=$days_events.$dts}
+    	{assign var=sevents value=$schedule_events.$dts}
+    	
+		{foreach name=evs from=$sevents.$this_days_time item=ev}
+			<td colspan="1" width="15" valign="top" style="background-color:#{$ev.color};" class="schedule_border" align="center">
+			{if $ev.first_inc}
+				{$ev.nickname}<br>
+			{/if}
+			{strip}
+			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time}" value="{$this_days_time}" onclick="toggleCell(this);">
+			{if $ev.last_inc}
+			<table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                        <td  style="background-color:#{$ev.color};" width="100%" align="center">
+			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time+900}" value="{$this_days_time+900}" onclick="toggleCell(this);">
+			</td>
+			</tr>
+			</table>
+			{/if}
+			{/strip}
+			</td>
+		{/foreach}
+		
+		{if isset($stablemap.$this_days_time)}
+			{section name=ll loop=$smaxcols-$stablemap.$this_days_time}
+			{if $smarty.section.ll.iteration+$stablemap.$this_days_time == $smaxcols+$maxcols}
+				<td rowspan="1" align="center" class="{$week_border}" style="border-right: 1px solid #A1A5A9;">&nbsp;</td>
+			{else}
+				<td rowspan="1" align="center" class="{$week_border}" style="border-right:none;">&nbsp;</td>
+			{/if}
+			{/section}
+		{/if}
+	
+		{foreach name=evs from=$events.$this_days_time item=ev}
+		{if $ev.schedule_code eq ADM}
+			{assign var=color value="FFFF13"}
+			{else}
+			{assign var=color value=$ev.color}
+		{/if}
+			
+			<td colspan="1"  rowspan="{$tablemap2[$ev.occurence_id]}"  class="eventbg2_1" valign="top" style="background-color:#{$color};">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td height="13" class="eventborder"><span class="eventfont">{$ev.start_ts|date_format:"%I:%M%p"}&nbsp;-&nbsp;{$ev.end_ts|date_format:"%I:%M%p"} {$ev.nickname}</span></td>
+					</tr>
+					<tr>
+					<td colspan="1" valign="top" >
+						<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+							<tr>
+							<td class="eventbg_1">
+								{if $ev.p_record_number > 0}
+								<b>{$ev.p_lastname}, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
+								{if $ev.notes}
+								<br>
+								{$ev.notes}
+								{/if}
+								<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>, 
+								<!-- <a href="controller.php?location&delete&id={$ev.occurence_id}&object=occurence&process=1">delete</a>, <a href="controller.php?location&update_schedule&id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, <a href="controller.php?location&update_schedule&id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a> -->
+								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a>, 
+								<a href="{$UPDATE_SCHEDULE_ACTION}&id={$ev.occurence_id}&schedule_code=NS&group_name=No Shows&process=1">ns</a>, 
+								<a href="{$UPDATE_SCHEDULE_ACTION}&id={$ev.occurence_id}&schedule_code=NS&group_name=Cancelations&process=1">cancel</a>
+
+								{else}
+								<!-- <a href="controller.php?main&location&action=schedule_list#{$ev.schedule_id}">{$ev.schedule_code}</a> <a href="controller.php?main&location&action=schedule_list#{$ev.schedule_id}">{$ev.title}</a> -->
+								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.schedule_code}</a> 
+								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.title}</a>
+
+								<br><a href="{$APPOINTMENT_ACTION}&appointment_id={$ev.occurence_id}">edit</a>, 
+								<!-- <a href="controller.php?location&delete&id={$ev.occurence_id}&object=occurence&process=1">delete</a><br> -->
+								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a><br>
+								{$ev.notes}
+								{/if}
+								<br>{$ev.last_change_nickname}-{$ev.last_change|date_format:"%m/%d/%Y"}  
+							</td>
+							</tr>
+						</table>
+					</td>
+					</tr>
+				</table>
+			</td>
+		{/foreach}
+		
+		{if isset($tablemap.$this_days_time)}
+			{section name=ll loop=$maxcols-$tablemap.$this_days_time}
+			{if $smarty.section.ll.iteration+$tablemap.$this_days_time == $maxcols}
+				<td bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="border-right: 1px solid #A1A5A9;">&nbsp;</td>
+			{else}
+				<td bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="border-right:none;">&nbsp;</td>
+			{/if}
+			{/section}
+			
+		{/if}
+		
+		{if !isset($tablemap.$this_days_time) AND !isset($stablemap.$this_days_time)}
+			<td  bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="{$add_border}">&nbsp</td>
+		{/if}
+		
+		{/foreach}
+    
+    {/foreach}
+    
+    </tr>
+</table>
+</td>
+<td style="padding-left:10px;" valign="top">{$sidebar}</td>
+</tr>
+</table>

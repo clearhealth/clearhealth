@@ -1,0 +1,17 @@
+<table>
+	<tr>
+		<td>Name</td>
+		
+	</tr>
+	{foreach from=$users item=user}
+	<tr>
+		{if $sec_obj->acl_qcheck("edit",$me,"users",$user)}
+		<td><a href="{$EDIT_USER_ACTION}id={$user->get_id()}">{$user->get_username()}</a></td>
+		{/if}
+	</tr>
+	{foreachelse}
+	<tr>
+		<td colspan="6">No Users Found</td>
+	</tr>
+	{/foreach}
+</table>

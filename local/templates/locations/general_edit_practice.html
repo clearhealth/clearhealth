@@ -1,0 +1,86 @@
+<form name="practice" method="post" action="{$FORM_ACTION}">
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$practice->id}" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Name</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="name" value="{$practice->name}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="main_address_line1" value="{$practice->main_address->line1}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="main_address_line2" value="{$practice->main_address->line2}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >City, State Zip</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="25" name="main_city" value="{$practice->main_address->city}"/> , <input type="text" size="2" maxlength="2" name="main_state" value="{$practice->main_address->state}"/> <input type="text" size="5" name="main_zip" value="{$practice->main_address->zip}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Secondary Address</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="secondary_address_line1" value="{$practice->secondary_address->line1}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="secondary_address_line2" value="{$practice->secondary_address->line2}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >City, State Zip</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="25" name="secondary_city" value="{$practice->secondary_address->city}"/> , <input type="text" size="2" maxlength="2" name="secondary_state" value="{$practice->secondary_address->state}"/> <input type="text" size="5" name="secondary_zip" value="{$practice->secondary_address->zip}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Website</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input TYPE="TEXT" NAME="website" SIZE="35" VALUE="{$practice->get_website()}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Main Phone</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input TYPE="TEXT" NAME="phone1" SIZE="12" VALUE="{$practice->get_phone1()}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Secondary Phone</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input TYPE="TEXT" NAME="phone2" SIZE="12" VALUE="{$practice->get_phone2()}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Fax</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input TYPE="TEXT" NAME="fax" SIZE="12" VALUE="{$practice->get_fax()}"/>
+	</td>
+</tr>
+
+<tr>
+	{if empty($practice->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+</table>
+<input type="hidden" name="id" value="{$practice->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>

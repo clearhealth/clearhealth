@@ -1,0 +1,52 @@
+<form name="building" method="post" action="{$FORM_ACTION}">
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$building->id}" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Name</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="name" value="{$building->name}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Description/Location</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" maxlength="250" name="description" value="{$building->description}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="address_line1" value="{$building->address->line1}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Address</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="40" name="address_line2" value="{$building->address->line2}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >City, State Zip</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input type="text" size="25" name="city" value="{$building->address->city}"/> , <input type="text" size="2" maxlength="2" name="state" value="{$building->address->state}"/> <input type="text" size="5" name="zip" value="{$building->address->zip}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Practice</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		{html_options name="practice_id" options=$practices selected="$building->get_practice_id()"}
+	</td>
+</tr>
+<tr>
+	{if empty($building->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+</table>
+<input type="hidden" name="id" value="{$building->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>

@@ -1,0 +1,278 @@
+<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+<SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete.js"></script>
+{literal}
+<script language="javascript">
+function captureEnter (field, event) {
+		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+		if (keyCode == 13) {
+			var i;
+			for (i = 0; i < field.form.elements.length; i++)
+				if (field == field.form.elements[i])
+					break;
+			i = (i + 1) % field.form.elements.length;
+			field.form.elements[i].focus();
+			return false;
+		} 
+		else
+		return true;
+	}      
+
+</script>
+{/literal}
+
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<div class="popup" id="popup">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="calborder">
+
+	<tr height="20">
+		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">
+		{if $edit_app}
+		Editing App #{$edit_oc->get_id()}
+		{else}
+		Add Appointment
+		{/if}
+		<a href="{literal}javascript:{}{/literal}" onClick="document.getElementById('popup').style.visibility = 'hidden';">C</a></div></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="left">
+			<div style="padding: 5px;">
+			<form name="make_appointment_popup" style="margin-bottom:0;" method="post" action="{$base_dir}index.php/main/location/edit_appointment">
+			<select name="user_id" class="query_style">
+			{if $edit_app}
+			{html_options options=$users_array selected=$edit_oc->get_user_id()}
+			{else}
+			{html_options options=$users_array selected=$selected_user}
+			{/if}			
+			</select>	
+			<br>
+			
+			<p style="align: center; font-weight:bold;">{$rooms_practice_array[$selected_location]}</p>
+			<input type="hidden" name="location_id" value="{$selected_location}">
+			
+			<table border="0">
+				<tr>
+					<td>Date</td><td><input type="text" name="date" size="9" value="{$edit_oc->get_date()}"></td>
+				</tr>
+				<tr>
+					<td colspan="2">Patient&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>&nbsp;&nbsp;
+					</td>
+				</tr>
+				<tr>
+				<td valign="top" colspan="2">
+					<INPUT TYPE="hidden" name="external_id"  id="patient_id_2" value="{$edit_oc->get_external_id()}">
+                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_oc->get_external_id()}">
+                	<div id="acDiv2" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
+				</td>
+				</tr>
+				<tr>
+					<td colspan="2">Time</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">Title</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>
+				</tr>
+			</table>
+			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
+			<input type="hidden" name="process" value="true">
+			</form>
+			
+			</script>
+			
+</div>		</td>
+	</tr>
+</table>
+
+</div>
+<table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
+
+	<tr height="20">
+		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">
+		{if $edit_app}
+		Editing App #{$edit_oc->get_id()}
+		{else}
+		Add Appointment
+		{/if}
+		</div></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="left">
+			<div style="padding: 5px;">
+			<form name="make_appointment" style="margin-bottom:0;" method="post" action="{$base_dir}index.php/main/location/edit_appointment">
+			<select name="user_id" class="query_style">
+			{if $edit_app}
+			{html_options options=$users_array selected=$edit_oc->get_user_id()}
+			{else}
+			{html_options options=$users_array selected=$selected_user}
+			{/if}			
+			</select>	
+			<br>
+			
+			<p style="align: center; font-weight:bold;">{$rooms_practice_array[$selected_location]}</p>
+			<input type="hidden" name="location_id" value="{$selected_location}">
+			
+			<table border="0">
+				<tr>
+				<td>Date</td><td>{clni_input_date name="date" size="9" value=$edit_oc->get_date()}</td>
+				</tr>
+				<tr>
+					<td colspan="2">Patient&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>&nbsp;&nbsp;
+					</td>
+				</tr>
+				<tr>
+				<td valign="top" colspan="2">
+					<INPUT TYPE="hidden" name="external_id" id="patient_id_1" value="{$edit_oc->get_external_id()}">
+                	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_oc->get_external_id()}">
+                	<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
+				</td>
+				</tr>
+				<tr>
+					<td colspan="2">Time</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">Title</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>
+				</tr>
+			</table>
+			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
+			<input type="hidden" name="process" value="true">
+			</form>
+			<script language="javascript">
+			{literal}
+			function popupEditor() {
+					var div;
+					
+					div = document.getElementById('popup');
+					div.style.width=250;
+					div.style.height=350;
+					//150 is the general width of the browser heading
+					div.style.top = (screen.height/2) - (parseInt(div.style.height)/2)+document.body.scrollTop - 100;
+					div.style.left = (screen.width/2) - (parseInt(div.style.width)/2);
+					div.style.visibility = 'visible';
+			}
+			
+			{/literal}
+			</script>
+			<a href="javascript:{literal}{}{/literal}" onClick="popupEditor();">show</a>
+</div>		</td>
+	</tr>
+</table>
+<br>
+
+<table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
+
+	<tr height="20">
+		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">Shortcuts</div></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="left">
+			<div style="padding: 5px;">
+			<form style="margin-bottom:0;" action="#" method="GET">
+			<select name="location" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=location/'+this.options[this.selectedIndex].value+'');">	
+			{html_options options=$rooms_practice_array selected=$selected_location}
+			</select>	
+			<br>
+			<select name="provider" class="query_style" onChange="window.location=('{$FILTER_ACTION}filter=user/'+this.options[this.selectedIndex].value+'');">
+			<option value="">All Providers</option>		
+			{html_options options=$users_array selected=$selected_user}
+			</select>
+<br>
+<select name="month" class="query_style" onChange="window.location=('{$LINK_BASE}date='+this.options[this.selectedIndex].value);">
+{html_options options=$month_select selected=$month_selected}
+</select>
+<br>
+<select name="week" class="query_style" onChange="window.location=('{$LINK_BASE}date='+this.options[this.selectedIndex].value);">
+{html_options options=$week_select selected=$week_selected}
+</select>
+<br>
+</form>
+</div>		</td>
+	</tr>
+</table>
+<br>
+
+
+{foreach from=$sidebar_months  item=month}
+		
+<table width="170" border="0" cellpadding="3" cellspacing="0" class="calborder">
+	<tr height="20">
+		<td align="center" class="sideback"><font class="G10BOLD">{$month->gettimestamp()|date_format:"%B"}</font></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="center">
+			<table border="1" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+				<tr><td align="center" class="G10BOLD">S</td><td align="center" class="G10BOLD">M</td><td align="center" class="G10BOLD">T</td><td align="center" class="G10BOLD">W</td><td align="center" class="G10BOLD">T</td><td align="center" class="G10BOLD">F</td><td align="center" class="G10BOLD">S</td></tr>
+
+{assign var=md value=$month->fetchAll()}
+{foreach from=$md item=day}
+	{if $day->isFirst()}
+		<tr>
+	{/if}
+	{if $day->isEmpty()}
+		<td width="22" align="center" class="G10B"><a class="psf" href="{$LINK_BASE}date={$day->thisMonth()}/{$day->thisDay()}/{$day->thisYear()}"><font class="G10G">{$day->thisDay()}</font></td>
+	{elseif $day->isSelected()}
+		<td width="22" align="center" class="G10B" style="background-color:#FFFF00;"><a class="ps2" href="{$LINK_BASE}date={$day->thisMonth()}/{$day->thisDay()}/{$day->thisYear()}">{$day->thisDay()}</td>
+	{else}
+		<td width="22" align="center" class="G10B"><a class="ps2" href="{$LINK_BASE}date={$day->thisMonth()}/{$day->thisDay()}/{$day->thisYear()}">{$day->thisDay()}</td>
+	{/if}
+	
+	{if $day->isLast()}
+		</tr>
+	{/if}
+
+{/foreach}
+</table>
+</td></tr>
+</table>
+<br>
+{/foreach}
+{literal}
+<SCRIPT language="javascript">
+
+function setupAutoComplete(){
+	var ac = new AutoComplete(
+	C_PatientFinder,
+    'patient_name_1',
+    'patient_id_1',
+    'acDiv',
+    true,
+    325
+                );
+    var ac2 = new AutoComplete(
+	C_PatientFinder,
+    'patient_name_2',
+    'patient_id_2',
+    'acDiv2',
+    true,
+    325
+                );
+}
+
+var C_PatientFinder = function find_remoting(searchString) {
+        var h = new c_patientfinder(this.dataHandler);
+        h.Sync();
+                                                                                
+        var results = h.find_remoting(searchString);
+        return results;
+}
+
+setupAutoComplete();
+</SCRIPT>
+{/literal}

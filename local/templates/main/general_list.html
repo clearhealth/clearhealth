@@ -1,0 +1,100 @@
+<html>
+<head>
+<!-- compliance patch for microsoft browsers -->
+<!--[if lt IE 7]>
+<script src="{$base_dir}js/ie7/ie7-standard.js" type="text/javascript">
+</script>
+<![endif]-->
+
+
+<script src="{$base_dir}js/validate.js" type="text/javascript"></script>
+<script src="{$base_dir}js/dateparse.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar-en.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar-setup.js" type="text/javascript"></script>
+
+{literal}
+<SCRIPT LANGUAGE="JavaScript">
+function popUp(URL,width,height) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=' + width + ',height=' + height + ',left = 400,top = 150');");
+}
+
+</script>
+ 
+ <style type="text/css" title="mystyles" media="all">
+<!--
+li{
+	font-size:11pt;
+	font-family:helvetica;
+	margin-left: 15px;
+}
+td {
+	font-size:8pt;
+	font-family:helvetica;
+}
+a {
+	font-size:8pt;
+	font-family:helvetica;
+}
+-->
+</style>
+{/literal}
+<link href="{$base_dir}cellini.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table>
+	<tr>
+		<td valign="top">
+			<ul style="padding-left:10px;list-style: none;">
+				
+				{if $me->get_id() > 0}
+				<!-- <lh><a href="{$TOP_ACTION}preferences&action=list">Preferences</a></lh><br> -->
+				<lh><a href="{$TOP_ACTION}preferences/list">Preferences</a></lh><br>
+				<lh><a href="{$TOP_ACTION}access/logout">Logout</a></lh><br><br>
+				{else}
+				<lh><a href="{$TOP_ACTION}access/login">Login</a></lh><br>
+				{/if}
+			</ul>
+			<ul style="padding-left:10px;list-style: none;">	
+				{if $sec_obj->acl_qcheck("edit",$me,"","")}
+				<lh><a href="{$TOP_ACTION}access/list_users">Users</a></lh>
+				<li><a href="{$TOP_ACTION}access/add_user">Add User</a></li>
+				<br>
+			</ul>
+{/if}
+				{if $sec_obj->acl_qcheck("edit",$me,"","event")}
+		<ul style="padding-left:10px;list-style: none;">
+				<lh><a href="{$TOP_ACTION}location/list">Schedule/Location Management</a></lh>
+				<li><a href="{$TOP_ACTION}location/edit_schedule">Add New Schedule</a></li>
+				{/if}
+				{if $sec_obj->acl_qcheck("add",$me,"","practice")}
+				<li><a href="{$TOP_ACTION}location/edit_practice">Add New Practice</a></li>
+				<li><a href="{$TOP_ACTION}location/edit_building">Add New Building</a></li>
+				<li><a href="{$TOP_ACTION}location/edit_room">Add New Room</a></li>
+				{/if}
+			</ul> <br />
+		{if $me->get_id() > 0}	
+			<ul style="padding-left:10px;list-style: none;">
+				<lh><a href="{$TOP_ACTION}calendar/default">Schedule Calendar</a></lh>
+				<li><a href="{$TOP_ACTION}calendar/month?date">Month</a></li>
+				<li><a href="{$TOP_ACTION}calendar/week?date">Week</a></li>
+				<li><a href="{$TOP_ACTION}calendar/week_grid?date">Week Grid</a></li>
+				<li><a href="{$TOP_ACTION}calendar/day?date">Day</a></li>
+				<li><a href="{$TOP_ACTION}calendar/day_brief?date">Brief Day</a></li>
+				<li><a href="{$TOP_ACTION}calendar/search">Search</a></li>
+				<!--<li><a href="{$TOP_ACTION}location&action=schedule_list">Schedule List</a></li>-->
+				{/if}
+			</ul><br />
+			<ul style="padding-left:10px;list-style: none;">
+				<lh><a href="{$TOP_ACTION}report/list">Reports</a></lh>
+				<li><a href="{$TOP_ACTION}report/add">Add Report</a></li>
+			</ul>
+		</td><td width="10">&nbsp;</td>
+		<td valign="top">{$display}</td>
+	</tr>
+</table>
+</body>
+</html>

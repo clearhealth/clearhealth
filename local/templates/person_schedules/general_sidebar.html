@@ -1,0 +1,97 @@
+<link rel="stylesheet" type="text/css" href="calendar.css">
+<table width="170" border="0" cellpadding="0" cellspacing="0" >
+
+<!--	<tr height="20">
+		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">Edit</div></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="left">
+			<div style="padding: 5px;">
+			<form name="make_appointment" style="margin-bottom:0;" method="post" action="controller.php?location&edit_appointment">
+			<input type="hidden" name="user_id" value="">
+			<input type="hidden" name="location_id" value="">
+			<table border="0">
+				<tr>
+					<td>Date</td><td><input type="text" name="date" size="8"></td>
+				</tr>
+				<tr>
+					<td>Time</td>
+				</tr>
+				<tr>
+					<td><input type="text" name="start_time" size="5"></td><td><input type="text" name="end_time" size="5"></td>
+				</tr>
+				<tr>
+					<td colspan="2">Notes</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="text" name="notes" size="15"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" name="make_appointment" value="Make Appointment"></td>
+				</tr>
+			</table>
+			<input type="hidden" name="process" value="true">
+			</form>
+</div>		</td>
+	</tr>
+</table>
+<br>
+-->
+<tr><td>
+<table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
+
+	<tr height="20">
+		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">Shortcuts</div></td>
+	</tr>
+	<tr>
+	<td align="center">
+<select name="month" class="query_style" onChange="window.location=('{$LINK_BASE}date='+this.options[this.selectedIndex].value);">
+{html_options options=$month_select selected=$month_selected}
+</select>
+<br>
+<select name="week" class="query_style" onChange="window.location=('{$LINK_BASE}date='+this.options[this.selectedIndex].value);">
+{html_options options=$week_select selected=$week_selected}
+</select>
+<br>
+</form>
+</div>
+</td>	
+</tr>
+</table>
+<br>
+
+
+{foreach from=$sidebar_months  item=month}
+		
+<table width="170" border="0" cellpadding="3" cellspacing="0" class="calborder">
+	<tr height="20">
+		<td align="center" class="sideback"><font class="G10BOLD">{$month->gettimestamp()|date_format:"%B"}</font></td>
+	</tr>
+	<tr>
+		<td bgcolor="#FFFFFF" align="center">
+			<table border="1" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+				<tr><td align="center" class="G10BOLD">S</td><td align="center" class="G10BOLD">M</td><td align="center" class="G10BOLD">T</td><td align="center" class="G10BOLD">W</td><td align="center" class="G10BOLD">T</td><td align="center" class="G10BOLD">F</td><td align="center" class="G10BOLD">S</td></tr>
+
+{assign var=md value=$month->fetchAll()}
+{foreach from=$md item=day}
+	{if $day->isFirst()}
+		<tr>
+	{/if}
+	{if $day->isEmpty()}
+		<td width="22" align="center" class="G10B"><a class="psf" href="{$LINK_BASE}date={$day->thisYear()}-{$day->thisMonth()}-{$day->thisDay()}"><font class="G10G">{$day->thisDay()}</font></td>
+	{elseif $day->isSelected()}
+		<td width="22" align="center" class="G10B" style="background-color:#FFFF00;"><a class="ps2" href="{$LINK_BASE}date={$day->thisYear()}-{$day->thisMonth()}-{$day->thisDay()}">{$day->thisDay()}</td>
+	{else}
+		<td width="22" align="center" class="G10B"><a class="ps2" href="{$LINK_BASE}date={$day->thisYear()}-{$day->thisMonth()}-{$day->thisDay()}">{$day->thisDay()}</td>
+	{/if}
+	
+	{if $day->isLast()}
+		</tr>
+	{/if}
+
+{/foreach}
+</table>
+</td></tr>
+</table>
+<br>
+{/foreach}

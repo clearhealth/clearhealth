@@ -1,0 +1,41 @@
+<form name="room" method="post" action="{$FORM_ACTION}">
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$room->id}" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Name</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="name" value="{$room->name}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Number of Beds</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="2" maxlength="4" name="number_seats" value="{$room->number_seats}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Additional Information</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" maxlength="250" name="description" value="{$room->description}"/>
+	</td>
+</tr>
+
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Building</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		{html_options name="building_id" options=$buildings selected=$room->get_building_id()}
+	</td>
+</tr>
+<tr>
+	{if empty($room->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+</table>
+<input type="hidden" name="id" value="{$room->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>

@@ -1,0 +1,179 @@
+{literal}
+<script>
+function toggleCell(box) {
+  	
+  	var cell = null;
+  	cell = box.parentNode;
+  
+    var domDetect = null;
+    var currentColor = null;
+    var newColor = null;
+    
+    if (typeof(window.opera) == 'undefined' && typeof(cell.getAttribute) != 'undefined') {
+        currentColor = cell.getAttribute('bgcolor');
+        domDetect    = true;
+        
+        if (currentColor == '#ffffff') {
+        	newColor = '#BBBBFF';
+        }
+        else {
+        	newColor = '#ffffff';
+        }
+    }
+
+    if (newColor) {
+        if (domDetect) {
+        	cell.setAttribute('bgcolor', newColor, 0);
+        }
+    }
+
+    return true;
+}
+
+</script>
+{/literal}
+<table CELLSPACING="0" CELLPADDING="3" border="0">
+<tr>
+<td>
+<form name="appointment" method="post" action="{$FORM_ACTION}">
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$schedule->id}" />
+<input type="hidden" name="appointment_code" value="schedule" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td colspan="5">
+	{if $messages }
+	{$messages->render()}
+	{/if}
+	</td>
+</tr>
+
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Title</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="title" value="{$schedule->title}"/>
+	</td>
+</tr>
+<tr>
+	<td>Dates (mm/dd/yyyy): </td>
+	<td><input type="text" name="starting_date" size="10" value="{$schedule->get_earliest_date()|date_format:"%m/%d/%Y"}"> to <input type="text" name="ending_date" size="10" value="{$schedule->get_latest_date()|date_format:"%m/%d/%Y"}"></td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Location</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	{html_options name="location_id" options=$rooms_practice_array selected=$edit_timeplace->get_location_id()}
+	</td>
+</tr>
+
+<tr>
+	{if empty($schedule->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+<tr>
+	<td><br></td>	
+</tr>
+<input type="hidden" name="id" value="{$schedule->id}" />
+<input type="hidden" name="occurence_user_id" value="{$schedule_user_id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</table>
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<table border="0" cellspacing="0" cellpadding="0" class="calborder">
+	<tr>
+		<td colspan="22">
+			<table width="100%">
+			<tr>
+				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
+				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
+      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>				
+	<td width="70" colspan="1" valign="top" align="center" class="dateback"></td>				
+	<td></td>
+	{foreach from=$WeekGridArray item=Day}
+		{assign var=dts value=$Day->gettimestamp()}
+    	<td width="70" colspan="{$week_maxcols.$dts}" valign="top" align="center" class="dateback"><span class="V9">
+    	<img src="{$base_dir}images/spacer.gif" width="70" height="1"><br>
+    	<a class="psf" href="{$DAY_ACTION}&year={$Day->thisYear()}&month={$Day->thisMonth()}&day={$Day->thisDay()}">{$Day->gettimestamp()|date_format:"%a, %b %d"}</a></span></td>
+    {/foreach}
+    
+    </tr>
+    
+	{foreach name=inc_count from=$header_increment key=time item=inc}
+	<tr>
+	{if $inc%4 eq 1 or $inc eq 1}
+		<td rowspan="4" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
+		{assign var=week_border value="weekborder"}
+	{else}
+		{assign var=week_border value="weekborder2"}
+	{/if}	
+	<td width="1" height="15"></td>
+
+	{foreach from=$WeekGridArray item=Day}
+		{assign var=dts value=$Day->gettimestamp()}
+		
+		{assign var=this_days_time value=$time+$dts}
+		
+    	{assign var=tablemap value=$week_tablemap.$dts}
+    	{assign var=tablemap2 value=$week_tablemap2.$dts}
+    	{assign var=maxcols value=$week_maxcols.$dts}
+    	{assign var=events value=$days_events.$dts}
+    	
+			{foreach name=evs from=$events.$this_days_time item=ev}
+			<td colspan="1" width="70" rowspan="{$tablemap2[$ev.occurence_id]}" class="eventbg2_1" valign="top">
+				<table width="100%" border="0" cellspacing="1" cellpadding="0">
+					<tr>
+						<td height="13" class="eventborder"><span class="eventfont">{$ev.start_ts|date_format:"%I:%M%p"}&nbsp;-&nbsp;{$ev.end_ts|date_format:"%I:%M%p"}</span></td>
+					</tr>
+					<tr>
+					<td colspan="1" valign="top">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+							<td class="eventbg_1">
+								<a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}"><!--{$ev.occurence_id} -->{$ev.schedule_code}</a> - <a href="{$SCHEDULE_LIST_ACTION}#{$ev.schedule_id}">{$ev.title}</a>
+								in {$ev.building}->{$ev.room}
+								<br>
+								{$ev.notes}
+								<br>
+								<a href="{$DELETE_ACTION}&id={$ev.occurence_id}&object=occurence&process=1">delete</a>
+								<br>
+							</td>
+							</tr>
+						</table>
+					</td>
+					</tr>
+				</table>
+			</td>
+		{/foreach}
+		
+		{if isset($tablemap.$this_days_time)}
+			{section name=ll loop=$maxcols-$tablemap.$this_days_time}
+			{if $smarty.section.ll.iteration+$tablemap.$this_days_time == $maxcols}
+				<td bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="border-right: 1px solid #A1A5A9;">&nbsp;<input type="checkbox" name="times[{$Day->gettimestamp()|date_format:"%A"|lower}][{$time}]" value="1" onclick="toggleCell(this);"></td>
+			{else}
+				<td bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="border-right:none;">&nbsp;</td>
+			{/if}
+			{/section}
+			
+		{/if}
+		
+		{if !isset($tablemap.$this_days_time) AND !isset($stablemap.$this_days_time)}
+			<td  bgcolor="#ffffff" rowspan="1" align="center" class="{$week_border}" style="{$add_border}">&nbsp
+			<input type="checkbox" name="times[{$Day->gettimestamp()|date_format:"%A"|lower}][{$time}]" value="1" onclick="toggleCell(this);"></td>
+		{/if}
+		
+		{/foreach}
+    {/foreach}
+    </tr>
+</table>
+</form>
+</td>
+<td style="padding-left:10px;" valign="top">{$sidebar}</td>
+</tr>
+</table>

@@ -1,0 +1,46 @@
+<form name="users" method="post" action="{$TOP_ACTION}">
+<table>
+	<tr>
+		<td colspan="2">
+		{if $error}
+			{$error}<br><br>
+		{/if}
+		{if $messages}
+			{$messages}<br><br>
+		{/if}
+		</td>
+	</tr>
+	<tr>
+		<td>Username:&nbsp;</td>
+		<td><input type="text" name="username" size="15" value="{$username}"></td>
+	</tr>
+	<tr>
+		<td>Nickname:&nbsp;</td>
+		<td><input type="text" name="nickname" size="15" value="{$nickname}"></td>
+	</tr>
+	<tr>
+		<td>Color:&nbsp;</td>
+		<td><input type="text" name="color" size="15" value="{$color}"></td>
+	</tr>
+	<tr>
+		<td>Default Location:</td>
+		<td>{html_options name="default_location_id" options=$rooms_practice_array}</td>
+	</tr>
+	<tr>
+		<td>Roles:&nbsp;</td>
+		<td>{html_options name="groups[]" options=$groups multiple="true" size="4"}</td>
+	</tr>
+	<tr>
+		<td>Password:&nbsp;</td>
+		<td><input type="password" name="password" size="15"></td>
+	</tr>
+	<tr>
+		<td>Password (match):&nbsp;</td>
+		<td><input type="password" name="password2" size="15"></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br><input type="submit" name="submit" value="Add User"></td>
+	</tr>
+</table>
+<input type="hidden" name="process" value="{$PROCESS}">
+</form>

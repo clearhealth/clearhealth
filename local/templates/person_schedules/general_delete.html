@@ -1,0 +1,31 @@
+<table>
+	<tr>
+		<td>Confirm Deletion</td>
+	</tr>
+	{if !$error}
+	<tr>
+		<td>You are deleting the following:</td>
+	</tr>
+	{else}
+	<tr>
+		<td>There was an error during the delete:</td>
+	</tr>
+	{/if}
+	<tr>
+		<td>{$message}</td>
+	</tr>
+	<tr>
+		<td><br></td>
+	</tr>
+	<tr>
+		<td>
+		<form method="post" action="{$DELETE_ACTION}">
+		<input type="hidden" name="process" value="{$PROCESS}">
+		<input type="submit" name="cancel" value="Cancel">&nbsp;&nbsp;
+		{if $allow_delete}
+		<input type="submit" name="delete" value="Delete">
+		{/if}
+		</form>
+		</td>
+	</tr>
+</table>

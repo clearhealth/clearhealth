@@ -1,0 +1,112 @@
+<script language="javascript" src="{$base_dir}js/calendar.js"></script>
+<table CELLSPACING="0" CELLPADDING="3" border="0">
+<tr>
+	<td>{$messages->render()}</td>
+</tr>
+<tr>
+<td>
+	<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<table  border="0" cellspacing="0" cellpadding="0" class="calborder">
+	<tr>
+		<td colspan="20">
+			<table  border="0" width="100%" cellspacing="0" cellpadding="0">
+			<tr>		
+    			<td align="left" width="100" class="navback">&nbsp;</td>
+    			<td class="navback">
+    				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    					<tr>
+							<td align="right" width="40%" class="navback"><a class="psf" href="{$DAY_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Day]" border="0" align="right"></a></td>
+							<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$DayGrid->gettimestamp()|date_format:"%a, %b %d"}</span></td>
+							<td align="left" width="40%" class="navback"><a class="psf" href="{$DAY_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Day]" border="0" align="left"></a>
+							<div style="float:right">
+      						<a href="{$CONTROLLER->_link("day",true)}date={$DayGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
+			      			<a href="{$CONTROLLER->_link("week_grid",true)}date={$DayGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
+    			  			<a href="{$CONTROLLER->_link("month",true)}date={$DayGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
+    			  			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
+      						</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+	<td></td>
+	<td width="70" colspan="1" valign="top" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;</td>
+	<td width="460" valign="top" colspan="7" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;
+	{if $users_filter}
+		Showing Users: {$users_filter}&nbsp;&nbsp;
+	{/if}
+	
+	{if $locations_filter}
+		Showing Locations: {$locations_filter}&nbsp;&nbsp;
+	{/if}
+	</td>
+	{foreach name=inc_count from=$increments key=time item=inc}
+		<tr>
+		<td width="0" height="15"></td>
+		{if $inc%2 eq 1 or $inc eq 1}
+			<td rowspan="2" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
+			{assign var=day_border value="dayborder"}	
+		{else}
+			{assign var=day_border value="dayborder2"}
+		{/if}
+		
+		{foreach name=evs from=$sevents.$time item=ev}
+			<td colspan="1" width="15" valign="top" style="background-color:#{$ev.color};" class="schedule_border" align="center">
+			{if $ev.first_inc}
+				{$ev.nickname}<br>
+			{/if}
+			{strip}
+			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time}" value="{$time}" onclick="toggleCell(this);">
+			{if $ev.last_inc}
+			<table width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+			<td  style="background-color:#{$ev.color};" width="100%" align="center">
+			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time+900}" value="{$time+900}" onclick="toggleCell(this);">
+			</td>
+			</tr>	
+			</table>
+			{/if}
+			{/strip}
+			</td>
+		{/foreach}
+		
+		{if isset($stablemap.$time)}
+			{section name=ll loop=$smaxcols-$stablemap.$time}
+				<td  bgcolor="#ffffff" rowspan="1" align="center" class="{$day_border}" style="border-right:none;">&nbsp;</td>
+			{/section}
+		{/if}
+	
+		{foreach name=evs from=$events.$time item=ev}
+		{if $ev.schedule_code eq ADM}
+			{assign var=color value="FFFF13"}
+			{else}
+			{assign var=color value=$ev.color}
+		{/if}
+			{assign var=inlineBlurb value=1}
+			{assign var=ev_edit value=1}
+			{include file="calendar/general_appointment_inline_blurb.html"}
+
+		{/foreach}
+		
+		{if isset($tablemap.$time)}
+			{section name=ll loop=$maxcols-$tablemap.$time}
+				<td bgcolor="#ffffff" rowspan="1" align="center" class="{$day_border}" style="border-right:none;">&nbsp;</td>
+			{/section}
+		{/if}
+		
+		{if $maxcols == 0 && $smaxcols == 0}
+			<td  bgcolor="#ffffff" rowspan="1" align="center" class="{$day_border}" style="{$add_border}">&nbsp;</td>
+		{/if}
+		</tr>
+	{/foreach}
+</tr>	
+</table>
+</td>
+<td style="padding-left:10px;" valign="top">{$sidebar}</td>
+
+</tr>
+</table>

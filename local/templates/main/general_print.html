@@ -1,0 +1,46 @@
+<html>
+<head>
+<!-- compliance patch for microsoft browsers -->
+<!--[if lt IE 7]>
+<script src="{$base_dir}js/ie7/ie7-standard.js" type="text/javascript">
+</script>
+<![endif]-->
+
+
+{literal}
+<SCRIPT LANGUAGE="JavaScript">
+function popUp(URL,width,height) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=' + width + ',height=' + height + ',left = 400,top = 150');");
+}
+
+</script>
+ 
+ <style type="text/css" title="mystyles" media="all">
+<!--
+li{
+	font-size:11pt;
+	font-family:helvetica;
+	margin-left: 15px;
+}
+td {
+	font-size:8pt;
+	font-family:helvetica;
+}
+a {
+	font-size:8pt;
+	font-family:helvetica;
+}
+-->
+</style>
+{/literal}
+</head>
+<body>
+<table>
+	<tr>
+		<td valign="top">{$display}</td>
+	</tr>
+</table>
+</body>
+</html>

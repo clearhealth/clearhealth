@@ -1,0 +1,530 @@
+<?php
+
+require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once APP_ROOT . "/local/controllers/C_Main.class.php";
+require_once APP_ROOT . "/local/controllers/C_Schedule.class.php";
+
+require_once APP_ROOT . "/local/ordo/Practice.class.php";
+require_once APP_ROOT . "/local/ordo/Building.class.php";
+require_once APP_ROOT . "/local/ordo/Room.class.php";
+require_once APP_ROOT . "/local/ordo/Schedule.class.php";
+
+class C_Location extends Controller {
+
+	var $template_mod;
+	var $location;
+
+	function C_Location($template_mod = "general") {
+		parent::Controller();
+		$this->template_mod = $template_mod;
+		$this->assign("FORM_ACTION", Cellini::link(true) . $_SERVER['QUERY_STRING']);
+		$this->assign("TOP_ACTION", Cellini::link(true));
+
+		$this->assign('EDIT_SCHEDULE_ACTION', Cellini::link('edit_schedule'));
+		$this->assign('DELETE_ACTION', Cellini::link('delete'));
+		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit_practice'));
+		$this->assign('EDIT_BUILDING_ACTION', Cellini::link('edit_building'));
+		$this->assign('EDIT_ROOM_ACTION', Cellini::link('edit_room'));
+		$this->assign('EDIT_EVENT_ACTION', Cellini::link('edit_event'));
+		$this->assign('EDIT_WIZARD_ACTION', Cellini::link('edit_event','personSchedule'));
+		$this->assign('SCHEDULE_LIST_ACTION', Cellini::link('schedule_list'));
+		$this->assign('UPDATE_SCHEDULE_ACTION', Cellini::link('update_schedule'));
+		$this->assign('EDIT_TIMEPLACE_ACTION', Cellini::link('edit_timeplace'));
+	}
+
+	function default_action() {
+		return $this->edit_action();
+	}
+
+	function list_action() {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
+		
+		$c = new Schedule();
+		$this->assign("schedules",$c->schedules_factory());
+		$s = new Practice();
+		$this->assign("practices",$s->practices_factory());
+		$b = new Building();
+		$this->assign("buildings",$b->buildings_factory());
+		$r = new Room();
+		$this->assign("rooms",$r->rooms_factory());
+		
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_list.html");
+	}
+	
+	function schedule_list_action() {
+		
+		$c = new Schedule();
+		$this->assign("schedules",$c->schedules_factory());
+		
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_schedule_list.html");
+	}
+
+	function edit_practice_action($id = "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
+		
+		if (is_numeric($id)) {
+			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
+		}
+		else{
+			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
+		}
+		
+		
+		if (!is_object($this->location)) {
+			$this->location = new Practice($id);
+		}
+		
+		$this->assign("practice",$this->location);
+
+		$this->assign("process",true);
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_practice.html");
+	}
+	
+		
+	function edit_practice_action_process() {
+		if ($_POST['process'] != "true")
+			return;
+		if (is_numeric($_POST['id'])) {
+			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
+		}
+		else{
+			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
+		}	
+			
+		$this->location = new Practice($_POST['id']);
+		parent::populate_object($this->location);
+		
+		$this->location->persist();
+		
+		$this->location->populate();
+		$_POST['process'] = "";
+	}
+	
+	function edit_building_action($id = "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
+		if (!is_object($this->location)) {
+			$this->location = new building($id);
+		}
+		
+		$this->assign("building",$this->location);
+		$s = new Practice();
+		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
+
+		$this->assign("process",true);
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_building.html");
+	}
+	
+		
+	function edit_building_action_process() {
+		if ($_POST['process'] != "true")
+			return;
+			$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
+		$this->location = new building($_POST['id']);
+		parent::populate_object($this->location);
+		
+		$this->location->persist();
+		
+		$this->location->populate($this->location->get_id());
+		$_POST['process'] = "";
+	}
+	
+	function edit_room_action($id = "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);
+		
+		if (!is_object($this->location)) {
+			$this->location = new room($id);
+		}
+		
+		$this->assign("room",$this->location);
+		$b = new Building();
+		$this->assign("buildings",$this->utility_array($b->buildings_factory(),"id","name"));
+
+		$this->assign("process",true);
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_room.html");
+	}
+	
+		
+	function edit_room_action_process() {
+		if ($_POST['process'] != "true")
+			return;
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
+		$this->location = new room($_POST['id']);
+		parent::populate_object($this->location);
+		
+		$this->location->persist();
+		
+		$this->location->populate($this->location->get_id());
+		$_POST['process'] = "";
+	}
+	
+	function edit_schedule_action($id = "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
+		if (!is_object($this->location)) {
+			$this->location = new schedule($id);
+		}
+		
+		$this->assign("schedule",$this->location);
+		$r = new Room();
+		$this->assign("rooms_practice_array",$r->rooms_practice_factory($this->location->get_practice_id()));
+		$s = new Practice();
+		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
+		
+		$u = new User(null,null);
+		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","_username"));
+		
+		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
+		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
+		$this->assign("process",true);
+		$this->assign("EVENT_ACTION", $this->_link("edit_event",true) . "id=$id");
+		$this->assign("OCCURENCE_ACTION", $this->_link("edit_occurence",true) . "id=$id");
+		//$this->assign("OCCURENCE_ACTION", "controller.php?" . str_replace("edit_schedule","edit_occurence",$_SERVER['QUERY_STRING']));
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_schedule.html");
+	}
+	
+	function edit_schedule_action_process() {
+		if ($_POST['process'] != "true")
+			return;
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
+		$this->location = new schedule($_POST['id']);
+		parent::populate_object($this->location);
+		
+		$this->location->persist();
+		
+		$this->location->populate();
+		$_POST['process'] = "";
+		$this->_state = false;
+		return $this->edit_schedule_action($this->location->get_id());
+	}
+	
+	function edit_event_action($id = "", $fid= "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
+		$this->assign("edit_event",new Event($id));
+		
+		return $this->edit_schedule_action($fid);
+	}
+	
+	function edit_timeplace_action($id = "", $fid= "") {
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","occurence",$this,false);
+		$this->assign("edit_timeplace",new Occurence($id));
+		
+		return $this->edit_schedule_action($fid);
+	}
+	
+	function edit_event_action_process($schedule_id = "") {
+		if ($_POST['process'] != "true")
+			return;
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
+		$this->location = new event($_POST['id']);
+		parent::populate_object($this->location);
+		
+		$this->location->persist();
+		
+		$this->location->populate();
+		$_POST['process'] = "";
+		$this->_state = false;
+		$this->location = null;
+		header("Location: ".Cellini::link("edit_schedule").$_SERVER['QUERY_STRING']);
+		return $this->edit_schedule_action($schedule_id);
+	}
+	
+	function edit_appointment_action_process($event_id = "",$confirm =false) {
+		if ($_POST['process'] != "true")
+			return;
+		
+		if (!isset($_POST['occurence_id'])) {
+			$_POST['occurence_id'] = 0;
+		}
+		$oc = new Occurence($_POST['occurence_id']);
+		if($this->_me->get_user_id() == $oc->get_user_id()) {
+			$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
+		}
+		else {
+			$this->sec_obj->acl_qcheck("edit_owner",$this->_me,"","event",$this,false);
+		}
+		
+		$_POST['process'] = "";
+		$this->_state = false;
+		
+		if (is_array($event_id)) {
+			$this->event = new event();
+			$this->event->populate_array($event_id);
+		}
+		else {
+			$this->event = new event($event_id);
+			$this->event->populate_array($_POST);;
+		}
+		
+		parent::populate_object($oc);
+
+		$cs = new C_Schedule();
+		//check for availability of provider
+		if (is_numeric($oc->get_user_id())) {
+			$availability = $cs->check_availability($oc->get_start(),$oc->get_end(), $oc->get_user_id(), $oc->get_location_id());
+			if ($availability) {
+				//echo "this event is within providers schedule<br>";	
+			}
+			else {
+				//echo "this event is NOT within providers schedule<br>";
+			}
+		}
+		
+		//check for double book
+		if (is_numeric($oc->get_user_id()) && !is_numeric($_POST['occurence_id'])) {
+			$double = $cs->check_double_book($oc,$this->event);
+			if ($double) {
+			if(!$this->sec_obj->acl_qcheck("add_double",$this->_me,"","event",$this,true)) {
+			echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
+exit;
+                	}
+				//echo "this event is double booking<br>";	
+			}
+			else {
+				//echo "this event is NOT double booking<br>";
+			}
+		}
+		
+		if (!($availability && !$double) && !$confirm) {
+			return $cs->confirm_action($_POST);	
+		}
+		
+		$this->event->persist();
+		$this->event->populate();
+		
+		$oc->set_event_id($this->event->get_id());
+
+		$oc->persist();
+		$oc->populate();
+		
+		$this->location = null;
+		$trail = $_SESSION['trail'];
+
+		$action = true;
+		$controller = true;
+		$section = true;
+		$qs = "";
+		foreach($trail as $stop) {
+				
+			if (!isset($stop['edit_appointment']) && 
+				$stop['action'] != "edit_appointment" &&
+				!isset($stop['confirm']) && 
+				$stop['action'] != "confirm" &&
+				!isset($stop['find']) && 
+				$stop['action'] != "find" &&
+				!isset($stop['appointment_popup']) && 
+				$stop['action'] != "appointment_popup"
+				) {
+					
+					$section = array_shift($stop);
+					$controller = array_shift($stop);
+					$action = array_shift($stop);
+
+					foreach($stop as $key => $val) {
+						$qs .= "$key=$val&";
+					}
+			}
+		}
+		//echo $location;
+		header("Location: " . Cellini::link($action,$controller,$section).$qs);
+		exit;
+		return $this->edit_schedule_action($schedule_id);
+	}
+	
+	
+	function edit_occurence_action_process($schedule_id = "") {
+		if ($_POST['process'] != "true")
+			return;
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","occurence",$this,false);
+		$id = "";
+		if (isset($_POST['id'])) $id =$_POST['id'];
+		$this->location = new occurence($id);
+		parent::populate_object($this->location);
+		$this->location->persist();
+		
+		$this->location->populate($this->location->get_id());
+		$_POST['process'] = "";
+		$this->_state = false;
+		$this->location = null;
+		header("Location: " . $this->_link("edit_schedule",true) . "id=" . $_POST['schedule_id']);
+		return;
+	}
+	
+	function delete_action($id = "",$object_class ="") {
+		
+		$action = "";
+		if($object_class == "occurence"){
+			$o = new Occurence($id);
+			$o->populate();
+			if($o->get_last_change_id() == $this->_me->get_user_id()){
+				$action = 'delete_owner';
+			}
+			else{
+				$action = 'delete';
+			}
+		}
+
+		$this->sec_obj->acl_qcheck($action,$this->_me,"",$object_class,$this,false);
+		
+		$message = "Incorrect parameters were passed, please check the query string and try again.";
+		$allow_delete = false;
+		preg_replace("/[^A-Za-z0-9]*/","",$object_class);
+		$obj = null;
+		if (!empty($id) && is_numeric($id)&& !empty($object_class)) {
+			
+			$obj = new $object_class($id);
+			
+			if (is_object($obj) && $obj->id > 0 && $obj->_populated && is_callable(array($obj,"get_delete_message"))) {
+				$message = nl2br($obj->get_delete_message());
+				$allow_delete = true;
+			}
+			else{
+				$message = "No object with that information could be found or it does not support deletion";
+			}
+
+		}
+		$this->assign("message",$message);
+		$this->assign("allow_delete",$allow_delete);
+		$this->assign("DELETE_ACTION", Cellini::link('delete')."id=$id&object_class=$object_class");
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");
+	}
+	
+	function delete_action_process($id = "",$object_class ="") {
+
+		$action = "delete";
+		if($object_class == "occurence"){
+			$o = new Occurence($id);
+			$o->populate();
+			if($o->get_last_change_id() == $this->_me->get_user_id()){
+				$action = 'delete_owner';
+			}else{
+				$action = 'delete';
+			}
+		}
+
+		$this->sec_obj->acl_qcheck($action,$this->_me,"",$object_class,$this,false);
+	
+		if ($_POST['process'] == true && (isset($_POST['cancel']) || isset($_GET['cancel']))) {
+			$this->_redirLast();
+		}
+		elseif ($_POST['process'] != "true" && (isset($_POST['delete']) || $_GET['delete'])) {
+			return;
+		}
+		$error = true;
+		if(empty($id) && empty($object_class)) {
+			$id = $_POST['id'];
+			$object_class = $_POST['object_class'];	
+		}
+		
+		preg_replace("/[^A-Za-z0-9]*/","",$object_class);
+		$obj = null;
+		
+		if (is_numeric($id) && !empty($object_class)) {
+			
+			$obj = new $object_class($id);
+			if (is_object($obj) && $obj->id > 0 && $obj->_populated && is_callable(array($obj,"delete"))) {
+				if ($obj->delete()) {
+					$message = "Object(s) deleted successfully";
+					$error = false;
+				}
+				else {
+					$message = "Object deletion failed";	
+				}
+			}
+			else{
+				$message = "No object with that information could be found or it does not support deletion";
+			}	
+			
+		}
+		$this->assign("message", $message);
+		if ($error) {
+			$this->assign("error",true);
+			$this->_state = false;
+			return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");	
+		}
+
+		$this->_redirLast();
+	}
+
+	function _redirLast() {
+		$action = 'list';
+		$controller = 'location';
+		$section = 'main';
+
+		$trail = $_SESSION['trail'];
+		$qs = "";
+		foreach($trail as $stop) {
+			if (!isset($stop['delete']) && $stop['action'] != "delete") {
+				$section = array_shift($stop);
+				$controller = array_shift($stop);
+				$action = array_shift($stop);
+
+				foreach($stop as $key => $val) {
+					$qs .= "$key=$val&";
+				}
+			}
+		}
+	
+		header("Location: ".Cellini::link($action,$controller,$section).$qs);
+		exit;
+	}
+
+	function update_schedule_action_process($id = "",$schedule_code ="",$group_name ="") {
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"",$object_class,$this,false);
+	
+		if ($_POST['process'] != "true") {
+			return;
+		}
+
+		if(empty($id) && empty($object_class)) {
+			$id = $_POST['id'];	
+		}
+		
+		if (is_numeric($id) && !empty($schedule_code) && !empty($group_name)) {
+			
+			$oc = new Occurence($id);
+			$s = new Schedule();
+			$sa = $s->schedules_factory();
+			
+			foreach ($sa as $schedule) {
+				if ($schedule->get_schedule_code() == $schedule_code) {
+					$ea = $schedule->get_events();
+					foreach ($ea as $event) {
+						if ($event->get_title() == urldecode($group_name)) {
+							$oc->set_event_id($event->get_id());
+							$oc->persist();
+							break;	
+						}	
+					}
+					break;	
+				}	
+			}	
+			
+		}
+		$this->assign("messages", $messages);
+		$location = "main&location&action=list";
+		$trail = $_SESSION['trail'];
+		foreach($trail as $stop) {
+			if (!isset($stop['update_schedule']) && $stop['action'] != "update_schedule") {
+				$location = "";
+				foreach ($stop as $qn => $qi) {
+					$location .= "$qn";
+					if (!empty($qi)) $location .= "=$qi";
+					$location .="&";
+				}
+				break;
+			}
+		}
+	
+		header("Location: controller.php?$location");
+		return;
+	}
+	
+}
+
+?>

@@ -1,0 +1,166 @@
+<form name="schedule" method="post" action="{$FORM_ACTION}">
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$schedule->id}" />
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Name</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="name" value="{$schedule->name}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Schedule Code</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="10" name="schedule_code" value="{$schedule->get_schedule_code()}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Short Description</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="description_short" value="{$schedule->get_description_short()}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Long Description</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<textarea wrap="virtual" cols="44" rows="6" name="description_long">{$schedule->get_description_long()}</textarea>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Practice</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	{html_options name="practice_id" options=$practices selected=$schedule->get_practice_id()}
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Provider</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	<select name="user_id">
+	<option value=""></option>
+	{html_options options=$users_array selected=$schedule->get_user_id()}
+	</select>
+	</td>
+</tr>
+
+<tr>
+	{if empty($schedule->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+<tr>
+	<td><br></td>	
+</tr>
+<input type="hidden" name="id" value="{$schedule->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>
+{if $schedule->get_id() gt 0}
+<form name="events" method="post" action="{$EVENT_ACTION}">
+<tr>
+	<td>{if $edit_event->id > 0}Edit{else}Add{/if} Schedule</td>
+</tr>
+<tr>
+	<td>Title:</td><td><input type="text" size="40" name="title" value="{$edit_event->get_title()}"/></td>
+</tr>
+<!--
+<tr>
+	<td>Website:</td><td><input type="text" size="40" name="website" value="{$edit_event->get_website()}"/></td>
+</tr>
+<tr>
+	<td>Instructor:</td><td><input type="text" size="40" name="contact_person" value="{$edit_event->get_contact_person()}"/></td>
+</tr>
+-->
+<tr>
+	<td><br /><input type="submit" value="{if $edit_event->id >0}Update{else}Add{/if}" /></td>
+</tr>
+<input type="hidden" name="id" value="{$edit_event->id}" />
+<input type="hidden" name="foreign_id" value="{$schedule->id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>
+<tr>
+	<td><br></td>	
+</tr>
+<tr>
+	<td>Event Groups</td>
+</tr>
+{foreach from=$schedule->events item=event}
+<tr>
+	<td><a href="{$EDIT_EVENT_ACTION}id={$event->get_id()}&foreign_id={$schedule->get_id()}">{$event->get_title()}</a> &nbsp;
+		<a href="{$EDIT_WIZARD_ACTION}id={$event->get_id()}">wizard</a>&nbsp;&nbsp;&nbsp;<a href="{$DELETE_ACTION}id={$event->get_id()}&object=event">D</a></td>
+	<!--<td>Instructor: {$event->get_contact_person()}</td>
+	<td>Website: {$event->get_website()}</td>-->
+</tr>
+<tr>	
+	<td colspan="4">
+		<table border="0">
+		
+		{if $edit_timeplace->get_event_id() eq $event->get_id()}
+		
+		<form name="occurences" method="post" action="{$OCCURENCE_ACTION}">
+		<tr>
+			<td colspan="4">&nbsp;&nbsp;Update Time and Place: Date <input type="text" name="date" size="10" value="{$edit_timeplace->get_date()}">
+			Start <input type="text" name="start_time" size="5" value="{$edit_timeplace->get_start_time()}"> End <input type="text" name="end_time" size="5" value="{$edit_timeplace->get_end_time()}">&nbsp;
+			{html_options name="location_id" options=$rooms_practice_array selected=$edit_timeplace->get_location_id()}&nbsp;
+			<input type="hidden" name="id" value="{$edit_timeplace->get_id()}"> 
+			<input type="submit" name="add" value="Update">
+			</td>
+		</tr>
+		<input type="hidden" name="schedule_id" value="{$schedule->id}" />
+		<input type="hidden" name="user_id" value="{$schedule->get_user_id()}" />
+		<input type="hidden" name="event_id" value="{$event->id}" />
+		<input type="hidden" name="process" value="{$PROCESS}" />
+		</form>
+		{else}
+		<form name="occurences" method="post" action="{$OCCURENCE_ACTION}">
+		<tr>
+			<td colspan="4">&nbsp;&nbsp;Add Time and Place: Date (E.g. 01/01/2005)
+			  <input type="text" name="date" size="10">
+			Start <input type="text" name="start_time" size="5" value=""> End <input type="text" name="end_time" size="5" value="">	&nbsp;
+			{html_options name="location_id" options=$rooms_practice_array}&nbsp;
+			<input type="submit" name="add" value="Add">
+			</td>
+		</tr>
+		<input type="hidden" name="schedule_id" value="{$schedule->id}" />
+		<input type="hidden" name="user_id" value="{$schedule->get_user_id()}" />
+		<input type="hidden" name="event_id" value="{$event->id}" />
+		<input type="hidden" name="process" value="{$PROCESS}" />
+		</form>
+		{/if}
+		<tr>
+			<td>Date</td><td>Time</td><td>Duration</td><td>Location</td><td></td>
+		</tr>
+		{foreach from=$event->get_occurences() item=timeplace}
+		<tr>
+			<td>
+				<a href="{$DELETE_ACTION}&id={$timeplace->get_id()}&object=occurence&process=1">D</a>&nbsp;&nbsp;
+
+				<a href="{$EDIT_TIMEPLACE_ACTION}&id={$timeplace->get_id()}&foreign_id={$schedule->get_id()}">{$timeplace->get_start()|date_format:"%a %m/%d/%Y"}</a>
+			</td>
+			<td> 
+				<a href="{$EDIT_TIMEPLACE_ACTION}&id={$timeplace->get_id()}&foreign_id={$schedule->get_id()}">{$timeplace->get_start()|date_format:"%H:%M %p"} to {$timeplace->get_end()|date_format:"%H:%M %p"}</a>
+			</td>
+			<td>
+			 	{math equation="floor(x / 60)" x=$timeplace->get_duration() } hours {math equation="x % 60" x=$timeplace->get_duration() } minutes
+			 </td>
+			 <td>
+				{assign var=location_id value=$timeplace->get_location_id()} 
+				{$rooms_practice_array.$location_id}
+			</td>
+			
+		</tr>
+		{/foreach}
+		</table>
+		<br>
+	</td>
+</tr>
+{foreachelse}
+<tr>
+	<td colspan="6">No Schedules Found</td>
+</tr>
+{/foreach}
+
+{/if}
+</table>
+

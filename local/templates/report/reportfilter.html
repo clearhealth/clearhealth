@@ -1,0 +1,18 @@
+<form name="report" id="h3sForm" method="post" action="{$TOP_ACTION}">
+		<fieldset class="radio">
+		<h3>Filter Report</h3>
+<table width="100%">
+	<tr>
+		{foreach from=$vars item=var name=vars}
+		<td>{$var.name|replace:"_":" "|capitalize:true}<input type="text" name="rf[{$var.name}]" width=15" value="{$var.value}"></td>
+		{/foreach}
+	</tr>
+	<tr>
+		<td colspan="{$vars.total}">
+			<input type="submit" value="Filter Report">
+		</td>
+</table>
+<input type="hidden" name="id" value="{$id}">
+<input type="hidden" name="process" value="{$PROCESS}">
+		</fieldset>
+</form>
