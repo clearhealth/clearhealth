@@ -360,7 +360,8 @@ class Person extends ORDataObject {
 	 */
 	function get_types() {
 		if ($this->_types === false) {
-			$res = $this->_execute("select person_type, person_type t from person_type where person_id = ".(int)$this->id);
+			$sql = "select person_type, person_type t from person_type where person_id = ".(int)$this->id;
+			$res = $this->_execute($sql);
 			$this->_types = $res->getAssoc();
 		}
 		return $this->_types;
