@@ -204,7 +204,7 @@ class C_Report extends Controller {
 	/**
 	* Download a report template
 	*/
-	function download_template_action_edit($template_id=0,$report_id=0) {
+	function download_template_action_edit($report_id=0,$template_id=0) {
 		if (is_numeric($template_id)) {
 			$file = realpath(APP_ROOT."/user/report_templates/")."/".(int)$template_id.".tpl.html";
 			if (file_exists($file)) {
