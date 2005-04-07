@@ -7,14 +7,14 @@ var clni_notify_alert_reset_store = new Object;
 /**
  * Use on a forms onSubmit action to validate a form, uses the rules specified in clni_validation_rules
  */
-function clni_validate() {
+function clni_validate(currentForm) {
 	var ret = true;
 	for(var i =0; i < clni_validation_rules.length; i++) {
 		rule = clni_validation_rules[i];
 
 		//alert("Checking rule: "+rule.rule+" on "+rule.id+" disabled: "+document.getElementById(rule.id).disabled);
 		// only run validation on non disabled elements
-		if (document.getElementById(rule.id).disabled != true) {
+		if (document.getElementById(rule.id).disabled != true && (elementInCurrentForm(document.getElementById(rule.id),currentForm))) {
 			eval('var res = clni_rule_'+rule.rule+'(document.getElementById("'+rule.id+'"));');
 			
 			if (!res) {
@@ -27,6 +27,19 @@ function clni_validate() {
 		}
 	}
 	return ret;
+}
+
+function elementInCurrentForm(element,currentForm) {
+	if (element && currentForm && currentForm  === element.parentNode) {
+		//alert("match" + element.parentNode.id);
+		return true;
+	}
+	else if (element){
+		if (elementInCurrentForm(element.parentNode,currentForm)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
