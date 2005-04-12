@@ -62,7 +62,7 @@ $imported_patients = array();
 $imported_subscribers = array();
 
 
-$theSQL = 'SELECT * FROM `patient_data` WHERE 1 LIMIT 0 , 30';
+$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != ""';
 
 	$query = mysql_query($theSQL);
 
