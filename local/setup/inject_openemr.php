@@ -69,7 +69,7 @@
 		$program_key="";
 
 		if(array_key_exists("subscriber_array",$insurance_info_instance)){
-			$subscriber =& ORDataObject::factory('Patient');
+			$subscriber =& ORDataObject::factory('Person');
 			$subscriber->populate_array($insurance_info_instance["subscriber_array"]);
 			$subscriber->set('identifier_type',1);
 			$subscriber->set('type',1);
@@ -132,8 +132,8 @@
 			$program->persist();
 
 			$program_key=$program->get('id');
-			echo "Imported Program: ".$program_key.
-			     " From: ".$insurance_info_instance["program_array"]["old_id"]."\n";
+		//	echo "Imported Program: ".$program_key.
+		//	     " From: ".$insurance_info_instance["insured_relationship_array"]["old_id"]."\n";
 
 			} //endif (array_key program_array
 
