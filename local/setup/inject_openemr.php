@@ -26,6 +26,8 @@
 	$feeSchedule =& ORDataObject::factory('FeeSchedule');
 	$schedules = array_flip($feeSchedule->toArray());
 
+	
+	
 
 	foreach($dataset as $person) {
 		unset($patient);
@@ -34,6 +36,17 @@
 		unset($subscriber_address);
 		unset($number);
 		unset($subscriber_number);
+		unset($importMap);	
+
+	//	if($importMap->isImported('patient',$person['old_id']))
+	//	{echo "patient has been imported \n";}
+
+
+		$importMap =& ORDataObject::factory('ImportMap',$person['old_id'],'patient');
+		
+		if($importMap->_populated){
+			echo "IMPORTED\n";
+		} 
 
 		$patient =& ORDataObject::factory('Patient');
 		$patient->populate_array($person);
@@ -54,9 +67,15 @@
 		$number->persist();
 
 		$patient_key=$patient->get('id');
+
+		$importMap->set('old_table_name','patient');	
+		$importMap->set('new_object_name','patient');	
+		$importMap->set('new_id',$patient_key);	
+		$importMap->persist();
+		unset($importMap);
+
+
 		echo "Imported Patient: ".$patient_key." From: ".$person["old_id"]."\n";
-		//Add patient to import map
-		
 				
 		if(array_key_exists("insurance_info",$person)){
 		$insurance_info=$person["insurance_info"];
