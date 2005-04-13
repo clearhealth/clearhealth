@@ -41,7 +41,7 @@
 	//	if($importMap->isImported('patient',$person['old_id']))
 	//	{echo "patient has been imported \n";}
 
-
+		echo "creating importmap with ".$person['old_id']." and patient\n";
 		$importMap =& ORDataObject::factory('ImportMap',$person['old_id'],'patient');
 		
 		if($importMap->_populated){
