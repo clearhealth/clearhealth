@@ -1,4 +1,8 @@
 <?php
+
+	$overwrite=true;
+
+
 	require_once dirname(__FILE__)."/../../../cellini/bootstrap.php";
 	set_time_limit(0);
 	$import_file = "dataset.php";
@@ -19,7 +23,9 @@
 
 		$importMap =& ORDataObject::factory('ImportMap',$user['user_id'],'user');
 		
-		if($importMap->_populated){
+		if(($importMap->_populated&&
+		  (!$overwrite))||
+		  ($user['user_id']==1)){
 			echo "User Already In:".$user['user_id']."\n";
 			$patient_key=$importMap->new_id;
 		}
