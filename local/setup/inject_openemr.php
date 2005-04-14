@@ -41,12 +41,13 @@
 	//	if($importMap->isImported('patient',$person['old_id']))
 	//	{echo "patient has been imported \n";}
 
-		echo "creating importmap with ".$person['old_id']." and patient\n";
 		$importMap =& ORDataObject::factory('ImportMap',$person['old_id'],'patient');
 		
 		if($importMap->_populated){
-			echo "IMPORTED\n";
-		} 
+			echo "Patient Already In:".$person['old_id']."\n";
+			$patient_key=$importMap->new_id;
+		}
+		else{ 
 
 		$patient =& ORDataObject::factory('Patient');
 		$patient->populate_array($person);
@@ -57,6 +58,7 @@
 		$address =& $patient->address();
 		$address->populate_array($person);
 		if($person["state"]==""){$person["state"]=$default_state;}
+		if(strlen($person["state"])>2){$person["state"]=$default_state;}
 		$address->set('state',$states[strtoupper($person['state'])]);
 		$address->set('type',1);
 		$address->persist();
@@ -73,9 +75,8 @@
 		$importMap->set('new_id',$patient_key);	
 		$importMap->persist();
 		unset($importMap);
-
-
 		echo "Imported Patient: ".$patient_key." From: ".$person["old_id"]."\n";
+		}
 				
 		if(array_key_exists("insurance_info",$person)){
 		$insurance_info=$person["insurance_info"];
@@ -88,6 +89,16 @@
 		$program_key="";
 
 		if(array_key_exists("subscriber_array",$insurance_info_instance)){
+
+
+		$importMap =& ORDataObject::factory('ImportMap',$insurance_info_instance['subscriber_array']['old_id'],'insurance_data_subscriber');
+		
+		if($importMap->_populated){
+			echo "Insurance Data Already In:".$insurance_info_instance['subscriber_array']['old_id']."\n";
+			$subscriber_key=$importMap->new_id;
+		}
+		else{ 
+
 			$subscriber =& ORDataObject::factory('Person');
 			$subscriber->populate_array($insurance_info_instance["subscriber_array"]);
 			$subscriber->set('identifier_type',1);
@@ -109,28 +120,61 @@
 
 			$subscriber_key=$subscriber->get('id');
 
+			$importMap->set('old_table_name','insurance_data_subscriber');	
+			$importMap->set('new_object_name','subscriber');	
+			$importMap->set('new_id',$subscriber_key);	
+			$importMap->persist();
+			unset($importMap);
+
 			echo "Imported Subscriber: ".$subscriber_key.
 			     " From: ".$insurance_info_instance["subscriber_array"]["old_id"]."\n";
-			
+
+			} //endelse not imported
 			} //endif (array_key_exists...
 
 
 		
 		if(array_key_exists("payer_array",$insurance_info_instance)){
+	
+
+		$importMap =& ORDataObject::factory('ImportMap',$insurance_info_instance['payer_array']['old_id'],'insurance_data_payer');
 		
+		if($importMap->_populated){
+			echo "Insurance Data Already In:".$insurance_info_instance['payer_array']['old_id']."\n";
+			$company_key=$importMap->new_id;
+		}
+		else{ 
+
+	
 			$company =& ORDataObject::factory('Company');
 			$company->populate_array($insurance_info_instance["payer_array"]);
 			$company->persist();
-
-			
 			$company_key=$company->get('id');
+
 			echo "Imported Company: ".$company_key.
 			     " From: ".$insurance_info_instance["payer_array"]["old_id"]."\n";
+
+			$importMap->set('old_table_name','insurance_data_payer');	
+			$importMap->set('new_object_name','subscriber');	
+			$importMap->set('new_id',$subscriber_key);	
+			$importMap->persist();
+			unset($importMap);
+		} //endelse not imported.
+
 
 
 		}
 
 		if(array_key_exists("program_array",$insurance_info_instance)){
+
+
+		$importMap =& ORDataObject::factory('ImportMap',$insurance_info_instance['program_array']['old_id'],'insurance_data_program');
+		
+		if($importMap->_populated){
+			echo "Insurance Data Already In:".$insurance_info_instance['program_array']['old_id']."\n";
+			$subscriber_key=$importMap->new_id;
+		}
+		else{ 	
 			$program =& ORDataObject::factory('InsuranceProgram');
 			$program->populate_array($insurance_info_instance["program_array"]);
 			$program->set('company_id',$company_key);
@@ -140,20 +184,45 @@
 			echo "Imported Program: ".$program_key.
 			     " From: ".$insurance_info_instance["program_array"]["old_id"]."\n";
 
+			$importMap->set('old_table_name','insurance_data_program');	
+			$importMap->set('new_object_name','subscriber');	
+			$importMap->set('new_id',$program_key);	
+			$importMap->persist();
+			unset($importMap);
+		} //endelse not imported.
+
+
 			} //endif (array_key program_array
 
 		if(array_key_exists("insured_relationship_array",$insurance_info_instance)){
+		if(array_key_exists("old_id",$insurance_info_instance['insured_relationship_array'])){
+
+		$importMap =& ORDataObject::factory('ImportMap',$insurance_info_instance['insured_relationship_array']['old_id'],'insurance_data_insured_relationship');
+		
+		if($importMap->_populated){
+			echo "Insurance Data Already In:".$insurance_info_instance['insured_relationship_array']['old_id']."\n";
+			$program_key=$importMap->new_id;
+		}
+		else{ 
 			$program =& ORDataObject::factory('InsuredRelationship');
 			$program->populate_array($insurance_info_instance["insured_relationship_array"]);
 			$program->set('insurance_program_id',$program_key);
 			$program->set('person_id',$patient_key);
 			$program->set('subscriber_id',$subscriber_key);
 			$program->persist();
-
 			$program_key=$program->get('id');
+
+			$importMap->set('old_table_name','insurance_data_insured_relationship');
+			$importMap->set('new_object_name','insured_relationship');	
+			$importMap->set('new_id',$program_key);	
+			$importMap->persist();
+			unset($importMap);
+		} //endelse not imported.
+
+
 		//	echo "Imported Program: ".$program_key.
 		//	     " From: ".$insurance_info_instance["insured_relationship_array"]["old_id"]."\n";
-
+			} //endif array_key old_id
 			} //endif (array_key program_array
 
 
