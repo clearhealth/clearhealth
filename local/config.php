@@ -36,4 +36,5 @@ $GLOBALS['C_ALL']['freeb2_dir'] = "/freeb2/index.php/";
 $GLOBALS['C_ALL']['emr_dir'] = "/clearhealth/index.php/";
 
 $config['htmldoc'] = "/usr/bin/htmldoc";
+$config['use_storage_text'] = true;
 ?>
