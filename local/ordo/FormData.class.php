@@ -126,6 +126,9 @@ class FormData extends ORDataObject {
 		foreach($this->_date_storage->_values as $key => $value) {
 			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'Date');
 		}
+		foreach($this->_text_storage->_values as $key => $value) {
+			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'Text');
+		}
 
 		usort($ret,array(&$this,'_sort'));
 		return $ret;
