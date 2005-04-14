@@ -101,10 +101,10 @@ class C_Form extends Controller {
 			$this->assign_by_ref('grid',$grid);
 		}
 		else {
-			$this->assign('FORM_ACTION',Cellini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id");
 			if (isset($this->form_data_id)) {
 				$form_data_id = $this->form_data_id;
 			}
+			$this->assign('FORM_ACTION',Cellini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id");
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$this->assign_by_ref('form',$form);
 			$this->assign_by_ref('data',$data);
