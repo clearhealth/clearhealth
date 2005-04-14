@@ -1,7 +1,7 @@
 <?php
 require_once("config.php");
 $db = $GLOBALS['frame']['adodb']['db'];
-$sql = "SELECT * from ".$GLOBALS['frame']['config']['openemr_db'].".users where username != 'admin'";
+$sql = "SELECT * from ".$GLOBALS['frame']['config']['openemr'].".users where username != 'admin'";
 
 $result = $db->Execute($sql);
 
