@@ -37,7 +37,7 @@ class ImportMap extends ORDataObject {
 		parent::ORDataObject($db);	
 		$this->_table = 'import_map';
 		$this->_sequence_name = 'sequences';	
-			echo "in constructor \n";
+		//	echo "in constructor \n";
 	}
 
 	/**
@@ -47,7 +47,7 @@ class ImportMap extends ORDataObject {
 		if ($id > 0) {
 			$this->set('id',$id);
 			$this->set('old_table_name',$old_table_name);
-			echo "in setup \n";
+		//	echo "in setup \n";
 			$this->populate();
 		}
 	}
@@ -57,12 +57,12 @@ class ImportMap extends ORDataObject {
 	 */
 	function populate($id = "id") {
 		$sql = "SELECT * from " . $this->_prefix  . $this->_table . " WHERE old_id = '" . mysql_real_escape_string(strval($this->id))  . "' AND old_table_name ='" . mysql_real_escape_string(strval($this->old_table_name))."'";
-			echo "in populate with $sql\n";
+			//echo "in populate with $sql\n";
 		$results = $this->_execute($sql);
 		if ($results && !$results->EOF) {
 			foreach ($results->fields as $field_name => $field) {
 				$this->set($field_name,$field);
-				echo 'field_name '.$field_name.' field'.$field."\n";
+				//echo 'field_name '.$field_name.' field'.$field."\n";
 			}
 			if (is_a($this->_int_storage,'Storage')) {
 				$this->_int_storage->foreign_key = $this->id;
