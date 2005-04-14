@@ -118,19 +118,19 @@ class FormData extends ORDataObject {
 		$ret = array();
 
 		foreach($this->_int_storage->_values as $key => $value) {
-			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'Integer');
+			$ret[$key] = array('name'=>$key,'value'=>$value,'type'=>'Integer');
 		}
 		foreach($this->_string_storage->_values as $key => $value) {
-			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'String');
+			$ret[$key] = array('name'=>$key,'value'=>$value,'type'=>'String');
 		}
 		foreach($this->_date_storage->_values as $key => $value) {
-			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'Date');
+			$ret[$key] = array('name'=>$key,'value'=>$value,'type'=>'Date');
 		}
 		foreach($this->_text_storage->_values as $key => $value) {
-			$ret[] = array('name'=>$key,'value'=>$value,'type'=>'Text');
+			$ret[$key] = array('name'=>$key,'value'=>$value,'type'=>'Text');
 		}
 
-		usort($ret,array(&$this,'_sort'));
+		uksort($ret,array(&$this,'_sort'));
 		return $ret;
 
 	}
