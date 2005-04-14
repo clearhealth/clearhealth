@@ -38,14 +38,15 @@
 			$provider->persist();
 			$person_key=$provider->get('person_id');
 			$person =& ORDataObject::factory('Person',$person_key);
+			$person->set_type(2);
 		}
 		else{
 			$person =& ORDataObject::factory('Person');
+			$person->set_type(4);
 		}
 		$person->set('first_name',$user['username']);
 		$person->set('last_name',"System Generated");
 		$person->set('identifier',$user['nickname']);
-		$person->set('identifier_type',1);
 		$person->persist();
 		$person_key=$person->get('person_id');
 		$userObject->person_id=$person_key;
