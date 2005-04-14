@@ -1,5 +1,5 @@
 <?php
-	require_once dirname(__FILE__)."/../../cellini/bootstrap.php";
+	require_once dirname(__FILE__)."/../../../cellini/bootstrap.php";
 	set_time_limit(0);
 	$import_file = "ch_fake_people.php";
 
