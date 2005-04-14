@@ -40,8 +40,7 @@ This import table is the only thing in the clearhealth system that should be acc
  $db_password = "password";
  $db_host = "localhost";
 
-if(!function_exists('mysql_connect'))
-{
+if(!function_exists('mysql_connect')){
 	die(" There is no mysql_connect looks like php was built without mysql ");
 }
 
@@ -61,7 +60,8 @@ $imported_payers = array();
 $imported_patients = array();
 $imported_subscribers = array();
 
-
+// use this to test trampling
+//$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != "" LIMIT 0,1000';
 $theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != ""';
 
 	$query = mysql_query($theSQL);
