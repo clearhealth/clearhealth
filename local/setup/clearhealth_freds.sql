@@ -4,13 +4,6 @@
 -- ------------------------------------------------------
 -- Server version	4.1.10
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 --
 -- Table structure for table `address`
@@ -29,7 +22,7 @@ CREATE TABLE `address` (
   `postal_code` varchar(255) NOT NULL default '',
   `notes` text NOT NULL,
   PRIMARY KEY  (`address_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person';
+) ENGINE=MyISAM   COMMENT='An address that can be for a company or a person';
 
 --
 -- Dumping data for table `address`
@@ -48,7 +41,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `adodbseq`
@@ -73,7 +66,7 @@ CREATE TABLE `building_address` (
   PRIMARY KEY  (`building_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `building_id` (`building_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying the address type';
+) ENGINE=MyISAM   COMMENT='Links a building to a address specifying the address type';
 
 --
 -- Dumping data for table `building_address`
@@ -96,7 +89,7 @@ CREATE TABLE `buildings` (
   `name` varchar(255) NOT NULL default '',
   `practice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `buildings`
@@ -124,7 +117,7 @@ CREATE TABLE `category` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `category`
@@ -146,7 +139,7 @@ CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `category_to_document`
@@ -170,7 +163,7 @@ CREATE TABLE `clearhealth_claim` (
   `total_billed` float(7,2) NOT NULL default '0.00',
   `total_paid` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`claim_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `clearhealth_claim`
@@ -198,7 +191,7 @@ CREATE TABLE `codes` (
   `fee` decimal(7,2) default NULL,
   `superbill` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`code_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `codes`
@@ -228,7 +221,7 @@ CREATE TABLE `coding_data` (
   `primary_code` tinyint(4) NOT NULL default '0',
   `code_order` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`coding_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `coding_data`
@@ -254,7 +247,7 @@ CREATE TABLE `company` (
   `url` varchar(255) NOT NULL default '',
   `is_historic` enum('no','yes') NOT NULL default 'no',
   PRIMARY KEY  (`company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is in linked tables';
+) ENGINE=MyISAM   COMMENT='Base Company record most of the data is in linked tables';
 
 --
 -- Dumping data for table `company`
@@ -278,7 +271,7 @@ CREATE TABLE `company_address` (
   PRIMARY KEY  (`company_id`,`address_id`),
   KEY `company_id` (`company_id`),
   KEY `address_id` (`address_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a company to a address specifying the address type';
+) ENGINE=MyISAM   COMMENT='Links a company to a address specifying the address type';
 
 --
 -- Dumping data for table `company_address`
@@ -302,7 +295,7 @@ CREATE TABLE `company_company` (
   PRIMARY KEY  (`company_id`,`related_company_id`),
   KEY `company_id` (`company_id`),
   KEY `related_company_id` (`related_company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Relates a company to another company specify the type with a';
+) ENGINE=MyISAM   COMMENT='Relates a company to another company specify the type with a';
 
 --
 -- Dumping data for table `company_company`
@@ -325,7 +318,7 @@ CREATE TABLE `company_number` (
   PRIMARY KEY  (`company_id`,`number_id`),
   KEY `company_id` (`company_id`),
   KEY `number_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between company and phone_numbers';
+) ENGINE=MyISAM   COMMENT='Links between company and phone_numbers';
 
 --
 -- Dumping data for table `company_number`
@@ -348,7 +341,7 @@ CREATE TABLE `company_type` (
   PRIMARY KEY  (`company_id`,`company_type`),
   KEY `company_id` (`company_id`),
   KEY `company_type` (`company_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify company type';
+) ENGINE=MyISAM   COMMENT='Link to specify company type';
 
 --
 -- Dumping data for table `company_type`
@@ -371,7 +364,7 @@ CREATE TABLE `countries` (
   `countries_iso_code_3` char(3) NOT NULL default '',
   PRIMARY KEY  (`countries_iso_code_3`),
   KEY `IDX_COUNTRIES_NAME` (`countries_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `countries`
@@ -406,7 +399,7 @@ CREATE TABLE `document` (
   KEY `revision` (`revision`),
   KEY `foreign_id` (`foreign_id`),
   KEY `owner` (`owner`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `document`
@@ -438,7 +431,7 @@ CREATE TABLE `encounter` (
   KEY `building_id` (`building_id`),
   KEY `treating_person_id` (`treating_person_id`),
   KEY `last_change_user_id` (`last_change_user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `encounter`
@@ -462,7 +455,7 @@ CREATE TABLE `encounter_date` (
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`encounter_date_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `encounter_date`
@@ -486,7 +479,7 @@ CREATE TABLE `encounter_person` (
   `person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`encounter_person_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `encounter_person`
@@ -510,7 +503,7 @@ CREATE TABLE `encounter_value` (
   `value` varchar(255) NOT NULL default '0',
   PRIMARY KEY  (`encounter_value_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `encounter_value`
@@ -560,7 +553,7 @@ CREATE TABLE `enumeration` (
   `number_type` enum('Home','Mobile','Work','Emergency','Fax') NOT NULL default 'Home',
   `payer_type` enum('medicare','champus','medical','private','feca','medicaid','champusva','otherhcfa','litigation') NOT NULL default 'medicare',
   PRIMARY KEY  (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
+) ENGINE=MyISAM   COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
 
 --
 -- Dumping data for table `enumeration`
@@ -587,7 +580,7 @@ CREATE TABLE `events` (
   `email` varchar(255) NOT NULL default '',
   `foreign_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `events`
@@ -615,7 +608,7 @@ CREATE TABLE `fbaddress` (
   `state` varchar(5) NOT NULL default '0',
   `zip` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`address_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person';
+) ENGINE=MyISAM   COMMENT='An address that can be for a company or a person';
 
 --
 -- Dumping data for table `fbaddress`
@@ -641,7 +634,7 @@ CREATE TABLE `fbclaim` (
   `date_sent` datetime NOT NULL default '0000-00-00 00:00:00',
   `format` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`claim_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fbclaim`
@@ -671,7 +664,7 @@ CREATE TABLE `fbclaimline` (
   `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`claimline_id`),
   KEY `claim_id` (`claim_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fbclaimline`
@@ -697,7 +690,7 @@ CREATE TABLE `fbcompany` (
   `name` varchar(100) NOT NULL default '',
   `phone_number` varchar(45) NOT NULL default '',
   PRIMARY KEY  (`company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is in linked tables';
+) ENGINE=MyISAM   COMMENT='Base Company record most of the data is in linked tables';
 
 --
 -- Dumping data for table `fbcompany`
@@ -719,7 +712,7 @@ CREATE TABLE `fbdiagnoses` (
   `claimline_id` int(11) NOT NULL default '0',
   `diagnosis` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fbdiagnoses`
@@ -740,7 +733,7 @@ CREATE TABLE `fblatest_revision` (
   `claim_identifier` varchar(255) NOT NULL default '',
   `revision` int(11) NOT NULL default '0',
   PRIMARY KEY  (`claim_identifier`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fblatest_revision`
@@ -773,7 +766,7 @@ CREATE TABLE `fbperson` (
   `phone_number` varchar(45) NOT NULL default '',
   `comment` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A person in the system';
+) ENGINE=MyISAM   COMMENT='A person in the system';
 
 --
 -- Dumping data for table `fbperson`
@@ -799,7 +792,7 @@ CREATE TABLE `fbpractice` (
   `billing_location_company_id` int(11) NOT NULL default '0',
   `provider_person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`practice_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fbpractice`
@@ -824,7 +817,7 @@ CREATE TABLE `fee_schedule` (
   `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fee_schedule`
@@ -851,7 +844,7 @@ CREATE TABLE `fee_schedule_data` (
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fee_schedule_data`
@@ -875,7 +868,7 @@ CREATE TABLE `fee_schedule_revision` (
   `name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`revision_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `fee_schedule_revision`
@@ -897,7 +890,7 @@ CREATE TABLE `form` (
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`form_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `form`
@@ -921,7 +914,7 @@ CREATE TABLE `form_data` (
   `external_id` int(11) NOT NULL default '0',
   `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`form_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `form_data`
@@ -951,7 +944,7 @@ CREATE TABLE `gacl_acl` (
   KEY `gacl_enabled_acl` (`enabled`),
   KEY `gacl_section_value_acl` (`section_value`),
   KEY `gacl_updated_date_acl` (`updated_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='ACL Table';
+) ENGINE=MyISAM   COMMENT='ACL Table';
 
 --
 -- Dumping data for table `gacl_acl`
@@ -978,7 +971,7 @@ CREATE TABLE `gacl_acl_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_acl_sections` (`value`),
   KEY `gacl_hidden_acl_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_acl_sections`
@@ -998,7 +991,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_acl_seq`
@@ -1026,7 +1019,7 @@ CREATE TABLE `gacl_aco` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aco` (`section_value`,`value`),
   KEY `gacl_hidden_aco` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aco`
@@ -1049,7 +1042,7 @@ CREATE TABLE `gacl_aco_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aco_map`
@@ -1076,7 +1069,7 @@ CREATE TABLE `gacl_aco_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aco_sections` (`value`),
   KEY `gacl_hidden_aco_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aco_sections`
@@ -1096,7 +1089,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aco_sections_seq`
@@ -1116,7 +1109,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aco_seq`
@@ -1144,7 +1137,7 @@ CREATE TABLE `gacl_aro` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aro` (`section_value`,`value`),
   KEY `gacl_hidden_aro` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro`
@@ -1173,7 +1166,7 @@ CREATE TABLE `gacl_aro_groups` (
   UNIQUE KEY `gacl_value_aro_groups` (`value`),
   KEY `gacl_parent_id_aro_groups` (`parent_id`),
   KEY `gacl_lft_rgt_aro_groups` (`lft`,`rgt`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_groups`
@@ -1193,7 +1186,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_groups_id_seq`
@@ -1215,7 +1208,7 @@ CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_groups_map`
@@ -1238,7 +1231,7 @@ CREATE TABLE `gacl_aro_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_map`
@@ -1265,7 +1258,7 @@ CREATE TABLE `gacl_aro_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aro_sections` (`value`),
   KEY `gacl_hidden_aro_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_sections`
@@ -1285,7 +1278,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_sections_seq`
@@ -1305,7 +1298,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_aro_seq`
@@ -1333,7 +1326,7 @@ CREATE TABLE `gacl_axo` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_axo` (`section_value`,`value`),
   KEY `gacl_hidden_axo` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo`
@@ -1362,7 +1355,7 @@ CREATE TABLE `gacl_axo_groups` (
   UNIQUE KEY `gacl_value_axo_groups` (`value`),
   KEY `gacl_parent_id_axo_groups` (`parent_id`),
   KEY `gacl_lft_rgt_axo_groups` (`lft`,`rgt`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_groups`
@@ -1382,7 +1375,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_groups_id_seq`
@@ -1404,7 +1397,7 @@ CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_groups_map`
@@ -1427,7 +1420,7 @@ CREATE TABLE `gacl_axo_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_map`
@@ -1454,7 +1447,7 @@ CREATE TABLE `gacl_axo_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_axo_sections` (`value`),
   KEY `gacl_hidden_axo_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_sections`
@@ -1474,7 +1467,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_sections_seq`
@@ -1494,7 +1487,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_axo_seq`
@@ -1516,7 +1509,7 @@ CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`aro_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_groups_aro_map`
@@ -1538,7 +1531,7 @@ CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`axo_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_groups_axo_map`
@@ -1560,7 +1553,7 @@ CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `gacl_phpgacl`
@@ -1582,7 +1575,7 @@ CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `groups`
@@ -1606,7 +1599,7 @@ CREATE TABLE `identifier` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`identifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `identifier`
@@ -1629,7 +1622,7 @@ CREATE TABLE `import_map` (
   `old_table_name` varchar(100) NOT NULL default '',
   `new_object_name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`old_id`,`old_table_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `import_map`
@@ -1651,7 +1644,7 @@ CREATE TABLE `insurance` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`company_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `insurance`
@@ -1676,7 +1669,7 @@ CREATE TABLE `insurance_program` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `insurance_program`
@@ -1706,7 +1699,7 @@ CREATE TABLE `insured_relationship` (
   `default_provider` int(11) NOT NULL default '0',
   `program_order` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insured_relationship_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `insured_relationship`
@@ -1734,7 +1727,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `menu`
@@ -1761,7 +1754,7 @@ CREATE TABLE `menu_form` (
   PRIMARY KEY  (`menu_form_id`),
   KEY `menu_id` (`menu_id`),
   KEY `form_id` (`form_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `menu_form`
@@ -1788,7 +1781,7 @@ CREATE TABLE `menu_report` (
   PRIMARY KEY  (`menu_report_id`),
   KEY `menu_id` (`menu_id`),
   KEY `report_template_id` (`report_template_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `menu_report`
@@ -1814,7 +1807,7 @@ CREATE TABLE `name_history` (
   `middle_name` varchar(50) NOT NULL default '',
   `update_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`name_history_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `name_history`
@@ -1842,7 +1835,7 @@ CREATE TABLE `note` (
   KEY `foreign_id` (`owner`),
   KEY `foreign_id_2` (`foreign_id`),
   KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `note`
@@ -1866,7 +1859,7 @@ CREATE TABLE `number` (
   `number` varchar(100) NOT NULL default '',
   `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A phone number';
+) ENGINE=MyISAM   COMMENT='A phone number';
 
 --
 -- Dumping data for table `number`
@@ -1895,7 +1888,7 @@ CREATE TABLE `occurences` (
   `external_id` int(11) default NULL,
   `reason_code` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `occurences`
@@ -1918,7 +1911,7 @@ CREATE TABLE `ownership` (
   PRIMARY KEY  (`id`,`user_id`),
   KEY `user_id` (`user_id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores which items are owned by which user';
+) ENGINE=MyISAM   COMMENT='Stores which items are owned by which user';
 
 --
 -- Dumping data for table `ownership`
@@ -1942,7 +1935,7 @@ CREATE TABLE `patient` (
   `record_number` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
+) ENGINE=MyISAM   COMMENT='An patient extends the person entity';
 
 --
 -- Dumping data for table `patient`
@@ -1967,7 +1960,7 @@ CREATE TABLE `patient_statistics` (
   `language` int(11) NOT NULL default '0',
   `migrant_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `patient_statistics`
@@ -1997,7 +1990,7 @@ CREATE TABLE `payment` (
   `payment_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`payment_id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `payment`
@@ -2022,7 +2015,7 @@ CREATE TABLE `payment_claimline` (
   `writeoff` float(7,2) NOT NULL default '0.00',
   `carry` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`payment_claimline_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `payment_claimline`
@@ -2057,7 +2050,7 @@ CREATE TABLE `person` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A person in the system';
+) ENGINE=MyISAM   COMMENT='A person in the system';
 
 --
 -- Dumping data for table `person`
@@ -2081,7 +2074,7 @@ CREATE TABLE `person_address` (
   PRIMARY KEY  (`person_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `person_id` (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a address specifying the address type';
+) ENGINE=MyISAM   COMMENT='Links a person to a address specifying the address type';
 
 --
 -- Dumping data for table `person_address`
@@ -2105,7 +2098,7 @@ CREATE TABLE `person_company` (
   PRIMARY KEY  (`person_id`,`company_id`),
   KEY `person_id` (`person_id`),
   KEY `company_id` (`company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a company and optionaly specifies the lin';
+) ENGINE=MyISAM   COMMENT='Links a person to a company and optionaly specifies the lin';
 
 --
 -- Dumping data for table `person_company`
@@ -2128,7 +2121,7 @@ CREATE TABLE `person_number` (
   PRIMARY KEY  (`person_id`,`number_id`),
   KEY `person_id` (`person_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=MyISAM   COMMENT='Links between people and phone_numbers';
 
 --
 -- Dumping data for table `person_number`
@@ -2152,7 +2145,7 @@ CREATE TABLE `person_person` (
   `relation_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_person_id`),
   UNIQUE KEY `person_id` (`person_id`,`related_person_id`,`relation_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `person_person`
@@ -2175,7 +2168,7 @@ CREATE TABLE `person_type` (
   PRIMARY KEY  (`person_id`,`person_type`),
   KEY `person_id` (`person_id`),
   KEY `person_type` (`person_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify person type';
+) ENGINE=MyISAM   COMMENT='Link to specify person type';
 
 --
 -- Dumping data for table `person_type`
@@ -2199,7 +2192,7 @@ CREATE TABLE `practice_address` (
   PRIMARY KEY  (`practice_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `practice_id` (`practice_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
+) ENGINE=MyISAM   COMMENT='Links a practice to a address specifying the address type';
 
 --
 -- Dumping data for table `practice_address`
@@ -2222,7 +2215,7 @@ CREATE TABLE `practice_number` (
   PRIMARY KEY  (`practice_id`,`number_id`),
   KEY `person_id` (`practice_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=MyISAM   COMMENT='Links between people and phone_numbers';
 
 --
 -- Dumping data for table `practice_number`
@@ -2244,7 +2237,7 @@ CREATE TABLE `practices` (
   `name` varchar(255) NOT NULL default '',
   `website` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `practices`
@@ -2271,7 +2264,7 @@ CREATE TABLE `preferences` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `preferences`
@@ -2294,7 +2287,7 @@ CREATE TABLE `provider` (
   `clia_number` varchar(100) NOT NULL default '',
   `dea_number` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `provider`
@@ -2319,7 +2312,7 @@ CREATE TABLE `provider_to_insurance` (
   `provider_number_type` int(11) NOT NULL default '0',
   `group_number` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`provider_to_insurance_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `provider_to_insurance`
@@ -2339,7 +2332,7 @@ DROP TABLE IF EXISTS `record_sequence`;
 CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `record_sequence`
@@ -2364,7 +2357,7 @@ CREATE TABLE `report_templates` (
   `is_default` enum('yes','no') NOT NULL default 'yes',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report templates';
+) ENGINE=MyISAM   COMMENT='Report templates';
 
 --
 -- Dumping data for table `report_templates`
@@ -2389,7 +2382,7 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
+) ENGINE=MyISAM   COMMENT='Report definitions TODO: change to Generic Seq';
 
 --
 -- Dumping data for table `reports`
@@ -2414,7 +2407,7 @@ CREATE TABLE `rooms` (
   `building_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `rooms`
@@ -2441,7 +2434,7 @@ CREATE TABLE `schedules` (
   `user_id` int(11) default NULL,
   `room_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `schedules`
@@ -2462,7 +2455,7 @@ DROP TABLE IF EXISTS `sequences`;
 CREATE TABLE `sequences` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `sequences`
@@ -2487,7 +2480,7 @@ CREATE TABLE `states` (
   PRIMARY KEY  (`zone_code`,`zone_name`),
   KEY `country` (`country`),
   KEY `zone_code` (`zone_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `states`
@@ -2509,7 +2502,7 @@ CREATE TABLE `storage_date` (
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store date values';
+) ENGINE=MyISAM   COMMENT='Generic way to store date values';
 
 --
 -- Dumping data for table `storage_date`
@@ -2532,7 +2525,7 @@ CREATE TABLE `storage_int` (
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store integer values (also boolean)';
+) ENGINE=MyISAM   COMMENT='Generic way to store integer values (also boolean)';
 
 --
 -- Dumping data for table `storage_int`
@@ -2554,7 +2547,7 @@ CREATE TABLE `storage_string` (
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+) ENGINE=MyISAM   COMMENT='Generic way to string values';
 
 --
 -- Dumping data for table `storage_string`
@@ -2577,7 +2570,7 @@ CREATE TABLE `superbill_data` (
   `code_id` int(11) NOT NULL default '0',
   `status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`superbill_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `superbill_data`
@@ -2606,7 +2599,7 @@ CREATE TABLE `user` (
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Users in the System';
+) ENGINE=MyISAM   COMMENT='Users in the System';
 
 --
 -- Dumping data for table `user`
@@ -2631,7 +2624,7 @@ CREATE TABLE `users_groups` (
   `table` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  ;
 
 --
 -- Dumping data for table `users_groups`
