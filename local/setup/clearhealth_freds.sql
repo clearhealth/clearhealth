@@ -2605,7 +2605,7 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-
+INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 1125);
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 LOCK TABLES `user` WRITE;
 UNLOCK TABLES;
@@ -2633,6 +2633,33 @@ CREATE TABLE `users_groups` (
 INSERT INTO `users_groups` VALUES (1, 1, 1, 0, '');
 INSERT INTO `users_groups` VALUES (634, 306, 1, 0, '');
 INSERT INTO `users_groups` VALUES (635, 306, 0, 0, '');
+
+
+-- 
+-- Table structure for table `user`
+-- 
+
+CREATE TABLE `user` (
+  user_id int(11) NOT NULL default '0',
+  username varchar(55) NOT NULL default '',
+  `password` varchar(255) NOT NULL default '',
+  nickname varchar(255) NOT NULL default '',
+  color varchar(255) NOT NULL default '',
+  person_id int(11) default NULL,
+  disabled enum('yes','no') NOT NULL default 'yes',
+  default_location_id int(11) NOT NULL default '0',
+  PRIMARY KEY  (user_id),
+  UNIQUE KEY username (username),
+  KEY person_id (person_id)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Users in the System';
+
+-- 
+-- Dumping data for table `user`
+-- 
+
+INSERT INTO user VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 1125);
+        
+
 
 SET FOREIGN_KEY_CHECKS=1;
 
