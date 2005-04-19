@@ -7,7 +7,7 @@
 
 */
 
-$open_db = "open";
+$open_db = "op-en-hcs";
 $clearhealth_db = "clearhealth";
 $db_user = "root";
 $db_password = "password";
