@@ -15,6 +15,7 @@ $db_user = "root";
 $db_password = "password";
 $db_host = "localhost";
 
+
 if(!function_exists('mysql_connect')){
 	die(" There is no mysql_connect looks like php was built without mysql ");
 }
@@ -42,6 +43,7 @@ foreach($schedules as $a_schedule)
 	$query = mysql_query($checkscheduleSQL);
 
 	if($result = mysql_fetch_array($query)){
+//Note: we dont update the patient id b/c it is already correctly set by the import script.
 	$update_schedule_sql = "UPDATE `schedules` SET 
 			`schedule_code` = '$schedule_code', 
 			`name` = '$name', 
@@ -55,6 +57,9 @@ foreach($schedules as $a_schedule)
 	if(mysql_query($update_schedule_sql)){	echo 'Update Schedule '.$a_schedule['id']."\n";}else{
 						echo 'Update Schedule Failed '.$a_schedule['id']."\n";}
 	}else{
+
+
+
 	$insert_schedule_sql = "INSERT INTO `schedules` (
 		`id`, 
 		`schedule_code`, 
@@ -171,6 +176,15 @@ foreach($occurences as $a_occurence)
 	if(mysql_query($update_occurence_sql)){	echo 'Update Occurance '.$a_occurence['id']."\n";}else{
 						echo 'Update Occurance Failed '.$a_occurence['id']."\n";}
 	}else{
+/* 
+We need to grap the patient map for this schedule item and use the new patient id in the appointment...
+*/
+
+	$check_import_map_sql = "SELECT * FROM `import_map` WHERE `old_table_name` = 'patient' AND `old_id` = ".$external_id;
+	$query = mysql_query($check_import_map_sql);
+	$import_result = mysql_fetch_array($query)
+	$new_external_id=$import_result('new_id');
+
 	$insert_occurence_sql = "INSERT INTO `occurences` (
 		`id`, 
 		`event_id`, 
@@ -191,7 +205,7 @@ foreach($occurences as $a_occurence)
 		'$location_id', 
 		'$user_id', 
 		'$last_change_id', 
-		'$external_id', 
+		'$new_external_id', 
 		'$reason_code')";	
 
 
