@@ -23,7 +23,7 @@ class M_User extends M_Patient {
 	/**
 	 * Handle updating login info
 	 *
-	 * @todo: we are going to want to do this bridging of type on person to group on user a lot, move this to some place more reusable
+	 * @todo: we are going to want to do this bridging of type on person to group on user a lot, move this to some place more reusable, this should be moved into the persist method of a user. Note: the inject_user.php script uses a cut and paste of this code.
 	 */
 	function process_user_update($person_id,$data) {
 			$u =& User::fromPersonId($person_id);
@@ -57,6 +57,7 @@ class M_User extends M_Patient {
 						if ($data[2] == $group) {
 							$gid = $data[0];
 							$u->groups[$gid] = array('id'=>$data[0]);
+							// move persist outside this loop for efficiency
 							$u->persist();
 							break;
 						}
