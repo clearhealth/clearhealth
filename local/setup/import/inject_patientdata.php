@@ -1,7 +1,7 @@
 <?php
 	require_once dirname(__FILE__)."/../../../cellini/bootstrap.php";
 	set_time_limit(0);
-	$import_file = "dataset.php";
+	$import_file = "patient_dataset.php";
 
 
 	$default_state="CA";
