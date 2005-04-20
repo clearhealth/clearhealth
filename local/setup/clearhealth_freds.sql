@@ -2769,21 +2769,6 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 -- 
 
-INSERT INTO `schedules` VALUES (501, 'PS', 'Provider 2', '', '', 2, 306, 0);
-INSERT INTO `schedules` VALUES (640, 'PS', 'Jnelson''s Office hours', '', '', 2, 984, 0);
-INSERT INTO `schedules` VALUES (20377, 'PS', 'Dr Perez''s Schedule', '', '', 0, 20376, 0);
-INSERT INTO `schedules` VALUES (1011, 'PS', 'XRay Schedule', '', '', 2, 0, 14);
-INSERT INTO `schedules` VALUES (1127, 'PS', 'Michelles Schedule', '', '', 1122, 1121, 0);
-INSERT INTO `schedules` VALUES (1561, 'PS', 'Joes Schedule', '', '', 1122, 1111, 0);
-INSERT INTO `schedules` VALUES (20345, 'NS', 'Vacated Events', '', '', 1122, 0, 0);
-INSERT INTO `schedules` VALUES (17052, 'PS', 'Dr Doctor''s Schedule', '', '', 0, 17047, 0);
-INSERT INTO `schedules` VALUES (17485, 'PS', 'Dr. Agona''s Schedule', '', '', 0, 17484, 0);
-INSERT INTO `schedules` VALUES (17592, 'PS', 'Dr Augustin''s Schedule', '', '', 0, 17591, 0);
-INSERT INTO `schedules` VALUES (17602, 'PS', 'Dr Baritone''s Schedule', '', '', 0, 17601, 0);
-INSERT INTO `schedules` VALUES (17610, 'PS', 'Dr. Chaplin''s Schedule', '', '', 0, 17609, 0);
-INSERT INTO `schedules` VALUES (17618, 'PS', 'Dr Dunkin''s Schedule', '', '', 0, 17617, 0);
-INSERT INTO `schedules` VALUES (17627, 'PS', 'Dr. Everstone''s Schedule', '', '', 0, 17626, 0);
-INSERT INTO `schedules` VALUES (17636, 'PS', 'Dr Flintstone''s Schedule', '', '', 0, 17635, 0);
 
 -- --------------------------------------------------------
 
