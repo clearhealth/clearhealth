@@ -29,7 +29,7 @@ This can be used to track whether an item is new or not allowing the script to b
 This import table is the only thing in the clearhealth system that should be accessed without objects.
 
 */
-	require_once dirname(__FILE__)."/../../cellini/bootstrap.php";
+	require_once dirname(__FILE__)."/../../../cellini/bootstrap.php";
 	set_time_limit(0);
 
 
