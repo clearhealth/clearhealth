@@ -8,7 +8,7 @@
 */
 
 
-include "dataset.php";
+include "calendar_dataset.php";
 		
 $clearhealth_db = "clearhealth";
 $db_user = "root";
@@ -182,9 +182,14 @@ We need to grap the patient map for this schedule item and use the new patient i
 
 	$check_import_map_sql = "SELECT * FROM `import_map` WHERE `old_table_name` = 'patient' AND `old_id` = ".$external_id;
 	$query = mysql_query($check_import_map_sql);
-	$import_result = mysql_fetch_array($query)
-	$new_external_id=$import_result('new_id');
-
+	$import_result = mysql_fetch_array($query);
+	if(!empty($import_result)){
+		$new_external_id=$import_result['new_id'];
+	}
+	else{
+		$new_external_id="";
+		echo "No Patient Reference\n";
+	}
 	$insert_occurence_sql = "INSERT INTO `occurences` (
 		`id`, 
 		`event_id`, 

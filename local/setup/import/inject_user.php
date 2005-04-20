@@ -5,7 +5,7 @@
 
 	require_once dirname(__FILE__)."/../../../cellini/bootstrap.php";
 	set_time_limit(0);
-	$import_file = "dataset.php";
+	$import_file = "user_dataset.php";
 	require $import_file;
 
 	$default_password="password";
@@ -13,6 +13,9 @@
 
 	$address =& ORDataObject::factory('Address');
 	$states = array_flip($address->getStatelist());
+
+	$controller = new Controller();
+
 
 
 	foreach($users as $user) {
@@ -56,6 +59,42 @@
 		$person->persist();
 		$person_key=$person->get('person_id');
 		$userObject->person_id=$person_key;
+
+// cut and past Gacl code here. from M_User
+
+
+			$t_list = $person->getTypeList();
+			$types = $person->get('types');
+
+			if (count($types) > 0) {
+				$type = array_shift($types);
+				if ($type > 0) {
+					$group = strtolower(str_replace(' ','_',$t_list[$type]));
+					$gacl_groups = $controller->security->sort_groups();
+					$flat_groups = array();
+					foreach($gacl_groups as $grp) {
+						foreach($grp as $k => $v) {
+							$flat_groups[$k] = $v;
+						}
+					}
+					$userObject->groups = array();
+					foreach($flat_groups as $id => $name) {
+						$data = $controller->security->get_group_data($id);
+						if ($data[2] == $group) {
+							$gid = $data[0];
+							$userObject->groups[$gid] = array('id'=>$data[0]);
+							// move persist outside this loop for efficiency
+							$userObject->persist();
+							break;
+						}
+					}
+				}
+			}
+
+
+
+
+// end pasted code
 		$userObject->persist();
 
 		$importMap->set('old_table_name','user');	
