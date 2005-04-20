@@ -3,11 +3,11 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 19, 2005 at 09:52 AM
+-- Generation Time: Apr 20, 2005 at 07:39 AM
 -- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
--- Database: `clearhealth_freds`
+-- Database: `clearhealth`
 -- 
 
 -- --------------------------------------------------------
@@ -16,7 +16,6 @@
 -- Table structure for table `address`
 -- 
 
-DROP TABLE IF EXISTS `address`;
 CREATE TABLE `address` (
   `address_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -42,7 +41,6 @@ CREATE TABLE `address` (
 -- Table structure for table `adodbseq`
 -- 
 
-DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
@@ -59,7 +57,6 @@ INSERT INTO `adodbseq` VALUES (1);
 -- Table structure for table `building_address`
 -- 
 
-DROP TABLE IF EXISTS `building_address`;
 CREATE TABLE `building_address` (
   `building_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -80,7 +77,6 @@ CREATE TABLE `building_address` (
 -- Table structure for table `buildings`
 -- 
 
-DROP TABLE IF EXISTS `buildings`;
 CREATE TABLE `buildings` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -100,7 +96,6 @@ CREATE TABLE `buildings` (
 -- Table structure for table `category`
 -- 
 
-DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -125,7 +120,6 @@ INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
 -- Table structure for table `category_to_document`
 -- 
 
-DROP TABLE IF EXISTS `category_to_document`;
 CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
@@ -143,7 +137,6 @@ CREATE TABLE `category_to_document` (
 -- Table structure for table `clearhealth_claim`
 -- 
 
-DROP TABLE IF EXISTS `clearhealth_claim`;
 CREATE TABLE `clearhealth_claim` (
   `claim_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -164,7 +157,6 @@ CREATE TABLE `clearhealth_claim` (
 -- Table structure for table `codes`
 -- 
 
-DROP TABLE IF EXISTS `codes`;
 CREATE TABLE `codes` (
   `code_id` int(11) NOT NULL auto_increment,
   `code_text` varchar(255) default NULL,
@@ -189,7 +181,6 @@ CREATE TABLE `codes` (
 -- Table structure for table `coding_data`
 -- 
 
-DROP TABLE IF EXISTS `coding_data`;
 CREATE TABLE `coding_data` (
   `coding_data_id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -214,7 +205,6 @@ CREATE TABLE `coding_data` (
 -- Table structure for table `company`
 -- 
 
-DROP TABLE IF EXISTS `company`;
 CREATE TABLE `company` (
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -237,7 +227,6 @@ CREATE TABLE `company` (
 -- Table structure for table `company_address`
 -- 
 
-DROP TABLE IF EXISTS `company_address`;
 CREATE TABLE `company_address` (
   `company_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -258,7 +247,6 @@ CREATE TABLE `company_address` (
 -- Table structure for table `company_company`
 -- 
 
-DROP TABLE IF EXISTS `company_company`;
 CREATE TABLE `company_company` (
   `company_id` int(11) NOT NULL default '0',
   `related_company_id` int(11) NOT NULL default '0',
@@ -279,7 +267,6 @@ CREATE TABLE `company_company` (
 -- Table structure for table `company_number`
 -- 
 
-DROP TABLE IF EXISTS `company_number`;
 CREATE TABLE `company_number` (
   `company_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -299,7 +286,6 @@ CREATE TABLE `company_number` (
 -- Table structure for table `company_type`
 -- 
 
-DROP TABLE IF EXISTS `company_type`;
 CREATE TABLE `company_type` (
   `company_id` int(11) NOT NULL default '0',
   `company_type` int(11) NOT NULL default '0',
@@ -319,7 +305,6 @@ CREATE TABLE `company_type` (
 -- Table structure for table `countries`
 -- 
 
-DROP TABLE IF EXISTS `countries`;
 CREATE TABLE `countries` (
   `countries_name` varchar(64) NOT NULL default '',
   `countries_iso_code_2` char(2) NOT NULL default '',
@@ -578,7 +563,6 @@ INSERT INTO `countries` VALUES ('Zimbabwe', 'ZW', 'ZWE');
 -- Table structure for table `document`
 -- 
 
-DROP TABLE IF EXISTS `document`;
 CREATE TABLE `document` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(50) NOT NULL default '',
@@ -609,7 +593,6 @@ CREATE TABLE `document` (
 -- Table structure for table `encounter`
 -- 
 
-DROP TABLE IF EXISTS `encounter`;
 CREATE TABLE `encounter` (
   `encounter_id` int(11) NOT NULL default '0',
   `encounter_reason` int(11) NOT NULL default '0',
@@ -638,7 +621,6 @@ CREATE TABLE `encounter` (
 -- Table structure for table `encounter_date`
 -- 
 
-DROP TABLE IF EXISTS `encounter_date`;
 CREATE TABLE `encounter_date` (
   `encounter_date_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -659,7 +641,6 @@ CREATE TABLE `encounter_date` (
 -- Table structure for table `encounter_person`
 -- 
 
-DROP TABLE IF EXISTS `encounter_person`;
 CREATE TABLE `encounter_person` (
   `encounter_person_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -680,7 +661,6 @@ CREATE TABLE `encounter_person` (
 -- Table structure for table `encounter_value`
 -- 
 
-DROP TABLE IF EXISTS `encounter_value`;
 CREATE TABLE `encounter_value` (
   `encounter_value_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
@@ -701,7 +681,6 @@ CREATE TABLE `encounter_value` (
 -- Table structure for table `enumeration`
 -- 
 
-DROP TABLE IF EXISTS `enumeration`;
 CREATE TABLE `enumeration` (
   `name` varchar(100) NOT NULL default '',
   `title` varchar(100) NOT NULL default '',
@@ -779,7 +758,6 @@ INSERT INTO `enumeration` VALUES ('appointment_reasons', 'Appointment Reason', '
 -- Table structure for table `events`
 -- 
 
-DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
@@ -802,7 +780,6 @@ CREATE TABLE `events` (
 -- Table structure for table `fbaddress`
 -- 
 
-DROP TABLE IF EXISTS `fbaddress`;
 CREATE TABLE `fbaddress` (
   `address_id` int(11) NOT NULL default '0',
   `external_id` int(11) NOT NULL default '0',
@@ -827,7 +804,6 @@ CREATE TABLE `fbaddress` (
 -- Table structure for table `fbclaim`
 -- 
 
-DROP TABLE IF EXISTS `fbclaim`;
 CREATE TABLE `fbclaim` (
   `claim_id` int(11) NOT NULL default '0',
   `claim_identifier` varchar(255) NOT NULL default '',
@@ -850,7 +826,6 @@ CREATE TABLE `fbclaim` (
 -- Table structure for table `fbclaimline`
 -- 
 
-DROP TABLE IF EXISTS `fbclaimline`;
 CREATE TABLE `fbclaimline` (
   `claimline_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -876,7 +851,6 @@ CREATE TABLE `fbclaimline` (
 -- Table structure for table `fbcompany`
 -- 
 
-DROP TABLE IF EXISTS `fbcompany`;
 CREATE TABLE `fbcompany` (
   `company_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -899,7 +873,6 @@ CREATE TABLE `fbcompany` (
 -- Table structure for table `fbdiagnoses`
 -- 
 
-DROP TABLE IF EXISTS `fbdiagnoses`;
 CREATE TABLE `fbdiagnoses` (
   `id` int(11) NOT NULL default '0',
   `claimline_id` int(11) NOT NULL default '0',
@@ -918,7 +891,6 @@ CREATE TABLE `fbdiagnoses` (
 -- Table structure for table `fblatest_revision`
 -- 
 
-DROP TABLE IF EXISTS `fblatest_revision`;
 CREATE TABLE `fblatest_revision` (
   `claim_identifier` varchar(255) NOT NULL default '',
   `revision` int(11) NOT NULL default '0',
@@ -936,7 +908,6 @@ CREATE TABLE `fblatest_revision` (
 -- Table structure for table `fbperson`
 -- 
 
-DROP TABLE IF EXISTS `fbperson`;
 CREATE TABLE `fbperson` (
   `person_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1128,7 +1099,6 @@ INSERT INTO `fbperson` VALUES (200439, 200426, 'FBResponsibleParty', '634-63-649
 -- Table structure for table `fbpractice`
 -- 
 
-DROP TABLE IF EXISTS `fbpractice`;
 CREATE TABLE `fbpractice` (
   `practice_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
@@ -1150,7 +1120,6 @@ CREATE TABLE `fbpractice` (
 -- Table structure for table `fee_schedule`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule`;
 CREATE TABLE `fee_schedule` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -1172,7 +1141,6 @@ CREATE TABLE `fee_schedule` (
 -- Table structure for table `fee_schedule_data`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule_data`;
 CREATE TABLE `fee_schedule_data` (
   `code_id` int(11) NOT NULL default '0',
   `revision_id` int(11) NOT NULL default '0',
@@ -1196,7 +1164,6 @@ CREATE TABLE `fee_schedule_data` (
 -- Table structure for table `fee_schedule_revision`
 -- 
 
-DROP TABLE IF EXISTS `fee_schedule_revision`;
 CREATE TABLE `fee_schedule_revision` (
   `revision_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -1217,7 +1184,6 @@ CREATE TABLE `fee_schedule_revision` (
 -- Table structure for table `form`
 -- 
 
-DROP TABLE IF EXISTS `form`;
 CREATE TABLE `form` (
   `form_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -1238,7 +1204,6 @@ INSERT INTO `form` VALUES (1710, 'Patient Vitals', 'Patient Vital Statistics');
 -- Table structure for table `form_data`
 -- 
 
-DROP TABLE IF EXISTS `form_data`;
 CREATE TABLE `form_data` (
   `form_data_id` int(11) NOT NULL default '0',
   `form_id` int(11) NOT NULL default '0',
@@ -1261,7 +1226,6 @@ INSERT INTO `form_data` VALUES (20351, 800, 10001, '2005-04-08 09:07:50');
 -- Table structure for table `gacl_acl`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl`;
 CREATE TABLE `gacl_acl` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default 'system',
@@ -1295,7 +1259,6 @@ INSERT INTO `gacl_acl` VALUES (35, 'user', 1, 1, '', '', 1112803381);
 -- Table structure for table `gacl_acl_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl_sections`;
 CREATE TABLE `gacl_acl_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1320,7 +1283,6 @@ INSERT INTO `gacl_acl_sections` VALUES (2, 'user', 2, 'User', 0);
 -- Table structure for table `gacl_acl_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1338,7 +1300,6 @@ INSERT INTO `gacl_acl_seq` VALUES (35);
 -- Table structure for table `gacl_aco`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco`;
 CREATE TABLE `gacl_aco` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1371,7 +1332,6 @@ INSERT INTO `gacl_aco` VALUES (20, 'actions', 'double_book', 17, 'Double Book Ap
 -- Table structure for table `gacl_aco_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_map`;
 CREATE TABLE `gacl_aco_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1422,7 +1382,6 @@ INSERT INTO `gacl_aco_map` VALUES (35, 'actions', 'double_book');
 -- Table structure for table `gacl_aco_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections`;
 CREATE TABLE `gacl_aco_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1446,7 +1405,6 @@ INSERT INTO `gacl_aco_sections` VALUES (11, 'actions', 10, 'Actions', 0);
 -- Table structure for table `gacl_aco_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1464,7 +1422,6 @@ INSERT INTO `gacl_aco_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aco_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1482,7 +1439,6 @@ INSERT INTO `gacl_aco_seq` VALUES (20);
 -- Table structure for table `gacl_aro`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1507,7 +1463,6 @@ INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
 -- Table structure for table `gacl_aro_groups`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups`;
 CREATE TABLE `gacl_aro_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -1543,7 +1498,6 @@ INSERT INTO `gacl_aro_groups` VALUES (28, 23, 19, 20, 'Billing User', 'billing_u
 -- Table structure for table `gacl_aro_groups_id_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1561,7 +1515,6 @@ INSERT INTO `gacl_aro_groups_id_seq` VALUES (28);
 -- Table structure for table `gacl_aro_groups_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_map`;
 CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -1591,7 +1544,6 @@ INSERT INTO `gacl_aro_groups_map` VALUES (33, 22);
 -- Table structure for table `gacl_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_map`;
 CREATE TABLE `gacl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1611,7 +1563,6 @@ INSERT INTO `gacl_aro_map` VALUES (35, 'users', 'admin');
 -- Table structure for table `gacl_aro_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections`;
 CREATE TABLE `gacl_aro_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1635,7 +1586,6 @@ INSERT INTO `gacl_aro_sections` VALUES (10, 'users', 10, 'Users', 0);
 -- Table structure for table `gacl_aro_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1653,7 +1603,6 @@ INSERT INTO `gacl_aro_sections_seq` VALUES (11);
 -- Table structure for table `gacl_aro_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1671,7 +1620,6 @@ INSERT INTO `gacl_aro_seq` VALUES (36);
 -- Table structure for table `gacl_axo`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo`;
 CREATE TABLE `gacl_axo` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -1732,7 +1680,6 @@ INSERT INTO `gacl_axo` VALUES (68, 'resources', 'account', 10, 'Section - Accoun
 -- Table structure for table `gacl_axo_groups`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups`;
 CREATE TABLE `gacl_axo_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -1759,7 +1706,6 @@ INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sectio
 -- Table structure for table `gacl_axo_groups_id_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1776,7 +1722,6 @@ INSERT INTO `gacl_axo_groups_id_seq` VALUES (11);
 -- Table structure for table `gacl_axo_groups_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_map`;
 CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -1796,7 +1741,6 @@ INSERT INTO `gacl_axo_groups_map` VALUES (35, 11);
 -- Table structure for table `gacl_axo_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_map`;
 CREATE TABLE `gacl_axo_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -1837,7 +1781,6 @@ INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'preferences');
 -- Table structure for table `gacl_axo_sections`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections`;
 CREATE TABLE `gacl_axo_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -1861,7 +1804,6 @@ INSERT INTO `gacl_axo_sections` VALUES (0, 'resources', 10, 'Resources', 0);
 -- Table structure for table `gacl_axo_sections_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1878,7 +1820,6 @@ INSERT INTO `gacl_axo_sections_seq` VALUES (23);
 -- Table structure for table `gacl_axo_seq`
 -- 
 
-DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1895,7 +1836,6 @@ INSERT INTO `gacl_axo_seq` VALUES (68);
 -- Table structure for table `gacl_groups_aro_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_groups_aro_map`;
 CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
@@ -1925,7 +1865,6 @@ INSERT INTO `gacl_groups_aro_map` VALUES (21, 27);
 -- Table structure for table `gacl_groups_axo_map`
 -- 
 
-DROP TABLE IF EXISTS `gacl_groups_axo_map`;
 CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
@@ -1981,7 +1920,6 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 68);
 -- Table structure for table `gacl_phpgacl`
 -- 
 
-DROP TABLE IF EXISTS `gacl_phpgacl`;
 CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
@@ -2001,7 +1939,6 @@ INSERT INTO `gacl_phpgacl` VALUES ('schema_version', '2.1');
 -- Table structure for table `groups`
 -- 
 
-DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -2023,7 +1960,6 @@ INSERT INTO `groups` VALUES (0, 'provider');
 -- Table structure for table `identifier`
 -- 
 
-DROP TABLE IF EXISTS `identifier`;
 CREATE TABLE `identifier` (
   `identifier_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -2043,7 +1979,6 @@ CREATE TABLE `identifier` (
 -- Table structure for table `import_map`
 -- 
 
-DROP TABLE IF EXISTS `import_map`;
 CREATE TABLE `import_map` (
   `old_id` int(11) NOT NULL default '0',
   `new_id` int(11) default NULL,
@@ -2063,7 +1998,6 @@ CREATE TABLE `import_map` (
 -- Table structure for table `insurance`
 -- 
 
-DROP TABLE IF EXISTS `insurance`;
 CREATE TABLE `insurance` (
   `company_id` int(11) NOT NULL default '0',
   `fee_schedule_id` int(11) NOT NULL default '0',
@@ -2082,7 +2016,6 @@ CREATE TABLE `insurance` (
 -- Table structure for table `insurance_program`
 -- 
 
-DROP TABLE IF EXISTS `insurance_program`;
 CREATE TABLE `insurance_program` (
   `insurance_program_id` int(11) NOT NULL default '0',
   `payer_type` int(11) NOT NULL default '0',
@@ -2104,7 +2037,6 @@ CREATE TABLE `insurance_program` (
 -- Table structure for table `insured_relationship`
 -- 
 
-DROP TABLE IF EXISTS `insured_relationship`;
 CREATE TABLE `insured_relationship` (
   `insured_relationship_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
@@ -2131,7 +2063,6 @@ CREATE TABLE `insured_relationship` (
 -- Table structure for table `menu`
 -- 
 
-DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -2240,7 +2171,6 @@ INSERT INTO `menu` VALUES (99, 'patient', 1, '', 'children', 1000, '', 'Account/
 -- Table structure for table `menu_form`
 -- 
 
-DROP TABLE IF EXISTS `menu_form`;
 CREATE TABLE `menu_form` (
   `menu_form_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
@@ -2265,7 +2195,6 @@ INSERT INTO `menu_form` VALUES (2066, 91, 1710, 'Patient Vitals', NULL);
 -- Table structure for table `menu_report`
 -- 
 
-DROP TABLE IF EXISTS `menu_report`;
 CREATE TABLE `menu_report` (
   `menu_report_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
@@ -2294,7 +2223,6 @@ INSERT INTO `menu_report` VALUES (20317, 62, 10, 'Coffee Analysis', NULL);
 -- Table structure for table `name_history`
 -- 
 
-DROP TABLE IF EXISTS `name_history`;
 CREATE TABLE `name_history` (
   `name_history_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -2316,7 +2244,6 @@ CREATE TABLE `name_history` (
 -- Table structure for table `note`
 -- 
 
-DROP TABLE IF EXISTS `note`;
 CREATE TABLE `note` (
   `id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -2341,7 +2268,6 @@ CREATE TABLE `note` (
 -- Table structure for table `number`
 -- 
 
-DROP TABLE IF EXISTS `number`;
 CREATE TABLE `number` (
   `number_id` int(11) NOT NULL default '0',
   `number_type` int(11) NOT NULL default '0',
@@ -2362,7 +2288,6 @@ CREATE TABLE `number` (
 -- Table structure for table `occurences`
 -- 
 
-DROP TABLE IF EXISTS `occurences`;
 CREATE TABLE `occurences` (
   `id` int(11) NOT NULL default '0',
   `event_id` int(11) NOT NULL default '0',
@@ -2388,7 +2313,6 @@ CREATE TABLE `occurences` (
 -- Table structure for table `ownership`
 -- 
 
-DROP TABLE IF EXISTS `ownership`;
 CREATE TABLE `ownership` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
@@ -2408,12 +2332,11 @@ CREATE TABLE `ownership` (
 -- Table structure for table `patient`
 -- 
 
-DROP TABLE IF EXISTS `patient`;
 CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
-  `record_number` int(11) NOT NULL default '0',
+  `record_number` varchar(255) NOT NULL default '0',
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
@@ -2429,7 +2352,6 @@ CREATE TABLE `patient` (
 -- Table structure for table `patient_statistics`
 -- 
 
-DROP TABLE IF EXISTS `patient_statistics`;
 CREATE TABLE `patient_statistics` (
   `person_id` int(11) NOT NULL default '0',
   `ethnicity` int(11) NOT NULL default '0',
@@ -2451,7 +2373,6 @@ CREATE TABLE `patient_statistics` (
 -- Table structure for table `payment`
 -- 
 
-DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
   `payment_id` int(11) NOT NULL default '0',
   `foreign_id` int(11) NOT NULL default '0',
@@ -2478,7 +2399,6 @@ CREATE TABLE `payment` (
 -- Table structure for table `payment_claimline`
 -- 
 
-DROP TABLE IF EXISTS `payment_claimline`;
 CREATE TABLE `payment_claimline` (
   `payment_claimline_id` int(11) NOT NULL default '0',
   `payment_id` int(11) NOT NULL default '0',
@@ -2500,7 +2420,6 @@ CREATE TABLE `payment_claimline` (
 -- Table structure for table `person`
 -- 
 
-DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL default '0',
   `salutation` varchar(20) NOT NULL default '',
@@ -2532,7 +2451,6 @@ CREATE TABLE `person` (
 -- Table structure for table `person_address`
 -- 
 
-DROP TABLE IF EXISTS `person_address`;
 CREATE TABLE `person_address` (
   `person_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -2553,7 +2471,6 @@ CREATE TABLE `person_address` (
 -- Table structure for table `person_company`
 -- 
 
-DROP TABLE IF EXISTS `person_company`;
 CREATE TABLE `person_company` (
   `person_id` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
@@ -2574,7 +2491,6 @@ CREATE TABLE `person_company` (
 -- Table structure for table `person_number`
 -- 
 
-DROP TABLE IF EXISTS `person_number`;
 CREATE TABLE `person_number` (
   `person_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -2594,7 +2510,6 @@ CREATE TABLE `person_number` (
 -- Table structure for table `person_person`
 -- 
 
-DROP TABLE IF EXISTS `person_person`;
 CREATE TABLE `person_person` (
   `person_person_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -2615,7 +2530,6 @@ CREATE TABLE `person_person` (
 -- Table structure for table `person_type`
 -- 
 
-DROP TABLE IF EXISTS `person_type`;
 CREATE TABLE `person_type` (
   `person_id` int(11) NOT NULL default '0',
   `person_type` int(11) NOT NULL default '0',
@@ -2635,7 +2549,6 @@ CREATE TABLE `person_type` (
 -- Table structure for table `practice_address`
 -- 
 
-DROP TABLE IF EXISTS `practice_address`;
 CREATE TABLE `practice_address` (
   `practice_id` int(11) NOT NULL default '0',
   `address_id` int(11) NOT NULL default '0',
@@ -2656,7 +2569,6 @@ CREATE TABLE `practice_address` (
 -- Table structure for table `practice_number`
 -- 
 
-DROP TABLE IF EXISTS `practice_number`;
 CREATE TABLE `practice_number` (
   `practice_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
@@ -2676,7 +2588,6 @@ CREATE TABLE `practice_number` (
 -- Table structure for table `practices`
 -- 
 
-DROP TABLE IF EXISTS `practices`;
 CREATE TABLE `practices` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -2695,7 +2606,6 @@ CREATE TABLE `practices` (
 -- Table structure for table `preferences`
 -- 
 
-DROP TABLE IF EXISTS `preferences`;
 CREATE TABLE `preferences` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
@@ -2719,7 +2629,6 @@ CREATE TABLE `preferences` (
 -- Table structure for table `provider`
 -- 
 
-DROP TABLE IF EXISTS `provider`;
 CREATE TABLE `provider` (
   `person_id` int(11) NOT NULL default '0',
   `state_license_number` varchar(100) NOT NULL default '',
@@ -2739,7 +2648,6 @@ CREATE TABLE `provider` (
 -- Table structure for table `provider_to_insurance`
 -- 
 
-DROP TABLE IF EXISTS `provider_to_insurance`;
 CREATE TABLE `provider_to_insurance` (
   `provider_to_insurance_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
@@ -2761,7 +2669,6 @@ CREATE TABLE `provider_to_insurance` (
 -- Table structure for table `record_sequence`
 -- 
 
-DROP TABLE IF EXISTS `record_sequence`;
 CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -2779,7 +2686,6 @@ INSERT INTO `record_sequence` VALUES (22);
 -- Table structure for table `report_templates`
 -- 
 
-DROP TABLE IF EXISTS `report_templates`;
 CREATE TABLE `report_templates` (
   `report_template_id` int(11) NOT NULL default '0',
   `report_id` int(11) NOT NULL default '0',
@@ -2800,7 +2706,6 @@ CREATE TABLE `report_templates` (
 -- Table structure for table `reports`
 -- 
 
-DROP TABLE IF EXISTS `reports`;
 CREATE TABLE `reports` (
   `id` int(11) NOT NULL auto_increment,
   `dbase` varchar(255) NOT NULL default '',
@@ -2828,7 +2733,6 @@ INSERT INTO `reports` VALUES (17857, '', '', 'Superbill Form', '---[practice]---
 -- Table structure for table `rooms`
 -- 
 
-DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
   `id` int(11) NOT NULL default '0',
   `description` text NOT NULL,
@@ -2849,7 +2753,6 @@ CREATE TABLE `rooms` (
 -- Table structure for table `schedules`
 -- 
 
-DROP TABLE IF EXISTS `schedules`;
 CREATE TABLE `schedules` (
   `id` int(11) NOT NULL default '0',
   `schedule_code` varchar(255) NOT NULL default '',
@@ -2888,7 +2791,6 @@ INSERT INTO `schedules` VALUES (17636, 'PS', 'Dr Flintstone''s Schedule', '', ''
 -- Table structure for table `sequences`
 -- 
 
-DROP TABLE IF EXISTS `sequences`;
 CREATE TABLE `sequences` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -2906,7 +2808,6 @@ INSERT INTO `sequences` VALUES (200442);
 -- Table structure for table `states`
 -- 
 
-DROP TABLE IF EXISTS `states`;
 CREATE TABLE `states` (
   `zone_code` varchar(32) NOT NULL default '',
   `zone_name` varchar(32) NOT NULL default '',
@@ -2927,7 +2828,6 @@ CREATE TABLE `states` (
 -- Table structure for table `storage_date`
 -- 
 
-DROP TABLE IF EXISTS `storage_date`;
 CREATE TABLE `storage_date` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -3310,7 +3210,6 @@ INSERT INTO `storage_date` VALUES (200427, '0', '1969-12-31');
 -- Table structure for table `storage_int`
 -- 
 
-DROP TABLE IF EXISTS `storage_int`;
 CREATE TABLE `storage_int` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -3329,7 +3228,6 @@ CREATE TABLE `storage_int` (
 -- Table structure for table `storage_string`
 -- 
 
-DROP TABLE IF EXISTS `storage_string`;
 CREATE TABLE `storage_string` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
@@ -3348,7 +3246,6 @@ CREATE TABLE `storage_string` (
 -- Table structure for table `storage_text`
 -- 
 
-DROP TABLE IF EXISTS `storage_text`;
 CREATE TABLE `storage_text` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(255) NOT NULL default '',
@@ -3367,7 +3264,6 @@ CREATE TABLE `storage_text` (
 -- Table structure for table `superbill_data`
 -- 
 
-DROP TABLE IF EXISTS `superbill_data`;
 CREATE TABLE `superbill_data` (
   `superbill_data_id` int(11) NOT NULL default '0',
   `superbill_id` int(11) NOT NULL default '0',
@@ -3387,7 +3283,6 @@ CREATE TABLE `superbill_data` (
 -- Table structure for table `user`
 -- 
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL default '0',
   `username` varchar(55) NOT NULL default '',
@@ -3414,7 +3309,6 @@ INSERT INTO `user` VALUES (1, 'admin', 'admin', '', '', NULL, 'no', 1125);
 -- Table structure for table `users_groups`
 -- 
 
-DROP TABLE IF EXISTS `users_groups`;
 CREATE TABLE `users_groups` (
   `id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
