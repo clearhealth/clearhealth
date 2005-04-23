@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 20, 2005 at 07:39 AM
+-- Generation Time: Apr 23, 2005 at 11:20 AM
 -- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
@@ -696,7 +696,7 @@ CREATE TABLE `enumeration` (
   `relation_of_information_code` enum('A - On file','I - Informed Consent','M - Limited Ability','N - Not allowed','O - On file','Y - Has permission') NOT NULL default 'A - On file',
   `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
   `provider_number_type` enum('State License') NOT NULL default 'State License',
-  `subscriber_to_patient_relationship` enum('Self','Mother','Father') NOT NULL default 'Self',
+  `subscriber_to_patient_relationship` enum('Self','Parent','Spouse','Other') NOT NULL default 'Self' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
   `person_to_person_relation_type` enum('Dependant','Spouse','Grand Parent','Other') NOT NULL default 'Dependant',
   `identifier_type` enum('SSN','EIN') NOT NULL default 'SSN',
   `code_modifier` enum('A0','A1','A2','B1','B2','C6') NOT NULL default 'A0',
@@ -711,7 +711,8 @@ CREATE TABLE `enumeration` (
   `migrant_status` enum('Seasonal Agricultural/Migrant Worker') NOT NULL default 'Seasonal Agricultural/Migrant Worker',
   `appointment_reasons` enum('Physical','FP','CDP','CHDP','F/U','Sick','Lab Only') NOT NULL default 'Physical',
   `address_type` enum('Home','Billing','Other','Main','Secondary') NOT NULL default 'Home',
-  `number_type` enum('Home','Mobile','Work','Emergency','Fax') NOT NULL default 'Home',
+  `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
+  `number_type` enum('Home','Mobile','Work','Emergency') NOT NULL default 'Home' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
   `payer_type` enum('medicare','champus','medical','private','feca','medicaid','champusva','otherhcfa','litigation') NOT NULL default 'medicare',
   PRIMARY KEY  (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='enums stored as new col, metadata 1 row perenumSTARTWITHDATA';
@@ -720,37 +721,37 @@ CREATE TABLE `enumeration` (
 -- Dumping data for table `enumeration`
 -- 
 
-INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('assigning', 'Assigning', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('relation_of_information_code', '', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('provider_number_type', 'Provider Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('subscriber_to_patient', 'Subscriber to patient', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('payer_type', 'Payer Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('person_to_person_relation_type', 'Person to person relation type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('code_modifier', 'Code Modifier', 'Modifiers available for codes.', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('encounter_reason', 'Encounter Reason', 'Reasons for an encounter', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('encounter_date_type', 'Encounter Date Type', 'Types for extra dates attached to an encounter', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('encounter_person_type', 'Encounter Person Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('payment_type', 'Payment Type', 'Types of payments', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('ethnicity', 'Ethnicity', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('marital_status', 'Marital Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('language', 'Languages', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('race', 'Race', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('income', 'Income', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('migrant status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('migrant_status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('appointment_reason', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
-INSERT INTO `enumeration` VALUES ('appointment_reasons', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('gender', 'Gender', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('person_type', 'Person Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('company_type', 'Company Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('state', 'State', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('number_type', 'Phone Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('company_number_type', 'Company Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('address_type', 'Address Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('disposition', 'Disposition', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('quality_of_file', 'Quality of File', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('group_list', 'File Groups', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('identifier_type', 'Identifier Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('assigning', 'Assigning', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('relation_of_information_code', '', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('provider_number_type', 'Provider Number Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('subscriber_to_patient', 'Subscriber to patient', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('payer_type', 'Payer Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('person_to_person_relation_type', 'Person to person relation type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('code_modifier', 'Code Modifier', 'Modifiers available for codes.', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('encounter_reason', 'Encounter Reason', 'Reasons for an encounter', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('encounter_date_type', 'Encounter Date Type', 'Types for extra dates attached to an encounter', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('encounter_person_type', 'Encounter Person Type', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('payment_type', 'Payment Type', 'Types of payments', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('ethnicity', 'Ethnicity', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('marital_status', 'Marital Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('language', 'Languages', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('race', 'Race', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('income', 'Income', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('migrant status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('migrant_status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('appointment_reason', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
+INSERT INTO `enumeration` VALUES ('appointment_reasons', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'Home', 'medicare');
 
 -- --------------------------------------------------------
 
@@ -854,6 +855,7 @@ CREATE TABLE `fbclaimline` (
 CREATE TABLE `fbcompany` (
   `company_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
+  `index` tinyint(4) NOT NULL default '0',
   `identifier` varchar(25) NOT NULL default '',
   `identifier_type` varchar(10) NOT NULL default '',
   `type` varchar(50) NOT NULL default '',
@@ -911,6 +913,7 @@ CREATE TABLE `fblatest_revision` (
 CREATE TABLE `fbperson` (
   `person_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
+  `index` tinyint(4) NOT NULL default '0',
   `type` varchar(50) NOT NULL default '',
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` varchar(10) NOT NULL default '',
@@ -930,168 +933,168 @@ CREATE TABLE `fbperson` (
 -- Dumping data for table `fbperson`
 -- 
 
-INSERT INTO `fbperson` VALUES (18441, 19445, 'FBPatient', '233-45-7763', 'SSN', '2706', '', 'Hewett', 'Margart', 'Floe', NULL, '1987-12-13', '', '');
-INSERT INTO `fbperson` VALUES (18443, 19445, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18449, 19445, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18451, 19445, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18453, 19445, 'FBResponsibleParty', '233-45-7763', 'SSN', '2706', '', 'Hewett', 'Margart', 'Floe', NULL, '1987-12-13', '', '');
-INSERT INTO `fbperson` VALUES (18466, 18623, 'FBPatient', '111-22-3333', 'SSN', '3799', '', 'Furl', 'Janay', 'Veldhuizen', '', '1919-10-17', '', '');
-INSERT INTO `fbperson` VALUES (18468, 18623, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18474, 18623, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18476, 18623, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18478, 18623, 'FBResponsibleParty', '648-72-1904', 'SSN', '3799', '', 'Furl', 'Janay', 'Veldhuizen', NULL, '1919-10-17', '', '');
-INSERT INTO `fbperson` VALUES (18488, 19641, 'FBPatient', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
-INSERT INTO `fbperson` VALUES (18490, 19641, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18496, 19641, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18498, 19641, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18500, 19641, 'FBResponsibleParty', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
-INSERT INTO `fbperson` VALUES (18512, 20348, 'FBPatient', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
-INSERT INTO `fbperson` VALUES (18514, 20348, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18520, 20348, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18522, 20348, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18524, 20348, 'FBResponsibleParty', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
-INSERT INTO `fbperson` VALUES (18533, 20381, 'FBPatient', '562-84-1994', 'SSN', '2533', '', 'Jeskie', 'Dannielle', 'Sillery', NULL, '1991-03-11', '', '');
-INSERT INTO `fbperson` VALUES (18535, 20381, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18541, 20381, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18543, 20381, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18545, 20381, 'FBResponsibleParty', '562-84-1994', 'SSN', '2533', '', 'Jeskie', 'Dannielle', 'Sillery', NULL, '1991-03-11', '', '');
-INSERT INTO `fbperson` VALUES (18556, 19684, 'FBPatient', '234-06-8001', 'SSN', '3459', '', 'Debus', 'Piper', 'Desamparo', NULL, '1984-09-25', '', '');
-INSERT INTO `fbperson` VALUES (18558, 19684, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18564, 19684, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18566, 19684, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18568, 19684, 'FBResponsibleParty', '234-06-8001', 'SSN', '3459', '', 'Debus', 'Piper', 'Desamparo', NULL, '1984-09-25', '', '');
-INSERT INTO `fbperson` VALUES (18577, 19453, 'FBPatient', '479-47-9690', 'SSN', '4458', '', 'Radican', 'Joana', 'Kofford', NULL, '1911-11-04', '', '');
-INSERT INTO `fbperson` VALUES (18579, 19453, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18585, 19453, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18587, 19453, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18589, 19453, 'FBResponsibleParty', '479-47-9690', 'SSN', '4458', '', 'Radican', 'Joana', 'Kofford', NULL, '1911-11-04', '', '');
-INSERT INTO `fbperson` VALUES (18599, 19449, 'FBPatient', '465-52-2099', 'SSN', '2431', '', 'Federer', 'Dorinda', 'Carlie', NULL, '1955-03-22', '', '');
-INSERT INTO `fbperson` VALUES (18601, 19449, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18607, 19449, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18609, 19449, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (18611, 19449, 'FBResponsibleParty', '465-52-2099', 'SSN', '2431', '', 'Federer', 'Dorinda', 'Carlie', NULL, '1955-03-22', '', '');
-INSERT INTO `fbperson` VALUES (18627, 20381, 'FBSubscriber', '', '34', '', '', 'George', 'Jetson', '', '', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19263, 19435, 'FBPatient', '557-85-5725', 'SSN', '3573', '', 'Bado', 'Sheron', 'Robello', NULL, '1965-05-06', '', '');
-INSERT INTO `fbperson` VALUES (19265, 19435, 'FBProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19271, 19435, 'FBReferringProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19273, 19435, 'FBSupervisingProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19275, 19435, 'FBResponsibleParty', '557-85-5725', 'SSN', '3573', '', 'Bado', 'Sheron', 'Robello', NULL, '1965-05-06', '', '');
-INSERT INTO `fbperson` VALUES (19284, 19431, 'FBPatient', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19286, 19431, 'FBProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19292, 19431, 'FBReferringProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19294, 19431, 'FBSupervisingProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19296, 19431, 'FBResponsibleParty', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19303, 19424, 'FBPatient', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19305, 19424, 'FBProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19311, 19424, 'FBReferringProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19313, 19424, 'FBSupervisingProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19315, 19424, 'FBResponsibleParty', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19400, 19440, 'FBPatient', '', '34', '', '', 'Trotter', 'Fred', '', '', '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19476, 19643, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19478, 19643, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19484, 19643, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19486, 19643, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19488, 19643, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19496, 19493, 'FBPatient', '938-94-4688', 'SSN', '2582', '', 'Macgillivray', 'Rodger', 'Isaacson', NULL, '1966-05-06', '', '');
-INSERT INTO `fbperson` VALUES (19498, 19493, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19504, 19493, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19506, 19493, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19508, 19493, 'FBResponsibleParty', '938-94-4688', 'SSN', '2582', '', 'Macgillivray', 'Rodger', 'Isaacson', NULL, '1966-05-06', '', '');
-INSERT INTO `fbperson` VALUES (19515, 19513, 'FBPatient', '600-20-9282', 'SSN', '3356', '', 'Recore', 'Evonne', 'Tenore', NULL, '1945-10-18', '', '');
-INSERT INTO `fbperson` VALUES (19517, 19513, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19523, 19513, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19525, 19513, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19527, 19513, 'FBResponsibleParty', '600-20-9282', 'SSN', '3356', '', 'Recore', 'Evonne', 'Tenore', NULL, '1945-10-18', '', '');
-INSERT INTO `fbperson` VALUES (19535, 19654, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19537, 19654, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19543, 19654, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19545, 19654, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19547, 19654, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19554, 19711, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19556, 19711, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19562, 19711, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19564, 19711, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19566, 19711, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19572, 19571, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19574, 19571, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19580, 19571, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19582, 19571, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19584, 19571, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19591, 19589, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19593, 19589, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19599, 19589, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19601, 19589, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19603, 19589, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19609, 19608, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (19611, 19608, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19617, 19608, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19619, 19608, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (19621, 19608, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
-INSERT INTO `fbperson` VALUES (20021, 20039, 'FBPatient', '123456789', 'SSN', '123', '', 'Payne', 'Ima', '', 'F', '1970-01-01', '', '');
-INSERT INTO `fbperson` VALUES (20023, 20039, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20029, 20039, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20031, 20039, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20033, 20039, 'FBResponsibleParty', '123456789', 'SSN', '123', '', 'Payne', 'Ima', '', 'F', '1970-01-01', '', '');
-INSERT INTO `fbperson` VALUES (20127, 20117, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20129, 20117, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20133, 20117, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20139, 20117, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20141, 20117, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20143, 20117, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20159, 20158, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20161, 20158, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20165, 20158, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20171, 20158, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20173, 20158, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20175, 20158, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20183, 20180, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20185, 20180, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20189, 20180, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20195, 20180, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20197, 20180, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20199, 20180, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20207, 20206, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20209, 20206, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20213, 20206, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20219, 20206, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20221, 20206, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20223, 20206, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20230, 20229, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20232, 20229, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20236, 20229, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20242, 20229, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20244, 20229, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20246, 20229, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
-INSERT INTO `fbperson` VALUES (20258, 20257, 'FBPatient', '098-28-5023', 'SSN', '2657', '', 'Ladewig', 'Thea', 'Heon', NULL, '1936-12-31', '', '');
-INSERT INTO `fbperson` VALUES (20260, 20257, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20266, 20257, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20268, 20257, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20270, 20257, 'FBResponsibleParty', '098-28-5023', 'SSN', '2657', '', 'Ladewig', 'Thea', 'Heon', NULL, '1936-12-31', '', '');
-INSERT INTO `fbperson` VALUES (20280, 20277, 'FBPatient', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
-INSERT INTO `fbperson` VALUES (20282, 20277, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20288, 20277, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20290, 20277, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20292, 20277, 'FBResponsibleParty', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
-INSERT INTO `fbperson` VALUES (20300, 20297, 'FBPatient', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
-INSERT INTO `fbperson` VALUES (20302, 20297, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20308, 20297, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20310, 20297, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20312, 20297, 'FBResponsibleParty', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
-INSERT INTO `fbperson` VALUES (20389, 20388, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
-INSERT INTO `fbperson` VALUES (20391, 20388, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20397, 20388, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20399, 20388, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20401, 20388, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
-INSERT INTO `fbperson` VALUES (20408, 20407, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
-INSERT INTO `fbperson` VALUES (20410, 20407, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20416, 20407, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20418, 20407, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (20420, 20407, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
-INSERT INTO `fbperson` VALUES (200427, 200426, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
-INSERT INTO `fbperson` VALUES (200429, 200426, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (200435, 200426, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (200437, 200426, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
-INSERT INTO `fbperson` VALUES (200439, 200426, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (18441, 19445, 0, 'FBPatient', '233-45-7763', 'SSN', '2706', '', 'Hewett', 'Margart', 'Floe', NULL, '1987-12-13', '', '');
+INSERT INTO `fbperson` VALUES (18443, 19445, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18449, 19445, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18451, 19445, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18453, 19445, 0, 'FBResponsibleParty', '233-45-7763', 'SSN', '2706', '', 'Hewett', 'Margart', 'Floe', NULL, '1987-12-13', '', '');
+INSERT INTO `fbperson` VALUES (18466, 18623, 0, 'FBPatient', '111-22-3333', 'SSN', '3799', '', 'Furl', 'Janay', 'Veldhuizen', '', '1919-10-17', '', '');
+INSERT INTO `fbperson` VALUES (18468, 18623, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18474, 18623, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18476, 18623, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18478, 18623, 0, 'FBResponsibleParty', '648-72-1904', 'SSN', '3799', '', 'Furl', 'Janay', 'Veldhuizen', NULL, '1919-10-17', '', '');
+INSERT INTO `fbperson` VALUES (18488, 19641, 0, 'FBPatient', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
+INSERT INTO `fbperson` VALUES (18490, 19641, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18496, 19641, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18498, 19641, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18500, 19641, 0, 'FBResponsibleParty', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
+INSERT INTO `fbperson` VALUES (18512, 20348, 0, 'FBPatient', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
+INSERT INTO `fbperson` VALUES (18514, 20348, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18520, 20348, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18522, 20348, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18524, 20348, 0, 'FBResponsibleParty', '099-11-7607', 'SSN', '3113', '', 'Quarto', 'Maggie', 'Biehl', NULL, '1915-11-23', '', '');
+INSERT INTO `fbperson` VALUES (18533, 20381, 0, 'FBPatient', '562-84-1994', 'SSN', '2533', '', 'Jeskie', 'Dannielle', 'Sillery', NULL, '1991-03-11', '', '');
+INSERT INTO `fbperson` VALUES (18535, 20381, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18541, 20381, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18543, 20381, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18545, 20381, 0, 'FBResponsibleParty', '562-84-1994', 'SSN', '2533', '', 'Jeskie', 'Dannielle', 'Sillery', NULL, '1991-03-11', '', '');
+INSERT INTO `fbperson` VALUES (18556, 19684, 0, 'FBPatient', '234-06-8001', 'SSN', '3459', '', 'Debus', 'Piper', 'Desamparo', NULL, '1984-09-25', '', '');
+INSERT INTO `fbperson` VALUES (18558, 19684, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18564, 19684, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18566, 19684, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18568, 19684, 0, 'FBResponsibleParty', '234-06-8001', 'SSN', '3459', '', 'Debus', 'Piper', 'Desamparo', NULL, '1984-09-25', '', '');
+INSERT INTO `fbperson` VALUES (18577, 19453, 0, 'FBPatient', '479-47-9690', 'SSN', '4458', '', 'Radican', 'Joana', 'Kofford', NULL, '1911-11-04', '', '');
+INSERT INTO `fbperson` VALUES (18579, 19453, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18585, 19453, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18587, 19453, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18589, 19453, 0, 'FBResponsibleParty', '479-47-9690', 'SSN', '4458', '', 'Radican', 'Joana', 'Kofford', NULL, '1911-11-04', '', '');
+INSERT INTO `fbperson` VALUES (18599, 19449, 0, 'FBPatient', '465-52-2099', 'SSN', '2431', '', 'Federer', 'Dorinda', 'Carlie', NULL, '1955-03-22', '', '');
+INSERT INTO `fbperson` VALUES (18601, 19449, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18607, 19449, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18609, 19449, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (18611, 19449, 0, 'FBResponsibleParty', '465-52-2099', 'SSN', '2431', '', 'Federer', 'Dorinda', 'Carlie', NULL, '1955-03-22', '', '');
+INSERT INTO `fbperson` VALUES (18627, 20381, 0, 'FBSubscriber', '', '34', '', '', 'George', 'Jetson', '', '', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19263, 19435, 0, 'FBPatient', '557-85-5725', 'SSN', '3573', '', 'Bado', 'Sheron', 'Robello', NULL, '1965-05-06', '', '');
+INSERT INTO `fbperson` VALUES (19265, 19435, 0, 'FBProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19271, 19435, 0, 'FBReferringProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19273, 19435, 0, 'FBSupervisingProvider', '11111111', 'SSN', '', 'Dr', 'Augustin', 'Alfred', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19275, 19435, 0, 'FBResponsibleParty', '557-85-5725', 'SSN', '3573', '', 'Bado', 'Sheron', 'Robello', NULL, '1965-05-06', '', '');
+INSERT INTO `fbperson` VALUES (19284, 19431, 0, 'FBPatient', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19286, 19431, 0, 'FBProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19292, 19431, 0, 'FBReferringProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19294, 19431, 0, 'FBSupervisingProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19296, 19431, 0, 'FBResponsibleParty', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19303, 19424, 0, 'FBPatient', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19305, 19424, 0, 'FBProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19311, 19424, 0, 'FBReferringProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19313, 19424, 0, 'FBSupervisingProvider', '', 'SSN', '', 'Dr', 'Doctor', 'Random', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19315, 19424, 0, 'FBResponsibleParty', '123-32-2323', 'SSN', '15', '', 'smith-jones', 'nancy', '', 'F', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19400, 19440, 0, 'FBPatient', '', '34', '', '', 'Trotter', 'Fred', '', '', '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19476, 19643, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19478, 19643, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19484, 19643, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19486, 19643, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19488, 19643, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19496, 19493, 0, 'FBPatient', '938-94-4688', 'SSN', '2582', '', 'Macgillivray', 'Rodger', 'Isaacson', NULL, '1966-05-06', '', '');
+INSERT INTO `fbperson` VALUES (19498, 19493, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19504, 19493, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19506, 19493, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19508, 19493, 0, 'FBResponsibleParty', '938-94-4688', 'SSN', '2582', '', 'Macgillivray', 'Rodger', 'Isaacson', NULL, '1966-05-06', '', '');
+INSERT INTO `fbperson` VALUES (19515, 19513, 0, 'FBPatient', '600-20-9282', 'SSN', '3356', '', 'Recore', 'Evonne', 'Tenore', NULL, '1945-10-18', '', '');
+INSERT INTO `fbperson` VALUES (19517, 19513, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19523, 19513, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19525, 19513, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19527, 19513, 0, 'FBResponsibleParty', '600-20-9282', 'SSN', '3356', '', 'Recore', 'Evonne', 'Tenore', NULL, '1945-10-18', '', '');
+INSERT INTO `fbperson` VALUES (19535, 19654, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19537, 19654, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19543, 19654, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19545, 19654, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19547, 19654, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19554, 19711, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19556, 19711, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19562, 19711, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19564, 19711, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19566, 19711, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19572, 19571, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19574, 19571, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19580, 19571, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19582, 19571, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19584, 19571, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19591, 19589, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19593, 19589, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19599, 19589, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19601, 19589, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19603, 19589, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19609, 19608, 0, 'FBPatient', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (19611, 19608, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19617, 19608, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19619, 19608, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (19621, 19608, 0, 'FBResponsibleParty', '752-69-8322', 'SSN', '2235', '', 'Ancic', 'Alleen', 'Handville', NULL, '1974-04-29', '', '');
+INSERT INTO `fbperson` VALUES (20021, 20039, 0, 'FBPatient', '123456789', 'SSN', '123', '', 'Payne', 'Ima', '', 'F', '1970-01-01', '', '');
+INSERT INTO `fbperson` VALUES (20023, 20039, 0, 'FBProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20029, 20039, 0, 'FBReferringProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20031, 20039, 0, 'FBSupervisingProvider', '', 'SSN', '', '', 'Minton', 'Michelle', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20033, 20039, 0, 'FBResponsibleParty', '123456789', 'SSN', '123', '', 'Payne', 'Ima', '', 'F', '1970-01-01', '', '');
+INSERT INTO `fbperson` VALUES (20127, 20117, 0, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20129, 20117, 0, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20133, 20117, 0, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20139, 20117, 0, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20141, 20117, 0, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20143, 20117, 0, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20159, 20158, 0, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20161, 20158, 0, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20165, 20158, 0, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20171, 20158, 0, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20173, 20158, 0, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20175, 20158, 0, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20183, 20180, 0, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20185, 20180, 0, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20189, 20180, 0, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20195, 20180, 0, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20197, 20180, 0, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20199, 20180, 0, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20207, 20206, 0, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20209, 20206, 0, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20213, 20206, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20219, 20206, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20221, 20206, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20223, 20206, 0, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20230, 20229, 0, 'FBPatient', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20232, 20229, 0, 'FBSubscriber', '693-32-5147', 'SSN', '', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20236, 20229, 0, 'FBProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20242, 20229, 0, 'FBReferringProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20244, 20229, 0, 'FBSupervisingProvider', '66666666', 'SSN', '', 'Dr.', 'Everstone', 'Elaine', 'E', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20246, 20229, 0, 'FBResponsibleParty', '693-32-5147', 'SSN', '2545', '', 'Weichman', 'Glendora', 'Schofell', NULL, '1992-06-11', '', '');
+INSERT INTO `fbperson` VALUES (20258, 20257, 0, 'FBPatient', '098-28-5023', 'SSN', '2657', '', 'Ladewig', 'Thea', 'Heon', NULL, '1936-12-31', '', '');
+INSERT INTO `fbperson` VALUES (20260, 20257, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20266, 20257, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20268, 20257, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20270, 20257, 0, 'FBResponsibleParty', '098-28-5023', 'SSN', '2657', '', 'Ladewig', 'Thea', 'Heon', NULL, '1936-12-31', '', '');
+INSERT INTO `fbperson` VALUES (20280, 20277, 0, 'FBPatient', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
+INSERT INTO `fbperson` VALUES (20282, 20277, 0, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20288, 20277, 0, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20290, 20277, 0, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20292, 20277, 0, 'FBResponsibleParty', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
+INSERT INTO `fbperson` VALUES (20300, 20297, 0, 'FBPatient', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
+INSERT INTO `fbperson` VALUES (20302, 20297, 0, 'FBProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20308, 20297, 0, 'FBReferringProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20310, 20297, 0, 'FBSupervisingProvider', '1233323J', 'SSN', '', '', 'Conrad', 'Joe', '', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20312, 20297, 0, 'FBResponsibleParty', '140-12-5530', 'SSN', '3253', '', 'Obnegon', 'Detra', 'Ibraham', NULL, '1961-09-24', '', '');
+INSERT INTO `fbperson` VALUES (20389, 20388, 0, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (20391, 20388, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20397, 20388, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20399, 20388, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20401, 20388, 0, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (20408, 20407, 0, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (20410, 20407, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20416, 20407, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20418, 20407, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (20420, 20407, 0, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (200427, 200426, 0, 'FBPatient', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
+INSERT INTO `fbperson` VALUES (200429, 200426, 0, 'FBProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (200435, 200426, 0, 'FBReferringProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (200437, 200426, 0, 'FBSupervisingProvider', '3412344132', 'SSN', '', 'Dr.', 'Agona', 'Albert', 'A', NULL, '0000-00-00', '', '');
+INSERT INTO `fbperson` VALUES (200439, 200426, 0, 'FBResponsibleParty', '634-63-6494', 'SSN', '2634', '', 'Abundis', 'Robena', 'Forwood', NULL, '1914-02-22', '', '');
 
 -- --------------------------------------------------------
 
@@ -1145,7 +1148,7 @@ CREATE TABLE `fee_schedule_data` (
   `code_id` int(11) NOT NULL default '0',
   `revision_id` int(11) NOT NULL default '0',
   `fee_schedule_id` int(11) NOT NULL default '0',
-  `data` double NOT NULL default '0',
+  `data` float(11,2) NOT NULL default '0.00',
   `formula` varchar(255) NOT NULL default '',
   `mapped_code` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
@@ -2336,7 +2339,8 @@ CREATE TABLE `patient` (
   `person_id` int(11) NOT NULL default '0',
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
-  `record_number` varchar(255) NOT NULL default '0',
+  `record_number` int(11) NOT NULL default '0',
+  `employer_name` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
