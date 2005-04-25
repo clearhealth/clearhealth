@@ -2703,6 +2703,8 @@ CREATE TABLE `report_templates` (
 -- Dumping data for table `report_templates`
 -- 
 
+INSERT INTO `report_templates` VALUES (17077, 17075, 'Invoice View', 'no');
+INSERT INTO `report_templates` VALUES (17859, 17857, 'MCC Superbill Form', 'no');
 
 -- --------------------------------------------------------
 
