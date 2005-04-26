@@ -465,7 +465,7 @@ class C_Patient extends Controller {
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
-			$cliamline['amount'] = $data['fee'];
+			$claimline['amount'] = $data['fee'];
 			$total_billed += $data['fee'];
 			$claimline['diagnoses'] = array();
 			
@@ -486,6 +486,8 @@ class C_Patient extends Controller {
 		$claim->persist();
 
 		// register patient data
+		//Debug:
+		//echo "Debug:C_Patient.class".var_export($patient->toArray());
 		$patientData = $this->_cleanDataArray($patient->toArray());
 		if (!$freeb2->registerData($claim_identifier,'Patient',$patientData)) {
 			trigger_error("Unable to register patient data - ".$freeb2->claimLastError($claim_identifier));
@@ -569,6 +571,30 @@ class C_Patient extends Controller {
 
 	}
 
+	// helper function that explodes the address
+	function _flattenAddress($data) {
+		if (isset($data['address']['zip'])) {
+			$data['zip'] = $data['address']['zip'];
+		}
+		if (isset($data['address']['state'])) {
+			$data['state'] = $data['address']['state'];
+		}
+		if (isset($data['address']['line1'])) {
+			$data['line1'] = $data['address']['line1'];
+		}
+		if (isset($data['address']['line2'])) {
+			$data['line2'] = $data['address']['line2'];
+		}
+		if (isset($data['address']['city'])) {
+			$data['city'] = $data['address']['city'];
+		}
+		if (isset($data['address']['state'])) {
+			$data['state'] = $data['address']['state'];
+		}
+		unset($data['address']);
+		return($data);
+	}
+
 	function _cleanDataArray($data) {
 		if (isset($address['date_of_birth'])) {
 			$data['dob'] = $data['date_of_birth'];
@@ -576,6 +602,12 @@ class C_Patient extends Controller {
 		if (isset($data['address']['postal_code'])) {
 			$data['address']['zip'] = $data['address']['postal_code'];
 		}
+
+	/*	if (isset($data['address'])){
+			$data=$this->_flattenAddress($data);
+	Apparantly not what is needed...
+		}*/
+
 		if (isset($data['phone_number'])) {
 			$data['phone_number'] = $data['home_phone'];
 		}
@@ -588,6 +620,12 @@ class C_Patient extends Controller {
 			unset($data['address']['postal_code']);
 			unset($data['address']['region']);
 		}
+		if (isset($data['payer_type'])) {
+			$payer = ORDataObject::factory("InsuranceProgram");
+			$pt_enum = $payer->_load_enum("PayerType");
+			$data['payer_type'] = $pt_enum[$data['payer_type']];
+		}
+		
 		unset($data['person_id']);
 		unset($data['type']);
 		return $data;
