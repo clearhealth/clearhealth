@@ -64,11 +64,15 @@ class InsuredRelationship extends ORDataObject {
 	 * return an array of InsuredRelationship objects that correspond to a personid
 	 */
 	function fromPersonId($person_id) {
+		//echo "Insured Relationship: fromPersonid with $person_id<br>";
 		settype($person_id,'int');
 		$ret = array();
 
 		$ir =& ORDataObject::Factory('InsuredRelationship');
-		$res = $ir->_execute("select * from $ir->_table where person_id = $person_id order by program_order");
+		$sql = "select * from $ir->_table where person_id = $person_id order by program_order";
+		//echo "<br> $sql <br>";
+		$res = $ir->_execute($sql);
+			
 
 		$i = 0;
 		while($res && !$res->EOF) {
