@@ -48,9 +48,12 @@ AutoComplete.prototype.getLeftPos = function(){
 AutoComplete.prototype.draw = function(){
 	// clear the popup-div.
 	this.clear();
-	this.choiceCount = this.choices.length;
+	if(this.choices.length){
+		this.choiceCount = this.choices.length;
+	}else{
+		this.choiceCount = 0;
+	}
 
-	this.oIdText.value = '';
 
 	if(this.choices.length == 1){
 		this.oText.value = this.choices[0]['name']+ ' #' + this.choices[0]['pubpid'];
@@ -140,8 +143,10 @@ AutoComplete.prototype.onKeyDown = function(evt){
 		return true;
 
 	if(evt.keyCode == 9 || evt.keyCode == 13){
-		this.value = this.AutoComplete.choices[this.AutoComplete.index]['name'] + ' #' + this.AutoComplete.choices[this.AutoComplete.index]['pubpid'];
-		this.AutoComplete.oIdText.value = this.AutoComplete.choices[this.AutoComplete.index]['id'];
+		if(this.AutoComplete.choices.length > 0){
+			this.value = this.AutoComplete.choices[this.AutoComplete.index]['name'] + ' #' + this.AutoComplete.choices[this.AutoComplete.index]['pubpid'];
+			this.AutoComplete.oIdText.value = this.AutoComplete.choices[this.AutoComplete.index]['id'];
+		}
 		//alert("Set ID to " + this.AutoComplete.choices[this.AutoComplete.index]['id']);
 		//if(event.cancelBubble) event.cancelBubble = true;
 		//if(evt.returnValue) evt.returnValuse = false;
@@ -156,13 +161,16 @@ AutoComplete.prototype.onKeyDown = function(evt){
 }
 
 AutoComplete.prototype.getData = function(){
-	if (!this.oText.value.length > 0) return;
 	this.itemSet = false;
 	var results = this.getDataFunc(this.oText.value);
 	this.index = 0;
 	this.searchString = this.oText.value;
 	this.choices = results;
-	this.choiceCount = results.length;
+	if(results.length){
+		this.choiceCount = results.length;
+	}else{
+		this.choiceCount = 0;
+	}
 	this.draw();
 
 }

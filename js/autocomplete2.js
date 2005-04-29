@@ -47,9 +47,12 @@ AutoComplete.prototype.getLeftPos = function(){
 AutoComplete.prototype.draw = function(){
 	// clear the popup-div.
 	this.clear();
-	this.choiceCount = this.choices.length;
-
-	this.oIdText.value = '';
+	if(this.choices.length){
+		this.choiceCount = this.choices.length;
+	}else{
+		this.choiceCount = 0;
+	}
+		
 
 	if(this.choices.length == 1){
 		this.oText.value = this.choices[0]['string'];
@@ -131,8 +134,10 @@ AutoComplete.prototype.onKeyDown = function(evt){
 		return true;
 
 	if(evt.keyCode == 9 || evt.keyCode == 13){
-		this.value = this.AutoComplete.choices[this.AutoComplete.index]['string'];
-		this.AutoComplete.oIdText.value = this.AutoComplete.choices[this.AutoComplete.index]['id'];
+		if(this.AutoComplete.choices.length > 0){
+			this.value = this.AutoComplete.choices[this.AutoComplete.index]['string'];
+			this.AutoComplete.oIdText.value = this.AutoComplete.choices[this.AutoComplete.index]['id'];
+		}
 		//alert("Set ID to " + this.AutoComplete.choices[this.AutoComplete.index]['id']);
 		//if(event.cancelBubble) event.cancelBubble = true;
 		//if(evt.returnValue) evt.returnValuse = false;
@@ -153,7 +158,11 @@ AutoComplete.prototype.getData = function(){
 	this.index = 0;
 	this.searchString = this.oText.value;
 	this.choices = results;
-	this.choiceCount = results.length;
+	if(results.length){
+		this.choiceCount = results.length;
+	}else{
+		this.choiceCount = 0;
+	}
 	this.draw();
 
 }
