@@ -503,6 +503,7 @@ class C_Patient extends Controller {
 			$tmp = $this->_cleanDataArray($data['subscriber']);
 			unset($data['subscriber']);
 			$data = array_merge($data,$tmp);
+			//echo "C_Patient subscriber data:<br>".var_export($data);
 			$freeb2->registerData($claim_identifier,'Subscriber',$data);
 		}
 
