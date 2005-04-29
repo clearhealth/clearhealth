@@ -460,6 +460,10 @@ class C_Patient extends Controller {
 		
 		// add claimlines
 		foreach($codes as $parent => $data) {
+
+	//	echo "Debug: C_Patient<br>";
+	//	var_export($data); echo "<br>";		
+
 			$claimline = array();
 			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
 			$claimline['procedure'] = $data['code'];
@@ -469,8 +473,8 @@ class C_Patient extends Controller {
 			$total_billed += $data['fee'];
 			$claimline['diagnoses'] = array();
 			
-
-			$childCodes = $cd->getChildCodes($data['parent_id'],$encounter->get('id'));
+			
+			$childCodes = $cd->getChildCodes($data['coding_data_id']);
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
@@ -512,6 +516,8 @@ class C_Patient extends Controller {
 				$data = $program->toArray();
 				$data = $this->_cleanDataArray($data['company']);
 				$data['identifier'] = $data['name'];
+				//echo "C_Patient payer";
+				//var_export($data); echo "<br>";
 				$freeb2->registerData($claim_identifier,'Payer',$data);
 				if ($clearingHouseData === false) {
 					$clearingHouseData = $data;
@@ -528,6 +534,8 @@ class C_Patient extends Controller {
 
 		// register practice
 		$practiceData = $this->_cleanDataArray($practice->toArray());
+		//echo "C_Patient practicedata";
+		//var_export($practiceData); echo "<br>";
 		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
 			trigger_error("Unable to register practice data - ".$freeb2->claimLastError($claim_identifier));
 		}
@@ -571,45 +579,20 @@ class C_Patient extends Controller {
 
 	}
 
-	// helper function that explodes the address
-	function _flattenAddress($data) {
-		if (isset($data['address']['zip'])) {
-			$data['zip'] = $data['address']['zip'];
-		}
-		if (isset($data['address']['state'])) {
-			$data['state'] = $data['address']['state'];
-		}
-		if (isset($data['address']['line1'])) {
-			$data['line1'] = $data['address']['line1'];
-		}
-		if (isset($data['address']['line2'])) {
-			$data['line2'] = $data['address']['line2'];
-		}
-		if (isset($data['address']['city'])) {
-			$data['city'] = $data['address']['city'];
-		}
-		if (isset($data['address']['state'])) {
-			$data['state'] = $data['address']['state'];
-		}
-		unset($data['address']);
-		return($data);
-	}
 
 	function _cleanDataArray($data) {
-		if (isset($address['date_of_birth'])) {
+		if (isset($data['date_of_birth'])) {
 			$data['dob'] = $data['date_of_birth'];
 		}
 		if (isset($data['address']['postal_code'])) {
 			$data['address']['zip'] = $data['address']['postal_code'];
 		}
 
-	/*	if (isset($data['address'])){
-			$data=$this->_flattenAddress($data);
-	Apparantly not what is needed...
-		}*/
 
-		if (isset($data['phone_number'])) {
+		if (isset($data['home_phone'])) {
+	// TODO.. there should be some kind of "billing phone number" flag or something...
 			$data['phone_number'] = $data['home_phone'];
+			unset($data['home_phone']);
 		}
 		if (isset($data['gender'])) { 
 			$data['gender'] = substr($data['gender'],0,1);

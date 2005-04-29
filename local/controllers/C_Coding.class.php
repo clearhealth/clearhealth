@@ -15,15 +15,30 @@ class C_Coding extends Controller {
 	function update_action_edit($foreign_id = 0, $parent_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
+		$encounter_id = $foreign_id; //Makes so much more sense...
+	//	echo "encounter id = $encounter_id <br>\n";
+	//	echo "codelookup id = $parent_id <br>\n";
 		//if($parent_id == 0)
 		//	$parent_id = $this->parent_id;
-			
+
+		// The foreign id is irrelevant, it is the parent id that should drive out this process.
+		// I need to know where this is called to send it the right data.	
 		$code_data =& ORDataObject::factory('CodingData');
-		$parent_code =& ORDataObject::factory('Code', $parent_id);
 		
+
+		//Get the REAL parent_id. From the CodingData 
+		
+
+		$parent_code =& ORDataObject::factory('Code', $parent_id);
+	
+		
+	//OldWay
 		$child_codes = $code_data->getChildCodes($foreign_id, $parent_id);
+	//NewWay	$parent_codes = $code_data->getParentCodes($encounter_id);
+	///NewWay	foreach $parent_codes as $parent_code
+	//NewWay	$child_codes[$parent_code['code_data_id']] = $code_data->getChildCodes($parent_code);
 //		var_dump($child_codes);
-		$code_list = $code_data->getCodeList($foreign_id);
+		$code_list = $code_data->getCodeList($encounter_id);
 		if(is_array($child_codes) && count($child_codes) > 0){
 			foreach($child_codes as $code){
 				if($code['coding_data_id'] != 0){
@@ -51,8 +66,14 @@ class C_Coding extends Controller {
 		$this->assign("foreign_id", $foreign_id);
 		
 		$this->assign_by_ref("code_data", $code_data);
+	//	echo "DEBUG C_Coding: code_data <br>\n";
+	//	echo $code_data->printme()."<br>\n";
 		$this->assign_by_ref("child_codes", $child_codes);
+	//	echo "DEBUG C_Coding: child_codes <br>\n";
+	//	var_dump($child_codes); echo "<br>\n";
 		$this->assign_by_ref("code_list", $code_list);
+	//	echo "DEBUG C_Coding: code_list <br>\n";
+	//	var_export($code_list); echo "<br>\n";
 		return $this->fetch(Cellini::getTemplatePath("/coding/" . $this->template_mod . "_update.html"));	
 	}
 	
@@ -102,23 +123,37 @@ class C_Coding extends Controller {
 		}
 
 		foreach($_POST['parent_codes'] as $parent) {
-			$parent['parent_id'] = $parent['code'];
+			$thecode = $parent['code'];
 			unset($code_data);
 			$code_data =& ORdataObject::factory('CodingData');
 			$code_data->populate_array($parent);
-			$code_data->set('foreign_id',$_POST['foreign_id']);
-			$code_data->clearChildCodes($_POST['foreign_id'], $parent['parent_id']);
-			$code_data->set('fee',$feeSchedule->getFeeFromCodeId($parent['parent_id']));
-		
+			$code_data->set('code_id',$thecode);
+			$code_data->set('parent_id',0); // There is no parent for the parent...
+			$code_data->set('foreign_id',$_POST['foreign_id']); 
+	//		$code_data->clearChildCodes($_POST['foreign_id'], $parent['parent_id']);
+	// This should not happen here...
+			$code_data->set('fee',$feeSchedule->getFeeFromCodeId($thecode));
+			$code_data->set("id", 0);
+			$code_data->persist();
+			$parent_id=$code_data->get('id');
+			//var_dump($code_data);
+
+			unset($child_code_data);		
+			$child_code_data =& ORdataObject::factory('CodingData');
+
 			if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
 				foreach($_POST['child_codes'] as $code_id){
 					if(intval($code_id) == 0)
 						continue;
-						
-					$code_data->set("id", 0);
-					$code_data->set('code_id', $code_id);
-					$code_data->persist();
-					//var_dump($code_data);
+			
+							
+					$child_code_data->set("id", 0);
+					$child_code_data->set('code_id', $code_id);
+					$child_code_data->set('parent_id', $parent_id);
+					$child_code_data->set('foreign_id',$_POST['foreign_id']); 
+					$child_code_data->persist();
+					// TODO: Should I set the primary_code class to 2 or something?
+					//var_dump($child_code_data);
 				}	
 			}
 		}
