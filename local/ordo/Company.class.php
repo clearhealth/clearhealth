@@ -362,7 +362,13 @@ class Company extends ORDataObject {
 
 		$address =& $this->address();
 		$ret['address'] = $address->toArray();
-
+		$phone = $this->get_numbers();
+		//echo "Company phone# <br>".var_export($phone);
+		foreach($phone as $phonearray)
+		{
+			$ret['phone_number'] = $phonearray["number"];	
+			//got to be a better way...
+		}
 		return $ret;
 	}
 } 
