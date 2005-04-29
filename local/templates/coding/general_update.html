@@ -96,8 +96,8 @@ function captureEnter (field, event) {
 <fieldset class="radio" id="Code List">
 <legend>Claim Lines</legend>
 {foreach from=$code_list item=code}
-{assign var=children value=$code_data->getChildCodes($code.foreign_id, $code.parent_id)}
-<A HREF="{$EDIT_LINK}parent_id={$code.parent_id}">{$code.description}</A><BR>
+{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
+<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A><BR>
 {foreach from=$children item=child}
 &nbsp;&nbsp;&nbsp;{$child.description}<br>
 {/foreach}<BR>
