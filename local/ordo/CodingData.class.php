@@ -139,16 +139,6 @@ class CodingData extends ORDataObject {
 		return $ret;
 	}
 	
-	function clearChildCodes($parent_id) {
-	//echo "CodingData clearChildCodes with $parent_id <br>";
-		$parent_id = intval($parent_id);
-		$sql = "
-			DELETE FROM coding_data
-			WHERE parent_id = $parent_id
-				";
-		
-		$res = $this->_execute($sql);
-	}
 	
 	function getCodeList($foreign_id){
 	//echo "CodingData getCodeList with $foreign_id <br>";
@@ -182,6 +172,23 @@ class CodingData extends ORDataObject {
 		}
 
 		return $this->_parentCode;	
+	}
+
+	function delete_claimline($parent_code){
+		if(!isset($parent_code)){ return;}
+	
+		//delete parent code...
+	$delete_parent_sql = "DELETE FROM `coding_data` WHERE `coding_data_id` = $parent_code";
+	//echo $delete_parent_sql."<br>";
+	$res = $this->_execute($delete_parent_sql);
+
+		//delete child codes...
+	$delete_children_sql = "DELETE FROM `coding_data` WHERE `parent_id` = $parent_code";
+	//echo $delete_children_sql."<br>";
+	$res = $this->_execute($delete_children_sql);
+
+
+
 	}
 
 
