@@ -161,6 +161,14 @@ class C_Coding extends Controller {
 		//return $this->update_action($_POST['foreign_id']);
 	}
 	
+	function delete_claimline($parent_id) {
+
+			
+		$code_data =& ORdataObject::factory('CodingData');
+		$code_data->delete_claimline($parent_id);
+
+
+	}
 	function update_dg_action($superbill_id) {
 		$icd =& new IcdCodingDatasource();
 		$icd->reset();
