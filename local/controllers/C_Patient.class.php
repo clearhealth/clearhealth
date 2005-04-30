@@ -580,6 +580,20 @@ class C_Patient extends Controller {
 
 	}
 
+	//add javadocs to say that this is pass through...
+	function delete_claimline_action_process($parent_id,$encounter_id) {
+
+		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
+		if($encounter->get('status') === "open"){
+			//TODO this disables the delete function on closed encounters
+			//TODO the template should not even display the X on a closed claim.
+			$this->coding->delete_claimline($parent_id);
+		}
+	
+		header("Location:" . Cellini::link("encounter", true, true, $encounter_id));
+		$this->_state=false;
+
+	}
 
 	function _cleanDataArray($data) {
 		if (isset($data['date_of_birth'])) {
