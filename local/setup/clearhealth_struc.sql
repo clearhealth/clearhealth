@@ -799,25 +799,6 @@ CREATE TABLE `insured_relationship` (
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `menu`
--- 
-
-CREATE TABLE `menu` (
-  `menu_id` int(11) NOT NULL auto_increment,
-  `site_section` varchar(50) NOT NULL default 'default',
-  `parent` int(11) NOT NULL default '0',
-  `dynamic_key` varchar(50) NOT NULL default '',
-  `section` enum('children','more','dynamic') NOT NULL default 'children',
-  `display_order` int(11) NOT NULL default '0',
-  `title` varchar(255) NOT NULL default '',
-  `action` varchar(255) NOT NULL default '',
-  `prefix` varchar(100) NOT NULL default 'main',
-  PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=88 ;
-
--- --------------------------------------------------------
-
--- 
 -- Table structure for table `menu_report`
 -- 
 
