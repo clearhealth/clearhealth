@@ -26,3 +26,22 @@ CREATE TABLE `sequences` (
 -- 
 
 INSERT INTO `sequences` VALUES (500000);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `record_sequence`
+-- 
+
+CREATE TABLE `record_sequence` (
+  `id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- 
+-- Dumping data for table `record_sequence`
+-- 
+
+INSERT INTO `record_sequence` VALUES (200000);
+
+

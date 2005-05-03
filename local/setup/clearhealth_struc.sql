@@ -805,17 +805,6 @@ CREATE TABLE `provider_to_insurance` (
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `record_sequence`
--- 
-
-CREATE TABLE `record_sequence` (
-  `id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
--- 
 -- Table structure for table `rooms`
 -- 
 
