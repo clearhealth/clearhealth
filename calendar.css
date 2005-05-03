@@ -1,3 +1,12 @@
+/* sidebar positioning */
+#calendarBody {
+	float: left;
+	margin-right: 180px;
+}
+#calendarSidebar {
+	float: left;
+	margin-left: -170px;
+}
 /* Style sheet for the silver calendar (default) */
 
 .eventborder	{ background-image: url(images/day_title.gif); border: 1px #006699 solid; }
