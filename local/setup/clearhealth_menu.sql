@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
+-- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 05, 2005 at 12:44 PM
--- Server version: 4.0.23
+-- Generation Time: May 03, 2005 at 12:28 PM
+-- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
 -- Database: `clearhealth`
@@ -16,7 +16,6 @@
 -- Table structure for table `menu`
 -- 
 
-DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL auto_increment,
   `site_section` varchar(50) NOT NULL default 'default',
@@ -28,7 +27,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) TYPE=MyISAM AUTO_INCREMENT=100 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- 
 -- Dumping data for table `menu`
@@ -118,3 +117,123 @@ INSERT INTO `menu` VALUES (96, 'billing', 49, '', 'children', 50, 'Change Passwo
 INSERT INTO `menu` VALUES (97, 'admin', 59, '', 'children', 50, 'Change Password', 'User/password', 'main');
 INSERT INTO `menu` VALUES (98, 'admin', 81, '', 'children', 800, 'ACL Editor', 'Admin/acl', 'main');
 INSERT INTO `menu` VALUES (99, 'patient', 1, '', 'children', 1000, '', 'Account/history', 'main');
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+);
+ 'main');
+
+
+hedule', 'main');
+practive', 'main');
+ilding', 'main');
+, 'main');
+
+
+ain');
+in');
+);
+, 'main');
+n');
+default', 'main');
+it', 'main');
+;
+
+
+
+ist', 'main');
+t', 'main');
+
+
+n');
+main');
+
+ain');
+nce/list', 'main');
+/edit', 'main');
+egory/list', 'main');
+in');
+ 'main');
+
+
+
+
+
+
+
+');
+, 'main');
+
+');
+, 'main');
+
+;
+'main');
+
+eb2');
+2');
+
+
+'main');
+
+main');
+ 'main');
+
+'main');
+
+
+
+
+
+
+n/list', 'main');
+ractice', 'main');
+);
+
+'main');
+
+ient');
+nt');
+nter');
+;
+
+', 'main');
+', 'main');
+', 'main');
+ 'main');
+;
+
