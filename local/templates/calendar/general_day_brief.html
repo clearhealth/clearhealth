@@ -1,10 +1,6 @@
-<table CELLSPACING="0" CELLPADDING="3" border="0">
-<tr>
-	<td>{$messages->render()}</td>
-</tr>
-<tr>
-<td valign="top">
-	<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<div>{$messages->render()}</div>
+<div id="calendarBody">
 <table  border="0" cellspacing="1" cellpadding="2" class="monthback">
 		<tr>
 		<td colspan="7">
@@ -69,9 +65,6 @@
     {/foreach}
     
 </table>
-</td>
-<td style="padding-left:10px;" valign="top">{$sidebar}</td>
+</div>
 
-</tr>
-</table>
-
+<div id="calendarSidebar">{$sidebar}</div>

@@ -1,11 +1,11 @@
-<script language="javascript" src="{$base_dir}js/calendar.js"></script>
-<table CELLSPACING="0" CELLPADDING="3" border="0">
-<tr>
-	<td>{$messages->render()}</td>
-</tr>
-<tr>
-<td>
+<script language="javascript" type="text/javascript" src="{$base_dir}js/calendar.js"></script>
 <link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+
+<div>
+	{$messages->render()}
+</div>
+
+<div id="calendarBody">
 <table border="0" cellspacing="0" cellpadding="0" class="calborder">
 	<tr>
 		<td colspan="35">
@@ -134,7 +134,7 @@
     
     </tr>
 </table>
-</td>
-<td style="padding-left:10px;" valign="top">{$sidebar}</td>
-</tr>
-</table>
+</div>
+
+
+<div id="calendarSidebar">{$sidebar}</div>

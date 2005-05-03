@@ -1,34 +1,30 @@
-<table CELLSPACING="0" CELLPADDING="3" border="0">
-<tr>
-	<td>{$messages->render()}</td>
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<div>{$messages->render()}</div>
+<div id="calendarBody">
+<table  border="0" cellspacing="1" cellpadding="2" class="monthback">
+	<tr>
+	<td colspan="7">
+		<table width="100%">
+		<tr>
+			<td align="right" width="40%" class="navback"><a class="psf" href="{$MONTH_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Month]" border="0" align="right"></a></td>
+			<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$Month->gettimestamp()|date_format:"%B, %Y"}</span></td>
+		<td align="left" width="40%" class="navback"><a class="psf" href="{$MONTH_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Month]" border="0" align="left"></a>
+		<div style="float:right">
+		<a href="{$CONTROLLER->_link("day",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
+		<a href="{$CONTROLLER->_link("week_grid",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
+		<a href="{$CONTROLLER->_link("month",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
+		<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
+		</div>
+		</td>
+		</tr>
+		</table>
+	</td>
 </tr>
 <tr>
-<td valign="top">
-	<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
-<table  border="0" cellspacing="1" cellpadding="2" class="monthback">
-		<tr>
-		<td colspan="7">
-			<table width="100%">
-			<tr>
-				<td align="right" width="40%" class="navback"><a class="psf" href="{$MONTH_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Month]" border="0" align="right"></a></td>
-				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$Month->gettimestamp()|date_format:"%B, %Y"}</span></td>
-      			<td align="left" width="40%" class="navback"><a class="psf" href="{$MONTH_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Month]" border="0" align="left"></a>
-      			<div style="float:right">
-      			<a href="{$CONTROLLER->_link("day",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
-      			<a href="{$CONTROLLER->_link("week_grid",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
-      			<a href="{$CONTROLLER->_link("month",true)}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
-      			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
-      			</div>
-      			</td>
-			</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td width="460" valign="top" colspan="7" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;
-		{if $users_filter}
-			Showing Users: {$users_filter}&nbsp;&nbsp;
-		{/if}
+	<td width="460" valign="top" colspan="7" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;
+	{if $users_filter}
+		Showing Users: {$users_filter}&nbsp;&nbsp;
+	{/if}
 		
 		{if $locations_filter}
 			Showing Locations: {$locations_filter}&nbsp;&nbsp;
@@ -78,7 +74,5 @@
     {/if}
     {/foreach}
 </table>
-</td>
-<td style="padding-left:10px;" valign="top">{$sidebar}</td>
-</tr>
-</table>
+</div>
+<div id="calendarSidebar">{$sidebar}</div>

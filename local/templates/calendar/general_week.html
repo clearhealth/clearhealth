@@ -1,10 +1,6 @@
-<table CELLSPACING="0" CELLPADDING="3" border="0">
-<tr>
-	<td>{$messages->render()}</td>
-</tr>
-<tr>
-<td valign="top">
-	<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
+<div>{$messages->render()}</div>
+<div id="calendarBody">
 <table  border="0" cellspacing="1" cellpadding="2" class="monthback">
 		<tr>
 		<td colspan="7">
@@ -12,7 +8,9 @@
 			<tr>
 				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
 				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
-      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a>
+			<td align="left" width="40%" class="navback">
+				<a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a>
+
       			<div style="float:right">
       			<a href="{$CONTROLLER->_link("day",true)}date={$Week->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
       			<a href="{$CONTROLLER->_link("week_grid",true)}date={$Week->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
@@ -76,7 +74,5 @@
     {/foreach}
     </tr>
 </table>
-</td>
-<td style="padding-left:10px;" valign="top">{$sidebar}</td>
-</tr>
-</table>
+</div>
+<div id="calendarSidebar">{$sidebar}</div>

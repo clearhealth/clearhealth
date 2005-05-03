@@ -1,11 +1,16 @@
 /* sidebar positioning */
 #calendarBody {
 	float: left;
-	margin-right: 180px;
+	padding-right: 190px;
 }
 #calendarSidebar {
 	float: left;
-	margin-left: -170px;
+	margin-left: -180px;
+}
+
+/* Other positioning cleanup */
+.navback {
+	white-space: nowrap;
 }
 /* Style sheet for the silver calendar (default) */
 
