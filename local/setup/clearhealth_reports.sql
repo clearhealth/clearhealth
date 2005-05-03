@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 30, 2005 at 09:32 AM
+-- Generation Time: May 03, 2005 at 12:11 PM
 -- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
@@ -31,7 +31,6 @@ CREATE TABLE `report_templates` (
 
 INSERT INTO `report_templates` VALUES (201803, 17857, 'Default Template', 'yes');
 INSERT INTO `report_templates` VALUES (17077, 17075, 'Invoice View', 'no');
-INSERT INTO `report_templates` VALUES (17978, 17976, 'MCC Superbill Form', 'no');
 INSERT INTO `report_templates` VALUES (17859, 17857, 'MCC Superbill Form', 'no');
 
 -- --------------------------------------------------------
