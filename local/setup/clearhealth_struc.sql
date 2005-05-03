@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
+-- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 10, 2005 at 11:52 AM
--- Server version: 4.0.23
+-- Generation Time: May 03, 2005 at 12:58 PM
+-- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
 -- Database: `clearhealth`
@@ -28,7 +28,7 @@ CREATE TABLE `address` (
   `postal_code` varchar(255) NOT NULL default '',
   `notes` text NOT NULL,
   PRIMARY KEY  (`address_id`)
-) TYPE=MyISAM COMMENT='An address that can be for a company or a person';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person. STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -38,7 +38,7 @@ CREATE TABLE `address` (
 
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
 
 -- --------------------------------------------------------
 
@@ -53,7 +53,7 @@ CREATE TABLE `building_address` (
   PRIMARY KEY  (`building_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `building_id` (`building_id`)
-) TYPE=MyISAM COMMENT='Links a building to a address specifying the address type';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying type. STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -67,25 +67,7 @@ CREATE TABLE `buildings` (
   `name` varchar(255) NOT NULL default '',
   `practice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `category`
--- 
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -97,40 +79,22 @@ CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`category_id`,`document_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `codes`
+-- Table structure for table `clearhealth_claim`
 -- 
 
-CREATE TABLE `codes` (
-  `code_id` int(11) NOT NULL auto_increment,
-  `code_text` varchar(255) default NULL,
-  `code_text_short` varchar(24) default NULL,
-  `code` varchar(10) default NULL,
-  `code_type` tinyint(2) default NULL,
-  `modifier` varchar(5) default NULL,
-  `units` tinyint(3) default NULL,
-  `fee` decimal(7,2) default NULL,
-  `superbill` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`code_id`)
-) TYPE=MyISAM AUTO_INCREMENT=27493 ;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `coding_data`
--- 
-
-CREATE TABLE `coding_data` (
-  `coding_data_id` int(11) NOT NULL default '0',
+CREATE TABLE `clearhealth_claim` (
+  `claim_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
-  `parent_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`coding_data_id`)
-) TYPE=MyISAM;
+  `identifier` varchar(255) NOT NULL default '',
+  `total_billed` float(7,2) NOT NULL default '0.00',
+  `total_paid` float(7,2) NOT NULL default '0.00',
+  PRIMARY KEY  (`claim_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -147,7 +111,7 @@ CREATE TABLE `company` (
   `url` varchar(255) NOT NULL default '',
   `is_historic` enum('no','yes') NOT NULL default 'no',
   PRIMARY KEY  (`company_id`)
-) TYPE=MyISAM COMMENT='Base Company record most of the data is in linked tables';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is linked in STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -162,7 +126,7 @@ CREATE TABLE `company_address` (
   PRIMARY KEY  (`company_id`,`address_id`),
   KEY `company_id` (`company_id`),
   KEY `address_id` (`address_id`)
-) TYPE=MyISAM COMMENT='Links a company to a address specifying the address type';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a company to a address specifying the type STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -177,7 +141,7 @@ CREATE TABLE `company_company` (
   PRIMARY KEY  (`company_id`,`related_company_id`),
   KEY `company_id` (`company_id`),
   KEY `related_company_id` (`related_company_id`)
-) TYPE=MyISAM COMMENT='Relates a company to another company specify the type with a';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Relates a company to another company STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -191,7 +155,7 @@ CREATE TABLE `company_number` (
   PRIMARY KEY  (`company_id`,`number_id`),
   KEY `company_id` (`company_id`),
   KEY `number_id` (`number_id`)
-) TYPE=MyISAM COMMENT='Links between company and phone_numbers';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between company and phone_numbers STARTEMPTY';
 
 -- --------------------------------------------------------
 
@@ -205,21 +169,7 @@ CREATE TABLE `company_type` (
   PRIMARY KEY  (`company_id`,`company_type`),
   KEY `company_id` (`company_id`),
   KEY `company_type` (`company_type`)
-) TYPE=MyISAM COMMENT='Link to specify company type';
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `countries`
--- 
-
-CREATE TABLE `countries` (
-  `countries_name` varchar(64) NOT NULL default '',
-  `countries_iso_code_2` char(2) NOT NULL default '',
-  `countries_iso_code_3` char(3) NOT NULL default '',
-  PRIMARY KEY  (`countries_iso_code_3`),
-  KEY `IDX_COUNTRIES_NAME` (`countries_name`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify company type';
 
 -- --------------------------------------------------------
 
@@ -237,44 +187,82 @@ CREATE TABLE `document` (
   `mimetype` varchar(255) default NULL,
   `pages` int(11) default NULL,
   `owner` int(11) default NULL,
-  `revision` timestamp(14) NOT NULL,
+  `revision` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `foreign_id` int(11) default NULL,
   `group_id` int(11) NOT NULL default '1',
   PRIMARY KEY  (`id`),
   KEY `revision` (`revision`),
   KEY `foreign_id` (`foreign_id`),
   KEY `owner` (`owner`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `enumeration`
+-- Table structure for table `encounter`
 -- 
 
-CREATE TABLE `enumeration` (
-  `name` varchar(100) NOT NULL default '',
-  `title` varchar(100) NOT NULL default '',
-  `description` tinytext NOT NULL,
-  `gender` enum('Male','Female','Not Specified') NOT NULL default 'Male',
-  `company_number_type` enum('Primary','Fax') NOT NULL default 'Primary',
-  `quality_of_file` enum('Good','Bad') NOT NULL default 'Good',
-  `disposition` enum('New','Waiting','Compete') NOT NULL default 'New',
-  `state` enum('Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','West Virginia','Wisconsin','Wyoming') NOT NULL default 'Alabama',
-  `group_list` enum('All','Arizona','California') NOT NULL default 'All',
-  `company_type` enum('Insurance') NOT NULL default 'Insurance',
-  `assigning` enum('A - Assigned','B - Assigned Lab Services Only','C - Not Assigned','P - Assignment Refused') NOT NULL default 'A - Assigned',
-  `relation_of_information_code` enum('A - On file','I - Informed Consent','M - Limited Ability','N - Not allowed','O - On file','Y - Has permission') NOT NULL default 'A - On file',
-  `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
-  `provider_number_type` enum('State License') NOT NULL default 'State License',
-  `subscriber_to_patient_relationship` enum('Self','Mother','Father') NOT NULL default 'Self',
-  `payer_type` enum('medicare') NOT NULL default 'medicare',
-  `person_to_person_relation_type` enum('Dependant','Spouse','Grand Parent','Other') NOT NULL default 'Dependant',
-  `identifier_type` enum('SSN','EIN') NOT NULL default 'SSN',
-  `number_type` enum('Home','Mobile','Work','Emergency') NOT NULL default 'Home',
-  `address_type` enum('Home','Billing','Other') NOT NULL default 'Home',
-  PRIMARY KEY  (`name`)
-) TYPE=MyISAM COMMENT='Each enum stored as a new col, metadata in 1 row per enum';
+CREATE TABLE `encounter` (
+  `encounter_id` int(11) NOT NULL default '0',
+  `encounter_reason` int(11) NOT NULL default '0',
+  `patient_id` int(11) NOT NULL default '0',
+  `building_id` int(11) NOT NULL default '0',
+  `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
+  `treating_person_id` int(11) NOT NULL default '0',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `last_change_user_id` int(11) NOT NULL default '0',
+  `status` enum('closed','open','billed') NOT NULL default 'open',
+  `occurence_id` int(11) default NULL,
+  PRIMARY KEY  (`encounter_id`),
+  KEY `building_id` (`building_id`),
+  KEY `treating_person_id` (`treating_person_id`),
+  KEY `last_change_user_id` (`last_change_user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `encounter_date`
+-- 
+
+CREATE TABLE `encounter_date` (
+  `encounter_date_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `date_type` int(11) NOT NULL default '0',
+  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`encounter_date_id`),
+  KEY `encounter_id` (`encounter_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `encounter_person`
+-- 
+
+CREATE TABLE `encounter_person` (
+  `encounter_person_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `person_type` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`encounter_person_id`),
+  KEY `encounter_id` (`encounter_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `encounter_value`
+-- 
+
+CREATE TABLE `encounter_value` (
+  `encounter_value_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `value_type` int(11) NOT NULL default '0',
+  `value` varchar(255) NOT NULL default '0',
+  PRIMARY KEY  (`encounter_value_id`),
+  KEY `encounter_id` (`encounter_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -291,7 +279,7 @@ CREATE TABLE `events` (
   `email` varchar(255) NOT NULL default '',
   `foreign_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -304,9 +292,10 @@ CREATE TABLE `fee_schedule` (
   `name` varchar(100) NOT NULL default '',
   `label` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
+  `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -318,12 +307,13 @@ CREATE TABLE `fee_schedule_data` (
   `code_id` int(11) NOT NULL default '0',
   `revision_id` int(11) NOT NULL default '0',
   `fee_schedule_id` int(11) NOT NULL default '0',
-  `data` double NOT NULL default '0',
+  `data` float(11,2) NOT NULL default '0.00',
   `formula` varchar(255) NOT NULL default '',
+  `mapped_code` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -338,415 +328,7 @@ CREATE TABLE `fee_schedule_revision` (
   `name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`revision_id`),
   KEY `user_id` (`user_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `form`
--- 
-
-CREATE TABLE `form` (
-  `form_id` int(11) NOT NULL default '0',
-  `name` varchar(100) NOT NULL default '',
-  `description` text NOT NULL,
-  PRIMARY KEY  (`form_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `form_data`
--- 
-
-CREATE TABLE `form_data` (
-  `form_data_id` int(11) NOT NULL default '0',
-  `form_id` int(11) NOT NULL default '0',
-  `external_id` int(11) NOT NULL default '0',
-  `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`form_data_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_acl`
--- 
-
-CREATE TABLE `gacl_acl` (
-  `id` int(11) NOT NULL default '0',
-  `section_value` varchar(230) NOT NULL default 'system',
-  `allow` int(11) NOT NULL default '0',
-  `enabled` int(11) NOT NULL default '0',
-  `return_value` longtext,
-  `note` longtext,
-  `updated_date` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `gacl_enabled_acl` (`enabled`),
-  KEY `gacl_section_value_acl` (`section_value`),
-  KEY `gacl_updated_date_acl` (`updated_date`)
-) TYPE=MyISAM COMMENT='ACL Table';
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_acl_sections`
--- 
-
-CREATE TABLE `gacl_acl_sections` (
-  `id` int(11) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(230) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_value_acl_sections` (`value`),
-  KEY `gacl_hidden_acl_sections` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_acl_seq`
--- 
-
-CREATE TABLE `gacl_acl_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aco`
--- 
-
-CREATE TABLE `gacl_aco` (
-  `id` int(11) NOT NULL default '0',
-  `section_value` varchar(240) NOT NULL default '0',
-  `value` varchar(240) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_section_value_value_aco` (`section_value`,`value`),
-  KEY `gacl_hidden_aco` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aco_map`
--- 
-
-CREATE TABLE `gacl_aco_map` (
-  `acl_id` int(11) NOT NULL default '0',
-  `section_value` varchar(230) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aco_sections`
--- 
-
-CREATE TABLE `gacl_aco_sections` (
-  `id` int(11) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(230) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_value_aco_sections` (`value`),
-  KEY `gacl_hidden_aco_sections` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aco_sections_seq`
--- 
-
-CREATE TABLE `gacl_aco_sections_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aco_seq`
--- 
-
-CREATE TABLE `gacl_aco_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro`
--- 
-
-CREATE TABLE `gacl_aro` (
-  `id` int(11) NOT NULL default '0',
-  `section_value` varchar(240) NOT NULL default '0',
-  `value` varchar(240) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_section_value_value_aro` (`section_value`,`value`),
-  KEY `gacl_hidden_aro` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_groups`
--- 
-
-CREATE TABLE `gacl_aro_groups` (
-  `id` int(11) NOT NULL default '0',
-  `parent_id` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rgt` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`,`value`),
-  UNIQUE KEY `gacl_value_aro_groups` (`value`),
-  KEY `gacl_parent_id_aro_groups` (`parent_id`),
-  KEY `gacl_lft_rgt_aro_groups` (`lft`,`rgt`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_groups_id_seq`
--- 
-
-CREATE TABLE `gacl_aro_groups_id_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_groups_map`
--- 
-
-CREATE TABLE `gacl_aro_groups_map` (
-  `acl_id` int(11) NOT NULL default '0',
-  `group_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`acl_id`,`group_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_map`
--- 
-
-CREATE TABLE `gacl_aro_map` (
-  `acl_id` int(11) NOT NULL default '0',
-  `section_value` varchar(230) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_sections`
--- 
-
-CREATE TABLE `gacl_aro_sections` (
-  `id` int(11) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(230) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_value_aro_sections` (`value`),
-  KEY `gacl_hidden_aro_sections` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_sections_seq`
--- 
-
-CREATE TABLE `gacl_aro_sections_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_aro_seq`
--- 
-
-CREATE TABLE `gacl_aro_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo`
--- 
-
-CREATE TABLE `gacl_axo` (
-  `id` int(11) NOT NULL default '0',
-  `section_value` varchar(240) NOT NULL default '0',
-  `value` varchar(240) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_section_value_value_axo` (`section_value`,`value`),
-  KEY `gacl_hidden_axo` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_groups`
--- 
-
-CREATE TABLE `gacl_axo_groups` (
-  `id` int(11) NOT NULL default '0',
-  `parent_id` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rgt` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`,`value`),
-  UNIQUE KEY `gacl_value_axo_groups` (`value`),
-  KEY `gacl_parent_id_axo_groups` (`parent_id`),
-  KEY `gacl_lft_rgt_axo_groups` (`lft`,`rgt`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_groups_id_seq`
--- 
-
-CREATE TABLE `gacl_axo_groups_id_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_groups_map`
--- 
-
-CREATE TABLE `gacl_axo_groups_map` (
-  `acl_id` int(11) NOT NULL default '0',
-  `group_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`acl_id`,`group_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_map`
--- 
-
-CREATE TABLE `gacl_axo_map` (
-  `acl_id` int(11) NOT NULL default '0',
-  `section_value` varchar(230) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_sections`
--- 
-
-CREATE TABLE `gacl_axo_sections` (
-  `id` int(11) NOT NULL default '0',
-  `value` varchar(230) NOT NULL default '',
-  `order_value` int(11) NOT NULL default '0',
-  `name` varchar(230) NOT NULL default '',
-  `hidden` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `gacl_value_axo_sections` (`value`),
-  KEY `gacl_hidden_axo_sections` (`hidden`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_sections_seq`
--- 
-
-CREATE TABLE `gacl_axo_sections_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_axo_seq`
--- 
-
-CREATE TABLE `gacl_axo_seq` (
-  `id` int(11) NOT NULL default '0'
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_groups_aro_map`
--- 
-
-CREATE TABLE `gacl_groups_aro_map` (
-  `group_id` int(11) NOT NULL default '0',
-  `aro_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`group_id`,`aro_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_groups_axo_map`
--- 
-
-CREATE TABLE `gacl_groups_axo_map` (
-  `group_id` int(11) NOT NULL default '0',
-  `axo_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`group_id`,`axo_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `gacl_phpgacl`
--- 
-
-CREATE TABLE `gacl_phpgacl` (
-  `name` varchar(230) NOT NULL default '',
-  `value` varchar(230) NOT NULL default '',
-  PRIMARY KEY  (`name`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `groups`
--- 
-
-CREATE TABLE `groups` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -760,7 +342,34 @@ CREATE TABLE `identifier` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`identifier_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `import_map`
+-- 
+
+CREATE TABLE `import_map` (
+  `old_id` int(11) NOT NULL default '0',
+  `new_id` int(11) default NULL,
+  `old_table_name` varchar(100) NOT NULL default '',
+  `new_object_name` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`old_id`,`old_table_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `insurance`
+-- 
+
+CREATE TABLE `insurance` (
+  `company_id` int(11) NOT NULL default '0',
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -773,8 +382,10 @@ CREATE TABLE `insurance_program` (
   `payer_type` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`insurance_program_id`)
-) TYPE=MyISAM;
+  `fee_schedule_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`insurance_program_id`),
+  KEY `fee_schedule_id` (`fee_schedule_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -786,15 +397,33 @@ CREATE TABLE `insured_relationship` (
   `insured_relationship_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
-  `subsciber_id` int(11) NOT NULL default '0',
+  `subscriber_id` int(11) NOT NULL default '0',
   `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
   `copay` float(11,2) NOT NULL default '0.00',
   `assigning` int(11) NOT NULL default '0',
   `group_name` varchar(100) NOT NULL default '',
   `group_number` varchar(100) NOT NULL default '',
   `default_provider` int(11) NOT NULL default '0',
+  `program_order` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insured_relationship_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `menu_form`
+-- 
+
+CREATE TABLE `menu_form` (
+  `menu_form_id` int(11) NOT NULL default '0',
+  `menu_id` int(11) NOT NULL default '0',
+  `form_id` int(11) NOT NULL default '0',
+  `title` varchar(50) NOT NULL default '',
+  `custom_action` varchar(255) default NULL,
+  PRIMARY KEY  (`menu_form_id`),
+  KEY `menu_id` (`menu_id`),
+  KEY `form_id` (`form_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -811,7 +440,7 @@ CREATE TABLE `menu_report` (
   PRIMARY KEY  (`menu_report_id`),
   KEY `menu_id` (`menu_id`),
   KEY `report_template_id` (`report_template_id`)
-) TYPE=InnoDB;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -827,7 +456,7 @@ CREATE TABLE `name_history` (
   `middle_name` varchar(50) NOT NULL default '',
   `update_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`name_history_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -841,12 +470,12 @@ CREATE TABLE `note` (
   `note` varchar(255) default NULL,
   `owner` int(11) default NULL,
   `date` datetime default NULL,
-  `revision` timestamp(14) NOT NULL,
+  `revision` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`),
   KEY `foreign_id` (`owner`),
   KEY `foreign_id_2` (`foreign_id`),
   KEY `date` (`date`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -861,7 +490,7 @@ CREATE TABLE `number` (
   `number` varchar(100) NOT NULL default '',
   `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
-) TYPE=MyISAM COMMENT='A phone number';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A phone number';
 
 -- --------------------------------------------------------
 
@@ -879,8 +508,9 @@ CREATE TABLE `occurences` (
   `user_id` int(11) default NULL,
   `last_change_id` int(11) default NULL,
   `external_id` int(11) default NULL,
+  `reason_code` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -894,7 +524,7 @@ CREATE TABLE `ownership` (
   PRIMARY KEY  (`id`,`user_id`),
   KEY `user_id` (`user_id`),
   KEY `id` (`id`)
-) TYPE=MyISAM COMMENT='Stores which items are owned by which user';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores which items are owned by which user';
 
 -- --------------------------------------------------------
 
@@ -907,8 +537,63 @@ CREATE TABLE `patient` (
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
   `record_number` int(11) NOT NULL default '0',
+  `employer_name` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
+  PRIMARY KEY  (`person_id`),
+  KEY `record_number` (`record_number`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `patient_statistics`
+-- 
+
+CREATE TABLE `patient_statistics` (
+  `person_id` int(11) NOT NULL default '0',
+  `ethnicity` int(11) NOT NULL default '0',
+  `race` int(11) NOT NULL default '0',
+  `income` int(11) NOT NULL default '0',
+  `language` int(11) NOT NULL default '0',
+  `migrant_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) TYPE=MyISAM COMMENT='An patient extends the person entity';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `payment`
+-- 
+
+CREATE TABLE `payment` (
+  `payment_id` int(11) NOT NULL default '0',
+  `foreign_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `payment_type` int(11) NOT NULL default '0',
+  `amount` float(11,2) NOT NULL default '0.00',
+  `writeoff` float(11,2) NOT NULL default '0.00',
+  `user_id` int(11) NOT NULL default '0',
+  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `payer_id` int(11) NOT NULL default '0',
+  `payment_date` date NOT NULL default '0000-00-00',
+  PRIMARY KEY  (`payment_id`),
+  KEY `foreign_id` (`foreign_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `payment_claimline`
+-- 
+
+CREATE TABLE `payment_claimline` (
+  `payment_claimline_id` int(11) NOT NULL default '0',
+  `payment_id` int(11) NOT NULL default '0',
+  `code_id` int(11) NOT NULL default '0',
+  `paid` float(7,2) NOT NULL default '0.00',
+  `writeoff` float(7,2) NOT NULL default '0.00',
+  `carry` float(7,2) NOT NULL default '0.00',
+  PRIMARY KEY  (`payment_claimline_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -934,7 +619,7 @@ CREATE TABLE `person` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) TYPE=MyISAM COMMENT='A person in the system';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A person in the system';
 
 -- --------------------------------------------------------
 
@@ -949,7 +634,7 @@ CREATE TABLE `person_address` (
   PRIMARY KEY  (`person_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `person_id` (`person_id`)
-) TYPE=MyISAM COMMENT='Links a person to a address specifying the address type';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a address specifying the address type';
 
 -- --------------------------------------------------------
 
@@ -964,7 +649,7 @@ CREATE TABLE `person_company` (
   PRIMARY KEY  (`person_id`,`company_id`),
   KEY `person_id` (`person_id`),
   KEY `company_id` (`company_id`)
-) TYPE=MyISAM COMMENT='Links a person to a company and optionaly specifies the lin';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a company and optionaly specifies the lin';
 
 -- --------------------------------------------------------
 
@@ -978,7 +663,7 @@ CREATE TABLE `person_number` (
   PRIMARY KEY  (`person_id`,`number_id`),
   KEY `person_id` (`person_id`),
   KEY `phone_id` (`number_id`)
-) TYPE=MyISAM COMMENT='Links between people and phone_numbers';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
 
 -- --------------------------------------------------------
 
@@ -993,7 +678,7 @@ CREATE TABLE `person_person` (
   `relation_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_person_id`),
   UNIQUE KEY `person_id` (`person_id`,`related_person_id`,`relation_type`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1007,7 +692,7 @@ CREATE TABLE `person_type` (
   PRIMARY KEY  (`person_id`,`person_type`),
   KEY `person_id` (`person_id`),
   KEY `person_type` (`person_type`)
-) TYPE=MyISAM COMMENT='Link to specify person type';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify person type';
 
 -- --------------------------------------------------------
 
@@ -1022,7 +707,21 @@ CREATE TABLE `practice_address` (
   PRIMARY KEY  (`practice_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `practice_id` (`practice_id`)
-) TYPE=MyISAM COMMENT='Links a practice to a address specifying the address type';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `practice_number`
+-- 
+
+CREATE TABLE `practice_number` (
+  `practice_id` int(11) NOT NULL default '0',
+  `number_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`practice_id`,`number_id`),
+  KEY `person_id` (`practice_id`),
+  KEY `phone_id` (`number_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
 
 -- --------------------------------------------------------
 
@@ -1035,7 +734,7 @@ CREATE TABLE `practices` (
   `name` varchar(255) NOT NULL default '',
   `website` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1053,7 +752,7 @@ CREATE TABLE `preferences` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1067,7 +766,7 @@ CREATE TABLE `provider` (
   `clia_number` varchar(100) NOT NULL default '',
   `dea_number` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`person_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1083,7 +782,7 @@ CREATE TABLE `provider_to_insurance` (
   `provider_number_type` int(11) NOT NULL default '0',
   `group_number` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`provider_to_insurance_id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1094,38 +793,7 @@ CREATE TABLE `provider_to_insurance` (
 CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `report_templates`
--- 
-
-CREATE TABLE `report_templates` (
-  `report_template_id` int(11) NOT NULL default '0',
-  `report_id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `is_default` enum('yes','no') NOT NULL default 'yes',
-  PRIMARY KEY  (`report_template_id`),
-  KEY `report_id` (`report_id`)
-) TYPE=MyISAM COMMENT='Report templates';
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `reports`
--- 
-
-CREATE TABLE `reports` (
-  `id` int(11) NOT NULL auto_increment,
-  `dbase` varchar(255) NOT NULL default '',
-  `user` varchar(255) NOT NULL default '',
-  `label` varchar(255) NOT NULL default '',
-  `query` text NOT NULL,
-  `description` mediumtext NOT NULL,
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=792 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1140,7 +808,7 @@ CREATE TABLE `rooms` (
   `building_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1158,33 +826,7 @@ CREATE TABLE `schedules` (
   `user_id` int(11) default NULL,
   `room_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `sequences`
--- 
-
-CREATE TABLE `sequences` (
-  `id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `states`
--- 
-
-CREATE TABLE `states` (
-  `zone_code` varchar(32) NOT NULL default '',
-  `zone_name` varchar(32) NOT NULL default '',
-  `country` char(3) default NULL,
-  PRIMARY KEY  (`zone_code`,`zone_name`),
-  KEY `country` (`country`),
-  KEY `zone_code` (`zone_code`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1197,7 +839,7 @@ CREATE TABLE `storage_date` (
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=MyISAM COMMENT='Generic way to store date values';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store date values';
 
 -- --------------------------------------------------------
 
@@ -1210,7 +852,7 @@ CREATE TABLE `storage_int` (
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=MyISAM COMMENT='Generic way to store integer values (also boolean)';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store integer values (also boolean)';
 
 -- --------------------------------------------------------
 
@@ -1223,7 +865,20 @@ CREATE TABLE `storage_string` (
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=MyISAM COMMENT='Generic way to string values';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `storage_text`
+-- 
+
+CREATE TABLE `storage_text` (
+  `foreign_key` int(11) NOT NULL default '0',
+  `value_key` varchar(255) NOT NULL default '',
+  `value` longtext NOT NULL,
+  PRIMARY KEY  (`foreign_key`,`value_key`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
 
 -- --------------------------------------------------------
 
@@ -1237,40 +892,5 @@ CREATE TABLE `superbill_data` (
   `code_id` int(11) NOT NULL default '0',
   `status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`superbill_data_id`)
-) TYPE=MyISAM;
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `user`
--- 
-
-CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL default '0',
-  `username` varchar(55) NOT NULL default '',
-  `password` varchar(255) NOT NULL default '',
-  `nickname` varchar(255) NOT NULL default '',
-  `color` varchar(255) NOT NULL default '',
-  `person_id` int(11) default NULL,
-  `disabled` enum('yes','no') NOT NULL default 'yes',
-  `default_location_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`user_id`),
-  UNIQUE KEY `username` (`username`),
-  KEY `person_id` (`person_id`)
-) TYPE=MyISAM COMMENT='Users in the System';
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `users_groups`
--- 
-
-CREATE TABLE `users_groups` (
-  `id` int(11) NOT NULL default '0',
-  `user_id` int(11) NOT NULL default '0',
-  `group_id` int(11) NOT NULL default '0',
-  `foreign_id` int(11) NOT NULL default '0',
-  `table` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+        
