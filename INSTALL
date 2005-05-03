@@ -4,15 +4,10 @@ clearhealth and freeb2 must be installed in parallel directories. For simplicity
 
    1. edit clear/clearhealth/local/config.php with the SQL variables you want to use
    2. create the database with the same name used in config.php, usually clearhealth
-   3. load clear/clearhealthlocal/setup/clearhealth.sql into the clearhealth db
-   4. load clear/clearhealthlocal/setup/enumeration.sql into the clearhealth db
-   5. load clear/clearhealthlocal/setup/menu.sql into the clearhealth db
-   6. load clear/clearhealthlocal/setup/codes.sql into the clearhealth db NOTE: codes.sql is not included in the tarball b/c it is copyright AMA
-   7. load clear/clearhealthlocal/setup/gacl.sql into the clearhealth db
-   8. configure the clear/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
-   9. create the database with the same name used in the freeb2 config.php, usually freeb2
-  10. load local/setup/freeb2.sql into the freeb2 db
-  11. both freeb2 and clearhealth directorys have a tmp subdirectory, these subdirectories must be configured so that the webserver can write to it, either by changing its permissions to 777 or changing the ownership to the apache user
+   3. load clear/clearhealthlocal/setup/install.sql into the clearhealth db
+   4. configure the clear/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
+   5. create the database with the same name used in the freeb2 config.php, usually freeb2
+   6. load local/setup/freeb2.sql into the freeb2 db
+   7. both freeb2 and clearhealth directorys have a tmp subdirectory, these subdirectories must be configured so that the webserver can write to it, either by changing its permissions to 777 or changing the ownership to the apache user
 
-Please see the clearhealth wiki to install clearhealth from subversion
 
