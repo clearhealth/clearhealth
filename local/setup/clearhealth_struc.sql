@@ -98,6 +98,24 @@ CREATE TABLE `clearhealth_claim` (
 
 -- --------------------------------------------------------
 
+
+CREATE TABLE coding_data (
+    coding_data_id int(11) NOT NULL DEFAULT '0' COMMENT '',
+    foreign_id int(11) NOT NULL DEFAULT '0' COMMENT '',
+    parent_id int(11) NOT NULL DEFAULT '0' COMMENT '',
+    code_id int(11) NOT NULL DEFAULT '0' COMMENT '',
+    modifier int(11) NOT NULL DEFAULT '0' COMMENT '',
+    units float(5,2) NOT NULL DEFAULT '1.00' COMMENT '',
+    fee float(11,2) NOT NULL DEFAULT '0.00' COMMENT '',
+    primary_code tinyint(4) NOT NULL DEFAULT '0' COMMENT '',
+    code_order tinyint(4) NOT NULL DEFAULT '0' COMMENT '',
+    PRIMARY KEY (coding_data_id)
+) DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+
+
+
 -- 
 -- Table structure for table `company`
 -- 
