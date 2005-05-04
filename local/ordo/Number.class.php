@@ -82,6 +82,7 @@ class Number extends ORDataObject {
 		$res = $this->_execute($sql);
 
 		$lookup = $this->getTypeList();
+		$numbers = array();
 		while($res && !$res->EOF) {
 			$res->fields['number_type'] = $lookup[$res->fields['number_type']];
 			$pos = strpos($res->fields['notes'],"\n");
