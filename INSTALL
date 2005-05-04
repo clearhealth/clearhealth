@@ -9,5 +9,10 @@ clearhealth and freeb2 must be installed in parallel directories. For simplicity
    5. create the database with the same name used in the freeb2 config.php, usually freeb2
    6. load local/setup/freeb2.sql into the freeb2 db
    7. both freeb2 and clearhealth directorys have a tmp subdirectory, these subdirectories must be configured so that the webserver can write to it, either by changing its permissions to 777 or changing the ownership to the apache user
+   8. change memory_limit in the php.ini file to 64
+   9. change max_execution_time in php.ini to 45 
+  10. change register_globals in php.ini to off
+  11. change magic_quotes_gpc in php.ini to off
+  12. restart httpd server
 
 
