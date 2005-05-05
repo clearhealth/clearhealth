@@ -543,7 +543,7 @@ class C_Patient extends Controller {
 		$payment_ds = $payment->paymentsFromEncounterId($encounter->get('id'));
 		$payment_ds->clearFilters();
 		$payments = $payment_ds->toArray();
-		
+
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
 
@@ -563,8 +563,41 @@ class C_Patient extends Controller {
 			$pmnt->set("foreign_id",$claim->get("claim_id"));
 			$pmnt->persist();
 			$total_paid += $payment_info['amount'];
+
+			// payments have no claimline yet so lets create one for them applying the values to codes
+			$currentPayments = $claim->summedPaymentsByCode();
+
+			$toApply = $pmnt->get('amount');
+			if ($toApply > 0) {
+				foreach($codes as $code) {
+					$fee = $code['fee'];
+					if (isset($currentPayments[$code['code']])) {
+						$fee = $fee - $currentPayments[$code['code']]['paid'];
+					}
+
+					if ($fee > 0) {
+						if ($fee > $toApply) {
+							$paid = $toApply;
+						}
+						else {
+							$paid = $fee;
+						}
+						$toApply = $toApply - $paid;
+
+						$claimline =& ORDataObject::Factory('PaymentClaimline');
+						$claimline->set('payment_id',$pmnt->get('id'));
+						$claimline->set('code_id',$code['code_id']);
+						$claimline->set('paid',$paid);
+						$claimline->set('writeoff',0);
+						$claimline->set('carry',$fee-$paid);
+						$claimline->persist();
+					}
+				}
+			}
+
 		}
 
+		
 		// generate a claim identifier from patient and encounter info
 		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'-'.$encounter->get('id');
 
@@ -574,6 +607,7 @@ class C_Patient extends Controller {
 		}
 		
 		// add claimlines
+		$currentPayments = $claim->summedPaymentsByCode();
 		foreach($codes as $parent => $data) {
 
 	//	echo "Debug: C_Patient<br>";
@@ -586,6 +620,9 @@ class C_Patient extends Controller {
 			$claimline['units'] = $data['units'];
 			$claimline['amount'] = $data['fee'];
 			$total_billed += $data['fee'];
+			if (isset($currentPayments[$data['code']])) {
+				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
+			}
 			$claimline['diagnoses'] = array();
 			
 			
