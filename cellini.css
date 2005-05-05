@@ -33,7 +33,7 @@ table.grid th { padding: 2px;
 }
 table.grid td {
 	margin: 2px;
-	padding: 1px 1px 1px 10px;
+	padding: 1px 1px 1px 5px;
 	background-color: white;
 }
 
