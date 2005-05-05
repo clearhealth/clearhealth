@@ -107,9 +107,9 @@ class PatientNote extends ORDataObject {
 	function multiLineFilter($content) {
 		if (strstr($content,"\n")) {
 			$pos = strpos($content,"\n");
-			$line1 = substr($content,0,$pos);
-			$rest = substr($content,($pos+1));
-			return "<span style='border-bottom: dotted 1px blue; white-space: pre;' onmouseover=\"this.getElementsByTagName('div').item(0).style.display = 'block'; this.style.borderBottom = '';\">$line1<div style='display:none'>$rest</div></span>";
+			$line1 = trim(substr($content,0,$pos));
+			$rest = trim(substr($content,($pos+1)));
+			return "<pre><span style='border-bottom: dotted 1px blue;' onmouseover=\"this.parentNode.getElementsByTagName('div').item(0).style.display = 'block'; this.style.borderBottom = '';\">$line1</span><div style='display:none;'>$rest</div></pre>";
 		}
 		return $content;
 	}
