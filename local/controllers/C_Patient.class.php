@@ -454,10 +454,12 @@ class C_Patient extends Controller {
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
 
-		$payments = $claim->summedPaymentsByCode();
+		$currentPayments = $claim->summedPaymentsByCode();
 		
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
+
+		$feeSchedule = ORDataObject::factory('FeeSchedule',$encounter->get('current_payer'));
 
 		// add claimlines
 		foreach($codes as $parent => $data) {
@@ -467,9 +469,11 @@ class C_Patient extends Controller {
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
-			$claimline['amount'] = $payments[$data['code']]['carry'];
+			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id']);
 			$claimline['diagnoses'] = array();
-			
+			if (isset($currentPayments[$data['code']])) {
+				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
+			}
 			
 			$childCodes = $cd->getChildCodes($data['coding_data_id']);
 			foreach($childCodes as $val) {
@@ -477,6 +481,17 @@ class C_Patient extends Controller {
 			}
 			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
 				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
+			}
+
+			// rewrite ar if needed
+			if (isset($currentPayments[$data['code']])) {
+				$cp = $currentPayments[$data['code']];
+
+				if ($cp['carry'] > 0 && $claimline['amount'] > $codes['fee']) {
+					$rcd =& ORDataObject::factory('CodingData',$data['coding_data_id']);
+					$rcd->set('fee',$claimline['amount']);
+					$rcd->persist();
+				}
 			}
 		}
 
