@@ -423,6 +423,8 @@ CREATE TABLE `insured_relationship` (
   `group_number` varchar(100) NOT NULL default '',
   `default_provider` int(11) NOT NULL default '0',
   `program_order` int(11) NOT NULL default '0',
+  `effective_start` date NOT NULL default '0000-00-00',
+  `effective_end` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`insured_relationship_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
