@@ -33,6 +33,8 @@ class InsuredRelationship extends ORDataObject {
 	var $group_number			= '';
 	var $default_provider			= '';
 	var $program_order			= '';
+	var $effective_start			= '';
+	var $effective_end			= '';
 	/**#@-*/
 
 
