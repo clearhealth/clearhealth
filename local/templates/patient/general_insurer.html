@@ -85,6 +85,12 @@
 				<td><input name="insuredRelationship[group_number]" value="{$insuredRelationship->get('group_number')}"></td>
 			</tr>
 			<tr>
+				<td><label>Effective Date Range:</label></td>
+				<td> 
+					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start')} to 
+					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end')}
+				</td>
+			<tr>
 				<td><label>Assigning:</label></td>
 				<td><select name="insuredRelationsip[assigning]">
 						{html_options options=$insuredRelationship->getAssigningList() selected=$insuredRelationship->get('assigning')}
