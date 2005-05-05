@@ -59,6 +59,18 @@ class Payment extends ORDataObject {
 	}
 
 	/**
+	 * make sure that user_id gets set
+	 */
+	function persist() {
+		$u = $this->get('user_id');
+		if ( empty($u) ) {
+			$me =& Me::getInstance();
+			$this->set('user_id',$me->get_user_id());
+		}
+		parent::persist();
+	}
+
+	/**
 	 * Populate the class from the db
 	 */
 	function populate() {
