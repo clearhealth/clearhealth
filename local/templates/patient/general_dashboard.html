@@ -138,6 +138,28 @@
 				</select>
 				</p>
 	</fieldset>
+
+	<fieldset class="radio" id="notes">
+		<legend>Notes</legend>
+		{$noteGrid->render()}
+		{if $noteGrid->empty}
+		<p>Patient has no Notes</p>
+		{/if}
+
+
+	{clni_form action=$NOTE_ACTION process=$PROCESS}
+		<input type="hidden" name="note[note_id]" value="{$note->get('id')}">
+		<div>
+			<label class="inline">Priority: </label>{html_options options=$note->priorityList() selected=$note->get('priority') name="note[priority]"}
+		</div>
+		<div>
+			<textarea name="note[note]" cols=20 rows=4>{$note->get('note')}</textarea>
+		</div>
+		<div>
+			<input type="submit" name="add_note" value="{if $note->get('id') > 0}Update{else}Add{/if} Note">
+		</div>
+</form>
+	</fieldset>
 </td>
 </tr>
 </table>

@@ -20,6 +20,7 @@ class C_Patient extends Controller {
 	var $patient_statistics_id = 0;
 	var $coding;
 	var $coding_parent_id = 0;
+	var $note_id = 0;
 
 	function C_Patient() {
 		parent::Controller();
@@ -74,6 +75,11 @@ class C_Patient extends Controller {
 			$reportGrid = new cGrid($report->connectedReportList(89));
 			$reportGrid->name = "reportGrid";
 			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
+
+			$note =& ORDataObject::factory('PatientNote');
+			$noteGrid =& new cGrid($note->listNotes($this->get('patient_id')));
+			$noteGrid->pageSize = 10;
+			$noteGrid->indexCol = false;
 			
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
@@ -87,6 +93,8 @@ class C_Patient extends Controller {
 			$this->assign_by_ref('formDataGrid',$formDataGrid);
 			$this->assign_by_ref('reportGrid',$reportGrid);
 			$this->assign_by_ref('accountStatus',$accountStatus);
+			$this->assign_by_ref('noteGrid',$noteGrid);
+			$this->assign_by_ref('note',$note);
 
 			$this->assign('formList',$formList);
 
@@ -95,6 +103,7 @@ class C_Patient extends Controller {
 			$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
 			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
 			$this->assign('NO_PATIENT', false);			
+			$this->assign('NOTE_ACTION',Cellini::managerLink('note',$this->get('patient_id')));
 		}
 		else {
 			$this->assign('NO_PATIENT', true);

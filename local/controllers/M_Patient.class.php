@@ -356,5 +356,24 @@ class M_Patient extends Manager {
 		$ir =& ORDataObject::factory('InsuredRelationship',$insured_relationship_id);
 		$ir->moveUp();
 	}
+
+	/**
+	 * Process a note
+	 */
+	function process_note($patient_id) {
+		$note_id = $_POST['note']['note_id'];
+		$note =& ORDataObject::factory('PatientNote',$note_id);
+		$note->populate_array($_POST['note']);
+
+		if ($note_id == 0) {
+			$note->set('user_id',$this->controller->_me->get_user_id());
+			$note->set('note_date',date('Y-m-d H:i:s'));
+		}
+
+		$note->set('patient_id',$patient_id);
+		$note->persist();
+		$this->controller->note_id = $note->get('id');
+	}
+
 }
 ?>
