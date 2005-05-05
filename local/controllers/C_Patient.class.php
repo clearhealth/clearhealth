@@ -273,6 +273,10 @@ class C_Patient extends Controller {
 			}
 		}
 
+		$insuredRelationship =& ORDataObject::factory('InsuredRelationship');
+
+
+		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
@@ -304,10 +308,18 @@ class C_Patient extends Controller {
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
+
 			// todo: get this without hard coding in the report and template id
 			$exit_base_link = str_replace("main","PDF",Cellini::link('report',true,true));
-			
 			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
+
+
+			// see if we need to add a rebill link
+			if ($this->_canRebill($encounter->get('id'))) {
+				$this->assign('REBILL_ACTION',Cellini::link('rebill_encounter',true,true,$encounter->get('id'))."process=true");
+			}
+
+			
 		}
 			$intake_base_link = str_replace("main","util",Cellini::link('report',true,true));
 			$this->assign('INTAKE_REPORT',$intake_base_link."report_id=17857&template_id=17859&encounter_id=".$encounter->get('id'));
@@ -316,14 +328,53 @@ class C_Patient extends Controller {
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
 	}
 
+	/**
+	 * Util function to check if we can rebill
+	 *
+	 * rule is: EOB payment has been made, There is an outstanding Balance, there is a secondary payer
+	 */
+	function _canRebill($encounterId) {
+		$claim =& ClearhealthClaim::fromEncounterId($encounterId);
+
+		ORDataObject::factory_include('Payment');
+		$payments = Payment::fromForeignId($claim->get('id'));
+
+		// check for EOB payment
+		if (count($payments) > 0)  {
+
+			$encounter =& ORDataObject::factory('Encounter',$encounterId);
+
+			// check for an outstanding balance
+			$status = $claim->accountStatus($encounter->get('patient_id'),$encounterId);
+			if ($status['total_balance'] > 0) {
+
+				// check for a secondary payer
+
+				ORDataObject::factory_include('InsuredRelationship');
+				$payers = InsuredRelationship::fromPersonId($encounter->get('patient_id'));
+				if (count($payers) > 1) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	function encounter_action_process($encounter_id=0) {
 		if (isset($_POST['saveCode'])) {
 			$this->coding->update_action_process();
 			return;
 		}
 
+
 		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
 		$encounter->populate_array($_POST['encounter']);
+
+		if (isset($_POST['select_payer'])) {
+			$encounter->persist();
+			return;
+		}
 		
 		if (isset($_POST['encounter']['close'])) {
 			$encounter->set("status","closed");	
@@ -367,6 +418,65 @@ class C_Patient extends Controller {
 		}
 	}
 
+	/**
+	 * Rebill an claim
+	 */
+	function rebill_encounter_action_process($encounter_id) {
+
+		$encounter =& ORDataObject::Factory('Encounter',$encounter_id);
+
+		// setup freeb2
+		$this->_includeFreeb2();
+		$freeb2 = new C_FreeBGateway();
+
+		// get the current clearhealth claim
+		ORdataObject::factory_include('ClearhealthClaim');
+		$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
+		$claimIdentifier = $claim->get('identifier');
+		
+
+		// get the current revision of the freeb2 claim
+		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
+
+		// open current claim forcing a revision, its a clean revision
+		//$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
+		
+		// resend all the data
+		// get the objects were going to need
+		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+
+		$payments = $claim->summedPaymentsByCode();
+		
+		$cd =& ORDataObject::Factory('CodingData');
+		$codes = $cd->getCodeList($encounter->get('id'));
+
+		// add claimlines
+		foreach($codes as $parent => $data) {
+
+			$claimline = array();
+			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
+			$claimline['procedure'] = $data['code'];
+			$claimline['modifier'] = $data['modifier'];
+			$claimline['units'] = $data['units'];
+			$claimline['amount'] = $payments[$data['code']]['carry'];
+			$claimline['diagnoses'] = array();
+			
+			
+			$childCodes = $cd->getChildCodes($data['coding_data_id']);
+			foreach($childCodes as $val) {
+				$claimline['diagnoses'][] = $val['code'];
+			}
+			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
+			}
+		}
+
+		$this->_registerClaimData($freeb2,$encounter,$claimIdentifier);
+
+		header('Location: '.Cellini::link('encounter',true,true,$encounter_id));
+		exit();
+	}
+
 	function _movePayer($program_order,$row) {
 		$ret = "";
 		if ($program_order > 1) {
@@ -392,11 +502,7 @@ class C_Patient extends Controller {
 		return $this->encounter_action_edit($this->get('encounter_id'));
 	}
 
-	function _generateClaim(&$encounter) {
-
-		//require_once "SOAP/Client.php";
-
-		//$wsdl = new SOAP_WSDL($GLOBALS['config']['freeb2_wsdl'],array('timeout'=>0));
+	function _includeFreeb2() {
 		require_once(APP_ROOT . "/../freeb2/local/controllers/C_FreeBGateway.class.php");
 		require_once(APP_ROOT . "/../freeb2/local/ordo/FBCompany.class.php");
 		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPerson.class.php");
@@ -415,15 +521,15 @@ class C_Patient extends Controller {
 		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClearingHouse.class.php");
 		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPatient.class.php");
 		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPayer.class.php");
-		//freeb2 = $wsdl->getProxy();		
+	}
+
+	function _generateClaim(&$encounter,$claim = false) {
+		$this->_includeFreeb2();
+
 		$freeb2 = new C_FreeBGateway();
+		
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
-		ORDataObject::Factory_include('InsuredRelationship');
-		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
-		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
-		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
-		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 		$payment =& ORDataObject::factory('Payment');
 		$payment_ds = $payment->paymentsFromEncounterId($encounter->get('id'));
 		$payment_ds->clearFilters();
@@ -489,6 +595,18 @@ class C_Patient extends Controller {
 		$claim->set('total_billed',$total_billed);
 		$claim->persist();
 
+		$this->_registerClaimData($freeb2,$encounter,$claim_identifier);
+	}
+
+	function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
+		// get the objects were going to need
+		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
+		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
+		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
+
 		// register patient data
 		//Debug:
 		//echo "Debug:C_Patient.class".var_export($patient->toArray());
@@ -510,8 +628,29 @@ class C_Patient extends Controller {
 		// register payers
 		$payerList = array();
 		$clearingHouseData = false;
+
+		if ((int)$encounter->get('current_payer') > 0) {
+
+			// only change order if its not correct
+			if ($relationships[0]->get('insurance_program_id') != $encounter->get('current_payer')) {
+				// find the index to move to the top
+
+				foreach($relationships as $key => $val) {
+					if ($val->get('insurance_program_id') == $encounter->get('current_payer')) {
+						$r = $val;
+						$id = $key;
+						break;
+					}
+				}
+				unset($relationships[$id]);
+				array_unshift($relationships,$r);
+
+			}
+		}
+
 		foreach($relationships as $r) {
 			$program =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+
 			if (!isset($payerList[$program->get('company_id')])) {
 				$payerList[$program->get('company_id')] = true;
 				$data = $program->toArray();

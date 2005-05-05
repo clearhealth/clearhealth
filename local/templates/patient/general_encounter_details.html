@@ -42,6 +42,9 @@
 			<a href="{$PAYMENT_ACTION}">Make a Payment</a>
 			<a href="{$FREEB_ACTION}">View Claim</a>
 			<a href="{$EXIT_REPORT}">Exit Report</a>
+			{if $REBILL_ACTION}
+				<a href="{$REBILL_ACTION}">Rebill Claim</a>
+			{/if}
         		{else}
             		open
             	{/if}

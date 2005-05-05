@@ -35,6 +35,11 @@ class Encounter extends ORDataObject {
 	var $_erCache = false;
 	/**#@-*/
 
+	var $storage_metadata = array(
+		'int' => array('current_payer'=>''), 
+		'date' => array(),
+		'string' => array()
+	);
 
 	/**
 	 * Setup some basic attributes
