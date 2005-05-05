@@ -439,7 +439,7 @@ class C_Patient extends Controller {
 		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
 
 		// open current claim forcing a revision, its a clean revision
-		//$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
+		$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
 		
 		// resend all the data
 		// get the objects were going to need
