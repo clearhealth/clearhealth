@@ -465,7 +465,7 @@ class C_Patient extends Controller {
 		foreach($codes as $parent => $data) {
 
 			$claimline = array();
-			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
+			$claimline['date_of_treatment'] = $encounter->get('date_of_treatment');
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
@@ -629,7 +629,7 @@ class C_Patient extends Controller {
 	//	var_export($data); echo "<br>";		
 
 			$claimline = array();
-			$claimline['data_of_treatment'] = $encounter->get('date_of_treatment');
+			$claimline['date_of_treatment'] = $encounter->get('date_of_treatment');
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
