@@ -275,7 +275,7 @@ class Report extends ORDataObject {
 		if (strstr($this->query,'---[')) {
 			$this->query = str_replace(array(" ---[","]--- "),array("\n---[","]---\n"),$this->query);
 			//var_dump($this->query);
-			preg_match_all('/---\[([\w]+)\]---\s+(.+)/',$this->query,$match);
+			preg_match_all('/---\[([\w,]+)\]---\s+(.+)/',$this->query,$match);
 			foreach($match[1] as $key => $val) {
 				$ret[$val] = trim($match[2][$key]);
 			}
