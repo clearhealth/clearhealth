@@ -31,6 +31,12 @@ class C_Account extends Controller {
 		$renderer =& new Grid_Renderer_AccountHistory();
 		$history_grid =& new cGrid($hds,$renderer);
 		$this->assign_by_ref("history_grid",$history_grid);
+
+		$building =& ORDataObject::Factory('Building');
+		$this->assign_by_ref('building',$building);
+
+		$ip =& ORDataObject::Factory('InsuranceProgram');
+		$this->assign_by_ref('insuranceProgram',$ip);
 		
 		return $this->fetch(Cellini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
 	}
