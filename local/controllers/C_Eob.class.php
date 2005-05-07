@@ -33,8 +33,10 @@ class C_Eob extends Controller {
 		$paymentDs =& $payment->paymentList($claim_id,true);
 		$paymentGrid =& new cGrid($paymentDs);
 
-		$payers = array(' '=>' ',$patient->get('id')=>'Self Pay');
-		foreach($payer_ds->toArray('company_id','name') as $key => $val) {
+		$payers = array(' '=>' ');
+
+		$insuranceProgram =& ORDataOBject::Factory('InsuranceProgram');
+		foreach($insuranceProgram->programList() as $key => $val) {
 			$payers[$key] = $val;
 		}
 
