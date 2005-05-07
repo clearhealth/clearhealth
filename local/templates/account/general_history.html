@@ -1,26 +1,23 @@
 <fieldset>
 <legend>Filter</legend>
 {clni_form action=$FILTER_ACTION process=$PROCESS}
-{*<div style="float:left;margin-left:10px;">
-	<label>{l}Status{/l}: </label>{html_options name="filter[status]" options=$claim->statusList() selected=$filters.status]}
-</div>*}
-<div style="float:left;margin-left:10px;">
+
+
+<div style="float:left;margin-left:10px; margin-bottom:10px;">
 	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start} to {clni_input_date name="filter[end]" value=$filters.end}
 </div>
-{*
-<div style="float:left;margin-left:10px;">
-	<label>{l}Name{/l}: </label>{clni_input type="string" name="filter[name]" value=$filters.name}
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getBuildingList() selected=$filters.facility}</select>
 </div>
-<div style="float:left;margin-left:10px;">
-	<label>{l}Facility{/l}: </label>{html_options name="filter[facility]" options=$claim->facilityList() selected=$filters.facility}
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>{l}Payer{/l}: </label>
+	<select name="filter[payer]"><option></option>{html_options options=$insuranceProgram->programList() selected=$filters.payer}</select>
 </div>
-<div style="float:left;margin-left:10px;">
-	<label>{l}Id{/l}: </label>{clni_input type="string" name="filter[claim_identifier]" value=$filters.claim_identifier}
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>{l}Provider{/l}: </label>
+	<select name="filter[provider]"><option></option>{query_options query="select p.person_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)" selected=$filters.provider}</select>
 </div>
-<div style="float:left;margin-left:10px;">
-	<label>{l}Payer{/l}: </label> {clni_input type="string" name="filter[payer]" value=$filters.payer}
-</div>*}
-<div style="float:left;margin-left:10px;">
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
 	{clni_input type="submit" name="filter_submit" value="Filter"}
 </div>
 </form>
@@ -29,6 +26,18 @@
 	<legend>Account History</legend>
 	{$history_grid->render()}
 	{if $history_grid->empty}
-		<p>Patient has no account history</p>
+		<p>Patient has no account history for selected Filters</p>
 	{/if}
 </fieldset>
+
+
+{*
+<div style="float:left;margin-left:10px;">
+	<label>{l}Name{/l}: </label>{clni_input type="string" name="filter[name]" value=$filters.name}
+</div>
+<div style="float:left;margin-left:10px;">
+	<label>{l}Id{/l}: </label>{clni_input type="string" name="filter[claim_identifier]" value=$filters.claim_identifier}
+</div>
+<div style="float:left;margin-left:10px;">
+	<label>{l}Status{/l}: </label>{html_options name="filter[status]" options=$claim->statusList() selected=$filters.status]}
+</div>*}
