@@ -174,15 +174,11 @@ class Payment extends ORDataObject {
 	var $_pCache = false;
 	function lookupPayer($id) {
 		if ($this->_pCache === false) {
-			$company =& ORDataObject::Factory('Company');
-			$ds = $company->companyListForType('Insurance');
-			$this->_pCache = $ds->toArray('company_id','name');
+			$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
+			$this->_pCache = $insuranceProgram->ProgramList();
 		}
 		if (isset($this->_pCache[$id])) {
 			return $this->_pCache[$id];
-		}
-		else if ($id > 0) {
-			return "Self Pay";
 		}
 	}
 	
