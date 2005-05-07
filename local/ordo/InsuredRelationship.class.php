@@ -169,7 +169,7 @@ class InsuredRelationship extends ORDataObject {
 
 	function getProgramList($person_id) {
 		settype($person_id,'int');
-		$sql = "select ip.insurance_program_id id, concat_ws(': ',c.name,ip.name) name from $this->_table inner join insurance_program ip using(insurance_program_id) left join company c using(company_id) where person_id = $person_id order by program_order";
+		$sql = "select ip.insurance_program_id id, concat_ws('->',c.name,ip.name) name from $this->_table inner join insurance_program ip using(insurance_program_id) left join company c using(company_id) where person_id = $person_id order by program_order";
 
 		$res = $this->_execute($sql);
 		$ret = array();
