@@ -242,6 +242,16 @@ class Building extends ORDataObject{
 		return $ret;
 	}
 
+	function getRoomList() {
+		$res = $this->_execute("select r.id, concat_ws('->',b.name,r.name) name from $this->_table b inner join rooms r on building_id = b.id order by b.name, r.name");
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['id']] = $res->fields['name'];
+			$res->moveNext();
+		}
+		return $ret;
+	}
+
 } // end of Class
 
 ?>

@@ -7,7 +7,7 @@
 	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start} to {clni_input_date name="filter[end]" value=$filters.end}
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
-	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getBuildingList() selected=$filters.facility}</select>
+	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getRoomList() selected=$filters.facility}</select>
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	<label>{l}Payer{/l}: </label>
