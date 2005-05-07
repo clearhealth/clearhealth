@@ -113,13 +113,13 @@ class ClearhealthClaim extends ORDataObject {
 						$where .= " UNIX_TIMESTAMP(e.date_of_treatment) < " . $this->_quote(strtotime($fval)) . " and ";
 						break;
 					case 'facility':
-						$where .= " co.name = " . $this->_quote($fval) . " and ";
+						$where .= " o.location_id = " . $this->_quote($fval) . " and ";
 						break;
-					case 'name':
-						$where .= " (p.last_name like  " . $this->_quote("%".$fval."%") . " or p.first_name like  " . $this->_quote("%".$fval."%") . ") and ";
+					case 'provider':
+						$where .= " e.treating_person_id = ". (int)$fval . " and ";
 						break;
 					case 'payer':
-						$where .= " pa.name like  " . $this->_quote("%".$fval."%") . " and ";
+						$where .= " pa.payer_id =  " . (int)$fval. " and ";
 						break;
 					case 'active':
 						if ($fval == 1) {
@@ -149,7 +149,7 @@ class ClearhealthClaim extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "chc.claim_id, chc.identifier, date_format(e.date_of_treatment,'%Y-%m-%d') date_of_treatment, chc.total_billed, chc.total_paid, "
 						. " (chc.total_billed - chc.total_paid) as balance, sum(pcl.writeoff) as writeoff",
-				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id",
+				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id left join occurences o on e.occurence_id = o.id",
 				'where' => " e.patient_id = $patient_id $where",
 				'groupby' => " chc.claim_id "
 			),
