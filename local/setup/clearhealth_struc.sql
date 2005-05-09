@@ -785,6 +785,8 @@ CREATE TABLE `provider` (
   `state_license_number` varchar(100) NOT NULL default '',
   `clia_number` varchar(100) NOT NULL default '',
   `dea_number` varchar(100) NOT NULL default '',
+  `bill_as` int(11) NOT NULL default '0',
+  `report_as` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
