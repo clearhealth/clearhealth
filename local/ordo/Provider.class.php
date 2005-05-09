@@ -26,6 +26,8 @@ class Provider extends MergeDecorator {
 	var $state_license_number	= '';
 	var $clia_number		= '';
 	var $dea_number			= '';
+	var $bill_as			= '';
+	var $report_as			= '';
 	/**#@-*/
 
 	var $patient;
@@ -90,12 +92,29 @@ class Provider extends MergeDecorator {
 		$this->id = $id;
 	}
 
+	function get_bill_as() {
+		if (empty($this->bill_as)) {
+			$this->set('bill_as',$this->get('id'));
+		}
+		return $this->bill_as;
+	}
+
 	/**#@-*/
 
 	function toArray() {
 		$ret = $this->person->toArray();
 		$ret['identifier'] = $this->get('state_license_number');
 
+		return $ret;
+	}
+
+	function getProviderList() {
+		$res = $this->_execute("select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by name");
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['user_id']] = $res->fields['name'];
+			$res->moveNext();
+		}
 		return $ret;
 	}
 }

@@ -15,6 +15,24 @@
 				<td><label>Dea number:</label></td>
 				<td><input name="provider[dea_number]" value="{$provider->get('dea_number')}"></td>
 			</tr>
+	<tr>
+		<td style="vertical-align:top;"><label>Bill as:</label></td>
+		<td>
+			<select name="provider[bill_as]">	
+				<option value="{$person->get('id')}">Self</option>
+				{html_options options=$provider->getProviderList() selected=$provider->get('bill_as')}
+			</select>	
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align:top;"><label>Report as:</label></td>
+		<td>
+			<select name="provider[report_as]">	
+				{enum_options name="provider_reporting_type" selected=$provider->get('report_as')}
+			</select>	
+		</td>
+	</tr>
+
 		</table>
 	</fieldset>
 {/if}
