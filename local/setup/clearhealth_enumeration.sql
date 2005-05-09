@@ -49,6 +49,7 @@ CREATE TABLE `enumeration` (
   `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0�',
   `payer_type` enum('medicare','champus','medical','private','feca','medicaid','champusva','otherhcfa','litigation') NOT NULL default 'medicare',
   `number_type` enum('Home','Mobile','Work','Emergency','Fax') NOT NULL default 'Home',
+  `provider_reporting_type` enum('MD','RNFP','RN','PA','MA') NOT NULL default 'MD',
   PRIMARY KEY  (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='enums stored as new col, metadata 1 row perenumSTARTWITHDATA';
 
@@ -87,4 +88,5 @@ INSERT INTO `enumeration` VALUES ('migrant status', 'Migrant Status', '', 'Male'
 INSERT INTO `enumeration` VALUES ('migrant_status', 'Migrant Status', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'medicare', 'Home');
 INSERT INTO `enumeration` VALUES ('appointment_reason', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'medicare', 'Home');
 INSERT INTO `enumeration` VALUES ('appointment_reasons', 'Appointment Reason', '', 'Male', 'Primary', 'Good', 'New', '', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', '', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Unknown', 'medicare', 'Home');
+INSERT INTO `enumeration` VALUES ('provider_reporting_type', 'Provider Reporting Type', '', 'Male', 'Primary', 'Good', 'New', 'AL', 'All', 'Insurance', 'A - Assigned', 'A - On file', 'Patient', 'State License', 'Self', 'Dependant', 'SSN', 'A0', 'Physical', 'Initial Visit Date', 'blah', 'visa', 'Single', 'English', 'Hispanic', 'White/Hispanic', 'Seasonal Agricultural/Migrant Worker', 'Physical', 'Home', 'Home', 'medicare', 'MD');
         
