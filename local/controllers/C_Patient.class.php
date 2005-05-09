@@ -487,7 +487,7 @@ class C_Patient extends Controller {
 			if (isset($currentPayments[$data['code']])) {
 				$cp = $currentPayments[$data['code']];
 
-				if ($cp['carry'] > 0 && $claimline['amount'] > $codes['fee']) {
+				if ($cp['carry'] > 0 && $claimline['amount'] > $data['fee']) {
 					$rcd =& ORDataObject::factory('CodingData',$data['coding_data_id']);
 					$rcd->set('fee',$claimline['amount']);
 					$rcd->persist();
@@ -664,7 +664,15 @@ class C_Patient extends Controller {
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
 		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
+		if ($provider->get('id') != $provider->get('bill_as')) {
+			$bill_as = $provider->get('bill_as');
+			unset($provider);
+			$provider =& ORDataObject::factory('Provider',$bill_as);
+		}
+
+
 		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
 		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 

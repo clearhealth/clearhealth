@@ -109,10 +109,10 @@ class Provider extends MergeDecorator {
 	}
 
 	function getProviderList() {
-		$res = $this->_execute("select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by name");
+		$res = $this->_execute("select p.person_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by name");
 		$ret = array();
 		while($res && !$res->EOF) {
-			$ret[$res->fields['user_id']] = $res->fields['name'];
+			$ret[$res->fields['person_id']] = $res->fields['name'];
 			$res->moveNext();
 		}
 		return $ret;
