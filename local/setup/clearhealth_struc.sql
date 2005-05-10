@@ -401,9 +401,9 @@ CREATE TABLE `insurance_program` (
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `fee_schedule_id` int(11) NOT NULL default '0',
-  `x12sender` varchar(255) NOT NULL default '',
-  `x12reciever` varchar(255) NOT NULL default '',
-  `x12version_string` varchar(255) NOT NULL default '',
+  `x12_sender_id` varchar(255) NOT NULL default '',
+  `x12_reciever_id` varchar(255) NOT NULL default '',
+  `x12_version` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

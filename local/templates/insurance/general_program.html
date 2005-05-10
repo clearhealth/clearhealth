@@ -26,6 +26,18 @@
 			</td>
 		</tr>
 		<tr>
+			<td><label>E-Billing Sender ID:</label></td>
+			<td><input name="insuranceProgram[x12_sender_id]" value="{$insuranceProgram->get('x12_sender_id')}"></td>
+		</tr>
+		<tr>
+			<td><label>E-Billing Reciever ID:</label></td>
+			<td><input name="insuranceProgram[x12_reciever_id]" value="{$insuranceProgram->get('x12_reciever_id')}"></td>
+		</tr>
+		<tr>
+			<td><label>E-Billing Version:</label></td>
+			<td><input name="insuranceProgram[x12_version]" value="{$insuranceProgram->get('x12_version')}"></td>
+		</tr>
+		<tr>
 			<td></td>
 			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program">
 				{if $insuranceProgram->get('id') > 0}
