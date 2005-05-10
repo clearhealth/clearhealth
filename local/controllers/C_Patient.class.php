@@ -717,8 +717,12 @@ class C_Patient extends Controller {
 			}
 		}
 
+		$defaultProgram = false;
 		foreach($relationships as $r) {
 			$program =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+			if ($defaultProgram == false) {
+				$defaultProgram =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+			}
 
 			if (!isset($payerList[$program->get('company_id')])) {
 				$payerList[$program->get('company_id')] = true;
@@ -737,6 +741,13 @@ class C_Patient extends Controller {
 		// register provider
 		// fixme: just using state_license_number for the identifier right now, should we be using a program specific one instead?
 		$providerData = $this->_cleanDataArray($provider->toArray());
+
+		// add in x12 fields from default program
+		$x12 = array('x12_sender_id','x12_reciever_id','x12_version');
+		foreach($x12 as $field) {
+			$providerData[$field] = $defaultProgram->get($field);
+		}
+
 		if (!$freeb2->registerData($claim_identifier,'Provider',$providerData)) {
 			trigger_error("Unable to register provider data - ".$freeb2->claimLastError($claim_identifier));
 		}
