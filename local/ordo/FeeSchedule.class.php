@@ -176,6 +176,26 @@ class FeeSchedule extends ORDataObject {
 		return 0.00;
 	}
 
+
+	function getMappedCodeFromCodeId($code_id) {
+		settype($code_id,'int');
+		
+		$sql = "select "
+				." case when (fsd.mapped_code > 0) then fsd.mapped_code else fsdd.mapped_code end as mapped_code "
+				." from codes, fee_schedule fs "
+				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
+				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
+				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code_id =  $code_id "
+				." order by code";
+		
+		$res = $this->_execute($sql);
+		if ($res && isset($res->fields['mapped_code'])) {
+			return $res->fields['mapped_code'];
+		}
+		return 0.00;
+	}
+
+
 	/**
 	 * Set a default value for every code of type 3
 	 */
