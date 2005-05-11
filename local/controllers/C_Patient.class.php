@@ -470,6 +470,12 @@ class C_Patient extends Controller {
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
 			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id']);
+			$mapped_code=$feeSchedule->getMappedCodeFromCodeId($data['code_id']);
+			//echo "<br>CPatient Code ".$data['code_id']." maps to $mapped_code<br>";
+			if(strlen($mapped_code)>0){// then there is a mapped code which we should use.
+				$claimline['procedure']=$mapped_code;
+			}
+
 			$claimline['diagnoses'] = array();
 			if (isset($currentPayments[$data['code']])) {
 				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
@@ -623,10 +629,13 @@ class C_Patient extends Controller {
 		
 		// add claimlines
 		$currentPayments = $claim->summedPaymentsByCode();
+
+		$feeSchedule = ORDataObject::factory('FeeSchedule',$encounter->get('current_payer'));
+
 		foreach($codes as $parent => $data) {
 
-	//	echo "Debug: C_Patient<br>";
-	//	var_export($data); echo "<br>";		
+		//echo "Debug: C_Patient<br>";
+		//var_export($data); echo "<br>";		
 
 			$claimline = array();
 			$claimline['date_of_treatment'] = $encounter->get('date_of_treatment');
@@ -634,6 +643,13 @@ class C_Patient extends Controller {
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
 			$claimline['amount'] = $data['fee'];
+			$mapped_code=$feeSchedule->getMappedCodeFromCodeId($data['code_id']);
+		//	echo "<br>CPatient Code ".$data['code_id']." maps to $mapped_code<br>";
+			if(strlen($mapped_code)>0){// then there is a mapped code which we should use.
+				$claimline['procedure']=$mapped_code;
+			}
+			
+
 			$total_billed += $data['fee'];
 			if (isset($currentPayments[$data['code']])) {
 				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
