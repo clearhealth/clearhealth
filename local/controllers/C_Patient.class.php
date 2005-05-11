@@ -768,9 +768,15 @@ class C_Patient extends Controller {
 			trigger_error("Unable to register provider data - ".$freeb2->claimLastError($claim_identifier));
 		}
 
+
 		// register practice
 		$practiceData = $this->_cleanDataArray($practice->toArray());
 		//echo "C_Patient practicedata";
+
+			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
+			$practiceData['receiver_id'] = $defaultProgram->get('x12_reciever_id');
+			$practiceData['x12_version'] = $defaultProgram->get('x12_version');
+
 		//var_export($practiceData); echo "<br>";
 		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
 			trigger_error("Unable to register practice data - ".$freeb2->claimLastError($claim_identifier));
