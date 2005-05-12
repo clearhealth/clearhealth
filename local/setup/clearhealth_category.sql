@@ -1,14 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 12:34 PM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
 
 -- --------------------------------------------------------
 
@@ -26,7 +15,7 @@ CREATE TABLE `category` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+) TYPE=MyISAM COMMENT='STARTWITHDATA';
 
 -- 
 -- Dumping data for table `category`
