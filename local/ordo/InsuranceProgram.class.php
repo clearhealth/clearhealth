@@ -28,7 +28,7 @@ class InsuranceProgram extends ORDataObject {
 	var $name		= '';
 	var $fee_schedule_id 	= '';
 	var $x12_sender_id	= '';
-	var $x12_reciever_id	= '';
+	var $x12_receiver_id	= '';
 	var $x12_version	= '';
 	/**#@-*/
 
