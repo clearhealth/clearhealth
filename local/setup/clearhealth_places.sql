@@ -1,16 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 12:35 PM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
--- --------------------------------------------------------
 
 -- 
 -- Table structure for table `countries`
@@ -22,7 +9,7 @@ CREATE TABLE `countries` (
   `countries_iso_code_3` char(3) NOT NULL default '',
   PRIMARY KEY  (`countries_iso_code_3`),
   KEY `IDX_COUNTRIES_NAME` (`countries_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `countries`
@@ -267,19 +254,6 @@ INSERT INTO `countries` VALUES ('Yugoslavia', 'YU', 'YUG');
 INSERT INTO `countries` VALUES ('Zaire', 'ZR', 'ZAR');
 INSERT INTO `countries` VALUES ('Zambia', 'ZM', 'ZMB');
 INSERT INTO `countries` VALUES ('Zimbabwe', 'ZW', 'ZWE');
-       
-
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 10:45 AM
--- Server version: 4.0.23
--- PHP Version: 4.3.10-10
--- 
--- Database: `clearhealth`
--- 
 
 -- --------------------------------------------------------
 
@@ -379,7 +353,7 @@ INSERT INTO `states` VALUES ('QC', 'Quebec', 'CAN');
 INSERT INTO `states` VALUES ('SK', 'Saskatchewan', 'CAN');
 INSERT INTO `states` VALUES ('YT', 'Yukon Territory', 'CAN');
 INSERT INTO `states` VALUES ('NDS', 'Niedersachsen', 'DEU');
-INSERT INTO `states` VALUES ('BAW', 'Baden-Württemberg', 'DEU');
+INSERT INTO `states` VALUES ('BAW', 'Baden-WÃ¼rttemberg', 'DEU');
 INSERT INTO `states` VALUES ('BAY', 'Bayern', 'DEU');
 INSERT INTO `states` VALUES ('BER', 'Berlin', 'DEU');
 INSERT INTO `states` VALUES ('BRG', 'Brandenburg', 'DEU');
@@ -393,12 +367,12 @@ INSERT INTO `states` VALUES ('SAR', 'Saarland', 'DEU');
 INSERT INTO `states` VALUES ('SAS', 'Sachsen', 'DEU');
 INSERT INTO `states` VALUES ('SAC', 'Sachsen-Anhalt', 'DEU');
 INSERT INTO `states` VALUES ('SCN', 'Schleswig-Holstein', 'DEU');
-INSERT INTO `states` VALUES ('THE', 'Thüringen', 'DEU');
+INSERT INTO `states` VALUES ('THE', 'ThÃ¼ringen', 'DEU');
 INSERT INTO `states` VALUES ('WI', 'Wien', 'AUT');
-INSERT INTO `states` VALUES ('NO', 'Niederösterreich', 'AUT');
-INSERT INTO `states` VALUES ('OO', 'Oberösterreich', 'AUT');
+INSERT INTO `states` VALUES ('NO', 'NiederÃ¶sterreich', 'AUT');
+INSERT INTO `states` VALUES ('OO', 'OberÃ¶sterreich', 'AUT');
 INSERT INTO `states` VALUES ('SB', 'Salzburg', 'AUT');
-INSERT INTO `states` VALUES ('KN', 'Kärnten', 'AUT');
+INSERT INTO `states` VALUES ('KN', 'KÃ¤rnten', 'AUT');
 INSERT INTO `states` VALUES ('ST', 'Steiermark', 'AUT');
 INSERT INTO `states` VALUES ('TI', 'Tirol', 'AUT');
 INSERT INTO `states` VALUES ('BL', 'Burgenland', 'AUT');
@@ -412,7 +386,7 @@ INSERT INTO `states` VALUES ('BS', 'Basel-Stadt', 'CHE');
 INSERT INTO `states` VALUES ('FR', 'Freiburg', 'CHE');
 INSERT INTO `states` VALUES ('GE', 'Genf', 'CHE');
 INSERT INTO `states` VALUES ('GL', 'Glarus', 'CHE');
-INSERT INTO `states` VALUES ('JU', 'Graubünden', 'CHE');
+INSERT INTO `states` VALUES ('JU', 'GraubÃ¼nden', 'CHE');
 INSERT INTO `states` VALUES ('JU', 'Jura', 'CHE');
 INSERT INTO `states` VALUES ('LU', 'Luzern', 'CHE');
 INSERT INTO `states` VALUES ('NE', 'Neuenburg', 'CHE');
@@ -428,8 +402,8 @@ INSERT INTO `states` VALUES ('UR', 'Uri', 'CHE');
 INSERT INTO `states` VALUES ('VD', 'Waadt', 'CHE');
 INSERT INTO `states` VALUES ('VS', 'Wallis', 'CHE');
 INSERT INTO `states` VALUES ('ZG', 'Zug', 'CHE');
-INSERT INTO `states` VALUES ('ZH', 'Zürich', 'CHE');
-INSERT INTO `states` VALUES ('A Coruña', 'A Coruña', 'ESP');
+INSERT INTO `states` VALUES ('ZH', 'ZÃ¼rich', 'CHE');
+INSERT INTO `states` VALUES ('A CoruÃ±a', 'A CoruÃ±a', 'ESP');
 INSERT INTO `states` VALUES ('Alava', 'Alava', 'ESP');
 INSERT INTO `states` VALUES ('Albacete', 'Albacete', 'ESP');
 INSERT INTO `states` VALUES ('Alicante', 'Alicante', 'ESP');
@@ -481,4 +455,4 @@ INSERT INTO `states` VALUES ('Valladolid', 'Valladolid', 'ESP');
 INSERT INTO `states` VALUES ('Vizcaya', 'Vizcaya', 'ESP');
 INSERT INTO `states` VALUES ('Zamora', 'Zamora', 'ESP');
 INSERT INTO `states` VALUES ('Zaragoza', 'Zaragoza', 'ESP');
-         
+        

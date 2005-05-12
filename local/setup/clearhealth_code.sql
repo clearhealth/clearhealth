@@ -1,22 +1,9 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1-rc2
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: Mar 02, 2005 at 02:08 PM
--- Server version: 4.0.23
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
 -- --------------------------------------------------------
 
 -- 
 -- Table structure for table `codes`
 -- 
 
-DROP TABLE IF EXISTS `codes`;
 CREATE TABLE `codes` (
   `code_id` int(11) NOT NULL auto_increment,
   `code_text` varchar(255) default NULL,
@@ -28,7 +15,7 @@ CREATE TABLE `codes` (
   `fee` decimal(7,2) default NULL,
   `superbill` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`code_id`)
-) TYPE=MyISAM AUTO_INCREMENT=27493 ;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `codes`
@@ -8220,7 +8207,7 @@ INSERT INTO `codes` VALUES (8183, 'OMPHALITIS OF NEWBORN\r\n', NULL, '771.4', 2,
 INSERT INTO `codes` VALUES (8184, 'NEONATAL INFEC MASTITIS\r\n', NULL, '771.5', 2, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (8185, 'NEONATAL CONJUNCTIVITIS\r\n', NULL, '771.6', 2, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (8186, 'NEONATAL CANDIDA INFECT\r\n', NULL, '771.7', 2, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (8187, 'NB SEPTICEMIA �SEPSIS�\r\n', NULL, '771.81', 2, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (8187, 'NB SEPTICEMIA ÕSEPSISþ\r\n', NULL, '771.81', 2, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (8188, 'NB URINARY TRACT INFECTN\r\n', NULL, '771.82', 2, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (8189, 'BACTEREMIA OF NEWBORN\r\n', NULL, '771.83', 2, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (8190, 'PERINATAL INFECTION NEC\r\n', NULL, '771.89', 2, NULL, NULL, NULL, 0);
@@ -14564,7 +14551,7 @@ INSERT INTO `codes` VALUES (25297, 'Wheelchair tray', NULL, 'K0107', 3, NULL, NU
 INSERT INTO `codes` VALUES (25296, 'Arm trough each', NULL, 'K0106', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (25295, 'Iv hanger', NULL, 'K0105', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (25294, 'Cylinder tank carrier', NULL, 'K0104', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (25293, 'Transfer board < 25”', NULL, 'K0103', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (25293, 'Transfer board < 25â€?', NULL, 'K0103', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (25292, 'Crutch and cane holder', NULL, 'K0102', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (25291, 'One-arm drive attachment', NULL, 'K0101', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (25290, 'Amputee adapter pair', NULL, 'K0100', 3, NULL, NULL, NULL, 0);
@@ -15599,7 +15586,7 @@ INSERT INTO `codes` VALUES (24262, 'Pwr seat elevation sys', NULL, 'E2300', 3, N
 INSERT INTO `codes` VALUES (24261, 'Frame depth 22 to 25 in', NULL, 'E2204', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (24260, 'Frame depth less than 22 in', NULL, 'E2203', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (24259, 'Seat width 24-27 in', NULL, 'E2202', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (24258, 'Man w/ch acc seat w>=20”<2', NULL, 'E2201', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (24258, 'Man w/ch acc seat w>=20â€?<2', NULL, 'E2201', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (24257, 'Pulse gen sys tx endolymp fl', NULL, 'E2120', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (24256, 'Bld glucose monitor w lance', NULL, 'E2101', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (24255, 'Bld glucose monitor w voice', NULL, 'E2100', 3, NULL, NULL, NULL, 0);
@@ -17624,32 +17611,32 @@ INSERT INTO `codes` VALUES (22237, 'Cmprsburngarment glove-wrist', NULL, 'A6504'
 INSERT INTO `codes` VALUES (22236, 'Compres burngarment facehood', NULL, 'A6503', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (22235, 'Compres burngarment chinstrp', NULL, 'A6502', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (22234, 'Compres burngarment bodysuit', NULL, 'A6501', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22233, 'Zinc paste band w >=3”<5�', NULL, 'A6456', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22232, 'Self-adher band >=5”/yd', NULL, 'A6455', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22231, 'Self-adher band w>=3” <5�', NULL, 'A6454', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22230, 'Self-adher band w <3”/yd', NULL, 'A6453', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22229, 'High compres band w>=3”<5�', NULL, 'A6452', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22228, 'Mod compres band w>=3”<5�', NULL, 'A6451', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22227, 'Lt compres band >=5”/yd', NULL, 'A6450', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22226, 'Lt compres band >=3” <5”', NULL, 'A6449', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22225, 'Lt compres band <3”/yd', NULL, 'A6448', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22224, 'Conform band s w >=5”/yd', NULL, 'A6447', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22223, 'Conform band s w>=3” <5”', NULL, 'A6446', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22222, 'Conform band s w <3”/yd', NULL, 'A6445', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22221, 'Conform band n/s w>=5”/yd', NULL, 'A6444', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22220, 'Conform band n/s w>=3”<5�', NULL, 'A6443', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22219, 'Conform band n/s w<3”/yd', NULL, 'A6442', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22218, 'Pad band w>=3” <5”/yd', NULL, 'A6441', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22217, 'Zinc paste bdg >=3<5”w /ro', NULL, 'A6440', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22216, 'Self-adher bdg >=3<5”w /ro', NULL, 'A6438', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22215, 'Hi compres bdg >=3<5”w /ro', NULL, 'A6436', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22214, 'Mo compres bdg >=3<5”w /ro', NULL, 'A6434', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22213, 'Lt compres bdg >=5”w /roll', NULL, 'A6432', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22212, 'Lt compres bdg >=3<5”w /ro', NULL, 'A6430', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22211, 'Conf bandage s >=5” w /rol', NULL, 'A6428', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22210, 'Conf bandage s >=3<5” w/ro', NULL, 'A6426', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22209, 'Conf bandage ns >=5”w /rol', NULL, 'A6424', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (22208, 'Conf bandage ns >=3<5”w/ro', NULL, 'A6422', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22233, 'Zinc paste band w >=3â€?<5â€', NULL, 'A6456', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22232, 'Self-adher band >=5â€?/yd', NULL, 'A6455', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22231, 'Self-adher band w>=3â€? <5â€', NULL, 'A6454', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22230, 'Self-adher band w <3â€?/yd', NULL, 'A6453', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22229, 'High compres band w>=3â€?<5â', NULL, 'A6452', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22228, 'Mod compres band w>=3â€?<5â€', NULL, 'A6451', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22227, 'Lt compres band >=5â€?/yd', NULL, 'A6450', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22226, 'Lt compres band >=3â€? <5â€?', NULL, 'A6449', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22225, 'Lt compres band <3â€?/yd', NULL, 'A6448', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22224, 'Conform band s w >=5â€?/yd', NULL, 'A6447', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22223, 'Conform band s w>=3â€? <5â€?', NULL, 'A6446', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22222, 'Conform band s w <3â€?/yd', NULL, 'A6445', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22221, 'Conform band n/s w>=5â€?/yd', NULL, 'A6444', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22220, 'Conform band n/s w>=3â€?<5â€', NULL, 'A6443', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22219, 'Conform band n/s w<3â€?/yd', NULL, 'A6442', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22218, 'Pad band w>=3â€? <5â€?/yd', NULL, 'A6441', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22217, 'Zinc paste bdg >=3<5â€?w /ro', NULL, 'A6440', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22216, 'Self-adher bdg >=3<5â€?w /ro', NULL, 'A6438', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22215, 'Hi compres bdg >=3<5â€?w /ro', NULL, 'A6436', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22214, 'Mo compres bdg >=3<5â€?w /ro', NULL, 'A6434', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22213, 'Lt compres bdg >=5â€?w /roll', NULL, 'A6432', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22212, 'Lt compres bdg >=3<5â€?w /ro', NULL, 'A6430', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22211, 'Conf bandage s >=5â€? w /rol', NULL, 'A6428', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22210, 'Conf bandage s >=3<5â€? w/ro', NULL, 'A6426', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22209, 'Conf bandage ns >=5â€?w /rol', NULL, 'A6424', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (22208, 'Conf bandage ns >=3<5â€?w/ro', NULL, 'A6422', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (22207, 'Pad bandage >=3 <5in w /roll', NULL, 'A6421', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (22206, 'Occlusive eye patch', NULL, 'A6412', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (22205, 'Non-sterile eye pad', NULL, 'A6411', 3, NULL, NULL, NULL, 0);
@@ -17968,13 +17955,13 @@ INSERT INTO `codes` VALUES (21893, 'Ost pch for bar w flange/flt', NULL, 'A4419'
 INSERT INTO `codes` VALUES (21892, 'Ost pch clsd w/o bar w filtr', NULL, 'A4418', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21891, 'Ost pch w bar/bltinconv/fltr', NULL, 'A4417', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21890, 'Ost pch clsd w barrier/filtr', NULL, 'A4416', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21889, 'Ostomy skn barr w flng >4sq�', NULL, 'A4415', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21888, 'Ostomy sknbarr w flng <=4sq�', NULL, 'A4414', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21889, 'Ostomy skn barr w flng >4sqâ', NULL, 'A4415', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21888, 'Ostomy sknbarr w flng <=4sqâ', NULL, 'A4414', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21887, '2 pc drainable ost pouch', NULL, 'A4413', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21886, 'Ost skn barr w flng >4sq”', NULL, 'A4410', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21885, 'Ost skn barr w flng <=4 sq�', NULL, 'A4409', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21884, 'Ext wear ost skn barr >4sq�', NULL, 'A4408', 3, NULL, NULL, NULL, 0);
-INSERT INTO `codes` VALUES (21883, 'Ext wear ost skn barr <=4sq�', NULL, 'A4407', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21886, 'Ost skn barr w flng >4sqâ€?', NULL, 'A4410', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21885, 'Ost skn barr w flng <=4 sqâ€', NULL, 'A4409', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21884, 'Ext wear ost skn barr >4sqâ€', NULL, 'A4408', 3, NULL, NULL, NULL, 0);
+INSERT INTO `codes` VALUES (21883, 'Ext wear ost skn barr <=4sqâ', NULL, 'A4407', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21882, 'Pectin based ostomy paste', NULL, 'A4406', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21881, 'Nonpectin based ostomy paste', NULL, 'A4405', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (21880, 'Ostomy ring each', NULL, 'A4404', 3, NULL, NULL, NULL, 0);
@@ -18910,3 +18897,4 @@ INSERT INTO `codes` VALUES (27489, 'Repair communication device', NULL, 'V5336',
 INSERT INTO `codes` VALUES (27490, 'Speech screening', NULL, 'V5362', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (27491, 'Language screening', NULL, 'V5363', 3, NULL, NULL, NULL, 0);
 INSERT INTO `codes` VALUES (27492, 'Dysphagia screening', NULL, 'V5364', 3, NULL, NULL, NULL, 0);
+        

@@ -1,16 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 12:11 PM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
--- --------------------------------------------------------
 
 -- 
 -- Table structure for table `report_templates`
@@ -23,7 +10,7 @@ CREATE TABLE `report_templates` (
   `is_default` enum('yes','no') NOT NULL default 'yes',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report templates';
+) TYPE=MyISAM COMMENT='Report templates';
 
 -- 
 -- Dumping data for table `report_templates`
@@ -47,7 +34,7 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
+) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq';
 
 -- 
 -- Dumping data for table `reports`

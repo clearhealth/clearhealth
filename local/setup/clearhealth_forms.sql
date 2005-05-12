@@ -1,15 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 12:37 PM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
 -- --------------------------------------------------------
 
 -- 
@@ -21,7 +9,7 @@ CREATE TABLE `form` (
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`form_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
+) TYPE=MyISAM COMMENT='Contains the EMR extending forms STARTWITHDATA';
 
 -- 
 -- Dumping data for table `form`
@@ -42,7 +30,7 @@ CREATE TABLE `form_data` (
   `external_id` int(11) NOT NULL default '0',
   `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`form_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links in the form data STARTWITHDATA';
+) TYPE=MyISAM COMMENT='Links in the form data STARTWITHDATA';
 
 -- 
 -- Dumping data for table `form_data`

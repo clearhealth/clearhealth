@@ -1,16 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 03, 2005 at 12:41 PM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
--- --------------------------------------------------------
 
 -- 
 -- Table structure for table `groups`
@@ -20,7 +7,7 @@ CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `groups`
@@ -49,7 +36,7 @@ CREATE TABLE `user` (
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Users in the System';
+) TYPE=MyISAM COMMENT='Users in the System';
 
 -- 
 -- Dumping data for table `user`
@@ -71,7 +58,7 @@ CREATE TABLE `users_groups` (
   `table` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `users_groups`

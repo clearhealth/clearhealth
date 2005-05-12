@@ -1,15 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.6.1
--- http://www.phpmyadmin.net
--- 
--- Host: localhost
--- Generation Time: May 12, 2005 at 07:53 AM
--- Server version: 4.1.10
--- PHP Version: 4.3.10
--- 
--- Database: `clearhealth`
--- 
-
 -- --------------------------------------------------------
 
 -- 
@@ -31,7 +19,7 @@ CREATE TABLE `enumeration` (
   `relation_of_information_code` enum('A - On file','I - Informed Consent','M - Limited Ability','N - Not allowed','O - On file','Y - Has permission') NOT NULL default 'A - On file',
   `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
   `provider_number_type` enum('State License') NOT NULL default 'State License',
-  `subscriber_to_patient_relationship` enum('Self','Parent','Spouse','Other') NOT NULL default 'Self' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0ï¿½',
+  `subscriber_to_patient_relationship` enum('Self','Parent','Spouse','Other') NOT NULL default 'Self' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0Ã¯Â¿Â½',
   `person_to_person_relation_type` enum('Dependant','Spouse','Grand Parent','Other') NOT NULL default 'Dependant',
   `identifier_type` enum('SSN','EIN') NOT NULL default 'SSN',
   `code_modifier` enum('A0','A1','A2','B1','B2','C6') NOT NULL default 'A0',
@@ -44,7 +32,7 @@ CREATE TABLE `enumeration` (
   `migrant_status` enum('Seasonal Agricultural/Migrant Worker') NOT NULL default 'Seasonal Agricultural/Migrant Worker',
   `appointment_reasons` enum('Physical','FP','CDP','CHDP','F/U','Sick','Lab Only') NOT NULL default 'Physical',
   `address_type` enum('Home','Billing','Other','Main','Secondary') NOT NULL default 'Home',
-  `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0ï¿½',
+  `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0Ã¯Â¿Â½',
   `payer_type` enum('medicare','champus','medical','private','feca','medicaid','champusva','otherhcfa','litigation') NOT NULL default 'medicare',
   `number_type` enum('Home','Mobile','Work','Emergency','Fax') NOT NULL default 'Home',
   `provider_reporting_type` enum('MD','RNFP','RN','PA','MA') NOT NULL default 'MD',
