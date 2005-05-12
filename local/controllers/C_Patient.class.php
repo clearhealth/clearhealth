@@ -789,6 +789,7 @@ class C_Patient extends Controller {
 		}
 		
 		// register referring provider
+/*
 		if (!$freeb2->registerData($claim_identifier,'ReferringProvider',$providerData)) {
 			trigger_error("Unable to register referring provider data - ".$freeb2->claimLastError($claim_identifier));
 		}
@@ -796,7 +797,7 @@ class C_Patient extends Controller {
 		// register supervising provider - provider
 		if (!$freeb2->registerData($claim_identifier,'SupervisingProvider',$providerData)) {
 			trigger_error("Unable to register supervising provider data - ".$freeb2->claimLastError($claim_identifier));
-		}
+		}*/// This code is functional, however it needs to grab the actual providers via the enumerations.
 
 		// register responsible party - patient
 		if (!$freeb2->registerData($claim_identifier,'ResponsibleParty',$patientData)) {
