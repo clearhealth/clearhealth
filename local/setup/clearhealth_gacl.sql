@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 03, 2005 at 12:19 PM
+-- Generation Time: May 12, 2005 at 07:50 AM
 -- Server version: 4.1.10
 -- PHP Version: 4.3.10
 -- 
@@ -28,7 +28,7 @@ CREATE TABLE `gacl_acl` (
   KEY `gacl_enabled_acl` (`enabled`),
   KEY `gacl_section_value_acl` (`section_value`),
   KEY `gacl_updated_date_acl` (`updated_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='ACL Table';
+) TYPE=MyISAM COMMENT='ACL Table';
 
 -- 
 -- Dumping data for table `gacl_acl`
@@ -36,12 +36,14 @@ CREATE TABLE `gacl_acl` (
 
 INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', 'Give Superadmn and Supervisors access to everything', 1112056945);
 INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', 'Give Super Admin and Supervisor access to everything even when no resource is selected', 1112056973);
-INSERT INTO `gacl_acl` VALUES (30, 'user', 1, 1, '', 'Give Calendar users and Supervisors access to basic calendar functions', 1112160903);
-INSERT INTO `gacl_acl` VALUES (29, 'user', 0, 1, '', 'Deny Supervisors access to some system wide configuration sections', 1112057023);
+INSERT INTO `gacl_acl` VALUES (30, 'user', 1, 1, '', 'Give Calendar users and Supervisors access to basic calendar functions', 1115842900);
+INSERT INTO `gacl_acl` VALUES (29, 'user', 0, 1, '', 'Deny Non-admin users access to some system wide configuration sections', 1115843200);
 INSERT INTO `gacl_acl` VALUES (31, 'user', 1, 1, '', 'Give Calendar supervisors the ability to double book', 1112057044);
-INSERT INTO `gacl_acl` VALUES (32, 'user', 1, 1, '', 'Give billing users basic access to those sections', 1112160920);
+INSERT INTO `gacl_acl` VALUES (32, 'user', 1, 1, '', 'Give billing users basic access to those sections', 1115843254);
 INSERT INTO `gacl_acl` VALUES (33, 'user', 1, 1, '', 'Give all users of the system access to basic app sections', 1112057091);
 INSERT INTO `gacl_acl` VALUES (35, 'user', 1, 1, '', '', 1112803381);
+INSERT INTO `gacl_acl` VALUES (36, 'user', 1, 1, '', 'Default System users have access to Billing, Calendar and Patient', 1115848370);
+INSERT INTO `gacl_acl` VALUES (37, 'user', 0, 1, '', 'Only the Admin user has access to the Admin menu', 1115848687);
 
 -- --------------------------------------------------------
 
@@ -58,7 +60,7 @@ CREATE TABLE `gacl_acl_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_acl_sections` (`value`),
   KEY `gacl_hidden_acl_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_acl_sections`
@@ -75,14 +77,14 @@ INSERT INTO `gacl_acl_sections` VALUES (2, 'user', 2, 'User', 0);
 
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_acl_seq`
 -- 
 
-INSERT INTO `gacl_acl_seq` VALUES (35);
-INSERT INTO `gacl_acl_seq` VALUES (35);
+INSERT INTO `gacl_acl_seq` VALUES (37);
+INSERT INTO `gacl_acl_seq` VALUES (37);
 
 -- --------------------------------------------------------
 
@@ -100,7 +102,7 @@ CREATE TABLE `gacl_aco` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aco` (`section_value`,`value`),
   KEY `gacl_hidden_aco` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aco`
@@ -127,7 +129,7 @@ CREATE TABLE `gacl_aco_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aco_map`
@@ -165,6 +167,22 @@ INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'view');
 INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'usage');
 INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'view');
 INSERT INTO `gacl_aco_map` VALUES (35, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'view');
 
 -- --------------------------------------------------------
 
@@ -181,7 +199,7 @@ CREATE TABLE `gacl_aco_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aco_sections` (`value`),
   KEY `gacl_hidden_aco_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aco_sections`
@@ -197,7 +215,7 @@ INSERT INTO `gacl_aco_sections` VALUES (11, 'actions', 10, 'Actions', 0);
 
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aco_sections_seq`
@@ -214,7 +232,7 @@ INSERT INTO `gacl_aco_sections_seq` VALUES (11);
 
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aco_seq`
@@ -239,13 +257,15 @@ CREATE TABLE `gacl_aro` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aro` (`section_value`,`value`),
   KEY `gacl_hidden_aro` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro`
 -- 
 
 INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
+INSERT INTO `gacl_aro` VALUES (38, 'users', 'mtrotter', 500023, 'mtrotter', 1);
+INSERT INTO `gacl_aro` VALUES (39, 'users', 'test1', 500195, 'test1', 1);
 
 -- --------------------------------------------------------
 
@@ -264,7 +284,7 @@ CREATE TABLE `gacl_aro_groups` (
   UNIQUE KEY `gacl_value_aro_groups` (`value`),
   KEY `gacl_parent_id_aro_groups` (`parent_id`),
   KEY `gacl_lft_rgt_aro_groups` (`lft`,`rgt`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_groups`
@@ -290,7 +310,7 @@ INSERT INTO `gacl_aro_groups` VALUES (28, 23, 19, 20, 'Billing User', 'billing_u
 
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_groups_id_seq`
@@ -309,7 +329,7 @@ CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_groups_map`
@@ -319,7 +339,16 @@ INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
 INSERT INTO `gacl_aro_groups_map` VALUES (24, 24);
 INSERT INTO `gacl_aro_groups_map` VALUES (26, 12);
 INSERT INTO `gacl_aro_groups_map` VALUES (26, 24);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 22);
 INSERT INTO `gacl_aro_groups_map` VALUES (29, 24);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 26);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 27);
+INSERT INTO `gacl_aro_groups_map` VALUES (29, 28);
+INSERT INTO `gacl_aro_groups_map` VALUES (30, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (30, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (30, 22);
 INSERT INTO `gacl_aro_groups_map` VALUES (30, 26);
 INSERT INTO `gacl_aro_groups_map` VALUES (30, 27);
 INSERT INTO `gacl_aro_groups_map` VALUES (31, 26);
@@ -327,6 +356,12 @@ INSERT INTO `gacl_aro_groups_map` VALUES (32, 28);
 INSERT INTO `gacl_aro_groups_map` VALUES (33, 20);
 INSERT INTO `gacl_aro_groups_map` VALUES (33, 21);
 INSERT INTO `gacl_aro_groups_map` VALUES (33, 22);
+INSERT INTO `gacl_aro_groups_map` VALUES (36, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (36, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (36, 22);
+INSERT INTO `gacl_aro_groups_map` VALUES (37, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (37, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (37, 22);
 
 -- --------------------------------------------------------
 
@@ -339,7 +374,7 @@ CREATE TABLE `gacl_aro_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_map`
@@ -362,7 +397,7 @@ CREATE TABLE `gacl_aro_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aro_sections` (`value`),
   KEY `gacl_hidden_aro_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_sections`
@@ -378,7 +413,7 @@ INSERT INTO `gacl_aro_sections` VALUES (10, 'users', 10, 'Users', 0);
 
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_sections_seq`
@@ -395,14 +430,14 @@ INSERT INTO `gacl_aro_sections_seq` VALUES (11);
 
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_aro_seq`
 -- 
 
-INSERT INTO `gacl_aro_seq` VALUES (37);
-INSERT INTO `gacl_aro_seq` VALUES (37);
+INSERT INTO `gacl_aro_seq` VALUES (39);
+INSERT INTO `gacl_aro_seq` VALUES (39);
 
 -- --------------------------------------------------------
 
@@ -420,7 +455,7 @@ CREATE TABLE `gacl_axo` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_axo` (`section_value`,`value`),
   KEY `gacl_hidden_axo` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo`
@@ -481,14 +516,18 @@ CREATE TABLE `gacl_axo_groups` (
   UNIQUE KEY `gacl_value_axo_groups` (`value`),
   KEY `gacl_parent_id_axo_groups` (`parent_id`),
   KEY `gacl_lft_rgt_axo_groups` (`lft`,`rgt`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_groups`
 -- 
 
-INSERT INTO `gacl_axo_groups` VALUES (10, 0, 1, 4, 'Root', 'root');
+INSERT INTO `gacl_axo_groups` VALUES (10, 0, 1, 20, 'Root', 'root');
 INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sections');
+INSERT INTO `gacl_axo_groups` VALUES (12, 10, 4, 5, 'Patient', 'patient');
+INSERT INTO `gacl_axo_groups` VALUES (18, 10, 14, 15, 'Billing', 'billing');
+INSERT INTO `gacl_axo_groups` VALUES (19, 10, 16, 17, 'Calendar', 'calendar');
+INSERT INTO `gacl_axo_groups` VALUES (20, 10, 18, 19, 'Admin', 'admin');
 
 -- --------------------------------------------------------
 
@@ -498,13 +537,13 @@ INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sectio
 
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_groups_id_seq`
 -- 
 
-INSERT INTO `gacl_axo_groups_id_seq` VALUES (11);
+INSERT INTO `gacl_axo_groups_id_seq` VALUES (20);
 
 -- --------------------------------------------------------
 
@@ -516,7 +555,7 @@ CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_groups_map`
@@ -524,6 +563,10 @@ CREATE TABLE `gacl_axo_groups_map` (
 
 INSERT INTO `gacl_axo_groups_map` VALUES (24, 11);
 INSERT INTO `gacl_axo_groups_map` VALUES (35, 11);
+INSERT INTO `gacl_axo_groups_map` VALUES (36, 12);
+INSERT INTO `gacl_axo_groups_map` VALUES (36, 18);
+INSERT INTO `gacl_axo_groups_map` VALUES (36, 19);
+INSERT INTO `gacl_axo_groups_map` VALUES (37, 20);
 
 -- --------------------------------------------------------
 
@@ -536,7 +579,7 @@ CREATE TABLE `gacl_axo_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_map`
@@ -580,7 +623,7 @@ CREATE TABLE `gacl_axo_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_axo_sections` (`value`),
   KEY `gacl_hidden_axo_sections` (`hidden`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_sections`
@@ -596,7 +639,7 @@ INSERT INTO `gacl_axo_sections` VALUES (0, 'resources', 10, 'Resources', 0);
 
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_sections_seq`
@@ -612,7 +655,7 @@ INSERT INTO `gacl_axo_sections_seq` VALUES (23);
 
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_axo_seq`
@@ -630,7 +673,7 @@ CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`aro_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_groups_aro_map`
@@ -648,7 +691,9 @@ INSERT INTO `gacl_groups_aro_map` VALUES (20, 34);
 INSERT INTO `gacl_groups_aro_map` VALUES (20, 35);
 INSERT INTO `gacl_groups_aro_map` VALUES (20, 36);
 INSERT INTO `gacl_groups_aro_map` VALUES (20, 37);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 38);
 INSERT INTO `gacl_groups_aro_map` VALUES (21, 27);
+INSERT INTO `gacl_groups_aro_map` VALUES (22, 39);
 
 -- --------------------------------------------------------
 
@@ -660,7 +705,7 @@ CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`axo_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_groups_axo_map`
@@ -704,6 +749,31 @@ INSERT INTO `gacl_groups_axo_map` VALUES (11, 65);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 66);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 67);
 INSERT INTO `gacl_groups_axo_map` VALUES (11, 68);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 41);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 50);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 51);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 58);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 60);
+INSERT INTO `gacl_groups_axo_map` VALUES (12, 66);
+INSERT INTO `gacl_groups_axo_map` VALUES (18, 48);
+INSERT INTO `gacl_groups_axo_map` VALUES (18, 59);
+INSERT INTO `gacl_groups_axo_map` VALUES (18, 62);
+INSERT INTO `gacl_groups_axo_map` VALUES (18, 63);
+INSERT INTO `gacl_groups_axo_map` VALUES (18, 65);
+INSERT INTO `gacl_groups_axo_map` VALUES (19, 38);
+INSERT INTO `gacl_groups_axo_map` VALUES (19, 43);
+INSERT INTO `gacl_groups_axo_map` VALUES (19, 46);
+INSERT INTO `gacl_groups_axo_map` VALUES (19, 55);
+INSERT INTO `gacl_groups_axo_map` VALUES (19, 64);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 36);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 37);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 44);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 46);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 49);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 52);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 56);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 57);
+INSERT INTO `gacl_groups_axo_map` VALUES (20, 67);
 
 -- --------------------------------------------------------
 
@@ -715,7 +785,7 @@ CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) TYPE=MyISAM;
 
 -- 
 -- Dumping data for table `gacl_phpgacl`
