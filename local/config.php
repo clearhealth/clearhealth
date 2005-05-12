@@ -24,15 +24,15 @@ $config['autoAcl'] = true;
 
 $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 
-$config['translate']['freeb2'] = "/freeb2/index.php/";
+$config['translate']['freeb2'] = "/clearhealth/freeb2/index.php/";
 
 $config['menu']['attachReports'] = true;
 $config['menu']['attachForms'] = true;
 
 $config['app_name'] = "clearhealth";
 
-$config['freeb2_wsdl'] = "http://localhost/freeb2/soap_gateway.php?wsdl";
-$GLOBALS['C_ALL']['freeb2_dir'] = "/freeb2/index.php/";
+$config['freeb2_wsdl'] = "http://localhost/clearhealth/freeb2/soap_gateway.php?wsdl";
+$GLOBALS['C_ALL']['freeb2_dir'] = "/clearhealth/freeb2/index.php/";
 $GLOBALS['C_ALL']['emr_dir'] = "/clearhealth/index.php/";
 
 $config['htmldoc'] = "/usr/bin/htmldoc";
