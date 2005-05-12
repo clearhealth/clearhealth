@@ -33,7 +33,7 @@ $config['app_name'] = "clearhealth";
 
 $config['freeb2_wsdl'] = "http://localhost/clearhealth/freeb2/soap_gateway.php?wsdl";
 $GLOBALS['C_ALL']['freeb2_dir'] = "/clearhealth/freeb2/index.php/";
-$GLOBALS['C_ALL']['emr_dir'] = "/clearhealth/index.php/";
+$GLOBALS['C_ALL']['emr_dir'] = "/index.php/";
 
 $config['htmldoc'] = "/usr/bin/htmldoc";
 $config['use_text_storage'] = true;
