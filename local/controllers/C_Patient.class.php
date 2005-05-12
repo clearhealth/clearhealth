@@ -533,24 +533,25 @@ class C_Patient extends Controller {
 	}
 
 	function _includeFreeb2() {
-		require_once(APP_ROOT . "/../freeb2/local/controllers/C_FreeBGateway.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBCompany.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPerson.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBAddress.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBBillingContact.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPractice.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBBillingFacility.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBReferringProvider.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBResponsibleParty.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBSubscriber.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBSupervisingProvider.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBTreatingFacility.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBProvider.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClaim.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClaimline.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBClearingHouse.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPatient.class.php");
-		require_once(APP_ROOT . "/../freeb2/local/ordo/FBPayer.class.php");
+		//TODO make these respect the config.php values
+		require_once(APP_ROOT . "/freeb2/local/controllers/C_FreeBGateway.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBCompany.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBPerson.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBAddress.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBBillingContact.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBPractice.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBBillingFacility.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBReferringProvider.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBResponsibleParty.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBSubscriber.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBSupervisingProvider.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBTreatingFacility.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBProvider.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBClaim.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBClaimline.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBClearingHouse.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBPatient.class.php");
+		require_once(APP_ROOT . "/freeb2/local/ordo/FBPayer.class.php");
 	}
 
 	function _generateClaim(&$encounter,$claim = false) {
@@ -759,7 +760,7 @@ class C_Patient extends Controller {
 		$providerData = $this->_cleanDataArray($provider->toArray());
 
 		// add in x12 fields from default program
-		$x12 = array('x12_sender_id','x12_reciever_id','x12_version');
+		$x12 = array('x12_sender_id','x12_receiver_id','x12_version');
 		foreach($x12 as $field) {
 			$providerData[$field] = $defaultProgram->get($field);
 		}
@@ -774,7 +775,7 @@ class C_Patient extends Controller {
 		//echo "C_Patient practicedata";
 
 			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
-			$practiceData['receiver_id'] = $defaultProgram->get('x12_reciever_id');
+			$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 			$practiceData['x12_version'] = $defaultProgram->get('x12_version');
 
 		//var_export($practiceData); echo "<br>";
