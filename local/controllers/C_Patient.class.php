@@ -763,10 +763,10 @@ class C_Patient extends Controller {
 	//	$x12 = array('x12_sender_id','x12_receiver_id','x12_version');
 
 
-		$providerData['sender_id'] = $defaultProgram->get('x12_sender_id');
+	/*	$providerData['sender_id'] = $defaultProgram->get('x12_sender_id');
 		$providerData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 		$providerData['x12_version'] = $defaultProgram->get('x12_version');
-
+*/
 		if (!$freeb2->registerData($claim_identifier,'Provider',$providerData)) {
 			trigger_error("Unable to register provider data - ".$freeb2->claimLastError($claim_identifier));
 		}
