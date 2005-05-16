@@ -385,9 +385,6 @@ class C_Patient extends Controller {
 			return;
 		}
 		
-		if (isset($_POST['encounter']['close'])) {
-			$encounter->set("status","closed");	
-		}
 				
 		$encounter->persist();
 		$this->encounter_id = $encounter->get('id');
@@ -422,8 +419,18 @@ class C_Patient extends Controller {
 			$this->payment_id = $payment->get('id');
 		}
 
-		if ($encounter->get('status') === "closed") {
-			$this->_generateClaim($encounter);
+		if (isset($_POST['encounter']['close'])) {
+			$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+			ORDataObject::Factory_include('InsuredRelationship');
+			$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
+			if ($relationships == null) { 
+				$this->messages->addMessage("This Patient has no Insurance Information, please add insurance information and try again <br>");
+				return;
+			}else{	
+				$encounter->set("status","closed");	
+				$this->_generateClaim($encounter);
+			}
 		}
 	}
 
@@ -453,7 +460,14 @@ class C_Patient extends Controller {
 		// resend all the data
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
+		if ($relationships == null) { 
+			$this->messages->addMessage("This Patient has no Insurance Information to rebill, please add insurance information and try again <br>");
+			return;
+		}	
+		
 		$currentPayments = $claim->summedPaymentsByCode();
 		
 		$cd =& ORDataObject::Factory('CodingData');
@@ -561,6 +575,16 @@ class C_Patient extends Controller {
 		
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
+		if ($relationships == null) { 
+			$this->messages->addMessage("This Patient has no Insurance Information to generate the claim, please add insurance information and try again <br>");
+			return;
+		}	
+		
+
 		$payment =& ORDataObject::factory('Payment');
 		$payment_ds = $payment->paymentsFromEncounterId($encounter->get('id'));
 		$payment_ds->clearFilters();
@@ -681,6 +705,12 @@ class C_Patient extends Controller {
 		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
+		if ($relationships == null) { 
+			$this->messages->addMessage("This Patient has no Insurance Information to register the claim data, please add insurance information and try again <br>");
+			return;
+		}	
+		
 
 		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
 		if ($provider->get('id') != $provider->get('bill_as')) {
