@@ -157,12 +157,14 @@ class C_Patient extends Controller {
 		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Cellini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
 
 		$building =& ORDataOBject::factory('Building');
+		$encounter =& ORDataOBject::factory('Encounter');
 		
 		$patientStatistics =& ORDataObject::factory('PatientStatistics',$this->patient_statistics_id);
 		
 		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
+		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
 		$this->assign_by_ref('identifier',$identifier);

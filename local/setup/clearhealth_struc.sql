@@ -758,6 +758,7 @@ CREATE TABLE `patient_statistics` (
   `language` int(11) NOT NULL default '0',
   `migrant_status` int(11) NOT NULL default '0',
   `registration_location` int(11) NOT NULL default '0',
+  `sign_in_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`person_id`)
 ) TYPE=MyISAM;
 

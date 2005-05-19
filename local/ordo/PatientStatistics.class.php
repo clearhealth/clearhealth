@@ -29,6 +29,7 @@ class PatientStatistics extends ORDataObject {
 	var $language		= '';
 	var $migrant_status	= '';
 	var $registration_location = '';
+	var $sign_in_date	= '';
 	/**#@-*/
 
 

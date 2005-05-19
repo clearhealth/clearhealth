@@ -163,5 +163,19 @@ class Encounter extends ORDataObject {
 		}
 		return $ar;	
 	}
+
+	function getFirstDate($patient_id) {
+		settype($patient_id,'int');
+		$sql = "select date_format(min(date_of_treatment),'%Y-%m-%d') date_of_treatment from $this->_table where patient_id = $patient_id";
+
+		$res = $this->_execute($sql);
+		if ($res && !$res->EOF) {
+			$d = $res->fields['date_of_treatment'];
+			if (!empty($d)) {
+				return $d;
+			}
+		}
+		return "No Encounters";
+	}
 }
 ?>

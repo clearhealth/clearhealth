@@ -3,31 +3,37 @@
 		<input type="hidden" value="{$patientStatistics->get('id')}" name="patientStatistics[patient_statistics_id]">
 		<table>
 			<tr>
-				<td><label>Ethnicity</label></td>
+				<td><label>Ethnicity:</label></td>
 				<td>{html_options name="patientStatistics[ethnicity]" options=$patientStatistics->getEthnicityList() selected=$patientStatistics->get('ethnicity')}</td>
-				<td><label>Race</label></td>
+				<td><label>Race:</label></td>
 				<td>{html_options name="patientStatistics[race]" options=$patientStatistics->getRaceList() selected=$patientStatistics->get('race')}</td>
 				
 			</tr>
 			<tr>
-				<td><label>Language</label></td>
+				<td><label>Language:</label></td>
 				<td>{html_options name="patientStatistics[language]" options=$patientStatistics->getLanguageList() selected=$patientStatistics->get('language')}</td>
-				<td><label>Migrant Status</label></td>
+				<td><label>Migrant Status:</label></td>
 				<td>{html_options name="patientStatistics[migrant_status]" options=$patientStatistics->getMigrantStatusList() selected=$patientStatistics->get('migrant_status')}</td>
 				<td><label></label></td>
 				<td></td>
 			</tr>
 			<tr>
-				<td><label>Income</label></td>
+				<td><label>Income:</label></td>
 				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income')}</td>
+
+				<td><label>Date of First Encounter:</label></td>
+				<td>{$encounter->getFirstDate($person->get('id'))}</td>
 			</tr>
 			<tr>
-				<td><label class="inline">Registration Location: </label></td>
+				<td><label>Registration Location: </label></td>
 				<td>
 				    <select name="patientStatistics[registration_location]">
 					    {html_options options=$building->getBuildingList() selected=$patientStatistics->get('registration_location')}
 				    </select>
 				</td>
+				<td><label>Sign in Date: </label></td>
+				<td>{clni_input_date name="patientStatistics[sign_in_date]" value=$patientStatistics->get('sign_in_date')}</td>
+			</tr>
 			<tr>
 				<td><input type="submit" value="Save"></td>
 			</tr>
