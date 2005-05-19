@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: patient_statistics
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,19 +15,20 @@ require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: patient_statistics
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class PatientStatistics extends ORDataObject {
 
 	/**#@+
 	 * Fields of table: patient_statistics mapped to class members
 	 */
-	var $id		= '';
+	var $id			= '';
 	var $ethnicity		= '';
 	var $race		= '';
 	var $income		= '';
 	var $language		= '';
-	var $migrant_status		= '';
+	var $migrant_status	= '';
+	var $registration_location = '';
 	/**#@-*/
 
 

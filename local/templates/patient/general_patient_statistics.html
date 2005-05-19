@@ -22,6 +22,13 @@
 				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income')}</td>
 			</tr>
 			<tr>
+				<td><label class="inline">Registration Location: </label></td>
+				<td>
+				    <select name="patientStatistics[registration_location]">
+					    {html_options options=$building->getBuildingList() selected=$patientStatistics->get('registration_location')}
+				    </select>
+				</td>
+			<tr>
 				<td><input type="submit" value="Save"></td>
 			</tr>
 		</table>

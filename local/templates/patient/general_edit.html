@@ -106,6 +106,17 @@ var C_PatientFinder = function find_remoting(searchString) {
 					</select>&nbsp;&nbsp;
 				</td>
 			</tr>
+		    {if $person->get_person_id() == 0}
+		    <tr>
+			    <td><label>Home Phone:</label></td>
+			    <td><input name="number[number]" size=10><input type="hidden" name="number[active]" value=1><input type="hidden" name="number[number_type]" value="1">
+				<label class="inline">Registration Location: </label><input type="hidden" name="patientStatistics[patient_statistics_id]" value="{$patientStatistics->get('id')}">
+				    <select name="patientStatistics[registration_location]">
+					    {html_options options=$building->getBuildingList()}
+				    </select>
+			    </td>
+		    </tr>
+		    {/if}
 			<tr>
 				<td></td>
 				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
