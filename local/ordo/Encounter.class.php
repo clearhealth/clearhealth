@@ -28,7 +28,7 @@ class Encounter extends ORDataObject {
 	var $building_id		= '';
 	var $date_of_treatment		= '';
 	var $treating_person_id		= '';
-	var $timestamp			= '';
+	//var $timestamp			= '';
 	var $last_change_user_id	= '';
 	var $status			= 'open';
 	var $occurence_id		= '';
