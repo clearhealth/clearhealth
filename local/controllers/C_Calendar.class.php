@@ -264,6 +264,9 @@ class C_Calendar extends CalendarController {
 	function day_action($date="",$start="",$end="") {
 		$this->sec_obj->acl_qcheck("usage",$this->_me,"","calendar",$this,false);
 	
+		if (@strtotime($date) == -1) {
+			$date = "";
+		}
 		if (empty($date)){
 			$year = date('Y');
 			$month = date('n');

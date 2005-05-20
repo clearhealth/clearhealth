@@ -675,6 +675,7 @@ CREATE TABLE `occurences` (
   `last_change_id` int(11) default NULL,
   `external_id` int(11) default NULL,
   `reason_code` int(11) NOT NULL default '0',
+  `timestamp` timestamp(14) NOT NULL,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 

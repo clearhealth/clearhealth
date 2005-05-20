@@ -117,6 +117,18 @@ img				{border-style: none;}
 
 /* Hidden div "popup" for new appointments */
 .popup { visibility: hidden; background-color: white; position: absolute; border: thin solid black; z-index: 10;}
+
+/* sidebar formating */
+#calendarSidebar p {
+	font-size: 9pt;
+}
+#calendarSidebar td {
+	font-size: 8pt;
+}
+.calendarBlurb {
+	font-size: 8pt;
+}
+
 .autoCompleteBackground
 {
         background-color: white;

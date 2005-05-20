@@ -83,7 +83,7 @@ function captureEnter (field, event) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>
+				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
 				</tr>
 			</table>
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
@@ -158,7 +158,7 @@ function captureEnter (field, event) {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="Make Appointment"></td>
+				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
 				</tr>
 			</table>
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
