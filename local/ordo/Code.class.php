@@ -58,6 +58,18 @@ class Code extends ORDataObject {
 		parent::populate('code_id');
 	}
 
+	/**
+	 * create a record from a code
+	 */
+	function &fromCode($code) {
+		$c =& ORDataObject::Factory('Code');
+		$res = $c->_execute("select code_id from $c->_table where code =".$c->_quote($code));
+		if ($res && !$res->EOF) {
+			$c->setup($res->fields['code_id']);
+		}
+		return $c;
+	}
+
 	/**#@+
 	 * Getters and Setters for Table: coding_data
 	 */
