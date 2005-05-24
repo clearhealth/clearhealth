@@ -246,6 +246,9 @@ function clni_rule_autocomplete(element) {
  * Require tha the passed in element be an email address
  */
 function clni_rule_email(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
 
 	var str = element.value;
 
@@ -289,6 +292,10 @@ function clni_rule_email(element) {
  * Requre the passing in value to be a number
  */
 function clni_rule_number(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
+
 	if (element.value.match(/^[0-9\.]+$/)) {
 		return true;
 	}
@@ -302,10 +309,30 @@ function clni_rule_number(element) {
  * 6 digits and 3 letters (fake ssn birthday+initials
  */
 function clni_rule_ssn(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
+
 	if (element.value.match(/^\d{9}$/)) {
 		return true;
 	}
 	if (element.value.match(/^\d{6}[a-zA-Z]{3}$/)) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Require a string to be a telephone #
+ *
+ * Right now were being strict and only allowing 10 digits
+ */
+function clni_rule_telephone(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
+
+	if (element.value.match(/^[0-9]{10}$/)) {
 		return true;
 	}
 	return false;
