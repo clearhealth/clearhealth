@@ -15,9 +15,11 @@ function clni_validate(currentForm) {
 		//alert("Checking rule: "+rule.rule+" on "+rule.id+" disabled: "+document.getElementById(rule.id).disabled);
 		// only run validation on non disabled elements
 		if (document.getElementById(rule.id).disabled != true && (elementInCurrentForm(document.getElementById(rule.id),currentForm))) {
+			document.getElementById(rule.id).ok = true;
 			eval('var res = clni_rule_'+rule.rule+'(document.getElementById("'+rule.id+'"));');
 			
 			if (!res) {
+				document.getElementById(rule.id).ok = false;
 				eval('clni_notify_'+rule.notify+'(document.getElementById("'+rule.id+'"));');
 				ret = false;
 			}
@@ -41,6 +43,66 @@ function elementInCurrentForm(element,currentForm) {
 	}
 	return false;
 }
+
+/**
+ * Set an element to the alert css class
+ */
+function clni_notify_alert(element) {
+	if (!element.className) {
+		element.className = "";
+	}
+	if (clni_notify_alert_reset_store[element.id] == null) {
+		clni_notify_alert_reset_store[element.id]=element.className;
+	}
+	element.className = "clniAlert";
+}
+
+/**
+ * Set an element to the alert css class
+ */
+function clni_notify_alert_reset(element) {
+	if (clni_notify_alert_reset_store[element.id] != null && element.ok) {
+		element.className = clni_notify_alert_reset_store[element.id];
+	}
+}
+
+/**
+ * Register a validation rule
+ */
+function clni_register_validation_rule(id,rule,notify) {
+	o = new Object;
+	o.id = id;
+	o.rule = rule;
+	o.notify = notify;
+	clni_validation_rules[clni_validation_rules.length] = o;
+}
+
+/**
+ * Auto register a date validation on all inputs named date[name]
+ */
+function clni_validate_auto_register_dates() {
+	inputs = document.getElementsByTagName('input');
+
+	for(var i = 0; i < inputs.length; i++) {
+		if (inputs[i].name.match(/date\[[a-zA-Z_]+\]/)) {
+			if (!inputs[i].id) {
+				inputs[i].id = "autoDateId"+i;
+			}
+			clni_register_validation_rule(inputs[i].id,'date','alert');
+		}
+	}
+}
+
+
+
+
+/***********************************************************************************/
+/*					RULES					   */
+/***********************************************************************************/
+
+
+
+
 
 /**
  * Requires that the passed in element is set
@@ -157,54 +219,4 @@ function clni_rule_number(element) {
 		return true;
 	}
 	return false;
-}
-
-
-/**
- * Set an element to the alert css class
- */
-function clni_notify_alert(element) {
-	if (!element.className) {
-		element.className = "";
-	}
-	if (clni_notify_alert_reset_store[element.id] == null) {
-		clni_notify_alert_reset_store[element.id]=element.className;
-	}
-	element.className = "clniAlert";
-}
-
-/**
- * Set an element to the alert css class
- */
-function clni_notify_alert_reset(element) {
-	if (clni_notify_alert_reset_store[element.id] != null) {
-		element.className = clni_notify_alert_reset_store[element.id];
-	}
-}
-
-/**
- * Register a validation rule
- */
-function clni_register_validation_rule(id,rule,notify) {
-	o = new Object;
-	o.id = id;
-	o.rule = rule;
-	o.notify = notify;
-	clni_validation_rules[clni_validation_rules.length] = o;
-}
-
-/**
- * Auto register a date validation on all inputs named date[name]
- */
-function clni_validate_auto_register_dates() {
-	inputs = document.getElementsByTagName('input');
-
-	for(var i = 0; i < inputs.length; i++) {
-		if (inputs[i].name.match(/date\[[a-zA-Z_]+\]/)) {
-			if (!inputs[i].id) {
-				inputs[i].id = "autoDateId"+i;
-			}
-			clni_register_validation_rule(inputs[i].id,'date','alert');
-		}
-	}
 }
