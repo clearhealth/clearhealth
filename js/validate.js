@@ -113,7 +113,6 @@ function clni_validate(currentForm) {
 		alert('Error in Validation Code form not submitted\n'+msg);
 		ret = false;
 	}
-	ret = false;
 	return ret;
 }
 
