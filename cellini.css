@@ -51,7 +51,13 @@ table.grid a.orderLink:hover {
 
 /* Form rules */
 .clniAlert {
-	background-color: red;
+	background-color: #CC9999;
+}
+.clniMessageActive {
+	border: solid 2px black;
+	padding: 5px;
+	margin-bottom: 5px;
+	background-color: #CC9999;
 }
 
 div.waiting {
