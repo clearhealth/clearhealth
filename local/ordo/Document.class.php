@@ -1,6 +1,7 @@
 <?php
 
 require_once CELLINI_ROOT. "/ordo/ORDataObject.class.php";
+require_once CELLINI_ROOT. "/includes/MimeLookup.class.php";
 
 /**
  * class Document
@@ -300,6 +301,8 @@ class Document extends ORDataObject{
 		return dirname(preg_replace("|^(.*)://|","",$this->url)) ."/";
 	}
 	function set_mimetype($mimetype) {
+		$ml = new MimeLookup();
+		$mimetype = $ml->cleanup($mimetype);
 		$this->mimetype = $mimetype;
 	}
 	function get_mimetype() {
@@ -317,6 +320,40 @@ class Document extends ORDataObject{
 	function get_owner() {
 		return $this->owner;
 	}
+
+	function get_displaytype() {
+		$ml = new MimeLookup();
+		return $ml->lookup($this->get('mimetype'));
+	}
+
+	function isDisplayable() {
+		$ml = new MimeLookup();
+		return $ml->displayable($this->get('mimetype'));
+	}
+
+	function get_displaySize() {
+		$size = $this->get('size');
+		$a = array("Bytes", "KB", "MB", "GB", "TB", "PB");
+		$pos = 0;
+		while ($size >= 1024) {
+			$size /= 1024;
+			$pos++;
+		}
+
+		return round($size,2)." ".$a[$pos];
+	}
+
+	/**
+	 * Pulls a chunk out of the notes to get a description of the item
+	 */
+	function get_description() {
+		ORdataObject::factory_include('Note');
+		$notes = Note::notes_fatory($this->get('id'));
+		if (isset($notes[0])) {
+			return $notes[0]->get('note');
+		}
+	}
+
 	/*
 	*	No getter for revision because it is updated automatically by the DB.
 	*/

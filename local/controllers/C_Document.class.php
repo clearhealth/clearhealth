@@ -3,7 +3,7 @@
 require_once CELLINI_ROOT. "/controllers/Controller.class.php";
 require_once APP_ROOT . "/local/ordo/Document.class.php";
 require_once APP_ROOT . "/local/includes/CategoryTree.class.php";
-require_once CELLINI_ROOT 	   . "/lib/TreeMenu.php";
+require_once CELLINI_ROOT. "/lib/TreeMenu.php";
 require_once APP_ROOT . "/local/ordo/Note.class.php";
 
 class C_Document extends Controller {
@@ -526,7 +526,8 @@ class C_Document extends Controller {
 				$icon = "file3.png";
 				if (isset($categories[$id]) && is_array($categories[$id])) {
 					foreach ($categories[$id] as $doc) {
-						$current_node->addItem(new HTML_TreeNode(array('text' => '<span title="">'.basename($doc['url']).'</span>', 
+						$current_node->addItem(new HTML_TreeNode(array('text' => '<span title="'.$doc['note'].'">'
+								.basename($doc['url']).'</span>', 
 								'link' => Cellini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&", 
 								'icon' => $icon, 'expandedIcon' => $expandedIcon,
 								)
