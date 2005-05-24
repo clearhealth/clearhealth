@@ -34,14 +34,20 @@ Date: {$note->get_date()}
 	</tr>
 	</table>
 
-<a href="{$web_path}">Click to download</a><br>
+
+	<table border=1 cellspacing=0 cellpadding=2>
+		<tr><td><label>File Name:</label></td><td>{$file->get('name')}</td></tr>
+		<tr><td><label>File Type:</label></td><td>{$file->get('displayType')}</td></tr>
+		<tr><td><label>File Size:</label></td><td>{$file->get('displaySize')}</td></tr>
+		<tr><td colspan=2><a href="{$web_path}">Download File</a></td></tr>
+	</table>
 
 </td>
 </tr>
 	<td>
 	{if $file->get_mimetype() eq "image/tiff"}
 	<embed border="0" frameborder="0" style="border:none;" width="800" height="600" type="{$file->get_mimetype()}" src="{$web_path}{$file->get_url_web()}&as_file=false"></embed>
-	{elseif $file->get_mimetype() eq "image/png" or $file->get_mimetype() eq "image/jpg" or $file->get_mimetype() eq "image/jpeg" or $file->get_mimetype() eq "image/gif" or $file->get_mimetype() eq "text/plain" or $file->get_mimetype() eq "text/html"}
+	{elseif $file->isDisplayable()}
 	<iframe border="0" frameborder="0" style="border:none;" width="800" height="600" type="{$file->get_mimetype()}" src="{$web_path}{$file->get_url_web()}&as_file=false"></iframe>
 	{else}
 	{*<iframe border="0" frameborder="0" style="border:none;" width="800" height="600" type="{$file->get_mimetype()}" src="{$web_path}{$file->get_url_web()}&as_file=true"></iframe>*}
