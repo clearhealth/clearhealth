@@ -47,7 +47,7 @@ class C_Document extends Controller {
 		}
 		
 		if(!isset($_GET['id'])) {
-			$_GET['id'] = 0;
+			$_GET['id'] = $this->get('patient_id','c_patient');
 		}
 		$this->file_path = $this->_config['repository'] . preg_replace("/[^A-Za-z0-9]/","_",$_GET['id']) . "/";
 
@@ -526,9 +526,11 @@ class C_Document extends Controller {
 				$icon = "file3.png";
 				if (isset($categories[$id]) && is_array($categories[$id])) {
 					foreach ($categories[$id] as $doc) {
-						$current_node->addItem(new HTML_TreeNode(array('text' => basename($doc['url']), 
+						$current_node->addItem(new HTML_TreeNode(array('text' => '<span title="">'.basename($doc['url']).'</span>', 
 								'link' => Cellini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&", 
-								'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+								'icon' => $icon, 'expandedIcon' => $expandedIcon,
+								)
+							));
 					}
 				}
 			}
