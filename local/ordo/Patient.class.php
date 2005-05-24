@@ -223,6 +223,5 @@ class Patient extends MergeDecorator {
 			return $list[$this->get("marital_status")];
 		}
 	}
-
 }
 ?>

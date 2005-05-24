@@ -513,5 +513,19 @@ class Person extends ORDataObject {
 		$ret['home_phone'] = $this->numberByType('Home',true);
 		return $ret;
 	}
+
+	
+	/**
+	 * Get the age of the person based on date of birth
+	 */
+	function get_age() {
+		$sql =  "select DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(date_of_birth, '%Y') - 
+			(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(date_of_birth, '00-%m-%d')) AS age
+			from $this->_table where person_id = ".(int)$this->get('id');
+		$res = $this->_execute($sql);
+		if ($res && !$res->EOF) {
+			return $res->fields['age'];
+		}
+	}
 }
 ?>
