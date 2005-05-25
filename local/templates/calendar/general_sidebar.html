@@ -62,7 +62,7 @@ function captureEnter (field, event) {
 					<td colspan="2">Title</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons select=$edit_oc->get_notes()}</td>
+				<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
 					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">New</a>&nbsp;&nbsp;
@@ -142,7 +142,7 @@ function captureEnter (field, event) {
 					<td colspan="2">Title</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"> {html_options name="reason_id" options=$appointment_reasons select=$edit_oc->get_notes()}</td>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"> {html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
 					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
