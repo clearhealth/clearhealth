@@ -144,6 +144,7 @@ foreach($events as $a_event)
 //Insert and update Occurances	
 foreach($occurences as $a_occurence)
 {
+	$a_occurence=my_clean_array($a_occurence);
 
 	$id=$a_occurence['id'];
 	$event_id=$a_occurence['event_id'];
@@ -221,6 +222,27 @@ We need to grap the patient map for this schedule item and use the new patient i
 }
 
 
+function my_clean_array ($array){ // remove special characters
+
+	$evil_strings=array("\'","'");
+
+	foreach($array as $key => $value)
+	{
+		echo "Checking $key with $value \n";
+		
+		if(strstr($value,"'")) {
+			echo "Got one in $value \n";
+			$value=str_replace($evil_strings,"",$value);
+			$array[$key]=$value;
+			echo "Replaced with $value \n";
+		}
+
+	
+	}
+
+	return($array);
+
+}
 
 
 
