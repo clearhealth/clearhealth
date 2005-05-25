@@ -676,6 +676,7 @@ CREATE TABLE `occurences` (
   `external_id` int(11) default NULL,
   `reason_code` int(11) NOT NULL default '0',
   `timestamp` timestamp(14) NOT NULL,
+  `walkin` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
 

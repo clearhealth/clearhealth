@@ -87,6 +87,8 @@ class Occurence extends ORDataObject{
 	 *	@var int last_change_id
 	 */
 	var $last_change_id;
+
+	var $walkin	= '';
 	
 	
 	/**

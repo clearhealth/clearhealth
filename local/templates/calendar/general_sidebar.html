@@ -76,6 +76,11 @@ function captureEnter (field, event) {
 				</td>
 				</tr>
 				<tr>
+					<td colspan="2"><input type="hidden" name="walkin" value="0">
+					<input type="checkbox" value="1" name="walkin" id="walkin" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
+					<label class="inline" for="walkin">Walk in?</label></td>
+				</tr>
+				<tr>
 					<td colspan="2">Time</td>
 				</tr>
 				<tr>
@@ -149,6 +154,11 @@ function captureEnter (field, event) {
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
                 	<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
 				</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="hidden" name="walkin" value="0">
+					<input type="checkbox" value="1" name="walkin" id="walkin1" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
+					<label class="inline" for="walkin1">Walk in?</label></td>
 				</tr>
 				<tr>
 					<td colspan="2">Time</td>

@@ -306,6 +306,9 @@ class C_Location extends Controller {
 		$this->event->populate();
 		
 		$oc->set_event_id($this->event->get_id());
+		if (isset($_POST['walkin'])) {
+			$oc->set('walkin',$_POST['walkin']);
+		}
 
 		$oc->persist();
 		$oc->populate();
