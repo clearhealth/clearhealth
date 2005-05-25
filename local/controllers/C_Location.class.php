@@ -162,7 +162,6 @@ class C_Location extends Controller {
 	}
 	
 	function edit_schedule_action($id = "") {
-		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		if (!is_object($this->location)) {
 			$this->location = new schedule($id);
@@ -189,8 +188,56 @@ class C_Location extends Controller {
 		$this->assign("process",true);
 		$this->assign("EVENT_ACTION", $this->_link("edit_event",true) . "id=$id");
 		$this->assign("OCCURENCE_ACTION", $this->_link("edit_occurence",true) . "id=$id");
+		$this->assign("SELECTED_ACTION", $this->_link("selected_occurence",true) . "id=$id");
 		//$this->assign("OCCURENCE_ACTION", "controller.php?" . str_replace("edit_schedule","edit_occurence",$_SERVER['QUERY_STRING']));
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_schedule.html");
+	}
+
+	function selected_occurence_action($id) {
+	}
+
+	function selected_occurence_action_process($id) {
+		if ($_POST['action'] == 'delete' && count($_POST['selected']) > 0) {
+			foreach($_POST['selected'] as $oid => $val) {
+				$action = "delete";
+				$o = new Occurence($id);
+				$o->populate();
+				if($o->get_last_change_id() == $this->_me->get_user_id()){
+					$action = 'delete_owner';
+				}else{
+					$action = 'delete';
+				}
+
+				$this->sec_obj->acl_qcheck($action,$this->_me,"",'occurence',$this,false);
+		
+				$error = true;
+			
+				$obj = null;
+			
+				$obj = new Occurence($oid);
+				if (is_object($obj) && $obj->id > 0 && $obj->_populated && is_callable(array($obj,"delete"))) {
+					if ($obj->delete()) {
+						$message = "Object(s) deleted successfully";
+						$error = false;
+					}
+					else {
+						$message = "Object deletion failed";	
+					}
+				}
+				else{
+					$message = "No object with that information could be found or it does not support deletion";
+				}	
+
+				$this->assign("message", $message);
+				if ($error) {
+					$this->assign("error",true);
+					$this->_state = false;
+					return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");	
+				}
+			}
+
+		}
+		header('Location: '.Cellini::link('edit_schedule',true,true,$id));
 	}
 	
 	function edit_schedule_action_process() {

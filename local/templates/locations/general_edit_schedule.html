@@ -137,13 +137,53 @@
 		<input type="hidden" name="process" value="{$PROCESS}" />
 		</form>
 		{/if}
+	</table>
+	{literal}
+	<script type="text/javascript">
+		function checkAll(box) {
+			var boxes = box.parentNode.parentNode.parentNode.getElementsByTagName('input');
+			for(var i =0; i < boxes.length; i++) {
+				boxes[i].checked = box.checked;
+			}
+		}
+		function submitChecked(select) {
+			var boxes = select.form.getElementsByTagName('input');
+			var num = 0;
+			for(var i =0; i < boxes.length; i++) {
+				if (boxes[i].checked) {
+					num++;
+				}
+			}
+			if (num == 0) {
+				select.selectedIndex = 0;
+				return false;
+			}
+			var verify = confirm('Are you sure you want to delete '+num+' Schedule(s)');
+			if (verify) {
+				select.form.submit();	
+			}
+			else {
+				select.selectedIndex = 0;
+			}
+		}
+	</script>
+	{/literal}
+	{clni_form action=$SELECTED_ACTION process=$PROCESS}
+	<select onchange="submitChecked(this);" name="action">
+		<option>With Selected</option>
+		<option value="delete">Delete</option>
+	</select>
+	<table class="grid">
 		<tr>
-			<td>Date</td><td>Time</td><td>Duration</td><td>Location</td><td></td>
+			<td style="background-color: transparent"><input type="checkbox" onclick="checkAll(this);"></td><th>Date</th><th>Time</th><th>Duration</th><th>Location</th>
 		</tr>
-		{foreach from=$event->get_occurences() item=timeplace}
-		<tr>
+		{foreach from=$event->get_occurences() item=timeplace key=key}
+		<tr {if $key % 2 == 1}class="alt"{/if}>
 			<td>
-				<a href="{$DELETE_ACTION}&id={$timeplace->get_id()}&object=occurence&process=1">D</a>&nbsp;&nbsp;
+				<input type="checkbox" name="selected[{$timeplace->get_id()}]" value="1">
+			</td>
+			<td>
+				{*<a href="{$DELETE_ACTION}&id={$timeplace->get_id()}&object=occurence&process=1">D</a>&nbsp;&nbsp;*}
 
 				<a href="{$EDIT_TIMEPLACE_ACTION}&id={$timeplace->get_id()}&foreign_id={$schedule->get_id()}">{$timeplace->get_start()|date_format:"%a %m/%d/%Y"}</a>
 			</td>
@@ -161,6 +201,7 @@
 		</tr>
 		{/foreach}
 		</table>
+	</form>
 		<br>
 	</td>
 </tr>
