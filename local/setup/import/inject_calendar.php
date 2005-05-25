@@ -228,15 +228,17 @@ function my_clean_array ($array){ // remove special characters
 
 	foreach($array as $key => $value)
 	{
-		echo "Checking $key with $value \n";
-		
-		if(strstr($value,"'")) {
-			echo "Got one in $value \n";
-			$value=str_replace($evil_strings,"",$value);
-			$array[$key]=$value;
-			echo "Replaced with $value \n";
-		}
+	//	echo "Checking $key with $value \n";
 
+	// This code can be uncommented to hunt for more evil strings		
+	//		if(strstr($value,"'")) {
+	//		echo "Got one in $value \n";
+	//		$value=str_replace($evil_strings,"",$value);
+	//		$array[$key]=$value;
+	//		echo "Replaced with $value \n";
+	//	}
+
+			$value=str_replace($evil_strings,"",$value);
 	
 	}
 
