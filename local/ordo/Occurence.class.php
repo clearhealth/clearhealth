@@ -52,9 +52,9 @@ class Occurence extends ORDataObject{
 	
 	/**
 	 *	From appointment reasons enumeration
-	 *	@var reason_id
+	 *	@var reason_code
 	 */
-	var $reason_id;
+	var $reason_code = '';
 	
 	/**
 	 *	
@@ -248,11 +248,11 @@ class Occurence extends ORDataObject{
 	}
 	
 	function set_reason_id($value) {
-		$this->reason_id = $value;
+		$this->reason_code = $value;
 	}
 	
 	function get_reason_id() {
-		return $this->reason_id;
+		return $this->reason_code;
 	}
 	
 	function set_last_change_id($value) {
