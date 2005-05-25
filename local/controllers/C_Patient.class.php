@@ -83,6 +83,12 @@ class C_Patient extends Controller {
 			
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
+
+			require_once APP_ROOT .'/local/includes/AppointmentDatasource.class.php';
+			$appointmentDS =& new AppointmentDatasource($this->get('patient_id'));
+			$appointmentDS->showPast = false;
+			$appointmentGrid =& new cGrid($appointmentDS);
+			$appointmentGrid->pageSize = 10;
 			
 			$this->assign_by_ref("person",$p);
 			$this->assign_by_ref('number',$number);
@@ -95,6 +101,7 @@ class C_Patient extends Controller {
 			$this->assign_by_ref('accountStatus',$accountStatus);
 			$this->assign_by_ref('noteGrid',$noteGrid);
 			$this->assign_by_ref('note',$note);
+			$this->assign_by_ref('appointmentGrid',$appointmentGrid);
 
 			$this->assign('formList',$formList);
 

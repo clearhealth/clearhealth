@@ -18,11 +18,16 @@
 			<td>{input name="test_ssn" type="string" id="ssn"}</td>
 		</tr>
 		<tr>
+			<td><label>Telephone Validation test:</label></td> 
+			<td>{input name="test_phone" type="string" id="phone"}</td>
+		</tr>
+		<tr>
 			<td></td>
 			<td>{submit}</td>
 		</tr>
 	</table>
 </form>
 {clni_register_message_target formId="myForm" targetId="myFormMessages"}
-{clni_register_validation_rule id="ssn" rule="required" message="SSN is required"}
 {clni_register_validation_rule id="ssn" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
+{clni_register_validation_rule id="ssn" rule="required" message="SSN is required"}
+{clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}

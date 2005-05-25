@@ -105,6 +105,13 @@
 		<p>No Reports have been connected to the dashboard</p>
 		{/if}
 	</fieldset>
+	<fieldset class="radio" id="Appointments">
+		<legend>Appointments {clni_section_links name="appointments"}</legend>
+		{$appointmentGrid->render()}
+		{if $appointmentGrid->empty}
+		<p>Patient has no Future appoinments</p>
+		{/if}
+	</fieldset>
 	</td>
 	<td>
 	<fieldset class="radio" id="encounters">
