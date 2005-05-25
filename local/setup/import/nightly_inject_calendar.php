@@ -85,7 +85,7 @@ foreach($schedules as $a_schedule)
 		
 }
 		
-
+/*
 //Insert and update Events	
 foreach($events as $a_event)
 {
@@ -139,22 +139,25 @@ foreach($events as $a_event)
 		
 }
 
-
+*/
 
 //Insert and update Occurances	
 foreach($occurences as $a_occurence)
 {
 
-	$id=$a_occurence['id'];
-	$event_id=$a_occurence['event_id'];
-	$start=$a_occurence['start'];
-	$end=$a_occurence['end'];
-	$notes=$a_occurence['notes'];
-	$location_id=$a_occurence['location_id'];
-	$user_id=$a_occurence['user_id'];
-	$last_change_id=$a_occurence['last_change_id'];
-	$external_id=$a_occurence['external_id'];
-	$reason_code=$a_occurence['reason_code'];
+	$a_occurence = my_clean_array($a_occurence);
+
+	$id= $a_occurence['id'];
+	$event_id= $a_occurence['event_id'];
+	$start= $a_occurence['start'];
+	$end= $a_occurence['end'];
+	$notes= $a_occurence['notes'];
+	echo "The notes I will use $notes \n";
+	$location_id= $a_occurence['location_id'];
+	$user_id= $a_occurence['user_id'];
+	$last_change_id= $a_occurence['last_change_id'];
+	$external_id= $a_occurence['external_id'];
+	$reason_code= $a_occurence['reason_code'];
 
 	$checkoccurenceSQL='SELECT * FROM `occurences` WHERE `id` = '.$a_occurence['id'];	
 	$query = mysql_query($checkoccurenceSQL);
@@ -182,7 +185,7 @@ We need to grap the patient map for this schedule item and use the new patient i
 
 	$check_import_map_sql = "SELECT * FROM `import_map` WHERE `old_table_name` = 'patient' AND `old_id` = ".$external_id;
 	$query = mysql_query($check_import_map_sql);
-	$import_result = mysql_fetch_array($query)
+	$import_result = mysql_fetch_array($query);
 	$new_external_id=$import_result('new_id');
 
 	$insert_occurence_sql = "INSERT INTO `occurences` (
@@ -217,7 +220,28 @@ We need to grap the patient map for this schedule item and use the new patient i
 
 
 
+function my_clean_array ($array){ // remove special characters
 
+
+$evil_strings=array("\'","'");
+
+	foreach($array as $key => $value)
+	{
+		echo "Checking $key with $value \n";
+		
+		if(strstr($value,"'")) {
+			echo "Got one in $value \n";
+			$value=str_replace($evil_strings,"",$value);
+			$array[$key]=$value;
+			echo "Replaced with $value \n";
+		}
+
+	
+	}
+
+	return($array);
+
+}
 
 
 ?>
