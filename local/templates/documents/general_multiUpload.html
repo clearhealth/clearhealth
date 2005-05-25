@@ -1,0 +1,32 @@
+<form method=post enctype="multipart/form-data" action="{$FORM_ACTION}">
+<input type="hidden" name="MAX_FILE_SIZE" value="12000000" />
+<p>NOTE: Uploading files with duplicate names will cause the files to be automatically renamed. For example '<i>file.jpg</i>' will become '<i>file.jpg.1</i>'. Filenames are considered globally unique, not per category. </p>
+<p><a href="{$LIST_ACTION}">View Documents</a></p>
+<table class="grid">
+	<tr>
+		<th>Location</th><th>File</th><th>Note</th>
+	</tr>
+
+	{foreach from=$list item=id}
+	<tr>
+		<td>
+			<select name="category[{$id}]">
+				{html_options options=$categories selected=$parent}
+			</select>
+		</td>
+		<td><input type="file" name="file[{$id}]"></td>
+		<td><input name="note[{$id}]"></td>
+	</tr>
+	{/foreach}
+</table>
+<p><input type="submit" value="Upload Files"></p>
+
+{if count($report) > 0}
+{foreach from=$report item=row key=key}
+	<p>{$key}: {$row}</p>
+{/foreach}
+{/if}
+<input type="hidden" name="foreign_id" value="{$foreign_id}" />
+<input type="hidden" name="category_id" value="{$category_id}" />
+<input type="hidden" name="process" value="{$PROCESS}" />
+</form>

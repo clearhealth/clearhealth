@@ -57,6 +57,12 @@ class C_Document extends Controller {
 		
 		$this->assign("STYLE", $GLOBALS['style']);
 
+		$parent = "";
+		if (isset($_GET['parent_id'])) {
+			$parent = "&parent_id=".$_GET['parent_id'];
+		}
+		$this->assign('MULTI_UPLOAD_ACTION',Cellini::link('multi_upload',true,true,$this->id).$parent);
+
 		if (!isset($_SESSION['DM']['group'])) {
 			$document =& ORDataObject::factory('Document');
 			$glookup = array_flip($document->getGroupList());
@@ -540,6 +546,98 @@ class C_Document extends Controller {
  	}
 	
 	
+	var $_pullCats = array();
+	var $_pullParent = array();
+	function multi_upload_action_uploadFile($project_id,$parent_id = 1) {
+		$this->_buildPulldown($this->tree->tree);
+		$this->assign('list',range(0,4));
+		$this->assign('LIST_ACTION',Cellini::link('list',true,true,$this->id));
+		$this->assign('categories',$this->_pullCats);
+		$this->assign('parent',$parent_id);
+		return $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_multiUpload.html"));
+	}
+
+	function multi_upload_action_process($project_id) {
+		if (!file_exists($this->file_path)) {
+			if (!@mkdir($this->file_path,0700)) {
+				$this->messages->addMessage("The system was unable to create the directory for this upload, '" . $this->file_path . "'.  No file uploads were completed.\n");
+				return;
+			}
+		}
+		$report = array();
+		foreach($_FILES['file']['name'] as $key => $name) {
+			$fname = preg_replace("/[^a-zA-Z0-9_.]/","_",$name);
+
+			if (empty($name)) {
+				break;
+			}
+			if ($_FILES['file']['error'][$key] > 0 || $_FILES['file']['size'][$key] == 0) {
+				$extra = " Error Number: ".$_FILES['file']['error'][$key];
+				if ($_FILES['file']['size'][$key] == 0) {
+					$extra = " , The system does not permit uploading files of with size 0.\n";
+				}
+				$report[$fname] = "Error Uploading File: $name".$extra;
+			}
+			else {
+				if (file_exists($this->file_path.$fname)) {
+					$report[$fname] = "File with same name already exists at location: " . $this->file_path . "\n";
+					$fname = basename($this->_rename_file($this->file_path.$fname));
+					$report[$fname] = "Current file name was changed to " . $fname ."\n";	
+				}
+		  	
+		  	
+				if (move_uploaded_file($_FILES['file']['tmp_name'][$key],$this->file_path.$fname)) {
+					if (!isset($report[$fname])) {
+						$report[$fname] = "";
+					}
+					$report[$fname] .= " File successfully stored.\n";
+					$d = new Document();
+					$d->url = "file://" .$this->file_path.$fname;
+					$d->mimetype = $_FILES['file']['type'][$key];
+					$d->size = $_FILES['file']['size'][$key];
+					if (isset($d->type_array['file_url'])){
+						$d->type = $d->type_array['file_url'];
+					}
+					$d->set_foreign_id($project_id);
+					$d->persist();
+					
+					$category_id = (int)$_POST['category'][$key];
+					$sql = "REPLACE INTO category_to_document set category_id = '" . $category_id . "', document_id = '" . $d->get_id() . "'";
+					$d->_Execute($sql);
+
+					if (!empty($_POST['note'][$key])) {
+						$n = new Note();
+						$n->set('foreign_id',$d->get_id());
+						$n->set('note',$_POST['note'][$key]);
+						$n->set('owner',$this->_me->get_id());
+						$n->persist();
+					}
+				}
+				else {
+					$report[$fname] = "The file could not be succesfully stored, this error is usually related to permissions problems on the storage system.\n";
+				}
+			}
+		}
+		$this->assign('report',$report);
+	}
+
+	function _buildPulldown($treeRow) {
+		foreach($treeRow as $key => $val) {
+			if ($key != 0) {
+				if (count($this->_pullParent) > 0) {
+					$this->_pullCats[$key] = implode(' -> ',$this->_pullParent).' -> '.$this->tree->_id_name[$key]['name'];
+				}
+				else {
+					$this->_pullCats[$key] = $this->tree->_id_name[$key]['name'];
+				}
+			}
+			if (is_array($val)) {
+				array_push($this->_pullParent,$this->tree->_id_name[$key]['name']);
+				$this->_buildPulldown($val);
+				array_pop($this->_pullParent);
+			}
+		}
+	}
 }
 //place to hold optional code
 //$first_node = array_keys($t->tree);
