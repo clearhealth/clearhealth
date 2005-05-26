@@ -34,7 +34,7 @@ class C_Patient extends Controller {
 	 * demographics, prescriptions documents
 	 *
 	 */
-	function dashboard_action($patient_id = "") {
+	function dashboard_action_view($patient_id = "") {
 		if (is_numeric($patient_id) && $patient_id > 0) {
 			$this->set("patient_id",$patient_id);	
 		} 

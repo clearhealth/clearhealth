@@ -11,7 +11,7 @@ class C_Admin extends Controller {
 		$this->template_mod = $template_mod;
 	}
 
-	function default_action() {
+	function default_action_view() {
 		return $this->fetch($GLOBALS['frame']['config']['template_dir'] ."/default/" . $this->template_mod . "_default.html");
 	}
 

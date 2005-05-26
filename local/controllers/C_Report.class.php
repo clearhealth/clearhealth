@@ -2,7 +2,7 @@
 /**
 * Controller for reports
 *
-* @package	com.uversainc.hnr-erp
+* @package	com.uversainc.clearhealth
 */
 
 /**

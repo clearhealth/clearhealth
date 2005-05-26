@@ -4,7 +4,7 @@ require_once APP_ROOT ."/local/includes/SuperbillDatasource.class.php";
 
 class C_Superbill extends Controller {
 
-	function list_action() {
+	function list_action_edit() {
 		$sbd =& ORDataObject::factory('SuperbillData');
 		$ds =& $sbd->superbillList();
 		$ds->template['superbill_id'] = "<a href='".Cellini::link('update')."id={\$superbill_id}'>{\$superbill_id}</a>";
@@ -15,7 +15,7 @@ class C_Superbill extends Controller {
 		return $this->fetch(Cellini::getTemplatePath("/superbill/" . $this->template_mod . "_list.html"));
 	}
 	
-	function update_action($superbill_id) {
+	function update_action_edit($superbill_id) {
 		$ds =& new SuperbillDatasource();
 		$ds->reset();
 		$renderer = new Grid_Renderer_JS();
