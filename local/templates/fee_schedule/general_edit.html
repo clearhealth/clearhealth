@@ -20,4 +20,6 @@
 	}
 </script>
 {/literal}
+{if ($feeSchedule->get('id') > 0)}
 {clni_register_validation_rule id="default_value" rule="confirm"}
+{/if}
