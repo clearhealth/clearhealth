@@ -104,7 +104,7 @@ class InsuranceProgram extends ORDataObject {
 	}
 
 	function programList() {
-		$sql = "select insurance_program_id, concat_ws('->',c.name,ip.name) as name from $this->_table ip inner join company c using(company_id)";
+		$sql = "select insurance_program_id, concat_ws('->',c.name,ip.name) as name from $this->_table ip inner join company c using(company_id) order by c.name, ip.name";
 		$res = $this->_execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
