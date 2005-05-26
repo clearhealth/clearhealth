@@ -59,7 +59,6 @@ class C_Calendar extends CalendarController {
 		if (is_array($filters)) {
 			
 			foreach ($filters as $type => $filter) {
-				
 				if (!empty($filter)) {
 					switch($type) {
 						case 'user': 
@@ -81,6 +80,9 @@ class C_Calendar extends CalendarController {
 		if (!empty($users)) {
 			$users = substr($users,0,-2);
 			$this->assign("users_filter", $users);
+		}
+		else {
+			$this->assign("users_filter",'');
 		}
 		
 		if (!empty($locations)) {
