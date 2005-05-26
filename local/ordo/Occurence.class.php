@@ -281,6 +281,17 @@ class Occurence extends ORDataObject{
 		$this->user = $u;
 		return $this->user;
 	}
+
+	function get_user_display_name() {
+		$user = $this->get_user();
+		$person =& ORDataObject::factory('Person',$user->get('person_id'));
+		return $person->get('last_name').', '.$person->get('first_name');
+	}
+
+	function get_external_display_name() {
+		$person =& ORDataObject::factory('Person',$this->get('external_id'));
+		return $person->get('last_name').', '.$person->get('first_name');
+	}
 	
 	function get_location_name() {
 		if (!is_object($this->location)) $this->location = new Room($this->location_id);

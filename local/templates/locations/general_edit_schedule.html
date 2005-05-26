@@ -169,6 +169,8 @@
 	</script>
 	{/literal}
 	{clni_form action=$SELECTED_ACTION process=$PROCESS}
+	{assign var=events value=$event->get_occurences()}
+	{if count($events) > 0}
 	<select onchange="submitChecked(this);" name="action">
 		<option>With Selected</option>
 		<option value="delete">Delete</option>
@@ -176,8 +178,11 @@
 	<table class="grid">
 		<tr>
 			<td style="background-color: transparent"><input type="checkbox" onclick="checkAll(this);"></td><th>Date</th><th>Time</th><th>Duration</th><th>Location</th>
+			{if $schedule->get_schedule_code() == "NS"}
+				<th>Patient</th><th>Title</th><th>Reason</th><th>Provider</th>
+			{/if}
 		</tr>
-		{foreach from=$event->get_occurences() item=timeplace key=key}
+		{foreach from=$events item=timeplace key=key}
 		<tr {if $key % 2 == 1}class="alt"{/if}>
 			<td>
 				<input type="checkbox" name="selected[{$timeplace->get_id()}]" value="1">
@@ -197,10 +202,17 @@
 				{assign var=location_id value=$timeplace->get_location_id()} 
 				{$rooms_practice_array.$location_id}
 			</td>
+			{if $schedule->get_schedule_code() == "NS"}
+				<td>{$timeplace->get('external_display_name')}</td>
+				<td>{$timeplace->get('notes')}</td>
+				<td>{enum_lookup name="appointment_reasons" value=$timeplace->get('reason_code')}</td>
+				<td>{$timeplace->get('user_display_name')}</td>
+			{/if}
 			
 		</tr>
 		{/foreach}
 		</table>
+	{/if}
 	</form>
 		<br>
 	</td>
