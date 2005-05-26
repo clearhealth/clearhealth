@@ -27,8 +27,8 @@ var C_PatientFinder = function find_remoting(searchString) {
 </script>
 {/literal}
 
-
-{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+<div id="patientGeneralEditMessages"></div>
+{clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 	{assign var="detail_section_title" value="Patient Details"}
 	<table class="columns"><tr><td>
 		<fieldset class="radio" id="person">
@@ -61,11 +61,11 @@ var C_PatientFinder = function find_remoting(searchString) {
 				</td>
 			</tr>
 			<tr>
-				<td><label>Salutation: </label></td>
+				<td><label>{l}Salutation{/l}: </label></td>
 				<td colspan="2">
 					<input name="person[salutation]" size="5" value="{$person->get('salutation')}" id="salutation">
-					&nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">
-					&nbsp;&nbsp;Middle Initial: 
+					&nbsp;&nbsp;{l}Initials{/l}: <input name="person[initials]" size="3" value="{$person->get('initials')}">
+					&nbsp;&nbsp;{l}Middle Initial{/l}: 
 					<input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
 				</td>
 			</tr>
@@ -81,25 +81,29 @@ var C_PatientFinder = function find_remoting(searchString) {
             </tr>
 		 	{/if}
             <tr>
-				<td><label>Employer Name:</label> </td>
+				<td><label>{l}Employer Name{/l}:</label> </td>
 				<td><input name="person[employer_name]" size="30" value="{$person->get('employer_name')}"></td>
             </tr>
             <tr>
-				<td><label>Gender:</label> </td>
+				<td><label>{l}Gender{/l}:</label> </td>
 				<td colspan="2">
 					<select name="person[gender]">
 						<option></option>
 						{html_options options=$person->getGenderList() selected=$person->get('gender')}
 					</select>&nbsp;&nbsp;
-			  		DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+			  		<label>{l}DOB{/l}:</label> {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
 				</td>
 			</tr>
             <tr>
-				<td><label>Marital Status:</label> </td>
+				<td><label>{l}Marital Status{/l}:</label> </td>
 				<td colspan="2">
 					{html_options name="person[marital_status]" options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
 					&nbsp;&nbsp;
-					Default Provider:
+				</td>
+				</tr>
+				<tr>
+				<td colspan="2">
+					<label>{l}Default Provider{/l}:</label>
 					<select name="person[default_provider]">
 						<option></option>
 						{html_options options=$providers_array selected=$person->get('default_provider')}
@@ -108,9 +112,9 @@ var C_PatientFinder = function find_remoting(searchString) {
 			</tr>
 		    {if $person->get_person_id() == 0}
 		    <tr>
-			    <td><label>Home Phone:</label></td>
-			    <td><input name="number[number]" size=10><input type="hidden" name="number[active]" value=1><input type="hidden" name="number[number_type]" value="1">
-				<label class="inline">Registration Location: </label><input type="hidden" name="patientStatistics[patient_statistics_id]" value="{$patientStatistics->get('id')}">
+			    <td><label>{l}Home Phone{/l}:</label></td>
+			    <td><input id="initialphone" name="number[number]" size=10><input type="hidden" name="number[active]" value=1><input type="hidden" name="number[number_type]" value="1">
+				<label class="inline">{l}Registration Location{/l}: </label><input type="hidden" name="patientStatistics[patient_statistics_id]" value="{$patientStatistics->get('id')}">
 				    <select name="patientStatistics[registration_location]">
 					    {html_options options=$building->getBuildingList()}
 				    </select>
@@ -124,8 +128,14 @@ var C_PatientFinder = function find_remoting(searchString) {
 			</tbody>
 		</table>
 		</fieldset>
+{clni_register_message_target formId="patientGeneralEditForm" targetId="patientGeneralEditMessages"}
 {clni_register_validation_rule id="last_name"}
-{clni_register_validation_rule id="identifier"}
+{clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
+{clni_register_validation_rule id="identifier" rule="required" message="An Identifier is required"}
+{if $person->get_person_id() == 0}
+{clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
+{clni_register_validation_rule id="initialphone" rule="required" message="A Phone Number is required"}
+{/if}
 
 	
 	{*
@@ -141,7 +151,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 <table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
+		<th>{l}Number{/l}</th><th>{l}Type{/l}</th><th>{l}Status{/l}</th><th>{l}Notes{/l}</th>
         </tr>
         {foreach from=$parent->get_numbers() item=row}
 	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
@@ -153,7 +163,7 @@ var C_PatientFinder = function find_remoting(searchString) {
         </tr>
         {foreachelse}
         <tr>
-                <td colspan="3">No Phone Numbers</td>
+                <td colspan="3">{l}No Phone Numbers{/l}</td>
         </tr>
         {/foreach}
 </table>
