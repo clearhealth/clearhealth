@@ -95,12 +95,11 @@ class Occurence extends ORDataObject{
 	 * Constructor sets all attributes to their default value
 	 *  
 	 */
-	function Occurence($id = "")	{
+	function Occurence($id = 0)	{
 		//call the parent constructor so we have a _db to work with
 		parent::ORDataObject();
 
 		//shore up the most basic ORDataObject bits
-		$this->id = $id;
 
 		$this->event_id = "";
 		$this->start = "";
@@ -110,8 +109,14 @@ class Occurence extends ORDataObject{
 		$this->date = "0000-00-00";
 	
 		$this->_table = "occurences";
+
+		$this->setup($id);
 		
-		if ($id != "") {
+	}
+
+	function setup($id = 0) {
+		$this->set('id',$id);
+		if ($id > 0) {
 			$this->populate();
 		}
 	}
