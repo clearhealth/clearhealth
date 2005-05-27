@@ -22,7 +22,7 @@ $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
 $config['htmldoc'] = "/usr/bin/htmldoc";
 
 // Do you want an option for group appointments on the calendar
-$config['scheduling']['group_appointments'] = true;
+$config['scheduling']['group_appointments'] = false;
 
 ################################################################################
 # Database Setup
@@ -74,4 +74,7 @@ $config['openemr_db'] = 'openemr';
 
 // ???
 $GLOBALS['C_ALL']['emr_dir'] = "/index.php/";
+
+// template mappings
+$GLOBALS['C_ALL']['group_appointments'] = $config['scheduling']['group_appointments'];
 ?>

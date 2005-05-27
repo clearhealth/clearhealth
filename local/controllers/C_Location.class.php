@@ -356,6 +356,9 @@ class C_Location extends Controller {
 		if (isset($_POST['walkin'])) {
 			$oc->set('walkin',$_POST['walkin']);
 		}
+		if (isset($_POST['group_appointment'])) {
+			$oc->set('group_appointment',$_POST['group_appointment']);
+		}
 		if (isset($_POST['reason_id'])) {
 			$oc->set('reason_code',$_POST['reason_id']);
 		}

@@ -17,8 +17,36 @@ function captureEnter (field, event) {
 		return true;
 	}      
 
-</script>
 {/literal}
+{if $group_appointments}
+var action="{$GROUP_ACTION}";
+{literal}
+var oldContent = new Object();
+function groupAppointment(cbox) {
+	var list = ['ghide1','ghide2','ghide3','ghide4'];
+	if (cbox.checked) {
+		document.getElementById('group_appointment1').checked = true;
+		document.getElementById('group_appointment2').checked = true;
+		for(var i = 0; i < list.length; i++) {
+			oldContent[list[i]] = document.getElementById(list[i]).innerHTML;
+			document.getElementById(list[i]).innerHTML = "";
+		}
+		document.getElementById('ghide1').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
+		document.getElementById('ghide3').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
+	}
+	else {
+		document.getElementById('group_appointment1').checked = false;
+		document.getElementById('group_appointment2').checked = false;
+		for(var i = 0; i < list.length; i++) {
+			if (oldContent[list[i]]) {
+				document.getElementById(list[i]).innerHTML = oldContent[list[i]];
+			}
+		}
+	}
+}
+{/literal}
+{/if}
+</script>
 <link rel="stylesheet" type="text/css" href="{$base_dir}calendar.css">
 <div class="popup" id="popup">
 <table width="100%" border="0" cellpadding="0" cellspacing="0" class="calborder">
@@ -65,11 +93,11 @@ function captureEnter (field, event) {
 				<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
-					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">New</a>&nbsp;&nbsp;
+					<td colspan="2" id="ghide1">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">New</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
-				<td valign="top" colspan="2">
+				<td valign="top" colspan="2" id="ghide2">
 					<INPUT TYPE="hidden" name="external_id"  id="patient_id_2" value="{$edit_oc->get_external_id()}">
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
                 	<div id="acDiv2" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
@@ -80,6 +108,13 @@ function captureEnter (field, event) {
 					<input type="checkbox" value="1" name="walkin" id="walkin" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
 					<label class="inline" for="walkin">Walk in?</label></td>
 				</tr>
+{if $group_appointments}
+				<tr>
+					<td colspan=2>
+					<input onchange="groupAppointment(this)" type="checkbox" value="1" name="group_appointment" id="group_appointment2" {if $edit_oc->get('group_appointment') > 0}CHECKED{/if}>
+					<label class="inline" for="group_appointment2">Group Appointment?</label></td>
+				</tr>
+{/if}
 				<tr>
 					<td colspan="2">Time</td>
 				</tr>
@@ -145,10 +180,10 @@ function captureEnter (field, event) {
 					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"> {html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
-					<td colspan="2">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
+				<td colspan="2" id="ghide3">Patient&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
 					</td>
 				</tr>
-				<tr>
+				<tr id="ghide4">
 				<td valign="top" colspan="2">
 					<INPUT TYPE="hidden" name="external_id" id="patient_id_1" value="{$edit_oc->get_external_id()}">
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
@@ -156,10 +191,17 @@ function captureEnter (field, event) {
 				</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="hidden" name="walkin" value="0">
+					<td colspan=2><input type="hidden" name="walkin" value="0">
 					<input type="checkbox" value="1" name="walkin" id="walkin1" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
 					<label class="inline" for="walkin1">Walk in?</label></td>
 				</tr>
+{if $group_appointments}
+				<tr>
+					<td colspan=2>
+					<input onchange="groupAppointment(this)" type="checkbox" value="1" name="group_appointment" id="group_appointment1" {if $edit_oc->get('group_appointment') > 0}CHECKED{/if}>
+					<label class="inline" for="group_appointment1">Group Appointment?</label></td>
+				</tr>
+{/if}
 				<tr>
 					<td colspan="2">Time</td>
 				</tr>
@@ -294,5 +336,8 @@ var C_PatientFinder = function find_remoting(searchString) {
 }
 
 setupAutoComplete();
-</SCRIPT>
 {/literal}
+{if $group_appointment}
+groupAppointment(document.getElementById('group_appointment1'));
+{/if}
+</SCRIPT>

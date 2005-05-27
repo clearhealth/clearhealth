@@ -42,6 +42,9 @@ class C_Calendar extends CalendarController {
 		$this->assign("FILTER_ACTION",Cellini::managerLink('setFilter'). $date_link . "");
 		$this->assign_by_ref("CONTROLLER", $this);
 		$this->assign('DELETE_ACTION', Cellini::link('delete','Location'));
+		if(isset($_GET['appointment_id'])) {
+			$this->assign('GROUP_ACTION',Cellini::link('editGroup','appointment',true,$_GET['appointment_id']));
+		}
 		
 		$this->_setupFilterDisplay();
 	}

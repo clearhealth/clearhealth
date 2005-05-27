@@ -153,8 +153,8 @@ class Encounter extends ORDataObject {
 				." left join user u on o.user_id = u.user_id"
 				." left join provider as pvds on pvds.person_id = u.person_id"
 				." left join person psn on psn.person_id = pvds.person_id"
-				." where o.external_id = " . (int)$this->get("patient_id")
-				." order by o.start DESC limit 10";
+				." left join group_occurence go on o.id = go.occurence_id"
+				." where o.external_id = " . (int)$this->get("patient_id") ." or go.patient_id = ". (int)$this->get("patient_id")				." order by o.start DESC limit 10";
 		$result = $this->_execute($sql);
 		$ar = array();
 		while ($result && !$result->EOF) {
