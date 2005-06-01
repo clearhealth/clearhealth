@@ -34,7 +34,7 @@
 {literal}
 <script language="javascript" type="text/javascript">
 var C_FindPeople = function find_remoting(searchString) {
-        var h = new c_patientfinder(this.dataHandler);
+        var h = new c_patientfinder(this.dataHandler,true);
         h.Sync();
                                                                                 
         var results = h.find_remoting(searchString,true);
