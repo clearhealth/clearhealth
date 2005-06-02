@@ -96,6 +96,26 @@ class EncounterValue extends ORDataObject {
 		return $ds;
 	}
 
+
+	function encounterValueListArray($encounter_id) {
+
+		settype($encounter_id,'int');
+
+		$sql = "select encounter_value_id, `value`, value_type from $this->_table where encounter_id = $encounter_id";
+		$res = $this->_execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[]=$res->fields['encounter_value_id'];
+			$res->MoveNext();
+		}
+		return $ret;
+
+	}
+
+
+
+
+
 	/**#@+
 	 * Enumeration getters
 	 */

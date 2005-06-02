@@ -103,6 +103,23 @@ class EncounterPerson extends ORDataObject {
 		return $ds;
 	}
 
+
+	/**#@-*/
+	function encounterPersonListArray($encounter_id) {
+
+		settype($encounter_id,'int');
+
+		$sql = "select encounter_person_id, concat_ws(' ',first_name,last_name) person, person_type from $this->_table inner join person using(person_id) where encounter_id = $encounter_id";
+		$res = $this->_execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[]=$res->fields['encounter_person_id'];
+			$res->MoveNext();
+		}
+		return $ret;
+
+	}
+
 	/**#@+
 	 * Enumeration getters
 	 */
