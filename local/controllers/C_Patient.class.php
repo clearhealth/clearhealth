@@ -441,6 +441,7 @@ class C_Patient extends Controller {
 				return;
 			}else{	
 				$encounter->set("status","closed");	
+				$encounter->persist();
 				$this->_generateClaim($encounter);
 			}
 		}
