@@ -1,18 +1,19 @@
 This is a quick guide to installing ClearHealth and FreeB2
 
-clearhealth and freeb2 must be installed in parallel directories. For simplicity they share a directory called clear in the tarball for this reason. clear should be placed in a directory published by Apache with php rights. Google for LAMP installation or visit the Apache and PHP website for more information on how to do this.
+The tar ball contains on directory, called "clearhealth". This should be placed in a directory published by Apache with php rights. Google for LAMP installation or visit the Apache and PHP website for more information on how to do this.
 
-   1. edit clear/clearhealth/local/config.php with the SQL variables you want to use
+Generally the ClearHealth project will support the latest versions of Fedora/RHEL and Ubuntu/Debian, but otherwise if you want to run ClearHealth, please download the XAMPP project. This will give you versions of php/mysql/apache that the project can support more easily. 
+
+   1. edit clearhealth/local/config.php with the SQL variables you want to use
    2. create the database with the same name used in config.php, usually clearhealth
-   3. load clear/clearhealthlocal/setup/install.sql into the clearhealth db
-   4. configure the clear/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
+   3. load clearhealth/local/setup/install.sql into the clearhealth db
+   4. configure the clearhealth/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
    5. create the database with the same name used in the freeb2 config.php, usually freeb2
-   6. load local/setup/freeb2.sql into the freeb2 db
-   7. both freeb2 and clearhealth directorys have a tmp subdirectory, these subdirectories must be configured so that the webserver can write to it, either by changing its permissions to 777 or changing the ownership to the apache user
+   6. load freeb2/local/setup/freeb2.sql into the freeb2 db
+   7. clearhealth/tmp and clearhealth/freeb2/tmp must be configured so that the webserver can write to them, either by changing its permissions to 777 or changing the ownership to the apache user
    8. change memory_limit in the php.ini file to 64
-   9. change max_execution_time in php.ini to 45 
+   9. change max_execution_time in php.ini to 45
   10. change register_globals in php.ini to off
   11. change magic_quotes_gpc in php.ini to off
-  12. restart httpd server
-
+  12. restart httpd server  
 
