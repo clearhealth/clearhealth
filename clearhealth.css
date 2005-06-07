@@ -22,9 +22,16 @@ body {
 #selectedItem {
 	position: relative;
 	left: 23em;
-	top: -17pt;
-	font-size: 11pt;
+	top: -16pt;
+	font-size: 10pt;
 	z-index: 10;
+	border: solid 1px black;
+	padding: 2px;
+	background-color: white;
+}
+#selectedItem a {
+	font-size: 10pt;
+	font-weight: bold;
 }
 
 #header {
