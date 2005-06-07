@@ -21,9 +21,10 @@ body {
 
 #selectedItem {
 	position: relative;
-	left: 110%;
-	top: -16pt;
-	font-size: 12pt;
+	left: 23em;
+	top: -17pt;
+	font-size: 11pt;
+	z-index: 10;
 }
 
 #header {

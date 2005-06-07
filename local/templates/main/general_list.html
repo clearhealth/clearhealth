@@ -68,7 +68,7 @@ eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,lo
 		{if $menu_group == "patient"}
 		<div id="selectedItem">
 			{if $selectedPatient}
-			Selected Patient: <a href="{link action="dashboard" controller="Patient" defaultArg=$selectedPatient->get("person_id")}"><b>{$selectedPatient->get('last_name')}, {$selectedPatient->get('first_name')}</a> #{$selectedPatient->get('record_number')}, Age {$selectedPatient->get('age')}</b>
+			Patient: <a href="{link action="dashboard" controller="Patient" defaultArg=$selectedPatient->get("person_id")}"><b>{$selectedPatient->get('last_name')}, {$selectedPatient->get('first_name')}</a> #{$selectedPatient->get('record_number')}, Age {$selectedPatient->get('age')}</b>
 			{/if}
 		</div>
 		{/if}
