@@ -331,7 +331,7 @@ class C_Location extends Controller {
 		
 		$double = false;
 		//check for double book
-		if (is_numeric($oc->get_user_id()) && !is_numeric($_POST['occurence_id'])) {
+		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1) {
 			$double = $cs->check_double_book($oc,$this->event);
 			if ($double) {
 			if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
