@@ -157,6 +157,17 @@ foreach($occurences as $a_occurence)
 	$external_id=$a_occurence['external_id'];
 	$reason_code=$a_occurence['reason_code'];
 
+	$check_import_map_sql = "SELECT * FROM `import_map` WHERE `old_table_name` = 'patient' AND `old_id` = ".$external_id;
+	$query = mysql_query($check_import_map_sql);
+	$import_result = mysql_fetch_array($query);
+	if(!empty($import_result)){
+		$new_external_id=$import_result['new_id'];
+	}
+	else{
+		$new_external_id="";
+		echo "No Patient Reference\n";
+	}
+
 	$checkoccurenceSQL='SELECT * FROM `occurences` WHERE `id` = '.$a_occurence['id'];	
 	$query = mysql_query($checkoccurenceSQL);
 
@@ -169,7 +180,7 @@ foreach($occurences as $a_occurence)
 			`location_id` = '$location_id', 
 			`user_id` = '$user_id', 
 			`last_change_id` = '$last_change_id', 
-			`external_id` = '$external_id', 
+			`external_id` = '$new_external_id', 
 			`reason_code` = '$reason_code' 
 			WHERE `id` = $id LIMIT 1";
 
@@ -181,16 +192,6 @@ foreach($occurences as $a_occurence)
 We need to grap the patient map for this schedule item and use the new patient id in the appointment...
 */
 
-	$check_import_map_sql = "SELECT * FROM `import_map` WHERE `old_table_name` = 'patient' AND `old_id` = ".$external_id;
-	$query = mysql_query($check_import_map_sql);
-	$import_result = mysql_fetch_array($query);
-	if(!empty($import_result)){
-		$new_external_id=$import_result['new_id'];
-	}
-	else{
-		$new_external_id="";
-		echo "No Patient Reference\n";
-	}
 	$insert_occurence_sql = "INSERT INTO `occurences` (
 		`id`, 
 		`event_id`, 
