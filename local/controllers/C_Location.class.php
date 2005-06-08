@@ -328,10 +328,10 @@ class C_Location extends Controller {
 				//echo "this event is NOT within providers schedule<br>";
 			}
 		}
-		
+
 		$double = false;
 		//check for double book
-		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1) {
+		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1 && $_POST['walkin'] != 1) {
 			$double = $cs->check_double_book($oc,$this->event);
 			if ($double) {
 			if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
