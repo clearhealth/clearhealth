@@ -68,7 +68,7 @@ div.waitingActive {
 	display: block;
 	position: absolute;
 	text-align: center;
-	vertical-align: center;
+	vertical-align: middle;
 	width: 100%;
 	background-color: white;
 	border: solid 2px black;
