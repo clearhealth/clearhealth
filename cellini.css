@@ -30,6 +30,7 @@ table.grid th { padding: 2px;
 	font-size: 12px;
 	background-color: transparent;
 	vertical-align: bottom;
+	white-space: nowrap;
 }
 table.grid td {
 	margin: 2px;
