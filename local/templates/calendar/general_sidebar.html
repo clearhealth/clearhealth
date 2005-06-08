@@ -104,6 +104,13 @@ function groupAppointment(cbox) {
 				</td>
 				</tr>
 				<tr>
+					<td colspan="2">Time</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2"><input type="hidden" name="walkin" value="0">
 					<input type="checkbox" value="1" name="walkin" id="walkin" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
 					<label class="inline" for="walkin">Walk in?</label></td>
@@ -115,13 +122,6 @@ function groupAppointment(cbox) {
 					<label class="inline" for="group_appointment2">Group Appointment?</label></td>
 				</tr>
 {/if}
-				<tr>
-					<td colspan="2">Time</td>
-				</tr>
-				<tr>
-					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
-					</td>
-				</tr>
 				<tr>
 				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
 				</tr>
@@ -191,6 +191,13 @@ function groupAppointment(cbox) {
 				</td>
 				</tr>
 				<tr>
+					<td colspan="2">Time</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+					</td>
+				</tr>
+				<tr>
 					<td colspan=2><input type="hidden" name="walkin" value="0">
 					<input type="checkbox" value="1" name="walkin" id="walkin1" {if $edit_oc->get('walkin') == 1}CHECKED{/if}>
 					<label class="inline" for="walkin1">Walk in?</label></td>
@@ -202,13 +209,6 @@ function groupAppointment(cbox) {
 					<label class="inline" for="group_appointment1">Group Appointment?</label></td>
 				</tr>
 {/if}
-				<tr>
-					<td colspan="2">Time</td>
-				</tr>
-				<tr>
-					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
-					</td>
-				</tr>
 				<tr>
 				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
 				</tr>
