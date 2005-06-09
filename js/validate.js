@@ -18,17 +18,39 @@ Plugins:  clni_form and clni_register_validation_rule
 // match
 // date
 // email
+// alphanum
+// requiredif
 
 
 /**
  * Register a validation rule
  */
 function clni_register_validation_rule(id,rule,notify,message) {
-	o = new Object;
+	o = new Object();
 	o.id = id;
 	o.rule = rule;
 	o.notify = notify;
 	o.message = message;
+	clni_validation_rules[clni_validation_rules.length] = o;
+}
+
+/**
+ * Register a validation rule with a hash allowing all optional attributes to be specified
+ */
+function clni_register_validation_rule_hash(hash) {
+	o = new Object();
+	for(var i in hash) {
+		o[i] = hash[i];
+	}
+	if (!o['notify'] && !o['message']) {
+		o.notify = 'alert';
+	}
+	if (!o['notify'] && o['message']) {
+		o.notify = 'messageAlert';
+	}
+	if (!o['message']) {
+		o.message = '';
+	}
 	clni_validation_rules[clni_validation_rules.length] = o;
 }
 
@@ -79,13 +101,20 @@ function clni_validate(currentForm) {
 		target.innerHTML = "";
 		target.className = "clniMessageInActive";
 	}
+	// reset ok on all form elements
+	for(var i =0; i < clni_validation_rules.length; i++) {
+		rule = clni_validation_rules[i];
+		document.getElementById(rule.id).ok = true;
+	}
+
+	// validate form
 	for(var i =0; i < clni_validation_rules.length; i++) {
 		rule = clni_validation_rules[i];
 
 		//alert("Checking rule: "+rule.rule+" on "+rule.id+" disabled: "+document.getElementById(rule.id).disabled);
 		// only run validation on non disabled elements
 		if (document.getElementById(rule.id).disabled != true && (elementInCurrentForm(document.getElementById(rule.id),currentForm))) {
-			document.getElementById(rule.id).ok = true;
+			document.getElementById(rule.id).rule = rule;
 			eval('var res = clni_rule_'+rule.rule+'(document.getElementById("'+rule.id+'"));');
 			
 			if (!res) {
@@ -186,11 +215,11 @@ function clni_rule_required(element) {
 		return true;
 	}
 
-	if (element.value.length == "") {
-		return false;
+	if (element.value.match(/\S/)) {
+		return true;
 	}
+	return false;
 	
-	return true;
 }
 
 /**
@@ -336,4 +365,31 @@ function clni_rule_telephone(element) {
 		return true;
 	}
 	return false;
+}
+
+/**
+ * Require that a string be alphanumeric
+ */
+function clni_rule_alphanum(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
+
+	if (element.value.match(/^[0-9a-zA-Z]$/)) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Make the field required when another field is set to a specific value
+ * Other field is in the testElement attribute the value is in the testValue attribute on rule
+ */
+function clni_rule_requiredif(element) {
+	var value = document.getElementById(element.rule.testElement).value;
+
+	if (value == element.rule.testValue) {
+		return clni_rule_required(element);
+	}
+	return true;
 }
