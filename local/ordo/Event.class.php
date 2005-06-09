@@ -441,9 +441,9 @@ class Event extends ORDataObject{
 		
 	}
 	
-	function get_occurences() {
+	function get_occurences($newest = -1) {
 		if (empty($this->occurences)) {
-			$this->occurences = Occurence::occurences_factory($this->id);	
+			$this->occurences = Occurence::occurences_factory($this->id,$newest);	
 		}
 		return $this->occurences;	
 	}
