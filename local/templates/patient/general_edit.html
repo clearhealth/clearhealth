@@ -40,33 +40,22 @@ var C_PatientFinder = function find_remoting(searchString) {
                         <tr>
                         <tr>
 				<td><label>{l}First Name{/l}: </label></td>
-				<td style="white-space: nowrap;" colspan=2><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
+				<td style="white-space: nowrap;" colspan="2"><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
                         </tr>
 			<tr>
 				<td><label>{l}Last Name{/l}: </label></td>
-				<td colspan=2><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+				<td colspan="2"><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
 			</tr>
 			<tr>
-				<td><label>{l}Record Number{/l}: </label></td>
-				<td colspan="2"><input id="record_number" name="person[record_number]" size="20" value="{$person->get('record_number')}">
+				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>
+				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}">
 				</td>
-			</tr>
-			<tr>
-				<td><label>{l}Identifier{/l}: </label></td>
-				<td colspan="2"><input id="identifier" name="person[identifier]" size="20" value="{$person->get('identifier')}">
-					<select name="person[identifier_type]">
+				<td style="white-space:nowrap;"><label>{l}Id #{/l}: </label></td>
+				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="{$person->get('identifier')}">
+					<select name="person[identifier_type]" >
 						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
 					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><label>{l}Salutation{/l}: </label></td>
-				<td colspan="2">
-					<input name="person[salutation]" size="5" value="{$person->get('salutation')}" id="salutation">
-					&nbsp;&nbsp;{l}Initials{/l}: <input name="person[initials]" size="3" value="{$person->get('initials')}">
-					&nbsp;&nbsp;{l}Middle Initial{/l}: 
-					<input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
 				</td>
 			</tr>
 			{if !$hide_type}
@@ -80,30 +69,33 @@ var C_PatientFinder = function find_remoting(searchString) {
 				 </td>
             </tr>
 		 	{/if}
-            <tr>
-				<td><label>{l}Employer Name{/l}:</label> </td>
-				<td><input name="person[employer_name]" size="30" value="{$person->get('employer_name')}"></td>
-            </tr>
+		 	<tr>
+		 		<td>
+			  		<label>{l}DOB{/l}:</label>
+				</td>
+				<td>
+					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+				</td>
+		 	</tr>
             <tr>
 				<td><label>{l}Gender{/l}:</label> </td>
-				<td colspan="2">
+				<td>
 					<select name="person[gender]">
 						<option></option>
 						{html_options options=$person->getGenderList() selected=$person->get('gender')}
 					</select>&nbsp;&nbsp;
-			  		<label>{l}DOB{/l}:</label> {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
 				</td>
-			</tr>
-            <tr>
-				<td><label>{l}Marital Status{/l}:</label> </td>
 				<td colspan="2">
+					{l}Marital Status{/l}:&nbsp;
 					{html_options name="person[marital_status]" options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
 					&nbsp;&nbsp;
 				</td>
-				</tr>
-				<tr>
-				<td colspan="2">
+			</tr>
+			<tr>
+				<td>
 					<label>{l}Default Provider{/l}:</label>
+				</td>
+				<td colspan="3">
 					<select name="person[default_provider]">
 						<option></option>
 						{html_options options=$providers_array selected=$person->get('default_provider')}
@@ -113,8 +105,17 @@ var C_PatientFinder = function find_remoting(searchString) {
 		    {if $person->get_person_id() == 0}
 		    <tr>
 			    <td><label>{l}Home Phone{/l}:</label></td>
-			    <td><input id="initialphone" name="number[number]" size=10><input type="hidden" name="number[active]" value=1><input type="hidden" name="number[number_type]" value="1">
-				<label class="inline">{l}Registration Location{/l}: </label><input type="hidden" name="patientStatistics[patient_statistics_id]" value="{$patientStatistics->get('id')}">
+			    <td>
+			    <input id="initialphone" name="number[number]" size="16">
+			    <input type="hidden" name="number[active]" value="1">
+			    <input type="hidden" name="number[number_type]" value="1">
+			   	</td>
+			</tr>
+			<tr>
+			   	<td>
+				<label class="inline">{l}Registration Location{/l}: </label>
+				</td>
+				<td colspan="3">
 				    <select name="patientStatistics[registration_location]">
 					    {html_options options=$building->getBuildingList()}
 				    </select>
