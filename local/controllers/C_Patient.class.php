@@ -77,9 +77,12 @@ class C_Patient extends Controller {
 			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 
 			$note =& ORDataObject::factory('PatientNote');
-			$noteGrid =& new cGrid($note->listNotes($this->get('patient_id')));
+			$noteGrid =& new cGrid($note->listNotes($this->get('patient_id'),0));
 			$noteGrid->pageSize = 10;
 			$noteGrid->indexCol = false;
+			$depnoteGrid =& new cGrid($note->listNotes($this->get('patient_id'),1));
+			$depnoteGrid->pageSize = 10;
+			$depnoteGrid->indexCol = false;
 			
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
@@ -100,6 +103,7 @@ class C_Patient extends Controller {
 			$this->assign_by_ref('reportGrid',$reportGrid);
 			$this->assign_by_ref('accountStatus',$accountStatus);
 			$this->assign_by_ref('noteGrid',$noteGrid);
+			$this->assign_by_ref('depnoteGrid',$depnoteGrid);
 			$this->assign_by_ref('note',$note);
 			$this->assign_by_ref('appointmentGrid',$appointmentGrid);
 

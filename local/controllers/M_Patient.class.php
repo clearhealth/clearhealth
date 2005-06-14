@@ -374,6 +374,14 @@ class M_Patient extends Manager {
 		$note->persist();
 		$this->controller->note_id = $note->get('id');
 	}
+	function process_depnote($patient_id) {
+		$note_id = $_GET['pnote_id'];
+		$note =& ORDataObject::factory('PatientNote',$note_id);
+		$note->deprecated=1;
+		$note->deprecate();
+
+		$note->persist();
+	}
 
 }
 ?>
