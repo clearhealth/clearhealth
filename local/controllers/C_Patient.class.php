@@ -225,6 +225,13 @@ class C_Patient extends Controller {
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
 		}
+
+		// check if an encounter_id already exists for this appointment
+		if ($appointment_id > 0) {
+			ORDataObject::factory_include('Encounter');
+			$encounter_id = Encounter::encounterIdFromAppointmentId($appointment_id);
+		}
+
 		if ($encounter_id > 0) {
 			$this->set('encounter_id',$encounter_id);
 		}

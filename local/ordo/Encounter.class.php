@@ -177,5 +177,18 @@ class Encounter extends ORDataObject {
 		}
 		return "No Encounters";
 	}
+
+	// static
+	function encounterIdFromAppointmentId($appointmentId) {
+		settype($appointmentId,'int');
+		$en =& ORDataObject::factory('Encounter');
+		$sql = "select encounter_id from $en->_table where occurence_id = $appointmentId";
+		$res = $en->_execute($sql);
+		if ($res && !$res->EOF) {
+			$id = $res->fields['encounter_id'];
+			return $id;
+		}
+		return 0;
+	}
 }
 ?>
