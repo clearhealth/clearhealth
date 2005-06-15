@@ -145,6 +145,9 @@ class M_Patient extends Manager {
 	 */
 	function process_patientStatistics_update($patient_id,$data) {
 		if (count($data) > 0) {
+			if (!isset($data['patient_statistics_id'])) {
+				$data['patient_statistics_id'] = 0;
+			}
 			$id = (int)$data['patient_statistics_id'];
 			$patientStatistics =& ORDataObject::factory('PatientStatistics',$id,$patient_id);
 			$patientStatistics->populate_array($data);
