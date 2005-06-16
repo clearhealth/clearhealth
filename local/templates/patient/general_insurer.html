@@ -101,6 +101,10 @@
 				<td><input name="insuredRelationship[copay]" value="{$insuredRelationship->get('copay')}"></td>
 			</tr>
 			<tr>
+				<td><label>Active:</label></td>
+				<td><input name="insuredRelationship[active]" {if $insuredRelationship->get('active')}checked{/if} value="{$insuredRelationship->get('active')}"></td>
+			</tr>
+			<tr>
 				<td><label>Subscriber:</label></td>
 				<td><select name="insuredRelationship[subscriber_to_patient_relationship]" onchange="selectSubscriber(this)" id="subscriberRelationship">
 					{html_options options=$insuredRelationship->getSubscriberToPatientRelationshipList() 

@@ -35,6 +35,7 @@ class InsuredRelationship extends ORDataObject {
 	var $program_order			= '';
 	var $effective_start			= '';
 	var $effective_end			= '';
+	var $active					= 1;
 	/**#@-*/
 
 
