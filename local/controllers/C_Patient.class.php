@@ -847,80 +847,51 @@ class C_Patient extends Controller {
 			trigger_error("Unable to register treating facility data - ".$freeb2->claimLastError($claim_identifier));
 		}
 	
-
-	
 		$encounter_id=$encounter->get('id');
 
-// Add Encounter People....
-     // Including Referring Provider
-     // Later Supervising Proivider
+		// Add Encounter People....
 
 		$EncounterPeople =& ORDataObject::factory('EncounterPerson');
 		$encounterPeopleArray=$EncounterPeople->encounterPersonListArray($encounter_id);
 	
 		foreach($encounterPeopleArray as $encounter_person_id){	
-	
-			echo "DEBUG: C_Patient: getting person $encounter_person_id <br>";
-			$EncounterPerson =& ORDataObject::factory('EncounterPerson',$encounter_person_id,$encounter_id);
-		
-
-			$persontypelist = $encounter->_load_enum("encounter_person_type",false);
-			$persontypelist = array_flip($persontypelist);
-
-			$person_type=$EncounterPerson->get('person_type');	
-			if (strcmp($persontypelist[$person_type],"Referring Provider")==0){
-				echo "<br>Debug: C_Patient: Refering Provider Added <br>";
-				$referringProvider =& ORDataObject::factory('Provider',$EncounterPerson->get('person_id'));
-
-				$referringProviderData = $this->_cleanDataArray($referringProvider->toArray());
-
-				if (!$freeb2->registerData($claim_identifier,'ReferringProvider',$referringProviderData)) {
-					trigger_error("Unable to register referring provider data - ".$freeb2->claimLastError($claim_identifier));
-				}
-
-/*
-		// register supervising provider - provider
-			if (!$freeb2->registerData($claim_identifier,'SupervisingProvider',$providerData)) {
-				trigger_error("Unable to register supervising provider data - ".$freeb2->claimLastError($claim_identifier));
-			}*/// This code is functional, however it needs to grab the actual providers via the enumerations.
-
+			$ep =& ORDataObject::factory('EncounterPerson',$encounter_person_id,$encounter_id);
+			$eptl = $encounter->_load_enum("encounter_person_type",false);
+			$eptl = array_flip($eptl);
+			$ept=$eptl[$ep->get('person_type')];
+			
+			$eptn = $ep->personTypeName();
+			if (!$eptn) {
+				trigger_error("Unable to find person type for encountner person with id: " . $EncounterPerson->get('person_id'));
+				continue;	
 			}
+			
+			//person based object	
+			$pbo =& ORDataObject::factory($eptn, $ep->get('person_id'));
+			$pbo_data = $this->_cleanDataArray($pbo->toArray());
+			//var_dump($pbo_data);
 
+			if (!$freeb2->registerData($claim_identifier,$ept,$pbo_data)) {
+				trigger_error("Unable to encounter person data - ".$freeb2->claimLastError($claim_identifier));
+			}
 		}
-// End Encounter People
+		// End Encounter People
 
-// Encounter Values, 
-	//Now  prior auth...
-	// Later Medicaid Resubmission
-	// Later Auto State
-	// Other random numbers go here...
+		// Encounter Values, 
 		$EncounterValues =& ORDataObject::factory('EncounterValue');
 		$encounterValueArray=$EncounterValues->encounterValueListArray($encounter_id);
+		$ev_enum = $EncounterValues->_load_enum("encounter_value_type");
+		$ev_enum = array_flip($ev_enum);
+		$ClaimData = array();
 	
 		foreach($encounterValueArray as $encounter_value_id){
-			echo "DEBUG: C_Patient: getting value $encounter_value_id <br>";
-	
 			$EncounterValue =& ORDataObject::factory('EncounterValue',$encounter_value_id,$encounter_id);
-
-			$valuetypelist = $encounter->_load_enum("encounter_value_type",false);
-			$valuetypelist = array_flip($valuetypelist);
-
-			$value_type=$EncounterValue->get('value_type');	
-			if (strcmp($valuetypelist[$value_type],"Prior Authorization Code")==0){
-
-
-				$prior_auth_code = $EncounterValue->get('value');
-				$ClaimData['prior_authorization_number'] = $prior_auth_code;
-				echo "Trying to add $prior_auth_code";
-
-				if (!$freeb2->registerData($claim_identifier,'Claim',$ClaimData)) {
-					trigger_error("Unable to register Claim data - ".$freeb2->claimLastError($claim_identifier));
-				}
-				echo "added Prior Auth<br>";
-
-
-			}
-
+			$ev_name = $ev_enum[$EncounterValue->get('value_type')];
+			$ClaimData[$ev_name] = $EncounterValue->get('value');
+		}
+		//var_dump($ClaimData);
+		if (!$freeb2->registerData($claim_identifier,'Claim',$ClaimData)) {
+			trigger_error("Unable to register Claim data - ".$freeb2->claimLastError($claim_identifier));
 		}
 
 		// register responsible party - patient
