@@ -31,7 +31,6 @@ class FeeScheduleDatasource extends Datasource_editable {
 		$this->object =& ORDataObject::factory('FeeScheduleData');
 
 		$this->_init_feeSessions();
-		$this->addOrderRule("c.code","ASC");		
 	}
 	
 	function _init_feeSessions() {
@@ -55,7 +54,8 @@ class FeeScheduleDatasource extends Datasource_editable {
 			$GLOBALS['config']['adodb']['db'],
 			array(
 				'cols' => $cols,
-				'from' => $from
+				'from' => $from,
+				'orderby' => 'code'
 			),
 			$labels
 			);	
