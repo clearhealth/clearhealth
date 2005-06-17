@@ -61,16 +61,15 @@
 				<td colspan="2"></td>
 			</tr>
 			<tr>
-				<td><label class="inline">{l}Salutation{/l}: </label>
-				  {$person->get('salutation')}
-				  &nbsp;&nbsp;{l}Initials{/l}: {$person->get('initials')}
-				  &nbsp;&nbsp;{l}Middle Initial{/l}: {$person->get('middle_name')}
-			    </td>
-	        </tr>
-	        <tr>
-				<td><label class="inline">{l}Primary Email{/l}:</label>{$person->get('email')}</td>
-	        </tr>
-				<td><label class="inline">{l}Gender{/l}:</label>{$person->get('print_gender')}&nbsp;&nbsp;DOB: {$person->get('date_of_birth')}</td>
+				<td><label class="inline">{l}Gender{/l}: </label>{$person->get('print_gender')}
+					&nbsp;&nbsp;DOB: {$person->get('date_of_birth')}</td>
+			</tr>
+			<tr>
+				<td><label class="inline">{l}Marital Status{/l}: </label>{$person->get('print_marital_status')}&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td><label class="inline">{l}Default Provider{/l}: </label>{$person->get('print_default_provider')}&nbsp;&nbsp;
+					{l}Registration Location:{/l} {$person->get('print_registration_location')}</td>
 			</tr>
 			<tr>
 				<td><a href="{$EDIT_ACTION}">Edit</a></td>
