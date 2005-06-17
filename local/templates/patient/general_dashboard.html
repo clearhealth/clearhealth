@@ -85,10 +85,6 @@
 	<fieldset class="radio" id="notes">
 		<legend>Notes</legend>
 		{$noteGrid->render()}
-		{if !$depnoteGrid->empty}
-		<br /><strong>Deprecated Notes</strong><br />
-		{$depnoteGrid->render()}
-		{/if}
 		{if $noteGrid->empty && $depnoteGrid->empty}
 		<p>Patient has no Notes</p>
 		{/if}

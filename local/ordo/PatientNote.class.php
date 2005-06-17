@@ -80,27 +80,16 @@ class PatientNote extends ORDataObject {
 
 	/**#@-*/
 
-	/**
-	* Deprecate this note
-	*/
-	function deprecate()
-	{
-		$this->_execute("UPDATE {$this->_prefix}$this->_table SET deprecated=1 WHERE patient_note_id = ". (int)$this->id);
-	}
-
-	function listNotes($patient_id,$deprecated) {
+	function listNotes($patient_id) {
 		$ds =& new Datasource_sql();
 
-		if ($deprecated==0) {
-		  $labels = array('priority' => 'P','note_date' => 'Date', 'username' => 'User', 'note' => 'Note','options'=>'Options');
-		} else {
-		  $labels = array('priority' => 'P','note_date' => 'Date', 'username' => 'User', 'note' => 'Note');
-		}
+		$labels = array('deprecated'=>'<span title="Deprecated">Dep</span>', 'priority' => 'P','note_date' => 'Date', 'username' => 'User', 'note' => 'Note');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "priority, note_date, note, username, patient_note_id",
+				'cols' 	=> "priority, note_date, note, username, patient_note_id, if(deprecated,'Yes','No') deprecated",
 				'from' 	=> "$this->_table n left join user u on u.user_id = n.user_id",
-				'where' => " patient_id = $patient_id AND deprecated=$deprecated",
+				'where' => " patient_id = $patient_id",
+				'orderby' => "deprecated ASC",
 			),
 			$labels
 		);
@@ -110,7 +99,7 @@ class PatientNote extends ORDataObject {
 
 		$ds->registerFilter('note',array($this,'multiLineFilter'));
 		$ds->registerFilter('priority',array($this,'colorLineFilter'));
-		$ds->template['options'] = "<a href='".Cellini::link('dashboard/depnote/'.$patient_id)."pnote_id={\$patient_note_id}&process=true'>Deprecate</a>";
+		$ds->template['deprecated'] = "<a href='".Cellini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
 		return $ds;
 	}
 

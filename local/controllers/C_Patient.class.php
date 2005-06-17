@@ -80,9 +80,6 @@ class C_Patient extends Controller {
 			$noteGrid =& new cGrid($note->listNotes($this->get('patient_id'),0));
 			$noteGrid->pageSize = 10;
 			$noteGrid->indexCol = false;
-			$depnoteGrid =& new cGrid($note->listNotes($this->get('patient_id'),1));
-			$depnoteGrid->pageSize = 10;
-			$depnoteGrid->indexCol = false;
 			
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
