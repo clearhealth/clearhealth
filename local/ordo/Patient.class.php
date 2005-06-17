@@ -197,7 +197,7 @@ class Patient extends MergeDecorator {
 					left join number c on pn.number_id = c.number_id and c.number_type = 2
 					",
 			'groupby' => 'person_id',
-			'orderby' => 'last_name, first_name'
+			'orderby' => 'name'
 			);
 		$cols = array('name' => 'Name','phone' => 'Phone');
 
