@@ -144,14 +144,31 @@ class InsuredRelationship extends ORDataObject {
 		settype($person_id,'int');
 
 		$ds =& new Datasource_sql();
-		$ds->setup($this->_db,array(
-			'cols' 	=> "ir.insured_relationship_id, ir.insurance_program_id, group_name, group_number, copay, ip.name as program, c.name as company, program_order, subscriber_to_patient_relationship subscriber_relationship, " .
-				" if(now() between effective_start and effective_end,concat('Until ',effective_end),".
-				" if (effective_end < now(),concat('Ended ',effective_end),concat('Starts ',effective_start))) effective",
+		$ds->setup($this->_db,
+			array('cols' 	=> "ir.insured_relationship_id,
+				ir.insurance_program_id, 
+				group_name,
+				group_number,
+				copay,
+				ip.name as program,
+				c.name as company,
+				program_order,
+				subscriber_to_patient_relationship subscriber_relationship, 
+				if(now() between effective_start and effective_end,concat('Until ',effective_end),
+				if (effective_end < now(),concat('Ended ',effective_end),concat('Starts ',effective_start))) effective,
+				active",
 				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
 				'where' => " person_id = $person_id",
 			),
-			array('program_order' => false, 'company'=> 'Company', 'program' => "Program", 'group_name' => 'Group Name','group_number'=> 'Group Number', 'copay' => 'Co-pay', 'subscriber_relationship' => 'Subscriber','effective'=>'Effective'));
+			array('program_order' => false,
+				'company'=> 'Company',
+				'program' => "Program",
+				'group_name' => 'Group Name',
+				'group_number'=> 'Group Number',
+				'copay' => 'Co-pay',
+				'subscriber_relationship' => 'Subscriber',
+				'effective'=>'Effective', 
+				'active' => 'Active'));
 		$ds->addOrderRule('program_order');
 		$ds->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
 		$ds->registerFilter('effective',array($this,'effectiveColorFilter'));
@@ -170,7 +187,17 @@ class InsuredRelationship extends ORDataObject {
 
 	function getProgramList($person_id) {
 		settype($person_id,'int');
-		$sql = "select ip.insurance_program_id id, concat_ws('->',c.name,ip.name) name from $this->_table inner join insurance_program ip using(insurance_program_id) left join company c using(company_id) where person_id = $person_id order by program_order";
+		$sql = "select 
+				ip.insurance_program_id id, 
+				concat_ws('->',c.name,ip.name) name 
+			from $this->_table 
+				inner join insurance_program ip using(insurance_program_id)
+				left join company c using(company_id)
+			where
+				person_id = $person_id AND
+				active = 1
+			order by
+				program_order";
 
 		$res = $this->_execute($sql);
 		$ret = array();
