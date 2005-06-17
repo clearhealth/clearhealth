@@ -30,10 +30,16 @@ class M_User extends M_Patient {
 			if ($u->get('id') == 0) {
 				$u->set('disabled','no');
 			}
+			$groups = array();
+			if (isset($data['groups'])) {
+				$groups = $data['groups'];
+				unset($data['groups']);
+			}
 			$u->set('person_id',$person_id);
 			$u->populate_array($data);
 			$u->persist();
 			$this->controller->user_id = $u->get('id');
+
 
 			// update gacl groups from type
 			$person =& ORDataObject::factory('Person',$person_id);
@@ -52,18 +58,21 @@ class M_User extends M_Patient {
 						}
 					}
 					$u->groups = array();
+					foreach($groups as $id) {
+						$u->groups[$id] = array('id'=>$id);
+					}
 					foreach($flat_groups as $id => $name) {
 						$data = $this->controller->security->get_group_data($id);
 						if ($data[2] == $group) {
 							$gid = $data[0];
 							$u->groups[$gid] = array('id'=>$data[0]);
 							// move persist outside this loop for efficiency
-							$u->persist();
 							break;
 						}
 					}
 				}
 			}
+			$u->persist();
 
 			if($t_list[$person->get('type')] === "Provider") {
 				// create default ps schedule if no ps schedule exists

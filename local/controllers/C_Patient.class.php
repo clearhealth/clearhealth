@@ -804,6 +804,7 @@ class C_Patient extends Controller {
 				$data['identifier'] = $data['name'];
 				//echo "C_Patient payer";
 				//var_export($data); echo "<br>";
+				//flush();
 				$freeb2->registerData($claim_identifier,'Payer',$data);
 				if ($clearingHouseData === false) {
 					$clearingHouseData = $data;
@@ -940,7 +941,6 @@ class C_Patient extends Controller {
 			$data['address']['zip'] = $data['address']['postal_code'];
 		}
 
-
 		if (isset($data['home_phone'])) {
 	// TODO.. there should be some kind of "billing phone number" flag or something...
 			$data['phone_number'] = $data['home_phone'];
@@ -954,6 +954,11 @@ class C_Patient extends Controller {
 			unset($data['address']['name']);
 			unset($data['address']['postal_code']);
 			unset($data['address']['region']);
+
+			/*if (isset($data['address']['state']) && preg_match('/^[0-9]+$/',$data['address']['state'])) {
+				$e =& ORDataObject::factory('Enumeration');
+				$data['address']['state'] = $e->enumLookup('state',$data['address']['state']);
+			}*/
 		}
 		if (isset($data['payer_type'])) {
 			$payer = ORDataObject::factory("InsuranceProgram");

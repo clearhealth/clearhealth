@@ -1,6 +1,7 @@
 <fieldset class="radio">
 	<legend>Login Information</legend>
 	<input type="hidden" name="user[user_id]" value="{$user->get('id')}">
+<table><tr><td>
 	<table>
 		<tr>
 			<td><label>Username: </label></td>
@@ -15,6 +16,21 @@
 			<td><input id="password_match" type="password" name="user[password_match]" {if $user->get('id') > 0}disabled="true"{/if}></td>
 		</tr>
 	</table>
+</td><td>
+	<table>
+		<tr>
+			<td style="text-align:center"><label class="inline">Security Roles</label></td>
+		</tr>
+		<tr>
+			<td>
+				<select size="5" multiple=true name="user[groups][]">
+					{html_options options=$user->getDisplayGroups('roles') selected=$user->get('selected_group_ids')}
+				</select>
+			</td>
+		</tr>
+	</table>
+
+</td></tr></table>
 </fieldset>
 {clni_register_validation_rule id="toad"}
 {clni_register_validation_rule id="password" rule="match"}

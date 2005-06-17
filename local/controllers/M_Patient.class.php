@@ -42,7 +42,7 @@ class M_Patient extends Manager {
 			$this->messages->addMessage($this->messageType.' Created');
 		}
 		else {
-			$this->messages->addmessage($this->messageType.' Update');
+			$this->messages->addmessage($this->messageType.' Updated');
 		}
 
 		$t_list = $patient->getTypeList();
