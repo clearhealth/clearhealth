@@ -222,7 +222,13 @@ class Patient extends MergeDecorator {
 	function get_print_registration_location() {
 		$ps =& ORDataObject::Factory('PatientStatistics',$this->get('id'));
 
-		return $ps->get('registration_location');
+		$b =& ORDataObject::Factory('Building');
+		$list = $b->getBuildingList();
+
+		$loc = $ps->get('registration_location');
+		if (isset($list[$loc])) {
+			return $list[$loc];
+		}
 	}
 }
 ?>
