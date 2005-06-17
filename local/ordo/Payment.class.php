@@ -32,6 +32,7 @@ class Payment extends ORDataObject {
 	var $user_id		= '';
 	var $payer_id		= '';
 	var $payment_date	= '';
+	var $title		= '';
 	/**#@-*/
 
 
@@ -109,9 +110,10 @@ class Payment extends ORDataObject {
 			$labels['payer_id'] = "Payer";
 			$ds->registerFilter('payer_id',array(&$this,'lookupPayer'));
 		}
+	       	$labels['title'] = 'Title';
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
+				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp, title",
 				'from' 	=> "$this->_table ",
 				'where' => " foreign_id = $foreign_id"
 			),
@@ -130,7 +132,7 @@ class Payment extends ORDataObject {
 		
 		$ds =& new Datasource_sql();
 
-		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
+		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount','title' => 'Title');
 		if ($extraCols) {
 			$labels['writeoff'] = "Write Off";
 			$labels['payer_id'] = "Payer";
@@ -138,7 +140,7 @@ class Payment extends ORDataObject {
 		}
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, encounter_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp",
+				'cols' 	=> "payment_id, foreign_id, encounter_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp, title",
 				'from' 	=> "$this->_table ",
 				'where' => " encounter_id = $foreign_id"
 			),

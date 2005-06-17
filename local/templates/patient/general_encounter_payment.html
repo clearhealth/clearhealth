@@ -8,13 +8,13 @@
 	{if $encounter->get('status') != 'closed'}		
 	<table>
 		<tr>
-			<td><label>Copay Type:</label></td>
+			<td><label>Type:</label></td>
 			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type')}</td>
-			<td><label>Amount Paid:</label></td>
+			<td><label>Amount:</label></td>
 			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}"></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}">
+			<td><label>Title:</label></td>
+			<td><input name="payment[title]" size="8" type="text" value="{$payment->get("title")}"></td>
+			<td><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}">
 				{if $payment->get('id') > 0}
 				<input type="button" value="New Payment" onclick="window.location = '{$NEW_ENCOUNTER_PAYMENT}';">
 				{/if}

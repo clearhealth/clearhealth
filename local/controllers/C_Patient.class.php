@@ -262,6 +262,9 @@ class C_Patient extends Controller {
 		$this->assign('NEW_ENCOUNTER_PERSON',Cellini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
 		$payment =& ORDataObject::factory('Payment',$this->payment_id);
+		if ($payment->_populated == false) {
+			$payment->set('title','Co-Pay');
+		}
 		$payment->set("encounter_id",$encounter_id);
 		$paymentGrid = new cGrid($payment->paymentsFromEncounterId($encounter_id));
 		$paymentGrid->name = "paymentGrid";
