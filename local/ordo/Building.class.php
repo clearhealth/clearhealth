@@ -39,6 +39,8 @@ class Building extends ORDataObject{
 	 */
 	var $address;
 
+	var $identifier = '';
+
 
     /**
 	 * Constructor sets all attributes to their default value

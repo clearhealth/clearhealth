@@ -130,6 +130,7 @@ class C_Location extends Controller {
 			$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
 		$this->location = new building($_POST['id']);
 		parent::populate_object($this->location);
+		$this->location->set('identifier',$_POST['identifier']);
 		
 		$this->location->persist();
 		
