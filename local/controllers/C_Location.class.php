@@ -40,8 +40,6 @@ class C_Location extends Controller {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		
-		$c = new Schedule();
-		$this->assign("schedules",$c->schedules_factory());
 		$s = new Practice();
 		$this->assign("practices",$s->practices_factory());
 		$b = new Building();
@@ -50,6 +48,14 @@ class C_Location extends Controller {
 		$this->assign("rooms",$r->rooms_factory());
 		
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_list.html");
+	}
+
+	// todo: move to a different controller
+	function schedules_action() {
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
+		$c = new Schedule();
+		$this->assign("schedules",$c->schedules_factory());
+		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_schedules.html");
 	}
 	
 	function schedule_list_action() {
