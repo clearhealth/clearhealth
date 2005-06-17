@@ -112,6 +112,8 @@ class C_Patient extends Controller {
 			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
 			$this->assign('NO_PATIENT', false);			
 			$this->assign('NOTE_ACTION',Cellini::managerLink('note',$this->get('patient_id')));
+			$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
+			$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$patient_id));
 		}
 		else {
 			$this->assign('NO_PATIENT', true);
