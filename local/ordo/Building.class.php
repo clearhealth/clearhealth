@@ -240,6 +240,7 @@ class Building extends ORDataObject{
 		$ret = array();
 		$ret['name'] = $this->get('name');
 		$ret['address'] = $this->address->toArray();
+		$ret['identifier'] = $this->get('identifier');
 
 		return $ret;
 	}

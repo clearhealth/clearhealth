@@ -92,21 +92,6 @@ function captureEnter (field, event) {
 	</tr>
 </table>
 </fieldset>
-{/if}
-<fieldset class="radio" id="Code List">
-<legend>Claim Lines</legend>
-{foreach from=$code_list item=code}
-{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
-<A HREF="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</A>&nbsp;
-<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A><BR>
-{foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br>
-{/foreach}<BR>
-{/foreach}
-&nbsp;
-</fieldset>
-</form>
-
 
 
 
@@ -236,3 +221,18 @@ function addCPTCode() {
 {/literal}
 {clni_register_validation_rule id="parent_code" rule="hascpt"}
 {clni_register_validation_rule id="child_code" rule="hasicd"}
+{/if}
+<fieldset class="radio" id="Code List">
+<legend>Claim Lines</legend>
+{foreach from=$code_list item=code}
+{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
+<A HREF="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</A>&nbsp;
+<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A><BR>
+{foreach from=$children item=child}
+&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br>
+{/foreach}<BR>
+{/foreach}
+&nbsp;
+</fieldset>
+</form>
+

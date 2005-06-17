@@ -844,6 +844,13 @@ class C_Patient extends Controller {
 
 		// register treating facility
 		$facilityData = $this->_cleanDataArray($facility->toArray());
+
+		// check for an overriding identifier
+		$bpi =& ORDAtaObject::factory('BuildingProgramIdentifier',$facility->get('id'),$defaultProgram->get('id'));
+		if ($bpi->_populated) {
+			$facilityData['identifier'] = $bpi->get('identifier');
+		}
+		
 		if (!$freeb2->registerData($claim_identifier,'TreatingFacility',$facilityData)) {
 			trigger_error("Unable to register treating facility data - ".$freeb2->claimLastError($claim_identifier));
 		}
