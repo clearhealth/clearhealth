@@ -1,5 +1,6 @@
 <fieldset class="radio">
 	<legend>Insurance Programs</legend>
+<table><tr><td valign='top'>
 	{$insuranceProgramGrid->render()}
 	{if $insuranceProgramGrid->empty}
 		<p>No Programs have been added</p>
@@ -46,4 +47,34 @@
 			</td>
 		</tr>
 	</table>
+</td><td valign='top'>
+	{$bpiGrid->render()}
+	{if $bpiGrid->empty}
+		<p>No Program Specific Building Identifier have been added</p>
+	{/if}
+	<table>
+		<tr>
+			<td><label>Program:</label></td>
+			<td><select name="bpi[program_id]"> 
+				{html_options options=$insuranceProgram->getCompanysProgramsList($company->get('id')) selected=$bpi->get('program_id')} 
+				</select></td>
+			<td><label>Building:</label></td>
+			<td><select name="bpi[building_id]"> {html_options options=$bpi->getBuildingList() selected=$bpi->get('building_id')} 
+				</select></td>
+		</tr>
+		<tr>
+			<td><label>Identifier:</label></td>
+			<td colspan=3><input name="bpi[identifier]" value="{$bpi->get('identifier')}" size=30></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan=3><input type="submit" value="{if $bpi->_populated}Update{else}Add{/if} Identifier">
+				{if $bpi->_populated}
+				<input type="button" value="New Identifier" onclick="window.location = '{$NEW_PROGRAM}';">
+				{/if}
+			</td>
+		</tr>
+	</table>
+
+</td></tr></table>
 </fieldset>

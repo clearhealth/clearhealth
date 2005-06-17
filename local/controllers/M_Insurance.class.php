@@ -42,6 +42,9 @@ class M_Insurance extends Manager {
 		if (isset($_POST['insuranceProgram'])) {
 			$this->process_insuranceProgram_update($this->controller->company_id,$_POST['insuranceProgram']);
 		}
+		if (isset($_POST['bpi'])) {
+			$this->process_bpi_update($this->controller->company_id,$_POST['bpi']);
+		}
 	}
 
 	/**
@@ -83,6 +86,18 @@ class M_Insurance extends Manager {
 			$this->controller->number_id = $number->get('id');
 
 			$this->messages->addMessage('Number Updated');
+		}
+	}
+
+	function process_bpi_update($company_id,$data) {
+		if (!empty($data['identifier'])) {
+			$building_id = $data['building_id'];
+			$program_id = $data['program_id'];
+			$bpi =& ORDAtaObject::Factory('BuildingProgramIdentifier',$building_id,$program_id);
+			$bpi->populate_array($data);
+			$bpi->persist();
+
+			$this->messages->addMessage('Identifier Updated');
 		}
 	}
 
@@ -129,6 +144,14 @@ class M_Insurance extends Manager {
 	 */
 	function process_editProgram($company_id,$program_id) {
 		$this->controller->insurance_program_id = $program_id;
+	}
+
+	/**
+	 * Setup for editing a bpi
+	 */
+	function process_editBpi($company_id,$program_id,$building_id) {
+		$this->controller->insurance_program_id = $program_id;
+		$this->controller->building_id = $building_id;
 	}
 
 	/**

@@ -11,6 +11,7 @@ class C_Insurance extends Controller {
 	var $address_id = 0;
 	var $identifier_id = 0;
 	var $insurance_program_id = 0;
+	var $building_id = 0;
 
 	/**
 	 * Edit/Add an Insurance Company
@@ -33,11 +34,19 @@ class C_Insurance extends Controller {
 		
 		$feeSchedule =& ORDataObject::factory('FeeSchedule',$insuranceProgram->get("fee_schedule_id"));
 
+		$buildingProgramIdentifier =& ORDataObject::factory('BuildingProgramIdentifier',$this->building_id,$this->insurance_program_id);
+		$dsbpg =& $buildingProgramIdentifier->getDs($company_id);
+		$buildingProgramGrid =& new cGrid($dsbpg);
+		$buildingProgramGrid->registerTemplate('identifier',
+		'<a href="'.Cellini::managerLink('editBpi',$company_id).'id={$program_id}&building_id={$building_id}&process=true">{$identifier}</a>');
+
 		$this->assign_by_ref('company',$company);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 		$this->assign_by_ref('insuranceProgramGrid',$insuranceProgramGrid);
+		$this->assign_by_ref('bpi',$buildingProgramIdentifier);
+		$this->assign_by_ref('bpiGrid',$buildingProgramGrid);
 		$this->assign_by_ref('feeSchedule',$feeSchedule);
 
 		$this->assign('FORM_ACTION',Cellini::managerLink('update',$company_id));
@@ -65,6 +74,8 @@ class C_Insurance extends Controller {
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);
+
+
 
 		return $this->fetch(Cellini::getTemplatePath("/insurance/" . $this->template_mod . "_list.html"));
 	}

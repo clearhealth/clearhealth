@@ -129,6 +129,18 @@ class InsuranceProgram extends ORDataObject {
 		return $ds;
 	}
 
+	function getCompanysProgramsList($company_id) {
+		$sql = "select insurance_program_id, name from $this->_table where company_id = $company_id order by name";
+		$ret = array();
+		$res = $this->_execute($sql);
+
+		while($res && !$res->EOF) {
+			$ret[$res->fields['insurance_program_id']] = $res->fields['name'];
+			$res->moveNext();
+		}
+		return $ret;
+	}
+
 	function toArray() {
 		$ret = array();
 		$ret['name'] = $this->get('name');
