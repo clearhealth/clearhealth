@@ -105,7 +105,8 @@ class Encounter extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
 				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
-				'where' => " patient_id = $patient_id"
+				'where' => " patient_id = $patient_id",
+				'orderby' => 'date_of_treatment DESC'
 			),
 			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'/*,'encounter_id' => "Encounter Id"*/));
 
