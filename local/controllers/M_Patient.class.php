@@ -85,7 +85,7 @@ class M_Patient extends Manager {
 			$this->process_personPerson_update($this->controller->patient_id,$_POST['personPerson']);
 		}
 		if (isset($_POST['patientStatistics'])) {
-			$this->process_patientStatistics_update($this->controller->patient_statistics_id,$_POST['patientStatistics']);
+			$this->process_patientStatistics_update($this->controller->patient_id,$_POST['patientStatistics']);
 		}
 	}
 
@@ -145,11 +145,7 @@ class M_Patient extends Manager {
 	 */
 	function process_patientStatistics_update($patient_id,$data) {
 		if (count($data) > 0) {
-			if (!isset($data['patient_statistics_id'])) {
-				$data['patient_statistics_id'] = 0;
-			}
-			$id = (int)$data['patient_statistics_id'];
-			$patientStatistics =& ORDataObject::factory('PatientStatistics',$id,$patient_id);
+			$patientStatistics =& ORDataObject::factory('PatientStatistics',$patient_id);
 			$patientStatistics->populate_array($data);
 			$patientStatistics->persist();
 			$this->controller->patient_statistics_id = $patientStatistics->get('id');
