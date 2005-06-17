@@ -141,5 +141,18 @@ class EncounterPerson extends ORDataObject {
 			return $this->_edCache[$id];
 		}
 	}
+	
+	function personTypeName() {
+		$sql = "SELECT person_type from person_type where person_id = " . $this->_quote($this->get("person_id"));
+		$res = $this->_execute($sql);
+		$ptl = $this->_load_enum("person_type",false);
+		$ptl = array_flip($ptl);
+		if ($res && !$res->EOF) {
+			$pt_id = $res->fields['person_type'];
+			$type_class_name = $ptl[$pt_id];
+			return $type_class_name;
+		}
+		return false;
+	}
 }
 ?>
