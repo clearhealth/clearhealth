@@ -33,7 +33,6 @@ class Patient extends MergeDecorator {
 	var $record_number = "";
 	var $employer_name = "";
 	var $default_provider = "";
-	var $marital_status = "";
 
 
 	/**
@@ -177,6 +176,9 @@ class Patient extends MergeDecorator {
 	function lookupType($id) {
 		return $this->person->lookupType($id);
 	}
+	function getMaritalStatusList() {
+		return $this->person->getMaritalStatusList();
+	}
 	/**#@-*/
 
 	/**
@@ -212,16 +214,15 @@ class Patient extends MergeDecorator {
 		return $ret;
 	}
 
-	function getMaritalStatusList() {
-		$list = $this->_load_enum('marital_status',false);
-		return array_flip($list);
+	function get_print_default_provider() {
+		$u =& User::fromId($this->get('default_provider'));
+		return $u->get('username');	
 	}
-	
-	function get_print_marital_status() {
-		$list = array_flip($this->_load_enum('marital_status',false));
-		if(isset($list[$this->get("marital_status")])) {
-			return $list[$this->get("marital_status")];
-		}
+
+	function get_print_registration_location() {
+		$ps =& ORDataObject::Factory('PatientStatistics',$this->get('id'));
+
+		return $ps->get('registration_location');
 	}
 }
 ?>

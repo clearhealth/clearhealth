@@ -39,6 +39,7 @@ class Person extends ORDataObject {
 	var $has_photo		= '';
 	var $identifier		= '';
 	var $identifier_type	= '';
+	var $marital_status	= '';
 	/**#@-*/
 
 	var $nameHistory = false;
@@ -250,6 +251,7 @@ class Person extends ORDataObject {
 		if(isset($list[$this->get("gender")])) {
 			return $list[$this->get("gender")];
 		}
+		return array_pop($list);
 	}
 
 	/**#@-*/
@@ -525,6 +527,18 @@ class Person extends ORDataObject {
 		$res = $this->_execute($sql);
 		if ($res && !$res->EOF) {
 			return $res->fields['age'];
+		}
+	}
+
+	function getMaritalStatusList() {
+		$list = $this->_load_enum('marital_status',false);
+		return array_flip($list);
+	}
+
+	function get_print_marital_status() {
+		$list = array_flip($this->_load_enum('marital_status',false));
+		if(isset($list[$this->get("marital_status")])) {
+			return $list[$this->get("marital_status")];
 		}
 	}
 }
