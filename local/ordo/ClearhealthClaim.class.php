@@ -113,7 +113,7 @@ class ClearhealthClaim extends ORDataObject {
 						$where .= " UNIX_TIMESTAMP(e.date_of_treatment) < " . $this->_quote(strtotime($fval)) . " and ";
 						break;
 					case 'facility':
-						$where .= " o.location_id = " . $this->_quote($fval) . " and ";
+						$where .= " (o.location_id = " . $this->_quote($fval) . " or e.building_id) and ";
 						break;
 					case 'provider':
 						$where .= " e.treating_person_id = ". (int)$fval . " and ";
