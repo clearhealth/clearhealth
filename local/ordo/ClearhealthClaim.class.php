@@ -113,7 +113,7 @@ class ClearhealthClaim extends ORDataObject {
 						$where .= " UNIX_TIMESTAMP(e.date_of_treatment) < " . $this->_quote(strtotime($fval)) . " and ";
 						break;
 					case 'facility':
-						$where .= " (o.location_id = " . $this->_quote($fval) . " or e.building_id) and ";
+						$where .= " (o.location_id = " . $this->_quote($fval) . " or e.building_id = ".$this->_quote($fval).") and ";
 						break;
 					case 'provider':
 						$where .= " e.treating_person_id = ". (int)$fval . " and ";
@@ -147,9 +147,10 @@ class ClearhealthClaim extends ORDataObject {
 		$labels = array('identifier' => 'Id','date_of_treatment' => 'Date', 'total_billed' => 'Billed','total_paid' => 'Paid', 'balance'=>'Balance');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "chc.claim_id, chc.identifier, date_format(e.date_of_treatment,'%Y-%m-%d') date_of_treatment, chc.total_billed, chc.total_paid, b.name facility, "
+				'cols' 	=> "chc.claim_id, chc.identifier, date_format(e.date_of_treatment,'%Y-%m-%d') date_of_treatment, chc.total_billed,"
+			       			. " chc.total_paid, b.name facility, concat_ws(',',pro.last_name,pro.first_name) provider, "
 						. " (chc.total_billed - chc.total_paid) as balance, sum(pcl.writeoff) as writeoff",
-				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id left join occurences o on e.occurence_id = o.id left join buildings b on e.building_id = b.id",
+				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id left join occurences o on e.occurence_id = o.id left join buildings b on e.building_id = b.id left join person pro on e.treating_person_id = pro.person_id",
 				'where' => " e.patient_id = $patient_id $where",
 				'groupby' => " chc.claim_id "
 			),

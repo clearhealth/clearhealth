@@ -40,11 +40,12 @@ class Datasource_AccountHistory extends Datasource {
 		$this->_labels = array ( 
 			'identifier' 	=> 'Id', 
 			'date_of_treatment' => 'Date', 
-			'facility'	=> "Facility",
 			'total_billed' 	=> 'Billed', 
 			'total_paid' 	=> 'Paid', 
 			'writeoff'	=> 'Write Off',
-			'balance' 	=> 'Balance' 
+			'balance' 	=> 'Balance',
+			'facility'	=> "Facility",
+			'provider'	=> "Provider",
 		);
 
 		$line =& ORDataObject::factory('PaymentClaimline');
