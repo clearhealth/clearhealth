@@ -7,7 +7,7 @@
 	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start} to {clni_input_date name="filter[end]" value=$filters.end}
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
-	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getRoomList() selected=$filters.facility}</select>
+	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getBuildingList() selected=$filters.facility}</select>
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	<label>{l}Payer{/l}: </label>
@@ -15,7 +15,7 @@
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	<label>{l}Provider{/l}: </label>
-	<select name="filter[provider]"><option></option>{query_options query="select p.person_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)" selected=$filters.provider}</select>
+	<select name="filter[provider]"><option></option>{query_options query="select p.person_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) inner join provider using(person_id)" selected=$filters.provider}</select>
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	{clni_input type="submit" name="filter_submit" value="Filter"}
