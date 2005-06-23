@@ -40,7 +40,7 @@ class Datasource_AccountHistory extends Datasource {
 		$this->_labels = array ( 
 			'identifier' 	=> 'Id', 
 			'date_of_treatment' => 'Date', 
-			'payer_name'	=> "Payer",
+			'facility'	=> "Facility",
 			'total_billed' 	=> 'Billed', 
 			'total_paid' 	=> 'Paid', 
 			'writeoff'	=> 'Write Off',
@@ -53,9 +53,6 @@ class Datasource_AccountHistory extends Datasource {
 		for($this->claims->rewind(); $this->claims->valid(); $this->claims->next()) {
 			$row = $this->claims->get();
 			$claim_id = $row['claim_id'];
-
-			$this->lines[$claim_id] =& $line->paymentClaimlineList($person_id,$claim_id);
-			$this->_numRows += $this->lines[$claim_id]->numRows();
 
 			$this->payments[$claim_id] =& $this->_paymentList($person_id,$claim_id);
 			$this->_numRows += $this->payments[$claim_id]->numRows();
@@ -84,26 +81,6 @@ class Datasource_AccountHistory extends Datasource {
 		}
 		$claim_id = $this->claim_id;
 
-		
-		if (isset($this->lines[$claim_id])) {
-			if (!isset($this->lineRewind[$claim_id])) {
-				$this->lines[$claim_id]->rewind();
-				$this->lineRewind[$claim_id] = true;
-			}
-			else {
-				$this->lines[$claim_id]->next();
-			}
-			if ($this->lines[$claim_id]->valid()) {
-				$nextClaim = false;
-				$this->_res = $this->lines[$claim_id]->_res;
-				$this->_res->fields['total_paid'] = $this->_res->fields['paid'];
-				$this->_res->fields['balance'] = $this->_res->fields['carry'];
-				$this->_res->fields['identifier'] = $this->_res->fields['code'];
-				$this->_res->fields['total_billed'] = $this->_res->fields['fee'];
-				$this->_valid = $this->lines[$claim_id]->valid();
-			}
-		}
-
 		if (isset($this->payments[$claim_id]) && $nextClaim) {
 			if (!isset($this->paymentRewind[$claim_id])) {
 				$this->payments[$claim_id]->rewind();
@@ -119,8 +96,13 @@ class Datasource_AccountHistory extends Datasource {
 			//	$this->_res->fields['balance'] = $this->_res->fields['carry'];
 				//var_dump($this->_res->fields);
 				$this->_res->fields['date_of_treatment'] = $this->_res->fields['payment_date'];
-				$this->_res->fields['identifier'] = 'copay';
-				$this->_res->fields['writeoff'] = '';
+				if (!is_null($this->_res->fields['payment_type'])) {
+					$this->_res->fields['identifier'] = 'copay';
+					$this->_res->fields['writeoff'] = '';
+				}
+				else {
+					$this->_res->fields['identifier'] = $this->_res->fields['payer_id'];
+				}
 				$this->_valid = $this->payments[$claim_id]->valid();
 			}
 		}
@@ -163,7 +145,7 @@ class Datasource_AccountHistory extends Datasource {
 				'from' 	=> " payment pa left join encounter e using(encounter_id) left join person p on e.patient_id = p.person_id "
 						." left join clearhealth_claim chc on chc.claim_id = pa.foreign_id "
 						." left join encounter e2 on chc.encounter_id = e2.encounter_id ",
-				'where' => " (e.patient_id = $patient_id /*or e2.patient_id = $patient_id*/) and chc.claim_id = $claim_id"
+				'where' => " (e.patient_id = $patient_id or e2.patient_id = $patient_id) and chc.claim_id = $claim_id"
 			),
 			$labels
 		);
