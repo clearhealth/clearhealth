@@ -40,7 +40,7 @@ var C_PatientFinder = function find_remoting(searchString) {
                         <tr>
                         <tr>
 				<td><label>{l}First Name{/l}: </label></td>
-				<td style="white-space: nowrap;" colspan="2"><input name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
+				<td style="white-space: nowrap;" colspan="2"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
                         </tr>
 			<tr>
@@ -74,13 +74,13 @@ var C_PatientFinder = function find_remoting(searchString) {
 			  		<label>{l}DOB{/l}:</label>
 				</td>
 				<td>
-					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]" id="date_of_birth"}
 				</td>
 		 	</tr>
             <tr>
 				<td><label>{l}Gender{/l}:</label> </td>
 				<td>
-					<select name="person[gender]">
+					<select name="person[gender]" id="gender">
 						<option></option>
 						{html_options options=$person->getGenderList() selected=$person->get('gender')}
 					</select>&nbsp;&nbsp;
@@ -96,7 +96,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 					<label>{l}Default Provider{/l}:</label>
 				</td>
 				<td colspan="3">
-					<select name="person[default_provider]">
+					<select name="person[default_provider]" id="default_provider">
 						<option></option>
 						{html_options options=$providers_array selected=$person->get('default_provider')}
 					</select>&nbsp;&nbsp;
@@ -130,7 +130,11 @@ var C_PatientFinder = function find_remoting(searchString) {
 		</table>
 		</fieldset>
 {clni_register_message_target formId="patientGeneralEditForm" targetId="patientGeneralEditMessages"}
-{clni_register_validation_rule id="last_name"}
+{clni_register_validation_rule id="last_name" message="Last Name is Required"}
+{clni_register_validation_rule id="first_name" message="First Name is Required"}
+{clni_register_validation_rule id="date_of_birth" message="Date of Birth is Required"}
+{clni_register_validation_rule id="gender" message="Gender is Required"}
+{clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
 {clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
 {clni_register_validation_rule id="identifier" rule="required" message="An Identifier is required"}
 {if $person->get_person_id() == 0}
