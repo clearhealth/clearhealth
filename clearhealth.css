@@ -7,11 +7,11 @@ body {
 }
 
 #username {
-	font-size: 10pt;
+	font-size: 8pt;
+	line-height: 7pt;
 	font-weight:normal;
-	left: 555px;
-	margin:0 200px 0;
-	padding:0;
+	padding-top: 6pt;
+	padding-right: 2pt;
 	float:right;
 	display:block;
 	
@@ -57,7 +57,9 @@ body {
 #header h1 {
 	margin: 0px;
 	padding: 0px;
+	vertical-align: top;
 	float: right;
+	font-size: 20pt;
 }
 	
 #body {
