@@ -39,9 +39,13 @@
             		<input type="submit" name="encounter[close]" value="Close">
 			{* <a href="{$INTAKE_REPORT}" target="_new">Intake Report</a> *}
             	{elseif $encounter->get('status') == 'closed'}
+			{if $encounter_has_claim}
 			<a href="{$PAYMENT_ACTION}">Make a Payment</a>
 			<a href="{$FREEB_ACTION}">View Claim</a>
-			<a href="{$EXIT_REPORT}">Exit Report</a>
+			{else}
+			Closed with no claim created
+			{/if}
+			{* <a href="{$EXIT_REPORT}">Exit Report</a> *}
 			{if $REBILL_ACTION}
 				<a href="{$REBILL_ACTION}">Rebill Claim</a>
 			{/if}

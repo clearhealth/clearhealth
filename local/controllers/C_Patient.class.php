@@ -286,7 +286,7 @@ class C_Patient extends Controller {
 		}
 		
 		$menu = Menu::getInstance();
-		$tmp = $menu->getMenuData('patient',91);
+		$tmp = $menu->getMenuData('patient',$menu->getMenuIdFromTitle('patient','Encounter Forms'));
 
 		$formList = array();
 		if (isset($tmp['forms'])) {
@@ -343,10 +343,16 @@ class C_Patient extends Controller {
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
 
+			$this->assign('encounter_has_claim',false);
+			if ($claim->_populated) {
+				$this->assign('encounter_has_claim',true);
+			}
+
+			/* moved to menu
 			// todo: get this without hard coding in the report and template id
 			$exit_base_link = str_replace("main","PDF",Cellini::link('report',true,true));
 			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
-
+			*/
 
 			// see if we need to add a rebill link
 			if ($this->_canRebill($encounter->get('id'))) {
@@ -355,9 +361,10 @@ class C_Patient extends Controller {
 
 			
 		}
+			/* not currently in use
 			$intake_base_link = str_replace("main","util",Cellini::link('report',true,true));
 			$this->assign('INTAKE_REPORT',$intake_base_link."report_id=17857&template_id=17859&encounter_id=".$encounter->get('id'));
-
+			*/
 
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
 	}
@@ -618,6 +625,11 @@ class C_Patient extends Controller {
 
 		$cd =& ORDataObject::Factory('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
+
+		if (count($codes) == 0) {
+			$this->messages->addMessage('This encounter had no claim lines so no claim was billed');
+			return;
+		}
 
 		//create totals paid as of now and total billed
 		$total_paid = 0.00;
