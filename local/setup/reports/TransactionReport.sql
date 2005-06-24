@@ -12,7 +12,7 @@ left join payment pay on pay.encounter_id = e.encounter_id
 left join person p on e.patient_id = p.person_id
 left join patient pat on p.person_id = pat.person_id
 left join person pro on e.treating_person_id = pro.person_id
-where if ('[user]',pay.user_id =
+where if ('[user]',e.created_by_user_id =
 '[user:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',1)
  and e.date_of_treatment = '[date:date]'
 ---[Total_payment_amount,hideFilter]---
@@ -23,7 +23,7 @@ inner join encounter e on pay.encounter_id = e.encounter_id
 inner join person p on e.patient_id = p.person_id
 inner join patient pat on p.person_id = pat.person_id
 inner join person pro on e.treating_person_id = pro.person_id
-where if ('[user]',pay.user_id =
+where if ('[user]',e.created_by_user_id =
 '[user]',1)
  and pay.payment_date = '[date:date]'
 ---[Total_payment_amount_by_type,hideFilter]---
@@ -35,7 +35,7 @@ inner join payment pay on pay.encounter_id = e.encounter_id
 left join person p on e.patient_id = p.person_id
 left join patient pat on p.person_id = pat.person_id
 left join person pro on e.treating_person_id = pro.person_id
-where if ('[user]',pay.user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
+where if ('[user]',e.created_by_user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
 group by payment_type
 ---[Total_encounters_by_provider,hideFilter]---
 select 
@@ -46,7 +46,7 @@ left join payment pay on pay.encounter_id = e.encounter_id
 left join person p on e.patient_id = p.person_id
 left join patient pat on p.person_id = pat.person_id
 left join person pro on e.treating_person_id = pro.person_id
-where if ('[user]',pay.user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
+where if ('[user]',e.created_by_user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
 group by provider
 ---[Total_encounters,hideFilter]---
 select 
@@ -56,5 +56,4 @@ left join payment pay on pay.encounter_id = e.encounter_id
 left join person p on e.patient_id = p.person_id
 left join patient pat on p.person_id = pat.person_id
 left join person pro on e.treating_person_id = pro.person_id
-where if ('[user]',pay.user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
-
+where if ('[user]',e.created_by_user_id = '[user]',1) and e.date_of_treatment = '[date:date]'
