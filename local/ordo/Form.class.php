@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: form
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -16,7 +16,7 @@ require_once CELLINI_ROOT.'/includes/Datasource_sql.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: form
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class Form extends ORDataObject {
 
@@ -64,7 +64,7 @@ class Form extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "f.form_id, f.name, f.description",
 				'from' 	=> "$this->_table f",
-				'orderby' => 'f.name',
+				'orderby' => 'name',
 			),
 			array('name'=>'Name','description'=>'Description'));
 		return $ds;
