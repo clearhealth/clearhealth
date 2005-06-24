@@ -36,6 +36,9 @@ class C_Patient extends Controller {
 	 */
 	function dashboard_action_view($patient_id = "") {
 		if (is_numeric($patient_id) && $patient_id > 0) {
+			if ($this->get('patient_id') != $patient_id) {
+				$this->set("encounter_id",false);	
+			}
 			$this->set("patient_id",$patient_id);	
 		} 
 		
