@@ -177,4 +177,8 @@ table td label {
 table td label.inline {
 	display: inline;
 }
-
+h3 {
+	margin: 0px;
+	padding: 0px;
+	margin-top: 12pt;
+}
