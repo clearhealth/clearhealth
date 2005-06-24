@@ -37,7 +37,7 @@
 			<td> 
             	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
             		<input type="submit" name="encounter[close]" value="Close">
-			<a href="{$INTAKE_REPORT}" target="_new">Intake Report</a>
+			{* <a href="{$INTAKE_REPORT}" target="_new">Intake Report</a> *}
             	{elseif $encounter->get('status') == 'closed'}
 			<a href="{$PAYMENT_ACTION}">Make a Payment</a>
 			<a href="{$FREEB_ACTION}">View Claim</a>
