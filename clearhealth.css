@@ -38,6 +38,8 @@ body {
 	border: solid 1px black;
 	padding: 2px;
 	background-color: white;
+	display: block;
+	float: left;
 }
 #selectedItem a {
 	font-size: 10pt;
