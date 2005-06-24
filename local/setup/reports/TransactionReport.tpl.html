@@ -10,23 +10,28 @@
 	{$Transaction_List_filter->setMinimumAction()}
 	{$Transaction_List_filter->render()}
 {else}
-<a href="{$REPORT_ACTION}&refilter=true">Change Filter</a>
+<a style="float:left" href="{$REPORT_ACTION}&refilter=true">Change Filter</a>
+{/if}
+
+{if $PRINT_ACTION}
+<a style="float:right" href="{$PRINT_ACTION}" target='print'>Print View</a>
 {/if}
 
 <h2>Transaction Report for: {query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} {$values.date}</h2>
 
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
-		<th>Date</th><th>Patient</th><th>Record #</th><th>Type</th><th>Amount</th><th>Provider</th>
+		<th>Date</th><th>Patient</th><th>Record #</th><th>Type</th><th>Amount</th><th>Provider</th><th>Encounter Note</th>
 	</tr>
 {foreach from=$transaction_array item=row key=key}
 	<tr>
-		<td>{$row.date}</td>
+		<td>{$row.payment_date}</td>
 		<td>{$row.patient}</td>
 		<td>{$row.record_number}</td>
 		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
 		<td>{$row.amount}</td>
 		<td>{$row.provider}</td>
+		<td>{$row.encounter_note}</td>
 	</tr>
 {/foreach}
 </table>
