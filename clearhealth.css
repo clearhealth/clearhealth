@@ -6,6 +6,16 @@ body {
 	font-size: 90%;
 }
 
+#username {
+	font-size: 10pt;
+	font-weight:normal;
+	left: 555px;
+	margin:0 200px 0;
+	padding:0;
+	float:right;
+	display:block;
+	
+}
 #sections {
 	position: absolute;
 	left: 5pt;

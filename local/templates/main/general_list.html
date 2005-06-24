@@ -71,6 +71,7 @@ eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,lo
 					href="{link action="dashboard" controller="Patient" defaultArg=$selectedPatient->get("person_id")}">{$selectedPatient->get('last_name')}, {$selectedPatient->get('first_name')}</a> #{$selectedPatient->get('record_number')}, Age {$selectedPatient->get('age')}</div>
 			{/if}
 		{/if}
+		<div class="section" id="username">Username: {$me->get_username()}</div>
 	</div>
 	{/if}
 	{include file="main/general_menu.html"}
