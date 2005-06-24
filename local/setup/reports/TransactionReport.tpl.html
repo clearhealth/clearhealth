@@ -17,7 +17,7 @@
 <a style="float:right" href="{$PRINT_ACTION}" target='print'>Print View</a>
 {/if}
 
-<h2>Transaction Report for: {query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} {$values.date}</h2>
+<h2>Transaction Report for: {query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} {$values.date} {query_lookup value=$values.facility query="select id, name from buildings"}</h2>
 
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
