@@ -32,8 +32,9 @@ class Encounter extends ORDataObject {
 	var $last_change_user_id	= '';
 	var $status			= 'open';
 	var $occurence_id		= '';
-	var $_erCache = false;
+	var $created_by_user_id		= '';
 	/**#@-*/
+	var $_erCache = false;
 
 	var $storage_metadata = array(
 		'int' => array('current_payer'=>''), 
@@ -70,6 +71,16 @@ class Encounter extends ORDataObject {
 	 */
 	function populate() {
 		parent::populate('encounter_id');
+	}
+
+	function persist() {
+		$me =& Me::getInstance();
+		
+		if ($this->get('id') == 0) {
+			$this->set('created_by_user_id',$me->get_id());
+		}
+		$this->set('last_change_user_id',$me->get_id());
+		parent::persist();
 	}
 
 	/**#@+
