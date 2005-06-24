@@ -66,7 +66,7 @@ class FormData extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "last_edit, form_id, form_data_id, external_id",
 				'from' 	=> "$this->_table d",
-				'orderby' => 'a.name',
+				'orderby' => 'name, last_edit',
 				'where' => "form_id = $form_id"
 			),
 			array('last_edit'=>'Time of Last Edit'));
@@ -82,7 +82,7 @@ class FormData extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "last_edit, f.name, form_data_id, external_id",
 				'from' 	=> "$this->_table d inner join form f using(form_id)",
-				'orderby' => 'f.name',
+				'orderby' => 'name, last_edit DESC',
 				'where' => "external_id = $external_id"
 			),
 			array('name' => 'Form Name','last_edit'=>'Last Edit'));
