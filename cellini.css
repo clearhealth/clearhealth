@@ -55,10 +55,11 @@ table.grid a.orderLink:hover {
 	background-color: #CC9999;
 }
 .clniMessageActive {
-	border: solid 2px black;
 	padding: 5px;
 	margin-bottom: 5px;
 	background-color: #CC9999;
+	border: 2px solid rgb(153, 153, 153); 
+	width: 325px;
 }
 
 div.waiting {
