@@ -1,0 +1,181 @@
+{literal}
+<style type="text/css">
+<!--
+	#practice {
+		float: left;
+	}
+	#facility {
+		padding-left: 1em;
+		float: left;
+	}
+	#provider {
+		padding-left: 1em;
+		float: left;
+	}
+
+	#title {
+		float: right;
+	}
+	h3 {
+		margin-top: 0px;
+	}
+	h4 {
+		margin: 0px;
+		padding: 0px;
+	}
+-->
+</style>
+{/literal}
+
+{assign var=practice_array value=$practice_ds->toArray()}
+{assign var=practice value=$practice_array[0]}
+{assign var=facility_array value=$treating_facility_ds->toArray()}
+{assign var=facility value=$facility_array[0]}
+{assign var=patient_array value=$patient_ds->toArray()}
+{assign var=patient value=$patient_array[0]}
+{assign var=provider_array value=$treating_provider_ds->toArray()}
+{assign var=provider value=$provider_array[0]}
+{assign var=encounter_array value=$encounter_ds->toArray()}
+{assign var=encounter value=$encounter_array[0]}
+{assign var=code_list value=$code_list_ds->toArray()}
+{assign var=payment_list value=$payment_history_ds->toArray()}
+
+
+
+<table border="0">
+<tr>
+<td colspan="4">
+<h3 id="title">{$report->get_label()} : {$patient.last_name}, {$patient.first_name} #{$patient.record_number} {$smarty.now|date_format:"%Y-%m-%d"}</h3>
+</td>
+</tr>
+<tr>
+<td valign="top">
+	<table>
+	<tr>
+	<td>Practice</td>
+	</tr>
+	<tr>
+	<td><h3>{$practice.name}</h3></td>
+	</tr>
+	<tr>
+	<td>{$practice.line1}<br>
+		{if $practice.line2}
+		{$practice.line2}<br>
+		{/if}
+		{$practice.city}, {enum_lookup name=state value=$practice.state} {$practice.postal_code}
+	</td>
+	</tr>
+		<!--Phone: 555-555-1234 <br>{* todo: grab the actual phone in the query *}-->
+		<!--Fax: 555-555-1235 {* todo: grab the actual phone in the query *}-->
+	</table>
+	<table>
+	<tr>
+	<td>Facility</td>
+	</tr>
+	<tr>
+	<td><h3>{$facility.name}</h3></td>
+	</tr>
+	<tr>
+		<td>{$facility.line1}<br>
+		{if $facility.line2}
+		{$facility.line2}<br>
+		{/if}
+		{$facility.city}, {enum_lookup name=state value=$facility.state} {$facility.postal_code}
+	</td>
+	</tr>
+	</table>
+</td>
+<td valign="top">
+	<table>
+	<tr>
+	<td>Provider</td>
+	</tr>
+	<tr>
+	<td><h3>{$provider.salutation} {$provider.last_name}, {$provider.first_name}</h3></td>
+	</tr>
+	<tr>
+	<td>
+	{$provider.line1}<br>
+	{if $provider.line2}
+	{$provider.line2}<br>
+	{/if}
+	{$provider.city}, {enum_lookup name=state value=$provider.state} {$provider.postal_code}<br />
+	Phone: {$provider.number}
+	</td>
+	</tr>
+	<tr>
+		<td>State License #{$provider.state_license_number}</td>
+	</tr>
+	</table>
+</td>
+<td valign="top">
+	<table>
+	<tr>
+	<td>
+	<h3>{$patient.salutation} {$patient.last_name}, {$patient.first_name}</h3>
+	
+			{$patient.line1}<br>
+			{if $patient.line2}
+			{$patient.line2}<br>
+			{/if}
+			{$patient.city}, {enum_lookup name=state value=$patient.state} {$patient.postal_code}<br>
+			Phone: {$patient.number}<br>
+			Record Number: {$patient.record_number}
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+<tr>
+<td  valign="top" colspan="4">
+	<table>
+	<tr>
+	<td>
+	<h3>Date of Treatment: {$encounter.date_of_treatment|date_format:"%Y-%m-%d"}</h3>
+	<h4>Procedures</h4>
+	<table>
+	<tr>
+	<td>Procedure</td><td>Code</td><td>Diagnosis</td><td>Modifier</td><td>Units</td><td>Fee</td>
+	</tr>
+	{foreach from=$code_list item=line}
+	<tr>
+	<td>{$line.Procedure}</td><td>{$line.Code}</td><td>{$line.Diagnosis}</td><td>{if $line.modifier>0}{enum_lookup name=code_modifier value=$line.modifier}{/if}</td><td>{$line.units}</td><td>{$line.fee}</td>
+	</tr>
+	{/foreach}
+	</table>
+	{$code_list_grid->setPageSize(false)}
+	{*$code_list_grid->render()*}
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+<tr >
+<td colspan="4"  valign="top">
+	<table>
+	<tr>
+	<td>
+	<h4>Payment History</h4>
+	{$payment_history_grid->setPageSize(false)}
+	{php}
+	// todo: make a non hackish way to do this
+	$p =& ORDataObject::factory('Payment');
+	$this->_tpl_vars['payment_history_ds']->registerFilter('payment_type',array(&$p,'lookupPaymentType'));
+	{/php}
+	{*$payment_history_grid->render()*}
+	<table>
+	<tr>
+	<td>Payment Date</td><td>Amount</td><td>Payment Type</td>
+	</tr>
+	{foreach from=$payment_list item=line}
+	<tr>
+	<td>{$line.payment_date}</td><td>{$line.amount}</td><td>{enum_lookup name=payment_type value=$line.payment_type}</td>
+	</tr>
+	{/foreach}
+	</table>
+
+	</td>
+	</tr>
+	</table>
+</tr>
+</table>
