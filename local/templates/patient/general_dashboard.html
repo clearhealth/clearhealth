@@ -15,7 +15,7 @@
         </tr>
         {foreach from=$parent->get_numbers() item=row}
 			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
-			<td>{$row.number}</td>
+			<td>{formatPhoneNumber number=$row.number}</td>
 			<td>{$row.number_type}</td>
 			<td>{if !$row.active}DNC{/if}</td>
 			<td>{$row.notes}</td>
