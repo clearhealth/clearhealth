@@ -20,7 +20,7 @@ Plugins:  clni_form and clni_register_validation_rule
 // email
 // alphanum
 // requiredif
-
+// alphastart
 
 /**
  * Register a validation rule
@@ -375,7 +375,7 @@ function clni_rule_alphanum(element) {
 		return true;
 	}
 
-	if (element.value.match(/^[0-9a-zA-Z]$/)) {
+	if (element.value.match(/^[0-9a-zA-Z]+$/)) {
 		return true;
 	}
 	return false;
@@ -392,17 +392,6 @@ function clni_rule_requiredif(element) {
 		return clni_rule_required(element);
 	}
 	return true;
-}
-
-
-/**
- * Validate that a field only contains alphanumeric characters
- */
-function clni_rule_alphanumeric(element) {
-	if (element.value.match(/^[0-9a-zA-Z]+$/)) {
-		return true;
-	}
-	return false;
 }
 
 
