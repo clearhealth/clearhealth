@@ -52,6 +52,43 @@ class Report extends ORDataObject {
 			$this->populate();
 		}
 	}
+
+	function getReportDs() {
+		$ds =& new Datasource_sql();
+
+		$labels = array('label' => 'Name', 'description' => 'description', 'view' => false);
+
+		$ds->setup($this->_db,array(
+				'cols'	=> 'label, description, id',
+				'from' 	=> "$this->_table ",
+				'orderby' => "label",
+			),
+			$labels
+		);
+
+		$ds->registerFilter('view',array($this,'templateViewFilter'));
+		$ds->registerTemplate('label','<a href="'.Cellini::link('edit').'report_id={$id}">{$label}</a>');
+		return $ds;
+	}
+
+	var $_templates = false;
+	function templateViewFilter($colVal,$row) {
+		if ($this->_templates == false) {
+			$res = $this->_execute("select * from report_templates");
+			while($res && !$res->EOF) {
+				$this->_templates[$res->fields['report_id']][$res->fields['report_template_id']] = $res->fields;
+				$res->MoveNext();
+			}
+		}
+		$ret = "<select onchange=\"window.location = '".Cellini::link('report')."' + this.options[this.selectedIndex].value\"><option>View Report with Template</option>";
+		if (isset($this->_templates[$row['id']])) {
+			foreach($this->_templates[$row['id']] as $template) {
+				$ret .= "<option value='report_id=$row[id]&report_template_id=$template[report_template_id]'>$template[name]</option>";
+			}
+		}
+		$ret .= "</select>";
+		return $ret;
+	}
     
 	/**
 	* Load all the reports n the system

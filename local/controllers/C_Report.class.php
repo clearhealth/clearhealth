@@ -44,17 +44,10 @@ class C_Report extends Controller {
 		$this->assign("EDIT_ACTION", Cellini::link('edit'));
 		$this->assign("VIEW_ACTION", Cellini::link('view'));
 
-		$r = new Report(null,null);
+		$r =& ORDataObject::factory('Report');
 
-		$pager = new Pager();
-
-		$res = $r->_db->query("select count(*) c from reports");
-		$pager->setMaxRows($res->fields['c']);
-
-		$reports = $r->report_factory($pager->getLimit());
-
+		$reports = new cGrid($r->getReportDs());
 		$this->assign("reports",$reports);
-		$this->assign("pager",$pager);
 
 		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_list.html"));
 	}
@@ -225,67 +218,5 @@ class C_Report extends Controller {
 	function view_action_view($id,$template_id = 0) {
 		return $this->report_action_view($id,$template_id);
 	}
-
-	/**
-	* View a report
-	*
-	* @todo: does this really belong here or should this be in some sort of withReports class
-	*/
-	/*
-	function view_action_view($id,$template_id=0)
-	{
-		if (!is_numeric($id)) {
-			echo "No suitable report id was provided, please check your query string.";	
-		}
-		$r = new Report($id);
-		$templates = $r->get_templates();
-		if (isset($templates[$template_id])) {
-			$template_name = $templates[$template_id]['name'];
-			if ($templates[$template_id]['is_default'] === 'no') {
-				$template = APP_ROOT."/user/report_templates/$template_id.tpl.html";
-				if (!file_exists($template)) {
-					$template = "default";
-				}
-			}
-			else {
-				$template = "default";
-			}
-		}
-		else {
-			$template_name = "Default Template";
-			$template = "default";
-		}
-
-
-
-		$this->assign("TOP_ACTION", Cellini::link('view')."report_id=$id");
-		$this->assign("report",$r);
-		$this->assign("template_name",$template_name);
-
-		$queries = $r->get_exploded_query();
-		$reports = array();
-		foreach($queries as $key => $query) {
-			$reports[$key]['filter'] =& new ReportFilter($query);
-			$reports[$key]['title'] = $key;
-
-			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
-			$reports[$key]['grid']->pageSize = 30;
-			$reports[$key]['grid']->name = $key;
-
-		}
-		if (count($reports) == 0) {
-			$key = "default";
-			$query = $r->get_query();
-			$reports[$key]['filter'] =& new ReportFilter($query);
-
-			$reports[$key]['grid'] =& new cGrid($reports[$key]['filter']->getDatasource());
-			$reports[$key]['grid']->pageSize = 30;
-			
-		}
-		$this->assign_by_ref("reports",$reports);
-
-		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_view.html"));	
-	}
-	*/
 }
 ?>
