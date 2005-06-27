@@ -125,10 +125,14 @@ class C_Report extends Controller {
 		{
 			return $this->list_action_view();
 		}
+
+		if ($id == 0 && isset($this->report_id)) {
+			$id = $this->report_id;
+		}
 		
 		$r = new Report($id);
 		
-		$this->assign("TOP_ACTION", Cellini::link('edit')."report_id=$id");
+		$this->assign("TOP_ACTION", Cellini::link('edit',true,true,$id));
 		$this->assign("template_top", Cellini::link('edit'));
 		$this->assign("report",$r);
 		$this->assign("template_edit",Cellini::link('edit_template'));
@@ -191,7 +195,13 @@ class C_Report extends Controller {
 
 		$report->persist();
 
-		$this->messages->addMessage("Update Successful","");
+		if ($id == 0) {
+			$this->messages->addMessage("Report Added");
+		}
+		else {
+			$this->messages->addMessage("Report Updated");
+		}
+		$this->report_id = $report->get('id');
 	}
 
 	/**
