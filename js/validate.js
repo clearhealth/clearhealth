@@ -393,3 +393,25 @@ function clni_rule_requiredif(element) {
 	}
 	return true;
 }
+
+
+/**
+ * Validate that a field only contains alphanumeric characters
+ */
+function clni_rule_alphanumeric(element) {
+	if (element.value.match(/^[0-9a-zA-Z]+$/)) {
+		return true;
+	}
+	return false;
+}
+
+
+/**
+ * Validate that a field begins with a letter of the alphabet.
+ */
+function clni_rule_alphastart(element) {
+	if (element.value.match(/^[a-zA-Z]/)) {
+		return true;
+	}
+	return false;
+}

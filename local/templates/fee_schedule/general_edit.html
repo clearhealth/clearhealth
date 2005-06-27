@@ -20,6 +20,7 @@
 	}
 </script>
 {/literal}
+{clni_register_validation id="feeSchedule__name" rules="alphanumeric|alphastart"}
 {if ($feeSchedule->get('id') > 0)}
 {clni_register_validation_rule id="default_value" rule="confirm"}
 {/if}
