@@ -928,6 +928,12 @@ class C_Patient extends Controller {
 		if (!$freeb2->registerData($claim_identifier,'BillingFacility',$practiceData)) {
 			trigger_error("Unable to register billing facility data - ".$freeb2->claimLastError($claim_identifier));
 		}
+		
+		// register biling facility - practice
+		if (!$freeb2->registerData($claim_identifier,'BillingContact',$practiceData)) {
+			trigger_error("Unable to register billing contact data - ".$freeb2->claimLastError($claim_identifier));
+		}
+
 
 		// register clearinghouse - payer
 //		if (!$freeb2->registerData($claim_identifier,'ClearingHouse',$clearingHouseData)) {
