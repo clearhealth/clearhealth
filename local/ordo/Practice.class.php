@@ -339,6 +339,7 @@ class Practice extends ORDataObject{
 		$ret['name'] = $this->get('name');
 		$ret['address'] = $this->main_address->toArray();
 		$ret['phone_number'] = $this->get_phone1();
+		$ret['identifier'] = $this->get('identifier');
 		return $ret;
 	}
 } // end of Class

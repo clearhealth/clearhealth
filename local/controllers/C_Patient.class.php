@@ -764,7 +764,6 @@ class C_Patient extends Controller {
 
 
 		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
-		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 
 		// register patient data
 		//Debug:
@@ -847,7 +846,9 @@ class C_Patient extends Controller {
 
 
 		// register practice
+		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 		$practiceData = $this->_cleanDataArray($practice->toArray());
+		//printf('<pre>%s</pre>', var_export($practiceData , true));
 		//echo "C_Patient practicedata";
 
 			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
