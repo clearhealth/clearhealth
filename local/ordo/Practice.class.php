@@ -47,6 +47,13 @@ class Practice extends ORDataObject{
 	var $phone_types;
 	
 	/**
+	 * Contains the identifier (generally an EIN) for a given practice
+	 *
+	 * @var string
+	 */
+	var $identifier = '';
+	
+	/**
 	 * Constructor sets all attributes to their default value
 	 *  
 	 */

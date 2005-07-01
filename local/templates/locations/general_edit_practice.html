@@ -81,6 +81,12 @@
 	</td>
 </tr>
 <tr>
+	<td>Identifier</td>
+	<td colspan="2">
+		<input type="text" id="identifier" name="identifier" value="{$practice->get('identifier')}" />
+	</td>
+</tr>
+<tr>
 	{if empty($practice->id) }
 	<td><br /><input type="submit" value="Save" /></td>
 	{else}

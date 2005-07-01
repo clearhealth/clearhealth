@@ -97,11 +97,9 @@ class C_Location extends Controller {
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
-		}	
-			
+		}
 		$this->location = new Practice($_POST['id']);
-		parent::populate_object($this->location);
-		
+		$this->location->populate_array($_POST);
 		$this->location->persist();
 		
 		$this->location->populate();
