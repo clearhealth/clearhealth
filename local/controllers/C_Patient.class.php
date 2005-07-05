@@ -829,7 +829,6 @@ class C_Patient extends Controller {
 		}
 
 		// register provider
-		// fixme: just using state_license_number for the identifier right now, should we be using a program specific one instead?
 		$providerData = $this->_cleanDataArray($provider->toArray());
 
 		// add in x12 fields from default program
