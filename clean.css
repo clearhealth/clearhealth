@@ -1,0 +1,197 @@
+/* $Id$ */
+body {
+	margin:0px; padding:0px;
+	/*text-align:center;*/
+	background-color:#fff;
+	font-family: sans-serif;
+	font-size: 90%;
+}
+
+#username {
+	font-size: 8pt;
+	line-height: 7pt;
+	font-weight:normal;
+	padding-top: 6pt;
+	padding-right: 2pt;
+	float:right;
+	display:block;
+	
+}
+#sections {
+	position: absolute;
+	left: 350px;
+	top: 6px;
+	font-size: 14pt;
+}
+#sections a {
+	font-size: 14pt;
+	padding:3px 6px;
+	width:10em;
+	border:1px solid #000;
+}
+
+#sections .selected {
+	font-weight: bold;
+	background-color: #eee;
+}
+
+#sections a:hover { 
+	background-color:#ccc;
+}
+
+#selectedItem {
+	position: relative;
+	left: 23em;
+	top: -16pt;
+	font-size: 10pt;
+	z-index: 10;
+	border: solid 1px black;
+	padding: 2px;
+	background-color: white;
+	display: block;
+	float: left;
+}
+#selectedItem a {
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+#header {
+	background-color: #fff;
+	position: relative;
+	z-index: 2;
+	text-align: left;
+	left: 0px;
+	top: 0px;
+	height:60px;
+}
+
+#header h1 {
+	text-indent:-5000px;
+	width:340px;
+	height:60px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 20pt;
+	background:url(images/clearhealth_weblogo.gif) no-repeat center center;
+	float:none;
+}
+	
+#body {
+	width:98%;
+	margin:0px auto;
+	text-align:left;
+	padding: 1%;
+	padding-top: 10px;
+}
+
+div #nav {
+	position: absolute;
+	top:auto;
+	bottom: -1px;
+	left: 350px;
+	margin: 0;
+	padding: 0;
+}
+
+div #nav div.section {
+	position: relative;
+	left:0;
+	float: left;
+	border: solid 1px #ccc;
+	margin: 0 2px;
+	padding: 0 3px;
+}
+
+div #nav div.topLevel {
+	font-weight: bold;
+}
+
+div #nav div ul {
+	margin: -2px 0 0;
+	padding: 0px;
+	position: absolute;
+	border: solid 1px black;
+	top: 11pt;
+	left: -1px;
+	background-color: #eee;
+	visibility: hidden;
+	width: 101pt;
+	text-align: left;
+	z-index:10;
+}
+
+div #nav div:hover > ul { 
+	visibility: visible;
+}
+div #nav div.section:hover {
+	background-color: #eee;
+	border: solid 1px black;
+}
+
+div #nav div ul li{
+	display: block;
+	list-style-type: none;
+	margin: 0px;
+	width: 100pt;
+}
+
+div #nav > div a {
+	display: block;
+	padding: 0 3px;
+	z-index: 11;
+}
+
+div #nav a {
+	display: block;
+}
+
+div.clear {
+	clear: both;
+}
+
+.gridInput {
+	width: 30pt;
+}
+
+.sectionCalendar { background-color: #fff !important; }
+.sectionCalendar #nav ul { background-color: #FFFFE6 !important; }
+
+.sectionPatient { background-color: #fff !important; }
+.sectionPatient #nav ul { background-color: #BFCFFF !important; }
+
+.sectionBilling { background-color: #fff !important; }
+.sectionBilling #nav ul { background-color: #E6FFBF !important; }
+
+.sectionAdministration { background-color: #fff !important; }
+.sectionAdministration #nav ul { background-color: #FFDFBF !important; }
+
+fieldset table.data td {
+	margin: 2px;
+	padding: 2px;
+	background-color: #ddd;
+}
+fieldset table.data th {
+	margin: 2px;
+	padding: 2px;
+}
+table.columns {
+	font-size: 100%;
+}
+table.columns td {
+	vertical-align: top;
+	font-size: 100%;
+}
+
+table td label {
+	text-align: right;
+	display: block;
+}
+table td label.inline {
+	display: inline;
+}
+h3 {
+	margin: 0px;
+	padding: 0px;
+	margin-top: 12pt;
+}

@@ -77,4 +77,8 @@ $GLOBALS['C_ALL']['emr_dir'] = "/index.php/";
 
 // template mappings
 $GLOBALS['C_ALL']['group_appointments'] = $config['scheduling']['group_appointments'];
+
+// Extra CSS file(s) to load
+$config['extra_css'] = array('clean.css');
+
 ?>
