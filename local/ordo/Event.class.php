@@ -195,9 +195,9 @@ class Event extends ORDataObject{
 		." LEFT JOIN person as psn on psn.person_id=pt.person_id "
 		." LEFT JOIN person_number as p2n on psn.person_id=p2n.person_id "
 		." LEFT JOIN number as n on n.number_id=p2n.number_id and n.number_type =" .  "1" //this will be the first value in the number_types enum
-		." WHERE o.start BETWEEN '$start'  AND '$end' AND (c.schedule_code != 'NS' OR c.schedule_code IS NULL) $foreign_id $code_filter $filter_sql ORDER BY schedule_sort DESC, o.start, o.end";
+		." WHERE o.start BETWEEN '$start'  AND '$end' AND (c.schedule_code != 'NS' OR c.schedule_code IS NULL) $foreign_id $code_filter $filter_sql group by o.id ORDER BY schedule_sort DESC, o.start, o.end";
 		//echo $sql . "<br>";
-	
+
 		$result = $e->_Execute($sql);
 		
 		return Event::event_array_builder($result,$key_type);
@@ -227,7 +227,7 @@ class Event extends ORDataObject{
 		." LEFT JOIN person as psn on psn.person_id=pt.person_id "
 		." LEFT JOIN person_number as p2n on psn.person_id=p2n.person_id "
 		." LEFT JOIN number as n on n.number_id=p2n.number_id and n.number_type =" .  "1" //this will be the first value in the number_types enum
- 		." WHERE $where_sql ORDER BY o.start";
+ 		." WHERE $where_sql group by o.id ORDER BY o.start";
 		//echo $sql;
 	
 		$result = $e->_Execute($sql);
