@@ -21,6 +21,12 @@
 				<td><label>Income:</label></td>
 				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income')}</td>
 
+				<td><label>Monthly Income:</label></td>
+				<td><input name="patientStatistics[monthly_income]" id="ps_monthly_income" value="{$patientStatistics->get('monthly_income')}" size=8 maxlength=8></td>
+			</tr>
+			<tr>
+				<td><label>Family Size:</label></td>
+				<td><input name="patientStatistics[family_size]" id="ps_family_size" value="{$patientStatistics->get('family_size')}" size=3 maxlength=3></td>
 				<td><label>Date of First Encounter:</label></td>
 				<td>{$encounter->getFirstDate($person->get('id'))}</td>
 			</tr>
@@ -40,3 +46,5 @@
 		</table>
 		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
 	</fieldset>
+{clni_register_validation_rule id="ps_monthly_income" rule="number" message="Monthly income is a Number no commas should be used"}
+{clni_register_validation_rule id="ps_family_size" rule="number" message="Family size a Number"}
