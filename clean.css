@@ -108,11 +108,11 @@ body {
 
 div #nav {
 	position: absolute;
-	top: 20px;
+	top: 25px;
+	height: 15px;
 	left: 25px;
 	margin: 0;
 	padding: 0;
-	border: solid 1px red;
 }
 
 div #nav div.section {
