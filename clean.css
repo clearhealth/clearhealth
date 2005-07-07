@@ -25,17 +25,11 @@ body {
 }
 #sections a {
 	font-size: 14pt;
-<<<<<<< .mine
 	padding: 0px;
 	padding-right: 5px;
 	padding-left: 5px;
 	border:solid 1px black;
 	text-decoration: none;
-=======
-	padding:1px 6px;
-	width:10em;
-	border:1px solid #000;
->>>>>>> .r736
 }
 
 #sections .selected {
