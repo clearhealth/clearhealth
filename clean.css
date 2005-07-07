@@ -11,15 +11,15 @@ body {
 	font-size: 8pt;
 	line-height: 7pt;
 	font-weight:normal;
-	padding-top: 6pt;
-	padding-right: 2pt;
+	padding-top: 18px;
+	padding-right: 5px;
 	float:right;
 	display:block;
 	
 }
 #sections {
 	position: absolute;
-	left: 350px;
+	left: 25px;
 	top: 6px;
 	font-size: 14pt;
 }
@@ -66,6 +66,7 @@ body {
 	height:60px;
 }
 
+
 #header h1 {
 	text-indent:-5000px;
 	width:340px;
@@ -73,9 +74,25 @@ body {
 	margin: 0px;
 	padding: 0px;
 	font-size: 20pt;
-	background:url(images/clearhealth_weblogo.gif) no-repeat center center;
-	float:none;
+	background:url(images/clearhealth_weblogo.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+	float:right;
 }
+
+.sectionCalendar h1 {
+	background-image:url(images/clearhealth_weblogo-calendar.gif) !important;
+}
+.sectionPatient h1 {
+	background-image:url(images/clearhealth_weblogo-patient.gif) !important;
+}
+.sectionBilling h1 {
+	background-image:url(images/clearhealth_weblogo-billing.gif) !important;
+}
+.sectionAdministration h1 {
+	background-image:url(images/clearhealth_weblogo-administration.gif) !important;
+}
+
 	
 #body {
 	width:98%;
@@ -89,7 +106,7 @@ div #nav {
 	position: absolute;
 	top:auto;
 	bottom: -1px;
-	left: 350px;
+	left: 25px;
 	margin: 0;
 	padding: 0;
 }
@@ -98,7 +115,7 @@ div #nav div.section {
 	position: relative;
 	left:0;
 	float: left;
-	border: solid 1px #ccc;
+	border: solid 1px #000;
 	margin: 0 2px;
 	padding: 0 3px;
 }
@@ -154,16 +171,12 @@ div.clear {
 	width: 30pt;
 }
 
-.sectionCalendar { background-color: #fff !important; }
 .sectionCalendar #nav ul { background-color: #FFFFE6 !important; }
 
-.sectionPatient { background-color: #fff !important; }
 .sectionPatient #nav ul { background-color: #BFCFFF !important; }
 
-.sectionBilling { background-color: #fff !important; }
 .sectionBilling #nav ul { background-color: #E6FFBF !important; }
 
-.sectionAdministration { background-color: #fff !important; }
 .sectionAdministration #nav ul { background-color: #FFDFBF !important; }
 
 fieldset table.data td {
