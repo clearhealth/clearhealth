@@ -119,8 +119,9 @@ div #nav div.section {
 	position: relative;
 	left:0;
 	border: solid 1px #000;
-	margin: 0 2px;
 	padding: 0 3px;
+	float: left;
+	margin-right: 4px;
 }
 
 div #nav div.topLevel {
