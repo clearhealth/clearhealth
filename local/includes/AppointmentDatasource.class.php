@@ -26,8 +26,8 @@ class AppointmentDataSource extends Datasource_sql {
 
 	function AppointmentDataSource($user_id) {
 		$this->user_id = $user_id;
-		$this->_db = Cellini::dbInstance();
-		$this->_query = array(
+		$this->setup(Cellini::dbInstance(),
+		array(
 			'cols' => "date_format(start,'%m/%d/%y %H:%i') start,
 					if (
 						((time_to_sec(end)-time_to_sec(start))/60 > 60), 
@@ -38,9 +38,9 @@ class AppointmentDataSource extends Datasource_sql {
 					o.notes, reason_code, concat_ws(', ',p.last_name,p.first_name) provider ",
 			'from' => 'occurences o inner join rooms r on r.id = o.location_id inner join buildings b on b.id = r.building_id
 			left join user u on o.user_id = u.user_id left join person p on u.person_id = p.person_id',
-			'where'=> '',
-			);
-		$this->addOrderRule('start');
+			'orderby' => 'start DESC'
+			),
+		$this->_labels);
 		$this->registerFilter('reason_code',array(&$this,'reasonFilter'));
 
 		$enum =& ORDataObject::factory('Enumeration');
@@ -53,7 +53,7 @@ class AppointmentDataSource extends Datasource_sql {
 		$this->_query['where'] .= " external_id = $this->user_id";
 
 		if (!$this->showPast) {
-			$this->_query['where'] .= " and start > date_format(now(),'%Y-%m-%d 00:00:00') ";
+			$this->_query['where'] = " and start > date_format(now(),'%Y-%m-%d 00:00:00') ";
 		}
 
 		parent::prepare();

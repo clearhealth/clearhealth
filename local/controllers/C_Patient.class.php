@@ -89,7 +89,6 @@ class C_Patient extends Controller {
 
 			require_once APP_ROOT .'/local/includes/AppointmentDatasource.class.php';
 			$appointmentDS =& new AppointmentDatasource($this->get('patient_id'));
-			$appointmentDS->showPast = false;
 			$appointmentGrid =& new cGrid($appointmentDS);
 			$appointmentGrid->pageSize = 10;
 			
