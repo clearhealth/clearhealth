@@ -138,8 +138,9 @@ class Occurence extends ORDataObject{
 	 * Convenience function to get an array of many objects
 	 * 
 	 * @param int $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned 
+	 * @param bool $newer	when newer is true only items from the last 7 days and into the future are shown
 	 */
-	function occurences_factory($foreign_id = "",$newest=-1) {
+	function occurences_factory($foreign_id = "",$mode=false) {
 		
 		$occurences = array();
 		
@@ -151,11 +152,16 @@ class Occurence extends ORDataObject{
 		}
 		
 		$o = new Occurence();
-		$sql = "SELECT * FROM  " . $o->_prefix . $o->_table . " WHERE event_id " .$foreign_id . " ORDER BY " . $o->_prefix . $o->_table . ".start";
-
-		if ($newest !== -1) {
-			$sql .= " DESC limit $newest";
+		$nsql = "";
+		if ($mode === 1) {
+			$nsql = " and start > date_sub(now(), INTERVAL 7 DAY) ";
 		}
+		$sql = "SELECT * FROM  " . $o->_prefix . $o->_table . " WHERE event_id " .$foreign_id . $nsql .
+			" ORDER BY " . $o->_prefix . $o->_table . ".start";
+		if ($mode === 2) {
+			$sql .= " DESC limit 100";
+		}
+
 		$result = $o->_Execute($sql);
 		
 		$i =0;

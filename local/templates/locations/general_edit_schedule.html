@@ -169,7 +169,11 @@
 	</script>
 	{/literal}
 	{clni_form action=$SELECTED_ACTION process=$PROCESS}
-	{assign var=events value=$event->get_occurences(50)}
+	{if $schedule->get_schedule_code() == "NS"}
+	{assign var=events value=$event->get_occurences(2)}
+	{else}
+	{assign var=events value=$event->get_occurences(1)}
+	{/if}
 	{if count($events) > 0}
 	<select onchange="submitChecked(this);" name="action">
 		<option>With Selected</option>
