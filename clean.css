@@ -9,9 +9,9 @@ body {
 
 #username {
 	font-size: 8pt;
-	line-height: 7pt;
+	line-height: 8pt;
 	font-weight:normal;
-	padding-top: 18px;
+	padding-top: 16pt;
 	padding-right: 5px;
 	float:right;
 	display:block;
@@ -20,14 +20,22 @@ body {
 #sections {
 	position: absolute;
 	left: 25px;
-	top: 6px;
+	top: -2px;
 	font-size: 14pt;
 }
 #sections a {
 	font-size: 14pt;
+<<<<<<< .mine
+	padding: 0px;
+	padding-right: 5px;
+	padding-left: 5px;
+	border:solid 1px black;
+	text-decoration: none;
+=======
 	padding:1px 6px;
 	width:10em;
 	border:1px solid #000;
+>>>>>>> .r736
 }
 
 #sections .selected {
@@ -41,8 +49,8 @@ body {
 
 #selectedItem {
 	position: relative;
-	left: 23em;
-	top: -16pt;
+	left: 27em;
+	top: -15pt;
 	font-size: 10pt;
 	z-index: 10;
 	border: solid 1px black;
@@ -52,8 +60,10 @@ body {
 	float: left;
 }
 #selectedItem a {
+	display: inline;
 	font-size: 10pt;
 	font-weight: bold;
+	border: 0px;
 }
 
 #header {
@@ -63,14 +73,14 @@ body {
 	text-align: left;
 	left: 0px;
 	top: 0px;
-	height:60px;
+	height:40px;
 }
 
 
 #header h1 {
 	text-indent:-5000px;
 	width:387px;
-	height:60px;
+	height:40px;
 	margin: 0px;
 	padding: 0px;
 	font-size: 20pt;
@@ -104,17 +114,16 @@ body {
 
 div #nav {
 	position: absolute;
-	top:auto;
-	bottom: -1px;
+	top: 20px;
 	left: 25px;
 	margin: 0;
 	padding: 0;
+	border: solid 1px red;
 }
 
 div #nav div.section {
 	position: relative;
 	left:0;
-	float: left;
 	border: solid 1px #000;
 	margin: 0 2px;
 	padding: 0 3px;
