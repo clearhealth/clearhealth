@@ -1,6 +1,12 @@
 <?php
 // todo: reduce the number of classes were handling to decrease the size of the javascript were generating (doesn't matter all that much in the local server case)
 require_once "cellini/bootstrap.php";
+
+// verify that were logged in
+$me =& Me::getInstance();
+if ($me->get_id() == 0) {
+	die('Access Denied');
+}
 // Including this sets up the JPSPAN constant
 require_once CELLINI_ROOT . '/lib/jpspan/JPSpan.php';
 
