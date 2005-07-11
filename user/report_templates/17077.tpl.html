@@ -13,11 +13,12 @@
 		float: left;
 	}
 
-	#title {
+	#rtitle {
 		float: right;
 	}
 	h3 {
-		margin-top: 0px;
+		padding: 0px;
+		margin: 0px;
 	}
 	h4 {
 		margin: 0px;
@@ -40,12 +41,19 @@
 {assign var=code_list value=$code_list_ds->toArray()}
 {assign var=payment_list value=$payment_history_ds->toArray()}
 
+{if !$encounter}
+You must select an encounter to view an Exit Report
+{/if}
 
 
+{if $encounter}
+{if $PRINT_ACTION}
+<a href="{$PRINT_ACTION}" target="print">Print View</a>
+{/if}
 <table border="0">
 <tr>
 <td colspan="4">
-<h3 id="title">{$report->get_label()} : {$patient.last_name}, {$patient.first_name} #{$patient.record_number} {$smarty.now|date_format:"%Y-%m-%d"}</h3>
+<h3 id="rtitle">{$report->get_label()} : {$patient.last_name}, {$patient.first_name} #{$patient.record_number} {$smarty.now|date_format:"%Y-%m-%d"}</h3>
 </td>
 </tr>
 <tr>
@@ -179,3 +187,4 @@
 	</table>
 </tr>
 </table>
+{/if}
