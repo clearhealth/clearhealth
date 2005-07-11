@@ -4,7 +4,7 @@ require_once CELLINI_ROOT."/includes/Grid.class.php";
 require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
 
 /**
- * Controller for the Freestand Branch stuff
+ * Controller Clearhealth Patient actions
  */
 class C_Patient extends Controller {
 
