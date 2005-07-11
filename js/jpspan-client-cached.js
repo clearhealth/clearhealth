@@ -257,6 +257,8 @@ JPSpan_HttpClient.prototype = {
         this.xmlhttp.setRequestHeader('Accept-Charset','UTF-8');
         request.send();
         
+        //use this to take a look at the wire return values if you need to debug
+        //alert(this.xmlhttp.responseText);
         if ( this.xmlhttp.status == 200 ) {
             return this.xmlhttp.responseText;
         } else {
@@ -610,7 +612,7 @@ function JPSpan_Request_RawPost(encoder) {
     
     return oParent;
 };
-// $Id: remoteobject.js,v 1.13 2005/05/26 22:40:01 harryf Exp $
+// $Id: remoteobject.js,v 1.12 2004/11/22 23:28:11 harryf Exp $
 // Base class for generated classes
 function JPSpan_RemoteObject() {}
 
@@ -651,7 +653,17 @@ JPSpan_RemoteObject.prototype = {
     // @access public
     clientErrorFunc: function(e) {
     
-        alert(this.__drawErrorMsg('Client_Error',e));
+        try {
+            var errorMsg = '['+e.name+'] '+e.message;
+        } catch (ex) {
+            var errorMsg = '[Client_Error] '+e;
+        }
+
+        if ( e.client && e.call ) {
+            errorMsg = errorMsg + ' while calling '+e.client+'.'+e.call+'()';
+        }
+
+        alert(errorMsg);
         
     },
     
@@ -667,11 +679,14 @@ JPSpan_RemoteObject.prototype = {
 
     serverErrorFunc: function(e) {
 
-        var errorMsg = this.__drawErrorMsg('Server_Error',e);
-        
-        if ( e.file && e.line ) {
-            errorMsg += "\nServer script: "
-                +e.file+" on line "+e.line;
+        try {
+            var errorMsg = '['+e.name+'] '+e.message;
+        } catch (ex) {
+            var errorMsg = '[Server_Error] '+e;
+        }
+
+        if ( e.client && e.call ) {
+            errorMsg = errorMsg + ' while calling '+e.client+ '.'+e.call+'()';
         }
 
         alert(errorMsg);
@@ -686,35 +701,18 @@ JPSpan_RemoteObject.prototype = {
     // @access public
     applicationErrorFunc: function(e) {
 
-        alert(this.__drawErrorMsg('Application_Error',e));
-
-    },
-    
-    // Builds a string error message from an exceptions
-    // properties
-    // @private
-    __drawErrorMsg: function(type, e) {
-        
         try {
-            var errorMsg = '['+e.name+']';
-            if ( e.code ) {
-                errorMsg += '['+e.code+']';
-            }
-            errorMsg += ' '+e.message;
+            var errorMsg = '['+e.name+'] '+e.message;
         } catch (ex) {
-            var errorMsg = '['+type+'] ';
-            if ( e.code ) {
-                errorMsg += '['+e.code+']';
-            }
-            errorMsg += ' '+e.message;
+            var errorMsg = '[Application_Error] '+e;
         }
-        
+
         if ( e.client && e.call ) {
-            errorMsg += "\nMethod called: "
-                +e.client+ "."+e.call+"()";
+            errorMsg = errorMsg + ' while calling '+e.client+ '.'+e.call+'()';
         }
-        
-        return errorMsg;
+
+        alert(errorMsg);
+
     },
     
     // Private stuff from here...
@@ -953,7 +951,7 @@ function c_patientfinder() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?c_patientfinder';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/c_patientfinder';
     
     oParent.__remoteClass = 'c_patientfinder';
     
@@ -977,7 +975,7 @@ function c_coding() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?c_coding';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/c_coding';
     
     oParent.__remoteClass = 'c_coding';
     
@@ -1007,7 +1005,7 @@ function feescheduledatasource() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?feescheduledatasource';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/feescheduledatasource';
     
     oParent.__remoteClass = 'feescheduledatasource';
     
@@ -1223,7 +1221,7 @@ function superbilldatasource() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?superbilldatasource';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/superbilldatasource';
     
     oParent.__remoteClass = 'superbilldatasource';
     
@@ -1427,7 +1425,7 @@ function icdcodingdatasource() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?icdcodingdatasource';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/icdcodingdatasource';
     
     oParent.__remoteClass = 'icdcodingdatasource';
     
@@ -1643,7 +1641,7 @@ function cptcodingdatasource() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?cptcodingdatasource';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/cptcodingdatasource';
     
     oParent.__remoteClass = 'cptcodingdatasource';
     
@@ -1859,7 +1857,7 @@ function encounter() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?encounter';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/encounter';
     
     oParent.__remoteClass = 'encounter';
     
@@ -1883,7 +1881,7 @@ function report() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?report';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/report';
     
     oParent.__remoteClass = 'report';
     
@@ -1983,24 +1981,6 @@ function report() {
     oParent.tostring = function() {
         var url = this.__serverurl+'/tostring/';
         return this.__call(url,arguments,'tostring');
-    };
-    
-    // @access public
-    oParent.ispopulated = function() {
-        var url = this.__serverurl+'/ispopulated/';
-        return this.__call(url,arguments,'ispopulated');
-    };
-    
-    // @access public
-    oParent.getreportds = function() {
-        var url = this.__serverurl+'/getreportds/';
-        return this.__call(url,arguments,'getreportds');
-    };
-    
-    // @access public
-    oParent.templateviewfilter = function() {
-        var url = this.__serverurl+'/templateviewfilter/';
-        return this.__call(url,arguments,'templateviewfilter');
     };
     
     // @access public
@@ -2117,7 +2097,7 @@ function menureport() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?menureport';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/menureport';
     
     oParent.__remoteClass = 'menureport';
     
@@ -2220,12 +2200,6 @@ function menureport() {
     };
     
     // @access public
-    oParent.ispopulated = function() {
-        var url = this.__serverurl+'/ispopulated/';
-        return this.__call(url,arguments,'ispopulated');
-    };
-    
-    // @access public
     oParent.getmenulist = function() {
         var url = this.__serverurl+'/getmenulist/';
         return this.__call(url,arguments,'getmenulist');
@@ -2309,7 +2283,7 @@ function menuform() {
         oParent.Async(arguments[0]);
     }
     
-    oParent.__serverurl = 'http://localhost/clearhealth/jpspan_server.php?menuform';
+    oParent.__serverurl = 'https://67.125.164.210/clearhealth/jpspan_server.php/menuform';
     
     oParent.__remoteClass = 'menuform';
     
@@ -2409,12 +2383,6 @@ function menuform() {
     oParent.tostring = function() {
         var url = this.__serverurl+'/tostring/';
         return this.__call(url,arguments,'tostring');
-    };
-    
-    // @access public
-    oParent.ispopulated = function() {
-        var url = this.__serverurl+'/ispopulated/';
-        return this.__call(url,arguments,'ispopulated');
     };
     
     // @access public
