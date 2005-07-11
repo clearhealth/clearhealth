@@ -2,7 +2,7 @@
 /**
  * Stub for generic user implementation
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ require_once CELLINI_ROOT.'/ordo/Base_User.class.php';
 /**
  * Stub user class
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class User extends Base_User {
 	
