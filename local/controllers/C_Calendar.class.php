@@ -330,7 +330,7 @@ class C_Calendar extends CalendarController {
 		
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day","calendar",$start,$end);
 		$this->assign_by_ref("sidebar",$sidebar);
-		
+
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day.html");
 	}
 	
@@ -381,20 +381,12 @@ class C_Calendar extends CalendarController {
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day_brief.html");
 	}
 
-	function _timestamp() {
-		list($usec, $sec) = explode(" ", microtime());
-		return ((float)$usec + (float)$sec);
-	}
-	
 	function sidebar_action($date = "",$view="week_grid",$controller="calendar",$start="",$end="") {
 		
 		if ($this->_print_view) return ""; 
 		
 		$this->sec_obj->acl_qcheck("usage",$this->_me,"","calendar",$this,false);
 
-		$t1 = $this->_timestamp();
-		
-		
 		if (empty($date)){
 			$year = date('Y');
 			$month = date('n');
@@ -460,12 +452,6 @@ class C_Calendar extends CalendarController {
 		$nmonth->build();
 		$months = array($tmonth, $nmonth);
 
-		$t2 = $this->_timestamp();
-
-		$t = $t2 - $t1;
-		echo "<!-- Calendar Building: $t -->\n";
-		$t1 = $this->_timestamp();
-
 		$p = new Practice();
 		$pa = $p->practices_factory();
 		$r = new Room();
@@ -476,11 +462,6 @@ class C_Calendar extends CalendarController {
 		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
 		}
 
-		$t2 = $this->_timestamp();
-		$t = $t2 - $t1;
-		echo "<!-- Practice Rooms: $t -->\n";
-		
-		$t1 = $this->_timestamp();
 		$u = new User(null,null);
 		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
 		if (isset($_SESSION['calendar']['filters']['user'])) {
@@ -490,11 +471,6 @@ class C_Calendar extends CalendarController {
 			$this->assign("selected_location",$_SESSION['calendar']['filters']['location']);
 		}
 		
-		$t2 = $this->_timestamp();
-		$t = $t2 - $t1;
-		echo "<!-- User List: $t -->\n";
-
-		$t1 = $this->_timestamp();
 		if (isset($_GET['appointment_id']) && is_numeric($_GET['appointment_id'])) {
 			$this->assign("edit_app", true);
 			$oc = new Occurence($_GET['appointment_id']);
@@ -512,9 +488,6 @@ class C_Calendar extends CalendarController {
 			$oc->end = $end;
 			$this->assign("edit_oc",$oc);
 		}
-		$t2 = $this->_timestamp();
-		$t = $t2 - $t1;
-		echo "<!-- Occurence: $t -->\n";
 		$this->assign_by_ref("sidebar_months",$months);
 		$this->assign("LINK_BASE",$this->_link($view,true));
 		$this->assign("appointment_reasons", array_flip($u->_load_enum("appointment_reasons",false)));
