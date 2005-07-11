@@ -1,5 +1,8 @@
-{*<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>*}
+{if $smarty.get.usecache}
 <script type='text/javascript' src='{$base_dir}js/jpspan-client-cached.js'></script>
+{else}
+<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+{/if}
 <SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete.js"></script>
 {literal}
 <script language="javascript">
