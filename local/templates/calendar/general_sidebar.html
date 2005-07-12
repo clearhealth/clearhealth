@@ -1,5 +1,5 @@
 {assign var="server" value=$smarty.server.HTTP_HOST}
-{assign var="file" value="$APP_ROOT/../js/jpspan-client-cache/$server.js"}
+{assign var="file" value="$APP_ROOT/js/jpspan-client-cache/$server.js"}
 {if file_exists($file)}
 <script type='text/javascript' src='{$base_dir}js/jpspan-client-cache/{$smarty.server.HTTP_HOST}.js'></script>
 {else}
