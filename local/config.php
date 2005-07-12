@@ -81,4 +81,7 @@ $GLOBALS['C_ALL']['group_appointments'] = $config['scheduling']['group_appointme
 // Extra CSS file(s) to load
 $config['extra_css'] = array('clean.css');
 
+// Show any deprecated function/method call notices
+$config['show_deprecated_warnings'] = false;
+
 ?>
