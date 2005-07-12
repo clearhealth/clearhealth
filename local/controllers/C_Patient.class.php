@@ -59,7 +59,7 @@ class C_Patient extends Controller {
 			$encounterGrid->pageSize = 5;
 
 			$formData =& ORDataObject::factory("FormData");
-			$formDataGrid =& new cGrid($formData->dataListByExternalId($this->get('patient_id')));
+			$formDataGrid =& new cGrid($formData->dataListForPatientByExternalId($this->get('patient_id')));
 			$formDataGrid->name = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
@@ -239,6 +239,7 @@ class C_Patient extends Controller {
 
 		if ($encounter_id > 0) {
 			$this->set('encounter_id',$encounter_id);
+			$this->set('external_id', $this->get('encounter_id'));
 		}
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id);
@@ -279,11 +280,6 @@ class C_Patient extends Controller {
 		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Cellini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
-		$formData =& ORDataObject::factory("FormData");
-		$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
-		$formDataGrid->name  = "formDataGrid";
-		$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
-		$formDataGrid->pageSize = 10;
 		
 		$appointments = $encounter->appointmentList();
 		$appointmentArray = array("" => " ");
@@ -291,14 +287,27 @@ class C_Patient extends Controller {
 			$appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
 		}
 		
-		$menu = Menu::getInstance();
-		$tmp = $menu->getMenuData('patient',$menu->getMenuIdFromTitle('patient','Encounter Forms'));
-
-		$formList = array();
-		if (isset($tmp['forms'])) {
-			foreach($tmp['forms'] as $form) {
-				$formList[$form['form_id']] = $form['title'];
-			}	
+		
+		// If this is a saved encounter, generate the following:
+		if ($this->get('encounter_id') > 0) {
+			// Load data that has been stored
+			$formData =& ORDataObject::factory("FormData");
+			$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
+			$formDataGrid->name  = "formDataGrid";
+			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
+			$formDataGrid->pageSize = 10;
+			
+			// Generate a menu of forms that are connected to Encounters
+			$menu = Menu::getInstance();
+			$connectedForms = $menu->getMenuData('patient',
+				$menu->getMenuIdFromTitle('patient','Encounter Forms'));
+			
+			$formList = array();
+			if (isset($connectedForms['forms'])) {
+				foreach($connectedForms['forms'] as $form) {
+					$formList[$form['form_id']] = $form['title'];
+				}
+			}
 		}
 		
 		//if an appointment id is supplied the request is coming from the calendar and so prepopulate the defaults
@@ -326,8 +335,6 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
 		$this->assign_by_ref('encounterValue',$encounterValue);
 		$this->assign_by_ref('encounterValueGrid',$encounterValueGrid);
-		$this->assign_by_ref('formDataGrid',$formDataGrid);
-		$this->assign_by_ref('formList',$formList);
 		$this->assign_by_ref('payment',$payment);
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
 		$this->assign_by_ref('appointmentList',$appointments);
@@ -341,6 +348,8 @@ class C_Patient extends Controller {
 			$this->coding->assign("encounter", $encounter);
 			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_parent_id);
 			$this->assign('codingHtml',$codingHtml);
+			$this->assign_by_ref('formDataGrid',$formDataGrid);
+			$this->assign_by_ref('formList',$formList);
 		}
 
 		if ($encounter->get('status') === "closed") {

@@ -77,16 +77,46 @@ class FormData extends ORDataObject {
 	 * Get a ds with data for an external_id
 	 */
 	function &dataListByExternalId($external_id) {
-		settype($patient_id,'int');
+		assert('$external_id == intval($external_id)');
+		$external_id = intval($external_id);
+		
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "last_edit, f.name, form_data_id, external_id",
-				'from' 	=> "$this->_table d inner join form f using(form_id)",
+				'cols'    => "last_edit, f.name, form_data_id, external_id",
+				'from'    => "$this->_table d inner join form f using(form_id)",
 				'orderby' => 'name, last_edit DESC',
-				'where' => "external_id = $external_id"
+				'where'   => "external_id = $external_id"
 			),
 			array('name' => 'Form Name','last_edit'=>'Last Edit'));
 		return $ds;
+	}
+	
+	
+	/**
+	 * Returns a {@link Datasource_sql} setup to retrieve form data for a 
+	 * patient.
+	 *
+	 * This differs from {@link dataListByExternalId()} in that it also searches
+	 * for matching encounters to link display as part of the list.
+	 *
+	 * @return {@link Datasource_sql}
+	 */
+	function &dataListForPatientByExternalId($external_id) {
+		assert('$external_id == intval($external_id)');
+		$external_id = intval($external_id);
+		
+		$ds =& new Datasource_sql();
+		$ds->setup($this->_db,
+			array(
+				'cols'    => "last_edit, f.name, form_data_id, external_id",
+				'from'    => "{$this->_table} AS d
+				             INNER JOIN form AS f USING(form_id)
+							LEFT JOIN encounter AS e ON(d.external_id = e.encounter_id)",
+				'orderby' => 'name, last_edit DESC',
+				'where'   => "external_id = {$external_id} || e.patient_id = {$external_id}"
+			),
+			array('name' => 'Form Name','last_edit'=>'Last Edit'));
+		return $ds;		
 	}
 
 

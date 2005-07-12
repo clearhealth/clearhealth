@@ -1,3 +1,4 @@
+{if $encounter->get('encounter_id') > 0}
 <fieldset>
 	<legend>Encounter Forms</legend>
 	{$formDataGrid->render()}
@@ -12,3 +13,4 @@
 	</p>
 	{/if}
 </fieldset>
+{/if}
