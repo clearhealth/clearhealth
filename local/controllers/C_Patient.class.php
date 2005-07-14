@@ -222,6 +222,7 @@ class C_Patient extends Controller {
 	 */
 	function encounter_action_edit($encounter_id = 0,$appointment_id = 0,$patient_id = 0) {
 		settype($encounter_id,'int');
+		$valid_appointment_id = false;
 		
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
@@ -233,8 +234,9 @@ class C_Patient extends Controller {
 			ORDataObject::factory_include('Encounter');
 			$id = Encounter::encounterIdFromAppointmentId($appointment_id);
 			if ($id > 0) {
-				$encounter_id = $id;
-			}
+				$valid_appointment_id = true;
+				$encounter_id         = $id;
+			} 
 		}
 
 		if ($encounter_id > 0) {
@@ -310,8 +312,9 @@ class C_Patient extends Controller {
 			}
 		}
 		
-		//if an appointment id is supplied the request is coming from the calendar and so prepopulate the defaults
-		if ($appointment_id > 0) {
+		//if an appointment id is supplied the request is coming from the 
+		//calendar and so prepopulate the defaults
+		if ($appointment_id > 0 && $valid_appointment_id) {
 			$encounter->set("occurence_id",$appointment_id);
 			$encounter->set("patient_id",$this->get("patient_id"));
 			if (isset($appointments[$appointment_id])) {
