@@ -135,6 +135,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 {clni_register_validation_rule id="gender" message="Gender is Required"}
 {clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
 {clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
+{clni_register_validation_rule id="record_number" rule="greaterthanzero" message="Record # must be greater than 0"}
 {if $person->get_person_id() == 0}
 {clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
 {clni_register_validation_rule id="initialphone" rule="required" message="A Phone Number is required"}

@@ -21,6 +21,7 @@ Plugins:  clni_form and clni_register_validation_rule
 // alphanum
 // requiredif
 // alphastart
+// greaterthanzero
 
 /**
  * Register a validation rule
@@ -400,6 +401,20 @@ function clni_rule_requiredif(element) {
  */
 function clni_rule_alphastart(element) {
 	if (element.value.match(/^[a-zA-Z]/)) {
+		return true;
+	}
+	return false;
+}
+
+
+/**
+ * Validates that a field is greater than zero
+ */
+function clni_rule_greaterthanzero(element) {
+	if (element.value.length == 0) {
+		return true;
+	}
+	if (element.value > 0) {
 		return true;
 	}
 	return false;
