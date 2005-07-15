@@ -62,12 +62,67 @@ $S->addHandler(new MenuForm());
 // server's URL
 
 if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'client')==0) {
+	// cache dir
+	$cacheDir = APP_ROOT."/tmp/";
 
-		// Compress the output Javascript (e.g. strip whitespace)
-		//define('JPSPAN_INCLUDE_COMPRESS',TRUE);
+	// create a hash from the api of the handlers
+	// turn the descriptions into a string
+	$api = "";
+	foreach($S->descriptions as $key => $val) {
+		$api .= $key;
+		foreach($val->methods as $method) {
+			$api .= $method;
+		}
+	}
+	$apihash = md5($api);
 
-		// Display the Javascript client
-		$S->displayClient();
+	// get the host the request is being made with since it gets embedded in the client file
+	$server = $_SERVER['HTTP_HOST'];
+
+	// create the filename
+	$cacheFile = "client-$apihash-$server.js";
+
+	// create the etag
+	$etag = md5($cacheFile);
+
+	// setup HTTP_Cache give it our custom etag and see if we need to generate the client
+	require_once 'HTTP/Cache.php';
+
+	$cache = &new HTTP_Cache();
+	$cache->setEtag($etag);
+
+	if (!$cache->isValid()) {
+
+		if (!file_exists($cacheDir.$cacheFile)) {
+			// Compress the output Javascript (e.g. strip whitespace)
+			define('JPSPAN_INCLUDE_COMPRESS',TRUE);
+
+			// Display the Javascript client
+			$G = & $S->getGenerator();
+			require_once JPSPAN . 'Include.php';
+			$I = & JPSpan_Include::instance();
+			
+			// HACK - this needs to change
+			$I->loadString(__FILE__,$G->getClient());
+			$client = $I->getCode();
+
+			file_put_contents($cacheDir.$cacheFile,$client);
+		}
+		else {
+			$client = file_get_contents($cacheDir.$cacheFile);
+		}
+
+
+		header('Content-Type: application/x-javascript');
+
+		$cache->setBody($client);
+	}
+	else {
+		// something is setting Cache-Control 
+		header('Cache-Control: must-revalidate');
+	}
+
+	$cache->send();
 
 } else {
 
