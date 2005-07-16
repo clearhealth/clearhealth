@@ -77,7 +77,7 @@ if (isset($_SERVER['QUERY_STRING']) && strcasecmp($_SERVER['QUERY_STRING'], 'cli
 	$apihash = md5($api);
 
 	// get the host the request is being made with since it gets embedded in the client file
-	$server = $_SERVER['HTTP_HOST'];
+	$server = preg_replace('/[^a-zA-Z0-9\._]/','',$_SERVER['HTTP_HOST']);
 
 	// create the filename
 	$cacheFile = "client-$apihash-$server.js";
