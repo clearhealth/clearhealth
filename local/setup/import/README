@@ -1,0 +1,20 @@
+Importing data into ClearHealth is a two step process. 
+Use the squeeze scripts to get the data from your current system,
+then use the inject scripts to enter the data into ClearHealth. If
+you are lucky ClearHealth will already have import scripts listed in the 
+/local/setup/import directory. If you are not lucky then you will have to 
+code one from scratch.
+
+
+To write a parser for your current system, you might start with one of the already 
+written scripts. It will show you the format of the data file...
+It needs to import data into a php file. The php file should 
+contain a large associative array.
+
+Then you need to use the import scripts under the common directory
+to import your data. You may need to modify these to get the system to work. 
+
+There is a map table that will automatically be created in ClearHealth by
+the import scripts. This will contain the map of ids in the previous system
+to the ids in ClearHealth. Using this is is possible to make certain
+that data is not imported twice. 
