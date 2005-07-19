@@ -298,10 +298,23 @@ class Report extends ORDataObject {
 		$this->description = $desc;
 	}
 
+	
+	/**
+	 * Accessor method for {@link $query}.  Would generally be called via
+	 * $report->get("query").
+	 *
+	 * {@internal This must call stripslashes to insure that all data is 
+	 *    properly escaped prior to returning it.  Without it, this will 
+	 *    attempt to execute a query on the database with all of the 
+	 *    apostrophies escaped}
+	 * @return string
+	 *    Query this {@link Report} should run.
+	 */
 	function get_query()
 	{
-		return $this->query;
+		return stripslashes($this->query);
 	}
+	
 	function set_query($query)
 	{
 		$this->query = $query;
