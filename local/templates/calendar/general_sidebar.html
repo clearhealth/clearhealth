@@ -135,7 +135,6 @@ function groupAppointment(cbox) {
 </div>		</td>
 	</tr>
 </table>
-
 </div>
 <table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
 
@@ -150,8 +149,9 @@ function groupAppointment(cbox) {
 	</tr>
 	<tr>
 		<td bgcolor="#FFFFFF" align="left">
+			<div id="makeAppointmentSidebarMessages"></div>
 			<div style="padding: 5px;">
-			<form name="make_appointment" style="margin-bottom:0;" method="post" action="{$base_dir}index.php/main/location/edit_appointment">
+			<form name="make_appointment" id="makeAppointmentSidebarForm" style="margin-bottom:0;" method="post" action="{$base_dir}index.php/main/location/edit_appointment" onsubmit='return clni_validate(this)'>
 			<select name="user_id" class="query_style">
 			{if $edit_app}
 			{html_options options=$users_array selected=$edit_oc->get_user_id()}
@@ -236,6 +236,9 @@ function groupAppointment(cbox) {
 </div>		</td>
 	</tr>
 </table>
+{clni_register_message_target formId="makeAppointmentSidebarForm" targetId="makeAppointmentSidebarMessages"}
+{clni_register_validation_rule id="patient_id_1" message="A patient is required"}
+
 <br>
 
 <table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
