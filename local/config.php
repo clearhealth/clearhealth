@@ -79,7 +79,7 @@ $GLOBALS['C_ALL']['emr_dir'] = "/index.php/";
 $GLOBALS['C_ALL']['group_appointments'] = $config['scheduling']['group_appointments'];
 
 // Extra CSS file(s) to load
-$config['extra_css'] = array('clean.css');
+$config['extra_css'] = array();
 
 // Show any deprecated function/method call notices
 $config['show_deprecated_warnings'] = false;

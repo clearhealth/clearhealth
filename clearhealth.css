@@ -1,19 +1,169 @@
 body {
-	margin:0px; padding:0px;
-	/*text-align:center;*/
-	background-color:#eee;
-	font-family: sans-serif;
+ margin:0px; padding:0px;
+ /*text-align:center;*/
+ background-color:#eee;
+ font-family: sans-serif;
+ font-size: 90%;
 }
-
+#username {
+ font-size: 8pt;
+ line-height: 7pt;
+ font-weight:normal;
+ padding-top: 6pt;
+ padding-right: 2pt;
+ float:right;
+ display:block;
+ 
+}
+#sections {
+ position: absolute;
+ left: 5pt;
+ font-size: 14pt;
+}
+#sections a {
+ font-size: 14pt;
+}
+#sections a.selected {
+ font-weight: bold;
+}
+#selectedItem {
+ position: relative;
+ left: 23em;
+ top: -16pt;
+ font-size: 10pt;
+ z-index: 10;
+ border: solid 1px black;
+ padding: 2px;
+ background-color: white;
+ display: block;
+ float: left;
+}
+#selectedItem a {
+ font-size: 10pt;
+ font-weight: bold;
+}
+#header {
+ background-color: #ccc;
+ position: relative;
+ z-index: 2;
+ text-align: left;
+ left: 0px;
+ top: 0px;
+ height: 31pt;
+}
+#header h1 {
+ margin: 0px;
+ padding: 0px;
+ vertical-align: top;
+ float: right;
+ font-size: 20pt;
+}
+ 
+#body {
+ width:98%;
+ margin:0px auto;
+ text-align:left;
+ padding: 1%;
+ padding-top: 10px;
+}
+div#nav {
+ position: absolute;
+ top: 18pt;
+ left: 0px;
+ margin: 0px;
+ padding: 0px;
+}
+div#nav div.section {
+ position: relative;
+ left: 10pt;
+ float: left;
+ border: solid 1px #ccc;
+ margin: 0px;
+ margin-right: 10pt;
+}
+div#nav div.topLevel {
+ font-weight: bold;
+}
+div#nav div ul {
+ margin: 0px;
+ margin-top: -2px;
+ padding: 0px;
+ position: absolute;
+ border: solid 1px black;
+ top: 11pt;
+ left: -1px;
+ background-color: #eee;
+ visibility: hidden;
+ width: 101pt;
+ text-align: left;
+ z-index:10;
+}
+div#nav div:hover > ul { visibility: visible;
+}
+div#nav div.section:hover {
+ background-color: #eee;
+ border: solid 1px black;
+}
+div#nav div ul li{
+ display: block;
+ list-style-type: none;
+ margin: 0px;
+ padding: 1pt;
+ width: 100pt;
+}
+div#nav > div a {
+ display: block;
+ padding: 0px;
+ padding-left: 1pt;
+ padding-right: 1pt;
+ z-index: 11;
+}
+div#nav a {
+ display: block;
+}
+div.clear {
+ clear: both;
+}
+.gridInput {
+ width: 30pt;
+}
 .sectionCalendar {
-	background-color: #FFFFE6 !important;
+ background-color: #FFFFE6 !important;
 }
 .sectionPatient  {
-	background-color: #BFCFFF !important;
+ background-color: #BFCFFF !important;
 }
 .sectionBilling  {
-	background-color: #E6FFBF !important;
+ background-color: #E6FFBF !important;
 }
 .sectionAdministration  {
-	background-color: #FFDFBF !important;
+ background-color: #FFDFBF !important;
+}
+fieldset table.data td {
+ margin: 2px;
+ padding: 2px;
+ background-color: #ddd;
+}
+fieldset table.data th {
+ margin: 2px;
+ padding: 2px;
+}
+table.columns {
+ font-size: 100%;
+}
+table.columns td {
+ vertical-align: top;
+ font-size: 100%;
+}
+table td label {
+ text-align: right;
+ display: block;
+}
+table td label.inline {
+ display: inline;
+}
+h3 {
+ margin: 0px;
+ padding: 0px;
+ margin-top: 12pt;
 }
