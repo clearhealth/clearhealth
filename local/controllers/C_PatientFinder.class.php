@@ -64,7 +64,7 @@ class C_PatientFinder extends Controller {
 		$pos = strpos($search_string, ',');
 		
 		// get result set into array and pass to array
-		if (preg_match("/[0-9]{3}-[0-9]{2}-[0-9]{4}/",$search_string)) {
+		if (preg_match("/[0-9]{9}/",$search_string)) {
 			$sql = $this->search_by_ssn($sql, $search_string);
 		}
 		elseif (preg_match("/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4}/",$search_string)) {
