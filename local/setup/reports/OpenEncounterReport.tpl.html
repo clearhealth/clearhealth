@@ -13,6 +13,7 @@
 			$this->_tpl_vars['default_ds']->setLabel('date_of_treatment','Date of Treatment');
 			$this->_tpl_vars['default_ds']->setLabel('last_change','Last Change');
 			$this->_tpl_vars['default_ds']->setLabel('patient','Patient');
+			$this->_tpl_vars['default_ds']->setLabel('facility', 'Facility');
 			$this->_tpl_vars['default_ds']->addOrderRule('last_change','DESC',0);
 		{/php}
 		{$default_grid->render()}
