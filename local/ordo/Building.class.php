@@ -40,6 +40,13 @@ class Building extends ORDataObject{
 	var $address;
 
 	var $identifier = '';
+	
+	/**
+	 * The ID of the facility code of this
+	 *
+	 * @var int
+	 */
+	var $facility_code_id = '';
 
 
     /**

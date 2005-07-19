@@ -46,6 +46,12 @@
 	</td>
 </tr>
 <tr>
+	<td>Facility Code</td>
+	<td colspan="2">
+		{html_options name="facility_code_id" options=$facilityCodeList selected=$building->get('facility_code_id')}
+	</td>
+</tr>
+<tr>
 	{if empty($building->id) }
 	<td><br /><input type="submit" value="Save" /></td>
 	{else} 

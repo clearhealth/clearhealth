@@ -8,6 +8,8 @@ require_once APP_ROOT . "/local/ordo/Practice.class.php";
 require_once APP_ROOT . "/local/ordo/Building.class.php";
 require_once APP_ROOT . "/local/ordo/Room.class.php";
 require_once APP_ROOT . "/local/ordo/Schedule.class.php";
+require_once APP_ROOT . "/local/ordo/FacilityCode.class.php";
+
 
 class C_Location extends Controller {
 
@@ -83,7 +85,7 @@ class C_Location extends Controller {
 		}
 		
 		$this->assign("practice",$this->location);
-
+		
 		$this->assign("process",true);
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_practice.html");
 	}
@@ -116,6 +118,9 @@ class C_Location extends Controller {
 		$this->assign("building",$this->location);
 		$s = new Practice();
 		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
+		
+		$fc = &new FacilityCode();
+		$this->assign('facilityCodeList', $fc->valueListForDropDown()); 
 
 		$this->assign("process",true);
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_building.html");
@@ -123,11 +128,13 @@ class C_Location extends Controller {
 	
 		
 	function edit_building_action_process() {
-		if ($_POST['process'] != "true")
+		if ($_POST['process'] != "true") {
 			return;
-			$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
+		}
+		
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
 		$this->location = new building($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location->populate_array($_POST);
 		$this->location->set('identifier',$_POST['identifier']);
 		
 		$this->location->persist();
@@ -158,7 +165,7 @@ class C_Location extends Controller {
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
 		$this->location = new room($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
 		
