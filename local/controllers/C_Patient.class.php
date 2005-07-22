@@ -374,10 +374,23 @@ class C_Patient extends Controller {
 
 			// see if we need to add a rebill link
 			if ($this->_canRebill($encounter->get('id'))) {
-				$this->assign('REBILL_ACTION',Cellini::link('rebill_encounter',true,true,$encounter->get('id'))."process=true");
+				$this->assign('REOPEN_ACTION',Cellini::link('reopen_encounter', true, true, $encounter->get('id')) . 'process=true');
+				//$this->assign('REBILL_ACTION',Cellini::link('rebill_encounter',true,true,$encounter->get('id'))."process=true");
 			}
 
 			
+		}
+		else {
+			ORdataObject::factory_include('ClearhealthClaim');
+			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
+			if ($claim->get('identifier') > 0) {
+				$this->assign('claimSubmitValue', 'rebill');
+			}
+			else {
+				$this->assign('claimSubmitValue', 'close');
+			}
+			//printf('<pre>%s</pre>', var_export($claim , true));
+			//exit;
 		}
 			/* not currently in use
 			$intake_base_link = str_replace("main","util",Cellini::link('report',true,true));
@@ -483,7 +496,30 @@ class C_Patient extends Controller {
 				$this->_generateClaim($encounter);
 			}
 		}
+		
+		// If this is a rebill, pass it off to the rebill method
+		if (isset($_POST['encounter']['rebill'])) {
+			$encounter->set('status', 'closed');
+			$encounter->persist();
+			$this->rebill_encounter_action_process($encounter_id);
+		}
 	}
+	
+	
+	/**
+	 * Re-opens a claim and redirects back to the encounter view
+	 *
+	 * @param int
+	 */
+	function reopen_encounter_action_process($encounter_id) {
+		$encounter =& ORDataObject::Factory('Encounter', $encounter_id);
+		$encounter->set('status', 'open');
+		$encounter->persist();
+		
+		header('Location: '.Cellini::link('encounter',true,true,$encounter_id));
+		exit();
+	}
+
 
 	/**
 	 * Rebill an claim
