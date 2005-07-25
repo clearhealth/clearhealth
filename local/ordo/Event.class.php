@@ -181,21 +181,59 @@ class Event extends ORDataObject{
 		}
 		
 		//echo $filter_sql;
-		$sql = "SELECT o.*,e.*,c.*, o.id as occurence_id, c.id as schedule_id, UNIX_TIMESTAMP(o.start) as start_ts,UNIX_TIMESTAMP(o.end) as end_ts, "
-		." UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) as start_day, b.name as building, r.name as room, IF(schedule_code = 'PS',1,0) as schedule_sort,"
-		." u.color as color, u.nickname as nickname, u2.nickname as last_change_nickname, psn.last_name as p_lastname, psn.person_id as person_id, psn.first_name as p_firstname, DATE_FORMAT(psn.date_of_birth,'%m/%d/%Y') as dob, " 
-		." pt.record_number as p_record_number, pt.record_number as p_patient_number, n.number as p_phone, n.active as dnc, rm.name as room_name, "
-		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, "
-		." o.`timestamp` last_change "
-		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
-		." LEFT JOIN rooms as rm on c.room_id=rm.id "
-		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
-		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id "
-		." LEFT JOIN patient as pt on pt.person_id=o.external_id "
-		." LEFT JOIN person as psn on psn.person_id=pt.person_id "
-		." LEFT JOIN person_number as p2n on psn.person_id=p2n.person_id "
-		." LEFT JOIN number as n on n.number_id=p2n.number_id and n.number_type =" .  "1" //this will be the first value in the number_types enum
-		." WHERE o.start BETWEEN '$start'  AND '$end' AND (c.schedule_code != 'NS' OR c.schedule_code IS NULL) $foreign_id $code_filter $filter_sql group by o.id ORDER BY schedule_sort DESC, o.start, o.end";
+		$sql = "
+			SELECT 
+				o.*,
+				e.*,
+				c.*, 
+				o.id AS occurence_id,
+				c.id AS schedule_id,
+				UNIX_TIMESTAMP(o.start) AS start_ts,
+				UNIX_TIMESTAMP(o.end) AS end_ts, 
+				UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) AS start_day,
+				b.name AS building,
+				r.name AS room,
+				IF(schedule_code = 'PS',1,0) AS schedule_sort,
+				u.color AS color,
+				u.nickname AS nickname,
+				u2.nickname AS last_change_nickname, 
+				psn.last_name AS p_lastname,
+				psn.person_id AS person_id,
+				psn.first_name AS p_firstname,
+				DATE_FORMAT(psn.date_of_birth,'%m/%d/%Y') AS dob,
+				pt.record_number AS p_record_number, 
+				pt.record_number AS p_patient_number,
+				n.number AS p_phone,
+				n.active AS dnc,
+				rm.name AS room_name, 
+				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
+				o.`timestamp` AS last_change
+			FROM 
+				`".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences AS o
+				LEFT JOIN `".$e->_prefix."events` AS e ON o.event_id = e.id
+				LEFT JOIN ".$e->_prefix."schedules AS c ON c.id = e.foreign_id 
+				LEFT JOIN rooms AS rm ON c.room_id=rm.id 
+				LEFT JOIN ".$e->_prefix."rooms AS r ON r.id = o.location_id 
+				LEFT JOIN ".$e->_prefix."buildings AS b ON b.id = r.building_id 
+				LEFT JOIN ".$e->_prefix."user AS u ON u.user_id= o.user_id
+				LEFT JOIN ".$e->_prefix."user AS u2 ON u2.user_id = o.last_change_id
+				LEFT JOIN patient AS pt ON pt.person_id=o.external_id
+				LEFT JOIN person AS psn ON psn.person_id=pt.person_id
+				LEFT JOIN person_number AS p2n ON psn.person_id=p2n.person_id
+				
+				-- // this will be the first value in the number_types enum
+				LEFT JOIN number AS n ON n.number_id=p2n.number_id and n.number_type =1
+			WHERE 
+				o.start BETWEEN '$start'  AND '$end' AND 
+				(c.schedule_code != 'NS' OR c.schedule_code IS NULL) 
+				$foreign_id 
+				$code_filter 
+				$filter_sql 
+			GROUP BY o.id 
+			ORDER BY
+				schedule_sort DESC,
+				o.start,
+				o.end";
 		//echo $sql . "<br>";
 
 		$result = $e->_Execute($sql);
