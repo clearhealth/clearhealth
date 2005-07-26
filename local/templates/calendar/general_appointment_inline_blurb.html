@@ -27,6 +27,7 @@
 					<br>
 					{$ev.notes}
 					{/if}
+					<br>reason: {enum_lookup name="appointment_reasons" value=$ev.reason_code}
 					{if $ev_edit == true}
 					<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>,
 					<a href="{$EVENT_DELETE_ACTION}id={$ev.occurence_id}&object=occurence&process=1">del</a>, 
