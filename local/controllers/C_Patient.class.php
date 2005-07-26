@@ -890,6 +890,15 @@ class C_Patient extends Controller {
 		$providerData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 		$providerData['x12_version'] = $defaultProgram->get('x12_version');
 */
+		// Set secondary identifier
+		$bpi =& ORDAtaObject::factory('BuildingProgramIdentifier',$facility->get('id'),$defaultProgram->get('id'));
+		$providerData['identifier_2'] = $bpi->isPopulated() ?
+			$bpi->get('identifier') :
+			$provider['identifier'];
+		
+		$payerTypes = $defaultProgram->_load_enum('payer_type');
+		$providerData['identifer_type_2'] = array_search($defaultProgram->get('payer_type'), $payerTypes);
+		//printf('<pre>%s</pre>', var_export($providerData , true));
 		if (!$freeb2->registerData($claim_identifier,'Provider',$providerData)) {
 			trigger_error("Unable to register provider data - ".$freeb2->claimLastError($claim_identifier));
 		}
