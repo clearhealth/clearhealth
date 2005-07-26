@@ -44,6 +44,9 @@ class C_Schedule extends CalendarController {
 		$this->assign("start_time",$args['start_time']);
 		$this->assign("end_time",$args['end_time']);
 		$this->assign("notes",$args['notes']);
+		if (isset($args['reason_id'])) {
+			$this->assign("reason_id", $args['reason_id']);
+		}
 		$this->assign("FORM_ACTION", Cellini::link('confirm','schedule',false));
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_confirm.html");

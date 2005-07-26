@@ -22,6 +22,9 @@
 		<input type="hidden" name="user_id" value="{$user_id}">
 		<input type="hidden" name="location_id" value="{$location_id}">
 		<input type="hidden" name="occurence_id" value="{$occurence_id}">
+		{if $reason_id > 0}
+		<input type="hidden" name="reason_id" value="{$reason_id}">
+		{/if}
 		<input type="hidden" name="date" value="{$date}">
 		<input type="hidden" name="external_id" value="{$external_id}">
 		<input type="hidden" name="start_time" value="{$start_time}">
