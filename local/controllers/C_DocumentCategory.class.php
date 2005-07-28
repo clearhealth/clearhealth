@@ -93,6 +93,18 @@ class C_DocumentCategory extends Controller {
 		return $this->list_action_view();
 	}
 
+	
+	/**
+	 * This code relies on a non-existent class, Pharmacy, to work.  This code
+	 * is not currently called, but once it is, Pharmacy will need to be 
+	 * created.
+	 *
+	 * Once this is implemented, it should be moved from using 
+	 * {@link Controller::populate_object()} to 
+	 * {@link Controller::populate_array()}.
+	 *
+	 * @access private
+	 */
 	function edit_action_process() {
 		if ($_POST['process'] != "true")
 			return;

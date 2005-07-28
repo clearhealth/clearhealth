@@ -186,7 +186,7 @@ class C_Document extends Controller {
 			return;
 			
 		$n = new Note();
-		parent::populate_object($n);
+		$n->populate_array($_POST);
 		$n->persist();
 		
 		$this->_state = false;

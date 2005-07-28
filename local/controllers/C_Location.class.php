@@ -112,7 +112,7 @@ class C_Location extends Controller {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
 		if (!is_object($this->location)) {
-			$this->location = new building($id);
+			$this->location = new Building($id);
 		}
 		
 		$this->assign("building",$this->location);
@@ -133,7 +133,7 @@ class C_Location extends Controller {
 		}
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
-		$this->location = new building($_POST['id']);
+		$this->location = new Building($_POST['id']);
 		$this->location->populate_array($_POST);
 		$this->location->set('identifier',$_POST['identifier']);
 		
@@ -148,7 +148,7 @@ class C_Location extends Controller {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);
 		
 		if (!is_object($this->location)) {
-			$this->location = new room($id);
+			$this->location = new Room($id);
 		}
 		
 		$this->assign("room",$this->location);
@@ -164,7 +164,7 @@ class C_Location extends Controller {
 		if ($_POST['process'] != "true")
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
-		$this->location = new room($_POST['id']);
+		$this->location = new Room($_POST['id']);
 		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
@@ -176,7 +176,7 @@ class C_Location extends Controller {
 	function edit_schedule_action($id = "") {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		if (!is_object($this->location)) {
-			$this->location = new schedule($id);
+			$this->location = new Schedule($id);
 		}
 		
 		$this->assign("schedule",$this->location);
@@ -256,8 +256,8 @@ class C_Location extends Controller {
 		if ($_POST['process'] != "true")
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
-		$this->location = new schedule($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location = new Schedule($_POST['id']);
+		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
 		
@@ -287,8 +287,8 @@ class C_Location extends Controller {
 		if ($_POST['process'] != "true")
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
-		$this->location = new event($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location = new Event($_POST['id']);
+		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
 		
@@ -319,15 +319,15 @@ class C_Location extends Controller {
 		$this->_state = false;
 		
 		if (is_array($event_id)) {
-			$this->event = new event();
+			$this->event = new Event();
 			$this->event->populate_array($event_id);
 		}
 		else {
-			$this->event = new event($event_id);
+			$this->event = new Event($event_id);
 			$this->event->populate_array($_POST);
 		}
 		
-		parent::populate_object($oc);
+		$oc->populate_array($_POST);
 
 		$cs = new C_Schedule();
 		//check for availability of provider
@@ -427,8 +427,8 @@ class C_Location extends Controller {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","occurence",$this,false);
 		$id = "";
 		if (isset($_POST['id'])) $id =$_POST['id'];
-		$this->location = new occurence($id);
-		parent::populate_object($this->location);
+		$this->location = new Occurence($id);
+		$this->location->populate_array($_POST);
 		$this->location->persist();
 		
 		$this->location->populate($this->location->get_id());

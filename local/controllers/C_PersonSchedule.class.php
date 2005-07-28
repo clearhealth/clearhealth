@@ -158,7 +158,7 @@ class C_PersonSchedule extends CalendarController {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
 		$this->schedule = new Event($id);
-		parent::populate_object($this->schedule);
+		$this->schedule->populate_array($_POST);
 		$this->schedule->persist();
 		$this->schedule->populate();
 		$location_id = 0;
@@ -257,8 +257,8 @@ class C_PersonSchedule extends CalendarController {
 		if ($_POST['process'] != "true")
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","event",$this,false);
-		$this->location = new event($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location = new Event($_POST['id']);
+		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
 		
@@ -274,8 +274,8 @@ class C_PersonSchedule extends CalendarController {
 		if ($_POST['process'] != "true")
 			return;
 			$this->sec_obj->acl_qcheck("edit",$this->_me,"","occurence",$this,false);
-		$this->location = new occurence($_POST['id']);
-		parent::populate_object($this->location);
+		$this->location = new Occurence($_POST['id']);
+		$this->location->populate_array($_POST);
 		$this->location->persist();
 		
 		$this->location->populate($this->location->get_id());
