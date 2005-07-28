@@ -10,7 +10,7 @@ Generally the ClearHealth project will support the latest versions of Fedora/RHE
    4. configure the clearhealth/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
    5. create the database with the same name used in the freeb2 config.php, usually freeb2
    6. load freeb2/local/setup/freeb2.sql into the freeb2 db
-   7. clearhealth/tmp and clearhealth/freeb2/tmp must be configured so that the webserver can write to them, either by changing its permissions to 777 or changing the ownership to the apache user
+   7. clearhealth/tmp, clearhealth/freeb2/tmp, and clearhealth/user/documents must be configured so that the webserver can write to them, either by changing its permissions to 777 or changing the ownership to the apache user 
    8. change memory_limit in the php.ini file to 64
    9. change max_execution_time in php.ini to 45
   10. change register_globals in php.ini to off
