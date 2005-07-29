@@ -162,27 +162,12 @@ class C_Schedule extends CalendarController {
 		$results = $db->query($sql);
 		
 		while ($results && !$results->EOF) {
-			
-			
-			//populate event array format from oc object
-			$oca['start_ts'] = $oc->get_start_timestamp();
-			$oca['end_ts'] = $oc->get_end_timestamp();
-			$u = $oc->get_user();
-			$oca['nickname'] = $u->get('nickname');
-			$oca['color'] = $u->get('color');
-			$p = new Patient($oc->get_external_id());
-			$oca['notes'] = $oc->get_notes(); 
-			$oca['p_lastname'] = $p->get('last_name');
-			$oca['p_firstname'] = $p->get('first_name');
-			$oca['dob'] = $p->get('date_of_birth');
-			$oca['p_record_number'] = $p->get('record_number');
-			$oca['p_patient_number'] = $p->get('patient_number');
-			$oca['p_phone'] = $p->get('phone');
-			$oca['age'] = $p->get('age');
-			
-			$this->assign("ev", $oca);
+			// Retrieve mock event array and create display
+			$this->assign("ev", $this->_createMockEventArray($oc));
 			$app_display = $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_appointment_inline_blurb.html");
 			
+			
+			// Now setup real data
 			$o = new Occurence($results->fields['id']);
 			$e = new Event();
 			$ea = $e->get_events("o.id = " . $o->get_id());
@@ -211,6 +196,46 @@ class C_Schedule extends CalendarController {
 		}
 		
 		return false;
+	}
+	
+	
+	/**
+	 * Creates a mock event array based on an occurence
+	 *
+	 * @param  Occurence
+	 * @return array
+	 * @access private
+	 *
+	 * @todo Consider refractoring this into Occurence so it can create its
+	 *   own array based on itself.
+	 */
+	function _createMockEventArray(&$oc) {
+		// Sanity check until type hinting in PHP 5
+		assert('is_a($oc, "Occurence")');
+		
+		$returnArray = array();
+		//populate event array format from oc object
+		$returnArray['start_ts']    = $oc->get('start_timestamp');
+		$returnArray['end_ts']      = $oc->get('end_timestamp');
+		$returnArray['reason_code'] = $oc->get('reason_code');
+		
+		// Pull user information in
+		$u = $oc->get_user();
+		$returnArray['nickname'] = $u->get('nickname');
+		$returnArray['color']    = $u->get('color');
+		
+		// Finally, create patient information
+		$p =& ORDataObject::factory('Patient', $oc->get('external_id'));
+		$returnArray['notes']            = $oc->get_notes();
+		$returnArray['p_lastname']       = $p->get('last_name');
+		$returnArray['p_firstname']      = $p->get('first_name');
+		$returnArray['dob']              = $p->get('date_of_birth');
+		$returnArray['p_record_number']  = $p->get('record_number');
+		$returnArray['p_patient_number'] = $p->get('patient_number');
+		$returnArray['p_phone']          = $p->get('phone');
+		$returnArray['age']              = $p->get('age');
+		
+		return $returnArray;
 	}
 	
 	function set_filter_action($filter) {
