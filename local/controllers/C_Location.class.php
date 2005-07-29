@@ -350,10 +350,10 @@ class C_Location extends Controller {
 		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1 && $walkin != 1) {
 			$double = $cs->check_double_book($oc,$this->event);
 			if ($double) {
-			if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
-				echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
-				exit;
-            }
+				if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
+					echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
+					exit;
+	            	}
 				//echo "this event is double booking<br>";	
 			}
 			else {
