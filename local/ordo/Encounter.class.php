@@ -105,6 +105,17 @@ class Encounter extends ORDataObject {
 	function set_date_of_treatment($date) {
 		$this->date_of_treatment = $this->_mysqlDate($date);
 	}
+	
+	/**
+	 * Returns date of treatment as an English date instead of ISO
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_date_of_treatment() {
+		return ORDataObject::_fromISODate($this->date_of_treatment);
+	}
+
 
 	/**#@-*/
 
@@ -114,7 +125,7 @@ class Encounter extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "date_format(date_of_treatment,'%Y-%m-%d') date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
+				'cols' 	=> "date_format(date_of_treatment,'%m/%d/%Y') AS date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
 				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
 				'where' => " patient_id = $patient_id",
 				'orderby' => 'date_of_treatment DESC'

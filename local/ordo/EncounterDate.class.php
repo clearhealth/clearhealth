@@ -81,6 +81,16 @@ class EncounterDate extends ORDataObject {
 	function set_date($date) {
 		$this->date = $this->_mysqlDate($date);
 	}
+	
+	/**
+	 * Returns date as an English date instead of ISO
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_date() {
+		return ORDataObject::_fromISODate($this->date);
+	}
 
 	/**#@-*/
 
@@ -89,7 +99,7 @@ class EncounterDate extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "encounter_date_id, date_format(`date`,'%Y-%m-%d') `date`, date_type",
+				'cols' 	=> "encounter_date_id, date_format(`date`,'%d/%m/%Y') `date`, date_type",
 				'from' 	=> "$this->_table ",
 				'where' => " encounter_id = $encounter_id"
 			),

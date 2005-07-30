@@ -170,6 +170,16 @@ class Person extends ORDataObject {
 	function set_date_of_birth($date) {
 		$this->date_of_birth = $this->_mysqlDate($date);
 	}
+	
+	/**
+	 * Returns date of birth as an English date instead of ISO
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_date_of_birth() {
+		return ORDataObject::_fromISODate($this->date_of_birth);
+	}
 
 	/**
 	 * When we only have a single type use this

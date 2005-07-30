@@ -138,10 +138,10 @@ class Note extends ORDataObject{
 		return $this->note;
 	}	
 	function set_date($date) {
-		$this->date = $date;
+		$this->date = ORDataObject::_mysqlDate($date);
 	}
 	function get_date() {
-		return $this->date;
+		return ORDataObject::_fromISODate($this->date);
 	}
 	function set_owner($owner) {
 		$this->owner = $owner;

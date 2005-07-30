@@ -137,7 +137,46 @@ class InsuredRelationship extends ORDataObject {
 		}
 		$this->subscriber_to_patient_relationship = $val;
 	}
-
+	
+	
+	/**
+	 * Insures that effective start date is in ISO format for database storage
+	 *
+	 * @access protected
+	 */
+	function set_effective_start($date) {
+		$this->effective_start = $this->_mysqlDate($date);
+	}
+	
+	/**
+	 * Returns effective start date as an English date instead of ISO
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_effective_start() {
+		return ORDataObject::_fromISODate($this->effective_start);
+	}
+	
+	/**
+	 * Insures that effective end date is in ISO format for database storage
+	 *
+	 * @access protected
+	 */
+	function set_effective_end($date) {
+		$this->effective_end = $this->_mysqlDate($date);
+	}
+	
+	/**
+	 * Returns effective start date as an English date instead of ISO
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_effective_end() {
+		return ORDataObject::_fromISODate($this->effective_end);
+	}
+	
 	/**#@-*/
 
 	function insuredRelationshipList($person_id) {
@@ -154,8 +193,8 @@ class InsuredRelationship extends ORDataObject {
 				c.name as company,
 				program_order,
 				subscriber_to_patient_relationship subscriber_relationship, 
-				if(now() between effective_start and effective_end,concat('Until ',effective_end),
-				if (effective_end < now(),concat('Ended ',effective_end),concat('Starts ',effective_start))) effective,
+				if(now() between effective_start and effective_end,concat('Until ',DATE_FORMAT(effective_end, '%m/%d/%Y')),
+				if (effective_end < now(),concat('Ended ',DATE_FORMAT(effective_end, '%m/%d/%Y')),concat('Starts ',DATE_FORMAT(effective_start, '%m/%d/%Y')))) effective,
 				active",
 				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
 				'where' => " person_id = $person_id",
