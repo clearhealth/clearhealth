@@ -87,8 +87,8 @@
 			<tr>
 				<td><label>Effective Date Range:</label></td>
 				<td> 
-					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start')} to 
-					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end')}
+					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start') format_popup="%m/%d/%Y"} to 
+					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end') format_popup="%m/%d/%Y"}
 				</td>
 			<tr>
 				<td><label>Assigning:</label></td>

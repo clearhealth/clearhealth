@@ -4,7 +4,7 @@
 
 
 <div style="float:left;margin-left:10px; margin-bottom:10px;">
-	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start} to {clni_input_date name="filter[end]" value=$filters.end}
+	<label>{l}Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start format_popup="%m/%d/%Y"} to {clni_input_date name="filter[end]" value=$filters.end}
 </div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	<label>{l}Facility{/l}: </label><select name="filter[facility]"><option></option>{html_options options=$building->getBuildingList() selected=$filters.facility}</select>

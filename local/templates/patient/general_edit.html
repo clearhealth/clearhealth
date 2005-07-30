@@ -73,7 +73,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 			  		<label>{l}DOB{/l}:</label>
 				</td>
 				<td>
-					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]" id="date_of_birth"}
+					{clni_input_date value=$person->get('date_of_birth') format_popup="%m/%d/%Y" name="person[date_of_birth]" id="date_of_birth"}
 				</td>
 		 	</tr>
             <tr>

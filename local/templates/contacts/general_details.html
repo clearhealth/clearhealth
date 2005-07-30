@@ -57,7 +57,7 @@
 				  <option></option>
 				{html_options options=$person->getGenderList() selected=$person->get('gender')}
                           </select>&nbsp;&nbsp;
-			  DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]"}
+			  DOB: {clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]" format_popup="%m/%d/%Y"}
                           </td>
                         </tr>
 				<td style="vertical-align: top;"><label>Notes:</label> </td>
