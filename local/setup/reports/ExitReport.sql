@@ -76,7 +76,7 @@ from coding_data cd
 where foreign_id = '[encounter_id:CONTROLLER:C_Patient]' and primary_code = 1
 ---[payment_history]---
 select 
-payment_date, amount, payment_type
+date_format(payment_date, '%m/%d/%Y'), amount, payment_type
 from payment
 where encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
 ---[encounter]---

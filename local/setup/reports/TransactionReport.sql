@@ -1,7 +1,7 @@
 /* Sql for a Transaction Report, tagged for using the standard reporting mechanism */
 ---[Transaction_List]---
 select 
-date_format(e.date_of_treatment,'%Y-%m-%d') `payment_date`,
+date_format(e.date_of_treatment,'%m/%d/%Y') `payment_date`,
 concat_ws(', ',p.last_name,p.first_name) patient,
 pat.record_number,
 pay.payment_type,
