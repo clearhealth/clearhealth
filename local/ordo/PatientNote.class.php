@@ -86,7 +86,7 @@ class PatientNote extends ORDataObject {
 		$labels = array('deprecated'=>'<span title="Deprecated">Dep</span>', 'priority' => 'P','note_date' => 'Date', 'username' => 'User', 'note' => 'Note');
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "priority, CONCAT(DATE_FORMAT(note_date, '%m/%d/%Y'), ' ' , TIME_FORMAT(note_date, '%H:%i:%s')) AS note_date, note, username, patient_note_id, if(deprecated,'Yes','No') deprecated",
+				'cols' 	=> "priority, DATE_FORMAT(note_date, '%m/%d/%Y %H:%i:%s') AS note_date, note, username, patient_note_id, if(deprecated,'Yes','No') deprecated",
 				'from' 	=> "$this->_table n left join user u on u.user_id = n.user_id",
 				'where' => " patient_id = $patient_id",
 				'orderby' => "deprecated ASC",
