@@ -1067,5 +1067,145 @@ class C_Patient extends Controller {
 		unset($data['type']);
 		return $data;
 	}
+
+	function summary_report_action() {
+		$patient_id = $this->get('patient_id');
+		if (!$patient_id) {
+			return "A Patient must be selected before running the patient summary report";
+		}
+		
+
+		// register data for selecting sections
+		$sections = array();
+
+		// demographic sections are static
+		$sections['Demographics'] = array(
+			array('display'=>'Basic Demographics','id'=>'bd','selected'=>true),
+			array('display'=>'Phone Numbers','id'=>'pn','selected'=>true),
+			array('display'=>'Addresses','id'=>'a','selected'=>true),
+			array('display'=>'Payers','id'=>'p','selected'=>true),
+			array('display'=>'Related People','id'=>'rp','selected'=>true),
+			array('display'=>'Name History','id'=>'nh','selected'=>true),
+			array('display'=>'Statistics','id'=>'s','selected'=>true),
+		);
+
+		$fd =& ORDataObject::factory('FormData');
+
+		// encounter information
+		$sections['Encounters'] = array();
+		$encounter =& ORDataObject::factory('Encounter');
+		$eds =& $encounter->encounterList($patient_id);
+		for($eds->rewind(); $eds->valid(); $eds->next()) {
+			$row = $eds->get();
+			$sections['Encounters'][$row['encounter_id']] = 
+				array('display' => "$row[encounter_reason] on $row[date_of_treatment]",'id'=>$row['encounter_id']);
+
+			$fds =& $fd->dataListByExternalId($row['encounter_id']);
+
+			for($fds->rewind(); $fds->valid(); $fds->next()) {
+				$r = $fds->get();
+				$sections['Encounters'][$row['encounter_id']]['Forms'][] = 
+					array('id'=>$r['form_data_id'],'display'=>"$r[name] completed on $r[last_edit]");
+			}
+		}
+
+
+		// patient forms
+		$sections['Forms'] = array();
+		$fds =& $fd->dataListByExternalId($patient_id);
+
+		for($fds->rewind(); $fds->valid(); $fds->next()) {
+			$row = $fds->get();
+			$sections['Forms'][] = array('date'=>$row['last_edit'],'name'=>$row['name'],'id'=>$row['form_data_id'],'display'=>"$row[name] completed on $row[last_edit]");
+		}
+
+		$this->assign('sections',$sections);
+
+
+		$patient =& ORDataObject::factory('Patient',$patient_id);
+		$this->assign_by_ref('patient',$patient);
+
+		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_summary_report.html"));
+	}
+
+	function summary_report_action_process() {
+		$data = array();
+
+		foreach($_POST['sections'] as $section => $d) {
+			$data[$section] = array();
+			var_dump($section,$d);
+
+			switch($section) {
+				case 'Demographics':
+					$data[$section] = $this->_summaryReportDemo($d);
+					break;
+				case 'Encounters':
+					break;
+				case 'Forms':
+					break;
+			}
+
+
+
+		}
+		$this->assign('data',$data);
+	}	
+
+	function _summaryReportDemo($sections) {
+		$patient_id = $this->get('patient_id');
+		$ret = array();
+		foreach($sections as $section => $value) {
+			if ($value == 1) {
+				switch($section) {
+				case 'bd':
+					$patient =& ORDataObject::factory('Patient',$patient_id);
+					$ret['Basic Demographics']['Last Name'] = $patient->get('last_name');
+					$ret['Basic Demographics']['First Name'] = $patient->get('first_name');
+					$ret['Basic Demographics']['Record Number'] = $patient->get('record_number');
+					$ret['Basic Demographics'][$patient->get('print_identifier_type')] = $patient->get('identifier');
+					$ret['Basic Demographics']['Date of Birth'] = $patient->get('date_of_birth');
+					$ret['Basic Demographics']['Gender'] = $patient->get('print_gender');
+					$ret['Basic Demographics']['Marital Status'] = $patient->get('print_marital_status');
+					$ret['Basic Demographics']['Default Provider'] = $patient->get('print_default_provider');
+					break;
+				case 'pn':
+					$number =& ORDataObject::factory('PersonNumber');
+					$list = $number->numberList($patient_id);
+					$ret['Phone Numbers']['table'] = array('Type','Number','Notes','Do Not Call?');
+
+					foreach($list as $val) {
+						$row = array();
+						$row['Type'] = $val['number_type'];
+						$row['Number'] = $val['number'];
+						$row['Notes'] = $val['notes'];
+						$row['Do Not Call?'] = $val['active'] ? 'no':'yes';
+						$ret['Phone Numbers'][] = $row;
+					}
+					break;
+				case 'a':
+					$ret['Addresses']['table'] = array('Type','Name','Address','City','State','Zip','Notes');
+					$address =& ORDataObject::Factory('PersonAddress');
+					$list = $address->addressList($patient_id);
+
+					foreach($list as $val) {
+						$row = array();
+						$row[] = $val['type'];
+						$row[] = $val['name'];
+						$row[] = $val['line1']."<br>".$val['line2'];
+						$row[] = $val['city'];
+						$row[] = $val['state'];
+						$row[] = $val['postal_code'];
+						$row[] = nl2br($val['notes']);
+						$ret['Addresses'][] = $row;
+					}
+					break;
+				case 'p':
+
+					break;
+				}
+			}
+		}
+		return $ret;
+	}
 }
 ?>
