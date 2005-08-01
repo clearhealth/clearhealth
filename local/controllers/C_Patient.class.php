@@ -231,11 +231,12 @@ class C_Patient extends Controller {
 
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
+			$valid_appointment_id = true;
 			ORDataObject::factory_include('Encounter');
 			$id = Encounter::encounterIdFromAppointmentId($appointment_id);
 			if ($id > 0) {
-				$valid_appointment_id = true;
 				$encounter_id         = $id;
+				$valid_appointment_id = false;
 			} 
 		}
 
