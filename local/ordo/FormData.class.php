@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: form_data
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -16,7 +16,7 @@ require_once CELLINI_ROOT.'/includes/Datasource_sql.class.php';
 /**
  * Object Relational Persistence Mapping Class for table: form_data
  *
- * @package	com.uversainc.freestand
+ * @package	com.uversainc.clearhealth
  */
 class FormData extends ORDataObject {
 
