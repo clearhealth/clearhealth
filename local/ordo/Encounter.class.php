@@ -116,6 +116,30 @@ class Encounter extends ORDataObject {
 		return ORDataObject::_fromISODate($this->date_of_treatment);
 	}
 
+	function get_encounter_reason_print() {
+		return $this->lookupEncounterReason($this->get('encounter_reason'));
+	}
+
+	function get_facility_name() {
+		$b =& ORDataObject::factory('Building',$this->get('building_id'));
+		return $b->get('name');
+	}
+
+	function get_treating_person_print() {
+		$p =& ORDataObject::factory('Person',$this->get('treating_person_id'));
+		return $p->get('last_name').', '.$p->get('first_name');
+	}
+
+	function get_appointment_print() {
+		if (!$this->get('occurence_id')) {
+			return '';
+		}
+		$o =& ORDataObject::factory('Occurence',$this->get('occurence_id'));
+		return $o->get('date').' '.$o->get('start_time').' '.$o->get('building_name').' -> '.$o->get('location_name') .' '.$o->get('user_display_name');
+
+	}
+
+
 
 	/**#@-*/
 

@@ -113,6 +113,13 @@ class CodingData extends ORDataObject {
 		return array_flip($list);
 	}
 
+	function lookupModifier($id) {
+		$ml = $this->getModifierList();
+		if (isset($ml[$id])) {
+			return $ml[$id];
+		}
+	}
+
 	/**
 	 * Get an array of codes for a provided parent_id
 	 * 

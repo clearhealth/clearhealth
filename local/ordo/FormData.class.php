@@ -139,6 +139,10 @@ class FormData extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function get_form_name() {
+		$f =& ORDataObject::factory('Form',$this->get('form_id'));
+		return $f->get('name');
+	}
 	/**#@-*/
 
 	/**

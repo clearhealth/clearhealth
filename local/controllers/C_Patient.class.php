@@ -1134,15 +1134,16 @@ class C_Patient extends Controller {
 
 		foreach($_POST['sections'] as $section => $d) {
 			$data[$section] = array();
-			var_dump($section,$d);
 
 			switch($section) {
 				case 'Demographics':
 					$data[$section] = $this->_summaryReportDemo($d);
 					break;
 				case 'Encounters':
+					$data[$section] = $this->_summaryReportEncounters($d);
 					break;
 				case 'Forms':
+					$data[$section] = $this->_summaryReportForms($d);
 					break;
 			}
 
@@ -1152,6 +1153,93 @@ class C_Patient extends Controller {
 		$this->assign('data',$data);
 	}	
 
+	function _summaryReportEncounters($d) {
+		$ret = array();
+		foreach($d as $encounter_id => $data) {
+			$e =& ORDataObject::factory('Encounter',$encounter_id);
+
+			$ret[$encounter_id]['_title'] = $e->get('encounter_reason_print') . ' on '.$e->get('date_of_treatment');
+			$ret[$encounter_id]['Status'] = $e->get('status');
+			$ret[$encounter_id]['Facility'] = $e->get('facility_name');
+			$ret[$encounter_id]['Treating Provider'] = $e->get('treating_person_print');
+			$ret[$encounter_id]['Date of Treatment'] = $e->get('date_of_treatment');
+			$ret[$encounter_id]['Reason'] = $e->get('encounter_reason_print');
+			$ret[$encounter_id]['Appointment'] = $e->get('appointment_print');
+
+			$cd =& ORDataObject::factory('CodingData');
+			$claims = $cd->getCodeList($encounter_id);
+			if (count($claims) > 0) {
+				$ret[$encounter_id]['Claims']['Claims'] = array();
+				foreach($claims as $claim) {
+					$ret[$encounter_id]['Claims']['Claims'][] = '<b>'.$claim['description'].', '
+						.$cd->lookupModifier($claim['modifier']) .' '.$claim['units'].'</b>';
+					$childs = $cd->getChildCodes($claim['coding_data_id']);
+					foreach($childs as $child) {
+						$ret[$encounter_id]['Claims']['Claims'][] = $child['description'];
+					}
+				}
+			}
+
+			$fd =& ORDataObject::factory('FormData');
+			$list =& $fd->dataListByExternalId($encounter_id);
+
+			$ret[$encounter_id]['Claims']['Forms'] = array();
+			for($list->rewind(); $list->valid(); $list->next()) {
+				$row = $list->get();
+				$title = $row['name'].' completed on '.$row['last_edit'];
+				$ret[$encounter_id]['Claims'][$title] = array();
+				$fd->setup($row['form_data_id']);
+				$data = $fd->allData();
+				foreach($data as $key => $val) {
+					$key = ucfirst(str_replace('_',' ',$key));
+					$ret[$encounter_id]['Claims'][$title][$key] = $val['value'];
+				}
+			}
+		}
+		return $ret;
+	}
+
+	function _summaryReportForms($d) {
+		$ret = array();
+		foreach(array_keys($d) as $form_id) {
+			$fd =& ORDataObject::factory('FormData',$form_id);
+
+			$title = $fd->get('form_name').' completed on '.$fd->get('last_edit');
+			$ret[$title] = array();
+
+			$data = $fd->allData();
+			foreach($data as $key => $val) {
+				$key = ucfirst(str_replace('_',' ',$key));
+				$ret[$title][$key] = $val['value'];
+			}
+		}
+		return $ret;
+	}
+
+	function _personDemo($patient_id) {
+		$patient =& ORDataObject::factory('Patient',$patient_id);
+		$ret['Last Name'] = $patient->get('last_name');
+		$ret['First Name'] = $patient->get('first_name');
+		$ret['Record Number'] = $patient->get('record_number');
+
+		$it = $patient->get('print_identifier_type');
+		if (empty($it)) {
+			$it = 'SSN';
+		}
+		$ret[$it] = $patient->get('identifier');
+		$ret['Date of Birth'] = $patient->get('date_of_birth');
+		$ret['Gender'] = $patient->get('print_gender');
+		$ret['Marital Status'] = $patient->get('print_marital_status');
+		$ret['Default Provider'] = $patient->get('print_default_provider');
+
+		foreach($ret as $key => $val) {
+			if (empty($val) || ($val === '00/00/0000')) {
+				unset($ret[$key]);
+			}
+		}
+		return $ret;
+	}
+
 	function _summaryReportDemo($sections) {
 		$patient_id = $this->get('patient_id');
 		$ret = array();
@@ -1159,15 +1247,7 @@ class C_Patient extends Controller {
 			if ($value == 1) {
 				switch($section) {
 				case 'bd':
-					$patient =& ORDataObject::factory('Patient',$patient_id);
-					$ret['Basic Demographics']['Last Name'] = $patient->get('last_name');
-					$ret['Basic Demographics']['First Name'] = $patient->get('first_name');
-					$ret['Basic Demographics']['Record Number'] = $patient->get('record_number');
-					$ret['Basic Demographics'][$patient->get('print_identifier_type')] = $patient->get('identifier');
-					$ret['Basic Demographics']['Date of Birth'] = $patient->get('date_of_birth');
-					$ret['Basic Demographics']['Gender'] = $patient->get('print_gender');
-					$ret['Basic Demographics']['Marital Status'] = $patient->get('print_marital_status');
-					$ret['Basic Demographics']['Default Provider'] = $patient->get('print_default_provider');
+					$ret['Basic Demographics'] = $this->_personDemo($patient_id);
 					break;
 				case 'pn':
 					$number =& ORDataObject::factory('PersonNumber');
@@ -1201,7 +1281,68 @@ class C_Patient extends Controller {
 					}
 					break;
 				case 'p':
+					$ret['Payers'] = array();
 
+					ORDataObject::Factory_Include('InsuredRelationship');
+					$payers =& InsuredRelationship::fromPersonId($patient_id);
+
+					foreach($payers as $payer) {
+						$ret['Payers'][$payer->get('id')] = array(
+							'Company' => $payer->get('insurance_company_name'),
+							'Program' => $payer->get('program_name'),
+							'Group Name' => $payer->get('group_name'),
+							'Group Number' => $payer->get('group_number'),
+							'Co-Pay' => $payer->get('copay'),
+							'Effective Date Range' => $payer->get('effective_start') .' to '.$payer->get('effective_end'),
+							'Active' => $payer->get('active') ? 'yes':'no',
+							'Subscriber Relationship' => $payer->get('subscriber_to_patient_relationship_name')
+							);
+						if ($payer->get('subscriber_to_patient_relationship_name') !== 'self')  {
+							$ret['Payers'][$payer->get('id')]['Subscriber'] = $this->_personDemo($payer->get('subscriber_id'));
+
+							$address =& ORDataObject::Factory('PersonAddress');
+							$list = $address->addressList($payer->get('subscriber_id'));
+
+							$ret['Payers'][$payer->get('id')]['Subscriber']['Address'] = $address->lookup(array_shift(array_keys($list)));
+
+						}
+					}
+
+					break;
+				case 'rp':
+					$ret['Related People'] = array();
+					$ret['Related People']['table'] = array('Name','Relation Of','Name');
+					$pp =& ORDataObject::factory('PersonPerson');
+					$list =& $pp->relatedList($patient_id);
+
+					for($list->rewind(); $list->valid(); $list->next()) {
+						$row = $list->get();
+						unset($row['person_person_id']);
+						$ret['Related People'][] = $row;
+					}
+					break;
+				case 'nh':
+					$ret['Name History'] = array();
+					$ret['Name History']['table'] = array('First Name','Last Name','Middle Initial','Date Changed');
+					$nh =& ORDataObject::factory('NameHistory');
+					$list =& $nh->nameHistoryList($patient_id);
+					for($list->rewind(); $list->valid(); $list->next()) {
+						$row = $list->get();
+						$ret['Name History'][] = $row;
+					}
+					
+					break;
+				case 's':
+					$ret['Secondary Identifiers'] = array();
+					$ret['Secondary Identifiers']['table'] = array('Identifier','Type');
+
+					$i =& ORDataObject::Factory('Identifier');
+					$list =& $i->identifierList($patient_id);
+					for($list->rewind(); $list->valid(); $list->next()) {
+						$row = $list->get();
+						unset($row['identifier_id']);
+						$ret['Secondary Identifiers'][] = $row;
+					}
 					break;
 				}
 			}
