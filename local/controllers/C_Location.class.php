@@ -332,8 +332,6 @@ class C_Location extends Controller {
 		$cs = new C_Schedule();
 		//check for availability of provider
 		if (is_numeric($oc->get_user_id())) {
-			echo "checking: avail<br>";
-			ob_flush();
 			$availability = $cs->check_availability($oc, $this->event);
 			if ($availability) {
 				//echo "this event is within providers schedule<br>";	
@@ -350,8 +348,6 @@ class C_Location extends Controller {
 			$walkin = $_POST['walkin'];
 		}
 		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1 && $walkin != 1) {
-			echo "checking: double<br>";
-			ob_flush();
 			$double = $cs->check_double_book($oc,$this->event);
 			if ($double) {
 				if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
