@@ -180,6 +180,11 @@ class Room extends ORDataObject{
 		return $this->building = $b;
 	}
 
+	function get_building_name() {
+		$b = $this->get_building();
+		return $b->get('name');
+	}
+
 	function set_name($value) {
 		$this->name = $value;
 	}

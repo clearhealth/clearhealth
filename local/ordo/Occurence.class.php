@@ -310,8 +310,13 @@ class Occurence extends ORDataObject{
 	}
 	
 	function get_location_name() {
-		if (!is_object($this->location)) $this->location = new Room($this->location_id);
+		if (!is_object($this->location)) $this->location = ORDataObject::factory('Room',$this->location_id);
 		return $this->location->get_name();
+	}
+
+	function get_building_name() {
+		if (!is_object($this->location)) $this->location = ORDataObject::factory('Room',$this->location_id);
+		return $this->location->get('building_name');
 	}
 	
 	function set_date($value) {
