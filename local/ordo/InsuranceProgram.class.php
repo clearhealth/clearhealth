@@ -82,6 +82,13 @@ class InsuranceProgram extends ORDataObject {
 		$this->id = $id;
 	}
 
+	/**
+	 * Get the insurance companies name
+	 */
+	function get_insurance_company_name() {
+		$company =& ORDataObject::Factory('Company',$this->get('company_id'));
+		return $company->get('name');
+	}
 	/**#@-*/
 
 	var $_typeCache = false;

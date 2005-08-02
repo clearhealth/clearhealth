@@ -110,6 +110,7 @@ class InsuredRelationship extends ORDataObject {
 
 	/**#@+
 	 * Getters and Setters for Table: insured_relationship
+	 * @access protected
 	 */
 
 	
@@ -137,12 +138,15 @@ class InsuredRelationship extends ORDataObject {
 		}
 		$this->subscriber_to_patient_relationship = $val;
 	}
+
+	function get_subscriber_to_patient_relationship_name() {
+		return $this->lookupSubscriberRelationship($this->get('subscriber_to_patient_relationship'));
+	}
 	
 	
 	/**
 	 * Insures that effective start date is in ISO format for database storage
 	 *
-	 * @access protected
 	 */
 	function set_effective_start($date) {
 		$this->effective_start = $this->_mysqlDate($date);
@@ -152,7 +156,6 @@ class InsuredRelationship extends ORDataObject {
 	 * Returns effective start date as an English date instead of ISO
 	 *
 	 * @return string
-	 * @access protected
 	 */
 	function get_effective_start() {
 		return ORDataObject::_fromISODate($this->effective_start);
@@ -161,7 +164,6 @@ class InsuredRelationship extends ORDataObject {
 	/**
 	 * Insures that effective end date is in ISO format for database storage
 	 *
-	 * @access protected
 	 */
 	function set_effective_end($date) {
 		$this->effective_end = $this->_mysqlDate($date);
@@ -171,10 +173,28 @@ class InsuredRelationship extends ORDataObject {
 	 * Returns effective start date as an English date instead of ISO
 	 *
 	 * @return string
-	 * @access protected
 	 */
 	function get_effective_end() {
 		return ORDataObject::_fromISODate($this->effective_end);
+	}
+
+	/**
+	 * Get the insurance companies name
+	 */
+	function get_insurance_company_name() {
+		$program =& ORDataObject::Factory('InsuranceProgram',$this->get('insurance_program_id'));
+		return $program->get('insurance_company_name');
+	}
+
+	/**
+	 * Get the program name
+	 */
+	function get_program_name() {
+		$program =& ORDataObject::Factory('InsuranceProgram',$this->get('insurance_program_id'));
+		return $program->get('name');
+	}
+
+	function get_subscriber_print() {
 	}
 	
 	/**#@-*/
@@ -213,6 +233,7 @@ class InsuredRelationship extends ORDataObject {
 		$ds->registerFilter('effective',array($this,'effectiveColorFilter'));
 		return $ds;
 	}
+
 
 	function getInsurerList() {
 		$res = $this->_execute("select company_id, name from company");
