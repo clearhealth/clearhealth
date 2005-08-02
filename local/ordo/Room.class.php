@@ -60,6 +60,10 @@ class Room extends ORDataObject{
 			$this->populate();
 		}
 	}
+
+	function setup($id) {
+		$this->room($id);
+	}
 	
 	/**
 	 * Convenience function to get an array of many objects
