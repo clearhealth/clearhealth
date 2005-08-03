@@ -63,7 +63,7 @@ function groupAppointment(cbox) {
 	<tr>
 		<td bgcolor="#FFFFFF" align="left">
 			<div style="padding: 5px;">
-			<form name="make_appointment_popup" style="margin-bottom:0;" method="post" action="{$base_dir}index.php/main/location/edit_appointment">
+			{clni_form name="make_appointment_popup" id="make_appointment_popup" style="margin-bottom:0;" method="post" action=$EDIT_APPOINTMENT_ACTION"}
 			<select name="user_id" class="query_style">
 			{if $edit_app}
 			{html_options options=$users_array selected=$edit_oc->get_user_id()}
@@ -84,7 +84,7 @@ function groupAppointment(cbox) {
 			
 			<table border="0">
 				<tr>
-					<td>Date</td><td><input type="text" name="date" size="9" value="{$edit_oc->get_date()}"></td>
+					<td>Date</td><td><input type="text" name="date" id="date1" size="9" value="{$edit_oc->get_date()}"></td>
 				</tr>
 				<tr>
 					<td colspan="2">Title</td>
@@ -101,13 +101,14 @@ function groupAppointment(cbox) {
 					<INPUT TYPE="hidden" name="external_id"  id="patient_id_2" value="{$edit_oc->get_external_id()}">
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
                 	<div id="acDiv2" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
+			<div id="validationMessageTarget1" style='width: 150px;'></div>
 				</td>
 				</tr>
 				<tr>
 					<td colspan="2">Time</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+					<td colspan="2" style="white-space:nowrap;"><input id="time1" style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}" id="time2">
 					</td>
 				</tr>
 				<tr>
@@ -130,8 +131,13 @@ function groupAppointment(cbox) {
 			<input type="hidden" name="process" value="true">
 			</form>
 			
-			</script>
-			
+{clni_register_message_target formId="make_appointment_popup" targetId="validationMessageTarget1"}
+{clni_register_validation id="date1" rules="required|date"}
+{clni_register_validation_rule id="time1"}
+{clni_register_validation_rule id="time2"}
+
+{* required is our test rule because its a not-empty check *}
+{clni_register_validation id="patient_id_2" rules="requiredif(testElement:'patient_name_2',testRule:'required',message:'No Patient is Selected')} 
 </div>		</td>
 	</tr>
 </table>
@@ -171,7 +177,7 @@ function groupAppointment(cbox) {
 			
 			<table border="0">
 				<tr>
-				<td>Date</td><td>{clni_input_date name="date" size="9" format_popup="%m/%d/%Y" value=$edit_oc->get_date()}</td>
+				<td>Date</td><td>{clni_input_date name="date" size="9" format_popup="%m/%d/%Y" value=$edit_oc->get_date() id="date2"}</td>
 				</tr>
 				<tr>
 					<td colspan="2">Title</td>
@@ -194,7 +200,7 @@ function groupAppointment(cbox) {
 					<td colspan="2">Time</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="white-space:nowrap;"><input style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
+				<td colspan="2" style="white-space:nowrap;"><input id="time3" style="display:inline;" type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"> to <input id="time4" style="display:inline;" type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">
 					</td>
 				</tr>
 				<tr>
@@ -238,6 +244,10 @@ function groupAppointment(cbox) {
 </table>
 {clni_register_message_target formId="makeAppointmentSidebarForm" targetId="makeAppointmentSidebarMessages"}
 {clni_register_validation_rule id="patient_id_1" message="A patient is required"}
+{clni_register_message_target formId="make_appointment_popup" targetId="validationMessageTarget1"}
+{clni_register_validation id="date2" rules="required|date"}
+{clni_register_validation_rule id="time3"}
+{clni_register_validation_rule id="time4"}
 
 <br>
 
