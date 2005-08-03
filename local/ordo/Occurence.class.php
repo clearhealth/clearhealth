@@ -1,6 +1,7 @@
 <?php
 
 require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
+require_once CELLINI_ROOT . '/includes/TimestampObject.class.php';
 
 /**
  * 
@@ -320,29 +321,13 @@ class Occurence extends ORDataObject{
 	}
 	
 	function set_date($value) {
-		if (strpos($value,"/") == 2 || strpos($value,"/") == 1) {
-			preg_match("/([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{2,4})/",$value,$matches);
-			$this->date = $matches[3] . "-" . $matches[1] . "-" . $matches[2];	
-		}
-		elseif (strpos($value,"-") == 2 && 	preg_match("/([0-9]{1,2})-([0-9]{1,2})-([0-9]{2,4})/",$value)) {
-			preg_match("/([0-9]{1,2})-([0-9]{1,2})-([0-9]{2,4})/",$value,$matches);
-			if (count($matches) == 4) {
-				$this->date = $matches[3] . "-" . $matches[1] . "-" . $matches[2];
-			}
-		}
-		elseif (strpos($value,"-") == 4 && 	preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/",$value,$matches)) {
-			preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/",$value,$matches);
-			if (count($matches) == 4) {
-				$this->date = $matches[1] . "-" . $matches[2] . "-" . $matches[3];
-			}
-		}
+		$this->_setDate('date', $value);
 	}
+	
 	function get_date() {
-		if (!empty($this->start)) {
-			return date("m/d/Y",strtotime($this->start));
-		}
-		return "";	
+		return $this->_getDate('date');
 	}
+	
 	function set_start_time($value) {	
 		$this->start = $this->date . " " . $value;
 	}

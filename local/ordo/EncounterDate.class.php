@@ -79,7 +79,7 @@ class EncounterDate extends ORDataObject {
 	}
 
 	function set_date($date) {
-		$this->date = $this->_mysqlDate($date);
+		$this->_setDate('date', $date);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ class EncounterDate extends ORDataObject {
 	 * @access protected
 	 */
 	function get_date() {
-		return ORDataObject::_fromISODate($this->date);
+		return $this->_getDate('date');
 	}
 
 	/**#@-*/

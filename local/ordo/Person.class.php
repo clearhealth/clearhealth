@@ -168,7 +168,7 @@ class Person extends ORDataObject {
 	 * Set date of birth, formating it correctly
 	 */
 	function set_date_of_birth($date) {
-		$this->date_of_birth = $this->_mysqlDate($date);
+		$this->_setDate('date_of_birth', $date);
 	}
 	
 	/**
@@ -178,7 +178,7 @@ class Person extends ORDataObject {
 	 * @access protected
 	 */
 	function get_date_of_birth() {
-		return ORDataObject::_fromISODate($this->date_of_birth);
+		return $this->_getDate('date_of_birth');
 	}
 
 	/**

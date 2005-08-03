@@ -149,7 +149,7 @@ class InsuredRelationship extends ORDataObject {
 	 *
 	 */
 	function set_effective_start($date) {
-		$this->effective_start = $this->_mysqlDate($date);
+		$this->_setDate('effective_start', $date);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ class InsuredRelationship extends ORDataObject {
 	 * @return string
 	 */
 	function get_effective_start() {
-		return ORDataObject::_fromISODate($this->effective_start);
+		return $this->_getDate('effective_start');
 	}
 	
 	/**
@@ -166,7 +166,7 @@ class InsuredRelationship extends ORDataObject {
 	 *
 	 */
 	function set_effective_end($date) {
-		$this->effective_end = $this->_mysqlDate($date);
+		$this->_setDate('effective_end', $date);
 	}
 	
 	/**
@@ -175,7 +175,7 @@ class InsuredRelationship extends ORDataObject {
 	 * @return string
 	 */
 	function get_effective_end() {
-		return ORDataObject::_fromISODate($this->effective_end);
+		return $this->_getDate('effective_end');
 	}
 
 	/**
