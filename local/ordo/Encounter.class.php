@@ -50,7 +50,7 @@ class Encounter extends ORDataObject {
 		parent::ORDataObject($db);	
 		$this->_table = 'encounter';
 		$this->_sequence_name = 'sequences';
-		$this->date_of_treatment = date("Y-m-d");	
+		$this->set('date_of_treatment', date("Y-m-d"));
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Encounter extends ORDataObject {
 	}
 
 	function set_date_of_treatment($date) {
-		$this->date_of_treatment = $this->_mysqlDate($date);
+		$this->_setDate('date_of_treatment', $date);
 	}
 	
 	/**
@@ -113,7 +113,7 @@ class Encounter extends ORDataObject {
 	 * @access protected
 	 */
 	function get_date_of_treatment() {
-		return ORDataObject::_fromISODate($this->date_of_treatment);
+		return $this->_getDate('date_of_treatment');
 	}
 
 	function get_encounter_reason_print() {
