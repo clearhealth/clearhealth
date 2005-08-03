@@ -387,14 +387,24 @@ function clni_rule_alphanum(element) {
  * Other field is in the testElement attribute the value is in the testValue attribute on rule
  */
 function clni_rule_requiredif(element) {
-	var value = document.getElementById(element.rule.testElement).value;
 
-	if (value == element.rule.testValue) {
-		return clni_rule_required(element);
+	if (element.rule.testValue) {
+		var value = document.getElementById(element.rule.testElement).value;
+
+		if (value == element.rule.testValue) {
+			return clni_rule_required(element);
+		}
+	}
+	if (element.rule.testRule) {
+		var el = document.getElementById(element.rule.testElement);
+		eval('var value = clni_rule_'+element.rule.testRule+'(el)');
+		
+		if (value) {
+			return clni_rule_required(element);
+		}
 	}
 	return true;
 }
-
 
 /**
  * Validate that a field begins with a letter of the alphabet.
