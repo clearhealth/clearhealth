@@ -281,6 +281,7 @@ class C_Patient extends Controller {
 		$paymentGrid = new cGrid($payment->paymentsFromEncounterId($encounter_id));
 		$paymentGrid->name = "paymentGrid";
 		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
+		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToEnglish'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Cellini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
 		
