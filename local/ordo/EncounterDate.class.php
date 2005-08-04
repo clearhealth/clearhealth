@@ -99,9 +99,9 @@ class EncounterDate extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "encounter_date_id, date_format(`date`,'%d/%m/%Y') `date`, date_type",
+				'cols' 	=> sprintf("encounter_date_id, date_format(`date`,'%s') `date`, date_type", DateObject::getFormat()),
 				'from' 	=> "$this->_table ",
-				'where' => " encounter_id = $encounter_id"
+				'where'	=> " encounter_id = $encounter_id"
 			),
 			array('date' => 'Date','date_type' => 'Title')
 		);

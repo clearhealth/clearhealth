@@ -149,7 +149,7 @@ class Encounter extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "date_format(date_of_treatment,'%m/%d/%Y') AS date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id",
+				'cols' 	=> sprintf("date_format(date_of_treatment,'%s') AS date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id", DateObject::getFormat()),
 				'from' 	=> "$this->_table e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
 				'where' => " patient_id = $patient_id",
 				'orderby' => 'date_of_treatment DESC'
@@ -213,7 +213,7 @@ class Encounter extends ORDataObject {
 
 	function getFirstDate($patient_id) {
 		settype($patient_id,'int');
-		$sql = "select date_format(min(date_of_treatment),'%Y-%m-%d') date_of_treatment from $this->_table where patient_id = $patient_id";
+		$sql = sprintf("select date_format(min(date_of_treatment),'%s') date_of_treatment from $this->_table where patient_id = $patient_id", DateObject::getFormat());
 
 		$res = $this->_execute($sql);
 		if ($res && !$res->EOF) {
