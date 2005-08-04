@@ -63,6 +63,17 @@ $config['document_manager']['type_type'] = false;
 // Show extra acl and db debugging info
 $config['debug'] = false;
 
+
+################################################################################
+## Locale settings
+################################################################################
+// Default date/time formats
+$config['locale']['date_format']      = "%m/%d/%Y";
+$config['locale']['time_format']      = "%H:%i:%s";
+$config['locale']['timestamp_format'] = sprintf("%s %s",
+	$config['locale']['date_format'],
+	$config['locale']['time_format']);
+
 ################################################################################
 # Other Options
 ################################################################################
