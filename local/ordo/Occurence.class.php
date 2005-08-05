@@ -1,7 +1,6 @@
 <?php
 
 require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT . '/includes/TimestampObject.class.php';
 
 /**
  * 
@@ -215,30 +214,82 @@ class Occurence extends ORDataObject{
 		return $this->event_id;
 	}
 
+	
+	/**
+	 * Sets the "start" timestamp of this object
+	 *
+	 * @param	string
+	 * @access	protected
+	 */
 	function set_start($value) {
-		$this->start = $value;
-	}
-	function get_start() {
-		return $this->start;
+		$this->_setDate('start', $value);
 	}
 	
+	/**
+	 * Returns the "start" timestamp of this object
+	 *
+	 * @return	string
+	 * @access	protected
+	 */
+	function get_start() {
+		return $this->_getTimestamp('start');
+	}
+	
+	/**
+	 * An alias for {@link get_start()} left in to insure BC.
+	 *
+	 * @see		get_start()
+	 * @access	protected
+	 */
 	function get_start_timestamp() {
-		return strtotime($this->start);
+		return $this->get_start();
 	}
 
+	
+	/**
+	 * Sets the "end" timestamp of this object
+	 *
+	 * @param	string
+	 * @access	protected
+	 */
 	function set_end($value) {
-		$this->end = $value;
+		$this->_setDate('end', $value);
 	}
+	
+	
+	/**
+	 * Returns the full timestamp this object's "end" column
+	 *
+	 * @return	string
+	 * @access	protected
+	 */
 	function get_end() {
-		return $this->end;
+		return $this->_getTimestamp('end');
 	}
 	
+	
+	/**
+	 * @internal This doesn't look right to me, the single-line comment was the
+	 *	original code that I'm replacing.  I don't want to change the behavior
+	 *	to what I believe is correct without first having the all clear from
+	 *	whoever put it in here this way.
+	 */
 	function get_end_timestamp() {
-		return strtotime($this->start);
+		return $this->_getTimestamp('start');
+		//return strtotime($this->start);
 	}
 	
+	
+	/**
+	 * Returns the duration of this object from start to finish
+	 *
+	 * @return	int
+	 * @access	protected
+	 * @todo		Implement some sort of time difference system inside 
+	 *			TimestampObject.
+	 */
 	function get_duration() {
-		return (strtotime($this->end) - strtotime($this->start))/60;
+		return (strtotime($this->end->toString()) - strtotime($this->start->toString())) / 60;
 	}
 
 	function set_notes($value) {
@@ -320,31 +371,124 @@ class Occurence extends ORDataObject{
 		return $this->location->get('building_name');
 	}
 	
+	
+	/**
+	 * Sets the internal date of this object
+	 *
+	 * This field does not exist in storage.  Instead, it is shorthand for
+	 * changing just the date portion of the "start" column.
+	 *
+	 * @param	string
+	 * @access	protected
+	 */
 	function set_date($value) {
 		$this->_setDate('date', $value);
 	}
 	
+	
+	/**
+	 * Retrieves the internal date of this object
+	 *
+	 * This field does not exist in storage, instead, it is generated based off
+	 * of the "start" field's contents.
+	 *
+	 * @return	string
+	 * @access	protected
+	 */
 	function get_date() {
-		return $this->_getDate('date');
+		if (is_a($this->date, 'TimestampObject')) {
+			return $this->_getDate('date');
+		}
+		elseif (is_a($this->start, 'TimestampObject')) {
+			return $this->_getDate('start');
+		}
+		
+		return '';
 	}
 	
-	function set_start_time($value) {	
-		$this->start = $this->date . " " . $value;
+	/**
+	 * Sets the start time of this object.
+	 *
+	 * This field does not exist in storage.  Instead, it is shorthand for
+	 * changing just the time portion of the "start" column.
+	 *
+	 * @param	string
+	 * @access	protected
+	 */
+	function set_start_time($value) {
+		switch (gettype($this->date)) {
+		case 'object' :
+			$this->_setDate('start', $this->_getDate('date') . ' ' . $value);
+			break;
+		
+		// This is here for legacy purposes - in case a date gets set as a 
+		// string instead of an object
+		case 'string' :
+			$this->_setDate('start', $this->date . ' ' . $value);
+			break;
+		}
 	}
+	
+	
+	/**
+	 * Returns the start time of this object.
+	 *
+	 * This field does not exist in storage, instead, it is generated based off
+	 * of the "start" field's contents.
+	 *
+	 * @return	string
+	 * @access	protected
+	 */
 	function get_start_time() {
-		if (!empty($this->start)) {
-			return date("H:i",strtotime($this->start));
+		if (empty($this->start)) {
+			return '';
 		}
-		return "";	
+		
+		$time =& $this->start->getTime();
+		return $time->toString('%H:%i');
 	}
+	
+	
+	/**
+	 * Sets the end time of this object.
+	 *
+	 * This field does not exist in storage.  Instead, it is shorthand for
+	 * changing just the time portion of the "end" column.
+	 *
+	 * @param	string
+	 * @access	protected
+	 */
 	function set_end_time($value) {
-		$this->end = $this->date . " " . $value; 
-	}
-	function get_end_time() {
-		if (!empty($this->end)) {
-			return date("H:i",strtotime($this->end));
+		switch (gettype($this->date)) {
+		case 'object' :
+			$this->_setDate('end', $this->_getDate('date') . ' ' . $value);
+			break;
+		
+		// This is here for legacy purposes - in case a date gets set as a 
+		// string instead of an object
+		case 'string' :
+			$this->_setDate('end', $this->date . ' ' . $value);
+			break;
 		}
-		return "";	
+	}
+	
+	
+	/**
+	 * Returns the end time of this object.
+	 *
+	 * This field does not exist in storage, instead, it is generated based off
+	 * of the "end" field's contents.
+	 *
+	 * @return	string
+	 * @access	protected
+	 */
+	function get_end_time() {
+		if (empty($this->end)) {
+			return '';
+		}
+		
+		$time =& $this->end->getTime();
+		return $time->toString('%H:%i');
 	}
 
 	function get_delete_message() {

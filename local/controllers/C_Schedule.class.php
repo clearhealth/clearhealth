@@ -91,18 +91,21 @@ class C_Schedule extends CalendarController {
 	}
 	
 	function check_availability($oc, $event) {
-		$start = $oc->get_start();
-		$end = $oc->get_end();
-		$provider_id = $oc->get_user_id();
-		$location_id = $oc->get_location_id();
+		$start = $oc->get('start');
+		$end   = $oc->get('end');
+		$provider_id = $oc->get('user_id');
+		$location_id = $oc->get('location_id');
 		$db = $GLOBALS['frame']['adodb']['db'];
 		
 		if (empty($start) || empty($end) || empty($provider_id)){
 			//echo "Date or provider information is invalid.";
 		}
 		else {
-			$sdate = date('Y-m-d H:i:00', strtotime($start));
-			$edate = date('Y-m-d H:i:00', strtotime($end));
+			$startObj = TimestampObject::create($start);
+			$sdate = $startObj->toString('%Y-%m-%d %H:%i:00');
+			
+			$endObj =& TimestampObject::create($end);
+			$edate  = $endObj->toString('%Y-%m-%d %H:%i:00');
 		}
 		
 		$sql = 	"SELECT e.id FROM occurences as o LEFT JOIN `events` as e on e.id=o.event_id LEFT JOIN schedules as s on s.id=e.foreign_id ".
