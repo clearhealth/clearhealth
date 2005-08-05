@@ -42,7 +42,7 @@ class Room extends ORDataObject{
 	 * Constructor sets all attributes to their default value
 	 *  
 	 */
-	function Room($id = "")	{
+	function Room($id = 0)	{
 		//call the parent constructor so we have a _db to work with
 		parent::ORDataObject();
 		
@@ -56,12 +56,12 @@ class Room extends ORDataObject{
 	
 		$this->_table = "rooms";
 		
-		if ($id != "") {
+		if ($id > 0) {
 			$this->populate();
 		}
 	}
 
-	function setup($id) {
+	function setup($id = 0) {
 		$this->room($id);
 	}
 	
