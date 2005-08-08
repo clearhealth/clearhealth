@@ -1,3 +1,6 @@
+{if $PRINT_ACTION}
+<div style="float:right"><a href="{$PRINT_ACTION}">Print View</a></div>
+{/if}
 <h2>Summary Report</h2>
 <h3>Patient: {$patient->get('last_name')}, {$patient->get('first_name')} #{$patient->get('record_number')}</h3>
 
@@ -58,7 +61,9 @@
 				{if is_array($value)}
 					{foreach from=$value item=v key=k}
 						{if is_array($v)}
+							{if !is_int($k)}
 							{$k}:
+							{/if}
 							<div style="margin-left: 1em">
 							{foreach from=$v item=v2 key=k2}
 							{if !is_int($k2)}{$k2}:{/if} {$v2}<br>
@@ -71,7 +76,11 @@
 					<br>
 				{elseif $key === '_title'}
 				{else}
-				{$key}: {$value}<br>
+
+				{if !is_int($key)}
+				{$key}: 
+				{/if}
+				{$value}<br>
 				{/if}
 			{/foreach}
 		{/if}

@@ -1070,10 +1070,14 @@ class C_Patient extends Controller {
 		return $data;
 	}
 
-	function summary_report_action() {
+	function summary_report_action($options = false) {
 		$patient_id = $this->get('patient_id');
 		if (!$patient_id) {
 			return "A Patient must be selected before running the patient summary report";
+		}
+
+		if ($options) {
+			$this->summary_report_action_process(true);
 		}
 		
 
@@ -1089,6 +1093,7 @@ class C_Patient extends Controller {
 			array('display'=>'Related People','id'=>'rp','selected'=>true),
 			array('display'=>'Name History','id'=>'nh','selected'=>true),
 			array('display'=>'Statistics','id'=>'s','selected'=>true),
+			array('display'=>'Notes','id'=>'n','selected'=>true),
 		);
 
 		$fd =& ORDataObject::factory('FormData');
@@ -1130,8 +1135,15 @@ class C_Patient extends Controller {
 		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_summary_report.html"));
 	}
 
-	function summary_report_action_process() {
+	function summary_report_action_process($options = false) {
 		$data = array();
+
+		if ($options == false) {
+			$this->set('sr_options',$_POST);
+		}
+		else {
+			$_POST = $this->get('sr_options');
+		}
 
 		foreach($_POST['sections'] as $section => $d) {
 			$data[$section] = array();
@@ -1152,6 +1164,9 @@ class C_Patient extends Controller {
 
 		}
 		$this->assign('data',$data);
+		if (!$options) {
+			$this->assign('PRINT_ACTION',Cellini::link('summary_report','patient','util').'options=current');
+		}
 	}	
 
 	function _summaryReportEncounters($d) {
@@ -1181,6 +1196,36 @@ class C_Patient extends Controller {
 				}
 			}
 
+			$ed =& ORDataObject::factory('EncounterDate');
+			$list = $ed->encounterDateList($encounter_id);
+
+			$ret[$encounter_id]['Claims']['Dates'] = array();
+			for($list->rewind(); $list->valid(); $list->next()) {
+				$row = $list->get();
+				$ret[$encounter_id]['Claims']['Dates'][$row['date']] = $row['date_type'];
+			}
+
+			$ed =& ORDataObject::factory('EncounterPerson');
+			$list = $ed->encounterPersonList($encounter_id);
+
+			$ret[$encounter_id]['Claims']['People'] = array();
+			for($list->rewind(); $list->valid(); $list->next()) {
+				$row = $list->get();
+				$ret[$encounter_id]['Claims']['People'][$row['person']] = $row['person_type'];
+			}
+
+
+			$ed =& ORDataObject::factory('EncounterValue');
+			$list = $ed->encounterValueList($encounter_id);
+
+			$ret[$encounter_id]['Claims']['Values'] = array();
+			for($list->rewind(); $list->valid(); $list->next()) {
+				$row = $list->get();
+				$ret[$encounter_id]['Claims']['Values'][$row['value']] = $row['value_type'];
+			}
+
+
+
 			$fd =& ORDataObject::factory('FormData');
 			$list =& $fd->dataListByExternalId($encounter_id);
 
@@ -1196,6 +1241,7 @@ class C_Patient extends Controller {
 					$ret[$encounter_id]['Claims'][$title][$key] = $val['value'];
 				}
 			}
+
 		}
 		return $ret;
 	}
@@ -1304,7 +1350,9 @@ class C_Patient extends Controller {
 							$address =& ORDataObject::Factory('PersonAddress');
 							$list = $address->addressList($payer->get('subscriber_id'));
 
+							if (is_array($list)) {
 							$ret['Payers'][$payer->get('id')]['Subscriber']['Address'] = $address->lookup(array_shift(array_keys($list)));
+							}
 
 						}
 					}
@@ -1345,6 +1393,24 @@ class C_Patient extends Controller {
 						$ret['Secondary Identifiers'][] = $row;
 					}
 					break;
+				case 'n':
+					$ret['Patient Notes'] = array();
+
+					$pn =& ORDataObject::factory('PatientNote');
+					$list =& $pn->listNotes($patient_id);
+					unset($list->filter['note']);
+					unset($list->template['deprecated']);
+					for($list->rewind(); $list->valid(); $list->next()) {
+						$row = $list->get();
+
+						$note = "<table border=1 cellpadding=2 cellspacing=0>
+								<tr><td colspan=2 style='padding-left: 7px'>$row[priority]</td></tr>
+								<tr><td>Date: $row[note_date]</td><td>Deprecated: $row[deprecated]</td></tr>
+								<tr><td colspan=2>".nl2br($row['note'])."</td></tr>
+								<tr><td colspan=2>Posted by: $row[username]</td></tr></table>";
+
+						$ret['Patient Notes'][] = $note;
+					}
 				}
 			}
 		}
