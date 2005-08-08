@@ -9,7 +9,10 @@
 	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
 		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
 		<td>{$row.type}</td>
-		<td class="address">{$row.line1}<br>{$row.line2}</td>
+		<td class="address">
+			<a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">
+				{$row.line1}<br>{$row.line2}</a>
+		</td>
 		<td>{$row.city}</td>
 		<td>{$row.postal_code}</td>
 		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
