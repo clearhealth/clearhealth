@@ -73,7 +73,7 @@ class C_Coding extends Controller {
 	//	var_dump($child_codes); echo "<br>\n";
 		$this->assign_by_ref("code_list", $code_list);
 	//	echo "DEBUG C_Coding: code_list <br>\n";
-	//	var_export($code_list); echo "<br>\n";
+	//	printf('<pre>%s</pre>', var_export($code_list , true));
 		return $this->fetch(Cellini::getTemplatePath("/coding/" . $this->template_mod . "_update.html"));	
 	}
 	
@@ -200,36 +200,30 @@ class C_Coding extends Controller {
 		$search_type = $_POST['searchtype'];
 		$superbill = intval($_POST['superbill']);
 		
-		$where = "WHERE ";
-		if($search_type == "icd"){
-			$where .= " c.code_type = 2 AND ";
-		}elseif($search_type == "cpt"){
-			$where .= " c.code_type = 3 AND ";			
+		$columnList = array('c.code_id', 'c.code', 'c.code_text');
+		$tableList  = array('codes AS c');
+		$filterList = array(
+			"(c.code LIKE '{$search_string}%' OR c.code_text LIKE '%{$search_string}%') "
+		);
+		
+		if ($search_type == "icd") {
+			$filterList[] = 'c.code_type = 2';
+		}
+		elseif ($search_type == 'cpt') {
+			array_push($filterList, 'c.code_type = 3', 'fsd.data > 0');
+			$tableList[]  = 'INNER JOIN fee_schedule_data AS fsd USING (code_id)';
 		}
 		
-		if($superbill > 0){
-			$where .= " sbd.superbill_id = $superbill AND ";
-		}
-		
-		$where .= " (c.code LIKE '$search_string%' OR c.code_text LIKE '%$search_string%') ";
-		$sql ="";	
-		if ($superbill  > 0 ) {
-			$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
-		}
-		else {
-			$sql = "SELECT c.code_id, c.code, c.code_text  FROM codes AS c ";
+		if ($superbill > 0) {
+			$filterList[] = 'sbd.superbill_id = ' . $superbill;
+			$columnList[] = 'sbd.superbill_id';
+			$tableList[]  = 'LEFT JOIN superbill_data AS sbd ON (sbd.code_id = c.code_id)';
 		}
 
-		
-		//$sql = "SELECT c.code_id, c.code, c.code_text, sbd.superbill_id FROM codes AS c"
-		//." LEFT JOIN superbill_data AS sbd ON sbd.code_id = c.code_id ";
-	       
-		if ($search_type == "cpt") {
-			$sql .= "inner join fee_schedule_data fsd using (code_id) "; 
-			$where .= " AND fsd.data > 0";
-		}
-		$sql .= " $where limit 30";
-		
+		$sql = sprintf('SELECT %s FROM %s WHERE %s LIMIT 30',
+			implode(', ',    $columnList),
+			implode(' ',     $tableList),
+			implode(' AND ', $filterList));
 		//print($sql);
 		$result_array = $this->_db->GetAll($sql);
 		
