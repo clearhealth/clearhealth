@@ -130,11 +130,21 @@ class CodingData extends ORDataObject {
 		
 		$parent_id = intval($parent_id);
 		$sql = "
-			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee 
-			FROM coding_data AS cd
-			LEFT JOIN codes AS c ON cd.code_id = c.code_id 
-			WHERE parent_id = $parent_id
+			SELECT
+				cd.coding_data_id, 
+				cd.foreign_id,
+				cd.parent_id,
+				cd.code_id, 
+				cd.modifier,
+				cd.units,
+				CONCAT(c.code, ' : ', c.code_text) AS description, 
+				c.code,
+				cd.fee 
+			FROM 
+				coding_data AS cd
+				LEFT JOIN codes AS c ON cd.code_id = c.code_id 
+			WHERE 
+				parent_id = $parent_id
 				";
 		
 		$res = $this->_execute($sql);
