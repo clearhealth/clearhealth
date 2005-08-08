@@ -202,16 +202,19 @@ class C_Coding extends Controller {
 		
 		$columnList = array('c.code_id', 'c.code', 'c.code_text');
 		$tableList  = array('codes AS c');
-		$filterList = array(
-			"(c.code LIKE '{$search_string}%' OR c.code_text LIKE '%{$search_string}%') "
-		);
+		$filterList = array("(c.code LIKE '{$search_string}%' OR c.code_text LIKE '%{$search_string}%') "	);
+		$groupList  = array('c.code_id');
+		$orderList  = array();
 		
 		if ($search_type == "icd") {
 			$filterList[] = 'c.code_type = 2';
 		}
 		elseif ($search_type == 'cpt') {
 			array_push($filterList, 'c.code_type = 3', 'fsd.data > 0');
-			$tableList[]  = 'INNER JOIN fee_schedule_data AS fsd USING (code_id)';
+			array_push($tableList,
+				'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
+				'JOIN fee_schedule AS fs USING (fee_schedule_id)');
+			$orderList[] = 'fs.priority ASC';
 		}
 		
 		if ($superbill > 0) {
@@ -220,10 +223,17 @@ class C_Coding extends Controller {
 			$tableList[]  = 'LEFT JOIN superbill_data AS sbd ON (sbd.code_id = c.code_id)';
 		}
 
-		$sql = sprintf('SELECT %s FROM %s WHERE %s LIMIT 30',
+		$sql = sprintf('SELECT %s FROM %s WHERE %s %s %s LIMIT 30',
 			implode(', ',    $columnList),
 			implode(' ',     $tableList),
-			implode(' AND ', $filterList));
+			implode(' AND ', $filterList),
+			count($groupList) > 0 ? 
+				'GROUP BY ' . implode(', ', $groupList) :
+				null,
+			count($orderList) > 0 ?
+				'ORDER BY ' . implode(', ', $orderList) :
+				null
+			);
 		//print($sql);
 		$result_array = $this->_db->GetAll($sql);
 		
