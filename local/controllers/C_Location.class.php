@@ -94,13 +94,13 @@ class C_Location extends Controller {
 	function edit_practice_action_process() {
 		if ($_POST['process'] != "true")
 			return;
-		if (is_numeric($_POST['id'])) {
+		if (is_numeric($_POST['practice_id'])) {
 			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
 		}
 		else{
 			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
 		}
-		$this->location = new Practice($_POST['id']);
+		$this->location = new Practice($_POST['practice_id']);
 		$this->location->populate_array($_POST);
 		$this->location->persist();
 		

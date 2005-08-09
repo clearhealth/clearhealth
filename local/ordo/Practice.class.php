@@ -179,6 +179,20 @@ class Practice extends ORDataObject{
 		return $this->id;
 	}
 	
+	/**
+	 * Alias to set_id() to avoid JS reserved word conflict
+	 */
+	function set_practice_id($id) {
+		$this->set_id($id);
+	}
+	
+	/**
+	 * Alias to get_id() to avoid JS reserved word conflict
+	 */
+	function get_practice_id() {
+		return $this->get_id;
+	}
+	
 	
 	function set_name($value) {
 		$this->name = $value;
