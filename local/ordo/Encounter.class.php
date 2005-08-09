@@ -193,29 +193,29 @@ class Encounter extends ORDataObject {
 	
 	function appointmentList() {
 		$sql = "
-			select 
-				b.name as building_name, 
-				b.id as building_id,
-				r.name as room_name, 
-				r.id as room_id,
-				o.id as occurence_id, 
-				concat_ws(' ',psn.first_name,psn.last_name) as provider_name,
-				pvds.person_id as provider_id, 
-				o.start as appointment_start 
-			from 
-				occurences o 
-				LEFT JOIN rooms r on r.id = o.location_id
-				LEFT JOIN buildings b on b.id = r.building_id
-				left join user u on o.user_id = u.user_id
-				left join provider as pvds on pvds.person_id = u.person_id
-				left join person psn on psn.person_id = pvds.person_id
-				left join group_occurence go on o.id = go.occurence_id
-			where
-				o.external_id = " . (int)$this->get("patient_id") . " or 
+			SELECT 
+				b.name AS building_name, 
+				b.id AS building_id,
+				r.name AS room_name, 
+				r.id AS room_id,
+				o.id AS occurence_id, 
+				concat_ws(' ',psn.first_name,psn.last_name) AS provider_name,
+				pvds.person_id AS provider_id, 
+				o.start AS appointment_start 
+			FROM 
+				occurences AS o 
+				LEFT JOIN rooms AS r ON (r.id = o.location_id)
+				LEFT JOIN buildings AS b ON (b.id = r.building_id)
+				LEFT JOIN user AS u ON (o.user_id = u.user_id)
+				LEFT JOIN provider AS pvds ON (pvds.person_id = u.person_id)
+				LEFT JOIN person AS psn ON (psn.person_id = pvds.person_id)
+				LEFT JOIN group_occurence AS go ON (o.id = go.occurence_id)
+			WHERE
+				o.external_id = " . (int)$this->get("patient_id") . " OR 
 				go.patient_id = ". (int)$this->get("patient_id") . "		
-			order by 
+			ORDER BY 
 				o.start DESC
-			limit 10";
+			LIMIT 10";
 		$result = $this->_execute($sql);
 		$ar = array();
 		while ($result && !$result->EOF) {
