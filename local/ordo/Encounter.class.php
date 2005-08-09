@@ -204,8 +204,8 @@ class Encounter extends ORDataObject {
 				o.start as appointment_start 
 			from 
 				occurences o 
-				inner join rooms r on r.id = o.location_id
-				inner join buildings b on b.id = r.building_id
+				LEFT JOIN rooms r on r.id = o.location_id
+				LEFT JOIN buildings b on b.id = r.building_id
 				left join user u on o.user_id = u.user_id
 				left join provider as pvds on pvds.person_id = u.person_id
 				left join person psn on psn.person_id = pvds.person_id
