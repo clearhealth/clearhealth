@@ -72,9 +72,8 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 			return;
 		}
 		
-		ORDataObject::factory_include('Enumeration');
-		$enumArray = Enumeration::loadEnum('subscriber_to_patient_relationship',false);
-		$this->_subscriberRelationships = array_flip($enumArray);
+		$enum = ORDataObject::factory('Enumeration');
+		$this->_subscriberRelationships = $enum->get_enum_list('subscriber_to_patient_relationship');
 	}
 }
 

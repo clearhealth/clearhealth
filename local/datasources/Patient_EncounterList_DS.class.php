@@ -32,9 +32,8 @@ class Patient_EncounterList_DS extends Datasource_sql
 			return;
 		}
 		
-		ORDataObject::factory_include('Enumeration');
-		$enumArray = Enumeration::loadEnum('encounter_reason',false);
-		$this->_encounterReasons = array_flip($enumArray);
+		$enum = ORDataObject::factory('Enumeration');
+		$this->_encounterReasons = $enum->get_enum_list('encounter_reason');
 	}
 	
 	
