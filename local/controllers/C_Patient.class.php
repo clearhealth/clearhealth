@@ -48,18 +48,16 @@ class C_Patient extends Controller {
 			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
-			$insuredRelationshipGrid =& new cGrid($p->insuredRelationshipList());
+			$insuredRelationshipGrid =& new cGrid($p->loadDatasource('InsuredRelationshipList'));
 			$insuredRelationshipGrid->name = "insuredRelationshipGrid";
 			$insuredRelationshipGrid->indexCol = false;
 
-			$encounter =& ORDataObject::factory("Encounter");
-			$encounterGrid =& new cGrid($encounter->encounterList($this->get('patient_id')));
+			$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 			$encounterGrid->name = "encounterGrid";
 			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Cellini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
 
-			$formData =& ORDataObject::factory("FormData");
-			$formDataGrid =& new cGrid($formData->dataListForPatientByExternalId($this->get('patient_id')));
+			$formDataGrid =& new cGrid($p->loadDatasource('FormDataList'));
 			$formDataGrid->name = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
@@ -75,12 +73,12 @@ class C_Patient extends Controller {
 			}
 
 			$report =& ORDataObject::factory("Report");
-			$reportGrid = new cGrid($report->connectedReportList(89));
+			$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 89));
 			$reportGrid->name = "reportGrid";
 			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 
 			$note =& ORDataObject::factory('PatientNote');
-			$noteGrid =& new cGrid($note->listNotes($this->get('patient_id'),0));
+			$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
 			$noteGrid->pageSize = 10;
 			$noteGrid->indexCol = false;
 			
