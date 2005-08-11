@@ -35,6 +35,7 @@ class Patient extends MergeDecorator {
 	var $default_provider = "";
 
 
+	var $_otherDatasourceObjects = array('person');
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
