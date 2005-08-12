@@ -155,6 +155,24 @@ class PatientStatistics extends ORDataObject {
 	function set_person_id($id)  {
 		$this->id = $id;
 	}
+	
+	
+	/**
+	 * Setter for sign_in_date.  Insures date is stored in ISO format
+	 */
+	function set_sign_in_date($date) {
+		$this->_setDate('sign_in_date', $date);
+	}
+	
+	
+	/**
+	 * Getter for sign_in_date.  Insures date is displayed in USA format
+	 *
+	 * @return string
+	 */
+	function get_sign_in_date() {
+		return $this->_getDate('sign_in_date');
+	}
 
 	/**#@-*/
 }
