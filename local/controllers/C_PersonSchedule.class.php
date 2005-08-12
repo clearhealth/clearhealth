@@ -179,16 +179,16 @@ class C_PersonSchedule extends CalendarController {
 			$this->messages->addMessage('', "You must specify a starting and ending date for the schedule."); 
 			$errors++;	
 		}
-		
-		
-		$sdts = 0;
-		$edts = 0;
-		if (isset($_POST['starting_date'])) $sdts = strtotime($_POST['starting_date']);
-		if (isset($_POST['ending_date']))$edts = strtotime($_POST['ending_date'] . " +1 day");
-		
-		if ($sdts > $edts) {
-			$this->messages->addMessage("The dates provided for were invalid, its starting date must be before its ending date. The schedule could not be changed.");
-			$errors++;	
+		else {
+			$sdts = 0;
+			$edts = 0;
+			if (isset($_POST['starting_date'])) $sdts = strtotime($_POST['starting_date']);
+			if (isset($_POST['ending_date']))$edts = strtotime($_POST['ending_date'] . " +1 day");
+			
+			if ($sdts > $edts) {
+				$this->messages->addMessage("The dates provided for were invalid, its starting date must be before its ending date. The schedule could not be changed.");
+				$errors++;	
+			}
 		}
 	
 		foreach($oc_template as $day => $se) {
@@ -209,20 +209,26 @@ class C_PersonSchedule extends CalendarController {
 					$day_template = array_keys($oc_template[strtolower(date("l",$dts))]);
 				}
 				$oc = new Occurence();
-				$oc->event_id = $this->schedule->get_id();
-				$oc->user_id = $_POST['occurence_user_id'];
-				$oc->set_location_id($location_id);
+				$oc->set('event_id', $this->schedule->get_id());
+				$oc->set('user_id', $_POST['occurence_user_id']);
+				$oc->set('location_id', $location_id);
+				printf('<pre>%s</pre>', var_export($day_template , true));
 				for($i=0;$i<count($day_template);$i++) {
 					if ($i%2 == 0) {
-						$oc->start = date("Y-m-d H:i:s", ($day_template[$i]+$dts));
+						if ($oc->get('start') != '') {
+							$oc->set('end', date("Y-m-d H:i:s", ($day_template[$i]+$dts)));
+						}
+						$oc->set('start', date("Y-m-d H:i:s", ($day_template[$i]+$dts)));
 					}
 					else {
-						$oc->end = date("Y-m-d H:i:s", ($day_template[$i]+$dts));
+						$oc->set('end', date("Y-m-d H:i:s", ($day_template[$i]+$dts)));
 						$ocs[] = $oc;
+						
+						// In case there's more schedule time today, start a new Occurence
 						$oc = new Occurence();
-						$oc->event_id = $this->schedule->get_id();
-						$oc->user_id = $_POST['occurence_user_id'];
-						$oc->set_location_id($location_id);
+						$oc->set('event_id', $this->schedule->get_id());
+						$oc->set('user_id', $_POST['occurence_user_id']);
+						$oc->set('location_id', $location_id);
 					}	
 				}
 				$d = $d->nextDay("object");
