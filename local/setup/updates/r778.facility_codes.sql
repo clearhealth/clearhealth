@@ -1,10 +1,9 @@
 CREATE TABLE `facility_codes` (
-	`code` VARCHAR( 5 ) NOT NULL ,
-	`name` VARCHAR( 255 ) NOT NULL ,
-	PRIMARY KEY ( `code` )
-) COMMENT = 'Stores x("12", "facility"),
-_code code/human name combos';
-
+	`facility_code_id` int( 11 ) NOT NULL auto_increment,
+	`code` varchar( 5 ) NOT NULL default '',
+	`name` varchar( 255 ) NOT NULL default '',
+	PRIMARY KEY  (`facility_code_id`)
+) TYPE=MyISAM COMMENT='Stores x12 facility_code code/human name combos';
 
 INSERT INTO `facility_codes` (`code`, `name`) VALUES
 ("11", "Office "),
