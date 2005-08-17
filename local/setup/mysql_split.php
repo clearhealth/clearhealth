@@ -44,7 +44,7 @@
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
-		$sqlfile = "2$dbname_$corename.sql";
+		$sqlfile = "clearhealth_$corename.sql";
 		echo "dumping $tablename to \n\t\t\t\t $sqlfile\n";	
 		system("mysqldump  -p$password -u$user $dbname $tablename >> $sqlfile");
 		

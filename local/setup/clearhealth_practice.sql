@@ -1,28 +1,3 @@
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `category`
--- 
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) TYPE=MyISAM COMMENT='STARTWITHDATA';
-
--- 
--- Dumping data for table `category`
--- 
-
-INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -39,32 +14,28 @@ INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category`
+-- Table structure for table `practice_address`
 --
 
-DROP TABLE IF EXISTS `category`;
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+DROP TABLE IF EXISTS `practice_address`;
+CREATE TABLE `practice_address` (
+  `practice_id` int(11) NOT NULL default '0',
+  `address_id` int(11) NOT NULL default '0',
+  `address_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`practice_id`,`address_id`),
+  KEY `address_id` (`address_id`),
+  KEY `practice_id` (`practice_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
 
 --
--- Dumping data for table `category`
+-- Dumping data for table `practice_address`
 --
 
 
-/*!40000 ALTER TABLE `category` DISABLE KEYS */;
-LOCK TABLES `category` WRITE;
-INSERT INTO `category` VALUES (1,'ClearHealth','',0,0,6);
+/*!40000 ALTER TABLE `practice_address` DISABLE KEYS */;
+LOCK TABLES `practice_address` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+/*!40000 ALTER TABLE `practice_address` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -90,25 +61,27 @@ UNLOCK TABLES;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category_to_document`
+-- Table structure for table `practice_number`
 --
 
-DROP TABLE IF EXISTS `category_to_document`;
-CREATE TABLE `category_to_document` (
-  `category_id` int(11) NOT NULL default '0',
-  `document_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+DROP TABLE IF EXISTS `practice_number`;
+CREATE TABLE `practice_number` (
+  `practice_id` int(11) NOT NULL default '0',
+  `number_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`practice_id`,`number_id`),
+  KEY `person_id` (`practice_id`),
+  KEY `phone_id` (`number_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
 
 --
--- Dumping data for table `category_to_document`
+-- Dumping data for table `practice_number`
 --
 
 
-/*!40000 ALTER TABLE `category_to_document` DISABLE KEYS */;
-LOCK TABLES `category_to_document` WRITE;
+/*!40000 ALTER TABLE `practice_number` DISABLE KEYS */;
+LOCK TABLES `practice_number` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category_to_document` ENABLE KEYS */;
+/*!40000 ALTER TABLE `practice_number` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

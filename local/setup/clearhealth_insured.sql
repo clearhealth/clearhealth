@@ -1,22 +1,3 @@
-
--- 
--- Table structure for table `superbill_data`
--- 
-
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
-) TYPE=MyISAM;
-
--- 
--- Dumping data for table `superbill_data`
--- 
-
-INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -33,28 +14,37 @@ INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `superbill_data`
+-- Table structure for table `insured_relationship`
 --
 
-DROP TABLE IF EXISTS `superbill_data`;
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
+DROP TABLE IF EXISTS `insured_relationship`;
+CREATE TABLE `insured_relationship` (
+  `insured_relationship_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL default '0',
+  `subscriber_id` int(11) NOT NULL default '0',
+  `subscriber_to_patient_relationship` int(11) NOT NULL default '0',
+  `copay` float(11,2) NOT NULL default '0.00',
+  `assigning` int(11) NOT NULL default '0',
+  `group_name` varchar(100) NOT NULL default '',
+  `group_number` varchar(100) NOT NULL default '',
+  `default_provider` int(11) NOT NULL default '0',
+  `program_order` int(11) NOT NULL default '0',
+  `effective_start` date NOT NULL default '0000-00-00',
+  `effective_end` date NOT NULL default '0000-00-00',
+  `active` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`insured_relationship_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `superbill_data`
+-- Dumping data for table `insured_relationship`
 --
 
 
-/*!40000 ALTER TABLE `superbill_data` DISABLE KEYS */;
-LOCK TABLES `superbill_data` WRITE;
-INSERT INTO `superbill_data` VALUES (1000,1,0,1);
+/*!40000 ALTER TABLE `insured_relationship` DISABLE KEYS */;
+LOCK TABLES `insured_relationship` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `superbill_data` ENABLE KEYS */;
+/*!40000 ALTER TABLE `insured_relationship` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

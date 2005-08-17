@@ -1,22 +1,3 @@
-
--- 
--- Table structure for table `superbill_data`
--- 
-
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
-) TYPE=MyISAM;
-
--- 
--- Dumping data for table `superbill_data`
--- 
-
-INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -33,28 +14,30 @@ INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `superbill_data`
+-- Table structure for table `events`
 --
 
-DROP TABLE IF EXISTS `superbill_data`;
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
+DROP TABLE IF EXISTS `events`;
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL default '0',
+  `title` varchar(255) NOT NULL default '',
+  `description` text NOT NULL,
+  `website` varchar(255) NOT NULL default '',
+  `contact_person` varchar(255) NOT NULL default '',
+  `email` varchar(255) NOT NULL default '',
+  `foreign_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `superbill_data`
+-- Dumping data for table `events`
 --
 
 
-/*!40000 ALTER TABLE `superbill_data` DISABLE KEYS */;
-LOCK TABLES `superbill_data` WRITE;
-INSERT INTO `superbill_data` VALUES (1000,1,0,1);
+/*!40000 ALTER TABLE `events` DISABLE KEYS */;
+LOCK TABLES `events` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `superbill_data` ENABLE KEYS */;
+/*!40000 ALTER TABLE `events` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

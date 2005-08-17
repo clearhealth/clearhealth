@@ -1,28 +1,3 @@
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `category`
--- 
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) TYPE=MyISAM COMMENT='STARTWITHDATA';
-
--- 
--- Dumping data for table `category`
--- 
-
-INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -39,32 +14,27 @@ INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category`
+-- Table structure for table `form`
 --
 
-DROP TABLE IF EXISTS `category`;
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+DROP TABLE IF EXISTS `form`;
+CREATE TABLE `form` (
+  `form_id` int(11) NOT NULL default '0',
+  `name` varchar(100) NOT NULL default '',
+  `description` text NOT NULL,
+  PRIMARY KEY  (`form_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
 
 --
--- Dumping data for table `category`
+-- Dumping data for table `form`
 --
 
 
-/*!40000 ALTER TABLE `category` DISABLE KEYS */;
-LOCK TABLES `category` WRITE;
-INSERT INTO `category` VALUES (1,'ClearHealth','',0,0,6);
+/*!40000 ALTER TABLE `form` DISABLE KEYS */;
+LOCK TABLES `form` WRITE;
+INSERT INTO `form` VALUES (800,'Test Data','Some random data'),(1710,'Patient Vitals','Patient Vital Statistics');
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+/*!40000 ALTER TABLE `form` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -90,25 +60,28 @@ UNLOCK TABLES;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category_to_document`
+-- Table structure for table `form_data`
 --
 
-DROP TABLE IF EXISTS `category_to_document`;
-CREATE TABLE `category_to_document` (
-  `category_id` int(11) NOT NULL default '0',
-  `document_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+DROP TABLE IF EXISTS `form_data`;
+CREATE TABLE `form_data` (
+  `form_data_id` int(11) NOT NULL default '0',
+  `form_id` int(11) NOT NULL default '0',
+  `external_id` int(11) NOT NULL default '0',
+  `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`form_data_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links in the form data STARTWITHDATA';
 
 --
--- Dumping data for table `category_to_document`
+-- Dumping data for table `form_data`
 --
 
 
-/*!40000 ALTER TABLE `category_to_document` DISABLE KEYS */;
-LOCK TABLES `category_to_document` WRITE;
+/*!40000 ALTER TABLE `form_data` DISABLE KEYS */;
+LOCK TABLES `form_data` WRITE;
+INSERT INTO `form_data` VALUES (2057,800,1110,'2005-03-14 15:09:50'),(20350,800,10061,'2005-04-08 09:05:24'),(20351,800,10001,'2005-04-08 09:07:50');
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category_to_document` ENABLE KEYS */;
+/*!40000 ALTER TABLE `form_data` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

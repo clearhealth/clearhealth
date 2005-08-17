@@ -1,22 +1,3 @@
-
--- 
--- Table structure for table `superbill_data`
--- 
-
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
-) TYPE=MyISAM;
-
--- 
--- Dumping data for table `superbill_data`
--- 
-
-INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -33,28 +14,29 @@ INSERT INTO `superbill_data` VALUES (1000, 1, 0, 1);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `superbill_data`
+-- Table structure for table `report_templates`
 --
 
-DROP TABLE IF EXISTS `superbill_data`;
-CREATE TABLE `superbill_data` (
-  `superbill_data_id` int(11) NOT NULL default '0',
-  `superbill_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `status` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`superbill_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS `report_templates`;
+CREATE TABLE `report_templates` (
+  `report_template_id` int(11) NOT NULL default '0',
+  `report_id` int(11) NOT NULL default '0',
+  `name` varchar(255) NOT NULL default '',
+  `is_default` enum('yes','no') NOT NULL default 'yes',
+  PRIMARY KEY  (`report_template_id`),
+  KEY `report_id` (`report_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report templates';
 
 --
--- Dumping data for table `superbill_data`
+-- Dumping data for table `report_templates`
 --
 
 
-/*!40000 ALTER TABLE `superbill_data` DISABLE KEYS */;
-LOCK TABLES `superbill_data` WRITE;
-INSERT INTO `superbill_data` VALUES (1000,1,0,1);
+/*!40000 ALTER TABLE `report_templates` DISABLE KEYS */;
+LOCK TABLES `report_templates` WRITE;
+INSERT INTO `report_templates` VALUES (201803,17857,'Default Template','yes'),(17077,17075,'Invoice View','no'),(17859,17857,'MCC Superbill Form','no');
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `superbill_data` ENABLE KEYS */;
+/*!40000 ALTER TABLE `report_templates` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

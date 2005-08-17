@@ -1,28 +1,3 @@
-
--- --------------------------------------------------------
-
--- 
--- Table structure for table `category`
--- 
-
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) TYPE=MyISAM COMMENT='STARTWITHDATA';
-
--- 
--- Dumping data for table `category`
--- 
-
-INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
-        
 -- MySQL dump 10.9
 --
 -- Host: localhost    Database: clearhealth
@@ -39,32 +14,28 @@ INSERT INTO `category` VALUES (1, 'ClearHealth', '', 0, 0, 6);
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category`
+-- Table structure for table `building_address`
 --
 
-DROP TABLE IF EXISTS `category`;
-CREATE TABLE `category` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `value` varchar(255) NOT NULL default '',
-  `parent` int(11) NOT NULL default '0',
-  `lft` int(11) NOT NULL default '0',
-  `rght` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
-  KEY `parent` (`parent`),
-  KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+DROP TABLE IF EXISTS `building_address`;
+CREATE TABLE `building_address` (
+  `building_id` int(11) NOT NULL default '0',
+  `address_id` int(11) NOT NULL default '0',
+  `address_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`building_id`,`address_id`),
+  KEY `address_id` (`address_id`),
+  KEY `building_id` (`building_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying type. STARTEMPTY';
 
 --
--- Dumping data for table `category`
+-- Dumping data for table `building_address`
 --
 
 
-/*!40000 ALTER TABLE `category` DISABLE KEYS */;
-LOCK TABLES `category` WRITE;
-INSERT INTO `category` VALUES (1,'ClearHealth','',0,0,6);
+/*!40000 ALTER TABLE `building_address` DISABLE KEYS */;
+LOCK TABLES `building_address` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+/*!40000 ALTER TABLE `building_address` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -90,25 +61,26 @@ UNLOCK TABLES;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `category_to_document`
+-- Table structure for table `building_program_identifier`
 --
 
-DROP TABLE IF EXISTS `category_to_document`;
-CREATE TABLE `category_to_document` (
-  `category_id` int(11) NOT NULL default '0',
-  `document_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+DROP TABLE IF EXISTS `building_program_identifier`;
+CREATE TABLE `building_program_identifier` (
+  `building_id` int(11) NOT NULL default '0',
+  `program_id` int(11) NOT NULL default '0',
+  `identifier` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`building_id`,`program_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `category_to_document`
+-- Dumping data for table `building_program_identifier`
 --
 
 
-/*!40000 ALTER TABLE `category_to_document` DISABLE KEYS */;
-LOCK TABLES `category_to_document` WRITE;
+/*!40000 ALTER TABLE `building_program_identifier` DISABLE KEYS */;
+LOCK TABLES `building_program_identifier` WRITE;
 UNLOCK TABLES;
-/*!40000 ALTER TABLE `category_to_document` ENABLE KEYS */;
+/*!40000 ALTER TABLE `building_program_identifier` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
