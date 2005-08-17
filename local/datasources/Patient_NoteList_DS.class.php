@@ -1,5 +1,7 @@
 <?php
 
+require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+
 class Patient_NoteList_DS extends Datasource_sql
 {
 	/**

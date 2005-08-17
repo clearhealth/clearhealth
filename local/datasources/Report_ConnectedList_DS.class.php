@@ -1,5 +1,7 @@
 <?php
 
+require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+
 class Report_ConnectedList_DS extends Datasource_sql
 {
 	/**
