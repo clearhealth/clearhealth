@@ -51,11 +51,13 @@ class C_Patient extends Controller {
 			$insuredRelationshipGrid =& new cGrid($p->loadDatasource('InsuredRelationshipList'));
 			$insuredRelationshipGrid->name = "insuredRelationshipGrid";
 			$insuredRelationshipGrid->indexCol = false;
+			$insuredRelationshipGrid->setExternalId($p->get('person_id'));
 
 			$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 			$encounterGrid->name = "encounterGrid";
 			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Cellini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
+			$encounterGrid->setExternalId($p->get('id'));
 
 			$formDataGrid =& new cGrid($p->loadDatasource('FormDataList'));
 			$formDataGrid->name = "formDataGrid";
