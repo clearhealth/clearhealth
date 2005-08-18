@@ -17,6 +17,14 @@ class Report_ConnectedList_DS extends Datasource_sql
 	var $_internalName = 'Report_ConnectedList_DS';
 	
 	
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+	
+	
 	function Report_ConnectedList_DS($menu_id) {
 		settype($menu_id,'int');
 

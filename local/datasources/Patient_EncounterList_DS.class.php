@@ -19,6 +19,14 @@ class Patient_EncounterList_DS extends Datasource_sql
 	 */
 	var $_internalName = 'Patient_EncounterList_DS';
 	
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+	
+	
 	function Patient_EncounterList_DS($patient_id) {
 		settype($patient_id,'int');
 

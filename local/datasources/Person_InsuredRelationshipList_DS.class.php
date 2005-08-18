@@ -20,6 +20,14 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 	var $_internalName = 'Person_InsuredRelationshipList_DS';
 	
 	
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+	
+	
 	function Person_InsuredRelationshipList_DS($person_id) {
 		settype($person_id,'int');
 		$this->_db =& Cellini::dbInstance();
@@ -51,7 +59,7 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 				'active' => 'Active'));
 		$this->addOrderRule('program_order');
 		$this->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
-		$this->registerFilter('effective',array($this,'effectiveColorFilter'));
+		$this->registerFilter('effective',array($this,'effectiveColorFilter'), false, 'html');
 	}
 	
 	

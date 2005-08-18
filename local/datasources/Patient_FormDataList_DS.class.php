@@ -16,6 +16,13 @@ class Patient_FormDataList_DS extends Datasource_sql
 	 */
 	var $_internalName = 'Patient_FormDataList_DS';
 
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+
 
 	function Patient_FormDataList_DS($external_id) {
 		$external_id = intval($external_id);

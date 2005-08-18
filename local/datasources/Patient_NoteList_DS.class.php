@@ -17,15 +17,26 @@ class Patient_NoteList_DS extends Datasource_sql
 	var $_internalName = 'Patient_NoteList_DS';
 	
 	
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * This can be overridden by a grid with {@link cGrid::setOutputType()}
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+	
+	
 	function Patient_NoteList_DS($patient_id) {
 		settype($patient_id, 'integer');
 		
 		$labels = array(
-			'deprecated' => '<span title="Deprecated">Dep</span>',
+			'deprecated' => 'Dep',
 			'priority'   => 'P',
 			'note_date'  => 'Date',
 			'username'   => 'User',
 			'note'       => 'Note');
+		$this->setTypeDependentLabel('html', 'deprecated', '<span title="Deprecated">Dep</span>');
 
 		$this->setup(Cellini::dbInstance(),
 			array(
@@ -41,7 +52,7 @@ class Patient_NoteList_DS extends Datasource_sql
 		$this->addOrderRule('note_date', 'DESC', 1);
 
 		$this->registerFilter('note',     array($this, 'multiLineFilter'));
-		$this->registerFilter('priority', array($this, 'colorLineFilter'));
+		$this->registerFilter('priority', array($this, 'colorLineFilter'), false, 'html');
 		//$this->template['deprecated'] = "<a href='".Cellini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
 	}
 	
