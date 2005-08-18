@@ -63,6 +63,7 @@ class C_Patient extends Controller {
 			$formDataGrid->name = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
+			$formDataGrid->setExternalId($p->get('id'));
 			
 			$menu = Menu::getInstance();
 			$tmp = $menu->getMenuData('patient',90);
@@ -78,19 +79,22 @@ class C_Patient extends Controller {
 			$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 89));
 			$reportGrid->name = "reportGrid";
 			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
+			$reportGrid->setExternalId(89);
 
 			$note =& ORDataObject::factory('PatientNote');
 			$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
 			$noteGrid->pageSize = 10;
 			$noteGrid->indexCol = false;
+			$noteGrid->setExternalId($p->get('id'));
 			
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
 
 			require_once APP_ROOT .'/local/includes/AppointmentDatasource.class.php';
-			$appointmentDS =& new AppointmentDatasource($this->get('patient_id'));
+			$appointmentDS =& new AppointmentDatasource($p->get('id'));
 			$appointmentGrid =& new cGrid($appointmentDS);
 			$appointmentGrid->pageSize = 10;
+			$appointmentGrid->setExternalId($p->get('id'));
 			
 			$this->assign_by_ref("person",$p);
 			$this->assign_by_ref('number',$number);
