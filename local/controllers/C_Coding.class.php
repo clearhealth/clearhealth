@@ -214,7 +214,7 @@ class C_Coding extends Controller {
 			array_push($tableList,
 				'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
 				'JOIN fee_schedule AS fs USING (fee_schedule_id)');
-			$orderList[] = 'fs.priority ASC';
+			$orderList[] = 'fs.priority DESC';
 		}
 		
 		if ($superbill > 0) {
