@@ -146,7 +146,7 @@ class C_Patient extends Controller {
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$patient_id);
 
-		$nameHistoryGrid =& new cGrid($person->nameHistoryList());
+		$nameHistoryGrid =& new cGrid($person->loadDatasource('NameHistoryList'));
 		$nameHistoryGrid->name = "nameHistoryGrid";
 		$identifierGrid =& new cGrid($person->identifierList());
 		$identifierGrid->name = "identifierGrid";
