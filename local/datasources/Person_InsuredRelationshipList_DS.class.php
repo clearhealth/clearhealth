@@ -30,6 +30,7 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 	
 	function Person_InsuredRelationshipList_DS($person_id) {
 		settype($person_id,'int');
+		$this->external_id = $person_id;
 		$this->_db =& Cellini::dbInstance();
 		
 		$this->setup($this->_db,
