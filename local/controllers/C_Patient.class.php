@@ -90,8 +90,7 @@ class C_Patient extends Controller {
 			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
 			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
 
-			require_once APP_ROOT .'/local/includes/AppointmentDatasource.class.php';
-			$appointmentDS =& new AppointmentDatasource($p->get('id'));
+			$appointmentDS =& $p->loadDatasource('Appointment');
 			$appointmentGrid =& new cGrid($appointmentDS);
 			$appointmentGrid->pageSize = 10;
 			$appointmentGrid->setExternalId($p->get('id'));

@@ -9,7 +9,26 @@ require_once CELLINI_ROOT .'/includes/Datasource_sql.class.php';
  * @package	com.uversainc.cellini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
-class AppointmentDataSource extends Datasource_sql {
+class Person_Appointment_DS extends Datasource_sql {
+	/**
+	 * Stores the case-sensative class name for this ds and should be considered
+	 * read-only.
+	 *
+	 * This is being used so that the internal name matches the filesystem
+	 * name.  Once BC for PHP 4 is no longer required, this can be dropped in
+	 * favor of using get_class($ds) where ever this property is referenced.
+	 *
+	 * @var string
+	 */
+	var $_internalName = 'Person_Appointment_DS';
+	
+	/**
+	 * The default output type for this datasource.
+	 *
+	 * @var string
+	 */
+	var $_type = 'html';
+	
 	var $user_id;
 	var $_labels = array(
 			'start' 	=> 'Start',
@@ -24,7 +43,7 @@ class AppointmentDataSource extends Datasource_sql {
 
 	var $showPast = true;
 
-	function AppointmentDataSource($user_id) {
+	function Person_Appointment_DS($user_id) {
 		$this->user_id = $user_id;
 		$this->setup(Cellini::dbInstance(),
 		array(
@@ -38,7 +57,8 @@ class AppointmentDataSource extends Datasource_sql {
 					o.notes, reason_code, concat_ws(', ',p.last_name,p.first_name) provider ",
 			'from' => 'occurences o inner join rooms r on r.id = o.location_id inner join buildings b on b.id = r.building_id
 			left join user u on o.user_id = u.user_id left join person p on u.person_id = p.person_id',
-			'orderby' => 'start DESC'
+			'orderby' => 'start DESC',
+			'where'   => ''
 			),
 		$this->_labels);
 		$this->registerFilter('reason_code',array(&$this,'reasonFilter'));
