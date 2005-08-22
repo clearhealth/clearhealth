@@ -153,13 +153,14 @@ class C_Patient extends Controller {
 		$identifierGrid->registerTemplate('actions','<a href="'.Cellini::ManagerLink('deleteIdentifier',$patient_id).'id={$identifier_id}&process=true">delete</a>');
 		$identifierGrid->setLabel('actions',false);
 
-		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
-		$insuredRelationshipGrid =& new cGrid($person->insuredRelationshipList());
+		$insuredRelationshipGrid =& new cGrid($person->loadDatasource('InsuredRelationshipList'));
 		$insuredRelationshipGrid->name = "insuredRelationshipGrid";
 		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Cellini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
 		$insuredRelationshipGrid->indexCol = false;
-		$this->payerCount = $insuredRelationship->numRelationships($patient_id);
 		$insuredRelationshipGrid->registerFilter('program_order',array(&$this,'_movePayer'));
+
+		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
+		$this->payerCount = $insuredRelationship->numRelationships($patient_id);
 
 		$subscriber =& ORDataObject::factory('Patient',$insuredRelationship->get('subscriber_id'));
 
@@ -167,7 +168,7 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 
 		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id);
-		$personPersonGrid = new cGrid($personPerson->relatedList($patient_id));
+		$personPersonGrid = new cGrid($person->loadDatasource('RelatedList'));
 		$personPersonGrid->name = "personPersonGrid";
 		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Cellini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
 
