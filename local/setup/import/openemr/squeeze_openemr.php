@@ -30,20 +30,20 @@ $GLOBALS['db_user'] = 'root';
 $GLOBALS['db_password'] = 'password';
 $GLOBALS['openemr_db'] = 'openemr';
 
-import_openemr();
-load_from_varexport();
+$data = import_openemr();
+load_from_varexport($data);
 
 function import_openemr()  {
 
-if(!function_exists('mysql_connect')){
-	die(" There is no mysql_connect looks like php was built without mysql ");
-}
+	if(!function_exists('mysql_connect')){
+		die(" There is no mysql_connect looks like php was built without mysql ");
+	}
 
 
-$link = mysql_connect($GLOBALS['db_host'],$GLOBALS['db_user'],$GLOBALS['db_password'])
-        or die(" Connect to database failed ");
+	$link = mysql_connect($GLOBALS['db_host'],$GLOBALS['db_user'],$GLOBALS['db_password'])
+        	or die(" Connect to database failed ");
 
-mysql_select_db($GLOBALS['openemr_db']) or die(" Could not select the database");
+	mysql_select_db($GLOBALS['openemr_db']) or die(" Could not select the database");
 
 
 /*
@@ -51,60 +51,60 @@ mysql_select_db($GLOBALS['openemr_db']) or die(" Could not select the database")
 Here we create the import array. To start with we will just have an array that we build to avoid between script duplicates.
 
 */
-$imported_payers = array();
-$imported_patients = array();
-$imported_subscribers = array();
+	$imported_payers = array();
+	$imported_patients = array();
+	$imported_subscribers = array();
 
-// use this to test trampling
-//$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != "" LIMIT 0,1000';
-$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != ""';
+	// use this to test trampling
+	$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != "" LIMIT 0,1000';
+	//$theSQL = 'SELECT * FROM `patient_data` WHERE `lname` != ""';
 
 	$query = mysql_query($theSQL);
 
 
 
-//start writing the file
-echo "<?php\n";
-echo "\$dataset =";
-$openemr_data = array();
+	//start writing the file
+	//echo "<?php\n";
+	//echo "\$dataset =";
+	$openemr_data = array();
 
-// For each Patient
-while ($result = mysql_fetch_array($query)) {
+	// For each Patient
+	while ($result = mysql_fetch_array($query)) {
 	
 
-// Logic here for between-run duplicates
+		// Logic here for between-run duplicates
 
-	$patient_array = array(
-	"first_name" => $result["fname"],
-	"middle_name" => $result["mname"],
-	"last_name" => $result["lname"],
-	"line1" => $result["street"],
-	"city" => $result["city"],
-	"state" => $result["state"],
-	"zip" => $result["postal_code"],
-	"number" => $result["phone_home"],
-	"record_number" => $result["id"],
-	"old_id" => $result["id"],
-	"identifier" => $result["ss"],
-	"date_of_birth" => $result["DOB"]
+		$patient_array = array(
+		"first_name" => $result["fname"],
+		"middle_name" => $result["mname"],
+		"last_name" => $result["lname"],
+		"line1" => $result["street"],
+		"city" => $result["city"],
+		"state" => $result["state"],
+		"zip" => $result["postal_code"],
+		"number" => $result["phone_home"],
+		"record_number" => $result["id"],
+		"old_id" => $result["id"],
+		"identifier" => $result["ss"],
+		"date_of_birth" => $result["DOB"]
 		);
 	
-	//echo "\n//PATIENT: Squeezed\n";
-	//echo "\n";
+		//echo "\n//PATIENT: Squeezed\n";
+		//echo "\n";
 	
 
 
 
-$subscriberSQL = 'SELECT *
-		FROM `insurance_data`
-		WHERE ! ( `provider` = ""
-		AND `plan_name` = ""
-		AND `policy_number` = ""
-		AND `group_number` = ""
-		AND `subscriber_ss` = "" ) AND `pid` = "'.$result["id"].'"';
+		$subscriberSQL = 'SELECT *
+			FROM `insurance_data`
+			WHERE ! ( `provider` = ""
+			AND `plan_name` = ""
+			AND `policy_number` = ""
+			AND `group_number` = ""
+			AND `subscriber_ss` = "" ) AND `pid` = "'.$result["id"].'"';
 
 
-	$subscriber_query = mysql_query($subscriberSQL);
+		$subscriber_query = mysql_query($subscriberSQL);
 
 	
 
@@ -112,134 +112,134 @@ $subscriberSQL = 'SELECT *
 	while ($subscriber_result = mysql_fetch_array($subscriber_query)) {
 
 
-	$insurance_info=array();
+			$insurance_info=array();
 
-	if(($subscriber_result["subscriber_relationship"]!="self")&&
-	   (($subscriber_result["subscriber_fname"]!="")||
-            ($subscriber_result["subscriber_lname"]!="")||
-            ($subscriber_result["subscriber_ss"]!=""))
-	  ){
-	$subscriber_array = array(
-	"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
-	"first_name" => $subscriber_result["subscriber_fname"],
-	"middle_name" => $subscriber_result["subscriber_mname"],
-	"last_name" => $subscriber_result["subscriber_lname"],
-	"line1" => $subscriber_result["subscriber_street"],
-	"city" => $subscriber_result["subscriber_city"],
-	"state" => $subscriber_result["subscriber_state"],
-	"zip" => $subscriber_result["subscriber_postal_code"],
-	"number" => $subscriber_result["subscriber_phone"],
-	"record_number" => $subscriber_result["id"],
-	"identifier" => $subscriber_result["subscriber_ss"],
-	"date_of_birth" => $subscriber_result["subscriber_DOB"]
-		);
+			if(($subscriber_result["subscriber_relationship"]!="self")&&
+			   (($subscriber_result["subscriber_fname"]!="")||
+       		 	    ($subscriber_result["subscriber_lname"]!="")||
+  		          ($subscriber_result["subscriber_ss"]!=""))
+			  ){
+				$subscriber_array = array(
+				"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
+				"first_name" => $subscriber_result["subscriber_fname"],
+				"middle_name" => $subscriber_result["subscriber_mname"],
+				"last_name" => $subscriber_result["subscriber_lname"],
+				"line1" => $subscriber_result["subscriber_street"],
+				"city" => $subscriber_result["subscriber_city"],
+				"state" => $subscriber_result["subscriber_state"],
+				"zip" => $subscriber_result["subscriber_postal_code"],
+				"number" => $subscriber_result["subscriber_phone"],
+				"record_number" => $subscriber_result["id"],
+				"identifier" => $subscriber_result["subscriber_ss"],
+				"date_of_birth" => $subscriber_result["subscriber_DOB"]
+				);
 	
 
-	$insurance_info["subscriber_array"] = $subscriber_array;
-	}	
-// Payer. 
+				$insurance_info["subscriber_array"] = $subscriber_array;
+			}	
+		// Payer. 
 
-	$payertype="private";
+		$payertype="private";
 
-	if(($subscriber_result["provider"]!="")){
-$payerSQL = "SELECT * FROM `insurance_companies` WHERE `id` = ".$subscriber_result["provider"];
-	$payer_query = mysql_query($payerSQL);
+		if(($subscriber_result["provider"]!="")){
+			$payerSQL = "SELECT * FROM `insurance_companies` WHERE `id` = ".$subscriber_result["provider"];
+			$payer_query = mysql_query($payerSQL);
 
-	while ($payer_result = mysql_fetch_array($payer_query)){
+			while ($payer_result = mysql_fetch_array($payer_query)){
 
-	$payer_array = array(
-	"old_id" => $payer_result["id"],// to de-duplicate in the next script
-	"name" => $payer_result["name"],
-	"description" => $payer_result["name"],
-	"notes" => $payer_result["name"]."imported from OpenEMR",
-	"initials" => "",
-	"url" => "",
-	"is_historic" => "",
-	);
-	}
+				$payer_array = array(
+				"old_id" => $payer_result["id"],// to de-duplicate in the next script
+				"name" => $payer_result["name"],
+				"description" => $payer_result["name"],
+				"notes" => $payer_result["name"]."imported from OpenEMR",
+				"initials" => "",
+				"url" => "",
+				"is_historic" => "",
+				);
+			}
 
-	$payertype="private";
-	if($payer_result['freeb_type']=6){$payertype="bcbs";}
-	if($payer_result['freeb_type']=5){$payertype="champus";}
-	if($payer_result['freeb_type']=3){$payertype="medical";}
-	if($payer_result['freeb_type']=2){$payertype="medicare";}
+			$payertype="private";
+			if($payer_result['freeb_type']=6){$payertype="bcbs";}
+			if($payer_result['freeb_type']=5){$payertype="champus";}
+			if($payer_result['freeb_type']=3){$payertype="medical";}
+			if($payer_result['freeb_type']=2){$payertype="medicare";}
 
-	$insurance_info["payer_array"] = $payer_array;
+			$insurance_info["payer_array"] = $payer_array;
 
-	} 
-
-
+		}//if(subscriber_result["provider"]) 
 
 
-	if(($subscriber_result["provider"]!="")||
-           ($subscriber_result["plan_name"]!="")){
-	$program_array = array(
-	"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
-	"payer_id" => $subscriber_result["provider"],// to associate with the inco output
-	"insurance_program_id" => "",//auto generate
-	"payer_type" => "",//enumeration based
-	"company_id" => "",//already made a payer?
-	"name" => $subscriber_result["plan_name"],
-	"fee_schedule_id" => $payertype,
-	);
 
-	//echo "//PROGRAM: Squeezed\n";
-	$insurance_info["program_array"] = $program_array;
-	}	
 
-	if(($subscriber_result["subscriber_relationship"]!="")||
-           ($subscriber_result["copay"]!="")||
-           ($subscriber_result["group_number"]!="")||
-           ($subscriber_result["plan_name"]!="")){
-	$insured_relationship_array = array(
-	"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
-	"insured_relationship_id" => "",// auto generate
-	"insurance_program_id" => "",// make program 
-	"person_id" => "",//make patient first
-	"subscriber_id" => "",// make subscriber patient first
-	"subscriber_to_patient_relationship" => $subscriber_result["subscriber_relationship"],// Enumeration
-	"copay" => $subscriber_result["copay"],
-	"assigning" => "yes",// OpenEMR doesnt know
-	"group_name" => $subscriber_result["plan_name"],// Should I do this??
-	"group_number" => $subscriber_result["group_number"],
-	"default_provider" => "",// ignore
-	"program_order" => "",// ignore
+		if(($subscriber_result["provider"]!="")||
+	       	    ($subscriber_result["plan_name"]!="")){
+		$program_array = array(
+		"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
+		"payer_id" => $subscriber_result["provider"],// to associate with the inco output
+		"insurance_program_id" => "",//auto generate
+		"payer_type" => "",//enumeration based
+		"company_id" => "",//already made a payer?
+		"name" => $subscriber_result["plan_name"],
+		"fee_schedule_id" => $payertype,
 		);
-	//echo "//RELATIONSHIP: Squeezed \n";
+
+		//echo "//PROGRAM: Squeezed\n";
+		$insurance_info["program_array"] = $program_array;
+		}	
+
+		if(($subscriber_result["subscriber_relationship"]!="")||
+	       	    ($subscriber_result["copay"]!="")||
+	       	    ($subscriber_result["group_number"]!="")||
+	           ($subscriber_result["plan_name"]!="")){
+			$insured_relationship_array = array(
+			"old_id" => $subscriber_result["id"],// to de-duplicate in the next script
+			"insured_relationship_id" => "",// auto generate
+			"insurance_program_id" => "",// make program 
+			"person_id" => "",//make patient first
+			"subscriber_id" => "",// make subscriber patient first
+			"subscriber_to_patient_relationship" => $subscriber_result["subscriber_relationship"],// Enumeration
+			"copay" => $subscriber_result["copay"],
+			"assigning" => "yes",// OpenEMR doesnt know
+			"group_name" => $subscriber_result["plan_name"],// Should I do this??
+			"group_number" => $subscriber_result["group_number"],
+			"default_provider" => "",// ignore
+			"program_order" => "",// ignore
+			);
+		//echo "//RELATIONSHIP: Squeezed \n";
 	
-	}else{
-	$insured_relationship_array = array(
-	"subscriber_to_patient_relationship" => "self"		
-	);
-	}
+		}else{
+			$insured_relationship_array = array(
+			"subscriber_to_patient_relationship" => "self"		
+			);
+		}//if subscriber_relationship...
 
-	$insurance_info["insured_relationship_array"] = $insured_relationship_array;
-	$patient_array['insurance_info'][]=$insurance_info;
+		$insurance_info["insured_relationship_array"] = $insured_relationship_array;
+		$patient_array['insurance_info'][]=$insurance_info;
 
-	}
+	}// each subscriber
 
 	$openemr_array[]=$patient_array;
 
-}
+    }//each patient
+
 mysql_close($link);
 
-echo var_export($openemr_array);
+return($openemr_array);
 
-echo "\n?>";
 
 }
 
-function load_from_varexport() {
+function load_from_varexport($dataset) {
 	set_time_limit(0);
-	$import_file = "dataset.php";
+//	$import_file = "dataset.php";
 
 
 	$default_state="CA";
 
 
-	require $import_file;
+//	require $import_file;
 
-	echo "<pre>\n";
+//	echo "<pre>\n";
 
 	$address =& ORDataObject::factory('Address');
 	$states = array_flip($address->getStatelist());
