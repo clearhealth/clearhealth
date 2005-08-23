@@ -1,1 +1,0 @@
-Its a real bother to have all of these scripts have thier owen db username and passwords defined. These should be moved to a "passwords.php" which is included in each script
