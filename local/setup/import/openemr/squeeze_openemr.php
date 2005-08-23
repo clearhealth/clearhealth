@@ -22,28 +22,48 @@ Multiple runs of this script are protected because it does not import any id aga
 
 
 */
-	require_once dirname(__FILE__)."/../../../../cellini/bootstrap.php";
-	set_time_limit(0);
+$config['db_type'] = "mysql";
+$config['db_host'] = "localhost";
+$config['db_user'] = "root"; 
+$config['db_password'] = "root";
+$config['db_name'] = "clearhealth";
+$config['openemr_db'] = "openemr";
+$GLOBALS['config'] = $config;
 
-$GLOBALS['db_host'] = 'localhost';
-$GLOBALS['db_user'] = 'root';
-$GLOBALS['db_password'] = 'password';
-$GLOBALS['openemr_db'] = 'openemr';
+if (!defined('CELLINI_ROOT')) {
+        define('CELLINI_ROOT',dirname(__FILE__) . "/../../../../cellini/");
+}                                                                                 
+/**
+* Base application dir
+*/
+if (!defined('APP_ROOT')) {
+        define('APP_ROOT',realpath(CELLINI_ROOT."/../"));
+}
+                                                                                
+/**
+* Base module dir
+*/
+if (!defined('MODULE_ROOT')) {
+        define('MODULE_ROOT',realpath(APP_ROOT."/modules"));
+}
+
+require_once CELLINI_ROOT . "config.php";
+
+
+//require_once dirname(__FILE__)."/../../../../cellini/bootstrap.php";
+//require_once dirname(__FILE__)."/../../../../cellini/ordo/ORDataObject.class.php";
+set_time_limit(0);
+
 
 $data = import_openemr();
 load_from_varexport($data);
 
 function import_openemr()  {
-
+	$config = $GLOBALS['config'];
 	if(!function_exists('mysql_connect')){
 		die(" There is no mysql_connect looks like php was built without mysql ");
 	}
-
-
-	$link = mysql_connect($GLOBALS['db_host'],$GLOBALS['db_user'],$GLOBALS['db_password'])
-        	or die(" Connect to database failed ");
-
-	mysql_select_db($GLOBALS['openemr_db']) or die(" Could not select the database");
+	mysql_select_db($config['openemr_db']) or die(" Could not select the database");
 
 
 /*
@@ -222,7 +242,6 @@ Here we create the import array. To start with we will just have an array that w
 
     }//each patient
 
-mysql_close($link);
 
 return($openemr_array);
 
@@ -230,14 +249,8 @@ return($openemr_array);
 }
 
 function load_from_varexport($dataset) {
-	set_time_limit(0);
-//	$import_file = "dataset.php";
-
-
 	$default_state="CA";
 
-
-//	require $import_file;
 
 //	echo "<pre>\n";
 
