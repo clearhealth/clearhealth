@@ -1,6 +1,11 @@
 <?php
 /*
 
+Script Notes:
+unpacks the openemr database into a php file with data closely matching the structure in ClearHealth. It should be run as squeeze_openemr.php > dataset.php
+
+
+General Notes:
 This system imports the Practice Management Components from OpenEMR into ClearHealth. There are many differences between ClearHealth and OpenEMR. This means that this script cannot be perfect, but it is much easier than doing it by hand.
 
 Usage notes. 
@@ -9,24 +14,12 @@ This assumes that there is a database in clearhealth called import_map that has 
 What it does.
 Imports Patients -> Patients
 Imports Subscribers -> Patients + Insured Relationship(there is no "subscriber" concept imbedded into clearhealth object/relational model, only patients who provide payer coverage for other patients)
-
-What is should do.
-* Imports Insurance Programs
-* Imports Payers without initial duplicate entry
-* Subsequent runs of the script do not duplicate Patients
-* Subsequent runs of the script do not duplicate Subscribers
-* Subsequent runs of the script do not duplicate Payers
-* Import Providers
-* Import Users
-* Import Future Appointments
-* Import EMR data compenents (Requires Comparable ClearHealth Forms)
+Imports Subcribers -> Insurance Programs
+Imports Insurance_Companies -> Companies
 
 
+Multiple runs of this script are protected because it does not import any id again that it records in import map. So it should be safe to run over and over again.
 
-
-This can be used to track whether an item is new or not allowing the script to be run over and over again, without fear of creating duplicate entries.
-
-This import table is the only thing in the clearhealth system that should be accessed without objects.
 
 */
 	require_once dirname(__FILE__)."/../../../../cellini/bootstrap.php";
