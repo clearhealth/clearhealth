@@ -145,13 +145,13 @@
 		}
 		else{ 
 
-	
 			$company =& ORDataObject::factory('Company');
-			
 
 			$company->populate_array($insurance_info_instance["payer_array"]);
+			$company->set('types',array(1));// makes it an insurance company
 			$company->persist();
 			$company_key=$company->get('id');
+
 
 		// Does not work...
 		//	$company->set('company_type','1');
