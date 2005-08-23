@@ -1,10 +1,6 @@
 <?php
 /*
 
-Script Notes:
-unpacks the openemr database into a php file with data closely matching the structure in ClearHealth. It should be run as squeeze_openemr.php > dataset.php
-
-
 General Notes:
 This system imports the Practice Management Components from OpenEMR into ClearHealth. There are many differences between ClearHealth and OpenEMR. This means that this script cannot be perfect, but it is much easier than doing it by hand.
 
@@ -31,7 +27,7 @@ $config['openemr_db'] = "openemr";
 $GLOBALS['config'] = $config;
 
 if (!defined('CELLINI_ROOT')) {
-        define('CELLINI_ROOT',dirname(__FILE__) . "/../../../../cellini/");
+        define('CELLINI_ROOT',dirname(__FILE__) . "/../../../cellini/");
 }                                                                                 
 /**
 * Base application dir
@@ -48,10 +44,6 @@ if (!defined('MODULE_ROOT')) {
 }
 
 require_once CELLINI_ROOT . "config.php";
-
-
-//require_once dirname(__FILE__)."/../../../../cellini/bootstrap.php";
-//require_once dirname(__FILE__)."/../../../../cellini/ordo/ORDataObject.class.php";
 set_time_limit(0);
 
 
