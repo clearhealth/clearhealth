@@ -18,7 +18,7 @@ $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 // where documents are uploaded too
 $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
 
-// location of htmldoc utility for creating pds
+// location of htmldoc utility for creating pdfs
 $config['htmldoc'] = "/usr/bin/htmldoc";
 
 // Do you want an option for group appointments on the calendar
