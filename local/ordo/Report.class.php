@@ -221,7 +221,7 @@ class Report extends ORDataObject {
 	* Run the query query to get report labels from the query
 	*/
 	function getReportLabels() {
-		$res = $this->_execute(ReportFilter::stripWhere($this->get_query()));
+		$res = $this->_execute(ReportFilter::stripWhere($this->get('query')));
 
 		$labels = array();
 		$cols = array();
