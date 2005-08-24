@@ -15,7 +15,7 @@ class C_Access extends C_Base_Access {
 			$m->process_setFilter("","location/" . $user->get("default_location_id"));
 		}
 		else {
-			header('Location: '.Cellini::link('default','Billing'));
+			header('Location: '.Cellini::link('find','PatientFinder'));
 			die();
 		}
         }
