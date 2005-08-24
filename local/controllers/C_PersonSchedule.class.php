@@ -385,7 +385,12 @@ class C_PersonSchedule extends CalendarController {
 		$trail = $_SESSION['trail'];
 		foreach($trail as $stop) {
 			if (!isset($stop['delete']) && $stop['action'] != "delete") {
-				if (isset($stop['main'])) array_shift($stop);
+				if (isset($stop['main'])) {
+					array_shift($stop);
+				}
+				if (substr($stop['action'], -4) == '.css') {
+					array_shift($stop);
+				}
 				$aks = array_keys($stop);
 				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
 				unset($stop[$aks[0]]);
