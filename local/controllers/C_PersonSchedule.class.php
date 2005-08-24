@@ -212,7 +212,7 @@ class C_PersonSchedule extends CalendarController {
 				$oc->set('event_id', $this->schedule->get_id());
 				$oc->set('user_id', $_POST['occurence_user_id']);
 				$oc->set('location_id', $location_id);
-				printf('<pre>%s</pre>', var_export($day_template , true));
+				//printf('<pre>%s</pre>', var_export($day_template , true));
 				for($i=0;$i<count($day_template);$i++) {
 					if ($i%2 == 0) {
 						if ($oc->get('start') != '') {
