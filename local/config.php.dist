@@ -28,10 +28,10 @@ $config['scheduling']['group_appointments'] = false;
 # Database Setup
 ################################################################################
 $config['db_type'] = "mysql";
-$config['db_host'] = "localhost";
-$config['db_user'] = "root";
-$config['db_password'] = "";
-$config['db_name'] = "clearhealth";
+$config['db_host'] = "INSTALL_DB_SERVER";
+$config['db_user'] = "INSTALL_DB_USERNAME";
+$config['db_password'] = "INSTALL_DB_PASSWORD";
+$config['db_name'] = "INSTALL_DB_DATABASE";
 $config['db_table_prefix'] = "";
 
 
