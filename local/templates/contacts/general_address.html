@@ -28,9 +28,9 @@
 		{/if}
                     <table>
                         <tr>
-				<td><label>Name:</label> </td>
+				<td><label>{l}Name{/l}:</label> </td>
                           <td><input name="address[name]" size="20" value="{$address->get('name')}" tabindex="31"></td>
-			  <td><label>Type:</label> </td>
+			  <td><label>{l}Type{/l}:</label> </td>
 			  <td>
 					<select name="address[type]" tabindex="31">
 						{html_options options=$address->getTypeList() selected=$address->get('type')}
@@ -38,33 +38,33 @@
 			  </td>
                         </tr>
                         <tr>
-				<td><label>Address:</label> </td>
+				<td><label>{l}Address{/l}:</label> </td>
 			  <td colspan="3">
 				  <input name="address[line1]" size="30" value="{$address->get('line1')}" tabindex="32"><br>
 				  <input name="address[line2]" size="30" value="{$address->get('line2')}" tabindex="32">
 			  </td>
                         </tr>
                         <tr>
-				<td><label>City:</label> </td>
+				<td><label>{l}City{/l}:</label> </td>
 				<td><input name="address[city]" size="15" value="{$address->get('city')}" tabindex="33"></td>
-				{*<td><label>State:</label> </td>*}
+				{*<td><label>{l}State{/l}:</label> </td>*}
 				<td>
 					<select name="address[state]" tabindex="34">
 					{html_options options=$address->getStateList() selected=$address->get('state')}
 					</select>
 				</td>	
-				<td><label class="inline">Zip:</label> 
+				<td><label class="inline">{l}Zip{/l}:</label> 
 				<input name="address[postal_code]" size="10" value="{$address->get('postal_code')}" tabindex="35"></td>
       </tr>
 				{*
       <tr>
-				<td><label>County:</label> </td>
+				<td><label>{l}County{/l}:</label> </td>
 				<td>
 					<select name="address[county]" tabindex="36">
 					{html_options options=$address->getCountyList() selected=$address->get('county')}
 					</select>
 				</td>
-				<td><label>Region:</label> </td>
+				<td><label>{l}Region{/l}:</label> </td>
 				<td>
 					<select name="address[region]" tabindex="37">
 					{html_options options=$address->getRegionList() selected=$address->get('region')}
@@ -73,7 +73,7 @@
 			</tr>
 				*}
                         <tr>
-				<td><label>Notes:</label> </td>
+				<td><label>{l}Notes{/l}:</label> </td>
 				<td colspan=3"><textarea name="address[notes]" rows="2" cols="35" tabindex="38">{$address->get('notes')}</textarea></td>
                         </tr>
                         <tr>

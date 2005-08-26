@@ -23,16 +23,16 @@
 		{/if}
                     <table>
                         <tr>
-				<td><label>Type: </label></td>
+				<td><label>{l}Type{/l}: </label></td>
                           <td><select name="number[number_type]" >
 				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
 				</select>
 			  </td>
-				<td><label>Number: </label></td>
+				<td><label>{l}Number{/l}: </label></td>
                           <td><input name="number[number]" size="14" value="{$number->get('number')}" ></td>
                         </tr>
                         <tr>
-				<td><label>Notes: </label></td>
+				<td><label>{l}Notes{/l}: </label></td>
                           <td colspan="3"><textarea name="number[notes]" rows="3" cols="35" >{$number->get('notes')}</textarea></td>
                         </tr>
                         <tr>
