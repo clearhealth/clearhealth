@@ -45,10 +45,10 @@ a {
 <table>
 {if count($result_set) > 0}
 	<tr>
-		<td>Results Found For Search '{$search_string}'</td>
+		<td>{l}Results Found For Search{/l} '{$search_string}'</td>
 	</tr>
 	<tr>
-		<td>Name</td><td>DOB</td><td></td><td>Patient ID</td><td>SSN</td>
+		<td>{l}Name{/l}</td><td>{l}DOB{/l}</td><td></td><td>{l}Patient ID{/l}</td><td>{l}SSN{/l}</td>
 {/if}
 {foreach  name="search_results" from=$result_set  item=result}
 	<tr>
@@ -64,7 +64,7 @@ a {
 {foreachelse}
 	{if is_array($result_set)}
 	<tr>
-		<td>No Results Found For Search '{$search_string}'</td>
+		<td>{l}No Results Found For Search{/l} '{$search_string}'</td>
 	</tr>
 	{/if}
 {/foreach}
