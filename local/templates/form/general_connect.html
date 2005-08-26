@@ -82,7 +82,7 @@
 		<fieldset class="radio" id="add" style="display:none">
 			<legend>Add new Form</legend>
 
-			<label class="cb">Select Form</label>
+			<label class="cb">{l}Select Form{/l}</label>
 			<select name="form_id" onChange="setId(this)">
 				<option>Select a Form</option>
 				{html_options options=$form->simpleFormList()}
@@ -91,7 +91,7 @@
 			<div id="newitem" style="display:none">
 				<table>
 					<tr>
-						<td><label>Title: </label></td><td><input id="title" name="title" type="text" width="20"></td>
+						<td><label>{l}Title{/l}: </label></td><td><input id="title" name="title" type="text" width="20"></td>
 						<td><input type="submit" value="Add Menu Entry" onClick="addMenuEntry()"></td>
 					</tr>
 				</table>

@@ -32,7 +32,7 @@ function captureEnter (field, event) {
 			<table>
 				<tr>
 					<td valign="top">
-						<label>CPT Code: </label>
+						<label>{l}CPT Code{/l}: </label>
 					</td>
 					<td valign="top">
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
@@ -48,11 +48,11 @@ function captureEnter (field, event) {
 				</tr>
 				<tr>
 					<td valign="top">
-						<label style="display:inline;">Units: </label></b>
+						<label style="display:inline;">{l}Units{/l}: </label></b>
 					</td>
 					<td>
 						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
-						&nbsp;<label style="display:inline;">SuperBill</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
+						&nbsp;<label style="display:inline;">{l}SuperBill{/l}</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
 					</td>
 				</tr>
 			</table>
@@ -61,7 +61,7 @@ function captureEnter (field, event) {
 			<table>
 				<tr>
 					<td valign="top">
-						<label>ICD Code:</label>
+						<label>{l}ICD Code{/l}:</label>
 					</td>
 					<td valign="top">
 						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="">
