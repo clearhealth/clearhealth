@@ -87,7 +87,7 @@
 <form name="report" id="h3sForm" method="post" action="{$FORM_ACTION}" enctype="multipart/form-data" onSubmit="return false;">
 	<fieldset>
 		<fieldset class="radio">
-			<legend>Select Menu Section</legend>
+			<legend>{l}Select Menu Section{/l}</legend>
 			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
 					{if $notfirst}<br>{/if}
@@ -100,13 +100,13 @@
 		</fieldset>
 
 		<fieldset class="radio" id="update" style="display:none">
-			<legend>Update Menu Entry</legend>
+			<legend>{l}Update Menu Entry{/l}</legend>
 			<div id="updateContent">
 			</div>
 		</fieldset>
 
 		<fieldset class="radio" id="add" style="display:none">
-			<legend>Add new Report</legend>
+			<legend>{l}Add new Report{/l}</legend>
 
 			<label class="cb">{l}Select Report and Template{/l}</label>
 			<select name="report" onChange="updateTemplate(this)">
@@ -114,7 +114,7 @@
 			</select>
 
 			<select name="report_template_id" id="template" onChange="setId(this)">
-				<option>Select a Report</option>
+				<option>{l}Select a Report{/l}</option>
 			</select>
 
 			<div id="newitem" style="display:none">
