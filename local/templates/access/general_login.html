@@ -3,17 +3,17 @@
 <form name="login" method="post" action="{$TOP_ACTION}">
 <table align="center">
 	<tr>
-		<td colspan="2"><br><br>Welcome<br><br>
+		<td colspan="2"><br><br>{l}Welcome{/l}<br><br>
 		{if $error}
 			{$error}<br><br>
 		{/if}</td>
 	</tr>
 	<tr>
-		<td>Username:&nbsp;</td>
+		<td>{l}Username{/l}:&nbsp;</td>
 		<td><input type="text" name="username" size="15" value="{$username}"></td>
 	</tr>
 	<tr>
-		<td>Password:&nbsp;</td>
+		<td>{l}Password{/l}:&nbsp;</td>
 		<td><input type="password" name="password" size="15"></td>
 	</tr>
 	<tr>
