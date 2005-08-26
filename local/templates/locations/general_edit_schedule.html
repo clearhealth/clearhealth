@@ -4,37 +4,37 @@
 <input type="hidden" name="form_id" value="{$schedule->id}" />
 <table CELLSPACING="0" CELLPADDING="3">
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Name</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Name{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" name="name" value="{$schedule->name}"/>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Schedule Code</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Schedule Code{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="10" name="schedule_code" value="{$schedule->get_schedule_code()}"/>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Short Description</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Short Description{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" name="description_short" value="{$schedule->get_description_short()}"/>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Long Description</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Long Description{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 		<textarea wrap="virtual" cols="44" rows="6" name="description_long">{$schedule->get_description_long()}</textarea>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Practice</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Practice{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 	{html_options name="practice_id" options=$practices selected=$schedule->get_practice_id()}
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Provider</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Provider{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 	<select name="user_id">
 	<option value=""></option>
@@ -44,7 +44,7 @@
 </tr>
 
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Or Facility/Equipment</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Or Facility/Equipment{l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 	<select name="room_id">
 	<option value=""></option>
@@ -68,21 +68,21 @@
 {if $schedule->get_id() gt 0}
 <form name="events" method="post" action="{$EVENT_ACTION}">
 <tr>
-	<td>{if $edit_event->id > 0}Edit{else}Add{/if} Schedule</td>
+	<td>{if $edit_event->id > 0}{l}Edit{/l}{else}{l}Add{/l}{/if} {l}Schedule{/l}</td>
 </tr>
 <tr>
-	<td>Title:</td><td><input type="text" size="40" name="title" value="{$edit_event->get_title()}"/></td>
+	<td>{l}Title{/l}:</td><td><input type="text" size="40" name="title" value="{$edit_event->get_title()}"/></td>
 </tr>
 <!--
 <tr>
-	<td>Website:</td><td><input type="text" size="40" name="website" value="{$edit_event->get_website()}"/></td>
+	<td>{l}Website{/l}:</td><td><input type="text" size="40" name="website" value="{$edit_event->get_website()}"/></td>
 </tr>
 <tr>
-	<td>Instructor:</td><td><input type="text" size="40" name="contact_person" value="{$edit_event->get_contact_person()}"/></td>
+	<td>{l}Instructor{/l}:</td><td><input type="text" size="40" name="contact_person" value="{$edit_event->get_contact_person()}"/></td>
 </tr>
 -->
 <tr>
-	<td><br /><input type="submit" value="{if $edit_event->id >0}Update{else}Add{/if}" /></td>
+	<td><br /><input type="submit" value="{if $edit_event->id >0}{l}Update{/l}{else}{l}Add{/l}{/if}" /></td>
 </tr>
 <input type="hidden" name="id" value="{$edit_event->id}" />
 <input type="hidden" name="foreign_id" value="{$schedule->id}" />
@@ -92,7 +92,7 @@
 	<td><br></td>	
 </tr>
 <tr>
-	<td>Event Groups</td>
+	<td>{l}Event Groups{/l}</td>
 </tr>
 {foreach from=$schedule->events item=event}
 <tr>
@@ -109,8 +109,8 @@
 		
 		<form name="occurences" method="post" action="{$OCCURENCE_ACTION}">
 		<tr>
-			<td colspan="4">&nbsp;&nbsp;Update Time and Place: Date <input type="text" name="date" size="10" value="{$edit_timeplace->get_date()}">
-			Start <input type="text" name="start_time" size="5" value="{$edit_timeplace->get_start_time()}"> End <input type="text" name="end_time" size="5" value="{$edit_timeplace->get_end_time()}">&nbsp;
+			<td colspan="4">&nbsp;&nbsp;{l}Update Time and Place: Date{/l} <input type="text" name="date" size="10" value="{$edit_timeplace->get_date()}">
+			{l}Start{/l} <input type="text" name="start_time" size="5" value="{$edit_timeplace->get_start_time()}"> {l}End{/l} <input type="text" name="end_time" size="5" value="{$edit_timeplace->get_end_time()}">&nbsp;
 			{html_options name="location_id" options=$rooms_practice_array selected=$edit_timeplace->get_location_id()}&nbsp;
 			<input type="hidden" name="id" value="{$edit_timeplace->get_id()}"> 
 			<input type="submit" name="add" value="Update">
@@ -124,9 +124,9 @@
 		{else}
 		<form name="occurences" method="post" action="{$OCCURENCE_ACTION}">
 		<tr>
-			<td colspan="4">&nbsp;&nbsp;Add Time and Place: Date (E.g. 01/01/2005)
+			<td colspan="4">&nbsp;&nbsp;{l}Add Time and Place: Date (E.g. 01/01/2005){/l}
 			  <input type="text" name="date" size="10">
-			Start <input type="text" name="start_time" size="5" value=""> End <input type="text" name="end_time" size="5" value="">	&nbsp;
+			{l}Start{/l} <input type="text" name="start_time" size="5" value=""> {l}End{/l} <input type="text" name="end_time" size="5" value="">	&nbsp;
 			{html_options name="location_id" options=$rooms_practice_array}&nbsp;
 			<input type="submit" name="add" value="Add">
 			</td>
@@ -176,14 +176,14 @@
 	{/if}
 	{if count($events) > 0}
 	<select onchange="submitChecked(this);" name="action">
-		<option>With Selected</option>
-		<option value="delete">Delete</option>
+		<option>{l}With Selected{/l}</option>
+		<option value="delete">{l}Delete{/l}</option>
 	</select>
 	<table class="grid">
 		<tr>
-			<td style="background-color: transparent"><input type="checkbox" onclick="checkAll(this);"></td><th>Date</th><th>Time</th><th>Duration</th><th>Location</th>
+			<td style="background-color: transparent"><input type="checkbox" onclick="checkAll(this);"></td><th>{l}Date{/l}</th><th>{l}Time{/l}</th><th>{l}Duration{/l}</th><th>{l}Location{/l}</th>
 			{if $schedule->get_schedule_code() == "NS"}
-				<th>Patient</th><th>Title</th><th>Reason</th><th>Provider</th>
+				<th>{l}Patient{/l}</th><th>{l}Title{/l}</th><th>{l}Reason{/l}</th><th>{l}Provider{/l}</th>
 			{/if}
 		</tr>
 		{foreach from=$events item=timeplace key=key}
@@ -223,7 +223,7 @@
 </tr>
 {foreachelse}
 <tr>
-	<td colspan="6">No Schedules Found</td>
+	<td colspan="6">{l}No Schedules Found{/l}</td>
 </tr>
 {/foreach}
 

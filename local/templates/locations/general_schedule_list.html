@@ -7,7 +7,7 @@
 		<td><h3><a name="{$schedule->get_id()}"></a>Schedule Code/Title:</td><td>{$schedule->get_schedule_code()} - {$schedule->get_name()}</h3></td>
 	</tr>
 	<tr>
-		<td style="padding-left:10;">Description:</td>
+		<td style="padding-left:10;">{l}Description{/l}:</td>
 		<td>{$schedule->get_description_long()}</td>
 	</tr>
 	<tr>
@@ -17,13 +17,13 @@
 	<td colspan="2">
 		{foreach from=$schedule->events item=event}
 			<tr>
-			<td style="padding-left:10;">Title:{$event->get_title()}</td>
-			<td>Instructor: {$event->get_contact_person()}</td>
-			<td>Website: {$event->get_website()}</td>
+			<td style="padding-left:10;">{l}Title{/l}:{$event->get_title()}</td>
+			<td>{l}Instructor{/l}: {$event->get_contact_person()}</td>
+			<td>{l}Website{/l}: {$event->get_website()}</td>
 		</tr>
 		<tr>	
 			<td  style="padding-left:10;" colspan="4">
-				<i>Note: Only displaying future classes.</i><br> 
+				<i>{l}Note: Only displaying future classes{/l}.</i><br> 
 				<table>
 				{foreach from=$event->occurences item=timeplace}
 				{if strtotime($timeplace->get_start()) > time()}
@@ -42,14 +42,14 @@
 		</tr>
 		{foreachelse}
 		<tr>
-			<td colspan="6">No Schedules Found</td>
+			<td colspan="6">{l}No Schedules Found{/l}</td>
 		</tr>
 		{/foreach}
 	</td>
 	</tr>
 	{foreachelse}
 	<tr>
-		<td colspan="6">No Schedules Found</td>
+		<td colspan="6">{l}No Schedules Found{/l}</td>
 	</tr>
 	{/foreach}
 	
