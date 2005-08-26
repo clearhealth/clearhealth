@@ -108,7 +108,7 @@
 		<fieldset class="radio" id="add" style="display:none">
 			<legend>Add new Report</legend>
 
-			<label class="cb">Select Report and Template</label>
+			<label class="cb">{l}Select Report and Template{/l}</label>
 			<select name="report" onChange="updateTemplate(this)">
 				{html_options options=$report->getReportList()}
 			</select>
@@ -120,7 +120,7 @@
 			<div id="newitem" style="display:none">
 				<table>
 					<tr>
-						<td><label>Title: </label></td><td><input id="title" name="title" type="text" width="20"></td>
+						<td><label>{l}Title{/l}: </label></td><td><input id="title" name="title" type="text" width="20"></td>
 						<td><input type="submit" value="Add Menu Entry" onClick="addMenuEntry()"></td>
 					</tr>
 				</table>
