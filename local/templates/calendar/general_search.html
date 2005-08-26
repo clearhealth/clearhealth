@@ -25,17 +25,17 @@ function captureEnter (field, event) {
 <input type='hidden' name='process' value="{$PROCESS}">
 <table>
 	<tr>
-		<td><label>Date Range:</label></td>
+		<td><label>{l}Date Range{/l}:</label></td>
 		<td>{clni_input_date name="from" value=$search.from} to {clni_input_date name="to" value=$search.to}</td>
 	</tr>
 	<tr>
-		<td><label>Provider:</label></td>
+		<td><label>{l}Provider{/l}:</label></td>
 		<td><select name="provider"><option></option>{html_options options=$providers selected=$search.provider}</select>
 		<input type="checkbox" name="find_first" value="1" {if $search.find_first eq 1}checked{/if}>&nbsp;find first
 		</td>
 	</tr>
 	<tr>
-		<td><label>Patient:</label></td>
+		<td><label>{l}Patient{/l}:</label></td>
 		<td>
 			<input TYPE="hidden" name="patient_id"  id="patient_id" value="{$search.patient_id}">
 			<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
@@ -45,15 +45,15 @@ function captureEnter (field, event) {
 		</td>
 	</tr>
 	<tr>
-		<td><label>Facility:</label></td>
+		<td><label>{l}Facility{/l}:</label></td>
 		<td><select name="facility"><option></option>{html_options options=$facility selected=$search.facility}</select></td>
 	</tr>
 	<tr>
-		<td><label>Reason:</label></td>
+		<td><label>{l}Reason{/l}:</label></td>
 		<td><input name="reason" value="{$search.reason}"></td>
 	</tr>
 	<tr>
-		<td><label>Schedule Code:</label></td>
+		<td><label>{l}Schedule Code{/l}:</label></td>
 		<td><input name="schedule_code" value="{$search.schedule_code}"></td>
 	</tr>
 	<tr>
