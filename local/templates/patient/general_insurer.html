@@ -71,41 +71,41 @@
 		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
 		<table>
 			<tr>
-				<td><label>Insurance Program:</label></td>
+				<td><label>{l}Insurance Program{/l}:</label></td>
 				<td><select name="insuredRelationship[insurance_program_id]">
 						{html_options options=$insuranceProgram->ProgramList() selected=$insuredRelationship->get('insurance_program_id')}
 					</select>
 				</td>
 			<tr>
-				<td><label>Group Name:</label></td>
+				<td><label>{l}Group Name{/l}:</label></td>
 				<td><input name="insuredRelationship[group_name]" value="{$insuredRelationship->get('group_name')}"></td>
 			</tr>
 			<tr>
-				<td><label>Group Number:</label></td>
+				<td><label>{l}Group Number{/l}:</label></td>
 				<td><input name="insuredRelationship[group_number]" value="{$insuredRelationship->get('group_number')}"></td>
 			</tr>
 			<tr>
-				<td><label>Effective Date Range:</label></td>
+				<td><label>{l}Effective Date Range{/l}:</label></td>
 				<td> 
 					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start')} to 
 					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end')}
 				</td>
 			<tr>
-				<td><label>Assigning:</label></td>
+				<td><label>{l}Assigning{/l}:</label></td>
 				<td><select name="insuredRelationsip[assigning]">
 						{html_options options=$insuredRelationship->getAssigningList() selected=$insuredRelationship->get('assigning')}
 					</select></td>
 			</tr>
 			<tr>
-				<td><label>Co-Pay:</label></td>
+				<td><label>{l}Co-Pay{/l}:</label></td>
 				<td><input name="insuredRelationship[copay]" value="{$insuredRelationship->get('copay')}"></td>
 			</tr>
 			<tr>
-				<td><label>Active:</label></td>
+				<td><label>{l}Active{/l}:</label></td>
 				<td><input type="hidden" name="insuredRelationship[active]" value="0"><input type="checkbox" name="insuredRelationship[active]" {if $insuredRelationship->get('active')}checked{/if} value="1"></td>
 			</tr>
 			<tr>
-				<td><label>Subscriber:</label></td>
+				<td><label>{l}Subscriber{/l}:</label></td>
 				<td><select name="insuredRelationship[subscriber_to_patient_relationship]" onchange="selectSubscriber(this)" id="subscriberRelationship">
 					{html_options options=$insuredRelationship->getSubscriberToPatientRelationshipList() 
 						selected=$insuredRelationship->get('subscriber_to_patient_relationship')}
@@ -122,15 +122,15 @@
 					{/if}
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" {if $subscriberIsAPatient}checked{/if}>
-					<label class="inline" for="rscs">Search Persons</label>
+					<label class="inline" for="rscs">{l}Search Persons{/l}</label>
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn" {if !$subscriberIsAPatient}checked{/if}>
-					<label class="inline" for="rscn">{if $subscriberIsAPatient}New{else}Update{/if} Subscriber</label>
+					<label class="inline" for="rscn">{if $subscriberIsAPatient}{l}New{/l}{else}{l}Update{/l}{/if} {l}Subscriber{/l}</label>
 					<div id="searchSubscriber">
 						<input type="hidden" name="searchSubscriber[person_id]" id="subscriber_id" value="{$subscriber->get('id')}">
 						<table>
 							<tr>
-								<td><label>Search:</label></td>
+								<td><label>{l}Search{/l}:</label></td>
 								<td>
 									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}><br>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
@@ -145,35 +145,35 @@
 						<input name="newSubscriber[person_id]" type="hidden" value="{$subscriber->get('id')}">
 						<table>
 							<tr>
-								<td colspan=2><label>First Name:</label></td>
+								<td colspan=2><label>{l}First Name{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[first_name]" value="{$subscriber->get('first_name')}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
-								<td colspan=2><label>Last Name:</label></td>
+								<td colspan=2><label>{l}Last Name{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[last_name]" value="{$subscriber->get('last_name')}" onChange="userEntered = true;"></td>
 							</tr>
 							<!--<tr>
-								<td colspan=2><label>Phone #:</label></td>
+								<td colspan=2><label>{l}Phone #{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[number]" value="{$subscriberNumber}" onChange="userEntered = true;"></td>
 							<tr>-->
-								<td colspan=2><label>SSN:</label></td>
+								<td colspan=2><label>{l}SSN{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[identifier]" value="{$subscriber->get("identifier")}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
-								<td valign="top" colspan=2><label>Address:</label></td>
+								<td valign="top" colspan=2><label>{l}Address{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[line1]" size=30 value="{$subscriberAddress->get('line1')}" onChange="userEntered = true;"><br>
 									<input name="newSubscriber[line2]" size=30 value="{$subscriberAddress->get('line2')}" onChange="userEntered = true;">
 								</td>
 							</tr>
 							<tr>
-								<td><label>City:</label> </td>
+								<td><label>{l}City{/l}:</label> </td>
 								<td><input name="newSubscriber[city]" size="15" value="{$subscriberAddress->get('city')}" onChange="userEntered = true;"></td>
 								<td>
 									<select name="newSubscriber[state]" onChange="userEntered = true;">
 										{html_options options=$address->getStateList() selected=$subscriberAddress->get('state')}
 									</select>
 								</td>	
-								<td><label class="inline">Zip:</label><input name="newSubscriber[postal_code]" size="10" value="{$subscriberAddress->get('postal_code')}" onChange="userEntered = true;"></td>
+								<td><label class="inline">{l}Zip{/l}:</label><input name="newSubscriber[postal_code]" size="10" value="{$subscriberAddress->get('postal_code')}" onChange="userEntered = true;"></td>
 						      </tr>
 					      </table>
 					</div>

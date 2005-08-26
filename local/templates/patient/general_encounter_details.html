@@ -17,7 +17,7 @@
 		<tr>
 			<td><label>{l}Date of Treatment{/l}:</label></td>
 			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment') id="date_of_treatment"}</td>
-			<td><label>Encounter Reason:</label></td>
+			<td><label>{l}Encounter Reason{/l}:</label></td>
 			<td><select name="encounter[encounter_reason]">
 					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
 				</select>

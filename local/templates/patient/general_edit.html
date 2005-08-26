@@ -59,7 +59,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 			</tr>
 			{if !$hide_type}
 	        <tr>
-				<td style="vertical-align:top;"><label>Type:</label></td>
+				<td style="vertical-align:top;"><label>{l}Type{/l}:</label></td>
 				<td>
 				  <select name="person[type]">
 					  <option></option>
@@ -179,17 +179,17 @@ var C_PatientFinder = function find_remoting(searchString) {
 		{/if}
                     <table>
                         <tr>
-				<td><label>Type: </label></td>
+				<td><label>{l}Type{/l}: </label></td>
                 <td><select name="number[number_type]" >
 				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
 				</select>
 			  </td>
-				<td><label>Number: </label></td>
+				<td><label>{l}Number{/l}: </label></td>
 				<input type="hidden" value="0" name="number[active]">
-				<td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > </label>DNC: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" {if $number->get('active') == 0}checked{/if}></td>
+				<td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > <label>{l}DNC{/l}: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" {if $number->get('active') == 0}checked{/if}></td>
                         </tr>
                         <tr>
-				<td><label>Notes: </label></td>
+				<td><label>{l}Notes{/l}: </label></td>
                           <td colspan="3"><textarea name="number[notes]" rows="2" cols="35" >{$number->get('notes')}</textarea></td>
                         </tr>
                         <tr>
