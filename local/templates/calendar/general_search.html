@@ -31,7 +31,7 @@ function captureEnter (field, event) {
 	<tr>
 		<td><label>{l}Provider{/l}:</label></td>
 		<td><select name="provider"><option></option>{html_options options=$providers selected=$search.provider}</select>
-		<input type="checkbox" name="find_first" value="1" {if $search.find_first eq 1}checked{/if}>&nbsp;find first
+		<input type="checkbox" name="find_first" value="1" {if $search.find_first eq 1}checked{/if}>&nbsp;{l}find first{/l}
 		</td>
 	</tr>
 	<tr>
