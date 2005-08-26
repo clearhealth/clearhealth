@@ -50,17 +50,17 @@ function toggleCell(box) {
 </tr>
 
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">Title</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Title{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" name="title" value="{$schedule->title}"/>
 	</td>
 </tr>
 <tr>
-	<td>Dates (mm/dd/yyyy): </td>
+	<td>{l}Dates (mm/dd/yyyy){/l}: </td>
 	<td><input type="text" name="starting_date" size="10" value="{$schedule->get_earliest_date()|date_format:"%m/%d/%Y"}"> to <input type="text" name="ending_date" size="10" value="{$schedule->get_latest_date()|date_format:"%m/%d/%Y"}"></td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >Location</td>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Location{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 	{html_options name="location_id" options=$rooms_practice_array selected=$edit_timeplace->get_location_id()}
 	</td>

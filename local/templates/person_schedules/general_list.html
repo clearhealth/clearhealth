@@ -1,6 +1,6 @@
 <table>
 	<tr>
-		<td>Appointments</td>
+		<td>{l}Appointments{/l}</td>
 	</tr>
 	{foreach from=$appointments item=appointment}
 	<tr>
@@ -10,14 +10,14 @@
 	</tr>
 	{foreachelse}
 	<tr>
-		<td colspan="6">No Appointments Found</td>
+		<td colspan="6">{l}No Appointments Found{/l}</td>
 	</tr>
 	{/foreach}
 	<tr>
 		<td><br></td>
 	</tr>
 	<tr>
-		<td>Practices</td>	
+		<td>{l}Practices{/l}</td>	
 	</tr>
 	{foreach from=$practices item=practice}
 	<tr>
@@ -26,7 +26,7 @@
 		
 	</tr>
 		<tr>
-			<td>&nbsp;&nbsp;Buildings</td>
+			<td>&nbsp;&nbsp;{l}Buildings{/l}</td>
 		</tr>
 		{foreach from=$buildings item=building}
 		{if $building->get_practice_id() == $practice->get_id()}
@@ -35,7 +35,7 @@
 			&nbsp;<a href="{$CONTROLLER}main&location&action=delete&id={$building->get_id()}&object_class=building">D</a></td>
 		</tr>
 			<tr>
-			<td>&nbsp;&nbsp;&nbsp;&nbsp;Rooms</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;{l}Rooms{/l}</td>
 			</tr>
 			{foreach from=$rooms item=room}
 			{if $room->get_building_id() == $building->get_id()}
@@ -47,18 +47,18 @@
 			{/if}
 			{foreachelse}
 			<tr>
-				<td colspan="6">&nbsp;&nbsp;&nbsp;&nbsp;No Rooms Found</td>
+				<td colspan="6">&nbsp;&nbsp;&nbsp;&nbsp;{l}No Rooms Found{/l}</td>
 			</tr>
 			{/foreach}
 		{/if}
 		{foreachelse}
 		<tr>
-			<td colspan="6">&nbsp;&nbsp;&nbsp;&nbsp;No Buildings Found</td>
+			<td colspan="6">&nbsp;&nbsp;&nbsp;&nbsp;{l}No Buildings Found{/l}</td>
 		</tr>
 		{/foreach}
 	{foreachelse}
 	<tr>
-		<td colspan="6">No Practices Found</td>
+		<td colspan="6">{l}No Practices Found{/l}</td>
 	</tr>
 	{/foreach}
 	
