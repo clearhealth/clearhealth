@@ -30,10 +30,10 @@
 		{if $edit_node_id eq true}
 		<td width="25"></td>
 		<td valign="top">
-		Editing Node<br>
+		{l}Editing Node{/l}<br>
 		<form method="post" action="{$NODE_ACTION}">
-		Node Name:&nbsp;<b>{$edit_node_name}</b><br><br>
-		Node Value:&nbsp;<input type="text" name="edit_node_value" value="{$edit_node_value}"><br>
+		{l}Node Name{/l}:&nbsp;<b>{$edit_node_name}</b><br><br>
+		{l}Node Value{/l}:&nbsp;<input type="text" name="edit_node_value" value="{$edit_node_value}"><br>
 		<input type="submit" name="Edit Node" value="Edit Node">
 		<input type="hidden" name="edit_node_id" value="{$edit_node_id}">
 		<input type="hidden" name="process" value="{$PROCESS}" />
