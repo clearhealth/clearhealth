@@ -36,9 +36,9 @@ Date: {$note->get_date()}
 
 
 	<table border=1 cellspacing=0 cellpadding=2>
-		<tr><td><label>File Name:</label></td><td>{$file->get('name')}</td></tr>
-		<tr><td><label>File Type:</label></td><td>{$file->get('displayType')}</td></tr>
-		<tr><td><label>File Size:</label></td><td>{$file->get('displaySize')}</td></tr>
+		<tr><td><label>{l}File Name{/l}:</label></td><td>{$file->get('name')}</td></tr>
+		<tr><td><label>{l}File Type:{/l}</label></td><td>{$file->get('displayType')}</td></tr>
+		<tr><td><label>{l}File Size{/l}:</label></td><td>{$file->get('displaySize')}</td></tr>
 		<tr><td colspan=2><a href="{$web_path}">Download File</a></td></tr>
 	</table>
 

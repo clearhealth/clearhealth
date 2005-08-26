@@ -1,15 +1,15 @@
 {clni_form action=$FORM_ACTION process=$PROCESS}
 <table>
 	<tr>
-		<td><label>Start: </label></td>
+		<td><label>{l}Start{/l}: </label></td>
 		<td>{$start}</td>
 	</tr>
 	<tr>
-		<td><label>Duration: </label></td>
+		<td><label>{l}Duration{/l}: </label></td>
 		<td>{math equation="floor(x / 60)" x=$duration} hours {math equation="x % 60" x=$duration} minutes</td>
 	</tr>
 	<tr>
-		<td><label>Appointment Title: </label></td>
+		<td><label>{l}Appointment Title{/l}: </label></td>
 		<td>{$title}</td>
 	</tr>
 </table>

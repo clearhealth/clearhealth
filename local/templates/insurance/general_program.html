@@ -9,33 +9,33 @@
 	<input type="hidden" name="insuranceProgram[insurance_program_id]" value="{$insuranceProgram->get('insurance_program_id')}">
 	<table>
 		<tr>
-			<td><label>Name:</label></td>
+			<td><label>{l}Name{/l}:</label></td>
 			<td><input name="insuranceProgram[name]" value="{$insuranceProgram->get('name')}"></td>
 		</tr>
 		<tr>
-			<td><label>Payer Type:</label></td>
+			<td><label>{l}Payer Type{/l}:</label></td>
 			<td><select name="insuranceProgram[payer_type]">
 					{html_options options=$insuranceProgram->getPayerTypeList() selected=$insuranceProgram->get('payer_type')}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td><label>Fee Schedule:</label></td>
+			<td><label>{l}Fee Schedule{/l}:</label></td>
 			<td><select name="insuranceProgram[fee_schedule_id]">
 					{html_options options=$feeSchedule->toArray() selected=$insuranceProgram->get('fee_schedule_id')}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td><label>E-Billing Sender ID:</label></td>
+			<td><label>{l}E-Billing Sender ID{/l}:</label></td>
 			<td><input name="insuranceProgram[x12_sender_id]" value="{$insuranceProgram->get('x12_sender_id')}"></td>
 		</tr>
 		<tr>
-			<td><label>E-Billing Reciever ID:</label></td>
+			<td><label>{l}E-Billing Reciever ID{/l}:</label></td>
 			<td><input name="insuranceProgram[x12_receiver_id]" value="{$insuranceProgram->get('x12_receiver_id')}"></td>
 		</tr>
 		<tr>
-			<td><label>E-Billing Version:</label></td>
+			<td><label>{l}E-Billing Version{/l}:</label></td>
 			<td><input name="insuranceProgram[x12_version]" value="{$insuranceProgram->get('x12_version')}"></td>
 		</tr>
 		<tr>
