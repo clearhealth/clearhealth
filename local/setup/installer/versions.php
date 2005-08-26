@@ -29,7 +29,7 @@ $version_1rc2->addAction('SQLFile', array(
 'server_field' => 'db_server',
 'port_field' => 'db_port',
 'db_field' => 'db_database',
-'files' => array($base_app_path.'/local/setup/clearhealth-0.1RC2.sql')));
+'files' => array($base_app_path.'/local/setup/clearhealth-0.1RC2.sql', $base_app_path.'/freeb/local/setup/freeb2.sql')));
 $version_1rc2->addAction('ReplaceString', array(
 'message' => "Saved database configuration information!",
 'files' => array($base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php'),

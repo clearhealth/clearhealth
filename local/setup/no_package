@@ -1,0 +1,13 @@
+# Remove stuff in sqltmp dir
+local/setup/sqltmp
+
+# Remove asp style hosting shit
+local/setup/instances
+local/setup/config_instances.php
+
+#Remove all the build helper scripts
+local/setup/no_package
+local/setup/make_install.sh
+local/setup/build_release.sh
+
+
