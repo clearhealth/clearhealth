@@ -63,14 +63,14 @@
 </script>
 {/literal}
 
-<h2>Record Payment for Claim: {$claim->get('identifier')}</h2>
-<p>Claim was created for encounter on: {$encounter->get('date_of_treatment')}</p>
-<p>Patient: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
+<h2>{l}Record Payment for Claim{/l}: {$claim->get('identifier')}</h2>
+<p>{l}Claim was created for encounter on{/l}: {$encounter->get('date_of_treatment')}</p>
+<p>{l}Patient{/l}: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
 
 <h3 style="margin: 0px; padding:0px;">Payment History</h3>
 {$paymentGrid->render()}
 {if $paymentGrid->empty}
-<p>No Payments have been made</p>
+<p>{l}No Payments have been made{/l}</p>
 {/if}
 
 <br>
@@ -79,7 +79,7 @@
 {if count($billList) > 0}
 <table class="grid">
 	<tr>
-		<th>Code</th><th>Amount<br> Billed</th><th>Current<br> Paid</th><th>Current<br> Writeoff</th><th>Payment<br> Amount</th><th>Carry</th><th>Payment<br> Writeoff</th>
+		<th>{l}Code{/l}</th><th>{l}Amount{/l}<br> {l}Billed{/l}</th><th>{l}Current{/l}<br> {l}Paid{/l}</th><th>{l}Current{/l}<br> {l}Writeoff{/l}</th><th>{l}Payment{/l}<br> {l}Amount{/l}</th><th>{l}Carry{/l}</th><th>{l}Payment{/l}<br> {l}Writeoff{/l}</th>
 	</tr>
 	{foreach from=$billList item=code}
 	<tr>
