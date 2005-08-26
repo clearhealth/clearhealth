@@ -15,12 +15,10 @@ INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
 
-$SCRIPT_HOME/build_sql.sh
-
 # No need to mess with anything below here
 BUILD_DIR="$BUILD_BASE/$NAME-$RELEASE"
 if [ "HEAD" == $SVN_REV ]; then
-	CURRENT_SVN_REV=`svn log $REPO_URL &2>/dev/null | head -2 | grep \| | cut -d\| -f1| cut -dr -f2`
+	CURRENT_SVN_REV=`svn log $REPO_URL 2>/dev/null | head -2 | grep \| | cut -d\| -f1| cut -dr -f2`
 else
 	CURRENT_SVN_REV=$SVN_REV
 fi
@@ -68,6 +66,9 @@ fi
 echo "Building $NAME $RELEASE into $BUILD_DIR"
 echo "Exporting repository $REPO_URL at revision $CURRENT_SVN_REV to $BUILD_DIR"
 svn export -r $SVN_REV $REPO_URL $BUILD_DIR
+
+# Build the sql file
+bash $BUILD_DIR/local/setup/build_sql.sh $RELEASE
 
 clean_release "$SCRIPT_HOME/no_package"
 

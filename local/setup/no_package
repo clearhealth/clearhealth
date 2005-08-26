@@ -9,5 +9,6 @@ local/setup/config_instances.php
 local/setup/no_package
 local/setup/make_install.sh
 local/setup/build_release.sh
+local/setup/build_sql.sh
 
 
