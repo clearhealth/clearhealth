@@ -4,15 +4,15 @@
 <table><tr><td>
 	<table>
 		<tr>
-			<td><label>Username: </label></td>
+			<td><label>{l}Username{/l}: </label></td>
 			<td><input id="toad" type="text" name="user[username]" value="{$user->get('username')}"></td>
 		</tr>
 		<tr>
-			<td><label>Password: </label></td>
+			<td><label>{l}Password{/l}: </label></td>
 			<td><input id="password" type="password" name="user[password]" {if $user->get('id') > 0}disabled="true"{/if}>{if $user->get('id') > 0}<input type="submit" value="Change Password" onclick="return togglePassword(this);">{/if}</td>
 		</tr>
 		<tr>
-			<td><label>Repeat Password: </label></td>
+			<td><label>{l}Repeat Password{/l}: </label></td>
 			<td><input id="password_match" type="password" name="user[password_match]" {if $user->get('id') > 0}disabled="true"{/if}></td>
 		</tr>
 	</table>

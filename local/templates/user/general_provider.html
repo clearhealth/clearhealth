@@ -4,19 +4,19 @@
 
 		<table>
 			<tr>
-				<td><label>State license number:</label></td>
+				<td><label>{l}State license number{/l}:</label></td>
 				<td><input name="provider[state_license_number]" value="{$provider->get('state_license_number')}"></td>
 			</tr>
 			<!--<tr>
-				<td><label>Clia number:</label></td>
+				<td><label>{l}Clia number{/l}:</label></td>
 				<td><input name="provider[clia_number]" value="{$provider->get('clia_number')}"></td>
 			</tr>-->
 			<tr>
-				<td><label>Dea number:</label></td>
+				<td><label>{l}Dea number{/l}:</label></td>
 				<td><input name="provider[dea_number]" value="{$provider->get('dea_number')}"></td>
 			</tr>
 	<tr>
-		<td style="vertical-align:top;"><label>Bill as:</label></td>
+		<td style="vertical-align:top;"><label>{l}Bill as{/l}:</label></td>
 		<td>
 			<select name="provider[bill_as]">	
 				<option value="{$person->get('id')}">Self</option>
@@ -25,7 +25,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td style="vertical-align:top;"><label>Report as:</label></td>
+		<td style="vertical-align:top;"><label>{l}Report as{/l}:</label></td>
 		<td>
 			<select name="provider[report_as]">	
 				{enum_options name="provider_reporting_type" selected=$provider->get('report_as')}

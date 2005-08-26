@@ -11,14 +11,14 @@
 		<input type="hidden" name="providerToInsurance[provider_to_insurance_id]" value="{$providerToInsurance->get('provider_to_insurance_id')}">
 		<table>
 			<tr>
-				<td><label>Insurance Program:</label> </td>
+				<td><label>{l}Insurance Program{/l}:</label> </td>
 				<td><select name="providerToInsurance[insurance_program_id]">
 						{html_options options=$insuranceProgram->programList() selected=$providerToInsurance->get('insurance_program_id')}
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td><label>Provider Number:</label></td>
+				<td><label>{l}Provider Number{/l}:</label></td>
 				<td><input name="providerToInsurance[provider_number]" value="{$providerToInsurance->get('provider_number')}">
 					<select name="providerToInsurance[provider_number_type]">
 						{html_options options=$providerToInsurance->getProviderNumberTypeList() selected=$providerToInsurance->geT('provider_number_type')}
@@ -26,7 +26,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><label>Group Number:</label></td>
+				<td><label>{l}Group Number{/l}:</label></td>
 				<td><input name="providerToInsurance[group_number]" value="{$providerToInsurance->get('group_number')}"></td>
 			</tr>
 			<tr>
