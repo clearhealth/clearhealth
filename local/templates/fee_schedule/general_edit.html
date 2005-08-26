@@ -4,15 +4,15 @@
 {if ($feeSchedule->get('id') > 0)}
 
 {clni_form action=$DEFAULT_ACTION process=$PROCESS}
-<div>Default Value: <input name="default_value" id="default_value"><input type="submit" value="Set default value for all procedures in Fee Schedule"></div>
+<div>{l}Default Value: <input name="default_value" id="default_value"><input type="submit" value="{l}Set default value for all procedures in Fee Schedule{/l}"></div>
 </form>
-<p>[<a href="{$UPDATE_ACTION}">Update Fee Schedule</a>]</p>
+<p>[<a href="{$UPDATE_ACTION}">{l}Update Fee Schedule{/l}</a>]</p>
 {/if}
 {literal}
 <script type="text/javascript">
 	function clni_rule_confirm(element) {
 		if (element.value != "" && clni_rule_number(element)) {
-			if (confirm('Set all fee schedule values to "'+element.value+'", overwriting any current values?')) {
+			if (confirm('{l}Set all fee schedule values to{/l} "'+element.value+'", {l}overwriting any current values?{/l}')) {
 				return true;
 			}
 		}
