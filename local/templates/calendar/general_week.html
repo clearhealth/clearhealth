@@ -6,10 +6,10 @@
 		<td colspan="7">
 			<table width="100%">
 			<tr>
-				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
+				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[{l}Previous Week{/l}]" border="0" align="right"></a></td>
 				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
 			<td align="left" width="40%" class="navback">
-				<a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a>
+				<a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[{l}Next Week{/l}]" border="0" align="left"></a>
 
       			<div style="float:right">
       			<a href="{$CONTROLLER->_link("day",true)}date={$Week->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
@@ -25,11 +25,11 @@
 	<tr>
 		<td width="460" valign="top" colspan="{7}" align="center" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;" class="dateback">&nbsp;
 		{if $users_filter}
-			Showing Users: {$users_filter}&nbsp;&nbsp;
+			{l}Showing Users{/l}: {$users_filter}&nbsp;&nbsp;
 		{/if}
 		
 		{if $locations_filter}
-			Showing Locations: {$locations_filter}&nbsp;&nbsp;
+			{l}Showing Locations{/l}: {$locations_filter}&nbsp;&nbsp;
 		{/if}
 		</td>
 	</tr>

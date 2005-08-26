@@ -27,9 +27,9 @@ function make_appointment_parent() {
 	<tr height="20">
 		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">
 		{if $edit_app}
-		Editing App #{$edit_oc->get_id()}
+		{l}Editing App{/l} #{$edit_oc->get_id()}
 		{else}
-		Add Appointment
+		{l}Add Appointment{/l}
 		{/if}
 		</div></td>
 	</tr>
@@ -51,10 +51,10 @@ function make_appointment_parent() {
 			
 			<table border="0">
 				<tr>
-					<td>Date</td><td><input type="text" name="date" size="9" value="{$edit_oc->get_date()}"></td>
+					<td>{l}Date{/l}</td><td><input type="text" name="date" size="9" value="{$edit_oc->get_date()}"></td>
 				</tr>
 				<tr>
-					<td>Patient</td><td>Time</td>
+					<td>{l}Patient{/l}</td><td>{l}Time{/l}</td>
 				</tr>
 				<tr>
 					<td valign="top"><input type="text" name="external_id" size="6"  value="{$edit_oc->get_external_id()}"><br>
@@ -65,7 +65,7 @@ function make_appointment_parent() {
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">Title</td>
+					<td colspan="2">{l}Title{/l}</td>
 				</tr>
 				<tr>
 					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>

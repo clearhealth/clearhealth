@@ -19,7 +19,7 @@
 			<td class="eventbg_1">
 				{if $ev.p_record_number > 0 || $ev.group_appointment}
 				{if $ev.group_appointment}
-					<b>Group Appointment</b>
+					<b>{l}Group Appointment{/l}</b>
 				{else}
 					<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
 				{/if}
@@ -53,7 +53,7 @@
 				{if $ev.last_change_nickname}
 					<br>{$ev.last_change_nickname}-{$ev.last_change|date_format:"%m/%d/%Y"}
 				{/if}  
-				&nbsp; {if $ev.walkin}WI{/if}
+				&nbsp; {if $ev.walkin}{l}WI{/l}{/if}
 			</td>
 		</tr>
 		</table>
