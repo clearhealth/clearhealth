@@ -1,6 +1,6 @@
 {if $providerToInsurance}
 	<fieldset class="radio" id="insurer">
-		<legend>Insurance Programs</legend> <a href="{php}echo Cellini::link("edit","insurance");{/php}">add new</a>
+		<legend>{l}Insurance Programs{/l}</legend> <a href="{php}echo Cellini::link("edit","insurance");{/php}">add new</a>
 
 		{$providerToInsuranceGrid->render()}
 		{if $providerToInsuranceGrid->empty}

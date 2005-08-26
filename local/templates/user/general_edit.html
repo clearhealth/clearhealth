@@ -5,7 +5,7 @@ var cp2 = new ColorPicker(); // DIV style
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users"}
 {assign var="detail_section_title" value="User Details"}
 <fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
+		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
 			{clni_section_links name="detail"}
 			</legend>
 			<table>
@@ -33,14 +33,14 @@ var cp2 = new ColorPicker(); // DIV style
 	</tr>
 	<tr>
 		 <td><a href="#" class="tooltip" {popup text="This is the color which will be the background of the user associated information on the calendar and elsewhere."}><label>{l}Color{/l}: </label></a></td>
-		<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">Pick</A></td>
+		<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">{l}Pick{/l}</A></td>
 	</tr>
 	<tr>
 		<td><label>{l}Salutation{/l}: </label></td>
 		<td colspan="2">
 			<input name="person[salutation]" size="5" value="{$person->get('salutation')}">
 			<!--&nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">-->
-			&nbsp;&nbsp;Middle Initial: 
+			&nbsp;&nbsp;{l}Middle Initial{/l}: 
 			<input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
 		</td>
 	</tr>

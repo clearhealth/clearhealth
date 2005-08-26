@@ -1,6 +1,6 @@
 {if $provider}
 	<fieldset class="radio">
-		<legend>Provider Details</legend>
+		<legend>{l}Provider Details{/l}</legend>
 
 		<table>
 			<tr>
@@ -19,7 +19,7 @@
 		<td style="vertical-align:top;"><label>{l}Bill as{/l}:</label></td>
 		<td>
 			<select name="provider[bill_as]">	
-				<option value="{$person->get('id')}">Self</option>
+				<option value="{$person->get('id')}">{l}Self{/l}</option>
 				{html_options options=$provider->getProviderList() selected=$provider->get('bill_as')}
 			</select>	
 		</td>
