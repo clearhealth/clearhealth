@@ -1,10 +1,10 @@
 <form method=post enctype="multipart/form-data" action="{$FORM_ACTION}">
 <input type="hidden" name="MAX_FILE_SIZE" value="12000000" />
-<p>NOTE: Uploading files with duplicate names will cause the files to be automatically renamed. For example '<i>file.jpg</i>' will become '<i>file.jpg.1</i>'. Filenames are considered globally unique, not per category. </p>
+<p>{l}NOTE: Uploading files with duplicate names will cause the files to be automatically renamed. For example{/l} '<i>{l}file.jpg{/l}</i>' {l}will become{/l} '<i>{l}file.jpg.1{/l}</i>'. {l}Filenames are considered globally unique, not per category.{/l} </p>
 <p><a href="{$LIST_ACTION}">View Documents</a></p>
 <table class="grid">
 	<tr>
-		<th>Location</th><th>File</th><th>Note</th>
+		<th>{l}Location{/l}</th><th>{l}File{/l}</th><th>{l}Note{/l}</th>
 	</tr>
 
 	{foreach from=$list item=id}

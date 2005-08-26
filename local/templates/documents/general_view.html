@@ -14,8 +14,8 @@
 		<td rowspan="2">
 		<textarea cols="53" rows="10" disabled>
 {foreach name=note_loop from=$notes item=note}
-Note #{$note->get_id()}
-Date: {$note->get_date()}
+{l}Note{/l} #{$note->get_id()}
+{l}Date{/l}: {$note->get_date()}
 {$note->get_note()}
 
 {/foreach}
