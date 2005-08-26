@@ -1,5 +1,5 @@
 <fieldset>
-<legend>Filter</legend>
+<legend>{l}Filter{/l}</legend>
 {clni_form action=$FILTER_ACTION process=$PROCESS}
 
 
@@ -23,7 +23,7 @@
 </form>
 </fieldset>
 <fieldset class="radio" id="account_history">
-	<legend>Account History</legend>
+	<legend>{l}Account History{/l}</legend>
 	{$history_grid->render()}
 	{if $history_grid->empty}
 		<p>Patient has no account history for selected Filters</p>
