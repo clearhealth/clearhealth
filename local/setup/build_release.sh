@@ -57,7 +57,7 @@ if [ $? -eq 0 ]; then
 fi
 
 echo "Tagging version in SVN"
-#svn copy -m "Tagged release $RELEASE of $NAME" -r $SVN_REV $REPO_URL $TAG_URL
+svn copy -m "Tagged release $RELEASE of $NAME" -r $SVN_REV $REPO_URL $TAG_URL
 if [ $? -ne 0 ]; then
 	echo "Could not create tag, aborting!"
 	exit 2
