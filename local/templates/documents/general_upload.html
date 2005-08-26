@@ -2,10 +2,10 @@
 <input type="hidden" name="MAX_FILE_SIZE" value="12000000" />
 <table>
 	<tr>
-		<td>NOTE: Uploading files with duplicate names will cause the files to be automatically renamed. For example '<i>file.jpg</i>' will become '<i>file.jpg.1</i>'. Filenames are considered globally unique, not per category. </td>
+		<td>{l}NOTE: Uploading files with duplicate names will cause the files to be automatically renamed. For example{/l} '<i>{l}file.jpg{/l}</i>' {l}will become{/l} '<i>{l}file.jpg.1{/l}</i>'. {l}Filenames are considered globally unique, not per category.{/l} </td>
 	</tr>
 	<tr>
-		<td>Upload Document {if $category_name} to category '{$category_name}'{/if}</td>
+		<td>{l}Upload Document{/l} {if $category_name} {l}to category{/l} '{$category_name}'{/if}</td>
 	</tr>
 	{*<tr>
 		<td><label>{l}State{/l}:</label><select name="group_id">{html_options options=$group_list}</select></td>
@@ -24,22 +24,22 @@
 		<td><br><br></td>
 	</tr>
 	<tr>
-		<td>Upload Report</td>
+		<td>{l}Upload Report{/l}</td>
 	</tr>
 	<tr>
 		<td>{$error}</td>
 	</tr>
 	<tr>
 		<td>
-		ID: {$file->get_id()}<br>
-		Name: {$file->get_name()}<br>
-		Entity: {$file->get_foreign_id()}<br>
-		URL: {$file->get_url()}<br>
-		Size: {$file->get_size()}<br>
-		Date: {$file->get_date()}<br>
-		MimeType: {$file->get_mimetype()}<br>
-		Revision: {$file->revision}<br>
-		Group: {$file->group_id}<br>
+		{l}ID{/l}: {$file->get_id()}<br>
+		{l}Name{/l}: {$file->get_name()}<br>
+		{l}Entity{/l}: {$file->get_foreign_id()}<br>
+		{l}URL{/l}: {$file->get_url()}<br>
+		{l}Size{/l}: {$file->get_size()}<br>
+		{l}Date{/l}: {$file->get_date()}<br>
+		{l}MimeType{/l}: {$file->get_mimetype()}<br>
+		{l}Revision{/l}: {$file->revision}<br>
+		{l}Group{/l}: {$file->group_id}<br>
 		</td>
 	</tr>
 	{/if}
