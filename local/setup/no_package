@@ -1,7 +1,7 @@
 # Remove stuff in sqltmp dir
 local/setup/sqltmp
 
-# Remove asp style hosting shit
+# Remove asp style hosting stuff
 local/setup/instances
 local/setup/config_instances.php
 
