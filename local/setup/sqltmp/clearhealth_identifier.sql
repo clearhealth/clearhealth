@@ -24,7 +24,7 @@ CREATE TABLE `identifier` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`identifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `identifier`

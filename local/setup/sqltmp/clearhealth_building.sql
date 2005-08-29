@@ -25,7 +25,7 @@ CREATE TABLE `building_address` (
   PRIMARY KEY  (`building_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `building_id` (`building_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying type. STARTEMPTY';
+) ENGINE=MyISAM COMMENT='Links a building to a address specifying type. STARTEMPTY';
 
 --
 -- Dumping data for table `building_address`
@@ -70,7 +70,7 @@ CREATE TABLE `building_program_identifier` (
   `program_id` int(11) NOT NULL default '0',
   `identifier` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`building_id`,`program_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `building_program_identifier`

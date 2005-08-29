@@ -24,7 +24,7 @@ CREATE TABLE `ownership` (
   PRIMARY KEY  (`id`,`user_id`),
   KEY `user_id` (`user_id`),
   KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores which items are owned by which user';
+) ENGINE=MyISAM COMMENT='Stores which items are owned by which user';
 
 --
 -- Dumping data for table `ownership`

@@ -25,7 +25,7 @@ CREATE TABLE `clearhealth_claim` (
   `total_billed` float(7,2) NOT NULL default '0.00',
   `total_paid` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`claim_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+) ENGINE=MyISAM COMMENT='STARTEMPTY';
 
 --
 -- Dumping data for table `clearhealth_claim`

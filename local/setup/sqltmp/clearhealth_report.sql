@@ -25,7 +25,7 @@ CREATE TABLE `report_templates` (
   `is_default` enum('yes','no') NOT NULL default 'yes',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report templates';
+) ENGINE=MyISAM COMMENT='Report templates';
 
 --
 -- Dumping data for table `report_templates`

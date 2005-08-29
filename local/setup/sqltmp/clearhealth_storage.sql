@@ -23,7 +23,7 @@ CREATE TABLE `storage_date` (
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store date values';
+) ENGINE=MyISAM COMMENT='Generic way to store date values';
 
 --
 -- Dumping data for table `storage_date`
@@ -68,7 +68,7 @@ CREATE TABLE `storage_int` (
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to store integer values (also boolean)';
+) ENGINE=MyISAM COMMENT='Generic way to store integer values (also boolean)';
 
 --
 -- Dumping data for table `storage_int`
@@ -113,7 +113,7 @@ CREATE TABLE `storage_string` (
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+) ENGINE=MyISAM COMMENT='Generic way to string values';
 
 --
 -- Dumping data for table `storage_string`
@@ -158,7 +158,7 @@ CREATE TABLE `storage_text` (
   `value_key` varchar(255) NOT NULL default '',
   `value` longtext NOT NULL,
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+) ENGINE=MyISAM COMMENT='Generic way to string values';
 
 --
 -- Dumping data for table `storage_text`

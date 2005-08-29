@@ -26,7 +26,7 @@ CREATE TABLE `buildings` (
   `identifier` varchar(255) NOT NULL default '',
   `facility_code_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+) ENGINE=MyISAM COMMENT='STARTEMPTY';
 
 --
 -- Dumping data for table `buildings`

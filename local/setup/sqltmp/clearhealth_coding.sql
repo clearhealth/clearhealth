@@ -29,7 +29,7 @@ CREATE TABLE `coding_data` (
   `primary_code` tinyint(4) NOT NULL default '0',
   `code_order` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`coding_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `coding_data`

@@ -53,7 +53,7 @@ CREATE TABLE `category` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+) ENGINE=MyISAM COMMENT='STARTWITHDATA';
 
 --
 -- Dumping data for table `category`
@@ -98,7 +98,7 @@ CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+) ENGINE=MyISAM COMMENT='STARTEMPTY';
 
 --
 -- Dumping data for table `category_to_document`

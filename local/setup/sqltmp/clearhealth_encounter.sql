@@ -25,7 +25,7 @@ CREATE TABLE `encounter` (
   `building_id` int(11) NOT NULL default '0',
   `date_of_treatment` datetime NOT NULL default '0000-00-00 00:00:00',
   `treating_person_id` int(11) NOT NULL default '0',
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL,
   `last_change_user_id` int(11) NOT NULL default '0',
   `status` enum('closed','open','billed') NOT NULL default 'open',
   `occurence_id` int(11) default NULL,
@@ -34,7 +34,7 @@ CREATE TABLE `encounter` (
   KEY `building_id` (`building_id`),
   KEY `treating_person_id` (`treating_person_id`),
   KEY `last_change_user_id` (`last_change_user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `encounter`
@@ -81,7 +81,7 @@ CREATE TABLE `encounter_date` (
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`encounter_date_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `encounter_date`
@@ -128,7 +128,7 @@ CREATE TABLE `encounter_person` (
   `person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`encounter_person_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `encounter_person`
@@ -175,7 +175,7 @@ CREATE TABLE `encounter_value` (
   `value` varchar(255) NOT NULL default '0',
   PRIMARY KEY  (`encounter_value_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `encounter_value`

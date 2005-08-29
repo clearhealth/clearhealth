@@ -23,7 +23,7 @@ CREATE TABLE `form` (
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`form_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
+) ENGINE=MyISAM COMMENT='Contains the EMR extending forms STARTWITHDATA';
 
 --
 -- Dumping data for table `form`
@@ -70,7 +70,7 @@ CREATE TABLE `form_data` (
   `external_id` int(11) NOT NULL default '0',
   `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`form_data_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links in the form data STARTWITHDATA';
+) ENGINE=MyISAM COMMENT='Links in the form data STARTWITHDATA';
 
 --
 -- Dumping data for table `form_data`

@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS `record_sequence`;
 CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `record_sequence`

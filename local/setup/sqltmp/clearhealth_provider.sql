@@ -26,7 +26,7 @@ CREATE TABLE `provider` (
   `bill_as` int(11) NOT NULL default '0',
   `report_as` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `provider`
@@ -74,7 +74,7 @@ CREATE TABLE `provider_to_insurance` (
   `provider_number_type` int(11) NOT NULL default '0',
   `group_number` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`provider_to_insurance_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `provider_to_insurance`

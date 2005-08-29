@@ -25,7 +25,7 @@ CREATE TABLE `number` (
   `number` varchar(100) NOT NULL default '',
   `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A phone number';
+) ENGINE=MyISAM COMMENT='A phone number';
 
 --
 -- Dumping data for table `number`

@@ -24,7 +24,7 @@ CREATE TABLE `practices` (
   `website` varchar(255) NOT NULL default '',
   `identifer` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `practices`

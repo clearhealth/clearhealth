@@ -22,7 +22,7 @@ CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `groups`

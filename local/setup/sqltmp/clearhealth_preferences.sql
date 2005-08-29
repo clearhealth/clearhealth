@@ -28,7 +28,7 @@ CREATE TABLE `preferences` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `preferences`
@@ -37,6 +37,8 @@ CREATE TABLE `preferences` (
 
 /*!40000 ALTER TABLE `preferences` DISABLE KEYS */;
 LOCK TABLES `preferences` WRITE;
+INSERT INTO `preferences` VALUES (9000,'Defaults','',0,1,4);
+INSERT INTO `preferences` VALUES (9001,'Special Event Color','#123444',9000,2,3);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `preferences` ENABLE KEYS */;
 

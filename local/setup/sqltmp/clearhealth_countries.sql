@@ -24,7 +24,7 @@ CREATE TABLE `countries` (
   `countries_iso_code_3` char(3) NOT NULL default '',
   PRIMARY KEY  (`countries_iso_code_3`),
   KEY `IDX_COUNTRIES_NAME` (`countries_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `countries`

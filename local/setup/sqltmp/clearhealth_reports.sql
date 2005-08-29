@@ -51,7 +51,7 @@ CREATE TABLE `reports` (
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
+) ENGINE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq';
 
 --
 -- Dumping data for table `reports`

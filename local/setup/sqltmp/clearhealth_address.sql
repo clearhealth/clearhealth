@@ -30,7 +30,7 @@ CREATE TABLE `address` (
   `postal_code` varchar(255) NOT NULL default '',
   `notes` text NOT NULL,
   PRIMARY KEY  (`address_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person. STARTEMPTY';
+) ENGINE=MyISAM COMMENT='An address that can be for a company or a person. STARTEMPTY';
 
 --
 -- Dumping data for table `address`

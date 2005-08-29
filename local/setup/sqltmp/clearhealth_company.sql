@@ -27,7 +27,7 @@ CREATE TABLE `company` (
   `url` varchar(255) NOT NULL default '',
   `is_historic` enum('no','yes') NOT NULL default 'no',
   PRIMARY KEY  (`company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is linked in STARTEMPTY';
+) ENGINE=MyISAM COMMENT='Base Company record most of the data is linked in STARTEMPTY';
 
 --
 -- Dumping data for table `company`
@@ -74,7 +74,7 @@ CREATE TABLE `company_address` (
   PRIMARY KEY  (`company_id`,`address_id`),
   KEY `company_id` (`company_id`),
   KEY `address_id` (`address_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a company to a address specifying the type STARTEMPTY';
+) ENGINE=MyISAM COMMENT='Links a company to a address specifying the type STARTEMPTY';
 
 --
 -- Dumping data for table `company_address`
@@ -121,7 +121,7 @@ CREATE TABLE `company_company` (
   PRIMARY KEY  (`company_id`,`related_company_id`),
   KEY `company_id` (`company_id`),
   KEY `related_company_id` (`related_company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Relates a company to another company STARTEMPTY';
+) ENGINE=MyISAM COMMENT='Relates a company to another company STARTEMPTY';
 
 --
 -- Dumping data for table `company_company`
@@ -167,7 +167,7 @@ CREATE TABLE `company_number` (
   PRIMARY KEY  (`company_id`,`number_id`),
   KEY `company_id` (`company_id`),
   KEY `number_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between company and phone_numbers STARTEMPTY';
+) ENGINE=MyISAM COMMENT='Links between company and phone_numbers STARTEMPTY';
 
 --
 -- Dumping data for table `company_number`
@@ -213,7 +213,7 @@ CREATE TABLE `company_type` (
   PRIMARY KEY  (`company_id`,`company_type`),
   KEY `company_id` (`company_id`),
   KEY `company_type` (`company_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify company type';
+) ENGINE=MyISAM COMMENT='Link to specify company type';
 
 --
 -- Dumping data for table `company_type`

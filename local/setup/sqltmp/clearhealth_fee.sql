@@ -26,7 +26,7 @@ CREATE TABLE `fee_schedule` (
   `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `fee_schedule`
@@ -76,7 +76,7 @@ CREATE TABLE `fee_schedule_data` (
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `fee_schedule_data`
@@ -123,7 +123,7 @@ CREATE TABLE `fee_schedule_revision` (
   `name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`revision_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `fee_schedule_revision`

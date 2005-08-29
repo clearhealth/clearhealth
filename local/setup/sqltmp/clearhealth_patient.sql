@@ -26,7 +26,7 @@ CREATE TABLE `patient` (
   `employer_name` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0Ã¯Â¿Â½',
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
+) ENGINE=MyISAM COMMENT='An patient extends the person entity';
 
 --
 -- Dumping data for table `patient`
@@ -75,7 +75,7 @@ CREATE TABLE `patient_note` (
   `note` text NOT NULL,
   `deprecated` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`patient_note_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `patient_note`
@@ -127,7 +127,7 @@ CREATE TABLE `patient_statistics` (
   `monthly_income` int(11) NOT NULL default '0',
   `family_size` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `patient_statistics`

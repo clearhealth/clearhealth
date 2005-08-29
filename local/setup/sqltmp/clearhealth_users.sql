@@ -26,7 +26,7 @@ CREATE TABLE `users_groups` (
   `table` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `users_groups`

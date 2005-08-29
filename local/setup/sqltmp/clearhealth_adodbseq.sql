@@ -20,7 +20,7 @@
 DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+) ENGINE=MyISAM COMMENT='STARTWITHDATA';
 
 --
 -- Dumping data for table `adodbseq`

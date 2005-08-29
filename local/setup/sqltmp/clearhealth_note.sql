@@ -24,12 +24,12 @@ CREATE TABLE `note` (
   `note` varchar(255) default NULL,
   `owner` int(11) default NULL,
   `date` datetime default NULL,
-  `revision` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `revision` timestamp NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `foreign_id` (`owner`),
   KEY `foreign_id_2` (`foreign_id`),
   KEY `date` (`date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `note`

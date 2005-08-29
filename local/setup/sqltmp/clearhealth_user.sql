@@ -30,7 +30,7 @@ CREATE TABLE `user` (
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Users in the System';
+) ENGINE=MyISAM COMMENT='Users in the System';
 
 --
 -- Dumping data for table `user`

@@ -24,7 +24,7 @@ CREATE TABLE `import_map` (
   `old_table_name` varchar(100) NOT NULL default '',
   `new_object_name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`old_id`,`old_table_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `import_map`

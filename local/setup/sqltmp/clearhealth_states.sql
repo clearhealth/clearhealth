@@ -25,7 +25,7 @@ CREATE TABLE `states` (
   PRIMARY KEY  (`zone_code`,`zone_name`),
   KEY `country` (`country`),
   KEY `zone_code` (`zone_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `states`

@@ -27,7 +27,7 @@ CREATE TABLE `events` (
   `email` varchar(255) NOT NULL default '',
   `foreign_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `events`

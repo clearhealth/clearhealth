@@ -37,7 +37,7 @@ CREATE TABLE `person` (
   `identifier_type` int(11) NOT NULL default '0',
   `marital_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A person in the system';
+) ENGINE=MyISAM COMMENT='A person in the system';
 
 --
 -- Dumping data for table `person`
@@ -84,7 +84,7 @@ CREATE TABLE `person_address` (
   PRIMARY KEY  (`person_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `person_id` (`person_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a address specifying the address type';
+) ENGINE=MyISAM COMMENT='Links a person to a address specifying the address type';
 
 --
 -- Dumping data for table `person_address`
@@ -131,7 +131,7 @@ CREATE TABLE `person_company` (
   PRIMARY KEY  (`person_id`,`company_id`),
   KEY `person_id` (`person_id`),
   KEY `company_id` (`company_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a person to a company and optionaly specifies the lin';
+) ENGINE=MyISAM COMMENT='Links a person to a company and optionaly specifies the lin';
 
 --
 -- Dumping data for table `person_company`
@@ -177,7 +177,7 @@ CREATE TABLE `person_number` (
   PRIMARY KEY  (`person_id`,`number_id`),
   KEY `person_id` (`person_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=MyISAM COMMENT='Links between people and phone_numbers';
 
 --
 -- Dumping data for table `person_number`
@@ -224,7 +224,7 @@ CREATE TABLE `person_person` (
   `relation_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_person_id`),
   UNIQUE KEY `person_id` (`person_id`,`related_person_id`,`relation_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `person_person`
@@ -270,7 +270,7 @@ CREATE TABLE `person_type` (
   PRIMARY KEY  (`person_id`,`person_type`),
   KEY `person_id` (`person_id`),
   KEY `person_type` (`person_type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Link to specify person type';
+) ENGINE=MyISAM COMMENT='Link to specify person type';
 
 --
 -- Dumping data for table `person_type`

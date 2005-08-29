@@ -145,7 +145,7 @@ CREATE TABLE `enumeration` (
   `state` enum('AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','PR') NOT NULL default 'AL',
   `subscriber_to_patient` enum('Spouse','Parent') NOT NULL default 'Spouse',
   PRIMARY KEY  (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='enums stored as new col, metadata 1 row perenumSTARTWITHDATA';
+) ENGINE=MyISAM COMMENT='enums stored as new col, metadata 1 row perenumSTARTWITHDATA';
 
 --
 -- Dumping data for table `enumeration`

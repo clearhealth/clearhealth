@@ -29,7 +29,7 @@ CREATE TABLE `codes` (
   `fee` decimal(7,2) default NULL,
   `superbill` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`code_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `codes`

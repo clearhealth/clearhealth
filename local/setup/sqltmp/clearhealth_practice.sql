@@ -25,7 +25,7 @@ CREATE TABLE `practice_address` (
   PRIMARY KEY  (`practice_id`,`address_id`),
   KEY `address_id` (`address_id`),
   KEY `practice_id` (`practice_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
+) ENGINE=MyISAM COMMENT='Links a practice to a address specifying the address type';
 
 --
 -- Dumping data for table `practice_address`
@@ -71,7 +71,7 @@ CREATE TABLE `practice_number` (
   PRIMARY KEY  (`practice_id`,`number_id`),
   KEY `person_id` (`practice_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=MyISAM COMMENT='Links between people and phone_numbers';
 
 --
 -- Dumping data for table `practice_number`

@@ -23,7 +23,7 @@ CREATE TABLE `facility_codes` (
   `code` varchar(5) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`facility_code_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores x12 facility_code code/human name combos';
+) ENGINE=MyISAM COMMENT='Stores x12 facility_code code/human name combos';
 
 --
 -- Dumping data for table `facility_codes`

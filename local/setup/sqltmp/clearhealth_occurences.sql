@@ -29,11 +29,11 @@ CREATE TABLE `occurences` (
   `last_change_id` int(11) default NULL,
   `external_id` int(11) default NULL,
   `reason_code` int(11) NOT NULL default '0',
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL,
   `walkin` tinyint(4) NOT NULL default '0',
   `group_appointment` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `occurences`

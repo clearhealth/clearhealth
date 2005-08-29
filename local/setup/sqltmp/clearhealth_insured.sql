@@ -34,7 +34,7 @@ CREATE TABLE `insured_relationship` (
   `effective_end` date NOT NULL default '0000-00-00',
   `active` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`insured_relationship_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `insured_relationship`

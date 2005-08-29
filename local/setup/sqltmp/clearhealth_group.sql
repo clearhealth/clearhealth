@@ -24,7 +24,7 @@ CREATE TABLE `group_occurence` (
   `patient_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_occurence_id`),
   UNIQUE KEY `occurence_id` (`occurence_id`,`patient_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `group_occurence`

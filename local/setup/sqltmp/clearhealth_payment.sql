@@ -26,12 +26,12 @@ CREATE TABLE `payment` (
   `amount` float(11,2) NOT NULL default '0.00',
   `writeoff` float(11,2) NOT NULL default '0.00',
   `user_id` int(11) NOT NULL default '0',
-  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL,
   `payer_id` int(11) NOT NULL default '0',
   `payment_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`payment_id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `payment`
@@ -79,7 +79,7 @@ CREATE TABLE `payment_claimline` (
   `writeoff` float(7,2) NOT NULL default '0.00',
   `carry` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`payment_claimline_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `payment_claimline`

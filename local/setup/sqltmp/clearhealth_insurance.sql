@@ -23,7 +23,7 @@ CREATE TABLE `insurance` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`company_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `insurance`
@@ -74,7 +74,7 @@ CREATE TABLE `insurance_program` (
   `x12_version` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM;
 
 --
 -- Dumping data for table `insurance_program`
