@@ -41,9 +41,19 @@ class C_Preferences extends Controller {
  		$this->_last_node = null;
  		$rnode = $this->_array_recurse($dprefs->tree, $dprefs);
 		$menu->addItem($rnode);
-		$treeMenu = &new HTML_TreeMenu_DHTML($menu, array('images' => $this->base_dir.'images/stock', 'defaultClass' => 'treeMenuDefault'));
-		
-		$this->assign("tree_html",$treeMenu->toHTML());
+		if (is_null($menu->items[0])) {
+			$messages =& $this->get_template_vars('messages');
+			$messages->addMessage('Database Error', 
+				'The preference database has not properly been initiated.');
+		}
+		else {
+			$treeOptions = array(
+				'images' => $this->base_dir.'images/stock',
+				'defaultClass' => 'treeMenuDefault'
+			);
+			$treeMenu = &new HTML_TreeMenu_DHTML($menu, $treeOptions);
+			$this->assign("tree_html",$treeMenu->toHTML());
+		}
 		return $this->fetch($GLOBALS['template_dir'] . "preferences/" . $this->template_mod . "_list.html");
 	}
 	
