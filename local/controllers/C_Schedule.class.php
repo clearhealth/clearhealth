@@ -40,7 +40,9 @@ class C_Schedule extends CalendarController {
 		$this->assign("location_id",$args['location_id']);
 		$this->assign("occurence_id",$args['occurence_id']);
 		$this->assign("date",$args['date']);
-		$this->assign("external_id",$args['external_id']);
+		if (isset($args['external_id'])) {
+			$this->assign("external_id",$args['external_id']);
+		}
 		$this->assign("start_time",$args['start_time']);
 		$this->assign("end_time",$args['end_time']);
 		$this->assign("notes",$args['notes']);
