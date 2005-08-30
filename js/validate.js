@@ -88,6 +88,7 @@ function clni_validate_auto_register_dates() {
 var clni_validation_rules = Array();
 var clni_notify_alert_reset_store = new Object;
 var clni_notify_message_targets = new Object();
+var clni_ignore_missing_elements = false;
 
 /**
  * Use on a forms onSubmit action to validate a form, uses the rules specified in clni_validation_rules
@@ -105,7 +106,9 @@ function clni_validate(currentForm) {
 	// reset ok on all form elements
 	for(var i =0; i < clni_validation_rules.length; i++) {
 		rule = clni_validation_rules[i];
-		document.getElementById(rule.id).ok = true;
+		if (document.getElementById(rule.id)) {
+			document.getElementById(rule.id).ok = true;
+		}
 	}
 
 	// validate form
@@ -114,6 +117,9 @@ function clni_validate(currentForm) {
 
 		//alert("Checking rule: "+rule.rule+" on "+rule.id+" disabled: "+document.getElementById(rule.id).disabled);
 		// only run validation on non disabled elements
+		if (!document.getElementById(rule.id) && clni_ignore_missing_elements) {
+			continue;
+		}
 		if (document.getElementById(rule.id).disabled != true && (elementInCurrentForm(document.getElementById(rule.id),currentForm))) {
 			document.getElementById(rule.id).rule = rule;
 			eval('var res = clni_rule_'+rule.rule+'(document.getElementById("'+rule.id+'"));');
