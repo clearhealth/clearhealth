@@ -225,7 +225,10 @@ class C_Patient extends Controller {
 	 * Edit/Add an encounter
 	 */
 	function encounter_action_edit($encounter_id = 0,$appointment_id = 0,$patient_id = 0) {
-		settype($encounter_id,'int');
+		$encounter_id = $this->_enforcer->int($encounter_id); 
+		$appointment_id = $this->_enforcer->int($appointment_id);
+		$patient_id = $this->_enforcer->int($patient_id);
+		
 		$valid_appointment_id = false;
 		
 		if (isset($this->encounter_id)) {
