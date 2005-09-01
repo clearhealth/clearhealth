@@ -186,14 +186,14 @@ class C_PersonSchedule extends CalendarController {
 			if (isset($_POST['ending_date']))$edts = strtotime($_POST['ending_date'] . " +1 day");
 			
 			if ($sdts > $edts) {
-				$this->messages->addMessage("The dates provided for were invalid, its starting date must be before its ending date. The schedule could not be changed.");
+				$this->messages->addMessage('', "The dates provided for were invalid, its starting date must be before its ending date. The schedule could not be changed.");
 				$errors++;	
 			}
 		}
 	
 		foreach($oc_template as $day => $se) {
 			if (count($se) % 2 != 0) {
-				$this->messages->addMessage("You must have an even number of entries per day to represent In and Out times.");
+				$this->messages->addMessage('', "You must have an even number of entries per day to represent In and Out times.");
 				continue;
 			}
 		}
@@ -392,13 +392,15 @@ class C_PersonSchedule extends CalendarController {
 					array_shift($stop);
 				}
 				$aks = array_keys($stop);
-				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
-				unset($stop[$aks[0]]);
-				unset($stop[$aks[1]]);
-				foreach ($stop as $qn => $qi) {
-					$location .= "$qn";
-					if (!empty($qi)) $location .= "=$qi";
-					$location .="&";
+				if (count($aks) > 1) {
+					$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+					unset($stop[$aks[0]]);
+					unset($stop[$aks[1]]);
+					foreach ($stop as $qn => $qi) {
+						$location .= "$qn";
+						if (!empty($qi)) $location .= "=$qi";
+						$location .="&";
+					}
 				}
 				break;
 			}
