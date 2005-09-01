@@ -427,17 +427,11 @@ class Event extends ORDataObject{
 	}
 	
 	function get_earliest_date() {
-		if (isset($this->occurences[0]->start)) {
-			return $this->occurences[0]->start;
-		}
-		return "";		
+		return $this->occurences[0]->get('start_date');		
 	}
 	
 	function get_latest_date() {
-		if (isset($this->occurences[count($this->occurences)-1])) {
-			return $this->occurences[count($this->occurences)-1]->end;	
-		}
-		return "";	
+		return $this->occurences[count($this->occurences) - 1]->get('end_date');
 	}
 	
 	function get_delete_message() {

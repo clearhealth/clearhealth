@@ -57,7 +57,10 @@ function toggleCell(box) {
 </tr>
 <tr>
 	<td>{l}Dates (mm/dd/yyyy){/l}: </td>
-	<td><input type="text" name="starting_date" size="10" value="{$schedule->get_earliest_date()|date_format:"%m/%d/%Y"}"> to <input type="text" name="ending_date" size="10" value="{$schedule->get_latest_date()|date_format:"%m/%d/%Y"}"></td>
+	<td>
+		{clni_input_date name="starting_date" value=$schedule->get_earliest_date()} to
+		{clni_input_date name="ending_date" value=$schedule->get_latest_date()}
+	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Location{/l}</td>

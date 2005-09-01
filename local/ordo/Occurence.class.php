@@ -235,6 +235,17 @@ class Occurence extends ORDataObject{
 		return $this->_getTimestamp('start');
 	}
 	
+	
+	/**
+	 * Returns the "start" date of this object
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_start_date() {
+		return $this->_getDate('start');
+	}
+	
 	/**
 	 * An alias for {@link get_start()} left in to insure BC.
 	 *
@@ -265,6 +276,16 @@ class Occurence extends ORDataObject{
 	 */
 	function get_end() {
 		return $this->_getTimestamp('end');
+	}
+	
+	/**
+	 * Returns the "end" date of this object
+	 *
+	 * @return string
+	 * @access protected
+	 */
+	function get_end_date() {
+		return $this->_getDate('end');
 	}
 	
 	
