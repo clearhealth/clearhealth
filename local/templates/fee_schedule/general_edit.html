@@ -4,7 +4,7 @@
 {if ($feeSchedule->get('id') > 0)}
 
 {clni_form action=$DEFAULT_ACTION process=$PROCESS}
-<div>{l}Default Value: <input name="default_value" id="default_value"><input type="submit" value="{l}Set default value for all procedures in Fee Schedule{/l}"></div>
+<div>{l}Default Value{/l}: <input name="default_value" id="default_value"><input type="submit" value="{l}Set default value for all procedures in Fee Schedule{/l}"></div>
 </form>
 <p>[<a href="{$UPDATE_ACTION}">{l}Update Fee Schedule{/l}</a>]</p>
 {/if}
