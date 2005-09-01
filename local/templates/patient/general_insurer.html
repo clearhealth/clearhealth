@@ -78,11 +78,11 @@
 				</td>
 			<tr>
 				<td><label>{l}Group Name{/l}:</label></td>
-				<td><input name="insuredRelationship[group_name]" value="{$insuredRelationship->get('group_name')}"></td>
+				<td><input id="insuredRelationship__group_name" name="insuredRelationship[group_name]" value="{$insuredRelationship->get('group_name')}"></td>
 			</tr>
 			<tr>
 				<td><label>{l}Group Number{/l}:</label></td>
-				<td><input name="insuredRelationship[group_number]" value="{$insuredRelationship->get('group_number')}"></td>
+				<td><input id="insuredRelationship__group_number" name="insuredRelationship[group_number]" value="{$insuredRelationship->get('group_number')}"></td>
 			</tr>
 			<tr>
 				<td><label>{l}Effective Date Range{/l}:</label></td>
@@ -189,6 +189,9 @@
 			</tr>
 		</table>
 	</fieldset>
+{clni_register_validation_rule id="insuredRelationship__group_name" message="Group Name is Required"}
+{clni_register_validation_rule id="insuredRelationship__group_number" message="Group Number is Required"}
+
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
 var ac = new AutoComplete(
