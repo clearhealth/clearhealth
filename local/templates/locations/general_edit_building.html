@@ -36,7 +36,7 @@
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Practice{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
-		{html_options name="practice_id" options=$practices selected="$building->get_practice_id()"}
+		{html_options name="practice_id" options=$practices selected=$building->get('practice_id')}
 	</td>
 </tr>
 <tr>
