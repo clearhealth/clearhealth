@@ -1,10 +1,10 @@
 <table>
 	<tr>
-		<td><h2>Schedules</h2></td>
+		<td><h2>{l}Schedules{/l}</h2></td>
 	</tr>
 	{foreach from=$schedules item=schedule}
 	<tr>
-		<td><h3><a name="{$schedule->get_id()}"></a>Schedule Code/Title:</td><td>{$schedule->get_schedule_code()} - {$schedule->get_name()}</h3></td>
+		<td><h3><a name="{$schedule->get_id()}"></a>{l}Schedule Code/Title{/l}:</td><td>{$schedule->get_schedule_code()} - {$schedule->get_name()}</h3></td>
 	</tr>
 	<tr>
 		<td style="padding-left:10;">{l}Description{/l}:</td>
