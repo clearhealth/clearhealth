@@ -4,7 +4,7 @@
 	</tr>
 	{foreach from=$appointments item=appointment}
 	<tr>
-		<td><h3><a name="{$appointment->get_id()}"></a>{l}Appointment Code/Title{l/}:</td><td>{$appointment->get_appointment_code()} - {$appointment->get_name()}</h3></td>
+		<td><h3><a name="{$appointment->get_id()}"></a>{l}Appointment Code/Title{/l}:</td><td>{$appointment->get_appointment_code()} - {$appointment->get_name()}</h3></td>
 	</tr>
 	<tr>
 		<td style="padding-left:10;">{l}Description{/l}:</td>
