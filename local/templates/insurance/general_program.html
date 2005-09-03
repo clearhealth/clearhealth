@@ -1,9 +1,9 @@
 <fieldset class="radio">
-	<legend>Insurance Programs</legend>
+	<legend>{l}Insurance Programs{/l}</legend>
 <table><tr><td valign='top'>
 	{$insuranceProgramGrid->render()}
 	{if $insuranceProgramGrid->empty}
-		<p>No Programs have been added</p>
+		<p>{l}No Programs have been added{/l}</p>
 	{/if}
 
 	<input type="hidden" name="insuranceProgram[insurance_program_id]" value="{$insuranceProgram->get('insurance_program_id')}">
@@ -50,20 +50,20 @@
 </td><td valign='top'>
 	{$bpiGrid->render()}
 	{if $bpiGrid->empty}
-		<p>No Program Specific Building Identifier have been added</p>
+		<p>{l}No Program Specific Building Identifier have been added{/l}</p>
 	{/if}
 	<table>
 		<tr>
-			<td><label>Program:</label></td>
+			<td><label>{l}Program{/l}:</label></td>
 			<td><select name="bpi[program_id]"> 
 				{html_options options=$insuranceProgram->getCompanysProgramsList($company->get('id')) selected=$bpi->get('program_id')} 
 				</select></td>
-			<td><label>Building:</label></td>
+			<td><label>{l}Building{/l}:</label></td>
 			<td><select name="bpi[building_id]"> {html_options options=$bpi->getBuildingList() selected=$bpi->get('building_id')} 
 				</select></td>
 		</tr>
 		<tr>
-			<td><label>Identifier:</label></td>
+			<td><label>{l}Identifier{/l}:</label></td>
 			<td colspan=3><input name="bpi[identifier]" value="{$bpi->get('identifier')}" size=30></td>
 		</tr>
 		<tr>
