@@ -1,9 +1,9 @@
 	<fieldset class="radio" id="address">
-		<legend>Addresses {clni_section_links name="address"}</legend>
+		<legend>{l}Addresses{/l} {clni_section_links name="address"}</legend>
 <table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
+		<th>{l}Name{/l}</th><th>{l}Type{/l}</th><th>{l}Address{/l}</th><th>{l}City{/l}</th><th>{l}Zip{/l}</th>
         </tr>
         {foreach from=$parent->get_addresses() item=row}
 	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
@@ -19,7 +19,7 @@
         </tr>
         {foreachelse}
         <tr>
-                <td colspan="5">No Addresses</td>
+                <td colspan="5">{l}No Addresses{/l}</td>
         </tr>
         {/foreach}
 </table>

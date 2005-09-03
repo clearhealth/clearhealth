@@ -1,9 +1,9 @@
 	<fieldset class="radio" id="people">
-		<legend>Employees {clni_section_links name="employees"}</legend>
+		<legend>{l}Employees{/l} {clni_section_links name="employees"}</legend>
 <table class="data" width="100%" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Name</th><th>Email</th><th>Phone</th>
+		<th>{l}Name{/l}</th><th>{l}Email{/l}</th><th>{l}Phone{/l}</th>
         </tr>
 	{foreach from=$company->get_people() item=row}
 	<tr>
@@ -14,9 +14,9 @@
         </tr>
         {foreachelse}
         <tr>
-                <td colspan="4">No Employees</td>
+                <td colspan="4">{l}No Employees{/l}</td>
         </tr>
         {/foreach}
 </table>
-{*<a href="{$ADD_PERSON}" target="person">Relate a new person</a>*}
+{*<a href="{$ADD_PERSON}" target="person">{l}Relate a new person{/l}</a>*}
 </fieldset>

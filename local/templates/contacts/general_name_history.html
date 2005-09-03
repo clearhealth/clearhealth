@@ -1,10 +1,10 @@
 	<fieldset class="radio" id="person">
-		<legend>Name History
+		<legend>{l}Name History{/l}
 			{clni_section_links name="nameHistory"}
 			</legend>
 
 		{$nameHistoryGrid->render()}
 		{if $nameHistoryGrid->empty}
-			<p>Name has not been changed</p>
+			<p>{l}Name has not been changed{/l}</p>
 		{/if}
 	</fieldset>

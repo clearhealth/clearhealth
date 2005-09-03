@@ -1,11 +1,11 @@
 	<fieldset class="radio" id="identifier">
-		<legend>Secondary Identifiers
+		<legend>{l}Secondary Identifiers{/l}
 			{clni_section_links name="identifier"}
 			</legend>
 
 		{$identifierGrid->render()}
 		{if $identifierGrid->empty}
-		<p>No Secondary Identifiers have been added</p>
+		<p>{l}No Secondary Identifiers have been added{/l}</p>
 		{/if}
 
 		<table>

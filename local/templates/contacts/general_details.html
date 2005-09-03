@@ -1,5 +1,5 @@
 	<fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
+		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
 			{clni_section_links name="detail"}
 			</legend>
 			<table>
@@ -26,8 +26,8 @@
 				<td><label>{l}Salutation{/l}: </label></td>
                           <td colspan="2">
 			  <input name="person[salutation]" size="5" value="{$person->get('salutation')}">
-			  &nbsp;&nbsp;Initials: <input name="person[initials]" size="3" value="{$person->get('initials')}">
-			  &nbsp;&nbsp;Middle Initial: 
+			  &nbsp;&nbsp;{l}Initials{/l}: <input name="person[initials]" size="3" value="{$person->get('initials')}">
+			  &nbsp;&nbsp;{l}Middle Initial{/l}: 
 			  <input name="person[middle_name]" size="2" value="{$person->get('middle_name')}">
 			  </td>
                         </tr>
