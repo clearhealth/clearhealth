@@ -1,8 +1,8 @@
 <fieldset>
-	<legend>Encounter people</legend>
+	<legend>{l}Encounter people{/l}</legend>
 	{$encounterPersonGrid->render()}
 	{if $encounterPersonGrid->empty}
-	<p>Encounter has no extra people</p>
+	<p>{l}Encounter has no extra people{/l}</p>
 	{/if}
 	<input type="hidden" name="encounterPerson[encounter_person_id]" value="{$encounterPerson->get('encounter_person_id')}">
 	{if $encounter->get('status') != 'closed'}
@@ -16,13 +16,13 @@
 					class="AutoCompleteBackground"></div></div>
 			</td>
 			<td><select name="encounterPerson[person_type]">
-					<option>Select Person Type</option>
+					<option>{l}Select Person Type{/l}</option>
 					{html_options options=$encounterPerson->getPersonTypeList() selected=$encounterPerson->get('person_type')}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td colspan=2><input type="submit" value="{if $encounterPerson->get('id') > 0}Update{else}Add{/if} Person">
+			<td colspan=2><input type="submit" value="{if $encounterPerson->get('id') > 0}{l}Update{/l}{else}{l}Add{/l}{/if} {l}Person{/l}">
 				{if $encounterPerson->get('id') > 0}
 				<input type="button" value="New Person" onclick="window.location = '{$NEW_ENCOUNTER_PERSON}';">
 				{/if}

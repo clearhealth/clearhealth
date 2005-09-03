@@ -1,8 +1,8 @@
 <fieldset>
-	<legend>Encounter Dates</legend>
+	<legend>{l}Encounter Dates{/l}</legend>
 	{$encounterDateGrid->render()}
 	{if $encounterDateGrid->empty}
-	<p>Encounter has no extra dates</p>
+	<p>{l}Encounter has no extra dates{/l}</p>
 	{/if}
 	<input type="hidden" name="encounterDate[encounter_date_id]" value="{$encounterDate->get('encounter_date_id')}">
 	{if $encounter->get('status') != 'closed'}
@@ -10,15 +10,15 @@
 		<tr>
 			<td>{clni_input_date name="encounterDate[date]" value=$encounterDate->get('date')}</td>
 			<td><select name="encounterDate[date_type]">
-					<option>Select Date Type</option>
+					<option>{l}Select Date Type{/l}</option>
 					{html_options options=$encounterDate->getDateTypeList() selected=$encounterDate->get('date_type')}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" value="{if $encounterDate->get('id') > 0}Update{else}Add{/if} Date">
+			<td colspan="2"><input type="submit" value="{if $encounterDate->get('id') > 0}{l}Update{/l}{else}{l}Add{/l}{/if} {l}Date{/l}">
 				{if $encounterDate->get('id') > 0}
-				<input type="button" value="New Date" onclick="window.location = '{$NEW_ENCOUNTER_DATE}';">
+				<input type="button" value="{l}New Date{/l}" onclick="window.location = '{$NEW_ENCOUNTER_DATE}';">
 				{/if}
 			</td>
 		</tr>

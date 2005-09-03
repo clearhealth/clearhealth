@@ -32,7 +32,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 	{assign var="detail_section_title" value="Patient Details"}
 	<table class="columns"><tr><td>
 		<fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}Individual Details{/if} 
+		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
 			{clni_section_links name="detail"}
 			</legend>
 			<table>

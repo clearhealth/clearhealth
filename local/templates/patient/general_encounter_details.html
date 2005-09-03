@@ -37,16 +37,16 @@
 			<td> 
             	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
             		<input type="submit" name="encounter[{$claimSubmitValue}]" value="{$claimSubmitValue|capitalize}">
-			{* <a href="{$INTAKE_REPORT}" target="_new">Intake Report</a> *}
+			{* <a href="{$INTAKE_REPORT}" target="_new">{l}Intake Report{/l}</a> *}
 			{elseif $encounter->get('status') == 'closed'}
 			{if $encounter_has_claim}
-			<a href="{$PAYMENT_ACTION}">Make a Payment</a>
-			<a href="{$FREEB_ACTION}">View Claim</a>
+			<a href="{$PAYMENT_ACTION}">{l}Make a Payment{/l}</a>
+			<a href="{$FREEB_ACTION}">{l}View Claim{/l}</a>
 			{else}
 			Closed with no claim created
 			{/if}
-			{* <a href="{$EXIT_REPORT}">Exit Report</a> *}
-			<a href="{$REOPEN_ACTION}">Re-open Claim</a>
+			{* <a href="{$EXIT_REPORT}">{l}Exit Report{/l}</a> *}
+			<a href="{$REOPEN_ACTION}">{l}Re-open Claim{/l}</a>
         		{else}
             		open
             	{/if}

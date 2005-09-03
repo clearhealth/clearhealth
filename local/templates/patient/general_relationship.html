@@ -1,9 +1,9 @@
 	<fieldset class="radio" id="relatedPeople">
-		<legend>Related People</legend>
+		<legend>{l}Related People{/l}</legend>
 
 		{$personPersonGrid->render()}
 		{if $personPersonGrid->empty}
-		<p>This Patient isn't related to anyone</p>
+		<p>{l}This Patient isn't related to anyone{/l}</p>
 		{/if}
 
 		<input type="hidden" value="{$personPerson->get('id')}" name="personPerson[person_person_id]">

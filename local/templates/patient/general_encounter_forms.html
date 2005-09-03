@@ -1,12 +1,12 @@
 {if $encounter->get('encounter_id') > 0}
 <fieldset>
-	<legend>Encounter Forms</legend>
+	<legend>{l}Encounter Forms{/l}</legend>
 	{$formDataGrid->render()}
 	{if $formDataGrid->empty}
-	<p>Encounter has no completed forms</p>
+	<p>{l}Encounter has no completed forms{/l}</p>
 	{/if}
 	{if $encounter->get('status') != 'closed'}
-	<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value; {literal}}{/literal}">
+	<p>{l}Fill out form{/l}: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value; {literal}}{/literal}">
 		<option value="0"></option>
 			{html_options options=$formList}
 		</select>

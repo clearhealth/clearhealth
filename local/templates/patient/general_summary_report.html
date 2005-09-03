@@ -1,8 +1,8 @@
 {if $PRINT_ACTION}
-<div style="float:right"><a href="{$PRINT_ACTION}">Print View</a></div>
+<div style="float:right"><a href="{$PRINT_ACTION}">{l}Print View{/l}</a></div>
 {/if}
-<h2>Summary Report</h2>
-<h3>Patient: {$patient->get('last_name')}, {$patient->get('first_name')} #{$patient->get('record_number')}</h3>
+<h2>{l}Summary Report{/l}</h2>
+<h3>{l}Patient{/l}: {$patient->get('last_name')}, {$patient->get('first_name')} #{$patient->get('record_number')}</h3>
 
 {if !$data}
 {clni_form process=$PROCESS}

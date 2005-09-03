@@ -61,11 +61,11 @@
 </script>
 {/literal}
 	<fieldset class="radio" id="insurer">
-		<legend>Payers</legend>
+		<legend>{l}Payers{/l}</legend>
 
 		{$insuredRelationshipGrid->render()}
 		{if $insuredRelationshipGrid->empty}
-		<p>Patient has no Payers Assigned</p>
+		<p>{l}Patient has no Payers Assigned{/l}</p>
 		{/if}
 
 		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
@@ -115,7 +115,7 @@
 			<tr>
 				<td colspan="2">
 				<fieldset id="subscriber" style="display:none">
-					<legend>Subscriber</legend>
+					<legend>{l}Subscriber{/l}</legend>
 					{assign var="subscriberIsAPatient" value=false}
 					{if $subscriber->lookupType($subscriber->get('type')) !== "Subscriber"}
 						{assign var="subscriberIsAPatient" value=true}

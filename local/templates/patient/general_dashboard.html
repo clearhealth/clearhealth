@@ -3,7 +3,7 @@
 <tr>
 <td colspan="2">
 	<fieldset class="radio" id="person" >
-	<legend>Patient {clni_section_links name="detail"}</legend>
+	<legend>{l}Patient{/l} {clni_section_links name="detail"}</legend>
 		{assign var="parent" value=$person}
 
 
@@ -39,11 +39,11 @@
 	</td><td align="right">
 	<div align="left" style="float: right">
 	<fieldset class="radio" id="number" style="vertical-align:top;">
-	<legend>Phone Numbers {clni_section_links name="number"}</legend>
+	<legend>{l}Phone Numbers{/l} {clni_section_links name="number"}</legend>
 	<table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Number</th><th>Type</th><th>Status</th><th>Notes</th>
+		<th>{l}Number{/l}</th><th>{l}Type{/l}</th><th>{l}Status{/l}</th><th>{l}Notes{/l}</th>
         </tr>
         {foreach from=$parent->get_numbers() item=row}
 			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
@@ -54,17 +54,17 @@
         	</tr>
         {foreachelse}
         	<tr>
-        		<td colspan="3">No Phone Numbers</td>
+        		<td colspan="3">{l}No Phone Numbers{/l}</td>
         	</tr>
         {/foreach}
 	</table>
 	</fieldset>
     <fieldset class="radio" id="address" style="vertical-align:top;">
-		<legend>Addresses {clni_section_links name="address"}</legend>
+		<legend>{l}Addresses{/l} {clni_section_links name="address"}</legend>
 		<table class="data" border="0" cellspacing="1" cellpadding="0">
         {$pager}
         <tr bgcolor="EFEFEF">
-		<th>Name</th><th>Type</th><th>Address</th><th>City</th><th>Zip</th>
+		<th>{l}Name{/l}</th><th>{l}Type{/l}</th><th>{l}Address{/l}</th><th>{l}City{/l}</th><th>{l}Zip{/l}</th>
         </tr>
         {foreach from=$parent->get_addresses() item=row}
 		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
@@ -89,7 +89,7 @@
 	<tr>
 	<td>
 	<fieldset class="radio" id="notes">
-		<legend>Notes</legend>
+		<legend>{l}Notes{/l}</legend>
 		{$noteGrid->render()}
 		{if $noteGrid->empty && $depnoteGrid->empty}
 		<p>Patient has no Notes</p>
@@ -111,38 +111,38 @@
 	</fieldset>
 	
 	<fieldset class="radio" id="insurer">
-		<legend>Insurers</legend>
+		<legend>{l}Insurers{/l}</legend>
 		{$insuredRelationshipGrid->render()}
 		{if $insuredRelationshipGrid->empty}
-			<p>Patient has no Insurers Assigned</p>
+			<p>{l}Patient has no Insurers Assigned{/l}</p>
 		{/if}
 	</fieldset>
 	<fieldset class="radio" id="encounters">
-		<legend>Encounters {clni_section_links name="encounters"}</legend>
+		<legend>{l}Encounters{/l} {clni_section_links name="encounters"}</legend>
 		{$encounterGrid->render()}
 		{if $encounterGrid->empty}
-			<p>Patient has no Encounters</p>
+			<p>{l}Patient has no Encounters{/l}</p>
 		{/if}
 		<p><a href="{$ENCOUNTER_ACTION}">Add Encounter</a></p>
 	</fieldset>
 	<fieldset class="radio" id="address">
-		<legend>Reports {clni_section_links name="reports"}</legend>
+		<legend>{l}Reports{/l} {clni_section_links name="reports"}</legend>
 		{$reportGrid->render()}
 		{if $reportGrid->empty}
-		<p>No Reports have been connected to the dashboard</p>
+		<p>{l}No Reports have been connected to the dashboard{/l}</p>
 		{/if}
 	</fieldset>
 	<fieldset class="radio" id="Appointments">
-		<legend>Appointments {clni_section_links name="appointments"}</legend>
+		<legend>{l}Appointments{/l} {clni_section_links name="appointments"}</legend>
 		{$appointmentGrid->render()}
 		{if $appointmentGrid->empty}
-		<p>Patient has no Future appoinments</p>
+		<p>{l}Patient has no Future appoinments{/l}</p>
 		{/if}
 	</fieldset>
 	</td>
 	<td>
 	<fieldset class="radio" id="encounters">
-		<legend>Account Information {clni_section_links name="account_information"}</legend>
+		<legend>{l}Account Information{/l} {clni_section_links name="account_information"}</legend>
 		{if count($accountStatus.total_billed) > 0}
 		<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>
 		<table>
@@ -157,14 +157,14 @@
 			</tr>
 		</table>
 		{else}
-		<p>No Account Information</p>
+		<p>{l}No Account Information{/l}</p>
 		{/if}
 	</fieldset>
 	<fieldset class="radio" id="forms">
-		<legend>Forms {clni_section_links name="forms"}</legend>
+		<legend>{l}Forms{/l} {clni_section_links name="forms"}</legend>
 		{$formDataGrid->render()}
 		{if $formDataGrid->empty}
-		<p>Patient has no completed forms</p>
+		<p>{l}Patient has no completed forms{/l}</p>
 		{/if}
 		<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value; {literal}}{/literal}">
 					<option value="0"></option>
