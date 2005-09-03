@@ -61,7 +61,7 @@
 <form name="report" id="h3sForm" method="post" action="{$FORM_ACTION}" enctype="multipart/form-data" onSubmit="return false;">
 	<fieldset>
 		<fieldset class="radio">
-			<legend>Select Menu Section</legend>
+			<legend>{l}Select Menu Section{/l}</legend>
 			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
 					{if $notfirst}<br>{/if}
@@ -74,17 +74,17 @@
 		</fieldset>
 
 		<fieldset class="radio" id="update" style="display:none">
-			<legend>Update Menu Entry</legend>
+			<legend>{l}Update Menu Entry{/l}</legend>
 			<div id="updateContent">
 			</div>
 		</fieldset>
 
 		<fieldset class="radio" id="add" style="display:none">
-			<legend>Add new Form</legend>
+			<legend>{l}Add new Form{/l}</legend>
 
 			<label class="cb">{l}Select Form{/l}</label>
 			<select name="form_id" onChange="setId(this)">
-				<option>Select a Form</option>
+				<option>{l}Select a Form{/l}</option>
 				{html_options options=$form->simpleFormList()}
 			</select>
 

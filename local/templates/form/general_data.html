@@ -1,10 +1,10 @@
 <h2>{$form->get('name')}</h2>
 <p>{$form->get('description')}</p>
-<p>Edited at: {$data->get('last_edit')}</p>
+<p>{l}Edited at{/l}: {$data->get('last_edit')}</p>
 
 <table>
 	<tr>
-		<th>Name</th><th>Value</th>
+		<th>{l}Name{/l}</th><th>{l}Value{/l}</th>
 	</tr>
 {foreach from=$data->allData() item=row}
 	<tr>

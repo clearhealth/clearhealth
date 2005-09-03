@@ -6,7 +6,7 @@
 	{if $form->fileExists()}
 	{include file=$form->get('file_path')}
 	{else}
-		<p>There was an error accessing this form.</p>
+		<p>{l}There was an error accessing this form{/l}.</p>
 	{/if}
 </div>
 {else}

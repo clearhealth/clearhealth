@@ -2,16 +2,16 @@
 {add_field type="file" id="form" label="upload_form"}
 {show_auto_form id='form'}
 
-<p><a href="{$VIEW_ACTION}">View form Data</a><p>
+<p><a href="{$VIEW_ACTION}">{l}View form Data{/l}</a><p>
 
 <h3 style="margin-top: 4em;">Form Demo:
 {if $form->fileExists()}
- [<a href="{$DOWNLOAD_ACTION}">Download Current Form</a>]
+ [<a href="{$DOWNLOAD_ACTION}">{l}Download Current Form{/l}</a>]
 {/if}</h3>
 <div style="margin: 4em; border: solid 3px black; padding: 1em; margin-top: 0px;">
 	{if $form->fileExists()}
 	{include file=$form->get('file_path')}
 	{else}
-	<p>Upload a form to see a demo</p>
+	<p>{l}Upload a form to see a demo{/l}</p>
 	{/if}
 </div>
