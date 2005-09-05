@@ -132,14 +132,20 @@ var clni_ignore_missing_elements = true;
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
 			<input type="hidden" name="process" value="true">
 			</form>
-			
+{if $group_appointments}
+{clni_register_validation id="date1" rules="required|date"}
+{clni_register_validation_rule id="time1"}
+{clni_register_validation_rule id="time2"}
+{* required is our test rule because its a not-empty check *}
+{clni_register_validation id="patient_id_2" rules="requiredif(testElement:'patient_name_2',testRule:'required',message:'No Patient is Selected')} 
+{else}			
 {clni_register_message_target formId="make_appointment_popup" targetId="validationMessageTarget1"}
 {clni_register_validation id="date1" rules="required|date"}
 {clni_register_validation_rule id="time1"}
 {clni_register_validation_rule id="time2"}
-
 {* required is our test rule because its a not-empty check *}
 {clni_register_validation id="patient_id_2" rules="requiredif(testElement:'patient_name_2',testRule:'required',message:'No Patient is Selected')} 
+{/if}
 </div>		</td>
 	</tr>
 </table>
@@ -171,6 +177,7 @@ var clni_ignore_missing_elements = true;
 			
 			<p style="align: center; font-weight:bold;">{$rooms_practice_array[$selected_location]}</p>
 			{if $edit_app}
+
 			<input type="hidden" name="location_id" value="{$edit_oc->get_location_id()}">
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
 			{else}
@@ -244,13 +251,19 @@ var clni_ignore_missing_elements = true;
 </div>		</td>
 	</tr>
 </table>
+{if $group_appointments}
+{clni_register_validation id="date2" rules="required|date"}
 {clni_register_message_target formId="makeAppointmentSidebarForm" targetId="makeAppointmentSidebarMessages"}
-{clni_register_validation_rule id="patient_id_1" message="A patient is required"}
+{clni_register_validation_rule id="time3"}
+{clni_register_validation_rule id="time4"}
+{else}
+{clni_register_message_target formId="makeAppointmentSidebarForm" targetId="makeAppointmentSidebarMessages"}
 {clni_register_message_target formId="make_appointment_popup" targetId="validationMessageTarget1"}
+{clni_register_validation_rule id="patient_id_1" message="A patient is required"}
 {clni_register_validation id="date2" rules="required|date"}
 {clni_register_validation_rule id="time3"}
 {clni_register_validation_rule id="time4"}
-
+{/if}
 <br>
 
 <table width="170" border="0" cellpadding="0" cellspacing="0" class="calborder">
