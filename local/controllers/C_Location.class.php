@@ -161,16 +161,32 @@ class C_Location extends Controller {
 	
 		
 	function edit_room_action_process() {
-		if ($_POST['process'] != "true")
+		if ($_POST['process'] != "true") {
 			return;
+		}
+		
+		// Capture so we know whether or not this was the first room
+		$room =& new Room();
+		$setDefaultRoom = !$room->roomsExist();
+		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
-		$this->location = new Room($_POST['id']);
+		$this->location =& $room;
+		$this->location->set('id', $_POST['id']);
+		$this->location->populate();
 		$this->location->populate_array($_POST);
 		
 		$this->location->persist();
 		
-		$this->location->populate($this->location->get_id());
+		$this->location->populate($this->location->get('id'));
 		$_POST['process'] = "";
+		
+		if ($setDefaultRoom) {
+			include_once APP_ROOT . '/local/includes/ChangeDefaultRoomForUsers.class.php';
+			$updater =& new ChangeDefaultRoomForUsers($this->location);
+			
+			$user =& ORDataObject::factory('User');
+			$updater->visit($user->users_factory());
+		}
 	}
 	
 	function edit_schedule_action($id = "") {

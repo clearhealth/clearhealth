@@ -242,6 +242,20 @@ class Room extends ORDataObject{
 		return false;
 		
 	}
+	
+	
+	/** 
+	 * Returns whether there are any rooms so we can determine if a room is
+	 * the first one to be added.
+	 *
+	 * @return boolean
+	 */
+	function roomsExist() {
+		$sql = "SELECT COUNT(*) AS total FROM {$this->_prefix}{$this->_table}";
+		$result = $this->_db->Execute($sql);
+		
+		return ($result->fields['total'] > 0);
+	}
 
 } // end of Class
 
