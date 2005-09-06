@@ -7,6 +7,9 @@ class M_User extends M_Patient {
 	var $messageType = "User";
 
 	function process_update($id = 0) {
+		if (!$this->_continueProcessing()) {
+			return;
+		}		
 		parent::process_update($id,true);
 		$this->controller->person_id = $this->controller->patient_id;
 		if (isset($_POST['user'])) {
@@ -18,6 +21,30 @@ class M_User extends M_Patient {
 		if (isset($_POST['providerToInsurance'])) {
 			$this->process_providerToInsurance_update($this->controller->person_id,$_POST['providerToInsurance']);
 		}
+	}
+	
+	
+	/**
+	 * Returns <i>TRUE</i> if {@link process_update()} should continue
+	 * processing, <i>FALSE</i> otherwise.
+	 *
+	 * @return boolean
+	 * @access private
+	 */
+	function _continueProcessing() {
+		$username = $_POST['user']['username'];
+		$u =& User::fromUsername($username);
+		if ($username == 'admin' && $u->get('person_id') > 0) {
+			$this->messages->addMessage('Admin user already tied to an existing person');
+			return false;
+		}
+		elseif ($username != 'admin' && $u->isPopulated()) {
+			$escapedUsername = htmlspecialchars($username); 
+			$this->messages->addMessage("Username \"{$escapedUsername}\" already taken.");
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
