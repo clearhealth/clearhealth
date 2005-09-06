@@ -26,53 +26,71 @@ class M_User extends M_Patient {
 	 * @todo: we are going to want to do this bridging of type on person to group on user a lot, move this to some place more reusable, this should be moved into the persist method of a user. Note: the inject_user.php script uses a cut and paste of this code.
 	 */
 	function process_user_update($person_id,$data) {
-			$u =& User::fromPersonId($person_id);
-			if ($u->get('id') == 0) {
-				$u->set('disabled','no');
+			/* 
+			 * If this username is 'admin', attempt to load it and tie this 
+			 * new person to it
+			 */
+			if ($data['username'] == 'admin') {
+				$u =& User::fromUsername('admin');
 			}
-			$groups = array();
-			if (isset($data['groups'])) {
-				$groups = $data['groups'];
-				unset($data['groups']);
+			else {
+				$u =& User::fromPersonId($person_id);
+				
+				// What does this do?
+				if ($u->get('id') == 0) {
+					$u->set('disabled','no');
+				}
 			}
+			
 			$u->set('person_id',$person_id);
 			$u->populate_array($data);
 			$u->persist();
 			$this->controller->user_id = $u->get('id');
 
 
-			// update gacl groups from type
+			// Determine the user types of this new person
 			$person =& ORDataObject::factory('Person',$person_id);
 			$t_list = $person->getTypeList();
 			$types = $person->get('types');
-
-			if (count($types) > 0) {
-				$type = array_shift($types);
-				if ($type > 0) {
-					$group = strtolower(str_replace(' ','_',$t_list[$type]));
-					$gacl_groups = $this->controller->security->sort_groups();
-					$flat_groups = array();
-					foreach($gacl_groups as $grp) {
-						foreach($grp as $k => $v) {
-							$flat_groups[$k] = $v;
+			
+			// update gacl groups from type
+			if ($data['username'] != 'admin') {
+				// Setup user groups
+				$groups = array();
+				if (isset($data['groups'])) {
+					$groups = $data['groups'];
+					unset($data['groups']);
+				}
+				
+				// Run through all the types setting the appropriate GACL.
+				if (count($types) > 0) {
+					$type = array_shift($types);
+					if ($type > 0) {
+						$group = strtolower(str_replace(' ','_',$t_list[$type]));
+						$gacl_groups = $this->controller->security->sort_groups();
+						$flat_groups = array();
+						foreach($gacl_groups as $grp) {
+							foreach($grp as $k => $v) {
+								$flat_groups[$k] = $v;
+							}
 						}
-					}
-					$u->groups = array();
-					foreach($groups as $id) {
-						$u->groups[$id] = array('id'=>$id);
-					}
-					foreach($flat_groups as $id => $name) {
-						$data = $this->controller->security->get_group_data($id);
-						if ($data[2] == $group) {
-							$gid = $data[0];
-							$u->groups[$gid] = array('id'=>$data[0]);
-							// move persist outside this loop for efficiency
-							break;
+						$u->groups = array();
+						foreach($groups as $id) {
+							$u->groups[$id] = array('id'=>$id);
+						}
+						foreach($flat_groups as $id => $name) {
+							$data = $this->controller->security->get_group_data($id);
+							if ($data[2] == $group) {
+								$gid = $data[0];
+								$u->groups[$gid] = array('id'=>$data[0]);
+								// move persist outside this loop for efficiency
+								break;
+							}
 						}
 					}
 				}
+				$u->persist();
 			}
-			$u->persist();
 
 			if($t_list[$person->get('type')] === "Provider") {
 				// create default ps schedule if no ps schedule exists
