@@ -39,9 +39,13 @@ class M_User extends M_Patient {
 			return false;
 		}
 		elseif ($username != 'admin' && $u->isPopulated()) {
-			$escapedUsername = htmlspecialchars($username); 
-			$this->messages->addMessage("Username \"{$escapedUsername}\" already taken.");
-			return false;
+			$user_id = $_POST['user']['user_id'];
+			if (($user_id == 0) ||
+			    ($user_id > 0 && $user_id != $u->get('id'))) 
+			{
+				$escapedUsername = htmlspecialchars($username); 
+				$this->messages->addMessage("Username \"{$escapedUsername}\" already taken.");
+			}
 		}
 		
 		return true;
