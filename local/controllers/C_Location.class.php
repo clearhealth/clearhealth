@@ -243,6 +243,7 @@ class C_Location extends Controller {
 				$obj = null;
 			
 				$obj = new Occurence($oid);
+				$message = '';
 				if (is_object($obj) && $obj->id > 0 && $obj->_populated && is_callable(array($obj,"delete"))) {
 					if ($obj->delete()) {
 						$message = "Object(s) deleted successfully";
