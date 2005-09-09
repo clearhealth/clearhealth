@@ -383,12 +383,10 @@ class C_PersonSchedule extends CalendarController {
 		}
 		$location = Cellini::link('list','location');
 		$trail = $_SESSION['trail'];
+		krsort($trail);
 		foreach($trail as $stop) {
 			if (!isset($stop['delete']) && $stop['action'] != "delete") {
 				if (isset($stop['main'])) {
-					array_shift($stop);
-				}
-				if (substr($stop['action'], -4) == '.css') {
 					array_shift($stop);
 				}
 				$aks = array_keys($stop);
@@ -398,7 +396,9 @@ class C_PersonSchedule extends CalendarController {
 					unset($stop[$aks[1]]);
 					foreach ($stop as $qn => $qi) {
 						$location .= "$qn";
-						if (!empty($qi)) $location .= "=$qi";
+						if (!empty($qi)) {
+							$location .= "=$qi";
+						}
 						$location .="&";
 					}
 				}
