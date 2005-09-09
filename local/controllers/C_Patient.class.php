@@ -381,13 +381,7 @@ class C_Patient extends Controller {
 			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
 			*/
 
-			// see if we need to add a rebill link
-			if ($this->_canRebill($encounter->get('id'))) {
-				$this->assign('REOPEN_ACTION',Cellini::link('reopen_encounter', true, true, $encounter->get('id')) . 'process=true');
-				//$this->assign('REBILL_ACTION',Cellini::link('rebill_encounter',true,true,$encounter->get('id'))."process=true");
-			}
-
-			
+			$this->assign('REOPEN_ACTION',Cellini::link('reopen_encounter', true, true, $encounter->get('id')) . 'process=true');
 		}
 		else {
 			ORdataObject::factory_include('ClearhealthClaim');
