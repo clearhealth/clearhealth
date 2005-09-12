@@ -1,0 +1,13 @@
+######
+# Sample .htaccess file
+#
+# If you're using Apache and do not have access to your server's php.ini file,
+# you can copy this file to /path/to/clearhealth/.htaccess to make the necessary
+# changes to PHP's internal configuration.
+#
+# This should only be used when you are unable to change the php.ini file.
+
+php_flag memory_limit 64
+php_flag max_execution_time 45
+php_flag register_globals off
+php_flag magic_quotes_gpc off
