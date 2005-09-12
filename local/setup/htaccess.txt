@@ -7,7 +7,10 @@
 #
 # This should only be used when you are unable to change the php.ini file.
 
-php_flag memory_limit 64
 php_flag max_execution_time 45
 php_flag register_globals off
 php_flag magic_quotes_gpc off
+
+# The following line may cause issues with certain PHP installations.  If you
+# are unable to access the site, comment it out
+php_flag memory_limit 64M
