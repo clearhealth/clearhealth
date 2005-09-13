@@ -27,7 +27,7 @@
 			<tr>
 				<td><label>{l}Family Size{/l}:</label></td>
 				<td><input name="patientStatistics[family_size]" id="ps_family_size" value="{$patientStatistics->get('family_size')}" size=3 maxlength=3></td>
-				<td><label>Date of First Encounter:</label></td>
+				<td><label>{l}Date of First Encounter:{/l}</label></td>
 				<td>{$encounter->getFirstDate($person->get('id'))}</td>
 			</tr>
 			<tr>
