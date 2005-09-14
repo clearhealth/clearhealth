@@ -463,17 +463,20 @@ class Person extends ORDataObject {
 	
 	function &nameHistoryList() {
 		$nh =& ORDataOBject::factory('NameHistory');
-		return $nh->nameHistoryList($this->get('id'));
+		$return =& $nh->nameHistoryList($this->get('id'));
+		return $return;
 	}
 
 	function &identifierList() {
 		$i =& ORDataOBject::factory('Identifier');
-		return $i->identifierList($this->get('id'));
+		$return =& $i->identifierList($this->get('id'));
+		return $return;
 	}
 
 	function &insuredRelationshipList() {
 		$ir =& ORDataObject::Factory('InsuredRelationship');
-		return $ir->insuredRelationshipList($this->get('id'));
+		$return =& $ir->insuredRelationshipList($this->get('id'));
+		return $return;
 	}
 
 	var $_tCache = false;

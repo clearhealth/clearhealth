@@ -62,7 +62,7 @@ class NameHistory extends ORDataObject {
 	/**
 	 * Get a ds with all the name history for a given person_id
 	 */
-	function nameHistoryList($person_id) {
+	function &nameHistoryList($person_id) {
 		settype($person_id,'int');
 		
 		$ds =& new Datasource_sql();

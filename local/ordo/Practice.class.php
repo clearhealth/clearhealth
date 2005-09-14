@@ -83,8 +83,8 @@ class Practice extends ORDataObject{
 
 		}
 
-		$number = ORDataobject::factory('Number');
-		$this->phone_types =& array_flip($number->getTypeList());
+		$number =& ORDataobject::factory('Number');
+		$this->phone_types = array_flip($number->getTypeList());
 	}
 
 	function populate() {

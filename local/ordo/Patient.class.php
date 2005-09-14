@@ -159,19 +159,24 @@ class Patient extends MergeDecorator {
 		return $this->person->peopleByCompany($company_id,$type);
 	}
 	function &numberByType($type,$value = false) {
-		return $this->person->numberByType($type,$value);
+		$return =& $this->person->numberByType($type,$value);
+		return $return;
 	}
 	function &address() {
-		return $this->person->address();
+		$return =& $this->person->address();
+		return $return;
 	}
 	function &nameHistoryList() {
-		return $this->person->nameHistoryList();
+		$return =& $this->person->nameHistoryList();
+		return $return;
 	}
 	function &identifierList() {
-		return $this->person->identifierList();
+		$return =& $this->person->identifierList();
+		return $return;
 	}
 	function &insuredRelationshipList() {
-		return $this->person->insuredRelationshipList();
+		$return =& $this->person->insuredRelationshipList();
+		return $return;
 	}
 	function lookupType($id) {
 		return $this->person->lookupType($id);
