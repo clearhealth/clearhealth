@@ -152,7 +152,8 @@ class Calendar_Factory
         $h = $cE->stampToHour($stamp);
         $i = $cE->stampToMinute($stamp);
         $s = $cE->stampToSecond($stamp);
-        return Calendar_Factory::create($type, $y, $m, $d, $h, $i, $s);
+        $object = Calendar_Factory::create($type, $y, $m, $d, $h, $i, $s);
+        return $object;
     }
 }
 ?>
