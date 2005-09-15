@@ -50,7 +50,7 @@ class ClearhealthClaim extends ORDataObject {
 		}
 	}
 
-	function fromEncounterId($encounter_id) {
+	function &fromEncounterId($encounter_id) {
 		settype($encounter_id,'int');
 
 		$claim =& ORDataOBject::factory('ClearhealthClaim');
@@ -95,7 +95,7 @@ class ClearhealthClaim extends ORDataObject {
 	/**
 	 * Get datasource for claims from the db
 	 */
-	function claimList($patient_id,$show_lines = false,$filters = false) {
+	function &claimList($patient_id,$show_lines = false,$filters = false) {
 		settype($foreign_id,'int');
 
 		$where = "";
