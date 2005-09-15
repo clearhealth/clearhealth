@@ -189,8 +189,13 @@
 			</tr>
 		</table>
 	</fieldset>
-{clni_register_validation_rule id="insuredRelationship__group_name" message="Group Name is Required"}
-{clni_register_validation_rule id="insuredRelationship__group_number" message="Group Number is Required"}
+{* clni_register_validation
+	rule="requiredif(testElement:'insuredRelationship__group_number',testRule:'alphanum')" 
+	id="insuredRelationship__group_name" message="Group Name is Required" *}
+	
+{* clni_register_validation
+	rule="requiredif(testElement:'insuredRelationship__group_name',testRule:'alphanum')" 
+	id="insuredRelationship__group_number" message="Group Number is Required" *}
 
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
