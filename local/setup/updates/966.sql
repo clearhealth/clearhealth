@@ -1,0 +1,1 @@
+ALTER TABLE `payment` ADD `title` VARCHAR( 256 ) NOT NULL 
