@@ -2,7 +2,7 @@
 /*
  * Created on Aug 16, 2005
  *
- * Example config file for application installer
+ * ClearHealth config file for application installer
  */
 
 /*
