@@ -38,8 +38,8 @@ $config['db_table_prefix'] = "";
 ################################################################################
 # freeb2 integration
 ################################################################################
-$GLOBALS['C_ALL']['freeb2_dir'] = "/freeb2/index.php/";
-$config['translate']['freeb2'] = "/freeb2/index.php/";
+$GLOBALS['C_ALL']['freeb2_dir'] = "/INSTALL_BASE_DIR/freeb2/index.php/";
+$config['translate']['freeb2'] = "/INSTALL_BASE_DIR/freeb2/index.php/";
 
 
 ################################################################################
