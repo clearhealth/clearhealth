@@ -15,7 +15,12 @@ $version_1rc2->collectData('db_server', 'Database Server', 'text', 'localhost');
 $version_1rc2->collectData('db_database', 'Database Name', 'text', '');
 $version_1rc2->addTest('PHPVersion', array('4.3.0'));
 $version_1rc2->addTest('PHPExtension', array('mysql'));
-$version_1rc2->addTest('WritableLocation', array($base_app_path.'/tmp'));
+$version_1rc2->addTest('WritableLocation', array(
+						 $base_app_path.'/tmp',
+						 $base_app_path.'/freeb2/tmp',
+						 $base_app_path.'/local/',
+						 $base_app_path.'/freeb2/local/'
+						));
 $version_1rc2->addTest('MysqlVersion', array(
 'username_field' => 'db_user',
 'password_field' => 'db_password',
