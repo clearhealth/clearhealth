@@ -94,7 +94,7 @@
 					{assign var=notfirst value=1}
 					<b>{$menu}</b><br>
 				{else}
-				<input onChange="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}"><label class="cb" for="r{$menu_id}">{$menu}</label><br>
+				<input onclick="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}"><label class="cb" for="r{$menu_id}">{$menu}</label><br>
 				{/if}
 			{/foreach}
 		</fieldset>
