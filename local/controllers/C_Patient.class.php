@@ -967,7 +967,7 @@ class C_Patient extends Controller {
 			//var_dump($pbo_data);
 
 			if (!$freeb2->registerData($claim_identifier,$ept,$pbo_data)) {
-				trigger_error("Unable to encounter person data - ".$freeb2->claimLastError($claim_identifier));
+				trigger_error("Unable to registerData person data with FreeB - FreeB Error: ".$freeb2->claimLastError($claim_identifier));
 			}
 		}
 		// End Encounter People
