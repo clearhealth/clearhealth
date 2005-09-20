@@ -28,14 +28,6 @@ var cp2 = new ColorPicker(); // DIV style
 		</td>
 	</tr>
 	<tr>
-				<td><label>{l}Nickname{/l}: </label></td>
-		<td><input type="text" name="user[nickname]" size="15" value="{$user->get("nickname")}"></td>
-	</tr>
-	<tr>
-		 <td><a href="#" class="tooltip" {popup text="This is the color which will be the background of the user associated information on the calendar and elsewhere."}><label>{l}Color{/l}: </label></a></td>
-		<td><input type="text" name="user[color]" size="15" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">{l}Pick{/l}</A></td>
-	</tr>
-	<tr>
 		<td><label>{l}Salutation{/l}: </label></td>
 		<td colspan="2">
 			<input name="person[salutation]" size="5" value="{$person->get('salutation')}">
@@ -46,7 +38,7 @@ var cp2 = new ColorPicker(); // DIV style
 	</tr>
 	{if !$hide_type}
 	<tr>
-		<td style="vertical-align:top;"><label>{l}Type{/l}:</label></td>
+		<td style="vertical-align:top;"><a href="#" class="tooltip" {popup text="This determines what extra data is needed for a user. For instance, extra billing data is required for healthcare providers."}><label>{l}Type{/l}:</label></a></td>
 		<td>
 			<select name="person[type]">
 				<option></option>
@@ -56,13 +48,21 @@ var cp2 = new ColorPicker(); // DIV style
 	</tr>
 	{/if}
 	<tr>
-		<td style="vertical-align:top;"><label>{l}Default Location{/l}:</label></td>
+		<td style="vertical-align:top;"><a href="#" class="tooltip" {popup text="The location that the calendar will display when the user logs in."}><label>{l}Default Location{/l}:</label></a></td>
 		<td>
 			<select name="user[default_location_id]">	
 			{html_options options=$rooms_practice_array selected=$user->get('default_location_id')}
 			</select>	
 		</td>
 	</tr>
+	<tr>
+				<td><a href="#" class="tooltip" {popup text="The Nickname will be displayed to identify the user on the calendar, it should short, only 1-3 characters."}><label>{l}Nickname{/l}: </label></a></td>
+		<td><input type="text" name="user[nickname]" size="3" value="{$user->get("nickname")}"></td>
+	
+		 <td><a href="#" class="tooltip" {popup text="This is the color which will be the background of the user associated information on the calendar and elsewhere."}><label>{l}Color{/l}: </label></a></td>
+		<td><input type="text" name="user[color]" size="6" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">{l}Pick{/l}</A></td>
+	</tr>
+
 	<tr>
 		<td><label>{l}Email{/l}:</label> </td>
 		<td><input name="person[email]" size="30" value="{$person->get('email')}"></td>
