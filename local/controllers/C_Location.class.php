@@ -169,24 +169,28 @@ class C_Location extends Controller {
 		$room =& new Room();
 		$setDefaultRoom = !$room->roomsExist();
 		
+		// Check and if allowed handle the saving
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
-		$this->location =& $room;
-		$this->location->set('id', $_POST['id']);
-		$this->location->populate();
-		$this->location->populate_array($_POST);
+		$location =& $room;
+		$location->set('id', $_POST['id']);
+		$location->populate_array($_POST);
+		$location->persist();
 		
-		$this->location->persist();
-		
-		$this->location->populate($this->location->get('id'));
 		$_POST['process'] = "";
 		
+		// If no rooms were set prior to creating this one, utilize the pseudo
+		// visitor ChangeDefaultRoomForUsers() to update the default rooms.
 		if ($setDefaultRoom) {
 			include_once APP_ROOT . '/local/includes/ChangeDefaultRoomForUsers.class.php';
-			$updater =& new ChangeDefaultRoomForUsers($this->location);
+			$updater =& new ChangeDefaultRoomForUsers($location);
 			
 			$user =& ORDataObject::factory('User');
 			$updater->visit($user->users_factory());
 		}
+		
+		// share this object with the rest of the controller so the DB doesn't
+		// have to be requeried.
+		$this->location =& $location;
 	}
 	
 	function edit_schedule_action($id = "") {
