@@ -5,7 +5,7 @@
 	<p>{l}Encounter has no extra information{/l}</p>
 	{/if}
 	{if $encounterValueGrid->empty ||
-		($encounter->get('status') != 'closed' && $encounterValue->isPopulated()) }
+		($encounter->get('status') != 'closed') }
 	<input type="hidden" name="encounterValue[encounter_value_id]" value="{$encounterValue->get('encounter_value_id')}">
 	<table>
 		<tr>
