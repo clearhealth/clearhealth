@@ -46,7 +46,7 @@ class C_Calendar extends CalendarController {
 			$this->assign('GROUP_ACTION',Cellini::link('editGroup','appointment',true,$_GET['appointment_id']));
 		}
 		else {
-			$this->assign('GROUP_ACTION',Cellini::link('editGroup','appointment',true,0));
+			$this->assign('GROUP_ACTION','false');
 		}
 
 		$this->assign('EDIT_APPOINTMENT_ACTION',Cellini::link('edit_appointment','location'));

@@ -31,8 +31,10 @@ function groupAppointment(cbox) {
 			oldContent[list[i]] = document.getElementById(list[i]).innerHTML;
 			document.getElementById(list[i]).innerHTML = "";
 		}
-		document.getElementById('ghide1').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
-		document.getElementById('ghide3').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
+		if (action != 'false') {
+			document.getElementById('ghide1').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
+			document.getElementById('ghide3').innerHTML = "<a href='"+action+"'>Edit&nbsp;Group</a>";
+		}
 	}
 	else {
 		document.getElementById('group_appointment1').checked = false;
