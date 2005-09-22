@@ -23,7 +23,7 @@
 <div id="storage">
 </div>
 
-<table id="patientList" class="grid">
+<table class="grid" id="patientList">
 	{foreach from=$patientList item=patient}
 	<tr>
 		<td>{$patient.name}</td>
@@ -78,7 +78,14 @@ function addPatient() {
 
 	document.getElementById('storage').innerHTML += "<input type='hidden' name='patient["+id+"]' value=1>";
 
-	document.getElementById('patientList').innerHTML += "<tr><td>"+name+"</td><td><a href='#' onclick='deletePatient("+id+",this.parentNode.parentNode)'>Remove</a></td></tr>";
+	var pl = document.getElementById('patientList');
+	var row = pl.insertRow(pl.rows.length);
+	var td1 = document.createElement('td');
+	var td2 = document.createElement('td');
+	td1.innerHTML = name;
+	td2.innerHTML = "<a href='#' onclick='deletePatient("+id+",this.parentNode.parentNode)'>Remove</a>";
+	row.appendChild(td1);
+	row.appendChild(td2);
 
 	document.getElementById('patient_name').value = '';
 	document.getElementById('patient_id').value = '';
