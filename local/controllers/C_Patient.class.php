@@ -823,6 +823,22 @@ class C_Patient extends Controller {
 		//Debug:
 		//echo "Debug:C_Patient.class".var_export($patient->toArray());
 		$patientData = $this->_cleanDataArray($patient->toArray());
+
+
+		$encounter_id=$encounter->get('id');
+
+		//This seems to be where Dates should be added..
+		$EncounterDates =& ORDataObject::factory('EncounterDate');
+		$encounterDatesArray=$EncounterDates->encounterDateListArray($encounter_id);
+		$date_enum = $EncounterDates->_load_enum("encounter_date_type");
+		$date_enum = array_flip($date_enum);
+	
+		foreach($encounterDatesArray as $encounter_date_id){
+			$EncounterDate =& ORDataObject::factory('EncounterDate',$encounter_date_id,$encounter_id);
+			$date_name = $date_enum[$EncounterDate->get('date_type')];
+			$patientData[$date_name] = $EncounterDate->get('date');
+		}
+
 		if (!$freeb2->registerData($claim_identifier,'Patient',$patientData)) {
 			trigger_error("Unable to register patient data - ".$freeb2->claimLastError($claim_identifier));
 		}
@@ -885,14 +901,6 @@ class C_Patient extends Controller {
 		// register provider
 		$providerData = $this->_cleanDataArray($provider->toArray());
 
-		// add in x12 fields from default program
-	//	$x12 = array('x12_sender_id','x12_receiver_id','x12_version');
-
-
-	/*	$providerData['sender_id'] = $defaultProgram->get('x12_sender_id');
-		$providerData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
-		$providerData['x12_version'] = $defaultProgram->get('x12_version');
-*/
 		// Set secondary identifier
 		$providerPerson =& $provider->get('person');
 		$extraIdentifiers =& $providerPerson->identifierList();
@@ -904,6 +912,8 @@ class C_Patient extends Controller {
 				$i++;
 			}
 		}
+
+
 		// There were no extra identifiers
 		else {
 			
@@ -917,8 +927,6 @@ class C_Patient extends Controller {
 		// register practice
 		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 		$practiceData = $this->_cleanDataArray($practice->toArray());
-		//printf('<pre>%s</pre>', var_export($practiceData , true));
-		//echo "C_Patient practicedata";
 
 			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
 			$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
@@ -942,7 +950,6 @@ class C_Patient extends Controller {
 			trigger_error("Unable to register treating facility data - ".$freeb2->claimLastError($claim_identifier));
 		}
 	
-		$encounter_id=$encounter->get('id');
 
 		// Add Encounter People....
 
@@ -953,21 +960,28 @@ class C_Patient extends Controller {
 			$ep =& ORDataObject::factory('EncounterPerson',$encounter_person_id,$encounter_id);
 			$eptl = $encounter->_load_enum("encounter_person_type",false);
 			$eptl = array_flip($eptl);
-			$ept=$eptl[$ep->get('person_type')];
+			$encounter_person_type=$eptl[$ep->get('person_type')];
 			
 			$eptn = $ep->personTypeName();
 			if (!$eptn) {
-				trigger_error("Unable to find person type for encountner person with id: " . $EncounterPerson->get('person_id'));
+				trigger_error("Unable to find person type for encountner person with id: $encounter_person_id This usually happens when a patient record is choosen as a person associated with an encounter");
 				continue;	
 			}
 			
-			//person based object	
-			$pbo =& ORDataObject::factory($eptn, $ep->get('person_id'));
+			//person based object
+			$person_type = 	$ep->get('person_type');
+			$loop_person_id = $ep->get('person_id');
+			$pbo =& ORDataObject::factory($eptn, $loop_person_id);
 			$pbo_data = $this->_cleanDataArray($pbo->toArray());
-			//var_dump($pbo_data);
 
-			if (!$freeb2->registerData($claim_identifier,$ept,$pbo_data)) {
-				trigger_error("Unable to registerData person data with FreeB - FreeB Error: ".$freeb2->claimLastError($claim_identifier));
+				//remove the gaps in the enumeration to be FreeB friendly..
+			$encounter_person_type = preg_replace('/\s+/', '', $encounter_person_type);
+
+			if (!$freeb2->registerData($claim_identifier,$encounter_person_type,$pbo_data)) {
+				$freeb_error = $freeb2->claimLastError($claim_identifier);
+				$freeb_error_message = $freeb_error[1];
+				var_dump($freeb_error);
+				trigger_error("Unable to registerData person data with FreeB using person #$encounter_person_id as person type #$person_type $encounter_person_type loaded as $eptn  - FreeB Error: $freeb_error_message");
 			}
 		}
 		// End Encounter People
