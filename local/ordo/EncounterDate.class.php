@@ -110,6 +110,23 @@ class EncounterDate extends ORDataObject {
 		return $ds;
 	}
 
+	function encounterDateListArray($encounter_id) {
+
+		settype($encounter_id,'int');
+
+		$sql = "select encounter_date_id, `date`, date_type from $this->_table where encounter_id = $encounter_id";
+		$res = $this->_execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[]=$res->fields['encounter_date_id'];
+			$res->MoveNext();
+		}
+		return $ret;
+
+	}
+
+
+
 	/**#@+
 	 * Enumeration getters
 	 */
