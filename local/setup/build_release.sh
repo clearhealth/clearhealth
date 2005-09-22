@@ -72,14 +72,14 @@ bash $BUILD_DIR/local/setup/build_sql.sh $RELEASE
 
 clean_release "$SCRIPT_HOME/no_package"
 
-# Setup freeb
-echo "Exporting freeb to $BUILD_DIR/freeb"
-svn export https://svn2.uversainc.com/svn/freeb2/trunk $BUILD_DIR/freeb
+# Setup freeb2
+echo "Exporting freeb2 to $BUILD_DIR/freeb2"
+svn export https://svn2.uversainc.com/svn/freeb2/trunk $BUILD_DIR/freeb2
 if [ $? -ne 0 ]; then
-	echo "Could not export freeb!"
+	echo "Could not export freeb2!"
 	exit 3
 fi
-clean_release "$BUILD_DIR/freeb/local/setup/no_package" "freeb"
+clean_release "$BUILD_DIR/freeb2/local/setup/no_package" "freeb2"
 
 # Setup cellini
 if [ "true" == "$CELLINI_APP" ]; then
