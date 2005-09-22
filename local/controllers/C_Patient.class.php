@@ -980,8 +980,19 @@ class C_Patient extends Controller {
 			if (!$freeb2->registerData($claim_identifier,$encounter_person_type,$pbo_data)) {
 				$freeb_error = $freeb2->claimLastError($claim_identifier);
 				$freeb_error_message = $freeb_error[1];
-				var_dump($freeb_error);
-				trigger_error("Unable to registerData person data with FreeB using person #$encounter_person_id as person type #$person_type $encounter_person_type loaded as $eptn  - FreeB Error: $freeb_error_message");
+				$freeb_error_number = $freeb_error[0];
+			//	var_dump($freeb_error);
+				if($freeb_error_number==110){// 110 = Unknown Registration name. 
+					//FreeB does not know what to do with this type of person.
+				$this->messages->addMessage("FreeB did not understand person type $encounter_person_type");
+				
+					continue;
+				}else{// lets give a fuller debugging message!!
+					trigger_error("Unable to registerData person data with FreeB using person #".
+					"$encounter_person_id as person type #$person_type $encounter_person_type ".
+					"loaded as $eptn  - FreeB Error: $freeb_error_message");
+					//no continue here, this should be a show stopper!!
+				}
 			}
 		}
 		// End Encounter People
