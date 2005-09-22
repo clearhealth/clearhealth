@@ -109,7 +109,7 @@ class EncounterPerson extends ORDataObject {
 
 		settype($encounter_id,'int');
 
-		$sql = "select encounter_person_id, concat_ws(' ',first_name,last_name) person, person_type from $this->_table inner join person using(person_id) where encounter_id = $encounter_id";
+		$sql = "select encounter_person.person_id, encounter_person_id, concat_ws(' ',first_name,last_name) person, person_type from $this->_table inner join person using(person_id) where encounter_id = $encounter_id";
 		$res = $this->_execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
