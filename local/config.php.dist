@@ -21,6 +21,9 @@ $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
 // location of htmldoc utility for creating pdfs
 $config['htmldoc'] = "/usr/bin/htmldoc";
 
+// Base URL directory
+$config['base_dir'] = '/clearhealth/';
+
 
 ################################################################################
 # Database Setup
