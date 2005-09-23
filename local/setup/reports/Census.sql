@@ -27,12 +27,12 @@ dsFilters-Reason|enumLookup&ds|encounter_reason
 select
  count(e.encounter_id) `Total Encounters`
 from
- occurences o
- inner join person p on o.external_id = p.person_id
- inner join encounter e on e.occurence_id = o.id
+ encounter e 
+ left join occurences o on e.occurence_id = o.id
+ left join person p on o.external_id = p.person_id
 where
- if ('[after]',o.start > '[after:date]',1) and
- if ('[before]',o.end < '[before:date]',1) and
+ if ('[after]',e.date_of_treatment >= '[after:date]',1) and
+ if ('[before]',e.date_of_treatment <= '[before:date]',1) and
  if ('[facility]',e.building_id = '[facility]',1) and
  if ('[provider]',o.user_id = '[provider]',1)
 ---[total_encounters_by_reason,hideFilter,noPager]---
