@@ -18,6 +18,8 @@
 	$host='localhost';
 	$dbname = 'clearhealth';
 
+	$file_prefix='clearhealth_';
+
 	if (!mysql_connect($host, $user, $password)) {
 	    echo 'Could not connect to mysql';
 	    exit;
@@ -37,7 +39,7 @@
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
-		$sqlfile = "clearhealth_$corename.sql";
+		$sqlfile = "$file_prefix$corename.sql";
 		echo "erasing $sqlfile\n";	
 		system("rm -rf $sqlfile");		
 	}
@@ -53,9 +55,10 @@
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
-		$sqlfile = "clearhealth_$corename.sql";
+		$sqlfile = "$file_prefix$corename.sql";
 		echo "dumping $tablename to \n\t\t\t\t $sqlfile\n";	
-		system("mysqldump  --create-options --compatible=mysql323 -p$password -u$user $dbname $tablename >> $sqlfile");
+		system("mysqldump  --compact --allow-keywords --skip-comments --quote-names  --compatible=mysql323 -p$password -u$user $dbname $tablename >> $sqlfile");
+
 		
 	}
 

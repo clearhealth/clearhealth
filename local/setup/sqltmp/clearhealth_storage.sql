@@ -1,180 +1,24 @@
--- MySQL dump 10.9
---
--- Host: localhost    Database: clearhealth
--- ------------------------------------------------------
--- Server version	4.1.12
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `storage_date`
---
-
-DROP TABLE IF EXISTS `storage_date`;
 CREATE TABLE `storage_date` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM COMMENT='Generic way to store date values';
-
---
--- Dumping data for table `storage_date`
---
-
-
-/*!40000 ALTER TABLE `storage_date` DISABLE KEYS */;
-LOCK TABLES `storage_date` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `storage_date` ENABLE KEYS */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- MySQL dump 10.9
---
--- Host: localhost    Database: clearhealth
--- ------------------------------------------------------
--- Server version	4.1.12
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `storage_int`
---
-
-DROP TABLE IF EXISTS `storage_int`;
+) TYPE=MyISAM COMMENT='Generic way to store date values';
 CREATE TABLE `storage_int` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM COMMENT='Generic way to store integer values (also boolean)';
-
---
--- Dumping data for table `storage_int`
---
-
-
-/*!40000 ALTER TABLE `storage_int` DISABLE KEYS */;
-LOCK TABLES `storage_int` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `storage_int` ENABLE KEYS */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- MySQL dump 10.9
---
--- Host: localhost    Database: clearhealth
--- ------------------------------------------------------
--- Server version	4.1.12
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `storage_string`
---
-
-DROP TABLE IF EXISTS `storage_string`;
+) TYPE=MyISAM COMMENT='Generic way to store integer values (also boolean)';
 CREATE TABLE `storage_string` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM COMMENT='Generic way to string values';
-
---
--- Dumping data for table `storage_string`
---
-
-
-/*!40000 ALTER TABLE `storage_string` DISABLE KEYS */;
-LOCK TABLES `storage_string` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `storage_string` ENABLE KEYS */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- MySQL dump 10.9
---
--- Host: localhost    Database: clearhealth
--- ------------------------------------------------------
--- Server version	4.1.12
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `storage_text`
---
-
-DROP TABLE IF EXISTS `storage_text`;
+) TYPE=MyISAM COMMENT='Generic way to string values';
 CREATE TABLE `storage_text` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(255) NOT NULL default '',
   `value` longtext NOT NULL,
   PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=MyISAM COMMENT='Generic way to string values';
-
---
--- Dumping data for table `storage_text`
---
-
-
-/*!40000 ALTER TABLE `storage_text` DISABLE KEYS */;
-LOCK TABLES `storage_text` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `storage_text` ENABLE KEYS */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
+) TYPE=MyISAM COMMENT='Generic way to string values';
