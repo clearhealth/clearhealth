@@ -527,7 +527,7 @@ class Person extends ORDataObject {
 		$ret['address'] = $address->toArray();
 		$ret['identifier_type'] = $this->lookupIdentifierType($ret['identifier_type']);
 		$ret['gender'] = $this->lookupGender($ret['gender']);
-		$number =& $this->numberByType();
+		$number =& $this->numberByType('Home');
 		$ret['home_phone'] = $number->get('number');
 		return $ret;
 	}
