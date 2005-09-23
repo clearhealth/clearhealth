@@ -902,7 +902,7 @@ class C_Patient extends Controller {
 		$providerData = $this->_cleanDataArray($provider->toArray());
 
 		// Set secondary identifier
-		$providerPerson =& $provider->get('person');
+		$providerPerson = $provider->get('person');
 		$extraIdentifiers =& $providerPerson->identifierList();
 		if (count($extraIdentifiers->toArray()) > 0) {
 			$i = 2;
