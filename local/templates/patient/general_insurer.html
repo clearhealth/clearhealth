@@ -139,7 +139,7 @@
 							</tr>
 						</table>
 					</div>
-					{assign var=subscriberNumber value=$subscriber->numberByType('Home',true)}
+					{assign var=subscriberNumber value=$subscriber->numberValueByType('Home')}
 					{assign var=subscriberAddress value=$subscriber->address()}
 					<div id="newSubscriber">
 						<input name="newSubscriber[person_id]" type="hidden" value="{$subscriber->get('id')}">

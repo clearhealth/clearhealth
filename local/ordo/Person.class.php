@@ -439,7 +439,7 @@ class Person extends ORDataObject {
 	 * If you have more then 1 number of type then 1 will be returned
 	 * If you have none a new/empty PersonNumber will be returned
 	 */
-	function &numberByType($type,$value = false) {
+	function &numberByType($type) {
 		settype($this->id,'int');
 
 		$type_id = 0;
@@ -454,10 +454,12 @@ class Person extends ORDataObject {
 			$number_id = $res->fields['number_id'];
 		}
 		$addr =& ORDataObject::factory('PersonNumber',$number_id,$this->id);
-		if ($value) {
-			return $addr->get('number');
-		}
 		return $addr;
+	}
+	
+	function numberValueByType($type) {
+		$number =& $this->numberByType($type);
+		return $number->get('number');
 	}
 
 	
@@ -525,7 +527,8 @@ class Person extends ORDataObject {
 		$ret['address'] = $address->toArray();
 		$ret['identifier_type'] = $this->lookupIdentifierType($ret['identifier_type']);
 		$ret['gender'] = $this->lookupGender($ret['gender']);
-		$ret['home_phone'] = $this->numberByType('Home',true);
+		$number =& $this->numberByType();
+		$ret['home_phone'] = $number->get('number');
 		return $ret;
 	}
 
