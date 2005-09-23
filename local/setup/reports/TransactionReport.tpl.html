@@ -19,47 +19,7 @@
 <a style="float:right" href="{$PRINT_ACTION}" target='print'>Print View</a>
 {/if}
 
-{assign var=c value=0}
-{if $values.user}{assign var=c value=$c+1}{/if}
-{if $values.user2}{assign var=c value=$c+1}{/if}
-{if $values.user3}{assign var=c value=$c+1}{/if}
-
-{if $values.date}
-<h2>Transaction Report for {$values.date}</h2>
-{else}
-<h2>Transaction Report requires a date to be set</h2>
-{/if}
-
-<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
-	<tr><th colspan=2>Selected Filters</th></tr>
-	<tr><th>Date</th><td>{$values.date}</td></tr>
-
-	<tr><th>Facility</th><td>
-{if $values.facility}
-	{query_lookup value=$values.facility query="select id, name from buildings"}</h2>
-{else}
-	Any
-{/if}
-	</td></tr>
-
-{if $values.user}
-	<tr><th>User 1</th><td>
-	{query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	</td></tr>
-{/if}
-{if $values.user2}
-	<tr><th>User 2</th><td>
-	{query_lookup value=$values.user2 query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	</td></tr>
-{/if}
-{if $values.user3}
-	<tr><th>User 3</th><td>
-	{query_lookup value=$values.user3 query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	</td></tr>
-{/if}
-</table>
-<br>
-	
+<h2>Transaction Report for: {query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} {$values.date} {query_lookup value=$values.facility query="select id, name from buildings"}</h2>
 
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
@@ -79,10 +39,7 @@
 {/foreach}
 </table>
 
-<h3 style="margin-bottom: 0px;">Amount Collected by 
-	{query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	{if !$values.user}Type{/if}
-	</h3>
+<h3 style="margin-bottom: 0px;">Amount Collected:</h3>
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
 		<th>Type</th><th>Amount</th>
@@ -100,17 +57,13 @@
 	</tr>
 </table>
 
-{if $values.user2}
-<h3 style="margin-bottom: 0px;">Amount Collected by
-	{query_lookup value=$values.user2 query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	</h3>
-
+<h3 style="margin-bottom: 0px;">Amount Collected2:</h3>
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
 		<th>Type</th><th>Amount</th>
 	</tr>
 {foreach from=$payment_by_type_array2 item=row key=key}
-	{assign var=total2 value=$total2+$row.total}
+	{assign var=total3 value=$total2+$row.total}
 	<tr>
 		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
 		<td>{$row.total}</td>
@@ -121,18 +74,13 @@
 		<td style="background-color: #ddd">{$total2|string_format:"%.2f"}</td>
 	</tr>
 </table>
-{/if}
-
-{if $values.user3}
-<h3 style="margin-bottom: 0px;">Amount Collected
-	{query_lookup value=$values.user3 query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} 
-	</h3>
+<h3 style="margin-bottom: 0px;">Amount Collected3:</h3>
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
 		<th>Type</th><th>Amount</th>
 	</tr>
 {foreach from=$payment_by_type_array3 item=row key=key}
-	{assign var=total3 value=$total3+$row.total}
+	{assign var=total3 value=$total1+$row.total}
 	<tr>
 		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
 		<td>{$row.total}</td>
@@ -143,15 +91,12 @@
 		<td style="background-color: #ddd">{$total3|string_format:"%.2f"}</td>
 	</tr>
 </table>
-{/if}
-
-
-<h3 style="margin-bottom: 0px;">Number Encounters</h3>
+<h3 style="margin-bottom: 0px;">Number Encounters:</h3>
 <table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
 	<tr>
 		<th>Provider</th><th># Encounters</th>
 	</tr>
-{foreach from=$encounters_by_provider_array item=row key=key}
+{foreach from=$encounters_by_provider_array3 item=row key=key}
 	<tr>
 		<td>{$row.provider}</td>
 		<td>{$row.total}</td>
