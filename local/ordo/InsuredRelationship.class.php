@@ -66,7 +66,7 @@ class InsuredRelationship extends ORDataObject {
 	/**
 	 * return an array of InsuredRelationship objects that correspond to a personid
 	 */
-	function fromPersonId($person_id) {
+	function &fromPersonId($person_id) {
 		//echo "Insured Relationship: fromPersonid with $person_id<br>";
 		settype($person_id,'int');
 		$ret = array();
