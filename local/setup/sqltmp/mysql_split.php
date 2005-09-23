@@ -11,6 +11,7 @@
 
 */
 
+	//rackspace =  3.23.58
 
 	$user='root';
 	$password='password';
@@ -22,14 +23,7 @@
 	    exit;
 	}
 
-	$sql = "SET sql_mode = 'MYSQL323'";
-	$result = mysql_query($sql);
 
-	if (!$result) {
- 	   echo "DB Error, could not set SQL Mode to MYSQL323\n";
-	   echo 'MySQL Error: ' . mysql_error();
-	   exit;
-	}
 
 	$sql = "SHOW TABLES FROM $dbname";
 	$result = mysql_query($sql);
@@ -39,24 +33,30 @@
 	   echo 'MySQL Error: ' . mysql_error();
 	   exit;
 	}
+	while ($row = mysql_fetch_row($result)) {
+    		$split_name_array = split("_",$row[0]);
+		$tablename = $row[0];
+		$corename = $split_name_array[0];
+		$sqlfile = "clearhealth_$corename.sql";
+		echo "erasing $sqlfile\n";	
+		system("rm -rf $sqlfile");		
+	}
+	//run the results again
+	$result = mysql_query($sql);
 
+	if (!$result) {
+ 	   echo "DB Error, could not list tables\n";
+	   echo 'MySQL Error: ' . mysql_error();
+	   exit;
+	}
 	while ($row = mysql_fetch_row($result)) {
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
 		$sqlfile = "clearhealth_$corename.sql";
 		echo "dumping $tablename to \n\t\t\t\t $sqlfile\n";	
-		system("mysqldump  -p$password -u$user $dbname $tablename >> $sqlfile");
+		system("mysqldump  --create-options --compatible=mysql323 -p$password -u$user $dbname $tablename >> $sqlfile");
 		
-	}
-
-	$sql = "SET sql_mode = ''";
-	$result = mysql_query($sql);
-
-	if (!$result) {
- 	   echo "DB Error, could not set SQL Mode back to nothing...\n";
-	   echo 'MySQL Error: ' . mysql_error();
-	   exit;
 	}
 
 
