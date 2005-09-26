@@ -58,9 +58,9 @@ var clni_ignore_missing_elements = true;
 	<tr height="20">
 		<td align="center" class="sideback"><div style="height: 20px; margin-top: 3px;" class="G10BOLD">
 		{if $edit_app}
-		Editing App #{$edit_oc->get_id()}
+		{l}Editing App #{/l}{$edit_oc->get_id()}
 		{else}
-		Add Appointment
+		{l}Add Appointment{/l}
 		{/if}
 		<a href="{literal}javascript:{}{/literal}" onClick="document.getElementById('popup').style.visibility = 'hidden';">C</a></div></td>
 	</tr>
@@ -97,7 +97,7 @@ var clni_ignore_missing_elements = true;
 				<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}">{html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
-					<td colspan="2" id="ghide1">{l}Patient{/l}&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">New</a>&nbsp;&nbsp;
+					<td colspan="2" id="ghide1">{l}Patient{/l}&nbsp;&nbsp;<a href="{php}echo Cellini::link("edit","patient");{/php}">{l}New{/l}</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
@@ -130,7 +130,7 @@ var clni_ignore_missing_elements = true;
 				</tr>
 {/if}
 				<tr>
-				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
+				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}{l}Edit Appointment{/l}{else}{l}Make Appointment{/l}{/if}"></td>
 				</tr>
 			</table>
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
@@ -231,7 +231,7 @@ var clni_ignore_missing_elements = true;
 				</tr>
 {/if}
 				<tr>
-				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}Edit Appointment{else}Make Appointment{/if}"></td>
+				<td colspan="2"><input type="submit" style="font-size:8pt;" name="make_appointment" value="{if $edit_app}{l}Edit Appointment{/l}{else}{l}Make Appointment{/l}{/if}"></td>
 				</tr>
 			</table>
 			<input type="hidden" name="occurence_id" value="{$edit_oc->get_id()}">
@@ -253,7 +253,7 @@ var clni_ignore_missing_elements = true;
 			
 			{/literal}
 			</script>
-			<a href="javascript:{literal}{}{/literal}" onClick="popupEditor();">show</a>
+			<a href="javascript:{literal}{}{/literal}" onClick="popupEditor();">{l}show{/l}</a>
 </div>		</td>
 	</tr>
 </table>
