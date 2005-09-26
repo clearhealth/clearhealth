@@ -8,3 +8,4 @@ CREATE TABLE `events` (
   `foreign_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;
+INSERT INTO `events` VALUES (502532,'No Shows','','','','',502530),(502530,'','','','','',0),(502535,'Cancelations','','','','',502530);

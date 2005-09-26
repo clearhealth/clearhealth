@@ -1,5 +1,4 @@
 CREATE TABLE `sequences` (
-  `id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  `id` int(11) NOT NULL default '0'
 ) TYPE=MyISAM;
-INSERT INTO `sequences` VALUES (500000);
+INSERT INTO `sequences` VALUES (505000);
