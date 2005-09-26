@@ -17,6 +17,7 @@ $version_1rc2->collectData('db_database', 'Database Name', 'text', '');
 
 $version_1rc2->addTest('PHPVersion', array('4.3.0'));
 $version_1rc2->addTest('PHPMemory', array('64M'));
+$version_1rc2->addTest('PHPMagicQuotes', array('Off'));
 $version_1rc2->addTest('PHPExtension', array('mysql'));
 $version_1rc2->addTest('WritableLocation', array(
 	$base_app_path.'/tmp',
