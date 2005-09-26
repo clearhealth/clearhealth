@@ -97,7 +97,12 @@
 {foreach from=$schedule->events item=event}
 <tr>
 	<td><a href="{$EDIT_EVENT_ACTION}id={$event->get_id()}&foreign_id={$schedule->get_id()}">{$event->get_title()}</a> &nbsp;
-		<a href="{$EDIT_WIZARD_ACTION}id={$event->get_id()}">wizard</a>&nbsp;&nbsp;&nbsp;<a href="{$DELETE_ACTION}id={$event->get_id()}&object=event">D</a></td>
+
+{if $schedule->get_schedule_code() != "NS"}
+		<a href="{$EDIT_WIZARD_ACTION}id={$event->get_id()}">wizard</a>&nbsp;&nbsp;&nbsp;
+{/if}
+<a href="{$DELETE_ACTION}id={$event->get_id()}&object=event">D</a>
+</td>
 	<!--<td>Instructor: {$event->get_contact_person()}</td>
 	<td>Website: {$event->get_website()}</td>-->
 </tr>
@@ -123,6 +128,8 @@
 		</form>
 		{else}
 		<form name="occurences" method="post" action="{$OCCURENCE_ACTION}">
+
+{if $schedule->get_schedule_code() != "NS"}
 		<tr>
 			<td colspan="4">&nbsp;&nbsp;{l}Add Time and Place: Date (E.g. 01/01/2005){/l}
 			  <input type="text" name="date" size="10">
@@ -131,6 +138,7 @@
 			<input type="submit" name="add" value="Add">
 			</td>
 		</tr>
+{/if}
 		<input type="hidden" name="schedule_id" value="{$schedule->id}" />
 		<input type="hidden" name="user_id" value="{$schedule->get_user_id()}" />
 		<input type="hidden" name="event_id" value="{$event->id}" />
