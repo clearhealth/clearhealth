@@ -15,9 +15,11 @@ $version_1rc2->collectData('db_password', 'Database Password', 'text', '');
 $version_1rc2->collectData('db_server', 'Database Server', 'text', 'localhost');
 $version_1rc2->collectData('db_database', 'Database Name', 'text', '');
 
-$version_1rc2->addTest('PHPVersion', array('4.3.0'));
+$version_1rc2->addTest('PHPVersionOver', array('4.3.0'));
+$version_1rc2->addTest('PHPVersionUnder', array('5.0.0'));
 $version_1rc2->addTest('PHPMemory', array('64M'));
 $version_1rc2->addTest('PHPMagicQuotes', array('Off'));
+$version_1rc2->addTest('PHPRegisterGlobals', array('Off'));
 $version_1rc2->addTest('PHPExtension', array('mysql'));
 $version_1rc2->addTest('WritableLocation', array(
 	$base_app_path.'/tmp',
@@ -25,12 +27,12 @@ $version_1rc2->addTest('WritableLocation', array(
 	$base_app_path.'/local/',
 	$base_app_path.'/freeb2/local/'
 						));
-$version_1rc2->addTest('MysqlVersion', array(
+$version_1rc2->addTest('MysqlVersionOver', array(
 	'username_field' => 'db_user',
 	'password_field' => 'db_password',
 	'server_field' => 'db_server',
 	'port_field' => 'db_port',
-	'version' => '4.1.0'));
+	'version' => '4.0.0'));
 $version_1rc2->addAction('AcceptText', array(dirname(__FILE__).'/LICENSE'));
 $version_1rc2->addAction('SQLFile', array(
 	'username_field' => 'db_user',
