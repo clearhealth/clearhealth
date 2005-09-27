@@ -162,6 +162,19 @@ class Patient extends MergeDecorator {
 		$return =& $this->person->numberByType($type,$value);
 		return $return;
 	}
+	
+	/**
+	 * An alias to {@link Person::numberValueByType()}.
+	 *
+	 * @param string
+	 * @return string
+	 */
+	function numberValueByType($type) {
+		$return = $this->person->numberValueByType($type);
+		return $return;
+	}
+	
+	
 	function &address() {
 		$return =& $this->person->address();
 		return $return;
