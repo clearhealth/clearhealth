@@ -35,8 +35,15 @@
 			<td><input name="insuranceProgram[x12_receiver_id]" value="{$insuranceProgram->get('x12_receiver_id')}"></td>
 		</tr>
 		<tr>
-			<td><label>{l}E-Billing Version{/l}:</label></td>
-			<td><input name="insuranceProgram[x12_version]" value="{$insuranceProgram->get('x12_version')}"></td>
+			<td>
+<a href="#" class="tooltip" {popup text="Unless there is a specific reason not, this should always be, 004010X098A1 which is the latest approved X12 version for HIPAA"}>
+<label>{l}E-Billing Version{/l}:</label></a>
+</td>
+			<td><input name="insuranceProgram[x12_version]"
+{if $insuranceProgram->get('x12_version')==""}	value="004010X098A1"
+{else}		 				value="{$insuranceProgram->get('x12_version')}"{/if}>
+
+</td>
 		</tr>
 		<tr>
 			<td></td>
