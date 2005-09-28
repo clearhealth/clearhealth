@@ -18,7 +18,7 @@
 	$host='localhost';
 	$dbname = 'clearhealth';
 
-	$file_prefix='clearhealth_';
+	$file_prefix='prop_';
 
 	if (!mysql_connect($host, $user, $password)) {
 	    echo 'Could not connect to mysql';
@@ -36,12 +36,18 @@
 	   exit;
 	}
 	while ($row = mysql_fetch_row($result)) {
+
+	if(!ereg('^fb',$row[0])){//this filters out all of the freeb sql files!
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
 		$sqlfile = "$file_prefix$corename.sql";
 		echo "erasing $sqlfile\n";	
-		system("rm -rf $sqlfile");		
+		system("rm -rf $sqlfile");
+	}else{
+		echo "ignoring freeb table ".$row[0]."\n";
+	}
+		
 	}
 	//run the results again
 	$result = mysql_query($sql);
@@ -52,13 +58,16 @@
 	   exit;
 	}
 	while ($row = mysql_fetch_row($result)) {
+	if(!ereg('^fb',$row[0])){//this filters out all of the freeb sql files!
     		$split_name_array = split("_",$row[0]);
 		$tablename = $row[0];
 		$corename = $split_name_array[0];
 		$sqlfile = "$file_prefix$corename.sql";
 		echo "dumping $tablename to \n\t\t\t\t $sqlfile\n";	
 		system("mysqldump  --compact --allow-keywords --skip-comments --quote-names  --compatible=mysql323 -p$password -u$user $dbname $tablename >> $sqlfile");
-
+	}else{
+		echo "ignoring freeb table ".$row[0]."\n";
+	}
 		
 	}
 
