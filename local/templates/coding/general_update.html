@@ -169,17 +169,28 @@ setupAutoComplete();
 
 function clni_rule_hasicd(element) {
 	var childDiv = document.getElementById('child_codes');
+	var cptDiv = document.getElementById('cptlist');
+	if (document.getElementById('parent_id').value == '' && childDiv.childNodes.length == 1 &&
+			childDiv.childNodes.length == 1 && document.getElementById('child_code').value == '') {
+		return true;
+	}
 	if (childDiv.childNodes.length == 1) {
 		return false;
 	}
 	return true;
 }
 function clni_rule_hascpt(element) {
+	// if the cpt is empty and icd list is empty then were valid
+	var childDiv = document.getElementById('child_codes');
+	var cptDiv = document.getElementById('cptlist');
+	if (document.getElementById('parent_id').value == '' && childDiv.childNodes.length == 1 &&
+			childDiv.childNodes.length == 1 && document.getElementById('child_code').value == '') {
+		return true;
+	}
 	if (document.getElementById('parent_id').value > 0) {
 		return true;
 	}
-	var childDiv = document.getElementById('cptlist');
-	if (childDiv.childNodes.length == 1) {
+	if (cptdiv.childNodes.length == 1) {
 		return false;
 	}
 	return true;
