@@ -1,19 +1,18 @@
-This is a quick guide to installing ClearHealth and FreeB2
+The installation of clearhealth is much simpler now to the installer.
 
-The tar ball contains on directory, called "clearhealth". This should be placed in a directory published by Apache with php rights. Google for LAMP installation or visit the Apache and PHP website for more information on how to do this.
+All you have to do is untar the clearhealth tgz file into a php/apache web directory 
+and then point your browser to the clearhealth directory. The installer will check your dependancies,
+tell you what directory permissions need to change and then create the configuration files and install the 
+database.
 
-Generally the ClearHealth project will support the latest versions of Fedora/RHEL and Ubuntu/Debian, but otherwise if you want to run ClearHealth, please download the XAMPP project. This will give you versions of php/mysql/apache that the project can support more easily. 
+Here are some links for more help!
 
-   1. edit clearhealth/local/config.php with the SQL variables you want to use
-   2. create the database with the same name used in config.php, usually clearhealth
-   3. load clearhealth/local/setup/install.sql into the clearhealth db
-   4. configure the clearhealth/freeb2/local/config.php to point to the freeb2 and clearhealth sql databases
-   5. create the database with the same name used in the freeb2 config.php, usually freeb2
-   6. load freeb2/local/setup/freeb2.sql into the freeb2 db
-   7. clearhealth/tmp, clearhealth/freeb2/tmp, and clearhealth/user/documents must be configured so that the webserver can write to them, either by changing its permissions to 777 or changing the ownership to the apache user 
-   8. change memory_limit in the php.ini file to 64
-   9. change max_execution_time in php.ini to 45
-  10. change register_globals in php.ini to off
-  11. change magic_quotes_gpc in php.ini to off
-  12. restart httpd server  
+ClearHealth Project Homepage 	http://www.clear-health.org
+FreeB Homepage 			http://www.freeb.org
+
+Forums 				http://op-en.org/forum/
+Bug Reporting 			http://op-en.org/mantis/login_page.php
+Documentation 			http://op-en.org/wiki/index.php/Main_Page
+
+Commercial Support		http://www.clear-health.com
 
