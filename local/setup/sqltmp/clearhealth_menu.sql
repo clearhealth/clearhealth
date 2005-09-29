@@ -21,6 +21,7 @@ CREATE TABLE `menu_form` (
   KEY `menu_id` (`menu_id`),
   KEY `form_id` (`form_id`)
 ) TYPE=MyISAM;
+INSERT INTO `menu_form` VALUES (505001,91,1710,'Patient Vitals',NULL);
 CREATE TABLE `menu_report` (
   `menu_report_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
