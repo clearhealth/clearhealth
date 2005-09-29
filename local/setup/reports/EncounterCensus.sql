@@ -1,25 +1,3 @@
----[census]---
-SELECT
- concat(p.last_name,', ',p.first_name) Patient,
- e.encounter_reason Reason,
- date_format(e.date_of_treatment,'%a %m/%d/%Y') `Date`,
- concat_ws(', ',pro.last_name,pro.first_name) Provider,
- b.name Facility
-FROM
- encounter e
- INNER JOIN person p on e.patient_id = p.person_id
- LEFT JOIN person pro on e.treating_person_id = pro.person_id
- LEFT JOIN buildings b on e.building_id = b.id
-WHERE
- IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
- IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility:query:select b.id, b.name from buildings b order by b.name]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider:query:select u.user_id, concat(p.last_name,', ',p.first_name) name from user INNER JOIN person p on u.person_id = p.person_id INNER JOIN provider pro using(person_id)]',1)
-order by
- `Date` DESC
-/***
-dsFilters-Reason|enumLookup&ds|encounter_reason
-***/
 ---[total_encounters,hideFilter,noPager]---
 SELECT
  COUNT(e.encounter_id) `Total Encounters`
