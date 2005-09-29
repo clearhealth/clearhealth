@@ -306,8 +306,9 @@ class C_Patient extends Controller {
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
 			$formDataGrid->name  = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
-			$formDataGrid->pageSize = 10;
-			
+		// commenting this line out fixed 3602 
+		//	$formDataGrid->pageSize = 10;
+		// 	
 			// Generate a menu of forms that are connected to Encounters
 			$menu = Menu::getInstance();
 			$connectedForms = $menu->getMenuData('patient',
