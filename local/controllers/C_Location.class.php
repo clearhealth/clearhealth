@@ -268,9 +268,14 @@ class C_Location extends Controller {
 					return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");	
 				}
 			}
-
+		
+			$next_url =  Cellini::link('edit_schedule',true,true);
+			//if the object was deleted then we cannot refer to it...
+		}else{
+			$next_url = Cellini::link('edit_schedule',true,true,$id);
+			//if the object was not deleted then we should keep it in focus...
 		}
-		header('Location: '.Cellini::link('edit_schedule',true,true,$id));
+		header('Location: '.$next_url);
 	}
 	
 	function edit_schedule_action_process() {
