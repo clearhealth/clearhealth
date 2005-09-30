@@ -40,7 +40,7 @@ WHERE
  IF ('[facility]',e.building_id = '[facility]',1) AND
  IF ('[provider]',e.treating_person_id = '[provider]',1)
 GROUP BY
- o.walkin
+ `Walk-in?`
 ---[total_encounters_by_facility,hideFilter,noPager]---
 SELECT
  b.name Facility,
