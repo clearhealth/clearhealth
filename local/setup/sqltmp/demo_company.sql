@@ -1,0 +1,25 @@
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `company_type`;
+CREATE TABLE `company_type` (
+  `company_id` int(11) NOT NULL default '0',
+  `company_type` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`company_id`,`company_type`),
+  KEY `company_id` (`company_id`),
+  KEY `company_type` (`company_type`)
+) TYPE=MyISAM COMMENT='Link to specify company type';
+
+
+/*!40000 ALTER TABLE `company_type` DISABLE KEYS */;
+LOCK TABLES `company_type` WRITE;
+INSERT INTO `company_type` VALUES (502553,1);
+UNLOCK TABLES;
+/*!40000 ALTER TABLE `company_type` ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
