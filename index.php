@@ -1,7 +1,12 @@
 <?php
 require_once "cellini/bootstrap.php";
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+if (file_exists(CELLINI_ROOT."/controllers/Dispatcher.class.php")) {
+	require_once CELLINI_ROOT."/controllers/Dispatcher.class.php";
+}
+else {
+	require_once CELLINI_ROOT."/controllers/Controller.class.php";
+}
 
 if ($config['dir_style_paths']) {
 
@@ -81,10 +86,15 @@ else {
 	$args = $_GET;
 }
 
-$c = new Controller();
-$c->check_input();
+if (class_exists('Dispatcher')) {
+	$d = new Dispatcher();
+}
+else {
+	$d = new Controller();
+}
+$d->check_input();
 
-$c->trail_build($args);
+$d->trail_build($args);
 
-echo $c->act($args);
+echo $d->act($args);
 ?>
