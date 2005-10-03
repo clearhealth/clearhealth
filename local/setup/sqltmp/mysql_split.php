@@ -16,7 +16,7 @@
 	$user='root';
 	$password='password';
 	$host='localhost';
-	$dbname = 'clearhealth';
+	$dbname = 'test';
 
 	$file_prefix='prop_';
 
