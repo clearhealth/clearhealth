@@ -100,7 +100,7 @@ cp $INSTALLER_VERSIONS $BUILD_DIR/installer
 
 echo "creating blank config files..."
 touch $BUILD_DIR/local/config.php
-touch $BUILD_DIR/local/freeb2/config.php
+touch $BUILD_DIR/freeb2/local/config.php
 
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
