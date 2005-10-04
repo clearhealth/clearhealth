@@ -24,8 +24,8 @@ $version_1rc2->addTest('PHPExtension', array('mysql'));
 $version_1rc2->addTest('WritableLocation', array(
 	$base_app_path.'/tmp',
 	$base_app_path.'/freeb2/tmp',
-	$base_app_path.'/local/',
-	$base_app_path.'/freeb2/local/'
+	$base_app_path.'/local/config.php',
+	$base_app_path.'/freeb2/local/config.php'
 						));
 $version_1rc2->addTest('MysqlVersionOver', array(
 	'username_field' => 'db_user',
