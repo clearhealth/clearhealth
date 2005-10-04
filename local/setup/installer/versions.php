@@ -5,7 +5,12 @@
  * Example version file for application installer
  */
 $base_app_path = realpath(dirname(__FILE__).'/../');
-
+// Our search and replaced is based on the / character, so we must get an address that is free of them...
+// By doing this we avoid // in the search string. This will probably break if there is a / in the string...
+//Eventually the replace string should move to be / insensitive.
+$webpath = substr($_SERVER['PHP_SELF'],1,strpos(strtolower($_SERVER['PHP_SELF']),"/installer/index.php")-1);
+if ($webpath == "") $webpath = "/"; 
+echo "$webpath <br>";
 $versions = new VersionSet();
 
 $version_1rc2 = new Version('1.0RC2');
@@ -49,7 +54,7 @@ $version_1rc2->addAction('ReplaceString', array(
 		$base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php',
 		$base_app_path.'/freeb2/local/config.php.dist' => $base_app_path.'/freeb2/local/config.php'),
 	'fields' => array(
-		'INSTALL_BASE_DIR' => $base_app_path,
+		'INSTALL_BASE_DIR' => $webpath,
 		'INSTALL_DB_USERNAME' => 'db_user',
 		'INSTALL_DB_PASSWORD' => 'db_password', 
 		'INSTALL_DB_DATABASE' => 'db_database', 
