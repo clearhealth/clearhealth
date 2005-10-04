@@ -9,4 +9,4 @@ CREATE TABLE `codes` (
   `fee` decimal(7,2) default NULL,
   `superbill` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`code_id`)
-) TYPE=MyISAM 
+) TYPE=MyISAM; 
