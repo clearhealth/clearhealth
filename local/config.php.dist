@@ -22,7 +22,7 @@ $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
 $config['htmldoc'] = "/usr/bin/htmldoc";
 
 // Base URL directory
-$config['base_dir'] = '/clearhealth/';
+$config['base_dir'] = '/INSTALL_BASE_DIR/';
 
 
 ################################################################################
