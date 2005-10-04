@@ -98,6 +98,10 @@ fi
 cp $INSTALLER_CONFIG $BUILD_DIR/installer
 cp $INSTALLER_VERSIONS $BUILD_DIR/installer
 
+echo "creating blank config files..."
+touch $BUILD_DIR/local/config.php
+touch $BUILD_DIR/local/freeb2/config.php
+
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
 CUR_DIR=`pwd`
