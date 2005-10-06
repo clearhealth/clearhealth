@@ -15,7 +15,6 @@ $base_app_path = realpath(dirname(__FILE__).'/../');
  */
 $webpath = substr($_SERVER['PHP_SELF'],1,strpos(strtolower($_SERVER['PHP_SELF']),"/installer/index.php")-1);
 if ($webpath == "") $webpath = "/";
-
 $versions = new VersionSet();
 
 $version_1rc2 = new Version('1.0RC2');
@@ -58,11 +57,12 @@ $version_1rc2->addAction('ReplaceString', array(
 		$base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php',
 		$base_app_path.'/freeb2/local/config.php.dist' => $base_app_path.'/freeb2/local/config.php'),
 	'fields' => array(
-		'INSTALL_BASE_DIR' => $web_path,
 		'INSTALL_DB_USERNAME' => 'db_user',
 		'INSTALL_DB_PASSWORD' => 'db_password', 
 		'INSTALL_DB_DATABASE' => 'db_database', 
-		'INSTALL_DB_SERVER' => 'db_server')
+		'INSTALL_DB_SERVER' => 'db_server'),
+
+	'strings' => array ('INSTALL_BASE_DIR' => $webpath)
 	));
 
 
