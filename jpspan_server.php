@@ -1,6 +1,11 @@
 <?php
 // todo: reduce the number of classes were handling to decrease the size of the javascript were generating (doesn't matter all that much in the local server case)
-require_once "cellini/bootstrap.php";
+if (file_exists('cellini')) {
+	require_once "cellini/bootstrap.php";
+}
+else {
+	require_once "celini/bootstrap.php";
+}
 
 // verify that were logged in
 $me =& Me::getInstance();
