@@ -7,6 +7,40 @@ else {
 	require_once "celini/bootstrap.php";
 }
 
+// simple logging class
+class jpspanLogger {
+        var $errorLog = "error.log";
+        var $successLog = "success.log";
+
+        /**
+        * Called when an error occurs
+        * @param array request / response / error / environment data snapshot
+        * @return void
+        * @access public
+        */
+        function error($data) {
+                if (file_exists($this->errorLog) && is_writable($this->errorLog) || is_writable(dirname(realpath($this->errorLog)))) {
+                        $fp = fopen($this->errorLog,'a+');
+                        fwrite($fp,var_export($data,true));
+                        fclose($fp);
+                }
+        }
+
+        /**
+        * Called on a successful request / response
+        * @param array request / response / environment data snapshot
+        * @return void
+        * @access public
+        */
+        function success($data) {
+                if (is_writable(dirname(realpath($this->errorLog)))) {
+                        $fp = fopen($this->successLog,'a+');
+                        fwrite($fp,var_export($data,true));
+                        fclose($fp);
+                }
+        }
+}
+
 // verify that were logged in
 $me =& Me::getInstance();
 if ($me->get_id() == 0) {
@@ -15,8 +49,15 @@ if ($me->get_id() == 0) {
 // Including this sets up the JPSPAN constant
 require_once CELLINI_ROOT . '/lib/jpspan/JPSpan.php';
 
+
+define ('JPSPAN_MONITOR', TRUE);
+require_once JPSPAN . 'Monitor.php';
+$monitor = & JPSpan_Monitor::instance();
+$monitor->addObserver(new jpspanLogger());
+
 // Load the PostOffice server
 require_once JPSPAN . 'Server/PostOffice.php';
+
 
 // Some class you've written...
 require_once APP_ROOT. '/local/controllers/C_PatientFinder.class.php';
