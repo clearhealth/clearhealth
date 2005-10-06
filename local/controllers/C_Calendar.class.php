@@ -509,7 +509,7 @@ class C_Calendar extends CalendarController {
 		$this->sidebar_action();
 		
 		//grab the oc object the sidebar action initializes. It may already have data in it in the edit case, we will overwrite it because the user did on the page form
-		$oc = $this->_tpl_vars['edit_oc'];
+		$oc = $this->get_template_vars('edit_oc');
 		
 		if (!empty($date)) {
 			$oc->set_date($date);	

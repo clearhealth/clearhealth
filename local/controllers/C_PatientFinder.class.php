@@ -112,7 +112,9 @@ class C_PatientFinder extends Controller {
 		
 		$this->find_action_process();
 		
-		if (is_array($this->_tpl_vars['result_set'])) return $this->_tpl_vars['result_set'];
+		if (is_array($this->get_template_vars('result_set'))) {
+			return $this->get_template_vars('result_set');
+		}
 		return null;
 	}
 	

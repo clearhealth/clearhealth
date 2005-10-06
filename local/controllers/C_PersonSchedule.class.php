@@ -132,8 +132,12 @@ class C_PersonSchedule extends CalendarController {
 		$s = new Schedule($this->schedule->get_foreign_id());
 		$this->assign("schedule_user_id",$s->get_user_id());
 		
-		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
-		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
+		if (!$this->isAssigned('edit_event')) {
+			$this->assign("edit_event",new Event());
+		}
+		if (!$this->isAssigned('edit_timeplace')) {
+			$this->assign("edit_timeplace",new Occurence());
+		}
 		$this->assign("process",true);
 		$this->assign("EVENT_ACTION", Cellini::link("edit_event") . "id=$id");
 		$this->assign("DELETE_ACTION", Cellini::link("delete"));

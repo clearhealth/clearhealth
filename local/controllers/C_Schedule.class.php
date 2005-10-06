@@ -189,8 +189,8 @@ class C_Schedule extends CalendarController {
 			$this->assign("ev",$e);
 			$capp_display = $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_appointment_inline_blurb.html");
 			$emsg = "";
-			if (isset($this->_tpl_vars['double_book_message'])) {
-				$emsg = $this->_tpl_vars['double_book_message'] . "<br />";
+			if ($this->isAssigned('double_book_message')) {
+				$emsg = $this->get_template_vars('double_book_message') . "<br />";
 			}
 			$this->assign("double_book_message", $emsg."You supplied this information:" . $app_display ."<br />But that collides with another event: <br>" . $capp_display);
 			$results->moveNext();
