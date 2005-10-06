@@ -74,7 +74,7 @@ $version_1rc2->addAction('SQLOptions', array(
 	'db_field' => 'db_database',
 	'files' => array(
 		$base_app_path.'/local/setup/code_packs', 
-		$base_app_path.'/local/setup/clearhealth_demodata-.sql')));
+		$base_app_path.'/local/setup/clearhealth_demodata-1.0RC2.sql')));
 
 $versions->add($version_1rc2);
 ?>
