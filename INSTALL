@@ -1,9 +1,6 @@
-The installation of clearhealth is much simpler now to the installer.
+The installation of clearhealth is now accomplished through a graphical installer.
 
-All you have to do is untar the clearhealth tgz file into a php/apache web directory 
-and then point your browser to the clearhealth directory. The installer will check your dependancies,
-tell you what directory permissions need to change and then create the configuration files and install the 
-database.
+Untar the clearhealth tgz file into your web directory and rename it to "clearhealth". Then point your browser to the clearhealth directory. The installer will check your dependancies, what directory permissions need to be changed, create the configuration files and install the database.
 
 Here are some links for more help!
 
