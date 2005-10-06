@@ -1,5 +1,10 @@
 <?php
-require_once "cellini/bootstrap.php";
+if (file_exists('cellini')) {
+	require_once "cellini/bootstrap.php";
+}
+else {
+	require_once "celini/bootstrap.php";
+}
 
 if (file_exists(CELLINI_ROOT."/controllers/Dispatcher.class.php")) {
 	require_once CELLINI_ROOT."/controllers/Dispatcher.class.php";

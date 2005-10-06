@@ -135,13 +135,13 @@ class C_DocumentCategory extends Controller {
  			  if ($node == null) {
  			  	
  			  	//echo "r:" . $this->tree->get_node_name($id) . "<br>";
-			    $rnode = new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => $this->_link("add_node",true) . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
+			    $rnode = new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Cellini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
 			    $this->_last_node = &$rnode;
  			  	$node = &$rnode;
 			  }
 			  else {
 			  	//echo "p:" . $this->tree->get_node_name($id) . "<br>";
- 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => $this->_link("add_node",true) . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+ 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Cellini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
 			  }
  			  if (is_array($ar)) {
  			    $this->_array_recurse($ar);
@@ -151,14 +151,14 @@ class C_DocumentCategory extends Controller {
  				if ($id === 0 && !empty($ar)) {
  				  $info = $this->tree->get_node_info($id);
  				  //echo "b:" . $this->tree->get_node_name($id) . "<br>";
- 				  $node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => $this->_link("add_node",true) . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+ 				  $node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => Cellini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  				}
  				else {
  					//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
  					//this conditional tree could be more efficient but working with trees makes my head hurt, TODO
  					if ($id !== 0 && is_object($node)) {
  					  //echo "n:" . $this->tree->get_node_name($id) . "<br>";
- 				  	  $node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => $this->_link("add_node",true) . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+ 				  	  $node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Cellini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  					}
  				}
  			}	

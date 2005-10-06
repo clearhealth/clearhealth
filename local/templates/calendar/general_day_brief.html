@@ -10,9 +10,9 @@
 				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"}</span></td>
       			<td align="left" width="40%" class="navback"><a class="psf" href="{$DAY_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[{l}Next Day{/l}]" border="0" align="left"></a>
       			<div style="float:right;">
-      			<a href="{$CONTROLLER->_link("day",true)}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
-      			<a href="{$CONTROLLER->_link("week_grid",true)}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
-      			<a href="{$CONTROLLER->_link("month",true)}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
+      			<a href="{link action="day"}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
+      			<a href="{link action="week_grid"}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
+      			<a href="{link action="month"}date={$Day->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
       			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
       			</div>
       			</td>

@@ -135,13 +135,13 @@ class C_PersonSchedule extends CalendarController {
 		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
 		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
 		$this->assign("process",true);
-		$this->assign("EVENT_ACTION", $this->_link("edit_event",true) . "id=$id");
-		$this->assign("DELETE_ACTION", $this->_link("delete",true));
-		$this->assign("OCCURENCE_ACTION", $this->_link("edit_occurence",true) . "id=$id&date=$date");
-		$this->assign("WEEK_NEXT_ACTION", $this->_link("edit_schedule",true) . "id=$id&date=$ndate");
-		$this->assign("WEEK_PREV_ACTION", $this->_link("edit_schedule",true) . "id=$id&date=$pdate");
+		$this->assign("EVENT_ACTION", Cellini::link("edit_event") . "id=$id");
+		$this->assign("DELETE_ACTION", Cellini::link("delete"));
+		$this->assign("OCCURENCE_ACTION", Cellini::link("edit_occurence") . "id=$id&date=$date");
+		$this->assign("WEEK_NEXT_ACTION", Cellini::link("edit_schedule") . "id=$id&date=$ndate");
+		$this->assign("WEEK_PREV_ACTION", Cellini::link("edit_schedule") . "id=$id&date=$pdate");
 		
-		$this->assign("LINK_BASE",$this->_link('edit_schedule',true));
+		$this->assign("LINK_BASE",Cellini::link('edit_schedule'));
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year,$id);
 		$this->assign_by_ref("sidebar",$sidebar);
 		
@@ -288,7 +288,7 @@ class C_PersonSchedule extends CalendarController {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: " . $this->_link("edit_schedule",true) . "id=" . $_POST['schedule_id']);
+		header("Location: " . Cellini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
 		return;
 	}
 	
@@ -313,7 +313,7 @@ class C_PersonSchedule extends CalendarController {
 		}
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
-		//$this->assign("DELETE_ACTION", $this->_link("delete",true) . "id=$id&object_class=$object_class");
+		//$this->assign("DELETE_ACTION", Cellini::link("delete",true) . "id=$id&object_class=$object_class");
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");
 	}
 	
@@ -492,7 +492,7 @@ class C_PersonSchedule extends CalendarController {
 		}
 		
 		$this->assign_by_ref("sidebar_months",$months);
-		$this->assign("LINK_BASE",$this->_link('edit_schedule',true) . "id=" . $id . "&");
+		$this->assign("LINK_BASE",Cellini::link('edit_schedule') . "id=" . $id . "&");
 		 
 		return $this->fetch($GLOBALS['template_dir'] . "person_schedules/" . $this->template_mod . "_sidebar.html");
 	}

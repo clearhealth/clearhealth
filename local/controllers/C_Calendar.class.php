@@ -140,8 +140,8 @@ class C_Calendar extends CalendarController {
 		$this->assign_by_ref("Month",$Month);
 		$this->assign_by_ref("MonthArray",$MonthArray);
 		
-		$this->assign("MONTH_NEXT_ACTION", $this->_link("month",true) . "date=$ndate");
-		$this->assign("MONTH_PREV_ACTION", $this->_link("month",true) . "date=$pdate");
+		$this->assign("MONTH_NEXT_ACTION", Cellini::link("month") . "date=$ndate");
+		$this->assign("MONTH_PREV_ACTION", Cellini::link("month") . "date=$pdate");
 		
 		$this->assign("Month",$Month);
 		
@@ -189,8 +189,8 @@ class C_Calendar extends CalendarController {
 		$this->assign_by_ref("Week",$Week);
 		$this->assign_by_ref("WeekArray",$WeekArray);
 		
-		$this->assign("WEEK_NEXT_ACTION", $this->_link("week",true) . "date=$ndate");
-		$this->assign("WEEK_PREV_ACTION", $this->_link("week",true) . "date=$pdate");
+		$this->assign("WEEK_NEXT_ACTION", Cellini::link("week") . "date=$ndate");
+		$this->assign("WEEK_PREV_ACTION", Cellini::link("week") . "date=$pdate");
 		
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "week");
 		$this->assign_by_ref("sidebar",$sidebar);
@@ -259,8 +259,8 @@ class C_Calendar extends CalendarController {
 		$this->assign("week_stablemap2",$map['tablemap2']);
 		$this->assign("week_smaxcols",$map['maxcols']);
 		
-		$this->assign("WEEK_NEXT_ACTION", $this->_link("week_grid",true) . "date=$ndate");
-		$this->assign("WEEK_PREV_ACTION", $this->_link("week_grid",true) . "date=$pdate");
+		$this->assign("WEEK_NEXT_ACTION", Cellini::link("week_grid") . "date=$ndate");
+		$this->assign("WEEK_PREV_ACTION", Cellini::link("week_grid") . "date=$pdate");
 		
 		$this->assign_by_ref("WeekGrid",$WeekGrid);
 		$this->assign_by_ref("WeekGridArray",$WeekGridArray);
@@ -327,8 +327,8 @@ class C_Calendar extends CalendarController {
 		$this->assign("start_timestamp",$start_timestamp);
 		$this->assign("end_timestamp",$end_timestamp);		
 		
-		$this->assign("DAY_NEXT_ACTION", $this->_link("day",true) . "date=$ndate");
-		$this->assign("DAY_PREV_ACTION", $this->_link("day",true) . "date=$pdate");
+		$this->assign("DAY_NEXT_ACTION", Cellini::link("day") . "date=$ndate");
+		$this->assign("DAY_PREV_ACTION", Cellini::link("day") . "date=$pdate");
 		
 		$this->assign_by_ref("DayGrid",$DayGrid);
 		$this->assign_by_ref("DayArray",$DayArray);
@@ -378,8 +378,8 @@ class C_Calendar extends CalendarController {
 		$this->assign_by_ref("Day",$Day);
 		$this->assign_by_ref("DayArray",$DayArray);
 		
-		$this->assign("DAY_NEXT_ACTION", $this->_link("day_brief",true) . "date=$ndate");
-		$this->assign("DAY_PREV_ACTION", $this->_link("day_brief",true) . "date=$pdate");
+		$this->assign("DAY_NEXT_ACTION", Cellini::link("day_brief") . "date=$ndate");
+		$this->assign("DAY_PREV_ACTION", Cellini::link("day_brief") . "date=$pdate");
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day_brief");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
@@ -494,7 +494,7 @@ class C_Calendar extends CalendarController {
 			$this->assign("edit_oc",$oc);
 		}
 		$this->assign_by_ref("sidebar_months",$months);
-		$this->assign("LINK_BASE",$this->_link($view,true));
+		$this->assign("LINK_BASE",Cellini::link($view));
 		$this->assign("appointment_reasons", array_flip($u->_load_enum("appointment_reasons",false)));
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_sidebar.html");

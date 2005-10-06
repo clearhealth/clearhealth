@@ -218,9 +218,9 @@ class C_Location extends Controller {
 		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
 		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
 		$this->assign("process",true);
-		$this->assign("EVENT_ACTION", $this->_link("edit_event",true) . "id=$id");
-		$this->assign("OCCURENCE_ACTION", $this->_link("edit_occurence",true) . "id=$id");
-		$this->assign("SELECTED_ACTION", $this->_link("selected_occurence",true) . "id=$id");
+		$this->assign("EVENT_ACTION", Cellini::link("edit_event") . "id=$id");
+		$this->assign("OCCURENCE_ACTION", Cellini::link("edit_occurence") . "id=$id");
+		$this->assign("SELECTED_ACTION", Cellini::link("selected_occurence") . "id=$id");
 		//$this->assign("OCCURENCE_ACTION", "controller.php?" . str_replace("edit_schedule","edit_occurence",$_SERVER['QUERY_STRING']));
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_schedule.html");
 	}
@@ -461,7 +461,7 @@ class C_Location extends Controller {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: " . $this->_link("edit_schedule",true) . "id=" . $_POST['schedule_id']);
+		header("Location: " . Cellini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
 		return;
 	}
 	
