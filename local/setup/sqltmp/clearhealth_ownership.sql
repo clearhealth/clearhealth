@@ -5,4 +5,3 @@ CREATE TABLE `ownership` (
   KEY `user_id` (`user_id`),
   KEY `id` (`id`)
 ) TYPE=MyISAM;
-INSERT INTO `ownership` VALUES (502530,1),(502531,1),(502532,1),(502533,1),(502534,1),(502535,1),(502536,1),(502537,1),(502538,1),(505001,1);
