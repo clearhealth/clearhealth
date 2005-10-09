@@ -54,7 +54,7 @@ class FeeSchedule extends ORDataObject {
 	/**
 	 * List all FeeScheduls
 	 */
-	function listFeeSchedules() {
+	function &listFeeSchedules() {
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
 				'cols' 	=> "fee_schedule_id, name, label, description",
