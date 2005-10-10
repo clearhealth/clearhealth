@@ -24,8 +24,6 @@ $config['htmldoc'] = "/usr/bin/htmldoc";
 // Base URL directory
 $config['base_dir'] = '/INSTALL_BASE_DIR/';
 
-// Allow Group Appointments on the Calendar
-$config['scheduling']['group_appointments'] = false;
 
 ################################################################################
 # Database Setup
