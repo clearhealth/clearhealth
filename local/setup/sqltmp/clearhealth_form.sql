@@ -12,4 +12,3 @@ CREATE TABLE `form_data` (
   `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`form_data_id`)
 ) TYPE=MyISAM COMMENT='Links in the form data STARTWITHDATA';
-INSERT INTO `form_data` VALUES (2057,800,1110,'2005-03-14 15:09:50'),(20350,800,10061,'2005-04-08 09:05:24'),(20351,800,10001,'2005-04-08 09:07:50');
