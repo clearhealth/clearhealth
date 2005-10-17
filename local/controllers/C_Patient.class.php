@@ -1,6 +1,6 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
 require_once APP_ROOT ."/local/controllers/C_Coding.class.php";
 
 /**
@@ -55,13 +55,13 @@ class C_Patient extends Controller {
 
 			$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 			$encounterGrid->name = "encounterGrid";
-			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Cellini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
+			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Celini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
 			$encounterGrid->setExternalId($p->get('id'));
 
 			$formDataGrid =& new cGrid($p->loadDatasource('FormDataList'));
 			$formDataGrid->name = "formDataGrid";
-			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
+			$formDataGrid->registerTemplate('name','<a href="'.Celini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
 			$formDataGrid->setExternalId($p->get('id'));
 			
@@ -78,7 +78,7 @@ class C_Patient extends Controller {
 			$report =& ORDataObject::factory("Report");
 			$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 89));
 			$reportGrid->name = "reportGrid";
-			$reportGrid->registerTemplate("title",'<a href="'.Cellini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
+			$reportGrid->registerTemplate("title",'<a href="'.Celini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 			$reportGrid->setExternalId(89);
 
 			$note =& ORDataObject::factory('PatientNote');
@@ -111,21 +111,21 @@ class C_Patient extends Controller {
 
 			$this->assign('formList',$formList);
 
-			$this->assign('ENCOUNTER_ACTION',Cellini::link('encounter'));
-			$this->assign('ACCOUNT_ACTION',Cellini::link('history','account',true,$this->get("patient_id")));
-			$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
-			$this->assign('EDIT_ACTION',Cellini::link('edit',true,true,$this->get('patient_id')));
+			$this->assign('ENCOUNTER_ACTION',Celini::link('encounter'));
+			$this->assign('ACCOUNT_ACTION',Celini::link('history','account',true,$this->get("patient_id")));
+			$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
+			$this->assign('EDIT_ACTION',Celini::link('edit',true,true,$this->get('patient_id')));
 			$this->assign('NO_PATIENT', false);			
-			$this->assign('NOTE_ACTION',Cellini::managerLink('note',$this->get('patient_id')));
-			$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
-			$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$patient_id));
+			$this->assign('NOTE_ACTION',Celini::managerLink('note',$this->get('patient_id')));
+			$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
+			$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
 		}
 		else {
 			$this->assign('NO_PATIENT', true);
 			$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');	
 		}
 		
-		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_dashboard.html"));
+		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_dashboard.html"));
 	}
 
 	/**
@@ -149,13 +149,13 @@ class C_Patient extends Controller {
 		$nameHistoryGrid->name = "nameHistoryGrid";
 		$identifierGrid =& new cGrid($person->identifierList());
 		$identifierGrid->name = "identifierGrid";
-		$identifierGrid->registerTemplate('identifier','<a href="'.Cellini::ManagerLink('editIdentifier',$patient_id).'id={$identifier_id}&process=true">{$identifier}</a>');
-		$identifierGrid->registerTemplate('actions','<a href="'.Cellini::ManagerLink('deleteIdentifier',$patient_id).'id={$identifier_id}&process=true">delete</a>');
+		$identifierGrid->registerTemplate('identifier','<a href="'.Celini::ManagerLink('editIdentifier',$patient_id).'id={$identifier_id}&process=true">{$identifier}</a>');
+		$identifierGrid->registerTemplate('actions','<a href="'.Celini::ManagerLink('deleteIdentifier',$patient_id).'id={$identifier_id}&process=true">delete</a>');
 		$identifierGrid->setLabel('actions',false);
 
 		$insuredRelationshipGrid =& new cGrid($person->loadDatasource('InsuredRelationshipList'));
 		$insuredRelationshipGrid->name = "insuredRelationshipGrid";
-		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Cellini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
+		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Celini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
 		$insuredRelationshipGrid->indexCol = false;
 		$insuredRelationshipGrid->registerFilter('program_order',array(&$this,'_movePayer'));
 
@@ -170,7 +170,7 @@ class C_Patient extends Controller {
 		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id);
 		$personPersonGrid = new cGrid($person->loadDatasource('RelatedList'));
 		$personPersonGrid->name = "personPersonGrid";
-		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Cellini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
+		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Celini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
 
 		$building =& ORDataOBject::factory('Building');
 		$encounter =& ORDataOBject::factory('Encounter');
@@ -192,17 +192,17 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->assign_by_ref('patientStatistics',$patientStatistics);
 		$this->assign_by_ref('subscriber',$subscriber);
-		$this->assign('FORM_ACTION',Cellini::managerLink('update',$patient_id));
-		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$patient_id));
-		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$patient_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$patient_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$patient_id));
-		$this->assign('NEW_PAYER',Cellini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$patient_id));
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$patient_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
+		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
 		$this->assign('hide_type',true);
 
 		$this->assign('now',date('Y-m-d'));
 
-		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_edit.html"));
+		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_edit.html"));
 	}
 
 	/**
@@ -212,13 +212,13 @@ class C_Patient extends Controller {
 		$person =& ORDataObject::factory('Patient');
 
 		$ds =& $person->patientList();
-		$ds->template['name'] = "<a href='".Cellini::link('dashboard')."id={\$person_id}'>{\$name}</a>";
+		$ds->template['name'] = "<a href='".Celini::link('dashboard')."id={\$person_id}'>{\$name}</a>";
 		$grid =& new cGrid($ds);
 		$grid->pageSize = 50;
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_list.html"));
 	}
 
 	/**
@@ -265,20 +265,20 @@ class C_Patient extends Controller {
 		$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$encounter_id);
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->name = "encounterDateGrid";
-		$encounterDateGrid->registerTemplate('date','<a href="'.Cellini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
-		$this->assign('NEW_ENCOUNTER_DATE',Cellini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
+		$encounterDateGrid->registerTemplate('date','<a href="'.Celini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
+		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
 		$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$encounter_id);
 		$encounterValueGrid = new cGrid($encounterValue->encounterValueList($encounter_id));
 		$encounterValueGrid->name = "encounterValueGrid";
-		$encounterValueGrid->registerTemplate('value','<a href="'.Cellini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
-		$this->assign('NEW_ENCOUNTER_VALUE',Cellini::managerLink('editEncounterValue',$encounter_id)."id=0&process=true");
+		$encounterValueGrid->registerTemplate('value','<a href="'.Celini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
+		$this->assign('NEW_ENCOUNTER_VALUE',Celini::managerLink('editEncounterValue',$encounter_id)."id=0&process=true");
 
 		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->name = "encounterPersonGrid";
-		$encounterPersonGrid->registerTemplate('person','<a href="'.Cellini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
-		$this->assign('NEW_ENCOUNTER_PERSON',Cellini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
+		$encounterPersonGrid->registerTemplate('person','<a href="'.Celini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
+		$this->assign('NEW_ENCOUNTER_PERSON',Celini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
 		$payment =& ORDataObject::factory('Payment',$this->payment_id);
 		if ($payment->_populated == false) {
@@ -287,9 +287,9 @@ class C_Patient extends Controller {
 		$payment->set("encounter_id",$encounter_id);
 		$paymentGrid = new cGrid($payment->paymentsFromEncounterId($encounter_id));
 		$paymentGrid->name = "paymentGrid";
-		$paymentGrid->registerTemplate('amount','<a href="'.Cellini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
+		$paymentGrid->registerTemplate('amount','<a href="'.Celini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
-		$this->assign('NEW_ENCOUNTER_PAYMENT',Cellini::managerLink('editPayment',$encounter_id)."id=0&process=true");
+		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
 		
 		$appointments = $encounter->appointmentList();
@@ -305,7 +305,7 @@ class C_Patient extends Controller {
 			$formData =& ORDataObject::factory("FormData");
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
 			$formDataGrid->name  = "formDataGrid";
-			$formDataGrid->registerTemplate('name','<a href="'.Cellini::link('data','Form').'id={$form_data_id}">{$name}</a>');
+			$formDataGrid->registerTemplate('name','<a href="'.Celini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 		// commenting this line out fixed 3602 
 		//	$formDataGrid->pageSize = 10;
 		// 	
@@ -353,11 +353,11 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('appointmentList',$appointments);
 		$this->assign_by_ref('appointmentArray',$appointmentArray);
 		
-		$this->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
-		$this->assign('FORM_FILLOUT_ACTION',Cellini::link('fillout','Form'));
+		$this->assign('FORM_ACTION',Celini::link('encounter',true,true,$encounter_id));
+		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 
 		if ($encounter_id > 0 /*&& $encounter->get('status') !== "closed"*/) {
-			$this->coding->assign('FORM_ACTION',Cellini::link('encounter',true,true,$encounter_id));
+			$this->coding->assign('FORM_ACTION',Celini::link('encounter',true,true,$encounter_id));
 			$this->coding->assign("encounter", $encounter);
 			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_parent_id);
 			$this->assign('codingHtml',$codingHtml);
@@ -368,8 +368,8 @@ class C_Patient extends Controller {
 		if ($encounter->get('status') === "closed") {
 			ORDataObject::factory_include('ClearhealthClaim');
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
-			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Cellini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
-			$this->assign('PAYMENT_ACTION',Cellini::link('payment','Eob',true,$claim->get('id')));
+			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Celini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
+			$this->assign('PAYMENT_ACTION',Celini::link('payment','Eob',true,$claim->get('id')));
 
 			$this->assign('encounter_has_claim',false);
 			if ($claim->_populated) {
@@ -378,11 +378,11 @@ class C_Patient extends Controller {
 
 			/* moved to menu
 			// todo: get this without hard coding in the report and template id
-			$exit_base_link = str_replace("main","PDF",Cellini::link('report',true,true));
+			$exit_base_link = str_replace("main","PDF",Celini::link('report',true,true));
 			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
 			*/
 
-			$this->assign('REOPEN_ACTION',Cellini::link('reopen_encounter', true, true, $encounter->get('id')) . 'process=true');
+			$this->assign('REOPEN_ACTION',Celini::link('reopen_encounter', true, true, $encounter->get('id')) . 'process=true');
 		}
 		else {
 			ORdataObject::factory_include('ClearhealthClaim');
@@ -397,11 +397,11 @@ class C_Patient extends Controller {
 			//exit;
 		}
 			/* not currently in use
-			$intake_base_link = str_replace("main","util",Cellini::link('report',true,true));
+			$intake_base_link = str_replace("main","util",Celini::link('report',true,true));
 			$this->assign('INTAKE_REPORT',$intake_base_link."report_id=17857&template_id=17859&encounter_id=".$encounter->get('id'));
 			*/
 
-		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
+		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_encounter.html"));
 	}
 
 	/**
@@ -520,7 +520,7 @@ class C_Patient extends Controller {
 		$encounter->set('status', 'open');
 		$encounter->persist();
 		
-		header('Location: '.Cellini::link('encounter',true,true,$encounter_id));
+		header('Location: '.Celini::link('encounter',true,true,$encounter_id));
 		exit();
 	}
 
@@ -608,21 +608,21 @@ class C_Patient extends Controller {
 
 		$this->_registerClaimData($freeb2,$encounter,$claimIdentifier);
 
-		header('Location: '.Cellini::link('encounter',true,true,$encounter_id));
+		header('Location: '.Celini::link('encounter',true,true,$encounter_id));
 		exit();
 	}
 
 	function _movePayer($program_order,$row) {
 		$ret = "";
 		if ($program_order > 1) {
-			$ret .= '<a href="'.Cellini::ManagerLink('moveInsuredRelationshipUp',$this->get('patient_id')).'id='.$row['insured_relationship_id'].
+			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipUp',$this->get('patient_id')).'id='.$row['insured_relationship_id'].
 			'&process=true"><img src="'.$this->base_dir.'images/stock/s_asc.png" border=0></a>';
 		}
 		else {
 			$ret .= "<img src='{$this->base_dir}images/stock/blank.gif' width=12 height=9>";
 		}
 		if ($program_order < $this->payerCount) {
-			$ret .= '<a href="'.Cellini::ManagerLink('moveInsuredRelationshipDown',$this->get('patient_id'))
+			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipDown',$this->get('patient_id'))
 			.'id='.$row['insured_relationship_id'].'&process=true"><img src="'.$this->base_dir.'images/stock/s_desc.png" border=0></a>';
 		}
 		else {
@@ -1054,7 +1054,7 @@ class C_Patient extends Controller {
 			$this->coding->delete_claimline($parent_id);
 		}
 	
-		header("Location:" . Cellini::link("encounter", true, true, $encounter_id));
+		header("Location:" . Celini::link("encounter", true, true, $encounter_id));
 		$this->_state=false;
 
 	}
@@ -1159,7 +1159,7 @@ class C_Patient extends Controller {
 		$patient =& ORDataObject::factory('Patient',$patient_id);
 		$this->assign_by_ref('patient',$patient);
 
-		return $this->fetch(Cellini::getTemplatePath("/patient/" . $this->template_mod . "_summary_report.html"));
+		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_summary_report.html"));
 	}
 
 	function summary_report_action_process($options = false) {
@@ -1192,7 +1192,7 @@ class C_Patient extends Controller {
 		}
 		$this->assign('data',$data);
 		if (!$options) {
-			$this->assign('PRINT_ACTION',Cellini::link('summary_report','patient','util').'options=current');
+			$this->assign('PRINT_ACTION',Celini::link('summary_report','patient','util').'options=current');
 		}
 	}	
 

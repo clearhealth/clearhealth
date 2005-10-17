@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Person_NameHistoryList_DS extends Datasource_sql
 {
@@ -44,7 +44,7 @@ class Person_NameHistoryList_DS extends Datasource_sql
 			'middle_name' => 'Middle Initial', 
 			'update_date' => 'Date Changed');
 		
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 			array(
 				'cols' 	=> "first_name, last_name, middle_name, update_date",
 				'from' 	=> "name_history AS nh",

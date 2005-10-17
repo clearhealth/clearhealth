@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 
 class C_Appointment extends Controller {
 
@@ -17,8 +17,8 @@ class C_Appointment extends Controller {
 		$this->assign('start',$oc->get('start'));
 		$this->assign('title',$oc->get('notes'));
 		$this->assign('duration',$oc->get('duration'));
-		$this->assign('FORM_ACTION',Cellini::link(true,true,true,$appointment_id));
-		$this->assign('ENCOUNTER_ACTION',Cellini::link('Encounter','patient',true,0)."occurence_id=$appointment_id&");
+		$this->assign('FORM_ACTION',Celini::link(true,true,true,$appointment_id));
+		$this->assign('ENCOUNTER_ACTION',Celini::link('Encounter','patient',true,0)."occurence_id=$appointment_id&");
 
 		$go =& ORDataObject::Factory('GroupOccurence');
 		$patientList = $go->getPatientlist($appointment_id);
@@ -27,7 +27,7 @@ class C_Appointment extends Controller {
 		$this->assign('patientList',$patientList);
 		$this->assign('patientListCount',$patientListCount);
 
-		return $this->fetch(Cellini::getTemplatePath("/appointment/" . $this->template_mod . "_editGroup.html"));
+		return $this->fetch(Celini::getTemplatePath("/appointment/" . $this->template_mod . "_editGroup.html"));
 	}
 
 	function editGroup_action_process($appointment_id) {

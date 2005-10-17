@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 
 class C_Docs extends Controller {
 
@@ -12,7 +12,7 @@ class C_Docs extends Controller {
 	}
 
 	function api_action() {
-		header("Location: $this->base_dir/cellini/docs/");
+		header("Location: $this->base_dir/Celini/docs/");
 	}
 
 

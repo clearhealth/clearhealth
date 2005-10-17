@@ -11,7 +11,7 @@
 /**
  * Require necessary file(s)
  */
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
 
 
 /** 

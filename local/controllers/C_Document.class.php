@@ -1,9 +1,9 @@
 <?php
 
-require_once CELLINI_ROOT. "/controllers/Controller.class.php";
+require_once CELINI_ROOT. "/controllers/Controller.class.php";
 require_once APP_ROOT . "/local/ordo/Document.class.php";
 require_once APP_ROOT . "/local/includes/CategoryTree.class.php";
-require_once CELLINI_ROOT. "/lib/TreeMenu.php";
+require_once CELINI_ROOT. "/lib/TreeMenu.php";
 require_once APP_ROOT . "/local/ordo/Note.class.php";
 
 class C_Document extends Controller {
@@ -23,7 +23,7 @@ class C_Document extends Controller {
 		parent::Controller();
 		$this->documents = array();
 		$this->template_mod = $template_mod;
-		$this->assign("CURRENT_ACTION", Cellini::link(true));
+		$this->assign("CURRENT_ACTION", Celini::link(true));
 		
 		//get global config options
 		$this->_config = $GLOBALS['config']['document_manager'];
@@ -53,7 +53,7 @@ class C_Document extends Controller {
 
 		$this->_args = array("project_id" => $_GET['project_id']);
 		$this->id = $_GET['project_id'];
-		$this->assign("FORM_ACTION", Cellini::link(true,true,true,$this->id) . $_SERVER['QUERY_STRING']);
+		$this->assign("FORM_ACTION", Celini::link(true,true,true,$this->id) . $_SERVER['QUERY_STRING']);
 		
 		$this->assign("STYLE", $GLOBALS['style']);
 
@@ -61,7 +61,7 @@ class C_Document extends Controller {
 		if (isset($_GET['parent_id'])) {
 			$parent = "&parent_id=".$_GET['parent_id'];
 		}
-		$this->assign('MULTI_UPLOAD_ACTION',Cellini::link('multi_upload',true,true,$this->id).$parent);
+		$this->assign('MULTI_UPLOAD_ACTION',Celini::link('multi_upload',true,true,$this->id).$parent);
 
 		if (!isset($_SESSION['DM']['group'])) {
 			$document =& ORDataObject::factory('Document');
@@ -101,7 +101,7 @@ class C_Document extends Controller {
 			$group_list = $document->getGroupList();
 			$this->assign("group_list",$group_list);
 
-			$activity .= $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_upload.html"));
+			$activity .= $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_upload.html"));
 		}
 		$this->assign("activity", $activity);
 
@@ -210,11 +210,11 @@ class C_Document extends Controller {
  		$data =& $this->_build_category_view($tree,$category_names);
 
 		$this->assign_by_ref('data',$data);
-		$l = Cellini::link('retrieve',true,'util');
+		$l = Celini::link('retrieve',true,'util');
 		$this->assign('VIEW_LINK',substr($l,0,strlen($l)-1)."/");
 
 
-		return $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_viewCategory.html"));
+		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_viewCategory.html"));
 	}
 
 	function &_build_category_view($array,$category_names) {
@@ -243,9 +243,9 @@ class C_Document extends Controller {
 		$notes = $n->notes_factory($doc_id);
 		
 		$this->assign("file", $d);
-		$this->assign("web_path", Cellini::link("retrieve",true,true,$this->id) . "document_id=" . $d->get_id() . "&");
-		$this->assign("NOTE_ACTION",Cellini::link("note",true,true,$this->id));
-		$this->assign("MOVE_ACTION",Cellini::link("move",true,true,$this->id) . "document_id=" . $d->get_id() . "&process=true");
+		$this->assign("web_path", Celini::link("retrieve",true,true,$this->id) . "document_id=" . $d->get_id() . "&");
+		$this->assign("NOTE_ACTION",Celini::link("note",true,true,$this->id));
+		$this->assign("MOVE_ACTION",Celini::link("move",true,true,$this->id) . "document_id=" . $d->get_id() . "&process=true");
 		
 		$this->assign("notes",$notes);
 		
@@ -260,7 +260,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		$activity = $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_view.html"));
+		$activity = $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_view.html"));
 		$this->assign("activity", $activity);
 		
 		return $this->list_action_view($project_id);
@@ -310,7 +310,7 @@ class C_Document extends Controller {
 					preg_match("/^([0-9]+)_/",basename($file),$patient_match);
 					$file_info['project_id'] = $patient_match[1];
 					$file_info['document_id'] = $d->get_id();
-					$file_info['web_path'] = Cellini::link("retrieve",true,true,$this->id) . "document_id=" . $d->get_id() . "&";
+					$file_info['web_path'] = Celini::link("retrieve",true,true,$this->id) . "document_id=" . $d->get_id() . "&";
 					
 					//merge the tmp array into the larger array
 					$queue_files[] = $file_info; 
@@ -335,7 +335,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		return $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_queue.html"));
+		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_queue.html"));
 	}
 	
 	function move_action_process($project_id="",$document_id) {
@@ -436,10 +436,10 @@ class C_Document extends Controller {
 
 		//$this->assign('group',$_SESSION['DM']['group']);
 
-		$this->assign("GROUP_ACTION", Cellini::ManagerLink('changeGroup',$this->id).$_SERVER['QUERY_STRING']);
+		$this->assign("GROUP_ACTION", Celini::ManagerLink('changeGroup',$this->id).$_SERVER['QUERY_STRING']);
 
 		
-		return $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_list.html"));
 	}
 	
 	/*
@@ -491,7 +491,7 @@ class C_Document extends Controller {
  			  if ($node == null) {
  			  	//echo "r:" . $this->tree->get_node_name($id) . "<br>";
 				$rnode = new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-						'link' => Cellini::link("upload",true,true,$this->id)."parent_id=$id&", 
+						'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
 			    			'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
 			    $this->_last_node = &$rnode;
  			  	$node = &$rnode;
@@ -500,7 +500,7 @@ class C_Document extends Controller {
 			  else {
 			  	//echo "p:" . $this->tree->get_node_name($id) . "<br>";
  			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-							'link' => Cellini::link("upload",true,true,$this->id)."parent_id=$id&", 
+							'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
 							'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  			    $current_node =&$this->_last_node;
 			  }
@@ -512,7 +512,7 @@ class C_Document extends Controller {
  				  $info = $this->tree->get_node_info($id);
  				  //echo "b:" . $this->tree->get_node_name($id) . "<br>";
  				  $current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $info['value'], 
-								'link' => Cellini::link("upload",true,true,$this->id)."parent_id=$id&", 
+								'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
 								'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  				}
  				else {
@@ -521,7 +521,7 @@ class C_Document extends Controller {
  					if ($id !== 0 && is_object($node)) {
  					  //echo "n:" . $this->tree->get_node_name($id) . "<br>";
  				  	  $current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-								'link' => Cellini::link("upload",true,true,$this->id)."parent_id=$id&", 
+								'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
 								'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  				  	  
  					}
@@ -534,7 +534,7 @@ class C_Document extends Controller {
 					foreach ($categories[$id] as $doc) {
 						$current_node->addItem(new HTML_TreeNode(array('text' => '<span title="'.$doc['note'].'">'
 								.basename($doc['url']).'</span>', 
-								'link' => Cellini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&", 
+								'link' => Celini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&", 
 								'icon' => $icon, 'expandedIcon' => $expandedIcon,
 								)
 							));
@@ -551,10 +551,10 @@ class C_Document extends Controller {
 	function multi_upload_action_uploadFile($project_id,$parent_id = 1) {
 		$this->_buildPulldown($this->tree->tree);
 		$this->assign('list',range(0,4));
-		$this->assign('LIST_ACTION',Cellini::link('list',true,true,$this->id));
+		$this->assign('LIST_ACTION',Celini::link('list',true,true,$this->id));
 		$this->assign('categories',$this->_pullCats);
 		$this->assign('parent',$parent_id);
-		return $this->fetch(Cellini::getTemplatePath("documents/" . $this->template_mod . "_multiUpload.html"));
+		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_multiUpload.html"));
 	}
 
 	function multi_upload_action_process($project_id) {

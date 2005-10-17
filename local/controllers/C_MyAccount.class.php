@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
 
 /**
  * Controller to hold stuff that a user can edit on there account
@@ -15,7 +15,7 @@ class C_MyAccount extends Controller {
 
 		$this->assign_by_ref('user',$user);
 		
-		return $this->fetch(Cellini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
+		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
 	}
 
 	function password_action_process() {

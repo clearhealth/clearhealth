@@ -2,10 +2,10 @@
 // fixes record # for patients who have a record id of 0
 // all are queried and replaced with the next record # sequence
 
-include "../../cellini/bootstrap.php";
+include "../../Celini/bootstrap.php";
 
 
-$db = Cellini::dbInstance();
+$db = Celini::dbInstance();
 
 $res = $db->execute("select person_id from patient where record_number = 0");
 

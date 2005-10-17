@@ -1,6 +1,6 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
 
 /**
  * Controller for the Clearhealth users
@@ -48,8 +48,8 @@ class C_User extends Controller {
 
 		$nameHistoryGrid =& new cGrid($person->nameHistoryList());
 		$identifierGrid =& new cGrid($person->identifierList());
-		$identifierGrid->registerTemplate('identifier','<a href="'.Cellini::ManagerLink('editIdentifier',$person_id).'id={$identifier_id}&process=true">{$identifier}</a>');
-		$identifierGrid->registerTemplate('actions','<a href="'.Cellini::ManagerLink('deleteIdentifier',$person_id).'id={$identifier_id}&process=true">delete</a>');
+		$identifierGrid->registerTemplate('identifier','<a href="'.Celini::ManagerLink('editIdentifier',$person_id).'id={$identifier_id}&process=true">{$identifier}</a>');
+		$identifierGrid->registerTemplate('actions','<a href="'.Celini::ManagerLink('deleteIdentifier',$person_id).'id={$identifier_id}&process=true">delete</a>');
 		$identifierGrid->setLabel('actions',false);
 		
 
@@ -61,15 +61,15 @@ class C_User extends Controller {
 		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
 		$this->assign("rooms_practice_array",$room->rooms_practice_factory());
-		$this->assign('FORM_ACTION',Cellini::managerLink('update',$person_id));
-		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$person_id));
-		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$person_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$person_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$person_id));
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$person_id));
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$person_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$person_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$person_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$person_id));
 
 		$this->assign('now',date('Y-m-d'));
 
-		return $this->fetch(Cellini::getTemplatePath("/user/" . $this->template_mod . "_edit.html"));
+		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_edit.html"));
 	}
 
 	/**
@@ -79,12 +79,12 @@ class C_User extends Controller {
 		$person =& ORDataObject::factory('Person');
 
 		$ds =& $person->peopleByType(array('Provider','Staff','Mid-Level'),true);
-		$ds->template['last_name'] = "<a href='".Cellini::link('edit')."id={\$person_id}'>{\$last_name}</a>";
+		$ds->template['last_name'] = "<a href='".Celini::link('edit')."id={\$person_id}'>{\$last_name}</a>";
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->fetch(Cellini::getTemplatePath("/user/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_list.html"));
 	}
 
 
@@ -96,7 +96,7 @@ class C_User extends Controller {
 
 		$this->assign_by_ref('user',$user);
 		
-		return $this->fetch(Cellini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
+		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
 	}
 
 	function password_action_process() {

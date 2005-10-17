@@ -1,15 +1,15 @@
 <?php
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 
 class CalendarController extends Controller {
 	
 	
 	function CalendarController() {
 		parent::Controller();	
-		$this->assign('EVENT_DELETE_ACTION',Cellini::link('delete','location'));
-		$this->assign('UPDATE_SCHEDULE_ACTION',Cellini::link('update_schedule','location'));
-		$this->assign('SCHEDULE_LIST_ACTION',Cellini::link('schedule_list','location'));
-		$this->assign('EDIT_APPOINTMENT_ACTION',Cellini::link('edit_appointment','location'));
+		$this->assign('EVENT_DELETE_ACTION',Celini::link('delete','location'));
+		$this->assign('UPDATE_SCHEDULE_ACTION',Celini::link('update_schedule','location'));
+		$this->assign('SCHEDULE_LIST_ACTION',Celini::link('schedule_list','location'));
+		$this->assign('EDIT_APPOINTMENT_ACTION',Celini::link('edit_appointment','location'));
 	}	
 	
 	function build_day_increments($date ="",$start_hour = 0, $end_hour = 24,$header_time = false) {

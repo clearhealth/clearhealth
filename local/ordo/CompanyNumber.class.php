@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
 ORdataObject::factory_include('Number');
 class CompanyNumber extends Number {
 	var $_relation = "company_number";

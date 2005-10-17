@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELLINI_ROOT.'/ordo/MergeDecorator.class.php';
+require_once CELINI_ROOT.'/ordo/MergeDecorator.class.php';
 /**#@-*/
 
 /**

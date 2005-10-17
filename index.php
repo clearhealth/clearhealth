@@ -1,16 +1,16 @@
 <?php
-if (file_exists('cellini')) {
-	require_once "cellini/bootstrap.php";
+if (file_exists('Celini')) {
+	require_once "Celini/bootstrap.php";
 }
 else {
 	require_once "celini/bootstrap.php";
 }
 
-if (file_exists(CELLINI_ROOT."/controllers/Dispatcher.class.php")) {
-	require_once CELLINI_ROOT."/controllers/Dispatcher.class.php";
+if (file_exists(CELINI_ROOT."/controllers/Dispatcher.class.php")) {
+	require_once CELINI_ROOT."/controllers/Dispatcher.class.php";
 }
 else {
-	require_once CELLINI_ROOT."/controllers/Controller.class.php";
+	require_once CELINI_ROOT."/controllers/Controller.class.php";
 }
 
 if ($config['dir_style_paths']) {

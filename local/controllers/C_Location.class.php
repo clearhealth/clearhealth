@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 //require_once APP_ROOT . "/local/controllers/C_Main.class.php";
 require_once APP_ROOT . "/local/controllers/C_Schedule.class.php";
 
@@ -19,19 +19,19 @@ class C_Location extends Controller {
 	function C_Location($template_mod = "general") {
 		parent::Controller();
 		$this->template_mod = $template_mod;
-		$this->assign("FORM_ACTION", Cellini::link(true) . $_SERVER['QUERY_STRING']);
-		$this->assign("TOP_ACTION", Cellini::link(true));
+		$this->assign("FORM_ACTION", Celini::link(true) . $_SERVER['QUERY_STRING']);
+		$this->assign("TOP_ACTION", Celini::link(true));
 
-		$this->assign('EDIT_SCHEDULE_ACTION', Cellini::link('edit_schedule'));
-		$this->assign('DELETE_ACTION', Cellini::link('delete'));
-		$this->assign('EDIT_PRACTICE_ACTION', Cellini::link('edit_practice'));
-		$this->assign('EDIT_BUILDING_ACTION', Cellini::link('edit_building'));
-		$this->assign('EDIT_ROOM_ACTION', Cellini::link('edit_room'));
-		$this->assign('EDIT_EVENT_ACTION', Cellini::link('edit_event'));
-		$this->assign('EDIT_WIZARD_ACTION', Cellini::link('edit_schedule','personSchedule'));
-		$this->assign('SCHEDULE_LIST_ACTION', Cellini::link('schedule_list'));
-		$this->assign('UPDATE_SCHEDULE_ACTION', Cellini::link('update_schedule'));
-		$this->assign('EDIT_TIMEPLACE_ACTION', Cellini::link('edit_timeplace'));
+		$this->assign('EDIT_SCHEDULE_ACTION', Celini::link('edit_schedule'));
+		$this->assign('DELETE_ACTION', Celini::link('delete'));
+		$this->assign('EDIT_PRACTICE_ACTION', Celini::link('edit_practice'));
+		$this->assign('EDIT_BUILDING_ACTION', Celini::link('edit_building'));
+		$this->assign('EDIT_ROOM_ACTION', Celini::link('edit_room'));
+		$this->assign('EDIT_EVENT_ACTION', Celini::link('edit_event'));
+		$this->assign('EDIT_WIZARD_ACTION', Celini::link('edit_schedule','personSchedule'));
+		$this->assign('SCHEDULE_LIST_ACTION', Celini::link('schedule_list'));
+		$this->assign('UPDATE_SCHEDULE_ACTION', Celini::link('update_schedule'));
+		$this->assign('EDIT_TIMEPLACE_ACTION', Celini::link('edit_timeplace'));
 	}
 
 	function default_action() {
@@ -218,9 +218,9 @@ class C_Location extends Controller {
 		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
 		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
 		$this->assign("process",true);
-		$this->assign("EVENT_ACTION", Cellini::link("edit_event") . "id=$id");
-		$this->assign("OCCURENCE_ACTION", Cellini::link("edit_occurence") . "id=$id");
-		$this->assign("SELECTED_ACTION", Cellini::link("selected_occurence") . "id=$id");
+		$this->assign("EVENT_ACTION", Celini::link("edit_event") . "id=$id");
+		$this->assign("OCCURENCE_ACTION", Celini::link("edit_occurence") . "id=$id");
+		$this->assign("SELECTED_ACTION", Celini::link("selected_occurence") . "id=$id");
 		//$this->assign("OCCURENCE_ACTION", "controller.php?" . str_replace("edit_schedule","edit_occurence",$_SERVER['QUERY_STRING']));
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_schedule.html");
 	}
@@ -269,10 +269,10 @@ class C_Location extends Controller {
 				}
 			}
 		
-			$next_url =  Cellini::link('edit_schedule',true,true);
+			$next_url =  Celini::link('edit_schedule',true,true);
 			//if the object was deleted then we cannot refer to it...
 		}else{
-			$next_url = Cellini::link('edit_schedule',true,true,$id);
+			$next_url = Celini::link('edit_schedule',true,true,$id);
 			//if the object was not deleted then we should keep it in focus...
 		}
 		header('Location: '.$next_url);
@@ -322,7 +322,7 @@ class C_Location extends Controller {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: ".Cellini::link("edit_schedule").$_SERVER['QUERY_STRING']);
+		header("Location: ".Celini::link("edit_schedule").$_SERVER['QUERY_STRING']);
 		return $this->edit_schedule_action($schedule_id);
 	}
 	
@@ -411,7 +411,7 @@ class C_Location extends Controller {
 		$this->location = null;
 		$trail = $_SESSION['trail'];
 
-		$location = Cellini::link('list','location');
+		$location = Celini::link('list','location');
 		//$trail = $_SESSION['trail'];
 		//var_dump($trail);
 		$trail = array_reverse($trail);
@@ -429,7 +429,7 @@ class C_Location extends Controller {
 
 				if (isset($stop['main'])) array_shift($stop);
 				$aks = array_keys($stop);
-				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+				$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
 				unset($stop[$aks[0]]);
 				unset($stop[$aks[1]]);
 				foreach ($stop as $qn => $qi) {
@@ -461,7 +461,7 @@ class C_Location extends Controller {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: " . Cellini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
+		header("Location: " . Celini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
 		return;
 	}
 	
@@ -500,7 +500,7 @@ class C_Location extends Controller {
 		}
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
-		$this->assign("DELETE_ACTION", Cellini::link('delete')."id=$id&object_class=$object_class");
+		$this->assign("DELETE_ACTION", Celini::link('delete')."id=$id&object_class=$object_class");
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");
 	}
 	
@@ -579,7 +579,7 @@ class C_Location extends Controller {
 				}
 			}
 		}
-		header("Location: ".Cellini::link($action,$controller,$section).$qs);
+		header("Location: ".Celini::link($action,$controller,$section).$qs);
 		exit;
 	}
 
@@ -616,13 +616,13 @@ class C_Location extends Controller {
 			
 		}
 
-		$location = Cellini::link('list','location');
+		$location = Celini::link('list','location');
 		$trail = array_reverse($_SESSION['trail']);
 		foreach($trail as $stop) {
 			if (!isset($stop['update_schedule']) && $stop['action'] != "update_schedule") {
 				if (isset($stop['main'])) array_shift($stop);
 				$aks = array_keys($stop);
-				$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+				$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
 				unset($stop[$aks[0]]);
 				unset($stop[$aks[1]]);
 				foreach ($stop as $qn => $qi) {

@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT ."/includes/Grid.class.php";
+require_once CELINI_ROOT ."/includes/Grid.class.php";
 
 class C_Eob extends Controller {
 
@@ -64,9 +64,9 @@ class C_Eob extends Controller {
 		$this->assign('billList',$billList);
 		$this->assign('payers',$payers);
 		
-		$this->assign('FORM_ACTION',Cellini::link('payment',true,true,$claim_id));
+		$this->assign('FORM_ACTION',Celini::link('payment',true,true,$claim_id));
 
-		return $this->fetch(Cellini::getTemplatePath("/eob/" . $this->template_mod . "_payment.html"));
+		return $this->fetch(Celini::getTemplatePath("/eob/" . $this->template_mod . "_payment.html"));
 	}
 
 	function payment_action_process($claim_id) {

@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 
 class C_Admin extends Controller {
 
@@ -16,7 +16,7 @@ class C_Admin extends Controller {
 	}
 
 	function acl_action_edit() {
-		return "<iframe src='{$this->base_dir}cellini/lib/phpgacl/admin/index.php' width='800px' height='700px'></iframe>";
+		return "<iframe src='{$this->base_dir}Celini/lib/phpgacl/admin/index.php' width='800px' height='700px'></iframe>";
 	}
 
 

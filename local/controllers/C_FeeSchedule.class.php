@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT ."/includes/Grid.class.php";
+require_once CELINI_ROOT ."/includes/Grid.class.php";
 require_once APP_ROOT ."/local/includes/FeeScheduleDatasource.class.php";
 
 class C_FeeSchedule extends Controller {
@@ -12,22 +12,22 @@ class C_FeeSchedule extends Controller {
 
 		$fs =& ORDataobject::factory('FeeSchedule');
 		$ds =& $fs->listFeeSchedules();
-		$ds->template['label'] = '<a href="'.Cellini::link('edit').'id={$fee_schedule_id}">{$label}</a>';
+		$ds->template['label'] = '<a href="'.Celini::link('edit').'id={$fee_schedule_id}">{$label}</a>';
 
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
-		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_list.html"));	
+		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_list.html"));	
 	}
 
 	function edit_action($fee_schedule_id = 0) {
 
 		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
 		$this->assign_By_ref('feeSchedule',$feeSchedule);
-		$this->assign('FORM_ACTION',Cellini::link('edit',true,true,$fee_schedule_id));
-		$this->assign('DEFAULT_ACTION',Cellini::link('setdefault',true,true,$fee_schedule_id));
-		$this->assign('UPDATE_ACTION',Cellini::link('update',true,true,$fee_schedule_id));
+		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$fee_schedule_id));
+		$this->assign('DEFAULT_ACTION',Celini::link('setdefault',true,true,$fee_schedule_id));
+		$this->assign('UPDATE_ACTION',Celini::link('update',true,true,$fee_schedule_id));
 		
-		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_edit.html"));	
+		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_edit.html"));	
 	}
 
 	function setdefault_action($fee_schedule_id = 0) {
@@ -95,7 +95,7 @@ class C_FeeSchedule extends Controller {
 		echo "fee4 S2052: " . $feeSchedule->getFee("S2052") . "<br>";
 		echo "fee4 S2085: " . $feeSchedule->getFee("S2085") . "<br>";*/
 		
-		return $this->fetch(Cellini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_update.html"));	
+		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_update.html"));	
 	}
 }
 ?>

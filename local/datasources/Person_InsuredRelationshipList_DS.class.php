@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Person_InsuredRelationshipList_DS extends Datasource_sql
 {
@@ -31,7 +31,7 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 	function Person_InsuredRelationshipList_DS($person_id) {
 		settype($person_id,'int');
 		$this->external_id = $person_id;
-		$this->_db =& Cellini::dbInstance();
+		$this->_db =& Celini::dbInstance();
 		
 		$this->setup($this->_db,
 			array('cols' 	=> "ir.insured_relationship_id,

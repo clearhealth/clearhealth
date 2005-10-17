@@ -1,6 +1,6 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
 
 /**
  * Controller for the Freestand Branch stuff
@@ -35,15 +35,15 @@ class C_Practice extends Controller {
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);
 		$this->assign_by_ref('company',$company);
-		$this->assign('FORM_ACTION',Cellini::managerLink('update',$practice_id));
-		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$practice_id));
-		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$practice_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$practice_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$practice_id));
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$practice_id));
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$practice_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$practice_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$practice_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$practice_id));
 
 		$this->assign('now',date('Y-m-d'));
 
-		return $this->fetch(Cellini::getTemplatePath("/practice/" . $this->template_mod . "_edit.html"));
+		return $this->fetch(Celini::getTemplatePath("/practice/" . $this->template_mod . "_edit.html"));
 	}
 
 	/**
@@ -53,12 +53,12 @@ class C_Practice extends Controller {
 		$person =& ORDataObject::factory('Practice');
 
 		$ds =& $person->practiceList();
-		$ds->template['name'] = "<a href='".Cellini::link('edit')."id={\$person_id}'>{\$name}</a>";
+		$ds->template['name'] = "<a href='".Celini::link('edit')."id={\$person_id}'>{\$name}</a>";
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->fetch(Cellini::getTemplatePath("/practice/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/practice/" . $this->template_mod . "_list.html"));
 	}
 
 }

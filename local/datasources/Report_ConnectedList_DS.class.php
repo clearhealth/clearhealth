@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Report_ConnectedList_DS extends Datasource_sql
 {
@@ -28,7 +28,7 @@ class Report_ConnectedList_DS extends Datasource_sql
 	function Report_ConnectedList_DS($menu_id) {
 		settype($menu_id,'int');
 
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 			array(
 				'cols' 	=> "title, report_id, description, rt.report_template_id",
 				'from' 	=> "reports r inner join report_templates rt on r.id = rt.report_id 

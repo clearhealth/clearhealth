@@ -1,6 +1,6 @@
 <?php
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
 
 /**
  * Controller for the Insurance listing/editing
@@ -29,7 +29,7 @@ class C_Insurance extends Controller {
 
 		$insuranceProgram =& ORDataObject::factory('InsuranceProgram',$this->insurance_program_id);
 		$ds =& $insuranceProgram->detailedProgramList($company_id);
-		$ds->registerTemplate('name','<a href="'.Cellini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
+		$ds->registerTemplate('name','<a href="'.Celini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
 		$insuranceProgramGrid =& new cGrid($ds);
 		
 		$feeSchedule =& ORDataObject::factory('FeeSchedule',$insuranceProgram->get("fee_schedule_id"));
@@ -38,7 +38,7 @@ class C_Insurance extends Controller {
 		$dsbpg =& $buildingProgramIdentifier->getDs($company_id);
 		$buildingProgramGrid =& new cGrid($dsbpg);
 		$buildingProgramGrid->registerTemplate('identifier',
-		'<a href="'.Cellini::managerLink('editBpi',$company_id).'id={$program_id}&building_id={$building_id}&process=true">{$identifier}</a>');
+		'<a href="'.Celini::managerLink('editBpi',$company_id).'id={$program_id}&building_id={$building_id}&process=true">{$identifier}</a>');
 
 		$this->assign_by_ref('company',$company);
 		$this->assign_by_ref('number',$number);
@@ -49,18 +49,18 @@ class C_Insurance extends Controller {
 		$this->assign_by_ref('bpiGrid',$buildingProgramGrid);
 		$this->assign_by_ref('feeSchedule',$feeSchedule);
 
-		$this->assign('FORM_ACTION',Cellini::managerLink('update',$company_id));
-		$this->assign('EDIT_NUMBER_ACTION',Cellini::managerLink('editNumber',$company_id));
-		$this->assign('DELETE_NUMBER_ACTION',Cellini::managerLink('deleteNumber',$company_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Cellini::managerLink('editAddress',$company_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Cellini::managerLink('deleteAddress',$company_id));
-		$this->assign('NEW_PROGRAM',Cellini::managerLink('editProgram',$company_id)."id=0&process=true");
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$company_id));
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$company_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$company_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$company_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$company_id));
+		$this->assign('NEW_PROGRAM',Celini::managerLink('editProgram',$company_id)."id=0&process=true");
 
 		$this->assign('hide_type',true);
 
 		$this->assign('now',date('Y-m-d'));
 
-		return $this->fetch(Cellini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
+		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
 	}
 
 	/**
@@ -70,14 +70,14 @@ class C_Insurance extends Controller {
 		$company =& ORDataObject::factory('Company');
 
 		$ds =& $company->companyListForType('Insurance');
-		$ds->template['name'] = "<a href='".Cellini::link('edit')."id={\$company_id}'>{\$name}</a>";
+		$ds->template['name'] = "<a href='".Celini::link('edit')."id={\$company_id}'>{\$name}</a>";
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);
 
 
 
-		return $this->fetch(Cellini::getTemplatePath("/insurance/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_list.html"));
 	}
 
 

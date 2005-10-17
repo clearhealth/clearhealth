@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . "/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT . "/ordo/ORDataObject.class.php";
 require_once APP_ROOT . "/local/ordo/Occurence.class.php";
 
 /**

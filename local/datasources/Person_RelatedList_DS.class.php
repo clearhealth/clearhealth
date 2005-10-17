@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Person_RelatedList_DS extends Datasource_sql
 {
@@ -26,7 +26,7 @@ class Person_RelatedList_DS extends Datasource_sql
 			'left_name'     => 'Name',
 			'relation_type' => 'Relation Of',
 			'right_name'    => 'Name');
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 			array(
 				'union' => 
 				array(

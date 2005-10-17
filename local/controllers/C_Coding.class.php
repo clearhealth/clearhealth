@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT ."/includes/Grid.class.php";
+require_once CELINI_ROOT ."/includes/Grid.class.php";
 require_once APP_ROOT ."/local/includes/CodingDatasource.class.php";
 
 class C_Coding extends Controller {
@@ -55,7 +55,7 @@ class C_Coding extends Controller {
 			$this->assign("superbill", 1);
 		}
 		
-		$this->assign("EDIT_LINK", Cellini::link("update", true, true, $foreign_id));
+		$this->assign("EDIT_LINK", Celini::link("update", true, true, $foreign_id));
 		if ($parent_id > 0) {
 			$this->assign_by_ref("parent_code", $parent_code);
 			$this->assign("parent_id", $parent_id);
@@ -74,7 +74,7 @@ class C_Coding extends Controller {
 		$this->assign_by_ref("code_list", $code_list);
 	//	echo "DEBUG C_Coding: code_list <br>\n";
 	//	printf('<pre>%s</pre>', var_export($code_list , true));
-		return $this->fetch(Cellini::getTemplatePath("/coding/" . $this->template_mod . "_update.html"));	
+		return $this->fetch(Celini::getTemplatePath("/coding/" . $this->template_mod . "_update.html"));	
 	}
 	
 	function update_action_process(){
@@ -184,7 +184,7 @@ class C_Coding extends Controller {
 		$gcpt =& new cGrid($cpt,$renderer_cpt);
 		$this->assign_by_ref('cpt',$gcpt);
 
-		return $this->fetch(Cellini::getTemplatePath("/coding/" . $this->template_mod . "_update_dg.html"));	
+		return $this->fetch(Celini::getTemplatePath("/coding/" . $this->template_mod . "_update_dg.html"));	
 	}
 	
 	/**

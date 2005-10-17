@@ -1,5 +1,5 @@
 <?php
-// Cellini Setup, installtion should only require editing of: 
+// Celini Setup, installtion should only require editing of: 
 // App Setup, Database Setup, and possible freeb2 integration
 
 ################################################################################
@@ -46,9 +46,9 @@ $config['translate']['freeb2'] = "/INSTALL_BASE_DIR/freeb2/index.php/";
 
 
 ################################################################################
-# Cellini Options 
+# Celini Options 
 ################################################################################
-// global cellini options
+// global Celini options
 $config['require_login'] = true;
 $config['use_text_storage'] = true;
 $config['autoAcl'] = true;

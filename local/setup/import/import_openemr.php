@@ -26,14 +26,14 @@ $config['db_name'] = "clearhealth";
 $config['openemr_db'] = "openemr";
 $GLOBALS['config'] = $config;
 
-if (!defined('CELLINI_ROOT')) {
-        define('CELLINI_ROOT',dirname(__FILE__) . "/../../../cellini/");
+if (!defined('CELINI_ROOT')) {
+        define('CELINI_ROOT',dirname(__FILE__) . "/../../../Celini/");
 }                                                                                 
 /**
 * Base application dir
 */
 if (!defined('APP_ROOT')) {
-        define('APP_ROOT',realpath(CELLINI_ROOT."/../"));
+        define('APP_ROOT',realpath(CELINI_ROOT."/../"));
 }
                                                                                 
 /**
@@ -43,7 +43,7 @@ if (!defined('MODULE_ROOT')) {
         define('MODULE_ROOT',realpath(APP_ROOT."/modules"));
 }
 
-require_once CELLINI_ROOT . "config.php";
+require_once CELINI_ROOT . "config.php";
 set_time_limit(0);
 
 

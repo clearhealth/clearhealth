@@ -4,7 +4,7 @@
 // to run multiple instances of clearhealth using the same
 // code base.
 //
-// Cellini Setup, installtion should only require editing of: 
+// Celini Setup, installtion should only require editing of: 
 // App Setup, Database Setup, and possible freeb2 integration
 
 // Get the instance name from the URL path
@@ -54,9 +54,9 @@ $config['translate']['freeb2'] = "/clearhealth/freeb2/index.php/";
 
 
 ################################################################################
-# Cellini Options 
+# Celini Options 
 ################################################################################
-// global cellini options
+// global Celini options
 $config['require_login'] = true;
 $config['use_text_storage'] = true;
 $config['autoAcl'] = true;

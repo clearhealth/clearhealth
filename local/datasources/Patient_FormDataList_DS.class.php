@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Patient_FormDataList_DS extends Datasource_sql 
 {
@@ -27,7 +27,7 @@ class Patient_FormDataList_DS extends Datasource_sql
 	function Patient_FormDataList_DS($external_id) {
 		$external_id = intval($external_id);
 		
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 			array(
 				'cols'    => "last_edit, f.name, form_data_id, external_id",
 				'from'    => "form_data AS d

@@ -1,8 +1,8 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
-require_once CELLINI_ROOT."/includes/Datasource_sql.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/includes/Datasource_sql.class.php";
 require_once APP_ROOT."/local/includes/Datasource_AccountHistory.class.php";
 require_once APP_ROOT."/local/includes/Grid_Renderer_AccountHistory.class.php";
 
@@ -38,7 +38,7 @@ class C_Account extends Controller {
 		$ip =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$ip);
 		
-		return $this->fetch(Cellini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
+		return $this->fetch(Celini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
 	}
 
 	function history_action_process($patient_id) {

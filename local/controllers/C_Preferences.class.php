@@ -1,8 +1,8 @@
 <?php
 
-require_once CELLINI_ROOT . "/controllers/Controller.class.php";
-require_once CELLINI_ROOT . "/includes/PreferenceTree.class.php";
-require_once CELLINI_ROOT . "/lib/TreeMenu.php";
+require_once CELINI_ROOT . "/controllers/Controller.class.php";
+require_once CELINI_ROOT . "/includes/PreferenceTree.class.php";
+require_once CELINI_ROOT . "/lib/TreeMenu.php";
 
 /**
 *	Controller class the handles the default case of access that leads to login
@@ -15,13 +15,13 @@ class C_Preferences extends Controller {
 	 
 	function C_Preferences ($template_mod = "general") {
 		parent::Controller($template_mod);
-		$this->assign("TOP_ACTION", Cellini::link('list','preferences'));
+		$this->assign("TOP_ACTION", Celini::link('list','preferences'));
 		
 		$this->_load_prefs();
 	}
 
 	function default_action() {
-		header("Location: ".Cellini::link('default','default','main'));
+		header("Location: ".Celini::link('default','default','main'));
 	}
 	
 	function list_action() {
@@ -96,13 +96,13 @@ class C_Preferences extends Controller {
  			  if ($node == null) {
  			  	
  			  	//echo "r:" . $this->tree->get_node_name($id) . "<br>";
-			    $rnode = new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Cellini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
+			    $rnode = new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Celini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
 			    $this->_last_node = &$rnode;
  			  	$node = &$rnode;
 			  }
 			  else {
 			  	//echo "p:" . $this->tree->get_node_name($id) . "<br>";
- 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Cellini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, "contents" => $ar)));
+ 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Celini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, "contents" => $ar)));
 			  }
  			  if (is_array($ar)) {
  			    $this->_array_recurse($ar,$treeObj);
@@ -112,14 +112,14 @@ class C_Preferences extends Controller {
  				if ($id === 0 && !empty($ar)) {
  				  $info = $treeObj->get_node_info($id);
  				  //echo "b:" . $this->tree->get_node_name($id) . "<br>";
- 				  $node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => Cellini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+ 				  $node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => Celini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  				}
  				else {
  					//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
  					//this conditional tree could be more efficient but working with trees makes my head hurt, TODO
  					if ($id !== 0 && is_object($node)) {
  					  //echo "n:" . $this->tree->get_node_name($id) . "<br>";
- 				  	  $node->addItem(new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Cellini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+ 				  	  $node->addItem(new HTML_TreeNode(array('text' => $treeObj->get_node_name($id), 'link' => Celini::link("edit_node") . "id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
  					}
  				}
  			}	
@@ -135,7 +135,7 @@ class C_Preferences extends Controller {
  			
  			$result = $db->Execute($sql);
  			if ($result && !$result->EOF) {
- 				$this->assign("NODE_ACTION",Cellini::link("edit_node"));
+ 				$this->assign("NODE_ACTION",Celini::link("edit_node"));
  				$this->assign("edit_node_id",$id);
  				$this->assign("edit_node_name", $result->fields['name']);
  				$this->assign("edit_node_value", $result->fields['value']);	

@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/includes/Tree.class.php";
+require_once CELINI_ROOT."/includes/Tree.class.php";
 
 /**
  * class CategoryTree

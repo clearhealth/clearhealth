@@ -25,9 +25,9 @@ class C_PersonSchedule extends CalendarController {
 	function C_PersonSchedule($template_mod = "general") {
 		parent::CalendarController();
 		$this->template_mod = $template_mod;
-		$this->assign("FORM_ACTION", Cellini::link(true) . $_SERVER['QUERY_STRING']);
+		$this->assign("FORM_ACTION", Celini::link(true) . $_SERVER['QUERY_STRING']);
 		$this->assign("TOP_ACTION", "don't use me");
-		$this->assign("DAY_ACTION", Cellini::link('day_action'));
+		$this->assign("DAY_ACTION", Celini::link('day_action'));
 	}
 
 	function default_action() {
@@ -139,13 +139,13 @@ class C_PersonSchedule extends CalendarController {
 			$this->assign("edit_timeplace",new Occurence());
 		}
 		$this->assign("process",true);
-		$this->assign("EVENT_ACTION", Cellini::link("edit_event") . "id=$id");
-		$this->assign("DELETE_ACTION", Cellini::link("delete"));
-		$this->assign("OCCURENCE_ACTION", Cellini::link("edit_occurence") . "id=$id&date=$date");
-		$this->assign("WEEK_NEXT_ACTION", Cellini::link("edit_schedule") . "id=$id&date=$ndate");
-		$this->assign("WEEK_PREV_ACTION", Cellini::link("edit_schedule") . "id=$id&date=$pdate");
+		$this->assign("EVENT_ACTION", Celini::link("edit_event") . "id=$id");
+		$this->assign("DELETE_ACTION", Celini::link("delete"));
+		$this->assign("OCCURENCE_ACTION", Celini::link("edit_occurence") . "id=$id&date=$date");
+		$this->assign("WEEK_NEXT_ACTION", Celini::link("edit_schedule") . "id=$id&date=$ndate");
+		$this->assign("WEEK_PREV_ACTION", Celini::link("edit_schedule") . "id=$id&date=$pdate");
 		
-		$this->assign("LINK_BASE",Cellini::link('edit_schedule'));
+		$this->assign("LINK_BASE",Celini::link('edit_schedule'));
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year,$id);
 		$this->assign_by_ref("sidebar",$sidebar);
 		
@@ -276,7 +276,7 @@ class C_PersonSchedule extends CalendarController {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: ".Cellini::link("edit_schedule").$_SERVER['QUERY_STRING']);
+		header("Location: ".Celini::link("edit_schedule").$_SERVER['QUERY_STRING']);
 		//return $this->edit_schedule_action($schedule_id);
 	}
 	
@@ -292,7 +292,7 @@ class C_PersonSchedule extends CalendarController {
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
-		header("Location: " . Cellini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
+		header("Location: " . Celini::link("edit_schedule") . "id=" . $_POST['schedule_id']);
 		return;
 	}
 	
@@ -317,7 +317,7 @@ class C_PersonSchedule extends CalendarController {
 		}
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
-		//$this->assign("DELETE_ACTION", Cellini::link("delete",true) . "id=$id&object_class=$object_class");
+		//$this->assign("DELETE_ACTION", Celini::link("delete",true) . "id=$id&object_class=$object_class");
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");
 	}
 	
@@ -326,13 +326,13 @@ class C_PersonSchedule extends CalendarController {
 		$this->sec_obj->acl_qcheck("delete",$this->_me,"",$object_class,$this,false);
 		
 		if ($_POST['process'] == true && (isset($_POST['cancel']) || isset($_GET['cancel']))) {
-			$location = Cellini::link('list','location');
+			$location = Celini::link('list','location');
 			$trail = $_SESSION['trail'];
 			foreach($trail as $stop) {
 				if (!isset($stop['delete']) && $stop['action'] != "delete") {
 					if (isset($stop['main'])) array_shift($stop);
 					$aks = array_keys($stop);
-					$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+					$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
 					unset($stop[$aks[0]]);
 					unset($stop[$aks[1]]);
 					foreach ($stop as $qn => $qi) {
@@ -385,7 +385,7 @@ class C_PersonSchedule extends CalendarController {
 			$this->_state = false;
 			return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_delete.html");	
 		}
-		$location = Cellini::link('list','location');
+		$location = Celini::link('list','location');
 		$trail = $_SESSION['trail'];
 		krsort($trail);
 		foreach($trail as $stop) {
@@ -395,7 +395,7 @@ class C_PersonSchedule extends CalendarController {
 				}
 				$aks = array_keys($stop);
 				if (count($aks) > 1) {
-					$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+					$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
 					unset($stop[$aks[0]]);
 					unset($stop[$aks[1]]);
 					foreach ($stop as $qn => $qi) {
@@ -496,7 +496,7 @@ class C_PersonSchedule extends CalendarController {
 		}
 		
 		$this->assign_by_ref("sidebar_months",$months);
-		$this->assign("LINK_BASE",Cellini::link('edit_schedule') . "id=" . $id . "&");
+		$this->assign("LINK_BASE",Celini::link('edit_schedule') . "id=" . $id . "&");
 		 
 		return $this->fetch($GLOBALS['template_dir'] . "person_schedules/" . $this->template_mod . "_sidebar.html");
 	}

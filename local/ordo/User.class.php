@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELLINI_ROOT.'/ordo/Base_User.class.php';
+require_once CELINI_ROOT.'/ordo/Base_User.class.php';
 /**#@-*/
 
 /**

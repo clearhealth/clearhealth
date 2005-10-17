@@ -7,13 +7,13 @@
 
 /**
 */
-require_once CELLINI_ROOT . "/controllers/Controller.class.php";
+require_once CELINI_ROOT . "/controllers/Controller.class.php";
 require_once APP_ROOT . "/local/ordo/Report.class.php";
 require_once APP_ROOT . "/local/ordo/MenuReport.class.php";
-require_once CELLINI_ROOT . "/includes/Pager.class.php";
-require_once CELLINI_ROOT . "/includes/ReportFilter.class.php";
-require_once CELLINI_ROOT . "/includes/Grid.class.php";
-require_once CELLINI_ROOT . "/includes/Datasource_sql.class.php";
+require_once CELINI_ROOT . "/includes/Pager.class.php";
+require_once CELINI_ROOT . "/includes/ReportFilter.class.php";
+require_once CELINI_ROOT . "/includes/Grid.class.php";
+require_once CELINI_ROOT . "/includes/Datasource_sql.class.php";
 
 
 /**
@@ -26,7 +26,7 @@ class C_Report extends Controller {
 	*/
 	function C_Report ($template_mod = "general") {
 		parent::Controller($template_mod);
-		$this->assign("TOP_ACTION", Cellini::link('default'));
+		$this->assign("TOP_ACTION", Celini::link('default'));
 	}
 
 	/**
@@ -40,23 +40,23 @@ class C_Report extends Controller {
 	* List all reports
 	*/
 	function list_action_view() {
-		$this->assign("TOP_ACTION", Cellini::link('list'));
-		$this->assign("EDIT_ACTION", Cellini::link('edit'));
-		$this->assign("VIEW_ACTION", Cellini::link('view'));
+		$this->assign("TOP_ACTION", Celini::link('list'));
+		$this->assign("EDIT_ACTION", Celini::link('edit'));
+		$this->assign("VIEW_ACTION", Celini::link('view'));
 
 		$r =& ORDataObject::factory('Report');
 
 		$reports = new cGrid($r->getReportDs());
 		$this->assign("reports",$reports);
 
-		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_list.html"));
 	}
 
 	/**
 	* Connect a report to the menu all reports
 	*/
 	function connect_action_edit() {
-		$this->assign("FORM_ACTION", Cellini::link('connect'));
+		$this->assign("FORM_ACTION", Celini::link('connect'));
 		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
 		$r = new Report();
@@ -69,7 +69,7 @@ class C_Report extends Controller {
 		//$mr = new MenuReport();
 		//var_dump($mr->getMenuList(7,true));
 
-		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_connect.html"));
+		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_connect.html"));
 	}
 
 	/**
@@ -79,7 +79,7 @@ class C_Report extends Controller {
 		$S = & new JPSpan_Server_PostOffice();
 		$S->addHandler(new Report());
 		$S->addHandler(new MenuReport());
-		$l = Cellini::link('remote',false,'util');
+		$l = Celini::link('remote',false,'util');
 		$S->setServerUrl(substr($l,0,strlen($l)-1));
 
 
@@ -132,16 +132,16 @@ class C_Report extends Controller {
 		
 		$r = new Report($id);
 		
-		$this->assign("TOP_ACTION", Cellini::link('edit',true,true,$id));
-		$this->assign("template_top", Cellini::link('edit'));
+		$this->assign("TOP_ACTION", Celini::link('edit',true,true,$id));
+		$this->assign("template_top", Celini::link('edit'));
 		$this->assign("report",$r);
-		$this->assign("template_edit",Cellini::link('edit_template'));
-		$this->assign("template_add",Cellini::link("add_template")."report_id=$id");
+		$this->assign("template_edit",Celini::link('edit_template'));
+		$this->assign("template_add",Celini::link("add_template")."report_id=$id");
 		$this->assign("templates",$r->get_templates());
-		$this->assign("DOWNLOAD_ACTION",Cellini::link('download_template',true,true,$id));
+		$this->assign("DOWNLOAD_ACTION",Celini::link('download_template',true,true,$id));
 	
 	
-		return $this->fetch(Cellini::getTemplatePath("/report/" . $this->template_mod . "_edit_report.html"));	
+		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_edit_report.html"));	
 	}
 
 	/**

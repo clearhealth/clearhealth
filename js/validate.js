@@ -1,14 +1,14 @@
-// Cellini JS validation functions
+// Celini JS validation functions
 // author: Joshua Eichorn jeichorn@mail.com
 
 /***********************************************************************************/
 /*				Public API					   */
 /***********************************************************************************/
 /*
-To use Cellini validation call clini_validate_form in the onsubmit event of your form
+To use Celini validation call clini_validate_form in the onsubmit event of your form
 rules are registered anytime before this uing the clni_register_validation_rule function
 
-Cellini contains smarty plugins for doing both of these thing
+Celini contains smarty plugins for doing both of these thing
 Plugins:  clni_form and clni_register_validation_rule
 */
 /* rule list */

@@ -1,4 +1,4 @@
-// JS Table renderer for Cellini Datasources
+// JS Table renderer for Celini Datasources
 // Uses the scrollable interface
 // Setup function to render a table, only handles the rows, header and such come from the static html renderer
 

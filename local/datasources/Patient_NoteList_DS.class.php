@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT . '/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
 class Patient_NoteList_DS extends Datasource_sql
 {
@@ -38,7 +38,7 @@ class Patient_NoteList_DS extends Datasource_sql
 			'note'       => 'Note');
 		$this->setTypeDependentLabel('html', 'deprecated', '<span title="Deprecated">Dep</span>');
 
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 			array(
 				'cols' 	=> "priority, DATE_FORMAT(note_date, '%m/%d/%Y %H:%i:%s') AS note_date, note, username, patient_note_id, if(deprecated,'Yes','No') deprecated",
 				'from' 	=> "patient_note n left join user u on u.user_id = n.user_id",
@@ -53,7 +53,7 @@ class Patient_NoteList_DS extends Datasource_sql
 
 		$this->registerFilter('note',     array($this, 'multiLineFilter'));
 		$this->registerFilter('priority', array($this, 'colorLineFilter'), false, 'html');
-		//$this->template['deprecated'] = "<a href='".Cellini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
+		//$this->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
 	}
 	
 	

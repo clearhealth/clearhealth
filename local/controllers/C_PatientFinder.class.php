@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT . "/controllers/Controller.class.php";
+require_once CELINI_ROOT . "/controllers/Controller.class.php";
 
 class C_PatientFinder extends Controller {
 
@@ -14,8 +14,8 @@ class C_PatientFinder extends Controller {
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
 		//$this->_join_db = $GLOBALS['frame']['config']['openemr_db'];
 		$this->template_mod = $template_mod;
-		$this->assign("FORM_ACTION", Cellini::link(true,true,false) . $_SERVER['QUERY_STRING']);
-		$this->assign("CURRENT_ACTION", Cellini::link('patient_finder'));
+		$this->assign("FORM_ACTION", Celini::link(true,true,false) . $_SERVER['QUERY_STRING']);
+		$this->assign("CURRENT_ACTION", Celini::link('patient_finder'));
 		$this->limit = 50;
 		
 		//remove the trail entries for this because it is a popup
@@ -40,8 +40,8 @@ class C_PatientFinder extends Controller {
         //prevent javascript injection, whitespace and semi-colons are the worry
         $form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
-		$this->assign("FORM_ACTION", Cellini::link('find',true,true,$form_name));
-		$this->assign('PATIENT_ACTION',Cellini::link('dashboard','Patient',true));
+		$this->assign("FORM_ACTION", Celini::link('find',true,true,$form_name));
+		$this->assign('PATIENT_ACTION',Celini::link('dashboard','Patient',true));
 		return $this->fetch($GLOBALS['template_dir'] . "patient_finder/" . $this->template_mod . "_find.html");
 	}
 	

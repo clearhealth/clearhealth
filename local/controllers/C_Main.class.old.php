@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
 
 class C_Main extends Controller {
 
@@ -9,7 +9,7 @@ class C_Main extends Controller {
 	function C_Main ($template_mod = "general") {
 		parent::Controller();
 		$this->template_mod = $template_mod; 
-		$this->assign("FORM_ACTION", Cellini::link(true). $_SERVER['QUERY_STRING']);
+		$this->assign("FORM_ACTION", Celini::link(true). $_SERVER['QUERY_STRING']);
 		$this->assign("TOP_ACTION",  $_SERVER['SCRIPT_NAME']."/main/");
 		if (!isset($GLOBALS['style'])) {
 			$GLOBALS['style'] = array();

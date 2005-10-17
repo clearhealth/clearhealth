@@ -1,6 +1,6 @@
 <?php
 
-require_once CELLINI_ROOT.'/controllers/C_Base_Access.class.php';
+require_once CELINI_ROOT.'/controllers/C_Base_Access.class.php';
 require_once APP_ROOT.'/local/controllers/C_Calendar.class.php';
 require_once APP_ROOT.'/local/controllers/M_Calendar.class.php';
 
@@ -15,7 +15,7 @@ class C_Access extends C_Base_Access {
 			$m->process_setFilter("","location/" . $user->get("default_location_id"));
 		}
 		else {
-			header('Location: '.Cellini::link('find','PatientFinder'));
+			header('Location: '.Celini::link('find','PatientFinder'));
 			die();
 		}
         }

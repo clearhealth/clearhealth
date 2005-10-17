@@ -1,5 +1,5 @@
 <?php
-require_once CELLINI_ROOT ."/includes/Datasource_editable.class.php";
+require_once CELINI_ROOT ."/includes/Datasource_editable.class.php";
 
 class FeeScheduleDatasource extends Datasource_editable {
 

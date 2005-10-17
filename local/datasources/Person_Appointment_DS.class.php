@@ -2,11 +2,11 @@
 /**
  * Class were extending
  */
-require_once CELLINI_ROOT .'/includes/Datasource_sql.class.php';
+require_once CELINI_ROOT .'/includes/Datasource_sql.class.php';
 /**
  * Datasource for handling appointments
  *
- * @package	com.uversainc.cellini
+ * @package	com.uversainc.Celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class Person_Appointment_DS extends Datasource_sql {
@@ -45,7 +45,7 @@ class Person_Appointment_DS extends Datasource_sql {
 
 	function Person_Appointment_DS($user_id) {
 		$this->user_id = $user_id;
-		$this->setup(Cellini::dbInstance(),
+		$this->setup(Celini::dbInstance(),
 		array(
 			'cols' => "date_format(start,'%m/%d/%y %H:%i') start,
 					if (

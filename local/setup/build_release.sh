@@ -8,8 +8,8 @@ REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/trunk"
 SVN_REV="HEAD"
 TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"
 BUILD_BASE="/tmp"
-CELLINI_APP="true"
-CELLINI_REV="HEAD"
+CELINI_APP="true"
+CELINI_REV="HEAD"
 INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
@@ -81,11 +81,11 @@ if [ $? -ne 0 ]; then
 fi
 clean_release "$BUILD_DIR/freeb2/local/setup/no_package" "freeb2"
 
-# Setup cellini
-if [ "true" == "$CELLINI_APP" ]; then
-	echo "Exporting cellini for application at rev $CELLINI_REV to $BUILD_DIR/cellini"
-	svn export -r $CELLINI_REV https://svn2.uversainc.com/svn/cellini/trunk $BUILD_DIR/cellini
-	clean_release "$BUILD_DIR/cellini/setup/no_package"
+# Setup Celini
+if [ "true" == "$CELINI_APP" ]; then
+	echo "Exporting Celini for application at rev $CELINI_REV to $BUILD_DIR/Celini"
+	svn export -r $CELINI_REV https://svn2.uversainc.com/svn/Celini/trunk $BUILD_DIR/Celini
+	clean_release "$BUILD_DIR/Celini/setup/no_package"
 fi
 
 #Setup installer

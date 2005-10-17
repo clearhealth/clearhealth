@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELLINI_ROOT.'/ordo/ORDataObject.class.php';
+require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
 /**#@-*/
 
 /**
@@ -99,7 +99,7 @@ class PatientNote extends ORDataObject {
 
 		$ds->registerFilter('note',array($this,'multiLineFilter'));
 		$ds->registerFilter('priority',array($this,'colorLineFilter'));
-		$ds->template['deprecated'] = "<a href='".Cellini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
+		$ds->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
 		return $ds;
 	}
 

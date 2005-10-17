@@ -1,13 +1,13 @@
 <?php
 
-require_once CELLINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELLINI_ROOT."/includes/Table.class.php";
-require_once CELLINI_ROOT."/includes/ReportFilter.class.php";
+require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
+require_once CELINI_ROOT."/includes/Table.class.php";
+require_once CELINI_ROOT."/includes/ReportFilter.class.php";
 
 /**
 * Compat functions
 */
-require_once CELLINI_ROOT.'/lib/PHP_Compat/Compat/Function/file_put_contents.php';
+require_once CELINI_ROOT.'/lib/PHP_Compat/Compat/Function/file_put_contents.php';
 
 
 /**
@@ -67,7 +67,7 @@ class Report extends ORDataObject {
 		);
 
 		$ds->registerFilter('view',array($this,'templateViewFilter'));
-		$ds->registerTemplate('label','<a href="'.Cellini::link('edit').'report_id={$id}">{$label}</a>');
+		$ds->registerTemplate('label','<a href="'.Celini::link('edit').'report_id={$id}">{$label}</a>');
 		return $ds;
 	}
 
@@ -80,7 +80,7 @@ class Report extends ORDataObject {
 				$res->MoveNext();
 			}
 		}
-		$ret = "<select onchange=\"window.location = '".Cellini::link('report')."' + this.options[this.selectedIndex].value\"><option>View Report with Template</option>";
+		$ret = "<select onchange=\"window.location = '".Celini::link('report')."' + this.options[this.selectedIndex].value\"><option>View Report with Template</option>";
 		if (isset($this->_templates[$row['id']])) {
 			foreach($this->_templates[$row['id']] as $template) {
 				$ret .= "<option value='report_id=$row[id]&report_template_id=$template[report_template_id]'>$template[name]</option>";

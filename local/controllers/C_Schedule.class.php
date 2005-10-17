@@ -22,7 +22,7 @@ class C_Schedule extends CalendarController {
 	function C_Schedule($template_mod = "general") {
 		parent::CalendarController();
 		$this->template_mod = $template_mod;
-		$this->assign("FORM_ACTION", Cellini::link(true) . $_SERVER['QUERY_STRING']);
+		$this->assign("FORM_ACTION", Celini::link(true) . $_SERVER['QUERY_STRING']);
 	}
 
 	function default_action() {
@@ -49,7 +49,7 @@ class C_Schedule extends CalendarController {
 		if (isset($args['reason_id'])) {
 			$this->assign("reason_id", $args['reason_id']);
 		}
-		$this->assign("FORM_ACTION", Cellini::link('confirm','schedule',false));
+		$this->assign("FORM_ACTION", Celini::link('confirm','schedule',false));
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_confirm.html");
 	}
@@ -60,14 +60,14 @@ class C_Schedule extends CalendarController {
 			return;
 		
 		if (isset($_POST['cancel'])) {
-			$location = Cellini::link('list','location');
+			$location = Celini::link('list','location');
 			$trail = $_SESSION['trail'];
 			foreach($trail as $stop) {
 					if (!isset($stop['edit_appointment']) && $stop['action'] != "edit_appointment" &&
 						!isset($stop['confirm']) && $stop['action'] != "confirm") {
 						if (isset($stop['main'])) array_shift($stop);
 						$aks = array_keys($stop);
-						$location = Cellini::link($stop[$aks[1]],$stop[$aks[0]]);
+						$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
 						unset($stop[$aks[0]]);
 						unset($stop[$aks[1]]);
 						foreach ($stop as $qn => $qi) {

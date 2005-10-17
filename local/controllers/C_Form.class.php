@@ -1,7 +1,7 @@
 <?php
 
-require_once CELLINI_ROOT."/controllers/Controller.class.php";
-require_once CELLINI_ROOT."/includes/Grid.class.php";
+require_once CELINI_ROOT."/controllers/Controller.class.php";
+require_once CELINI_ROOT."/includes/Grid.class.php";
 
 /**
  * Controller for generic form processing
@@ -15,13 +15,13 @@ class C_Form extends Controller {
 		$form =& ORDataObject::factory('Form');
 
 		$ds =& $form->formList();
-		$ds->template['name'] = '<a href="'.Cellini::link('edit').'id={$form_id}">{$name}</a>';
+		$ds->template['name'] = '<a href="'.Celini::link('edit').'id={$form_id}">{$name}</a>';
 		$grid =& new cGrid($ds);
 
 		$this->assign_by_ref('grid',$grid);
 
 
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_list.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_list.html"));
 	}
 
 	/**
@@ -34,13 +34,13 @@ class C_Form extends Controller {
 		$form =& ORDataObject::factory('Form',$form_id);
 
 		$this->assign_by_ref('form',$form);
-		$this->assign('FORM_ACTION',Cellini::link('edit',true,true,$form_id));
-		$this->assign('DOWNLOAD_ACTION',Cellini::link('download',true,true,$form_id));
-		$this->assign('VIEW_ACTION',Cellini::link('view',true,true,$form_id));
+		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$form_id));
+		$this->assign('DOWNLOAD_ACTION',Celini::link('download',true,true,$form_id));
+		$this->assign('VIEW_ACTION',Celini::link('view',true,true,$form_id));
 
 		$this->secure_dir[] = APP_ROOT."/user/form/";
 
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_edit.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_edit.html"));
 	}
 
 	function edit_action_process($form_id) {
@@ -79,24 +79,24 @@ class C_Form extends Controller {
 		$form =& ORDataObject::factory('Form',$form_id);
 		if ($form_id == false) {
 			$ds =& $form->formList();
-			$ds->template['name'] = '<a href="'.Cellini::link('view').'id={$form_id}">{$name}</a>';
+			$ds->template['name'] = '<a href="'.Celini::link('view').'id={$form_id}">{$name}</a>';
 		}
 		else {
 			$data =& ORDataObject::factory('FormData');
 			$ds =& $data->dataList($form_id);
-			$ds->template['last_edit'] = '<a href="'.Cellini::link('data').'id={$form_data_id}">{$last_edit}</a>';
+			$ds->template['last_edit'] = '<a href="'.Celini::link('data').'id={$form_data_id}">{$last_edit}</a>';
 			$this->assign_by_ref('form',$form);
 		}
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_view.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_view.html"));
 	}
 
 	function fillout_action($form_id = 0,$form_data_id = 0) {
 		$form =& ORDataObject::factory('Form',$form_id);
 		if ($form_id == false) {
 			$ds =& $form->formList();
-			$ds->template['name'] = '<a href="'.Cellini::link('fillout').'id={$form_id}">{$name}</a>';
+			$ds->template['name'] = '<a href="'.Celini::link('fillout').'id={$form_id}">{$name}</a>';
 			$grid =& new cGrid($ds);
 			$this->assign_by_ref('grid',$grid);
 		}
@@ -104,13 +104,13 @@ class C_Form extends Controller {
 			if (isset($this->form_data_id)) {
 				$form_data_id = $this->form_data_id;
 			}
-			$this->assign('FORM_ACTION',Cellini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id");
+			$this->assign('FORM_ACTION',Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id");
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$this->assign_by_ref('form',$form);
 			$this->assign_by_ref('data',$data);
 			$this->secure_dir[] = APP_ROOT."/user/form/";
 		}
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_fillout.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_fillout.html"));
 	}
 
 	function fillout_action_process($form_id = 0, $form_data_id = 0) {
@@ -133,14 +133,14 @@ class C_Form extends Controller {
 		$this->Assign_by_ref('data',$data);
 		$this->Assign_by_ref('form',$form);
 
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_data.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_data.html"));
 	}
 
 	/**
 	* Connect a report to the menu all reports
 	*/
 	function connect_action_edit() {
-		$this->assign("FORM_ACTION", Cellini::link('connect'));
+		$this->assign("FORM_ACTION", Celini::link('connect'));
 		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
 		$menu = Menu::getInstance();
@@ -149,7 +149,7 @@ class C_Form extends Controller {
 		$form =& ORDataObject::factory('Form');
 		$this->assign_by_ref('form',$form);
 
-		return $this->fetch(Cellini::getTemplatePath("/form/" . $this->template_mod . "_connect.html"));
+		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_connect.html"));
 	}
 
 }
