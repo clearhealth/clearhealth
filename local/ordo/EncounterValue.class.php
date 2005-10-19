@@ -9,7 +9,8 @@
 /**#@+
  * Required Libs
  */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
+$loader->requireOnce('ordo/ORDataObject.class.php');
+$loader->requireOnce('includes/EnumManager.class.php');
 /**#@-*/
 
 /**
@@ -120,8 +121,8 @@ class EncounterValue extends ORDataObject {
 	 * Enumeration getters
 	 */
 	function getValueTypeList() {
-		$list = $this->_load_enum('encounter_value_type',false);
-		return array_flip($list);
+		$enumManager =& EnumManager::getInstance();
+		return $enumManager->enumArray('encounter_value_type');
 	}
 	/**#@-*/
 
