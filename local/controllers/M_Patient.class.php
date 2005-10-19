@@ -330,9 +330,11 @@ class M_Patient extends Manager {
 
 	/**
 	 * Process a complaint
+	 *
+	 * @todo Remove this?  There is no Complaint ORDO
 	 */
 	function process_complaint($patient_id) {
-		$complaint =& ORDataObject::factory('complaint');
+		$complaint =& ORDataObject::factory('Complaint');
 		$complaint->populate_array($_POST['complaint']);
 		$complaint->persist();
 	}
