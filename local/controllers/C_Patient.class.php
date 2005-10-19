@@ -1001,12 +1001,12 @@ class C_Patient extends Controller {
 		// Encounter Values, 
 		$EncounterValues =& ORDataObject::factory('EncounterValue');
 		$encounterValueArray=$EncounterValues->encounterValueListArray($encounter_id);
-		$ev_enum = $EncounterValues->_load_enum("encounter_value_type");
-		$ev_enum = array_flip($ev_enum);
+		$ev_enum = $EncounterValues->getValueTypeList();
 		$ClaimData = array();
 	
 		foreach($encounterValueArray as $encounter_value_id){
 			$EncounterValue =& ORDataObject::factory('EncounterValue',$encounter_value_id,$encounter_id);
+			//printf('<pre>%s</pre>', var_export($ev_enum , true));exit;
 			$ev_name = $ev_enum[$EncounterValue->get('value_type')];
 			$ClaimData[$ev_name] = $EncounterValue->get('value');
 		}
