@@ -44,7 +44,7 @@ class C_Patient extends Controller {
 		
 		if (is_numeric($this->get("patient_id")) && $this->get("patient_id") > 0){
 			$this->set('external_id',$this->get('patient_id'));
-			$p = ORDataObject::Factory("patient",$this->get("patient_id"));
+			$p = ORDataObject::Factory("Patient",$this->get("patient_id"));
 			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);

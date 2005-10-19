@@ -90,7 +90,7 @@ class C_PatientFinder extends Controller {
 		$result_array = $this->_db->GetAll($sql);
 
 		if ($this->showNonPatients) {
-			$person =& ORDataObject::factory('person');
+			$person =& ORDataObject::factory('Person');
 			foreach($result_array as $key => $row) {
 				if (empty($row['person_type'])) {
 					$row['person_type'] = 1;
