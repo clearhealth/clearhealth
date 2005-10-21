@@ -24,19 +24,20 @@ class CalendarController extends Controller {
 		if (!$header_time) {
 			$base = strtotime($date);	
 		}
+
+		$increment = 5*60;
 				
 		$incs = array();
 		$stime = $base + ($start_hour * 60 * 60);
-		$loop_end = ($end_hour * 4) + 1;
+		$loop_end = ($end_hour * (60*60/$increment)) + 1;
 		for($i=1;$i<$loop_end;$i++) {
 			($i > 48) ? $period = $i - 48: $period = $i;
 				
 			$incs[$stime] = $period; 
-			//add fifteen minutes, this is the default day increment
-			$stime += 900;	
+			//add specified increment
+			$stime += $increment;	
 		}
 		
-		//print_r($incs);
 		return $incs;	
 	}
 	
