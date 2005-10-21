@@ -6,7 +6,7 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-$loader->requireOnce('/ordo/ORDataObject.class.php';
+$loader->requireOnce('/ordo/ORDataObject.class.php');
 
 /**
  * Object Relational Persistence Mapping Class for table: practice_setting
@@ -24,6 +24,18 @@ class PracticeSetting extends ORDataObject {
 	var $value		= '';
 	var $serialized		= '';
 	/**#@-*/
+
+	function setupName($name,$practiceId) {
+		$name = $this->dbHelper->escape($name);
+		$practiceId = $this->dbHelper->escape($practiceId);
+		$id = $this->dbHelper->getOne('select practice_setting_id from '.$this->tableName()." where name = $name and practice_id = $practiceId");
+		$this->setup($id);
+
+		if (!$this->isPopulated()) {
+			$this->set('practice_id',$practiceId);
+			$this->set('name',$name);
+		}
+	}
 
 
 	/**

@@ -22,6 +22,7 @@ class C_Calendar extends CalendarController {
 
 	var $template_mod;
 	var $location;
+	var $practiceConfig;
 
 	function C_Calendar($template_mod = "general") {
 		parent::CalendarController();
@@ -52,6 +53,8 @@ class C_Calendar extends CalendarController {
 		$this->assign('EDIT_APPOINTMENT_ACTION',Celini::link('edit_appointment','location'));
 		
 		$this->_setupFilterDisplay();
+
+		$this->practiceConfig =& Celini::configInstance('Practice');
 	}
 		
 	function _setupFilterDisplay() {
