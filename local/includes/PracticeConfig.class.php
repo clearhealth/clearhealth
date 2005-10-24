@@ -5,7 +5,6 @@
  *
  * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
- * @todo	Add CREATE TABLE SQL for this code...
  */
 class PracticeConfig extends clniConfig {
 
@@ -20,7 +19,6 @@ class PracticeConfig extends clniConfig {
 	 * Load config for a given practice
 	 */
 	function loadPractice($practiceId) {
-		return;
 		$db = new clniDb();
 
 		$typeEnforcer = new EnforceType();
@@ -37,6 +35,20 @@ class PracticeConfig extends clniConfig {
 			$res->MoveNext();
 		}
 
+	}
+
+	/**
+	 * Get a value for a key, falling back to the clniConfig if it isn't set for this practice
+	 *
+	 */
+	function get($key, $default = null) {
+		if (isset($this->_corral[$key])) {
+			return $this->_corral[$key];
+		}
+		else {
+			$conf =& Celini::configInstance();
+			return $conf->get($key,$default);
+		}
 	}
 
 	/**
