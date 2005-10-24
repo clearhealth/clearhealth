@@ -25,13 +25,16 @@ class CalendarController extends Controller {
 			$base = strtotime($date);	
 		}
 
-		$increment = 5*60;
+		$config =& Celini::configInstance('Practice');
+		$increment = $config->get('CalendarIncrement',900);
+
+		$numPeriods = ((60*60*$end_hour)-(60*60*$start_hour))/$increment*2;
 				
 		$incs = array();
 		$stime = $base + ($start_hour * 60 * 60);
 		$loop_end = ($end_hour * (60*60/$increment)) + 1;
 		for($i=1;$i<$loop_end;$i++) {
-			($i > 48) ? $period = $i - 48: $period = $i;
+			($i > $numPeriods) ? $period = $i - $numPeriods: $period = $i;
 				
 			$incs[$stime] = $period; 
 			//add specified increment

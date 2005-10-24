@@ -275,7 +275,8 @@ class Event extends ORDataObject{
 	
 	function event_array_builder($result,$key_type) {
 
-		$increment = 300;
+		$config =& Celini::configInstance('Practice');
+		$increment = $config->get('CalendarIncrement',900);
 
 		$events = array();
 		while ($result && !$result->EOF) {
