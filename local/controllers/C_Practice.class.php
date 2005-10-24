@@ -1,65 +1,40 @@
 <?php
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELINI_ROOT."/includes/Grid.class.php";
-
 /**
- * Controller for the Freestand Branch stuff
+ * Controller for editing a clearhealth practice
  */
 class C_Practice extends Controller {
+	var $location = false;
 
-	var $number_id = 0;
-
-	/**
-	 * Edit/Add an Practice
-	 *
-	 */
-	function edit_action_edit($practice_id = 0) {
-		if (isset($this->practice_id)) {
-			$practice_id = $this->practice_id;
-		}
-
-		$number_id = $this->number_id;
-
-		$address_id = 0;
-		if (isset($this->address_id)) {
-			$address_id = $this->address_id;
-		}
-
-		$practice =& ORdataObject::factory('Practice',$practice_id);
-		$number =& ORDataObject::factory('PracticeNumber',$number_id,$practice_id);
-		$address =& ORDataObject::factory('PracticeAddress',$address_id,$practice_id);
-
-		$this->assign_by_ref('practice',$practice);
-		$this->assign_by_ref('parent',$practice);
-		$this->assign_by_ref('user',$user);
-		$this->assign_by_ref('number',$number);
-		$this->assign_by_ref('address',$address);
-		$this->assign_by_ref('company',$company);
-		$this->assign('FORM_ACTION',Celini::managerLink('update',$practice_id));
-		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$practice_id));
-		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$practice_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$practice_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$practice_id));
-
-		$this->assign('now',date('Y-m-d'));
-
-		return $this->fetch(Celini::getTemplatePath("/practice/" . $this->template_mod . "_edit.html"));
+	function actionAdd() {
+		return $this->actionEdit(0);
 	}
 
-	/**
-	 * List Branches
-	 */
-	function list_action_view() {
-		$person =& ORDataObject::factory('Practice');
-
-		$ds =& $person->practiceList();
-		$ds->template['name'] = "<a href='".Celini::link('edit')."id={\$person_id}'>{\$name}</a>";
-		$grid =& new cGrid($ds);
-
-		$this->assign_by_ref('grid',$grid);
-
-		return $this->fetch(Celini::getTemplatePath("/practice/" . $this->template_mod . "_list.html"));
+	function actionEdit($id = 0) {
+		if (!is_object($this->location)) {
+			$this->location =& Celini::newORDO('Practice',$id);
+		}
+		
+		$this->assign_by_ref("practice",$this->location);
+		
+		$this->assign("process",true);
+		$this->assign("FORM_ACTION",Celini::link('edit',true,true,$id));
+		return $this->view->render("edit.html");
 	}
+	
+	function processEdit($id) {
+		if ($_POST['practice_id'] == 0) {
+			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
+		}
+
+		$this->location =& Celini::newORDO('Practice',$_POST['practice_id']);
+		$this->location = new Practice($_POST['practice_id']);
+		$this->location->populate_array($_POST);
+		$this->location->persist();
+		
+		$this->location->populate();
+		$_POST['process'] = "";
+	}
+	
 
 }
 ?>

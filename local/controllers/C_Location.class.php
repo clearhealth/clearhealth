@@ -24,7 +24,7 @@ class C_Location extends Controller {
 
 		$this->assign('EDIT_SCHEDULE_ACTION', Celini::link('edit_schedule'));
 		$this->assign('DELETE_ACTION', Celini::link('delete'));
-		$this->assign('EDIT_PRACTICE_ACTION', Celini::link('edit_practice'));
+		$this->assign('EDIT_PRACTICE_ACTION', Celini::link('edit','practice'));
 		$this->assign('EDIT_BUILDING_ACTION', Celini::link('edit_building'));
 		$this->assign('EDIT_ROOM_ACTION', Celini::link('edit_room'));
 		$this->assign('EDIT_EVENT_ACTION', Celini::link('edit_event'));
@@ -68,46 +68,6 @@ class C_Location extends Controller {
 		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_schedule_list.html");
 	}
 
-	function edit_practice_action($id = "") {
-		
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
-		
-		if (is_numeric($id)) {
-			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
-		}
-		else{
-			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
-		}
-		
-		
-		if (!is_object($this->location)) {
-			$this->location = new Practice($id);
-		}
-		
-		$this->assign("practice",$this->location);
-		
-		$this->assign("process",true);
-		return $this->fetch($GLOBALS['template_dir'] . "locations/" . $this->template_mod . "_edit_practice.html");
-	}
-	
-		
-	function edit_practice_action_process() {
-		if ($_POST['process'] != "true")
-			return;
-		if (is_numeric($_POST['practice_id'])) {
-			$this->sec_obj->acl_qcheck("edit",$this->_me,"","practice",$this,false);
-		}
-		else{
-			$this->sec_obj->acl_qcheck("add",$this->_me,"","practice",$this,false);
-		}
-		$this->location = new Practice($_POST['practice_id']);
-		$this->location->populate_array($_POST);
-		$this->location->persist();
-		
-		$this->location->populate();
-		$_POST['process'] = "";
-	}
-	
 	function edit_building_action($id = "") {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
