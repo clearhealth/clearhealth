@@ -4,7 +4,8 @@
  * Configuration tied to a clearhealth practice
  *
  * @package	com.uversainc.clearhealth
- * @uathor	Joshua Eichorn <jeichorn@mail.com>
+ * @author	Joshua Eichorn <jeichorn@mail.com>
+ * @todo	Add CREATE TABLE SQL for this code...
  */
 class PracticeConfig extends clniConfig {
 
@@ -19,6 +20,7 @@ class PracticeConfig extends clniConfig {
 	 * Load config for a given practice
 	 */
 	function loadPractice($practiceId) {
+		return;
 		$db = new clniDb();
 
 		$typeEnforcer = new EnforceType();
