@@ -274,6 +274,9 @@ class Event extends ORDataObject{
 	}
 	
 	function event_array_builder($result,$key_type) {
+
+		$increment = 300;
+
 		$events = array();
 		while ($result && !$result->EOF) {
 			$key = null;
@@ -306,15 +309,15 @@ class Event extends ORDataObject{
 					break;
 				case "day":
 					//floor to the correct 15 minute increment in seconds
-					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
-					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
-					$result->fields['duration_increments'] = ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
+					$result->fields['duration_increments'] = ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$events[$key][] = $result->fields;
 					break;
 				case "day_schedule":
 					//floor to the correct 15 minute increment in seconds
-					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
-					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$result->fields['duration_increments'] = 1;
 					$result->fields['first_inc'] = true;
 					$events[$key][] = $result->fields;
@@ -324,24 +327,24 @@ class Event extends ORDataObject{
 						if ($i+1 == $di) {
 							$result->fields['last_inc'] = true;		
 						}
-						$events[$key+($i*900)][] = $result->fields;
+						$events[$key+($i*$increment)][] = $result->fields;
 					}
 					break;	
 				case "day_brief":
 					//floor to the correct 15 minute increment in seconds
-					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
-					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$result->fields['duration_increments'] = 1;
 					$result->fields['first_inc'] = true;
 					$events[$key][] = $result->fields;
 					break;
 				case "find_first":
-					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
+					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
 					//echo "end ts " . date("Y-m-d H:i",$result->fields['end_ts']) . " start ts " .date("Y-m-d H:i",$result->fields['start_ts']) . " di " . ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900) . "<br>";
-					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$events[] = $key2;
 					for($i=1;$i<$di;$i++) {	
-						$events[] = $key2+($i*900);
+						$events[] = $key2+($i*$increment);
 					}
 					break;
 			}
