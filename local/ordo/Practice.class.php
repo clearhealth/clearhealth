@@ -68,23 +68,25 @@ class Practice extends ORDataObject{
 		$this->website = "";
 		$this->addresses = array();
 		$this->phone_numbers = array();
-		$this->main_address = new PracticeAddress();
+		$this->main_address =& new PracticeAddress();
 		$tlist = array_flip($this->main_address->getTypeList());
-		if(isset($tlist['Main']))
+		if(isset($tlist['Main'])) {
 			$this->main_address->set_type($tlist["Main"]);
-		$this->secondary_address = new PracticeAddress();
-		if(isset($tlist['Secondary']))
+		}
+
+		$this->secondary_address =& new PracticeAddress();
+		if(isset($tlist['Secondary'])) {
 			$this->secondary_address->set_type($tlist["Secondary"]);
+		}
 
 		$this->_table = "practices";
 
-		if ($id != "") {
-			$this->populate();
-
-		}
-
 		$number =& ORDataobject::factory('Number');
 		$this->phone_types = array_flip($number->getTypeList());
+
+		if ($id != "") {
+			$this->populate();
+		}
 	}
 
 	function populate() {
@@ -102,7 +104,6 @@ class Practice extends ORDataObject{
 					break;
 			}
 			$res->MoveNext();
-
 		}
 
 		$res = $this->_execute("select * from practice_number where practice_id = ".(int)$this->id);

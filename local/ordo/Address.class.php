@@ -32,7 +32,7 @@ class Address extends ORDataObject {
 	}
 	function setup($id = 0,$parent = false, $parent_type = "person") {
 		if ($id !== 0) {
-			$this->id = $id;
+			$this->set('id',$id);
 			$this->populate();
 		}
 
@@ -48,7 +48,7 @@ class Address extends ORDataObject {
 	* Pull data for this record from the database
 	*/
 	function populate() {
-		parent::populate('address_id');
+		parent::populate(true);
 
 		if (isset($this->_relation)) {
 			$sql = "select address_type from $this->_relation where address_id = ".(int)$this->id;
@@ -117,10 +117,10 @@ class Address extends ORDataObject {
     *	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
     */
     function get_address_id() {
-    	return $this->id;
+	return $this->get('id');
     }
     function set_address_id($id) {
-    	$this->id = $id;	
+	    $this->set('id',$id);
     }
 
     function get_name() {
