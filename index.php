@@ -1,6 +1,6 @@
 <?php
-if (file_exists('Celini')) {
-	require_once "Celini/bootstrap.php";
+if (file_exists('cellini')) {
+	require_once "cellini/bootstrap.php";
 }
 else {
 	require_once "celini/bootstrap.php";
