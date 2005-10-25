@@ -131,9 +131,7 @@ class M_User extends M_Patient {
 
 				if (count($schedules) == 0) {
 					// get the default practice
-					ORDataObject::factory_include('Practice');
-					$practices = Practice::practices_factory();
-					$practice_id = $practices[0]->get('id');
+					$practice_id = $u->get('DefaultPracticeId');
 
 					// create a ps schedule for the provider
 					$schedule =& ORDataObject::factory('Schedule');
