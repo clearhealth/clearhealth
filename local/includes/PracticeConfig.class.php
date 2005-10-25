@@ -5,11 +5,18 @@
  *
  * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
+ * @todo	figure out a decent external format for schema information and write a class to load it
  */
 class PracticeConfig extends clniConfig {
 
 	var $defaultPracticeId = 0;
 	var $practiceId;
+
+	var $_schema = array('CalendarInterval' => array('label'=>'Calendar Interval','type'=>'second'));
+
+	function getSchema() {
+		return $this->_schema;
+	}
 
 	function PracticeConfig() {
 		$this->loadPractice($this->defaultPracticeId);
