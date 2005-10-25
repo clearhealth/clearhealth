@@ -540,7 +540,6 @@ class C_Patient extends Controller {
 		ORdataObject::factory_include('ClearhealthClaim');
 		$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
 		$claimIdentifier = $claim->get('identifier');
-		
 
 		// get the current revision of the freeb2 claim
 		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
@@ -871,8 +870,10 @@ class C_Patient extends Controller {
 						break;
 					}
 				}
-				unset($relationships[$id]);
-				array_unshift($relationships,$r);
+				if (isset($id)) {
+					unset($relationships[$id]);
+					array_unshift($relationships,$r);
+				}
 
 			}
 		}
