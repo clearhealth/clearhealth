@@ -461,7 +461,7 @@ class Occurence extends ORDataObject{
 	 * @access	protected
 	 */
 	function get_start_time() {
-		if (empty($this->start)) {
+		if (empty($this->start) || !is_object($this->start)) {
 			return '';
 		}
 		
