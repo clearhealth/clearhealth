@@ -57,7 +57,7 @@ class User extends Base_User {
 	function get_DefaultPracticeId() {
 		$room =& Celini::newORDO('Room',$this->get('default_location_id'));
 		if ($room->isPopulated()) {
-			$building =& Celini::newORDO('Bulding',$room->get('building_id'));
+			$building =& Celini::newORDO('Building',$room->get('building_id'));
 			return $building->get('practice_id');
 		}
 		else {
