@@ -44,7 +44,6 @@
 	{foreach name=inc_count from=$increments key=time item=inc}
 		<tr>
 		<td width="0" height="15"></td>
-		{*{if $inc%2 eq 1 or $inc eq 1}*}
 		{if ($time/60)%60 eq 0 or ($time/60)%30 eq 0}
 			<td rowspan="{$CalendarPeriodSize}" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
 			{assign var=day_border value="dayborder"}	
