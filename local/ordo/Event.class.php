@@ -276,8 +276,6 @@ class Event extends ORDataObject{
 	function event_array_builder($result,$key_type) {
 
 		$config =& Celini::configInstance('Practice');
-		$user =& $this->_me->get_user();
-		$config->loadPractice($user->get('DefaultPracticeId'));
 		$increment = $config->get('CalendarIncrement',900);
 
 		$events = array();
