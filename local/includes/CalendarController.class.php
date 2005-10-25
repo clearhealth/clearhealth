@@ -26,6 +26,7 @@ class CalendarController extends Controller {
 		}
 
 		$config =& Celini::configInstance('Practice');
+		$config->loadPractice(1122);
 		$increment = $config->get('CalendarIncrement',900);
 
 		$numPeriods = ((60*60*$end_hour)-(60*60*$start_hour))/$increment*2;
@@ -40,6 +41,9 @@ class CalendarController extends Controller {
 			//add specified increment
 			$stime += $increment;	
 		}
+
+		$cps = $numPeriods / (($end_hour-$start_hour)*2) /2;
+		$this->assign('CalendarPeriodSize',$cps);
 		
 		return $incs;	
 	}
