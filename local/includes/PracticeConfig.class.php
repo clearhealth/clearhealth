@@ -19,6 +19,9 @@ class PracticeConfig extends clniConfig {
 	}
 
 	function PracticeConfig() {
+		$me =& Me::getInstance();
+		$user =& $me->get_user();
+		$this->defaultPracticeId = $user->get('DefaultPracticeId');
 		$this->loadPractice($this->defaultPracticeId);
 	}
 
