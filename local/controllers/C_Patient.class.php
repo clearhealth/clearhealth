@@ -591,7 +591,7 @@ class C_Patient extends Controller {
 				$claimline['diagnoses'][] = $val['code'];
 			}
 			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
+				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claimIdentifier),true));
 			}
 
 			// rewrite ar if needed
