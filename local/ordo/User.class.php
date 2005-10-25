@@ -49,5 +49,22 @@ class User extends Base_User {
                 return $users;
         }
 
+	/**
+	 * Get the practiceId that matches this users default location, if no location is specified use the first practice
+	 *
+	 * @todo replace call to practices_factory with a setup method that returns the default practice
+	 */
+	function get_DefaultPracticeId() {
+		$room =& Celini::newORDO('Room',$this->get('default_location_id'));
+		if ($room->isPopulated()) {
+			$building =& Celini::newORDO('Bulding',$room->get('building_id'));
+			return $building->get('practice_id');
+		}
+		else {
+			ORDataObject::factory_include('Practice');
+			$practices = Practice::practices_factory();
+			return $practices[0]->get('id');
+		}
+	}
 }
 ?>
