@@ -276,6 +276,8 @@ class Event extends ORDataObject{
 	function event_array_builder($result,$key_type) {
 
 		$config =& Celini::configInstance('Practice');
+		$user =& $this->_me->get_user();
+		$config->loadPractice($user->get('DefaultPracticeId'));
 		$increment = $config->get('CalendarIncrement',900);
 
 		$events = array();
@@ -286,16 +288,16 @@ class Event extends ORDataObject{
 				case "week":
 				
 					$key = $result->fields['start_day'];
-					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
+					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
 					//echo "end ts " . date("Y-m-d H:i",$result->fields['end_ts']) . " start ts " .date("Y-m-d H:i",$result->fields['start_ts']) . " di " . ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900) . "<br>";
-					$result->fields['duration_increments'] = ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$result->fields['duration_increments'] = ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$events[$key][$key2][] = $result->fields;
 					break;
 				case "week_schedule":
 					$key = $result->fields['start_day'];
-					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%900));
+					$key2 = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
 					//echo "end ts " . date("Y-m-d H:i",$result->fields['end_ts']) . " start ts " .date("Y-m-d H:i",$result->fields['start_ts']) . " di " . ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900) . "<br>";
-					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/900);
+					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$result->fields['duration_increments'] = 1;
 					$result->fields['first_inc'] = true;
 					$events[$key][$key2][] = $result->fields;
@@ -305,7 +307,7 @@ class Event extends ORDataObject{
 						if ($i+1 == $di) {
 							$result->fields['last_inc'] = true;		
 						}
-						$events[$key][$key2+($i*900)][] = $result->fields;
+						$events[$key][$key2+($i*$increment)][] = $result->fields;
 					}
 					break;
 				case "day":
