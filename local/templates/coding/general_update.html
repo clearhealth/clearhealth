@@ -238,7 +238,7 @@ function addCPTCode() {
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
 <A HREF="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</A>&nbsp;
-<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A><BR>
+<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A> {enum_lookup name="code_modifier" value=$code.modifier}<BR>
 {foreach from=$children item=child}
 &nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br>
 {/foreach}<BR>
