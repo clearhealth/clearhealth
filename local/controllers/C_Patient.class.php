@@ -934,7 +934,7 @@ class C_Patient extends Controller {
 			$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 			$practiceData['x12_version'] = $defaultProgram->get('x12_version');
 
-		//var_export($practiceData); echo "<br>";
+		//printf('<pre>%s</pre>', var_export($practiceData , true));
 		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
 			trigger_error("Unable to register practice data - ".$freeb2->claimLastError($claim_identifier));
 		}
