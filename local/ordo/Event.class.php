@@ -304,6 +304,7 @@ class Event extends ORDataObject{
 					for($i=1;$i<$di;$i++) {	
 						if ($i+1 == $di) {
 							$result->fields['last_inc'] = true;		
+							$events[$key][$key2+($i*$increment)+$increment][] = $result->fields;
 						}
 						$events[$key][$key2+($i*$increment)][] = $result->fields;
 					}
@@ -324,9 +325,13 @@ class Event extends ORDataObject{
 					$events[$key][] = $result->fields;
 					$result->fields['first_inc'] = false;
 					$result->fields['last_inc'] = false;
+					if (is_null($result->fields['color'])) {
+						$result->fields['color'] = "FFF";
+					}
 					for($i=1;$i<$di;$i++) {	
 						if ($i+1 == $di) {
 							$result->fields['last_inc'] = true;		
+							$events[$key+($i*$increment)+$increment][] = $result->fields;
 						}
 						$events[$key+($i*$increment)][] = $result->fields;
 					}
