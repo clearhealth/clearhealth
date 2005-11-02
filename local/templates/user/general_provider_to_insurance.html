@@ -26,6 +26,15 @@
 				</td>
 			</tr>
 			<tr>
+				<td><label>{l}Building{/l}:</label></td>
+				<td>
+					<select name="providerToInsurance[building_id]">
+						<option value=""></option>
+						{html_options options=$building->getBuildingList() selected=$providerToInsurance->get('building_id')"}
+					</select>
+				</td>
+			</tr>
+			<tr>
 				<td><label>{l}Group Number{/l}:</label></td>
 				<td><input name="providerToInsurance[group_number]" value="{$providerToInsurance->get('group_number')}"></td>
 			</tr>

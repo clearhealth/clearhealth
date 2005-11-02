@@ -16,7 +16,7 @@ class C_User extends Controller {
 	 * Edit/Add a User
 	 *
 	 */
-	function edit_action_edit($person_id = 0) {
+	function actionEdit($person_id = 0) {
 		if (isset($this->person_id)) {
 			$person_id = $this->person_id;
 		}
@@ -33,17 +33,20 @@ class C_User extends Controller {
 		}
 
 		if ($person->get('type') == 2) {
-			$provider =& ORDataObject::factory('Provider',$person_id);
-			$this->assign_by_ref('provider',$provider);
+			$provider =& Celini::newORDO('Provider',$person_id);
+			$this->view->assign_by_ref('provider',$provider);
 
-			$providerToInsurance =& ORDataObject::factory('ProviderToInsurance',$this->provider_to_insurance_id);
-			$this->assign_by_ref('providerToInsurance',$providerToInsurance);
+			$providerToInsurance =& Celini::newORDO('ProviderToInsurance',$this->provider_to_insurance_id);
+			$this->view->assign_by_ref('providerToInsurance',$providerToInsurance);
 
 			$providerToInsuranceGrid =& new cGrid($providerToInsurance->providerToInsuranceList($person_id));
-			$this->assign_by_ref('providerToInsuranceGrid',$providerToInsuranceGrid);
+			$this->view->assign_by_ref('providerToInsuranceGrid',$providerToInsuranceGrid);
 
-			$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
-			$this->assign_by_ref('insuranceProgram',$insuranceProgram);
+			$insuranceProgram =& Celini::newORDO('InsuranceProgram');
+			$this->view->assign_by_ref('insuranceProgram',$insuranceProgram);
+			
+			$building =& Celini::newORDO('Building');
+			$this->view->assign_by_ref('building', $building);
 		}
 
 		$nameHistoryGrid =& new cGrid($person->nameHistoryList());
@@ -69,7 +72,7 @@ class C_User extends Controller {
 
 		$this->assign('now',date('Y-m-d'));
 
-		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_edit.html"));
+		return $this->view->render('edit.html');
 	}
 
 	/**

@@ -28,6 +28,7 @@ class ProviderToInsurance extends ORDataObject {
 	var $provider_number		= '';
 	var $provider_number_type	= '';
 	var $group_number		= '';
+	var $building_id = '';
 	/**#@-*/
 
 	var $_typeCache = false;
@@ -85,16 +86,28 @@ class ProviderToInsurance extends ORDataObject {
 	/**#@-*/
 
 	
+	/**
+	 * @todo Refractor this into a DS off of the {@link Person} ordo
+	 */
 	function providerToInsuranceList($person_id) {
 		settype($person_id,'int');
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "ip.name, provider_number, provider_number_type, group_number",
-				'from' 	=> "$this->_table inner join insurance_program ip using(insurance_program_id)",
+				'cols' 	=> "ip.name, provider_number, provider_number_type, group_number, b.name AS building_name",
+				'from' 	=> "
+					$this->_table AS pToI
+					INNER JOIN insurance_program AS ip USING(insurance_program_id)
+					LEFT JOIN buildings AS b ON(pToI.building_id = b.id)",
 				'where' => " person_id = $person_id"
 			),
-			array('name' => 'Name','provider_number'=> 'Provider Number', 'group_number' => 'Group Number'));
+			array(
+				'name' => 'Name',
+				'provider_number' => 'Provider Number', 
+				'group_number' => 'Group Number',
+				'building_name' => 'Building Name'
+			)
+		);
 
 		$ds->registerFilter('provider_number_type',array(&$this,'lookupProviderNumberType'));
 		return $ds;
