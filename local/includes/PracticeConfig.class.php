@@ -12,7 +12,7 @@ class PracticeConfig extends clniConfig {
 	var $defaultPracticeId = 0;
 	var $practiceId;
 
-	var $_schema = array('CalendarInterval' => array('label'=>'Calendar Interval','type'=>'second'));
+	var $_schema = array('CalendarIncrement' => array('label'=>'Calendar Interval','type'=>'second'));
 
 	function getSchema() {
 		return $this->_schema;
@@ -77,6 +77,7 @@ class PracticeConfig extends clniConfig {
 
 		$ps->set('value',$value);
 		$ps->persist();
+		parent::set($key,$value);
 	}
 	
 }

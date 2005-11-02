@@ -1,6 +1,8 @@
 <form id="practiceForm" name="practice" method="post" action="{$FORM_ACTION}" onsubmit="return clni_validate(this)">
 <!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
 		if it were called last, the settings from the form would be overwritten with the old information-->
+<div style="margin: 1em">
+	<h2>Practice Information</h2>
 <input type="hidden" name="form_id" value="{$practice->get('id')}" />
 <div id="practiceFormMessageBox"></div>
 <table CELLSPACING="0" CELLPADDING="3">
@@ -91,20 +93,29 @@
 		<input type="text" id="identifier" name="identifier" value="{$practice->get('identifier')}" />
 	</td>
 </tr>
+
+{if $settings}
+<tr><td colspan="3"><h2 style="margin: 0px; margin-top: 1em;">Per Practice Configuration</h2></td></tr>
+{/if}
+	{foreach from=$settings item=row}
+<tr>
+	<td align="left">{$row.label}</td>
+	<td solspan="2">{$row.widget}</td>
+</tr>
+	{/foreach}
 <tr>
 	{if empty($practice->id) }
-	<td><br /><input type="submit" value="Save" /></td>
+	<td></td><td><br /><input type="submit" value="Save" /></td>
 	{else}
-	<td><br /><input type="submit" value="Update" /></td>
+	<td></td><td><br /><input type="submit" value="Update" /></td>
 	{/if}
 </tr>
 </table>
-{*{include file="contacts/general_phone.html"}
-{include file="contacts/general_address.html"}*}
-
-{clni_register_message_target formId="practiceForm" targetId="practiceFormMessageBox"}
-{clni_register_validation_rule id="identifier" rule="ssn" message="Identifier (SSN/EIN) must be 9 digits with no spaces or 6 digits and 3 letters"}
+</div>
 
 <input type="hidden" name="practice_id" value="{$practice->id}" />
 <input type="hidden" name="process" value="{$PROCESS}" />
 </form>
+
+{clni_register_message_target formId="practiceForm" targetId="practiceFormMessageBox"}
+{clni_register_validation_rule id="identifier" rule="ssn" message="Identifier (SSN/EIN) must be 9 digits with no spaces or 6 digits and 3 letters"}

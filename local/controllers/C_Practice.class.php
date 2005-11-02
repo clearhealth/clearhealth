@@ -1,4 +1,5 @@
 <?php
+$loader->requireOnce('includes/TypeFileLoader.class.php');
 /**
  * Controller for editing a clearhealth practice
  */
@@ -18,6 +19,8 @@ class C_Practice extends Controller {
 		
 		$this->assign("process",true);
 		$this->assign("FORM_ACTION",Celini::link('edit',true,true,$id));
+
+		$this->assign('settings',$this->_practiceSettings($id));
 		return $this->view->render("edit.html");
 	}
 	
@@ -32,9 +35,53 @@ class C_Practice extends Controller {
 		$this->location->persist();
 		
 		$this->location->populate();
-		$_POST['process'] = "";
-	}
-	
 
+		if (isset($_POST['config'])) {
+			$this->_processPracticeSettings($id,$_POST['config']);
+		}
+	}
+
+	function _practiceSettings($id) {
+		if ($id == 0) {
+			return "";
+		}
+
+		$config =& Celini::configInstance('practice');
+		$config->loadPractice($id);
+
+		$schema = $config->getSchema();
+		$ret = array();
+
+		foreach($schema as $key => $info) {
+			$type = $this->_typeClass($info['type']);
+
+			$ret[$key]['label'] = $type->label($key,$info['label']);
+			$ret[$key]['widget'] = $type->widget($key,$config->get($key,900));
+		}
+		return $ret;
+	}
+
+	function _processPracticeSettings($id,$settings) {
+		$config =& Celini::configInstance('practice');
+		$config->loadPractice($id);
+
+		$schema = $config->getSchema();
+		$typeLoader =& new TypeFileLoader();
+
+		foreach($settings as $key => $value) {
+			if (isset($schema[$key])) {
+				$type = $this->_typeClass($schema[$key]['type']);
+				$config->set($key,$type->parseValue($value));
+			}
+		}
+	}
+
+	function _typeClass($type) {
+		$typeLoader =& new TypeFileLoader();
+		$typeLoader->loadType($type);
+		$class = 'clniType'.$type;
+		$type = new $class();
+		return $type;
+	}
 }
 ?>
