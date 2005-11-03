@@ -597,5 +597,9 @@ class C_Location extends Controller {
 		header("Location: $location");
 		return;
 	}
+
+	function edit_practice_action($id = 0) {
+		header('Location: '.Celini::link('edit','Practice',true,$id));
+	}
 }
 ?>
