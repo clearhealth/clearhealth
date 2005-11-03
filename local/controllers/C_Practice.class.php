@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('includes/TypeFileLoader.class.php');
+require_once APP_ROOT."/local/includes/PracticeConfig.class.php";
 /**
  * Controller for editing a clearhealth practice
  */
@@ -77,6 +78,7 @@ class C_Practice extends Controller {
 	}
 
 	function _typeClass($type) {
+		require_once CELINI_ROOT."/includes/clniType/Second.class.php";
 		$typeLoader =& new TypeFileLoader();
 		$typeLoader->loadType($type);
 		$class = 'clniType'.$type;
