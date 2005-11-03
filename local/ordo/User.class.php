@@ -63,8 +63,11 @@ class User extends Base_User {
 		else {
 			ORDataObject::factory_include('Practice');
 			$practices = Practice::practices_factory();
-			return $practices[0]->get('id');
+			if (isset($practices[0])) {
+				return $practices[0]->get('id');
+			}
 		}
+		return 0;
 	}
 }
 ?>
