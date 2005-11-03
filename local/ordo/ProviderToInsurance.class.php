@@ -56,7 +56,30 @@ class ProviderToInsurance extends ORDataObject {
 			$this->set('person_id',$person_id);
 		}
 	}
-
+	
+	/**
+	 * Setup that will load an ORDO based on the program/building combo of a 
+	 * given user
+	 *
+	 * @param int
+	 * @param int
+	 * @param int
+	 */
+	function setupByProgramAndBuilding($person_id, $program_id, $building_id) {
+		$sql = '
+			SELECT 
+				*
+			FROM
+				' . $this->_table . '
+			WHERE
+				insurance_program_id = ' . (int)$program_id . ' AND
+				(building_id = ' . (int)$building_id . ' OR building_id = 0)
+			ORDER BY building_id DESC
+			LIMIT 1';
+		$results =& $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this, $results);
+	}
+	
 	/**
 	 * Populate the class from the db
 	 */
@@ -87,7 +110,18 @@ class ProviderToInsurance extends ORDataObject {
 
 	
 	/**
-	 * @todo Refractor this into a DS off of the {@link Person} ordo
+	 * Virtual getter to load the identifier_type's enum value.
+	 *
+	 * @return string
+	 * @see lookupProviderNumberType()
+	 */
+	function get_identifier_type_value() {
+		return $this->lookupProviderNumberType($this->get('identifier_type'));
+	}
+	
+	/**
+	 * @todo Refractor this into a DS off of the {@link Person} or 
+	 *    {@link Provider} ordo
 	 */
 	function providerToInsuranceList($person_id) {
 		settype($person_id,'int');

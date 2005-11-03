@@ -905,20 +905,30 @@ class C_Patient extends Controller {
 
 		// Set secondary identifier
 		$providerPerson = $provider->get('person');
-		$extraIdentifiers =& $providerPerson->identifierList();
-		if (count($extraIdentifiers->toArray()) > 0) {
-			$i = 2;
-			foreach ($extraIdentifiers->toArray() as $extraIdentifier) {
-				$providerData["identifier_{$i}"]      = $extraIdentifier["identifier"];
-				$providerData["identifier_type_{$i}"] = $extraIdentifier["identifier_type"];
-				$i++;
-			}
+		
+		// See if there is a program specific, or program/building specific ID 
+		// for this provider.
+		
+		$programSpecificID =& Celini::newORDO(
+			'ProviderToInsurance', 
+			array($provider->get('id'), $defaultProgram->get('id'), $facility->get('id')),
+			'ByProgramAndBuilding');
+		
+		if ($programSpecificID->isPopulated()) {
+			$providerData['identifier_2']      = $programSpecificID->get('provider_number');
+			$providerData['identifier_type_2'] = $programSpecificID->get('identifier_type_value'); 
 		}
-
-
-		// There were no extra identifiers
-		else {
-			
+		else { /* */
+			// Attempt to load default secondary IDs
+			$extraIdentifiers =& $providerPerson->identifierList();
+			if (count($extraIdentifiers->toArray()) > 0) {
+				$i = 2;
+				foreach ($extraIdentifiers->toArray() as $extraIdentifier) {
+					$providerData["identifier_{$i}"]      = $extraIdentifier["identifier"];
+					$providerData["identifier_type_{$i}"] = $extraIdentifier["identifier_type"];
+					$i++;
+				}
+			}
 		}
 		
 		if (!$freeb2->registerData($claim_identifier,'Provider',$providerData)) {
