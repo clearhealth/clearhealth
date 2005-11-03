@@ -1,1 +1,1 @@
-ALTER TABLE `payment` ADD `title` VARCHAR( 256 ) NOT NULL 
+ALTER TABLE `payment` ADD `title` VARCHAR( 255 ) NOT NULL 
