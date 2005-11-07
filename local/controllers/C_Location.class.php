@@ -369,40 +369,11 @@ class C_Location extends Controller {
 		$oc->populate();
 		
 		$this->location = null;
-		$trail = $_SESSION['trail'];
 
-		$location = Celini::link('list','location');
-		//$trail = $_SESSION['trail'];
-		//var_dump($trail);
-		$trail = array_reverse($trail);
-		foreach($trail as $stop) {
-				if (!isset($stop['edit_appointment']) && 
-				$stop['action'] != "edit_appointment" &&
-				!isset($stop['confirm']) && 
-				$stop['action'] != "confirm" &&
-				!isset($stop['find']) && 
-				$stop['action'] != "find" &&
-				!isset($stop['appointment_popup']) && 
-				$stop['action'] != "appointment_popup"
-				) {
-				
-
-				if (isset($stop['main'])) array_shift($stop);
-				$aks = array_keys($stop);
-				$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
-				unset($stop[$aks[0]]);
-				unset($stop[$aks[1]]);
-				foreach ($stop as $qn => $qi) {
-				//they were coming from editing this appointment which they are now done doing, don't send this and put them back in to edit mode
-				if ($qn === "appointment_id") continue;
-				$location .= "$qn";
-				if (!empty($qi)) $location .= "=$qi";
-					$location .="&";
-				}
-				break;
-			}
-		}
-		header("Location: " . $location);
+		$trail =& Celini::trailInstance();
+		$trail->skipActions = array('edit_appointment','confirm','find','appointment_popup');
+		$action = $trail->lastItem();
+		header("Location: " . $action->link());
 		exit;
 	}
 	
@@ -522,24 +493,10 @@ class C_Location extends Controller {
 	}
 
 	function _redirLast() {
-		$action = 'list';
-		$controller = 'location';
-		$section = 'main';
-
-		$trail = $_SESSION['trail'];
-		$qs = "";
-		foreach($trail as $stop) {
-			if (!isset($stop['delete']) && $stop['action'] != "delete") {
-				$section = array_shift($stop);
-				$controller = array_shift($stop);
-				$action = array_shift($stop);
-
-				foreach($stop as $key => $val) {
-					$qs .= "$key=$val&";
-				}
-			}
-		}
-		header("Location: ".Celini::link($action,$controller,$section).$qs);
+		$trail =& Celini::trailInstance();
+		$trail->skipActions = array('delete');
+		$action = $trail->lastItem();
+		header("Location: ".$action->link());
 		exit;
 	}
 
@@ -577,24 +534,10 @@ class C_Location extends Controller {
 		}
 
 		$location = Celini::link('list','location');
-		$trail = array_reverse($_SESSION['trail']);
-		foreach($trail as $stop) {
-			if (!isset($stop['update_schedule']) && $stop['action'] != "update_schedule") {
-				if (isset($stop['main'])) array_shift($stop);
-				$aks = array_keys($stop);
-				$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
-				unset($stop[$aks[0]]);
-				unset($stop[$aks[1]]);
-				foreach ($stop as $qn => $qi) {
-					$location .= "$qn";
-					if (!empty($qi)) $location .= "=$qi";
-						$location .="&";
-				}
-				break;
-			}
-		}
-		// Redirect them to the screen they were previously on.
-		header("Location: $location");
+		$trail =& Celini::trailInstance();
+		$trail->skipActions = array('update_schedule');
+		$action = $trail->lastItem();
+		header("Location: ".$action->link());
 		return;
 	}
 
