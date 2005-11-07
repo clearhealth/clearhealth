@@ -39,7 +39,7 @@
 					<a href="{link action="editGroup" controller="Appointment"}appointment_id={$ev.occurence_id}">enc</a>,
 					<a href="{link action="editGroup" controller="Appointment"}appointment_id={$ev.occurence_id}">edit group</a>
 				{else}
-					<a href="{link action="encounter" controller="Patient" defaultArg="0"}occurence_id={$ev.occurence_id}&patient_id={$ev.person_id}">enc</a>
+					<a href="{link action="edit" controller="Encounter" defaultArg="0"}occurence_id={$ev.occurence_id}&patient_id={$ev.person_id}">enc</a>
 				{/if}
 					{/if}
 				{else}
