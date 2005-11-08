@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('controllers/C_Coding.class.php');
+$loader->requireOnce('freeb2/local/controllers/C_FreeBGateway.class.php');
 /**
  * A patient Encounter
  */
@@ -23,17 +24,16 @@ class C_Encounter extends Controller {
 	/**
 	 * Edit/Add an encounter
 	 */
-	function actionEdit($encounter_id = 0,$appointment_id = 0,$patient_id = 0) {
-		$encounter_id = $this->_enforcer->int($encounter_id); 
-		$appointment_id = $this->_enforcer->int($appointment_id);
-		$patient_id = $this->_enforcer->int($patient_id);
-		
-		$valid_appointment_id = false;
-		
+	function actionEdit($encounter_id = 0) {
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
 		}
-
+		
+		$encounter_id = $this->_enforcer->int($encounter_id);
+		$appointment_id = $this->GET->getTyped('appointment_id', 'int');
+		$patient_id = $this->GET->getTyped('patient_id', 'int');
+		
+		$valid_appointment_id = false;
 
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
@@ -155,7 +155,7 @@ class C_Encounter extends Controller {
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 
-		if ($encounter_id > 0 /*&& $encounter->get('status') !== "closed"*/) {
+		if ($encounter_id > 0) {
 			$this->coding->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 			$this->coding->assign("encounter", $encounter);
 			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_parent_id);
@@ -167,6 +167,7 @@ class C_Encounter extends Controller {
 		if ($encounter->get('status') === "closed") {
 			ORDataObject::factory_include('ClearhealthClaim');
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
+			printf('<pre>%s</pre>', var_export($encounter_id , true));
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Celini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Celini::link('payment','Eob',true,$claim->get('id')));
 
@@ -174,12 +175,6 @@ class C_Encounter extends Controller {
 			if ($claim->_populated) {
 				$this->assign('encounter_has_claim',true);
 			}
-
-			/* moved to menu
-			// todo: get this without hard coding in the report and template id
-			$exit_base_link = str_replace("main","PDF",Celini::link('report',true,true));
-			$this->assign('EXIT_REPORT',$exit_base_link."report_id=17075&template_id=17077&encounter_id=".$encounter->get('id'));
-			*/
 
 			$this->assign('REOPEN_ACTION',Celini::link('reopen', true, true, $encounter->get('id')) . 'process=true');
 		}
@@ -192,14 +187,7 @@ class C_Encounter extends Controller {
 			else {
 				$this->assign('claimSubmitValue', 'close');
 			}
-			//printf('<pre>%s</pre>', var_export($claim , true));
-			//exit;
 		}
-			/* not currently in use
-			$intake_base_link = str_replace("main","util",Celini::link('report',true,true));
-			$this->assign('INTAKE_REPORT',$intake_base_link."report_id=17857&template_id=17859&encounter_id=".$encounter->get('id'));
-			*/
-
 		return $this->view->render("edit.html");
 	}
 
