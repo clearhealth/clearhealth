@@ -59,23 +59,23 @@ class C_Encounter extends Controller {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
 		$this->set('encounter_id',$encounter_id);
-		$encounter =& Celini::newORDO('Encounter',$encounter_id,$this->get('patient_id'));
+		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
 		$person =& Celini::newORDO('Person');
 		$building =& Celini::newORDO('Building');
 
-		$encounterDate =& Celini::newORDO('EncounterDate',$this->encounter_date_id,$encounter_id);
+		$encounterDate =& Celini::newORDO('EncounterDate',array($this->encounter_date_id,$encounter_id));
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->name = "encounterDateGrid";
 		$encounterDateGrid->registerTemplate('date','<a href="'.Celini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
-		$encounterValue =& Celini::newORDO('EncounterValue',$this->encounter_value_id,$encounter_id);
+		$encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$encounter_id));
 		$encounterValueGrid = new cGrid($encounterValue->encounterValueList($encounter_id));
 		$encounterValueGrid->name = "encounterValueGrid";
 		$encounterValueGrid->registerTemplate('value','<a href="'.Celini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
 		$this->assign('NEW_ENCOUNTER_VALUE',Celini::managerLink('editEncounterValue',$encounter_id)."id=0&process=true");
 
-		$encounterPerson =& Celini::newORDO('EncounterPerson',$this->encounter_person_id,$encounter_id);
+		$encounterPerson =& Celini::newORDO('EncounterPerson',array($this->encounter_person_id,$encounter_id));
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->name = "encounterPersonGrid";
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Celini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
@@ -201,7 +201,7 @@ class C_Encounter extends Controller {
 		}
 
 
-		$encounter =& Celini::newORDO('Encounter',$encounter_id,$this->get('patient_id'));
+		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
 		$encounter->populate_array($_POST['encounter']);
 
 		if (isset($_POST['select_payer'])) {
@@ -215,21 +215,21 @@ class C_Encounter extends Controller {
 
 		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
 			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
-			$encounterDate =& Celini::newORDO('EncounterDate',$this->encounter_date_id,$this->encounter_id);
+			$encounterDate =& Celini::newORDO('EncounterDate',array($this->encounter_date_id,$this->encounter_id));
 			$encounterDate->populate_array($_POST['encounterDate']);
 			$encounterDate->persist();
 			$this->encounter_date_id = $encounterDate->get('id');
 		}
 		if (isset($_POST['encounterValue']) && !empty($_POST['encounterValue']['value'])) {
 			$this->encounter_value_id = $_POST['encounterValue']['encounter_value_id'];
-			$encounterValue =& Celini::newORDO('EncounterValue',$this->encounter_value_id,$this->encounter_id);
+			$encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$this->encounter_id));
 			$encounterValue->populate_array($_POST['encounterValue']);
 			$encounterValue->persist();
 			$this->encounter_value_id = $encounterValue->get('id');
 		}
 		if (isset($_POST['encounterPerson']) && !empty($_POST['encounterPerson']['person_id'])) {
 			$this->encounter_person_id = $_POST['encounterPerson']['encounter_person_id'];
-			$encounterPerson =& Celini::newORDO('EncounterPerson',$this->encounter_person_id,$this->encounter_id);
+			$encounterPerson =& Celini::newORDO('EncounterPerson',array($this->encounter_person_id,$this->encounter_id));
 			$encounterPerson->populate_array($_POST['encounterPerson']);
 			$encounterPerson->persist();
 			$this->encounter_person_id = $encounterPerson->get('id');
@@ -262,7 +262,7 @@ class C_Encounter extends Controller {
 		if (isset($_POST['encounter']['rebill'])) {
 			$encounter->set('status', 'closed');
 			$encounter->persist();
-			$this->_handleRebill($encounter_id);
+			$this->_handleRebill($encounter);
 		}
 	}
 
@@ -290,83 +290,8 @@ class C_Encounter extends Controller {
 	 * @param  int
 	 * @access private
 	 */
-	function _handleRebill($encounter_id) {
-		$encounter =& Celini::newORDO('Encounter',$encounter_id);
-
-		// setup freeb2
-		$freeb2 = new C_FreeBGateway();
-
-		// get the current clearhealth claim
-		ORdataObject::factory_include('ClearhealthClaim');
-		$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
-		$claimIdentifier = $claim->get('identifier');
-
-		// get the current revision of the freeb2 claim
-		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
-
-		// open current claim forcing a revision, its a clean revision
-		$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
-		
-		// resend all the data
-		// get the objects were going to need
-		$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
-		ORDataObject::Factory_include('InsuredRelationship');
-		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
-
-		if ($relationships == null) { 
-			$this->messages->addMessage("This Patient has no Insurance Information to rebill, please add insurance information and try again <br>");
-			return;
-		}	
-		
-		$currentPayments = $claim->summedPaymentsByCode();
-		
-		$cd =& Celini::newORDO('CodingData');
-		$codes = $cd->getCodeList($encounter->get('id'));
-
-		$feeSchedule =& Celini::newORDO('FeeSchedule',$encounter->get('current_payer'));
-
-		// add claimlines
-		foreach($codes as $parent => $data) {
-
-			$claimline = array();
-			$claimline['date_of_treatment'] = $encounter->get('date_of_treatment');
-			$claimline['procedure'] = $data['code'];
-			$claimline['modifier'] = $data['modifier'];
-			$claimline['units'] = $data['units'];
-			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id']);
-			$mapped_code=$feeSchedule->getMappedCodeFromCodeId($data['code_id']);
-			//echo "<br>CPatient Code ".$data['code_id']." maps to $mapped_code<br>";
-			if(strlen($mapped_code)>0){// then there is a mapped code which we should use.
-				$claimline['procedure']=$mapped_code;
-			}
-
-			$claimline['diagnoses'] = array();
-			if (isset($currentPayments[$data['code']])) {
-				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
-			}
-			
-			$childCodes = $cd->getChildCodes($data['coding_data_id']);
-			foreach($childCodes as $val) {
-				$claimline['diagnoses'][] = $val['code'];
-			}
-			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claimIdentifier),true));
-			}
-
-			// rewrite ar if needed
-			if (isset($currentPayments[$data['code']])) {
-				$cp = $currentPayments[$data['code']];
-
-				if ($cp['carry'] > 0 && $claimline['amount'] > $data['fee']) {
-					$rcd =& Celini::newORDO('CodingData',$data['coding_data_id']);
-					$rcd->set('fee',$claimline['amount']);
-					$rcd->persist();
-				}
-			}
-		}
-
-		$this->_registerClaimData($freeb2,$encounter,$claimIdentifier);
-		
+	function _handleRebill(&$encounter) {
+		$this->_sendClaim($encounter, 'rebill');
 		// no need to return, as processEdit() will fall back to actionEdit()
 	}
 
@@ -412,15 +337,29 @@ class C_Encounter extends Controller {
 	}
 
 	function _generateClaim(&$encounter,$claim = false) {
+		$this->_sendClaim($encounter, 'new');
+	}
+	
+	/**
+	 * Handles the actual interaction with the gateway
+	 *
+	 * <i>$type</i> should always be "new" or "rebill"
+	 *
+	 * @param  Encounter
+	 * @param  string
+	 * @access private
+	 */
+	function _sendClaim(&$encounter, $type) {
+		assert('$type == "new" || $type == "rebill"');
 		// load gateway
 		global $loader;
 		$loader->requireOnce('local/includes/freebGateway/ClearhealthToFreebGateway.class.php');
 		
 		$gateway =& new ClearhealthToFreebGateway($this, $encounter);
-		$gateway->send();
+		$gateway->send($type);
 	}
 
-function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
+	function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		// get the objects were going to need
 		$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
@@ -591,7 +530,7 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		$encounterPeopleArray=$EncounterPeople->encounterPersonListArray($encounter_id);
 	
 		foreach($encounterPeopleArray as $encounter_person_id){	
-			$ep =& Celini::newORDO('EncounterPerson',$encounter_person_id,$encounter_id);
+			$ep =& Celini::newORDO('EncounterPerson',array($encounter_person_id,$encounter_id));
 			$eptl = $encounter->_load_enum("encounter_person_type",false);
 			$eptl = array_flip($eptl);
 			$encounter_person_type=$eptl[$ep->get('person_type')];
@@ -638,7 +577,7 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		$ClaimData = array();
 	
 		foreach($encounterValueArray as $encounter_value_id){
-			$EncounterValue =& Celini::newORDO('EncounterValue',$encounter_value_id,$encounter_id);
+			$EncounterValue =& Celini::newORDO('EncounterValue',array($encounter_value_id,$encounter_id));
 			//printf('<pre>%s</pre>', var_export($ev_enum , true));exit;
 			$ev_name = $ev_enum[$EncounterValue->get('value_type')];
 			$ClaimData[$ev_name] = $EncounterValue->get('value');
@@ -702,7 +641,5 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		$adapter =& new CHToFBArrayAdapter($data);
 		return $adapter->adapted();
 	}
-
-
 }
 ?>

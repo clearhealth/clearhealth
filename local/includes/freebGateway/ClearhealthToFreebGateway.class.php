@@ -11,6 +11,10 @@
  */
 class ClearhealthToFreebGateway
 {
+	/**#@+
+	 * @access private
+	 */
+	 
 	/**
 	 * The Controller that originated this call
 	 *
@@ -27,17 +31,130 @@ class ClearhealthToFreebGateway
 	 */
 	var $_encounter = null;
 	
+	/**
+	 * An internal reference to the C_FreeBGateway object
+	 *
+	 * @var C_FreeBGateway
+	 */
+	var $_freeb2 = null;
+	
+	/**
+	 * Holds the string that is the claim_identifier of the claim we're working
+	 * with.
+	 *
+	 * @var string
+	 */
+	var $_claim_identifier = '';
+	
+	/**#@-*/
+	
 	function ClearhealthToFreebGateway(&$controller, &$encounter) {
 		$this->_caller =& $controller;
 		$this->_encounter =& $encounter;
+		$this->_freeb2 =& new C_FreeBGateway();
 	}
 	
-	function send() {
-		$freeb2 = new C_FreeBGateway();
-		
+	function send($status = 'new') {
 		// get the objects were going to need
 		$patient =& ORDataObject::factory('Patient',$this->_encounter->get('patient_id'));
+		switch ($status) {
+			case 'new' :
+				$this->_setupNewClaim();
+				break;
+			case 'rebill' :
+				$this->_setupRebillClaim();
+				break;
+		}
+		$this->_caller->_registerClaimData($this->_freeb2, $this->_encounter, $this->_claim_identifier);
+	}
+	
+	/**
+	 * Setup an existing claim in Freeb for rebilling
+	 *
+	 * @access private
+	 */
+	function _setupRebillClaim() {
 
+		// setup freeb2
+		$freeb2 = new C_FreeBGateway();
+
+		// get the current clearhealth claim
+		ORdataObject::factory_include('ClearhealthClaim');
+		$claim =& ClearhealthClaim::fromEncounterId($this->_encounter->get('id'));
+		$claimIdentifier = $claim->get('identifier');
+
+		// get the current revision of the freeb2 claim
+		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
+
+		// open current claim forcing a revision, its a clean revision
+		$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
+		
+		// resend all the data
+		// get the objects were going to need
+		$patient =& Celini::newORDO('Patient',$this->_encounter->get('patient_id'));
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
+		if ($relationships == null) { 
+			$this->messages->addMessage("This Patient has no Insurance Information to rebill, please add insurance information and try again <br>");
+			return;
+		}	
+		
+		$currentPayments = $claim->summedPaymentsByCode();
+		
+		$cd =& Celini::newORDO('CodingData');
+		$codes = $cd->getCodeList($this->_encounter->get('id'));
+
+		$feeSchedule =& Celini::newORDO('FeeSchedule',$this->_encounter->get('current_payer'));
+
+		// add claimlines
+		foreach($codes as $parent => $data) {
+
+			$claimline = array();
+			$claimline['date_of_treatment'] = $this->_encounter->get('date_of_treatment');
+			$claimline['procedure'] = $data['code'];
+			$claimline['modifier'] = $data['modifier'];
+			$claimline['units'] = $data['units'];
+			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id']);
+			$mapped_code=$feeSchedule->getMappedCodeFromCodeId($data['code_id']);
+			//echo "<br>CPatient Code ".$data['code_id']." maps to $mapped_code<br>";
+			if(strlen($mapped_code)>0){// then there is a mapped code which we should use.
+				$claimline['procedure']=$mapped_code;
+			}
+
+			$claimline['diagnoses'] = array();
+			if (isset($currentPayments[$data['code']])) {
+				$claimline['amount_paid'] = $currentPayments[$data['code']]['paid'];
+			}
+			
+			$childCodes = $cd->getChildCodes($data['coding_data_id']);
+			foreach($childCodes as $val) {
+				$claimline['diagnoses'][] = $val['code'];
+			}
+			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claimIdentifier),true));
+			}
+
+			// rewrite ar if needed
+			if (isset($currentPayments[$data['code']])) {
+				$cp = $currentPayments[$data['code']];
+
+				if ($cp['carry'] > 0 && $claimline['amount'] > $data['fee']) {
+					$rcd =& Celini::newORDO('CodingData',$data['coding_data_id']);
+					$rcd->set('fee',$claimline['amount']);
+					$rcd->persist();
+				}
+			}
+		}
+
+		$this->_claim_identifier = $claimIdentifier;
+	}
+	/**
+	 * Setup a new claim in Freeb
+	 *
+	 * @access private
+	 */
+	function _setupNewClaim() {
 		ORDataObject::Factory_include('InsuredRelationship');
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
@@ -115,8 +232,8 @@ class ClearhealthToFreebGateway
 		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'-'.$this->_encounter->get('id');
 
 		// open the claim
-		if (!$freeb2->openClaim($claim_identifier)) {
-			trigger_error("Unable to open claim: $claim_identifier - ".$freeb2->claimLastError($claim_identifier));
+		if (!$this->_freeb2->openClaim($claim_identifier)) {
+			trigger_error("Unable to open claim: $claim_identifier - ".$this->_freeb2->claimLastError($claim_identifier));
 		}
 		
 		// add claimlines
@@ -153,8 +270,8 @@ class ClearhealthToFreebGateway
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
-			if (!$freeb2->registerData($claim_identifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claim_identifier),true));
+			if (!$this->_freeb2->registerData($claim_identifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ". print_r($this->_freeb2->claimLastError($claim_identifier),true));
 			}
 		}
 
@@ -163,8 +280,7 @@ class ClearhealthToFreebGateway
 		$claim->set("total_paid",$total_paid);
 		$claim->set('total_billed',$total_billed);
 		$claim->persist();
-
-		$this->_caller->_registerClaimData($freeb2, $this->_encounter, $claim_identifier);
+		$this->_claim_identifier = $claim_identifier;
 	}
 }
 
