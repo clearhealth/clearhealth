@@ -59,29 +59,29 @@ class C_Encounter extends Controller {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
 		$this->set('encounter_id',$encounter_id);
-		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
-		$person =& ORDataObject::factory('Person');
-		$building =& ORDataObject::factory('Building');
+		$encounter =& Celini::newORDO('Encounter',$encounter_id,$this->get('patient_id'));
+		$person =& Celini::newORDO('Person');
+		$building =& Celini::newORDO('Building');
 
-		$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$encounter_id);
+		$encounterDate =& Celini::newORDO('EncounterDate',$this->encounter_date_id,$encounter_id);
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->name = "encounterDateGrid";
 		$encounterDateGrid->registerTemplate('date','<a href="'.Celini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
-		$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$encounter_id);
+		$encounterValue =& Celini::newORDO('EncounterValue',$this->encounter_value_id,$encounter_id);
 		$encounterValueGrid = new cGrid($encounterValue->encounterValueList($encounter_id));
 		$encounterValueGrid->name = "encounterValueGrid";
 		$encounterValueGrid->registerTemplate('value','<a href="'.Celini::Managerlink('editEncounterValue',$encounter_id).'id={$encounter_value_id}&process=true">{$value}</a>');
 		$this->assign('NEW_ENCOUNTER_VALUE',Celini::managerLink('editEncounterValue',$encounter_id)."id=0&process=true");
 
-		$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$encounter_id);
+		$encounterPerson =& Celini::newORDO('EncounterPerson',$this->encounter_person_id,$encounter_id);
 		$encounterPersonGrid = new cGrid($encounterPerson->encounterPersonList($encounter_id));
 		$encounterPersonGrid->name = "encounterPersonGrid";
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Celini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 		$this->assign('NEW_ENCOUNTER_PERSON',Celini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
-		$payment =& ORDataObject::factory('Payment',$this->payment_id);
+		$payment =& Celini::newORDO('Payment',$this->payment_id);
 		if ($payment->_populated == false) {
 			$payment->set('title','Co-Pay');
 		}
@@ -103,7 +103,7 @@ class C_Encounter extends Controller {
 		// If this is a saved encounter, generate the following:
 		if ($this->get('encounter_id') > 0) {
 			// Load data that has been stored
-			$formData =& ORDataObject::factory("FormData");
+			$formData =& Celini::newORDO("FormData");
 			$formDataGrid =& new cGrid($formData->dataListByExternalId($encounter_id));
 			$formDataGrid->name  = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Celini::link('data','Form').'id={$form_data_id}">{$name}</a>');
@@ -136,7 +136,7 @@ class C_Encounter extends Controller {
 			}
 		}
 
-		$insuredRelationship =& ORDataObject::factory('InsuredRelationship');
+		$insuredRelationship =& Celini::newORDO('InsuredRelationship');
 
 
 		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
@@ -201,7 +201,7 @@ class C_Encounter extends Controller {
 		}
 
 
-		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
+		$encounter =& Celini::newORDO('Encounter',$encounter_id,$this->get('patient_id'));
 		$encounter->populate_array($_POST['encounter']);
 
 		if (isset($_POST['select_payer'])) {
@@ -215,28 +215,28 @@ class C_Encounter extends Controller {
 
 		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
 			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
-			$encounterDate =& ORDataObject::factory('EncounterDate',$this->encounter_date_id,$this->encounter_id);
+			$encounterDate =& Celini::newORDO('EncounterDate',$this->encounter_date_id,$this->encounter_id);
 			$encounterDate->populate_array($_POST['encounterDate']);
 			$encounterDate->persist();
 			$this->encounter_date_id = $encounterDate->get('id');
 		}
 		if (isset($_POST['encounterValue']) && !empty($_POST['encounterValue']['value'])) {
 			$this->encounter_value_id = $_POST['encounterValue']['encounter_value_id'];
-			$encounterValue =& ORDataObject::factory('EncounterValue',$this->encounter_value_id,$this->encounter_id);
+			$encounterValue =& Celini::newORDO('EncounterValue',$this->encounter_value_id,$this->encounter_id);
 			$encounterValue->populate_array($_POST['encounterValue']);
 			$encounterValue->persist();
 			$this->encounter_value_id = $encounterValue->get('id');
 		}
 		if (isset($_POST['encounterPerson']) && !empty($_POST['encounterPerson']['person_id'])) {
 			$this->encounter_person_id = $_POST['encounterPerson']['encounter_person_id'];
-			$encounterPerson =& ORDataObject::factory('EncounterPerson',$this->encounter_person_id,$this->encounter_id);
+			$encounterPerson =& Celini::newORDO('EncounterPerson',$this->encounter_person_id,$this->encounter_id);
 			$encounterPerson->populate_array($_POST['encounterPerson']);
 			$encounterPerson->persist();
 			$this->encounter_person_id = $encounterPerson->get('id');
 		}
 		if (isset($_POST['payment']) && !empty($_POST['payment']['amount'])) {
 			$this->payment_id = $_POST['payment']['payment_id'];
-			$payment =& ORDataObject::factory('Payment',$this->payment_id);
+			$payment =& Celini::newORDO('Payment',$this->payment_id);
 			$payment->set("encounter_id", $this->encounter_id);
 			$payment->populate_array($_POST['payment']);
 			$payment->persist();
@@ -244,7 +244,7 @@ class C_Encounter extends Controller {
 		}
 
 		if (isset($_POST['encounter']['close'])) {
-			$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+			$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
 			ORDataObject::Factory_include('InsuredRelationship');
 			$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
@@ -262,7 +262,7 @@ class C_Encounter extends Controller {
 		if (isset($_POST['encounter']['rebill'])) {
 			$encounter->set('status', 'closed');
 			$encounter->persist();
-			$this->rebill_encounter_action_process($encounter_id);
+			$this->_handleRebill($encounter_id);
 		}
 	}
 
@@ -272,24 +272,28 @@ class C_Encounter extends Controller {
 	 * @param int
 	 */
 	function processReopen_edit($encounter_id) {
-		$encounter =& ORDataObject::Factory('Encounter', $encounter_id);
+		$encounter =& Celini::newORDO('Encounter', $encounter_id);
 		$encounter->set('status', 'open');
 		$encounter->persist();
 		
-		header('Location: '.Celini::link('edit',true,true,$encounter_id));
-		exit();
+		// return display
+		$this->_state = false;
+		return $this->actionEdit($encounter->get('id'));
 	}
 
 
 	/**
 	 * Rebill an claim
+	 *
+	 * This will be called by {@link processEdit()}
+	 *
+	 * @param  int
+	 * @access private
 	 */
-	function processRebillEncounter_edit($encounter_id) {
-
-		$encounter =& ORDataObject::Factory('Encounter',$encounter_id);
+	function _handleRebill($encounter_id) {
+		$encounter =& Celini::newORDO('Encounter',$encounter_id);
 
 		// setup freeb2
-		$this->_includeFreeb2();
 		$freeb2 = new C_FreeBGateway();
 
 		// get the current clearhealth claim
@@ -305,7 +309,7 @@ class C_Encounter extends Controller {
 		
 		// resend all the data
 		// get the objects were going to need
-		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
@@ -316,10 +320,10 @@ class C_Encounter extends Controller {
 		
 		$currentPayments = $claim->summedPaymentsByCode();
 		
-		$cd =& ORDataObject::Factory('CodingData');
+		$cd =& Celini::newORDO('CodingData');
 		$codes = $cd->getCodeList($encounter->get('id'));
 
-		$feeSchedule = ORDataObject::factory('FeeSchedule',$encounter->get('current_payer'));
+		$feeSchedule =& Celini::newORDO('FeeSchedule',$encounter->get('current_payer'));
 
 		// add claimlines
 		foreach($codes as $parent => $data) {
@@ -354,7 +358,7 @@ class C_Encounter extends Controller {
 				$cp = $currentPayments[$data['code']];
 
 				if ($cp['carry'] > 0 && $claimline['amount'] > $data['fee']) {
-					$rcd =& ORDataObject::factory('CodingData',$data['coding_data_id']);
+					$rcd =& Celini::newORDO('CodingData',$data['coding_data_id']);
 					$rcd->set('fee',$claimline['amount']);
 					$rcd->persist();
 				}
@@ -362,9 +366,8 @@ class C_Encounter extends Controller {
 		}
 
 		$this->_registerClaimData($freeb2,$encounter,$claimIdentifier);
-
-		header('Location: '.Celini::link('edit',true,true,$encounter_id));
-		exit();
+		
+		// no need to return, as processEdit() will fall back to actionEdit()
 	}
 
 	
@@ -384,7 +387,7 @@ class C_Encounter extends Controller {
 		// check for EOB payment
 		if (count($payments) > 0)  {
 
-			$encounter =& ORDataObject::factory('Encounter',$encounterId);
+			$encounter =& Celini::newORDO('Encounter',$encounterId);
 
 			// check for an outstanding balance
 			$status = $claim->accountStatus($encounter->get('patient_id'),$encounterId);
@@ -408,11 +411,6 @@ class C_Encounter extends Controller {
 		return $this->encounter_action_edit($this->get('encounter_id'));
 	}
 
-	function _includeFreeb2() {
-		//TODO make these respect the config.php values
-		global $loader;
-	}
-
 	function _generateClaim(&$encounter,$claim = false) {
 		// load gateway
 		global $loader;
@@ -424,7 +422,7 @@ class C_Encounter extends Controller {
 
 function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		// get the objects were going to need
-		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
@@ -434,17 +432,17 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		}	
 		
 
-		$provider =& ORDataObject::factory('Provider',$encounter->get('treating_person_id'));
+		$provider =& Celini::newORDO('Provider',$encounter->get('treating_person_id'));
 		if ($provider->get('id') != $provider->get('bill_as')) {
 			$bill_as = $provider->get('bill_as');
 			unset($provider);
-			$provider =& ORDataObject::factory('Provider',$bill_as);
+			$provider =& Celini::newORDO('Provider',$bill_as);
 		}
 
 
 
 
-		$facility =& ORDataObject::factory('Building',$encounter->get('building_id'));
+		$facility =& Celini::newORDO('Building',$encounter->get('building_id'));
 
 		// register patient data
 		//Debug:
@@ -455,13 +453,13 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		$encounter_id=$encounter->get('id');
 
 		//This seems to be where Dates should be added..
-		$EncounterDates =& ORDataObject::factory('EncounterDate');
+		$EncounterDates =& Celini::newORDO('EncounterDate');
 		$encounterDatesArray=$EncounterDates->encounterDateListArray($encounter_id);
 		$date_enum = $EncounterDates->_load_enum("encounter_date_type");
 		$date_enum = array_flip($date_enum);
 	
 		foreach($encounterDatesArray as $encounter_date_id){
-			$EncounterDate =& ORDataObject::factory('EncounterDate',$encounter_date_id,$encounter_id);
+			$EncounterDate =& Celini::newORDO('EncounterDate',$encounter_date_id,$encounter_id);
 			$date_name = $date_enum[$EncounterDate->get('date_type')];
 			$patientData[$date_name] = $EncounterDate->get('date');
 		}
@@ -507,9 +505,9 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 
 		$defaultProgram = false;
 		foreach($relationships as $r) {
-			$program =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+			$program =& Celini::newORDO('InsuranceProgram',$r->get('insurance_program_id'));
 			if ($defaultProgram == false) {
-				$defaultProgram =& ORDataObject::factory('InsuranceProgram',$r->get('insurance_program_id'));
+				$defaultProgram =& Celini::newORDO('InsuranceProgram',$r->get('insurance_program_id'));
 			}
 
 			if (!isset($payerList[$program->get('company_id')])) {
@@ -561,7 +559,7 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 
 
 		// register practice
-		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
+		$practice =& Celini::newORDO('Practice',$facility->get('practice_id'));
 		$practiceData = $this->_cleanDataArray($practice->toArray());
 
 		$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
@@ -589,11 +587,11 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 
 		// Add Encounter People....
 
-		$EncounterPeople =& ORDataObject::factory('EncounterPerson');
+		$EncounterPeople =& Celini::newORDO('EncounterPerson');
 		$encounterPeopleArray=$EncounterPeople->encounterPersonListArray($encounter_id);
 	
 		foreach($encounterPeopleArray as $encounter_person_id){	
-			$ep =& ORDataObject::factory('EncounterPerson',$encounter_person_id,$encounter_id);
+			$ep =& Celini::newORDO('EncounterPerson',$encounter_person_id,$encounter_id);
 			$eptl = $encounter->_load_enum("encounter_person_type",false);
 			$eptl = array_flip($eptl);
 			$encounter_person_type=$eptl[$ep->get('person_type')];
@@ -607,7 +605,7 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 			//person based object
 			$person_type = 	$ep->get('person_type');
 			$loop_person_id = $ep->get('person_id');
-			$pbo =& ORDataObject::factory($eptn, $loop_person_id);
+			$pbo =& Celini::newORDO($eptn, $loop_person_id);
 			$pbo_data = $this->_cleanDataArray($pbo->toArray());
 
 				//remove the gaps in the enumeration to be FreeB friendly..
@@ -634,13 +632,13 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		// End Encounter People
 
 		// Encounter Values, 
-		$EncounterValues =& ORDataObject::factory('EncounterValue');
+		$EncounterValues =& Celini::newORDO('EncounterValue');
 		$encounterValueArray=$EncounterValues->encounterValueListArray($encounter_id);
 		$ev_enum = $EncounterValues->getValueTypeList();
 		$ClaimData = array();
 	
 		foreach($encounterValueArray as $encounter_value_id){
-			$EncounterValue =& ORDataObject::factory('EncounterValue',$encounter_value_id,$encounter_id);
+			$EncounterValue =& Celini::newORDO('EncounterValue',$encounter_value_id,$encounter_id);
 			//printf('<pre>%s</pre>', var_export($ev_enum , true));exit;
 			$ev_name = $ev_enum[$EncounterValue->get('value_type')];
 			$ClaimData[$ev_name] = $EncounterValue->get('value');
