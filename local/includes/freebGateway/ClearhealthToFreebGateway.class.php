@@ -1,24 +1,4 @@
 <?php
-// todo: this should be the responsibility of Freeb
-$loader->requireOnce('/freeb2/local/controllers/C_FreeBGateway.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBCompany.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBPerson.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBAddress.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBBillingContact.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBPractice.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBBillingFacility.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBReferringProvider.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBResponsibleParty.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBSubscriber.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBSupervisingProvider.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBTreatingFacility.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBProvider.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBClaim.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBClaimline.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBClearingHouse.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBPatient.class.php');
-$loader->requireOnce('/freeb2/local/ordo/FBPayer.class.php');
-
 
 /**
  * Serves as the gateway between Clearhealth and Freeb
