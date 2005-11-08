@@ -73,9 +73,9 @@ function captureEnter (field, event) {
 			  			{foreach name="icd_list" from=$child_codes item=code}
 			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
 			  			{if $smart.foreach.icd_list.first}
-						<strong>{$code.description}</strong><BR>
+						<strong>{$code.description}</strong><br />
 						{else}
-						{$code.description}<BR>
+						{$code.description}<br />
 						{/if}
 						
 						{/foreach}
@@ -156,10 +156,10 @@ function addICDCode(){
 	}
 //	alert('Adding ICD Code ' + icdCode.value)
 	if (childDiv.childNodes.length == 1) {
-		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><BR>';
+		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><br />';
 	}
 	else {
-		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<BR>';
+		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<br />';
 	}
 	icdCode.value = '';
 	icdCodeText.value = '';
@@ -221,7 +221,7 @@ function addCPTCode() {
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][code]" value="' + cptCode.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][modifier]" value="' + modifier.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][units]" value="' + units.value  + '">' 
-		+ cptText.value + modStr + ' - Units: '+ units.value +'<BR>';
+		+ cptText.value + modStr + ' - Units: '+ units.value +'<br />';
 	cptCode.value = '';
 	cptText.value = '';
 	units.value = '1.00';
@@ -237,11 +237,13 @@ function addCPTCode() {
 <legend>{l}Claim Lines{/l}</legend>
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
-<A HREF="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</A>&nbsp;
-<A HREF="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</A> {enum_lookup name="code_modifier" value=$code.modifier}<BR>
+{if $encounter->get('status') != 'closed'}
+<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
+{/if}
+<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}<br />
 {foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br>
-{/foreach}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
+{/foreach}<br />
 {/foreach}
 &nbsp;
 </fieldset>

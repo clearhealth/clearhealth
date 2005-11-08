@@ -665,20 +665,28 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 			trigger_error("Unable to register billing contact data - ".$freeb2->claimLastError($claim_identifier));
 		}
 	}
-
-	//add javadocs to say that this is pass through...
-	function delete_claimline_action_process($parent_id,$encounter_id) {
-
-		$encounter =& ORDataObject::factory('Encounter',$encounter_id,$this->get('patient_id'));
-		if($encounter->get('status') === "open"){
-			//TODO this disables the delete function on closed encounters
-			//TODO the template should not even display the X on a closed claim.
-			$this->coding->delete_claimline($parent_id);
-		}
 	
-		header("Location:" . Celini::link("encounter", true, true, $encounter_id));
-		$this->_state=false;
-
+	
+	/**
+	 * Deletes a claimline from the encounter
+	 *
+	 * This serves as an alias for {@link C_Coding::delete_claimline()}.
+	 *
+	 * @param  int
+	 * @access protected
+	 * @see    C_Coding::delete_claimline()
+	 */
+	function delete_claimline_action_process($claimline_id) {
+		$encounter =& Celini::newORDO('Encounter', $this->GET->getTyped('encounter_id', 'int'));
+		
+		// double check to insure the encounter is open
+		if($encounter->get('status') === "open") {
+			$this->coding->delete_claimline($claimline_id);
+		}
+		
+		// return display
+		$this->_state = false;
+		return $this->actionEdit($encounter->get('id'));
 	}
 
 	/**
