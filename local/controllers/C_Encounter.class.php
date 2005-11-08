@@ -1,6 +1,8 @@
 <?php
 $loader->requireOnce('controllers/C_Coding.class.php');
 $loader->requireOnce('freeb2/local/controllers/C_FreeBGateway.class.php');
+$loader->requireOnce('local/includes/freebGateway/CHToFBArrayAdapter.class.php');
+
 /**
  * A patient Encounter
  */
@@ -686,49 +688,13 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 	 * @param  array
 	 * @return array
 	 * @access private
+	 * @deprecated
 	 *
-	 * @todo move to its own object
+	 * @todo replace calls to this with direct calls to {@link CHToFBArrayAdapter}
 	 */
 	function _cleanDataArray($data) {
-		// map date_of_birth to dob
-		if (isset($data['date_of_birth'])) {
-			$data['dob'] = $data['date_of_birth'];
-		}
-		
-		// map postal_code to zip
-		if (isset($data['address']['postal_code'])) {
-			$data['address']['zip'] = $data['address']['postal_code'];
-		}
-
-		// map phone number
-		// TODO: there should be some kind of "billing phone number" flag or something...
-		if (isset($data['home_phone'])) {
-			$data['phone_number'] = $data['home_phone'];
-			unset($data['home_phone']);
-		}
-		if (isset($data['gender'])) { 
-			$data['gender'] = substr($data['gender'],0,1);
-		}
-		
-		// remove unnecessary address info
-		if (isset($data['address'])) {
-			unset($data['address']['id']);
-			unset($data['address']['name']);
-			unset($data['address']['postal_code']);
-			unset($data['address']['region']);
-		}
-		
-		// determine payer type from enum
-		if (isset($data['payer_type'])) {
-			$payer = ORDataObject::factory("InsuranceProgram");
-			$pt_enum = $payer->_load_enum("PayerType");
-			$data['payer_type'] = $pt_enum[$data['payer_type']];
-		}
-		
-		// remove all person_id and type data
-		unset($data['person_id']);
-		unset($data['type']);
-		return $data;
+		$adapter =& new CHToFBArrayAdapter($data);
+		return $adapter->adapted();
 	}
 
 
