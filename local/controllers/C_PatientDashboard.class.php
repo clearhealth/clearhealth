@@ -36,7 +36,7 @@ class C_PatientDashboard extends Controller {
 
 			$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 			$encounterGrid->name = "encounterGrid";
-			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Celini::link('encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
+			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Celini::link('edit', 'encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
 			$encounterGrid->setExternalId($p->get('id'));
 
@@ -92,7 +92,7 @@ class C_PatientDashboard extends Controller {
 
 			$this->assign('formList',$formList);
 
-			$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter'));
+			$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter') . 'patient_id=' . $p->get('id'));
 			$this->assign('ACCOUNT_ACTION',Celini::link('history','account',true,$this->get("patient_id")));
 			$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 			$this->assign('EDIT_ACTION',Celini::link('edit','Patient',true,$this->get('patient_id')));
