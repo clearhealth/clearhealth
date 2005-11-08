@@ -56,7 +56,7 @@ class ClearhealthToFreebGateway
 	
 	function send($status = 'new') {
 		// get the objects were going to need
-		$patient =& ORDataObject::factory('Patient',$this->_encounter->get('patient_id'));
+		$patient =& Celini::newORDO('Patient',$this->_encounter->get('patient_id'));
 		switch ($status) {
 			case 'new' :
 				$this->_setupNewClaim();
@@ -182,7 +182,7 @@ class ClearhealthToFreebGateway
 		
 		//set the existing payments on the encounter to be part of this claim
 		foreach ($payments as $payment_info) {
-			$pmnt = ORDataObject::factory("Payment");
+			$pmnt = Celini::newORDO("Payment");
 			$pmnt->populate_array($payment_info);
 			$pmnt->set("foreign_id",$claim->get("claim_id"));
 			$pmnt->persist();
@@ -234,7 +234,7 @@ class ClearhealthToFreebGateway
 		// add claimlines
 		$currentPayments = $claim->summedPaymentsByCode();
 
-		$feeSchedule = ORDataObject::factory('FeeSchedule',$this->_encounter->get('current_payer'));
+		$feeSchedule = Celini::newORDO('FeeSchedule',$this->_encounter->get('current_payer'));
 
 		foreach($codes as $parent => $data) {
 
@@ -324,7 +324,7 @@ class ClearhealthToFreebGateway
 		$date_enum = array_flip($date_enum);
 	
 		foreach($encounterDatesArray as $encounter_date_id){
-			$EncounterDate =& Celini::newORDO('EncounterDate',$encounter_date_id,$encounter_id);
+			$EncounterDate =& Celini::newORDO('EncounterDate', array($encounter_date_id,$encounter_id));
 			$date_name = $date_enum[$EncounterDate->get('date_type')];
 			$patientData[$date_name] = $EncounterDate->get('date');
 		}
