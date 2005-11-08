@@ -65,7 +65,7 @@ class ClearhealthToFreebGateway
 				$this->_setupRebillClaim();
 				break;
 		}
-		$this->_caller->_registerClaimData($this->_freeb2, $this->_encounter, $this->_claim_identifier);
+		$this->_registerClaimData();
 	}
 	
 	/**
@@ -74,20 +74,16 @@ class ClearhealthToFreebGateway
 	 * @access private
 	 */
 	function _setupRebillClaim() {
-
-		// setup freeb2
-		$freeb2 = new C_FreeBGateway();
-
 		// get the current clearhealth claim
 		ORdataObject::factory_include('ClearhealthClaim');
 		$claim =& ClearhealthClaim::fromEncounterId($this->_encounter->get('id'));
-		$claimIdentifier = $claim->get('identifier');
+		$this->_claim_identifier = $claim->get('identifier');
 
 		// get the current revision of the freeb2 claim
-		$currentRevision = $freeb2->maxClaimRevision($claimIdentifier);
+		$currentRevision = $this->_freeb2->maxClaimRevision($this->_claim_identifier);
 
 		// open current claim forcing a revision, its a clean revision
-		$revision = $freeb2->openClaim($claimIdentifier, $currentRevision, "P", true);
+		$revision = $this->_freeb2->openClaim($this->_claim_identifier, $currentRevision, "P", true);
 		
 		// resend all the data
 		// get the objects were going to need
@@ -131,8 +127,8 @@ class ClearhealthToFreebGateway
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
-			if (!$freeb2->registerData($claimIdentifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ". print_r($freeb2->claimLastError($claimIdentifier),true));
+			if (!$this->_freeb2->registerData($this->_claim_identifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ". print_r($this->_freeb2->claimLastError($this->_claim_identifier),true));
 			}
 
 			// rewrite ar if needed
@@ -146,8 +142,6 @@ class ClearhealthToFreebGateway
 				}
 			}
 		}
-
-		$this->_claim_identifier = $claimIdentifier;
 	}
 	/**
 	 * Setup a new claim in Freeb
@@ -156,7 +150,7 @@ class ClearhealthToFreebGateway
 	 */
 	function _setupNewClaim() {
 		ORDataObject::Factory_include('InsuredRelationship');
-		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+		$relationships = InsuredRelationship::fromPersonId($this->_encounter->get('patient_id'));
 
 		if ($relationships == null) { 
 			$this->_caller->messages->addMessage("This Patient has no Insurance Information to generate the claim, please add insurance information and try again <br>");
@@ -229,11 +223,12 @@ class ClearhealthToFreebGateway
 
 		
 		// generate a claim identifier from patient and encounter info
-		$claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'-'.$this->_encounter->get('id');
+		$patient =& Celini::newORDO('Patient', $this->_encounter->get('patient_id'));
+		$this->_claim_identifier = $claim->get('id').'-'.$patient->get('record_number').'-'.$this->_encounter->get('id');
 
 		// open the claim
-		if (!$this->_freeb2->openClaim($claim_identifier)) {
-			trigger_error("Unable to open claim: $claim_identifier - ".$this->_freeb2->claimLastError($claim_identifier));
+		if (!$this->_freeb2->openClaim($this->_claim_identifier)) {
+			trigger_error("Unable to open claim: $this->_claim_identifier - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 		
 		// add claimlines
@@ -270,17 +265,286 @@ class ClearhealthToFreebGateway
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
-			if (!$this->_freeb2->registerData($claim_identifier,'Claimline',$claimline)) {
-				trigger_error("Unable to register claimline - ". print_r($this->_freeb2->claimLastError($claim_identifier),true));
+			if (!$this->_freeb2->registerData($this->_claim_identifier,'Claimline',$claimline)) {
+				trigger_error("Unable to register claimline - ". print_r($this->_freeb2->claimLastError($this->_claim_identifier),true));
 			}
 		}
 
 		// store id in clearhealth
-		$claim->set('identifier',$claim_identifier);
+		$claim->set('identifier',$this->_claim_identifier);
 		$claim->set("total_paid",$total_paid);
 		$claim->set('total_billed',$total_billed);
 		$claim->persist();
-		$this->_claim_identifier = $claim_identifier;
+	}
+	
+	
+	/**
+	 * Handle registering a claim
+	 *
+	 * @access private
+	 *
+	 * @todo break into multiple methods and/or objects
+	 */
+	function _registerClaimData() {
+		// get the objects were going to need
+		$patient =& Celini::newORDO('Patient',$this->_encounter->get('patient_id'));
+		ORDataObject::Factory_include('InsuredRelationship');
+		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
+
+		if ($relationships == null) { 
+			$this->messages->addMessage("This Patient has no Insurance Information to register the claim data, please add insurance information and try again <br>");
+			return;
+		}	
+		
+
+		$provider =& Celini::newORDO('Provider',$this->_encounter->get('treating_person_id'));
+		if ($provider->get('id') != $provider->get('bill_as')) {
+			$bill_as = $provider->get('bill_as');
+			unset($provider);
+			$provider =& Celini::newORDO('Provider',$bill_as);
+		}
+
+
+
+
+		$facility =& Celini::newORDO('Building',$this->_encounter->get('building_id'));
+
+		// register patient data
+		//Debug:
+		//echo "Debug:C_Patient.class".var_export($patient->toArray());
+		$patientData = $this->_cleanDataArray($patient->toArray());
+
+
+		$encounter_id=$this->_encounter->get('id');
+
+		//This seems to be where Dates should be added..
+		$EncounterDates =& Celini::newORDO('EncounterDate');
+		$encounterDatesArray=$EncounterDates->encounterDateListArray($encounter_id);
+		$date_enum = $EncounterDates->_load_enum("encounter_date_type");
+		$date_enum = array_flip($date_enum);
+	
+		foreach($encounterDatesArray as $encounter_date_id){
+			$EncounterDate =& Celini::newORDO('EncounterDate',$encounter_date_id,$encounter_id);
+			$date_name = $date_enum[$EncounterDate->get('date_type')];
+			$patientData[$date_name] = $EncounterDate->get('date');
+		}
+
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Patient',$patientData)) {
+			trigger_error("Unable to register patient data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+
+		// register subscriber data
+		foreach($relationships as $r) {
+			$data = $r->toArray();
+			$tmp = $this->_cleanDataArray($data['subscriber']);
+			unset($data['subscriber']);
+			$data = array_merge($data,$tmp);
+			//echo "C_Patient subscriber data:<br>".var_export($data);
+			$this->_freeb2->registerData($this->_claim_identifier,'Subscriber',$data);
+		}
+
+		// register payers
+		$payerList = array();
+		$clearingHouseData = false;
+
+		if ((int)$this->_encounter->get('current_payer') > 0) {
+
+			// only change order if its not correct
+			if ($relationships[0]->get('insurance_program_id') != $this->_encounter->get('current_payer')) {
+				// find the index to move to the top
+
+				foreach($relationships as $key => $val) {
+					if ($val->get('insurance_program_id') == $this->_encounter->get('current_payer')) {
+						$r = $val;
+						$id = $key;
+						break;
+					}
+				}
+				if (isset($id)) {
+					unset($relationships[$id]);
+					array_unshift($relationships,$r);
+				}
+
+			}
+		}
+
+		$defaultProgram = false;
+		foreach($relationships as $r) {
+			$program =& Celini::newORDO('InsuranceProgram',$r->get('insurance_program_id'));
+			if ($defaultProgram == false) {
+				$defaultProgram =& Celini::newORDO('InsuranceProgram',$r->get('insurance_program_id'));
+			}
+
+			if (!isset($payerList[$program->get('company_id')])) {
+				$payerList[$program->get('company_id')] = true;
+				$data = $program->toArray();
+				$data = $this->_cleanDataArray($data['company']);
+				$data['identifier'] = $data['name'];
+				$this->_freeb2->registerData($this->_claim_identifier,'Payer',$data);
+				if ($clearingHouseData === false) {
+					$clearingHouseData = $data;
+				}
+			}
+		}
+
+		// register provider
+		$providerData = $this->_cleanDataArray($provider->toArray());
+
+		// Set secondary identifier
+		$providerPerson = $provider->get('person');
+		
+		// See if there is a program specific, or program/building specific ID 
+		// for this provider.
+		
+		$programSpecificID =& Celini::newORDO(
+			'ProviderToInsurance', 
+			array($provider->get('id'), $defaultProgram->get('id'), $facility->get('id')),
+			'ByProgramAndBuilding');
+		
+		if ($programSpecificID->isPopulated()) {
+			$providerData['identifier_2']      = $programSpecificID->get('provider_number');
+			$providerData['identifier_type_2'] = $programSpecificID->get('identifier_type_value'); 
+		}
+		else { /* */
+			// Attempt to load default secondary IDs
+			$extraIdentifiers =& $providerPerson->identifierList();
+			if (count($extraIdentifiers->toArray()) > 0) {
+				$i = 2;
+				foreach ($extraIdentifiers->toArray() as $extraIdentifier) {
+					$providerData["identifier_{$i}"]      = $extraIdentifier["identifier"];
+					$providerData["identifier_type_{$i}"] = $extraIdentifier["identifier_type"];
+					$i++;
+				}
+			}
+		}
+		
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Provider',$providerData)) {
+			trigger_error("Unable to register provider data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+
+
+		// register practice
+		$practice =& Celini::newORDO('Practice',$facility->get('practice_id'));
+		$practiceData = $this->_cleanDataArray($practice->toArray());
+
+		$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
+		$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
+		$practiceData['x12_version'] = $defaultProgram->get('x12_version');
+
+		//printf('<pre>%s</pre>', var_export($practiceData , true));
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Practice',$practiceData)) {
+			trigger_error("Unable to register practice data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+
+		// register treating facility
+		$facilityData = $this->_cleanDataArray($facility->toArray());
+
+		// check for an overriding identifier
+		$bpi =& ORDAtaObject::factory('BuildingProgramIdentifier',$facility->get('id'),$defaultProgram->get('id'));
+		if ($bpi->_populated) {
+			$facilityData['identifier'] = $bpi->get('identifier');
+		}
+		
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'TreatingFacility',$facilityData)) {
+			trigger_error("Unable to register treating facility data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+	
+
+		// Add Encounter People....
+
+		$EncounterPeople =& Celini::newORDO('EncounterPerson');
+		$encounterPeopleArray=$EncounterPeople->encounterPersonListArray($encounter_id);
+	
+		foreach($encounterPeopleArray as $encounter_person_id){	
+			$ep =& Celini::newORDO('EncounterPerson',array($encounter_person_id,$encounter_id));
+			$eptl = $this->_encounter->_load_enum("encounter_person_type",false);
+			$eptl = array_flip($eptl);
+			$encounter_person_type=$eptl[$ep->get('person_type')];
+			
+			$eptn = $ep->personTypeName();
+			if (!$eptn) {
+				trigger_error("Unable to find person type for encountner person with id: $encounter_person_id This usually happens when a patient record is choosen as a person associated with an encounter");
+				continue;	
+			}
+			
+			//person based object
+			$person_type = 	$ep->get('person_type');
+			$loop_person_id = $ep->get('person_id');
+			$pbo =& Celini::newORDO($eptn, $loop_person_id);
+			$pbo_data = $this->_cleanDataArray($pbo->toArray());
+
+				//remove the gaps in the enumeration to be FreeB friendly..
+			$encounter_person_type = preg_replace('/\s+/', '', $encounter_person_type);
+
+			if (!$this->_freeb2->registerData($this->_claim_identifier,$encounter_person_type,$pbo_data)) {
+				$freeb_error = $this->_freeb2->claimLastError($this->_claim_identifier);
+				$freeb_error_message = $freeb_error[1];
+				$freeb_error_number = $freeb_error[0];
+			//	var_dump($freeb_error);
+				if($freeb_error_number==110){// 110 = Unknown Registration name. 
+					//FreeB does not know what to do with this type of person.
+				$this->messages->addMessage("FreeB did not understand person type $encounter_person_type");
+				
+					continue;
+				}else{// lets give a fuller debugging message!!
+					trigger_error("Unable to registerData person data with FreeB using person #".
+					"$encounter_person_id as person type #$person_type $encounter_person_type ".
+					"loaded as $eptn  - FreeB Error: $freeb_error_message");
+					//no continue here, this should be a show stopper!!
+				}
+			}
+		}
+		// End Encounter People
+
+		// Encounter Values, 
+		$EncounterValues =& Celini::newORDO('EncounterValue');
+		$encounterValueArray=$EncounterValues->encounterValueListArray($encounter_id);
+		$ev_enum = $EncounterValues->getValueTypeList();
+		$ClaimData = array();
+	
+		foreach($encounterValueArray as $encounter_value_id){
+			$EncounterValue =& Celini::newORDO('EncounterValue',array($encounter_value_id,$encounter_id));
+			//printf('<pre>%s</pre>', var_export($ev_enum , true));exit;
+			$ev_name = $ev_enum[$EncounterValue->get('value_type')];
+			$ClaimData[$ev_name] = $EncounterValue->get('value');
+		}
+		//var_dump($ClaimData);
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Claim',$ClaimData)) {
+			trigger_error("Unable to register Claim data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+
+		// register responsible party - patient
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'ResponsibleParty',$patientData)) {
+			trigger_error("Unable to register responsible party data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+
+		// register biling facility - practice
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingFacility',$practiceData)) {
+			trigger_error("Unable to register billing facility data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+		
+		// register biling facility - practice
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingContact',$practiceData)) {
+			trigger_error("Unable to register billing contact data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
+		}
+	}
+	
+	
+
+	/**
+	 * Handles preparing an array of data to be passed into freeb by converting
+	 * names from CH name to FB name
+	 *
+	 * @param  array
+	 * @return array
+	 * @access private
+	 * @deprecated
+	 *
+	 * @todo replace calls to this with direct calls to {@link CHToFBArrayAdapter}
+	 */
+	function _cleanDataArray($data) {
+		$adapter =& new CHToFBArrayAdapter($data);
+		return $adapter->adapted();
 	}
 }
 
