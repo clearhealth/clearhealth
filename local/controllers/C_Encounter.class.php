@@ -515,9 +515,6 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 				$data = $program->toArray();
 				$data = $this->_cleanDataArray($data['company']);
 				$data['identifier'] = $data['name'];
-				//echo "C_Patient payer";
-				//var_export($data); echo "<br>";
-				//flush();
 				$freeb2->registerData($claim_identifier,'Payer',$data);
 				if ($clearingHouseData === false) {
 					$clearingHouseData = $data;
@@ -565,9 +562,9 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		$practice =& ORDataObject::factory('Practice',$facility->get('practice_id'));
 		$practiceData = $this->_cleanDataArray($practice->toArray());
 
-			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
-			$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
-			$practiceData['x12_version'] = $defaultProgram->get('x12_version');
+		$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
+		$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
+		$practiceData['x12_version'] = $defaultProgram->get('x12_version');
 
 		//printf('<pre>%s</pre>', var_export($practiceData , true));
 		if (!$freeb2->registerData($claim_identifier,'Practice',$practiceData)) {
@@ -665,19 +662,6 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 		if (!$freeb2->registerData($claim_identifier,'BillingContact',$practiceData)) {
 			trigger_error("Unable to register billing contact data - ".$freeb2->claimLastError($claim_identifier));
 		}
-
-
-		// register clearinghouse - payer
-//		if (!$freeb2->registerData($claim_identifier,'ClearingHouse',$clearingHouseData)) {
-//			trigger_error("Unable to register clearing house data - ".$freeb2->claimLastError($claim_identifier));
-//		}
-
-		// close the claim
-		/*if (!$freeb2->closeClaim($claim_identifier,1)) {
-			trigger_Error("Failed to close claim:  $claim_identifier");
-		}*/
-
-
 	}
 
 	//add javadocs to say that this is pass through...
@@ -695,39 +679,53 @@ function _registerClaimData(&$freeb2,&$encounter,$claim_identifier) {
 
 	}
 
+	/**
+	 * Handles preparing an array of data to be passed into freeb by converting
+	 * names from CH name to FB name
+	 *
+	 * @param  array
+	 * @return array
+	 * @access private
+	 *
+	 * @todo move to its own object
+	 */
 	function _cleanDataArray($data) {
+		// map date_of_birth to dob
 		if (isset($data['date_of_birth'])) {
 			$data['dob'] = $data['date_of_birth'];
 		}
+		
+		// map postal_code to zip
 		if (isset($data['address']['postal_code'])) {
 			$data['address']['zip'] = $data['address']['postal_code'];
 		}
 
+		// map phone number
+		// TODO: there should be some kind of "billing phone number" flag or something...
 		if (isset($data['home_phone'])) {
-	// TODO.. there should be some kind of "billing phone number" flag or something...
 			$data['phone_number'] = $data['home_phone'];
 			unset($data['home_phone']);
 		}
 		if (isset($data['gender'])) { 
 			$data['gender'] = substr($data['gender'],0,1);
 		}
+		
+		// remove unnecessary address info
 		if (isset($data['address'])) {
 			unset($data['address']['id']);
 			unset($data['address']['name']);
 			unset($data['address']['postal_code']);
 			unset($data['address']['region']);
-
-			/*if (isset($data['address']['state']) && preg_match('/^[0-9]+$/',$data['address']['state'])) {
-				$e =& ORDataObject::factory('Enumeration');
-				$data['address']['state'] = $e->enumLookup('state',$data['address']['state']);
-			}*/
 		}
+		
+		// determine payer type from enum
 		if (isset($data['payer_type'])) {
 			$payer = ORDataObject::factory("InsuranceProgram");
 			$pt_enum = $payer->_load_enum("PayerType");
 			$data['payer_type'] = $pt_enum[$data['payer_type']];
 		}
 		
+		// remove all person_id and type data
 		unset($data['person_id']);
 		unset($data['type']);
 		return $data;
