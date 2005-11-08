@@ -28,6 +28,17 @@ class CHToFBArrayAdapter
 	 * The adapted FB array
 	 */
 	var $_adapted  = array();
+	
+	
+	/**
+	 * An array of methods to call for handling the various changes that need to
+	 * be made.
+	 *
+	 * The methods it looks for will be _adapt<i>callback</i>(), (i.e., 
+	 * General == {@link _adaptGeneral()}
+	 */
+	var $_callbacks = array('General', 'DateOfBirth', 'Address', 'Phone', 
+		'Gender', 'Payer');
 	/**#@-*/
 	
 	
@@ -50,44 +61,90 @@ class CHToFBArrayAdapter
 	 * @return array
 	 */
 	function adapted() {
-		// map date_of_birth to dob
-		if (isset($this->_original['date_of_birth'])) {
-			$this->_adapted['dob'] = $this->_original['date_of_birth'];
+		foreach ($this->_callbacks as $methodSuffix) {
+			$method = '_adapt' . $methodSuffix;
+			$this->$method();
+		}
+			
+		return $this->_adapted;
+	}
+	
+	/**#@+
+	 * @access private
+	 */
+	
+	/**
+	 * remove all person_id and type data
+	 */
+	function _adaptGeneral() {
+		unset($this->_adapted['person_id']);
+		unset($this->_adapted['type']);
+	}
+	
+	/**
+	 * map date_of_birth to dob
+	 */
+	function _adaptDateOfBirth() {
+		if (!isset($this->_original['date_of_birth'])) {
+			return;
+		}
+		$this->_adapted['dob'] = $this->_original['date_of_birth'];
+	}
+	
+	/**
+	 * map postal_code to zip & remove unnecessary address info
+	 */
+	function _adaptAddress() {
+		if (!isset($this->_original['address'])) {
+			return;
 		}
 		
-		// map postal_code to zip
 		if (isset($this->_original['address']['postal_code'])) {
 			$this->_adapted['address']['zip'] = $this->_original['address']['postal_code'];
 		}
-
-		// map phone number
-		// TODO: there should be some kind of "billing phone number" flag or something...
-		if (isset($this->_original['home_phone'])) {
-			$this->_adapted['phone_number'] = $this->_original['home_phone'];
-			unset($this->_original['home_phone']);
-		}
-		if (isset($this->_original['gender'])) { 
-			$this->_adapted['gender'] = substr($this->_original['gender'],0,1);
-		}
 		
-		// remove unnecessary address info
-		if (isset($this->_original['address'])) {
-			unset($this->_adapted['address']['id']);
-			unset($this->_adapted['address']['name']);
-			unset($this->_adapted['address']['postal_code']);
-			unset($this->_adapted['address']['region']);
-		}
-		
-		// determine payer type from enum
-		if (isset($this->_original['payer_type'])) {
-			$payer = ORDataObject::factory("InsuranceProgram");
-			$pt_enum = $payer->_load_enum("PayerType");
-			$this->_adapted['payer_type'] = $pt_enum[$this->_original['payer_type']];
-		}
-		
-		// remove all person_id and type data
-		unset($this->_adapted['person_id']);
-		unset($this->_adapted['type']);
-		return $this->_adapted;
+		unset($this->_adapted['address']['id']);
+		unset($this->_adapted['address']['name']);
+		unset($this->_adapted['address']['postal_code']);
+		unset($this->_adapted['address']['region']);
 	}
+	
+	/**
+	 * map phone number
+	 *
+	 * @todo  there should be some kind of "billing phone number" flag or something...
+	 */
+	function _adaptPhone() {
+		if (!isset($this->_original['home_phone'])) {
+			return;
+		}
+		$this->_adapted['phone_number'] = $this->_original['home_phone'];
+		unset($this->_original['home_phone']);
+	}
+	
+	/**
+	 * map gender
+	 */
+	function _adaptGender() {
+		if (!isset($this->_original['gender'])) {
+			return;
+		}
+		$this->_adapted['gender'] = substr($this->_original['gender'],0,1);
+	}
+	
+	/**
+	 * determine payer type from enum
+	 *
+	 * @todo switch to new {@link EnumManager{
+	 */
+	function _adaptPayer() {
+		if (!isset($this->_original['payer_type'])) {
+			return;
+		}
+		
+		$payer = ORDataObject::factory("InsuranceProgram");
+		$pt_enum = $payer->_load_enum("PayerType");
+		$this->_adapted['payer_type'] = $pt_enum[$this->_original['payer_type']];
+	}
+	/**#@-*/
 }
