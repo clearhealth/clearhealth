@@ -18,14 +18,14 @@ class C_PatientDashboard extends Controller {
 	function actionView($patient_id = "") {
 		if (is_numeric($patient_id) && $patient_id > 0) {
 			if ($this->get('patient_id') != $patient_id) {
-				$this->set("encounter_id",false);	
+				$this->set("encounter_id",false,'c_patient');	
 			}
-			$this->set("patient_id",$patient_id);	
+			$this->set("patient_id",$patient_id,'c_patient');	
 		} 
 		
-		if (is_numeric($this->get("patient_id")) && $this->get("patient_id") > 0){
-			$this->set('external_id',$this->get('patient_id'));
-			$p = ORDataObject::Factory("Patient",$this->get("patient_id"));
+		if (is_numeric($this->get("patient_id",'c_patient')) && $this->get("patient_id",'c_patient') > 0){
+			$this->set('external_id',$this->get('patient_id','c_patient'));
+			$p = ORDataObject::Factory("Patient",$this->get("patient_id",'c_patient'));
 			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
