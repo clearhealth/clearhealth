@@ -41,7 +41,7 @@ class C_PatientFinder extends Controller {
         $form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('find',true,true,$form_name));
-		$this->assign('PATIENT_ACTION',Celini::link('dashboard','Patient',true));
+		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
 		return $this->fetch($GLOBALS['template_dir'] . "patient_finder/" . $this->template_mod . "_find.html");
 	}
 	
