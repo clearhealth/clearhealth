@@ -167,7 +167,7 @@ class C_Encounter extends Controller {
 		if ($encounter->get('status') === "closed") {
 			ORDataObject::factory_include('ClearhealthClaim');
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
-			printf('<pre>%s</pre>', var_export($encounter_id , true));
+			//printf('<pre>%s</pre>', var_export($claim->toArray(), true));
 			$this->assign('FREEB_ACTION',$GLOBALS['C_ALL']['freeb2_dir'] . substr(Celini::link('list_revisions','Claim','freeb2',$claim->get('identifier'),false,false),1));
 			$this->assign('PAYMENT_ACTION',Celini::link('payment','Eob',true,$claim->get('id')));
 
