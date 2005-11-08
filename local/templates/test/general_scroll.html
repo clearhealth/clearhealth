@@ -16,7 +16,7 @@
 
 <table cellpadding=0 cellspacing=0><tr><td>
 
-	<table class="grid" id="table">
+	<table class="grid" id="table" style="width: 400px">
 		<thead>
 			<tr>
 				<th>Code</th><th>Code Text</th>
@@ -32,7 +32,7 @@
 <script type="text/javascript" language="javascript">
 	{$dsSetup}
 	var ds = new clniDatasource(new ActiveFeeSchedule(),dsSetup);
-	var grid = new clniGrid('table','template',10,ds);
+	var grid = new clniGrid('table','template',20,ds);
 
 	var headHeight = document.getElementById('table').tHead.getElementsByTagName('tr').item(0).clientHeight;
 	var imagePath = '{$base_dir}index.php/images';
@@ -43,7 +43,7 @@
 				thumbId:'gripper',
 				imagePath:imagePath,
 				totalElements:ds.numRows,
-				visibleElements:10,
+				visibleElements:20,
 				topOffset:headHeight
 			});
 	sb.onScroll = function(to) {
