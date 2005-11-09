@@ -95,7 +95,7 @@ class C_PatientDashboard extends Controller {
 			$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter') . 'patient_id=' . $p->get('id'));
 			$this->assign('ACCOUNT_ACTION',Celini::link('history','account',true,$this->get("patient_id")));
 			$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
-			$this->assign('EDIT_ACTION',Celini::link('edit','Patient',true,$this->get('patient_id')));
+			$this->assign('EDIT_ACTION',Celini::link('edit','Patient',true,$patient_id));
 			$this->assign('NO_PATIENT', false);			
 			$this->assign('NOTE_ACTION',Celini::managerLink('note',$this->get('patient_id')));
 			$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
