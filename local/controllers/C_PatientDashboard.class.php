@@ -15,37 +15,39 @@ class C_PatientDashboard extends Controller {
 	 * demographics, prescriptions documents
 	 *
 	 */
-	function actionView($patient_id = "") {
-		if (is_numeric($patient_id) && $patient_id > 0) {
-			if ($this->get('patient_id') != $patient_id) {
-				$this->set("encounter_id",false,'c_patient');	
-			}
-			$this->set("patient_id",$patient_id,'c_patient');	
-		} 
+	function actionView($patient_id = '') {
+		$p =& $this->_loadPatient($patient_id);
 		
-		if (is_numeric($this->get("patient_id",'c_patient')) && $this->get("patient_id",'c_patient') > 0){
-			$this->set('external_id',$this->get('patient_id','c_patient'));
-			$p = ORDataObject::Factory("Patient",$this->get("patient_id",'c_patient'));
-			$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
-			$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
-			$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
+		if ($p->isPopulated()) {
+			// todo: determine what this is doing
+			$this->set('external_id',$p->get('id'));
+			
+			// todo: determine why this are using $this->value_id
+			$number =& Celini::newORDO('PersonNumber', array($this->number_id, $p->get('id')));
+			$address =& Celini::newORDO('PersonAddress', array($this->address_id, $p->get('id')));
+			
+			// Setup insured relationships block
+			$insuredRelationship =& Celini::newORDO('InsuredRelationship', array($this->insured_relationship_id, $p->get('id')));
 			$insuredRelationshipGrid =& new cGrid($p->loadDatasource('InsuredRelationshipList'));
 			$insuredRelationshipGrid->name = "insuredRelationshipGrid";
 			$insuredRelationshipGrid->indexCol = false;
 			$insuredRelationshipGrid->setExternalId($p->get('person_id'));
 
+			// Setup encounter block
 			$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 			$encounterGrid->name = "encounterGrid";
 			$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Celini::link('edit', 'encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
 			$encounterGrid->pageSize = 5;
 			$encounterGrid->setExternalId($p->get('id'));
 
+			// Setup form data block
 			$formDataGrid =& new cGrid($p->loadDatasource('FormDataList'));
 			$formDataGrid->name = "formDataGrid";
 			$formDataGrid->registerTemplate('name','<a href="'.Celini::link('data','Form').'id={$form_data_id}">{$name}</a>');
 			$formDataGrid->pageSize = 10;
 			$formDataGrid->setExternalId($p->get('id'));
 			
+			// todo: determine what this is doing and label it correctly
 			$menu = Menu::getInstance();
 			$tmp = $menu->getMenuData('patient',90);
 
@@ -55,21 +57,24 @@ class C_PatientDashboard extends Controller {
 					$formList[$form['form_id']] = $form['title'];
 				}	
 			}
-
-			$report =& ORDataObject::factory("Report");
+			
+			// Setup report data block
+			$report =& Celini::newORDO("Report");
 			$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 89));
 			$reportGrid->name = "reportGrid";
 			$reportGrid->registerTemplate("title",'<a href="'.Celini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 			$reportGrid->setExternalId(89);
 
-			$note =& ORDataObject::factory('PatientNote');
+			// Setup note data block
+			$note =& Celini::newORDO('PatientNote');
 			$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
 			$noteGrid->pageSize = 10;
 			$noteGrid->indexCol = false;
 			$noteGrid->setExternalId($p->get('id'));
 			
-			$clearhealth_claim = ORDataObject::factory("ClearhealthClaim");
-			$accountStatus = $clearhealth_claim->accountStatus($this->get("patient_id"));
+			// todo: determine what this is doing and label it appropriately
+			$clearhealth_claim = Celini::newORDO("ClearhealthClaim");
+			$accountStatus = $clearhealth_claim->accountStatus($p->get('id'));
 
 			$appointmentDS =& $p->loadDatasource('Appointment');
 			$appointmentGrid =& new cGrid($appointmentDS);
@@ -93,13 +98,13 @@ class C_PatientDashboard extends Controller {
 			$this->assign('formList',$formList);
 
 			$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter') . 'patient_id=' . $p->get('id'));
-			$this->assign('ACCOUNT_ACTION',Celini::link('history','account',true,$this->get("patient_id")));
+			$this->assign('ACCOUNT_ACTION',Celini::link('history','account',true, $p->get('id')));
 			$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
-			$this->assign('EDIT_ACTION',Celini::link('edit','Patient',true,$patient_id));
+			$this->assign('EDIT_ACTION',Celini::link('edit','Patient',true,$p->get('id')));
 			$this->assign('NO_PATIENT', false);			
-			$this->assign('NOTE_ACTION',Celini::managerLink('note',$this->get('patient_id')));
-			$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
-			$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
+			$this->assign('NOTE_ACTION',Celini::managerLink('note',$p->get('id')));
+			$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$p->get('id')));
+			$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$p->get('id')));
 		}
 		else {
 			$this->assign('NO_PATIENT', true);
@@ -108,5 +113,24 @@ class C_PatientDashboard extends Controller {
 		
 		return $this->view->render("view.html");
 	}
+	
+	
+	/**
+	 * 
+	 * @access private
+	 */
+	function &_loadPatient($patient_id) {
+		if (is_numeric($patient_id) && $patient_id > 0) {
+			if ($this->get('patient_id', 'c_patient') != $patient_id) {
+				$this->set("encounter_id", false, 'c_patient');	
+			}
+			$this->set("patient_id", $patient_id, 'c_patient');	
+		} 
+		
+		$patient_id = $this->_enforcer->int($this->get('patient_id', 'c_patient'));
+		$p =& Celini::newORDO('Patient', $patient_id);
+		return $p;
+	}		
+
 }
 ?>
