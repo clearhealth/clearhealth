@@ -1,9 +1,31 @@
+<script type="text/javascript" src="{$base_dir}index.php/ajax?client=clniGrid"></script>
 <link href="{$base_dir}index.php/css/scrollbar.css" rel="stylesheet" type="text/css">
+{literal}
+<style>
+.gridHeaderHandle {
+	background-color: gray;
+	width: 1px;
+	top: -2px;
+	cursor: e-resize;
+}
+.activeGrid td {
+}
+table.activeGrid th {
+	position: relative;
+	height: 20px;
+	border: solid 1px black;
+	padding: 2px;
+	background-color: white !important;
+	padding-right: 0px;
+}
+</style>
+{/literal}
 
 {literal}
 <div id="template" style="display:none">
 	<table>
 		<tr class="normal">
+			<td>{$code_id}</td>
 			<td>{$code}</td>
 			<td>{$code_text}</td>
 		</tr>
@@ -14,12 +36,12 @@
 </div>
 {/literal}
 
-<table cellpadding=0 cellspacing=0><tr><td>
+<table cellpadding=0 cellspacing=0><tr><td style='vertical-align:top'>
 
-	<table class="grid" id="table" style="width: 450px;">
+	<table class="activeGrid grid" id="table" style="width: 450px;" cellpadding="0" cellspacing="1">
 		<thead>
 			<tr>
-				<th>Code</th><th>Code Text</th>
+				<th>Id</th><th>Code</th><th>Code Text</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -28,11 +50,14 @@
 </td><td>
 <div id="bar" class="scrollBar"></div>
 </td></tr></table>
+<pre id="debug"></pre>
 
 <script type="text/javascript" language="javascript">
 	{$dsSetup}
 	var ds = new clniDatasource(new ActiveFeeSchedule(),dsSetup);
-	var grid = new clniGrid('table','template',20,ds);
+	{literal}
+	var grid = new clniGrid(ds,{tableId:'table',templateId:'template',rows:20});
+	{/literal}
 
 	var headHeight = document.getElementById('table').tHead.getElementsByTagName('tr').item(0).clientHeight;
 	var imagePath = '{$base_dir}index.php/images';
@@ -49,5 +74,6 @@
 	sb.onScroll = function(to) {
 		grid.scrollTo(to);
 	}
+	grid.scrollBar = sb;
 	{/literal}
 </script>

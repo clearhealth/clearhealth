@@ -6,7 +6,7 @@ class C_Test extends Controller {
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = 'scriptaculous';
 		$ajax->jsLibraries[] = 'scrollbar';
-		$ajax->jsLibraries[] = 'clniGrid';
+		//$ajax->jsLibraries[] = 'clniGrid';
 		$ajax->stubs[] = 'ActiveFeeSchedule';
 
 

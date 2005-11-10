@@ -11,7 +11,8 @@ class FeeSchedule_DS extends DatasourceActive {
 	var $_type = 'html';
 
 	function FeeSchedule_DS() {
-		$labels = array( 'code' => 'Code', 'code_text' => 'Code name');
+		$this->DatasourceActive();
+		$labels = array( 'code_id' => 'ID', 'code' => 'Code', 'code_text' => 'Code name');
 
 		$this->setup(Celini::dbInstance(),
 			array(
