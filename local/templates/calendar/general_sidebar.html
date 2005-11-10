@@ -1,5 +1,9 @@
 <SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete.js"></script>
 <script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
+{*
+<script type='text/javascript' src='{$base_dir}js/suggest.js'></script>
+*}
+<script type='text/javascript' src='{$base_dir}index.php/ajax?stub=PatientFinder'></script>
 {literal}
 <script language="javascript">
 function captureEnter (field, event) {
@@ -102,6 +106,9 @@ var clni_ignore_missing_elements = true;
 				</tr>
 				<tr>
 				<td valign="top" colspan="2">
+{* old searcher
+<input type="text" class="string" id="pf" name="pfinder" autocomplete="off" onkeyup="do_suggest(this.id,false,'PatientFinder','SmartSearch');return false;" value="" /><div id="suggestionholder"><div class="suggestions" id="pfsuggestions" style="display:none;">&nbsp;</div></div>
+*}
 				<div id="ghide2">
 					<INPUT TYPE="hidden" name="external_id"  id="patient_id_2" value="{$edit_oc->get_external_id()}">
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_2" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
@@ -196,7 +203,7 @@ var clni_ignore_missing_elements = true;
 					<td colspan="2">{l}Title{/l}</td>
 				</tr>
 				<tr>
-					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"> {html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
+					<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"><br />{html_options name="reason_id" options=$appointment_reasons selected=$edit_oc->get('reason_id')}</td>
 				</tr>
 				<tr>
 				<td colspan="2" id="ghide3">{l}Patient{/l}&nbsp;&nbsp;<a href="{php}echo Celini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
@@ -204,6 +211,10 @@ var clni_ignore_missing_elements = true;
 				</tr>
 				<tr>
 				<td valign="top" colspan="2">
+{*
+					<INPUT TYPE="hidden" name="external_id" id="patient_id_1" value="{$edit_oc->get_external_id()}">
+					<input type="text" class="string" id="pfb" name="pfinder" autocomplete="off" onkeyup="do_suggest(this.id,false,'PatientFinder','SmartSearch');return false;" /><div id="suggestionholder" style="z-index:20;min-width:150px;"><div class="suggestions" id="pfbsuggestions" style="display:none;">&nbsp;</div></div>
+*}
 				<div id="ghide4"> 
 					<INPUT TYPE="hidden" name="external_id" id="patient_id_1" value="{$edit_oc->get_external_id()}">
                 	<INPUT TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" name="patient_name" id="patient_name_1" SIZE="20" autocomplete="off" value="{$edit_patient_name}"><br>
@@ -339,6 +350,7 @@ var clni_ignore_missing_elements = true;
 </table>
 <br>
 {/foreach}
+
 {literal}
 <SCRIPT language="javascript">
 

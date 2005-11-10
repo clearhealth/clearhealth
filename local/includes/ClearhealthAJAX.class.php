@@ -7,5 +7,12 @@ class ClearhealthAJAX {
 
 		$this->server->registerClass($ds,'ActiveFeeSchedule',$ds->ajaxMethods());
 	}
+
+	function initPatientFinder() {
+		$GLOBALS['loader']->requireOnce('controllers/C_PatientFinder.class.php');
+		$pf =& new C_PatientFinder();
+		$this->server->registerClass($pf,'PatientFinder',array('SmartSearch'));
+	}
+
 }
 ?>

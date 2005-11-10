@@ -162,14 +162,16 @@ AutoComplete.prototype.onKeyDown = function(evt){
 
 AutoComplete.prototype.getData = function(){
 	this.itemSet = false;
-	var results = this.getDataFunc(this.oText.value);
-	this.index = 0;
-	this.searchString = this.oText.value;
-	this.choices = results;
-	if(results.length){
-		this.choiceCount = results.length;
-	}else{
-		this.choiceCount = 0;
+	if(this.oText.value!=''){
+		var results = this.getDataFunc(this.oText.value);
+		this.index = 0;
+		this.searchString = this.oText.value;
+		this.choices = results;
+		if(results.length){
+			this.choiceCount = results.length;
+		}else{
+			this.choiceCount = 0;
+		}
 	}
 	this.draw();
 
