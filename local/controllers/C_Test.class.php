@@ -1,12 +1,12 @@
 <?php
 $loader->requireOnce('datasources/FeeSchedule_DS.class.php');
+$loader->requireOnce('/includes/clni/clniActiveGrid.class.php');
 class C_Test extends Controller {
 
 	function actionScroll() {
 		$ajax =& Celini::ajaxInstance();
-		$ajax->jsLibraries[] = 'scriptaculous';
-		$ajax->jsLibraries[] = 'scrollbar';
-		//$ajax->jsLibraries[] = 'clniGrid';
+		$ajax->jsLibraries[] = array('scriptaculous');
+		$ajax->jsLibraries[] = array('scrollbar','clniGrid');
 		$ajax->stubs[] = 'ActiveFeeSchedule';
 
 
@@ -15,6 +15,15 @@ class C_Test extends Controller {
 		
 		
 		return $this->view->render('scroll.html');
+	}
+
+	function actionGrid() {
+		$ds =& new FeeSchedule_DS();
+		$grid =& new clniActiveGrid('testGrid',$ds);
+
+		$grid->stubName = 'ActiveFeeSchedule';
+
+		return $grid->render();
 	}
 }
 ?>
