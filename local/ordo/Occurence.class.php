@@ -91,6 +91,11 @@ class Occurence extends ORDataObject{
 	var $walkin	= '';
 	var $group_appointment	= '';
 	
+	/**
+	 *	Creator_id contains the user id of the first user to persist the object
+	 *	@var int created_by_id
+	 */
+	var $creator_id=0;
 	
 	/**
 	 * Constructor sets all attributes to their default value
@@ -129,7 +134,11 @@ class Occurence extends ORDataObject{
 		$this->user = null;
 		$me =& Me::getInstance();
 		if ($me->get_user_id() > 0) {
-			$this->last_change_id = $me->get_user_id();
+			if($this->id==0){
+				$this->creator_id=$me->get_user_id();
+			} else {
+				$this->last_change_id = $me->get_user_id();
+			}
 		}
 		parent::persist();
 	}
@@ -371,8 +380,29 @@ class Occurence extends ORDataObject{
 		return $this->user;
 	}
 
+	function get_creator() {
+		if (is_object($this->creator)) {
+			return $this->creator;	
+		}
+		$u = new User(null,null);
+		if($this->creator_id==0){
+			$u->id=$this->last_change_id;
+		}else{
+			$u->id = $this->creator_id;
+		}
+		$u->populate();
+		$this->creator = $u;
+		return $this->creator;
+	}
+
 	function get_user_display_name() {
 		$user = $this->get_user();
+		$person =& ORDataObject::factory('Person',$user->get('person_id'));
+		return $person->get('last_name').', '.$person->get('first_name');
+	}
+
+	function get_creator_display_name() {
+		$user = $this->get_creator();
 		$person =& ORDataObject::factory('Person',$user->get('person_id'));
 		return $person->get('last_name').', '.$person->get('first_name');
 	}

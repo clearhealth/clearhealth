@@ -12,5 +12,6 @@ CREATE TABLE `occurences` (
   `timestamp` timestamp NOT NULL,
   `walkin` tinyint(4) NOT NULL default '0',
   `group_appointment` tinyint(4) NOT NULL default '0',
+  `creator_id` int(11) default 0,
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM;

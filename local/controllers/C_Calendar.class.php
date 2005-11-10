@@ -309,6 +309,7 @@ class C_Calendar extends CalendarController {
 		
 		//add 86400 because between uses midnight to midnight so the last day needs to be made inclusive
 		$events = Event::get_events_between(date("Y-m-d",$start_timestamp),date("Y-m-d",$end_timestamp + 86400),"day","","PS",false);
+
 		//print_r($events);
 		$this->assign_by_ref("events",$events);
 	

@@ -51,8 +51,13 @@
 					{/if}
 					{$ev.notes}
 				{/if}
+				{if $ev.creator_nickname}
+					<br />Entered by: {$ev.creator_nickname} - {$ev.timestamp|date_format:"%m/%d/%Y"}
+				{else}
+					<br />Entered by UserID: {$ev.creator_id} - {$ev.timestamp|date_format:"%m/%d/%Y"}
+				{/if}
 				{if $ev.last_change_nickname}
-					<br>{$ev.last_change_nickname}-{$ev.last_change|date_format:"%m/%d/%Y"}
+					<br>Last Edit: {$ev.last_change_nickname} - {$ev.last_change|date_format:"%m/%d/%Y %H:%M:%S"}
 				{/if}  
 				&nbsp; {if $ev.walkin}{l}WI{/l}{/if}
 			</td>

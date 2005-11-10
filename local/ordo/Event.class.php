@@ -206,6 +206,7 @@ class Event extends ORDataObject{
 				n.number AS p_phone,
 				n.active AS dnc,
 				rm.name AS room_name, 
+				u3.nickname AS creator_nickname, 
 				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
 				o.`timestamp` AS last_change
 			FROM 
@@ -217,6 +218,7 @@ class Event extends ORDataObject{
 				LEFT JOIN ".$e->_prefix."buildings AS b ON b.id = r.building_id 
 				LEFT JOIN ".$e->_prefix."user AS u ON u.user_id= o.user_id
 				LEFT JOIN ".$e->_prefix."user AS u2 ON u2.user_id = o.last_change_id
+				LEFT JOIN ".$e->_prefix."user as u3 ON u3.user_id = o.creator_id
 				LEFT JOIN patient AS pt ON pt.person_id=o.external_id
 				LEFT JOIN person AS psn ON psn.person_id=pt.person_id
 				LEFT JOIN person_number AS p2n ON psn.person_id=p2n.person_id
