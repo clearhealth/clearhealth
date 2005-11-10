@@ -1,25 +1,4 @@
-<script type="text/javascript" src="{$base_dir}index.php/ajax?client=clniGrid"></script>
-<link href="{$base_dir}index.php/css/scrollbar.css" rel="stylesheet" type="text/css">
-{literal}
-<style>
-.gridHeaderHandle {
-	background-color: gray;
-	width: 1px;
-	top: -2px;
-	cursor: e-resize;
-}
-.activeGrid td {
-}
-table.activeGrid th {
-	position: relative;
-	height: 20px;
-	border: solid 1px black;
-	padding: 2px;
-	background-color: white !important;
-	padding-right: 0px;
-}
-</style>
-{/literal}
+<link href="{$base_dir}index.php/css/activeGrid.css" rel="stylesheet" type="text/css">
 
 {literal}
 <div id="template" style="display:none">
@@ -71,9 +50,9 @@ table.activeGrid th {
 				visibleElements:20,
 				topOffset:headHeight
 			});
-	sb.onScroll = function(to) {
-		grid.scrollTo(to);
-	}
-	grid.scrollBar = sb;
 	{/literal}
+	sb.onScroll = function(to) {lcb}
+		grid.scrollTo(to);
+	{rcb}
+	grid.scrollBar = sb;
 </script>
