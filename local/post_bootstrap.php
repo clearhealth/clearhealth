@@ -11,4 +11,6 @@ $conf =& Celini::configInstance();
 $ajaxConf = (array)$conf->get('ajaxConfClasses');
 $ajaxConf[] = 'ClearhealthAJAX';
 $conf->set('ajaxConfClasses',$ajaxConf);
+
+define('CLEARHEALTH_ROOT',APP_ROOT);
 ?>
