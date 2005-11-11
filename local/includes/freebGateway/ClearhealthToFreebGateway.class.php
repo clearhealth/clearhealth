@@ -59,13 +59,16 @@ class ClearhealthToFreebGateway
 		$patient =& Celini::newORDO('Patient',$this->_encounter->get('patient_id'));
 		switch ($status) {
 			case 'new' :
-				$this->_setupNewClaim();
+				$continue = $this->_setupNewClaim();
 				break;
 			case 'rebill' :
-				$this->_setupRebillClaim();
+				$continue = $this->_setupRebillClaim();
 				break;
 		}
-		$this->_registerClaimData();
+		
+		if ($continue) {
+			$this->_registerClaimData();
+		}
 	}
 	
 	/**
@@ -93,7 +96,7 @@ class ClearhealthToFreebGateway
 
 		if ($relationships == null) { 
 			$this->messages->addMessage("This Patient has no Insurance Information to rebill, please add insurance information and try again <br>");
-			return;
+			return false;
 		}	
 		
 		$currentPayments = $claim->summedPaymentsByCode();
@@ -142,7 +145,10 @@ class ClearhealthToFreebGateway
 				}
 			}
 		}
+		return true;
 	}
+	
+	
 	/**
 	 * Setup a new claim in Freeb
 	 *
@@ -154,7 +160,7 @@ class ClearhealthToFreebGateway
 
 		if ($relationships == null) { 
 			$this->_caller->messages->addMessage("This Patient has no Insurance Information to generate the claim, please add insurance information and try again <br>");
-			return;
+			return false;
 		}	
 		
 
@@ -168,7 +174,7 @@ class ClearhealthToFreebGateway
 
 		if (count($codes) == 0) {
 			$this->_caller->messages->addMessage('This encounter had no claim lines so no claim was billed');
-			return;
+			return false;
 		}
 
 		//create totals paid as of now and total billed
@@ -275,6 +281,7 @@ class ClearhealthToFreebGateway
 		$claim->set("total_paid",$total_paid);
 		$claim->set('total_billed',$total_billed);
 		$claim->persist();
+		return true;
 	}
 	
 	
@@ -293,7 +300,7 @@ class ClearhealthToFreebGateway
 
 		if ($relationships == null) { 
 			$this->messages->addMessage("This Patient has no Insurance Information to register the claim data, please add insurance information and try again <br>");
-			return;
+			return false;
 		}	
 		
 
