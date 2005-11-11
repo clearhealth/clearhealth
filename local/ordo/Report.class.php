@@ -17,9 +17,9 @@ require_once CELINI_ROOT.'/lib/PHP_Compat/Compat/Function/file_put_contents.php'
 class Report extends ORDataObject {
 
 	var $id = 0;
-	var $label;
-	var $description;
-	var $query;
+	var $label = '';
+	var $description = '';
+	var $query = '';
 	var $templates = false;
 	var $newTemplates = false;
 	var $deletedTemplates = false;

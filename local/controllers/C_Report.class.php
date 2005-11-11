@@ -39,7 +39,7 @@ class C_Report extends Controller {
 	/**
 	* List all reports
 	*/
-	function list_action_view() {
+	function actionList() {
 		$this->assign("TOP_ACTION", Celini::link('list'));
 		$this->assign("EDIT_ACTION", Celini::link('edit'));
 		$this->assign("VIEW_ACTION", Celini::link('view'));
@@ -55,7 +55,7 @@ class C_Report extends Controller {
 	/**
 	* Connect a report to the menu all reports
 	*/
-	function connect_action_edit() {
+	function actionConnect_edit() {
 		$this->assign("FORM_ACTION", Celini::link('connect'));
 		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
@@ -75,7 +75,7 @@ class C_Report extends Controller {
 	/**
 	* remotly access a report object
 	*/
-	function remote_action_edit() {
+	function actionRemote_edit() {
 		$S = & new JPSpan_Server_PostOffice();
 		$S->addHandler(new Report());
 		$S->addHandler(new MenuReport());
@@ -117,14 +117,8 @@ class C_Report extends Controller {
 	/**
 	* Edit a report
 	*/
-	function edit_action_edit($id=-1) {
-		if (!is_numeric($id)) {
-			//echo "No suitable report id was provided, please check your query string.";	
-		}
-		if ($id === -1)
-		{
-			return $this->list_action_view();
-		}
+	function actionEdit($id = 0) {
+		$id = $this->_enforcer->int($id);
 
 		if ($id == 0 && isset($this->report_id)) {
 			$id = $this->report_id;
@@ -141,28 +135,27 @@ class C_Report extends Controller {
 		$this->assign("DOWNLOAD_ACTION",Celini::link('download_template',true,true,$id));
 	
 	
-		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_edit_report.html"));	
+		return $this->view->render('edit_report.html');	
 	}
 
 	/**
 	* Create a new template
 	*/
-	function add_template_action_add($id) {
+	function actionAdd_template_add($id) {
 		$this->add_template_edit_edit(0,$id);
 	}
 
 	/**
 	* Create a new report
 	*/
-	function add_action_add()
-	{
+	function actionAdd() {
 		return $this->edit_action_edit(0);
 	}
 
 	/**
 	* process edit form submissions
 	*/
-	function edit_action_process($id) {
+	function processEdit($id) {
 		if ($_POST['process'] != "true") {
 			return;
 		}
@@ -207,7 +200,7 @@ class C_Report extends Controller {
 	/**
 	* Download a report template
 	*/
-	function download_template_action_edit($report_id=0,$template_id=0) {
+	function actionDownload_template_edit($report_id=0,$template_id=0) {
 		if (is_numeric($template_id)) {
 			$file = realpath(APP_ROOT."/user/report_templates/")."/".(int)$template_id.".tpl.html";
 			if (file_exists($file)) {
@@ -225,7 +218,7 @@ class C_Report extends Controller {
 		}
 	}
 
-	function view_action_view($id,$template_id = 0) {
+	function actionView($id,$template_id = 0) {
 		return $this->report_action_view($id,$template_id);
 	}
 }
