@@ -20,6 +20,7 @@ class C_Test extends Controller {
 	function actionGrid() {
 		$ds =& new FeeSchedule_DS();
 		$grid =& new clniActiveGrid('testGrid',$ds);
+		$grid->gridWidth = "600px";
 
 		$grid->stubName = 'ActiveFeeSchedule';
 
