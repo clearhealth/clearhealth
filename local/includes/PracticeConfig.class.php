@@ -12,7 +12,10 @@ class PracticeConfig extends clniConfig {
 	var $defaultPracticeId = 0;
 	var $practiceId;
 
-	var $_schema = array('CalendarIncrement' => array('label'=>'Calendar Interval','type'=>'second'));
+	var $_schema = array(
+		'CalendarIncrement' => array('label'=>'Calendar Interval','type'=>'second'),
+		'FacilityType' => array('label'=>'Facility Type (For ICD Codes)','type'=>'facilitytype')
+	);
 
 	function getSchema() {
 		return $this->_schema;
