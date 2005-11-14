@@ -467,8 +467,8 @@ class C_Calendar extends CalendarController {
 		
 		//false is because we do not want a blank inserted at the beginning of the array
 
-                if(count($pa) > 0) {
-		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
+		if(count($pa) > 0) {
+			$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
 		}
 
 		$u = new User(null,null);
