@@ -26,5 +26,14 @@ class C_Test extends Controller {
 
 		return $grid->render();
 	}
+
+	function actionRaw() {
+
+		$person =& Celini::newOrdo('Patient',1110);
+		var_dump($person->get('gender'));
+		$person->set('gender',new ClniValueRaw('gender + 1'));
+		$person->persist();
+		var_dump($person->get('gender'));
+	}
 }
 ?>
