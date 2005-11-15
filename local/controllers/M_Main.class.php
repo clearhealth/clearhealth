@@ -10,7 +10,7 @@ class M_Main extends Manager {
 			$_SESSION['defaultpractice']=$_GET['changepractice'];
 		}
 		if(!isset($_SESSION['defaultpractice'])){
-			$_SESSION['defaultpractice']=$user->get_DefaultPracticeId();
+			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}
 	}
 
