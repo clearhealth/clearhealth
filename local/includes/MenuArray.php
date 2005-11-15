@@ -1,6 +1,6 @@
 <?php
 $menuarrays=array();
-$defPractice=ORDataObject::factory('Practice',$_SESSION['defaultpractice']);
+$defPractice=&Celini::newOrdo('Practice',$_SESSION['defaultpractice']);
 $menuarrays[]=array(
 	'menus'=>array(112,113,114,115),
 	'sql'=>"
