@@ -65,6 +65,7 @@ $config['autoAcl'] = true;
 $config['use_menu'] = true;
 $config['menu']['attachReports'] = true;
 $config['menu']['attachForms'] = true;
+$config['menu']['attachSQL'] = true;
 
 // document management
 $config['document_manager']['documents_on_tree'] = true;
