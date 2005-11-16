@@ -148,7 +148,6 @@ class Practice extends ORDataObject{
 			$practices[] = new Practice($result->fields['id']);
 			$result->MoveNext();
 		}
-
 		return $practices;
 	}
 
@@ -357,6 +356,14 @@ class Practice extends ORDataObject{
 		$ret['identifier'] = $this->get('identifier');
 		return $ret;
 	}
+
+	function &get_config(){
+		require_once APP_ROOT.'/local/includes/PracticeConfig.class.php';
+		$config =& Celini::configInstance('practice');
+		$config->loadPractice($this->get('id'));
+		return $config;
+	}
+
 } // end of Class
 
 ?>
