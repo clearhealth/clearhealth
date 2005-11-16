@@ -55,6 +55,7 @@ class C_Calendar extends CalendarController {
 		$this->_setupFilterDisplay();
 
 		$this->practiceConfig =& Celini::configInstance('Practice');
+		$this->practiceConfig->loadPractice($_SESSION['defaultpractice']);
 	}
 		
 	function _setupFilterDisplay() {
@@ -62,6 +63,14 @@ class C_Calendar extends CalendarController {
 		$users = "";
 		$locations = "";
 
+		if (!isset($_SESSION['calendar']['practice'])) {
+			$_SESSION['calendar']['practice']=$_SESSION['defaultpractice'];
+			$_SESSION['calendar']['filters']=null;
+		}
+		if (isset($_SESSION['calendar']['practice']) && $_SESSION['calendar']['practice'] != $_SESSION['defaultpractice']){
+			$_SESSION['calendar']['practice']=$_SESSION['defaultpractice'];
+			$_SESSION['calendar']['filters']=null;
+		}
 		if (!isset($_SESSION['calendar']['filters'])) {
 			$_SESSION['calendar']['filters'] = null;
 		}
@@ -99,6 +108,17 @@ class C_Calendar extends CalendarController {
 		if (!empty($locations)) {
 			$locations = substr($locations,0,-2);
 			$this->assign("locations_filter", $locations);
+		} else {
+			$prac = ORDataObject::factory('Practice',$_SESSION['defaultpractice']);
+			$bldgs = $prac->get_buildings();
+			foreach($bldgs as $bldg){
+				$locs=$bldg->get_rooms();
+				foreach($locs as $loc){
+					$_SESSION['calendar']['filters']['location']=$loc->get('id');
+					$locations = $bldg->get_name() . "->" . $loc->get_name();
+				}
+			}
+			$this->assign("locations_filter",$locations);
 		}
 	}
 
@@ -461,22 +481,17 @@ class C_Calendar extends CalendarController {
 		$nmonth->build();
 		$months = array($tmonth, $nmonth);
 
-		$p = new Practice();
-		$pa = $p->practices_factory();
+		$pa = ORDataObject::factory('Practice',$_SESSION['defaultpractice']);
 		$r = new Room();
 		
-		//false is because we do not want a blank inserted at the beginning of the array
-
-		if(count($pa) > 0) {
-			$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
-		}
-
+		$locations=$r->rooms_practice_factory($pa->get_id());
+		$this->assign("rooms_practice_array",$locations,false);
 		$u = new User(null,null);
 		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
 		if (isset($_SESSION['calendar']['filters']['user'])) {
 			$this->assign("selected_user",$_SESSION['calendar']['filters']['user']);
 		}
-		if (isset($_SESSION['calendar']['filters']['location'])) {
+		if (isset($_SESSION['calendar']['filters']['location']) && isset($locations[$_SESSION['calendar']['filters']['location']])) {
 			$this->assign("selected_location",$_SESSION['calendar']['filters']['location']);
 		}
 		

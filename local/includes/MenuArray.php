@@ -6,7 +6,7 @@ $menuarrays[]=array(
 	'sql'=>"
 				SELECT 
 					p.name as title,
-					CONCAT('".Celini::link('',true,true)."','changepractice=',p.id) as action,
+					CONCAT('".Celini::link(true,true,true)."','changepractice=',p.id) as action,
 					p.id as item_id
 				FROM
 					practices AS p
