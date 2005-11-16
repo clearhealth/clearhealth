@@ -79,6 +79,7 @@ class C_Practice extends Controller {
 
 	function _typeClass($type) {
 		require_once CELINI_ROOT."/includes/clniType/Second.class.php";
+		require_once APP_ROOT."/local/includes/clniType/FacilityType.class.php";
 		$typeLoader =& new TypeFileLoader();
 		$typeLoader->loadType($type);
 		$class = 'clniType'.$type;
