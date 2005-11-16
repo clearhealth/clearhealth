@@ -167,9 +167,8 @@ class C_Location extends Controller {
 		
 		$pa = $s->practices_factory();
 		$r = new Room();
-		
 		if(count($pa) > 0) {
-			$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
+			$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa,false));
 		}
 		
 		$u = new User(null,null);

@@ -125,7 +125,7 @@ class C_PersonSchedule extends CalendarController {
 		$p = new Practice();
 		$pa = $p->practices_factory();
 		$r = new Room();
-		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id()));
+		$this->assign("rooms_practice_array",$r->rooms_practice_factory($_SESSION['defaultpractice']));
 		
 		$this->assign("practices",$this->utility_array($pa,"id","name"));
 		
@@ -484,7 +484,7 @@ class C_PersonSchedule extends CalendarController {
 		$r = new Room();
 		
 		//false is because we do not want a blank inserted at the beginning of the array
-		$this->assign("rooms_practice_array",$r->rooms_practice_factory($pa[0]->get_id(),false));
+		$this->assign("rooms_practice_array",$r->rooms_practice_factory('',false));
 		
 		$u = new User(null,null);
 		$this->assign("users_array",$this->utility_array($u->users_factory(),"id","username"));

@@ -38,7 +38,7 @@ class C_Calendar extends CalendarController {
 		}
 		$this->assign("APPOINTMENT_ACTION",$current_link);
 		$this->assign('DAY_ACTION', Celini::link('day'));
-		 $this->assign('PATIENT_DASHBOARD_LINK', Celini::link('dashboard','patient'));
+		 $this->assign('PATIENT_DASHBOARD_LINK', Celini::link('view','PatientDashboard','main'));
 		
 		$this->assign("FILTER_ACTION",Celini::managerLink('setFilter'). $date_link . "");
 		$this->assign_by_ref("CONTROLLER", $this);

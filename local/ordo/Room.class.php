@@ -95,7 +95,7 @@ class Room extends ORDataObject{
 	/**
 	 * Convenience function to get an array of many objects
 	 * 
-	 * @param int $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned 
+	 * @param mixed $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned 
 	 */
 	function rooms_practice_factory($foreign_id = "",$blank = true) {
 		$rooms = array();
@@ -103,24 +103,33 @@ class Room extends ORDataObject{
 		if ($blank)
 			$rooms[0] = " ";
 			
-		if (empty($foreign_id)) {
-			 $foreign_id= "like '%'";
+		if(is_array($foreign_id)){
+			$practices=$foreign_id;
+		} elseif(is_a($foreign_id,'Practice')) {
+			$practices = array($foreign_id);
+		} else {
+			$practices=array(ORDataObject::factory('Practice',$foreign_id));
 		}
-		else {
-			$foreign_id= " = '" . mysql_real_escape_string(strval($foreign_id)) . "'";
-		}
+		foreach($practices as $practice){
+			$foreign_id=$practice->get('id');
+			if (empty($foreign_id)) {
+				 $foreign_id= "like '%'";
+			}
+			else {
+				$foreign_id= " = '" . mysql_real_escape_string(strval($foreign_id)) . "'";
+			}
 		
-		$d = new Room();
-		$sql = "SELECT r.id, r.name as room_name, b.name as building_name FROM  " . $d->_prefix . $d->_table . " as r "
-		."LEFT JOIN buildings as b on b.id=r.building_id "
-		."LEFT JOIN practices as s on  s.id=b.practice_id WHERE s.id " .$foreign_id ;
-		$result = $d->_Execute($sql);
+			$d = new Room();
+			$sql = "SELECT r.id, r.name as room_name, b.name as building_name FROM  " . $d->_prefix . $d->_table . " as r "
+			."LEFT JOIN buildings as b on b.id=r.building_id "
+			."LEFT JOIN practices as s on  s.id=b.practice_id WHERE s.id " .$foreign_id ;
+			$result = $d->_Execute($sql);
 		
-		while ($result && !$result->EOF) {
-			$rooms[$result->fields['id']] = $result->fields['building_name'] . "->" . $result->fields['room_name'];
-			$result->MoveNext();
+			while ($result && !$result->EOF) {
+				$rooms[$result->fields['id']] = $result->fields['building_name'] . "->" . $result->fields['room_name'];
+				$result->MoveNext();
+			}
 		}
-
 		return $rooms;
 	}
 	
