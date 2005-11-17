@@ -8,10 +8,8 @@ WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
  IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
- IF ('[provider]',o.user_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1)
-/***
-dsFilters-Reason|enumLookup&ds|encounter_reason
-***/
+ IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 ---[total_encounters_by_reason,hideFilter,noPager]---
 SELECT
  e.encounter_reason `Reason`,
@@ -22,10 +20,11 @@ FROM
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility:query:select b.id, b.name from buildings b order by b.name]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider]',1)
+ IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
+ IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 GROUP BY
- o.reason_code
+ e.encounter_reason
 /***
 dsFilters-Reason|enumLookup&ds|encounter_reason
 ***/
@@ -40,8 +39,9 @@ FROM
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider]',1)
+ IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
+ IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 GROUP BY
  `Walk-in?`
 ---[total_encounters_by_facility,hideFilter,noPager]---
@@ -51,11 +51,13 @@ SELECT
 FROM
  encounter AS e
  INNER JOIN buildings AS b ON(e.building_id = b.id)
+ LEFT JOIN occurences AS o on (e.occurence_id = o.id)
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider]',1)
+ IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
+ IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 GROUP BY
  b.id
 ---[total_encounters_by_provider,hideFilter,noPager]---
@@ -65,10 +67,12 @@ SELECT
 FROM
  encounter e
  INNER JOIN person AS pro ON(e.treating_person_id = pro.person_id)
+ LEFT JOIN occurences AS o on (e.occurence_id = o.id)
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider]',1)
+ IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
+ IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 GROUP BY
  pro.person_id
