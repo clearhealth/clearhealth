@@ -64,8 +64,8 @@ class C_Encounter extends Controller {
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
 		$person =& Celini::newORDO('Person');
-		$building =& Celini::newORDO('Building');
-
+		$building =& Celini::newORDO('Building',$encounter->get('building_id'));
+		$practice =& Celini::newORDO('Practice',$building->get('practice_id'));
 		$encounterDate =& Celini::newORDO('EncounterDate',array($this->encounter_date_id,$encounter_id));
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->name = "encounterDateGrid";
@@ -160,6 +160,22 @@ class C_Encounter extends Controller {
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 
+		$pconfig=&$practice->get_config();
+		if($pconfig->get('FacilityType',FALSE)){
+			$this->coding->assign('dentalpractice',true);
+			$this->coding->assign('teetharray',array(
+				'N/A'=>'N/A',
+				'All'=>'All',
+				1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9,10=>10,11=>11,12=>12,13=>13,14=>14,15=>15,
+				16=>16,17=>17,18=>18,19=>19,20=>20,21=>21,22=>22,23=>23,24=>24,25=>25,26=>26,27=>27,
+				28=>28,29=>29,30=>30,31=>31,32=>32,
+				'All (Primary)'=>'All (Primary)',
+				'A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J',
+				'K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T'
+			));
+			$this->coding->assign('toothsidearray',array('N/A'=>'N/A','Front'=>'Front','Back'=>'Back','Top'=>'Top','Left'=>'Left','Right'=>'Right'));
+		}
+
 		if ($encounter_id > 0) {
 			$this->coding->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 			$this->coding->assign("encounter", $encounter);
@@ -193,6 +209,7 @@ class C_Encounter extends Controller {
 				$this->assign('claimSubmitValue', 'close');
 			}
 		}
+
 		return $this->view->render("edit.html");
 	}
 
@@ -202,7 +219,6 @@ class C_Encounter extends Controller {
 			$this->coding->update_action_process();
 			return;
 		}
-
 
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
 		$encounter->populate_array($_POST['encounter']);
@@ -336,7 +352,7 @@ class C_Encounter extends Controller {
 
 	function update_action($foreign_id = 0, $parent_id = 0) {
 		$this->coding_parent_id = $parent_id;
-		return $this->encounter_action_edit($this->get('encounter_id'));
+		return $this->actionEdit($this->get('encounter_id'));
 	}
 
 	function _generateClaim(&$encounter,$claim = false) {

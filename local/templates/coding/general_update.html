@@ -37,10 +37,93 @@ function captureEnter (field, event) {
 					<td valign="top">
 						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
 						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" autofield="parent_id"
-							name="parent_code" id="parent_code" SIZE="35" autocomplete="off" value="{$parent_code->getCodeDesc()}">
+							name="parent_code" id="parent_code" {if $dentalpractice}SIZE="25"{else}SIZE="35"{/if} autocomplete="off" value="{$parent_code->getCodeDesc()}">
 						<select name="modifier" STYLE="z-index: 1;" id="modifier">
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
+{if $dentalpractice}
+{literal}
+<script type="text/javascript">
+function showTeethSelector(){
+	document.getElementById('toothSelector').style.display='block';
+}
+function selectTooth(id){
+	document.getElementById('tooth').value=id;
+	document.getElementById('toothSelector').style.display='none';
+}
+</script>
+{/literal}
+						<a href="javascript:void(0);" onClick="showTeethSelector();">Select Tooth</a>
+						<select name="tooth" id="tooth">
+							{html_options options=$teetharray selected=$code_data->get('tooth')}
+						</select>
+						<div id="toothSelector" style="border:1px solid Black;display:none;position:absolute;background-color:White;text-align:center;" onClick="this.style.display='none';">
+							<a href="javascript:selectTooth('All');">N/A</a>&nbsp;&nbsp;
+							<a href="javascript:selectTooth('All');">All</a>
+							<br />
+							<a href="javascript:selectTooth(1);">1</a> :: 
+							<a href="javascript:selectTooth(2);">2</a> :: 
+							<a href="javascript:selectTooth(3);">3</a> :: 
+							<a href="javascript:selectTooth(4);">4</a> :: 
+							<a href="javascript:selectTooth(5);">5</a> :: 
+							<a href="javascript:selectTooth(6);">6</a> :: 
+							<a href="javascript:selectTooth(7);">7</a> :: 
+							<a href="javascript:selectTooth(8);">8</a> :: 
+							<a href="javascript:selectTooth(9);">9</a> :: 
+							<a href="javascript:selectTooth(10);">10</a> :: 
+							<a href="javascript:selectTooth(11);">11</a> :: 
+							<a href="javascript:selectTooth(12);">12</a> :: 
+							<a href="javascript:selectTooth(13);">13</a> :: 
+							<a href="javascript:selectTooth(14);">14</a> :: 
+							<a href="javascript:selectTooth(15);">15</a> :: 
+							<a href="javascript:selectTooth(16);">16</a>
+							<br />
+							<a href="javascript:selectTooth(17);">17</a> :: 
+							<a href="javascript:selectTooth(18);">18</a> :: 
+							<a href="javascript:selectTooth(19);">19</a> :: 
+							<a href="javascript:selectTooth(20);">20</a> :: 
+							<a href="javascript:selectTooth(21);">21</a> :: 
+							<a href="javascript:selectTooth(22);">22</a> :: 
+							<a href="javascript:selectTooth(23);">23</a> :: 
+							<a href="javascript:selectTooth(24);">24</a> :: 
+							<a href="javascript:selectTooth(25);">25</a> :: 
+							<a href="javascript:selectTooth(26);">26</a> :: 
+							<a href="javascript:selectTooth(27);">27</a> :: 
+							<a href="javascript:selectTooth(28);">28</a> :: 
+							<a href="javascript:selectTooth(29);">29</a> :: 
+							<a href="javascript:selectTooth(30);">30</a> :: 
+							<a href="javascript:selectTooth(31);">31</a> :: 
+							<a href="javascript:selectTooth(32);">32</a>
+							<br /><br />
+							<a href="javascript:selectTooth('All (Primary)');">All (Primary)</a>
+							<br />
+							<a href="javascript:selectTooth('A');">A</a> :: 
+							<a href="javascript:selectTooth('B');">B</a> :: 
+							<a href="javascript:selectTooth('C');">C</a> :: 
+							<a href="javascript:selectTooth('D');">D</a> :: 
+							<a href="javascript:selectTooth('E');">E</a> :: 
+							<a href="javascript:selectTooth('F');">F</a> :: 
+							<a href="javascript:selectTooth('G');">G</a> :: 
+							<a href="javascript:selectTooth('H');">H</a> :: 
+							<a href="javascript:selectTooth('I');">I</a> :: 
+							<a href="javascript:selectTooth('J');">J</a>
+							<br />
+							<a href="javascript:selectTooth('K');">K</a> :: 
+							<a href="javascript:selectTooth('L');">L</a> :: 
+							<a href="javascript:selectTooth('M');">M</a> :: 
+							<a href="javascript:selectTooth('N');">N</a> :: 
+							<a href="javascript:selectTooth('O');">O</a> :: 
+							<a href="javascript:selectTooth('P');">P</a> :: 
+							<a href="javascript:selectTooth('Q');">Q</a> :: 
+							<a href="javascript:selectTooth('R');">R</a> :: 
+							<a href="javascript:selectTooth('S');">S</a> :: 
+							<a href="javascript:selectTooth('T');">T</a>
+
+						</div>
+						<select name="toothside" id="toothside">
+							{html_options options=$toothsidearray selected=$code_data->get('toothside')}
+						</select>
+{/if}
 						<input type="button" name="add_cpt" value="Add CPT" onClick="addCPTCode()">
 						<div id="cptlist">
 						</div>
@@ -204,6 +287,13 @@ function addCPTCode() {
 	var units = document.getElementById('units');
 	var modifier = document.getElementById('modifier');
 
+	if(document.getElementById('tooth')){
+		var tooth=document.getElementById('tooth');
+		var ts=document.getElementById('toothside');
+		var tstring='Tooth/Teeth: '+tooth.value+', Side: '+ts.value;
+	} else {
+		var tstring='';
+	}
 	if (cptCode.value == "") {
 		clni_notify_alert(cptText);
 		return false;
@@ -221,7 +311,9 @@ function addCPTCode() {
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][code]" value="' + cptCode.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][modifier]" value="' + modifier.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][units]" value="' + units.value  + '">' 
-		+ cptText.value + modStr + ' - Units: '+ units.value +'<br />';
+		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][tooth]" value="' + tooth.value  + '">' 
+		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][toothside]" value="' + ts.value  + '">' 
+		+ cptText.value + modStr + ' - Units: '+ units.value +' '+tstring+'<br />';
 	cptCode.value = '';
 	cptText.value = '';
 	units.value = '1.00';
@@ -240,7 +332,11 @@ function addCPTCode() {
 {if $encounter->get('status') != 'closed'}
 <a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
 {/if}
-<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}<br />
+<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
+{if $dentalpractice}
+Tooth: {$code.tooth} Side {$code.toothside}
+{/if}
+<br />
 {foreach from=$children item=child}
 &nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
 {/foreach}<br />

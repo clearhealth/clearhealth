@@ -120,6 +120,10 @@ class C_Coding extends Controller {
 			$_POST['parent_codes'][$_POST['parent_id']]['code'] = $_POST['parent_id'];
 			$_POST['parent_codes'][$_POST['parent_id']]['units'] = $_POST['units'];
 			$_POST['parent_codes'][$_POST['parent_id']]['modifier'] = $_POST['modifier'];
+			if(isset($_POST['tooth'])){
+				$_POST['parent_codes'][$_POST['parent_id']]['tooth'] = $_POST['tooth'];
+				$_POST['parent_codes'][$_POST['parent_id']]['toothside'] = $_POST['toothside'];
+			}
 		}
 
 		foreach($_POST['parent_codes'] as $parent) {
@@ -136,6 +140,11 @@ class C_Coding extends Controller {
 			$code_data->set("id", 0);
 			$code_data->persist();
 			$parent_id=$code_data->get('id');
+			if(isset($parent['tooth'])){
+				$this->_db->Execute("DELETE FROM coding_data_dental WHERE coding_data_id='$parent_id'");
+				$sql="INSERT INTO coding_data_dental (coding_data_id,tooth,toothside) VALUES ('".$code_data->get('id')."','".mysql_real_escape_string($parent['tooth'])."','".mysql_real_escape_string($parent['toothside'])."')";
+				$this->_db->Execute($sql);
+			}
 			//var_dump($code_data);
 
 			unset($child_code_data);		

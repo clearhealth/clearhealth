@@ -86,6 +86,12 @@ class CodingData extends ORDataObject {
 	 */
 	function populate() {
 		parent::populate('coding_data_id');
+		$sql="SELECT * FROM coding_data_dental WHERE coding_data_id='".$this->get('id')."'";
+		$teeth=$this->_db->GetAll($sql);
+		if(count($teeth)>0){
+			$this->set('tooth',$teeth['tooth']);
+			$this->set('toothside',$teeth['toothside']);
+		}
 	}
 
 	/**#@+
