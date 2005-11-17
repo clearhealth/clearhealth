@@ -1,0 +1,17 @@
+Dentist
+<select name="user_id" class="query_style">
+	{if $edit_app}
+	{html_options options=$users_array selected=$edit_oc->get_user_id()}
+	{else}
+	{html_options options=$users_array selected=$selected_user}
+	{/if}			
+</select>	
+Assistant
+<select name="assistant_id" class="query_style">
+	{html_options options=$users_array selected=$selected_assistant}
+</select>
+
+Template
+<select name="template_id" class="query_style">
+	{html_options options=$template_array selected=$selected_template}
+</select>

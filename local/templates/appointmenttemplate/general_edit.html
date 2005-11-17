@@ -1,0 +1,20 @@
+{clni_form action=$FORM_ACTION}
+	<table>
+		<tr>
+			<td><label>Template Name:</label></td>
+			<td><input name="AppointmentTemplate[name]" value="{$at->get('name')}"></td>
+		</tr>
+		{if $breakdown}
+		<tr>
+			<td><label>Template Breakdown:</label></td>
+			<td>
+				{$breakdown}
+			</td>
+		</tr>
+		{/if}
+		<tr>
+			<td></td>
+			<td><input type="submit" value="{if $at->get('id') > 0}Update{else}Create{/if} Template"></td>
+		</tr>
+	</table>
+</form>
