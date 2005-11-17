@@ -1,4 +1,4 @@
----[total_encounters,hideFilter,noPager]---
+---[total_encounters,noPager]---
 SELECT
  COUNT(e.encounter_id) `Total Encounters`
 FROM
@@ -7,8 +7,11 @@ FROM
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility]',1) AND
- IF ('[provider]',o.user_id = '[provider]',1)
+ IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
+ IF ('[provider]',o.user_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1)
+/***
+dsFilters-Reason|enumLookup&ds|encounter_reason
+***/
 ---[total_encounters_by_reason,hideFilter,noPager]---
 SELECT
  e.encounter_reason `Reason`,
