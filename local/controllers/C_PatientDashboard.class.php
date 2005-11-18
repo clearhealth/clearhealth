@@ -25,8 +25,6 @@ class C_PatientDashboard extends Controller {
 			return $this->view->render("view.html");
 		}
 		
-		// todo: determine what this is doing
-		$this->set('external_id',$p->get('id'));
 		
 		// todo: determine why this are using $this->value_id
 		$number =& Celini::newORDO('PersonNumber', array($this->number_id, $p->get('id')));
@@ -125,11 +123,14 @@ class C_PatientDashboard extends Controller {
 			if ($this->get('patient_id', 'c_patient') != $patient_id) {
 				$this->set("encounter_id", false, 'c_patient');	
 			}
-			$this->set("patient_id", $patient_id, 'c_patient');	
 		} 
 		
 		$patient_id = $this->_enforcer->int($this->get('patient_id', 'c_patient'));
 		$p =& Celini::newORDO('Patient', $patient_id);
+
+		// used to interact with stuff that just wants a generic id instead of patient one (C_Form, maybe others)
+		$this->set("patient_id", $patient_id, 'c_patient');	
+		$this->set('external_id',$patient_id,'c_patient');
 		return $p;
 	}		
 
