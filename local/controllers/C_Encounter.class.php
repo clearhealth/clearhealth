@@ -53,10 +53,10 @@ class C_Encounter extends Controller {
 
 		if ($encounter_id > 0) {
 			$this->set('encounter_id',$encounter_id);
-			$this->set('external_id', $this->get('encounter_id'));
+			$this->set('external_id', $this->get('encounter_id'),'c_patient');
 		}
 		if ($patient_id > 0) {
-			$this->set('patient_id',$patient_id);
+			$this->set('patient_id',$patient_id,'c_patient');
 		}
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 		//	$encounter_id = $this->get('encounter_id');
