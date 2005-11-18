@@ -1,6 +1,9 @@
 <h2>{$form->get('name')}</h2>
 <p>{$form->get('description')}</p>
 <p>{l}Edited at{/l}: {$data->get('last_edit')}</p>
+{if $EDIT_ACTION}
+<p><a href="{$EDIT_ACTION}">{l}Edit{/l}</a></p>
+{/if}
 
 <table>
 	<tr>
