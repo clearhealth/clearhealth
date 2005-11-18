@@ -11,7 +11,7 @@ class C_Form extends Controller {
 	/**
 	 * List all the forms in the system
 	 */
-	function list_action() {
+	function actionList() {
 		$form =& ORDataObject::factory('Form');
 
 		$ds =& $form->formList();
@@ -27,7 +27,7 @@ class C_Form extends Controller {
 	/**
 	 * Edit/Add a new form
 	 */
-	function edit_action($form_id = 0) {
+	function actionEdit($form_id = 0) {
 		if (isset($this->form_id)) {
 			$form_id = $this->form_id;
 		}
@@ -43,7 +43,7 @@ class C_Form extends Controller {
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_edit.html"));
 	}
 
-	function edit_action_process($form_id) {
+	function processEdit($form_id) {
 		if (!isset($_POST['form'])) {
 			return "";
 		}
@@ -64,7 +64,7 @@ class C_Form extends Controller {
 		}
 	}
 
-	function download_action($form_id) {
+	function actionDownload_view($form_id) {
 		// force download headers
 		header('Content-type: text/html');
 		$form =& ORDataObject::factory('Form',$form_id);
@@ -75,7 +75,7 @@ class C_Form extends Controller {
 		die();
 	}
 
-	function view_action($form_id = false) {
+	function actionView($form_id = false) {
 		$form =& ORDataObject::factory('Form',$form_id);
 		if ($form_id == false) {
 			$ds =& $form->formList();
@@ -92,7 +92,7 @@ class C_Form extends Controller {
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_view.html"));
 	}
 
-	function fillout_action($form_id = 0,$form_data_id = 0) {
+	function actionFillout_edit($form_id = 0,$form_data_id = 0) {
 		$form =& ORDataObject::factory('Form',$form_id);
 		if ($form_id == false) {
 			$ds =& $form->formList();
@@ -113,7 +113,7 @@ class C_Form extends Controller {
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_fillout.html"));
 	}
 
-	function fillout_action_process($form_id = 0, $form_data_id = 0) {
+	function processFillout_edit($form_id = 0, $form_data_id = 0) {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
@@ -126,7 +126,7 @@ class C_Form extends Controller {
 			$this->form_data_id = $data->get('id');
 	}
 
-	function data_action($form_data_id) {
+	function actionData_view($form_data_id) {
 		$data =& ORDataObject::factory('FormData',$form_data_id);
 		$form =& ORDataObject::Factory('Form',$data->get('form_id'));
 
@@ -139,7 +139,7 @@ class C_Form extends Controller {
 	/**
 	* Connect a report to the menu all reports
 	*/
-	function connect_action_edit() {
+	function actionConnect_edit() {
 		$this->assign("FORM_ACTION", Celini::link('connect'));
 		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
