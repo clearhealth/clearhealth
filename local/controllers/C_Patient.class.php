@@ -26,6 +26,7 @@ class C_Patient extends Controller {
 		}
 
 		$this->set('patient_id',$patient_id);
+		$this->set('external_id',$patient_id);
 
 		$user =& ORdataObject::factory('User');
 		$person =& ORdataObject::factory('Patient',$patient_id);
