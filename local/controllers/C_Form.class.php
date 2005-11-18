@@ -132,6 +132,7 @@ class C_Form extends Controller {
 
 		$this->Assign_by_ref('data',$data);
 		$this->Assign_by_ref('form',$form);
+		$this->assign('EDIT_ACTION',celini::link('fillout',true,true,$data->get('form_id')).'form_data_id='.$form_data_id);
 
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_data.html"));
 	}
