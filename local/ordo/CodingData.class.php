@@ -52,6 +52,12 @@ class CodingData extends ORDataObject {
 		if ($id > 0) {
 			$this->set('id',$id);
 			$this->populate();
+			$sql="SELECT * FROM coding_data_dental WHERE coding_data_id='".$this->get('id')."'";
+			$teeth=$this->_db->GetAll($sql);
+			if(count($teeth)>0){
+				$this->set('tooth',$teeth['tooth']);
+				$this->set('toothside',$teeth['toothside']);
+			}
 		}
 	}
 
@@ -86,12 +92,6 @@ class CodingData extends ORDataObject {
 	 */
 	function populate() {
 		parent::populate('coding_data_id');
-		$sql="SELECT * FROM coding_data_dental WHERE coding_data_id='".$this->get('id')."'";
-		$teeth=$this->_db->GetAll($sql);
-		if(count($teeth)>0){
-			$this->set('tooth',$teeth['tooth']);
-			$this->set('toothside',$teeth['toothside']);
-		}
 	}
 
 	/**#@+
@@ -168,9 +168,11 @@ class CodingData extends ORDataObject {
 		$foreign_id = intval($foreign_id);
 		$sql = "
 			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee  
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee,
+			cdd.tooth, cdd.toothside
 			FROM coding_data AS cd
 			LEFT JOIN codes AS c ON cd.code_id = c.code_id 
+			LEFT JOIN coding_data_dental AS cdd ON cd.coding_data_id=cdd.coding_data_id
 			WHERE foreign_id = $foreign_id
 			AND parent_id = 0
 			order by cd.coding_data_id
