@@ -1,6 +1,5 @@
 <?php
-require_once CELINI_ROOT."/controllers/Controller.class.php";
-
+$loader->requireOnce('includes/EnumManager.class.php');
 class CalendarController extends Controller {
 	
 	
@@ -10,6 +9,21 @@ class CalendarController extends Controller {
 		$this->assign('UPDATE_SCHEDULE_ACTION',Celini::link('update_schedule','location'));
 		$this->assign('SCHEDULE_LIST_ACTION',Celini::link('schedule_list','location'));
 		$this->assign('EDIT_APPOINTMENT_ACTION',Celini::link('edit_appointment','location'));
+
+		$config =& Celini::configInstance('Practice');
+
+		$manager =& EnumManager::getInstance();
+		$list =& $manager->enumList('appointment_reasons');
+
+		$ap = false;
+		for($list->rewind();$list->valid();$list->next()) {
+			$row = $list->current();
+			if ($row->extra1 !== '') {
+				$ap = true;
+				break;
+			}
+		}
+		$this->assign('appointment_templates',$ap);
 	}	
 	
 	function build_day_increments($date ="",$start_hour = 0, $end_hour = 24,$header_time = false) {
