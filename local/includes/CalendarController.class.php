@@ -15,15 +15,14 @@ class CalendarController extends Controller {
 		$manager =& EnumManager::getInstance();
 		$list =& $manager->enumList('appointment_reasons');
 
-		$ap = false;
+		$templates = array();
 		for($list->rewind();$list->valid();$list->next()) {
 			$row = $list->current();
 			if ($row->extra1 !== '') {
-				$ap = true;
-				break;
+				$templates[$row->key] =& Celini::newOrdo('AppointmentTemplate',$row->extra1);
 			}
 		}
-		$this->assign('appointment_templates',$ap);
+		$this->assign('appointment_templates',$templates);
 	}	
 	
 	function build_day_increments($date ="",$start_hour = 0, $end_hour = 24,$header_time = false) {
