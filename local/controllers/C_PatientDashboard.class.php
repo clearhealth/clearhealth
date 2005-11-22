@@ -122,6 +122,7 @@ class C_PatientDashboard extends Controller {
 		if (is_numeric($patient_id) && $patient_id > 0) {
 			if ($this->get('patient_id', 'c_patient') != $patient_id) {
 				$this->set("encounter_id", false, 'c_patient');	
+				$this->set("patient_id", $patient_id, 'c_patient');	
 			}
 		} 
 		
