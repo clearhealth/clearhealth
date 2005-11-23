@@ -1,6 +1,11 @@
 <?php
 require_once CELINI_ROOT . "/controllers/Controller.class.php";
 
+/**
+ * @todo Refractor internal names.  There are way too many methods with 
+ *    "smart_search" or "SmartSearch" as part of their names.  They need to 
+ *    define what they are doing instead of what they are being used by.
+ */
 class C_PatientFinder extends Controller {
 
 	var $template_mod;
@@ -237,18 +242,30 @@ class C_PatientFinder extends Controller {
 			$join_type = "LEFT";
 		}
 		//get the db connection and pass it to the helper functions
-		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type, concat(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string` FROM person psn"
-		." $join_type JOIN patient as pt on psn.person_id=pt.person_id left join person_type ptype using(person_id)\nWHERE\n";
+		$sql = '
+			SELECT 
+				CONCAT(last_name, ", ", first_name, " ", middle_name) AS name,
+				date_of_birth AS DOB, 
+				psn.person_id AS id,
+				record_number AS pubpid, 
+				psn.identifier AS ss,
+				person_type,
+				CONCAT(last_name, ", ", first_name, " ", middle_name, "#", record_number)  AS `string`
+			FROM
+				person psn
+				' . $join_type . ' JOIN patient AS pt ON(psn.person_id=pt.person_id)
+				LEFT JOIN person_type AS ptype USING(person_id)
+			WHERE ';
 
 		$sqls = $this->smart_search($search_string);
-		// var_dump($sqls);
-		$sqland=$sql.implode(' AND ',$sqls);
-		$sqlor=$sql.implode(' AND ',$sqls);
+		
+		$sqland=$sql . implode(' AND ',$sqls);
+		$sqlor=$sql . implode(' OR ',$sqls);
 
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
 		}
-		// print "SQL is $sql \n";
+		
 		$result_array = $this->_db->GetAll($sqland);
 		if(count($result_array)==0){
 			$andfailed=true;
@@ -310,8 +327,21 @@ class C_PatientFinder extends Controller {
 	/**
 	* Returns array of sql items to put in the WHERE clause
 	* @param string $search_string space-separated list of items for smart search
+	*
+	* @todo Update the formatting of this so it matches the Uversa coding 
+	*    standards (see wiki).
+	* @todo Remove all ereg code and replace with preg_match
+	* @todo Consider wholesale refractoring.  Each of this various if() 
+	*    statements contain code that could possibly be (or maybe is being) used
+	*    elsewhere in CH.  A perfect example is the date checking.  All of that
+	*    is already handled in DateObject, so there's no need to do it all again
+	* @todo Definitely fix date issue - double eregs when the code already
+	*    exists and is tested inside Celini to handle this.  (issue 4628)
+	* @todo Determine if all of the if()s should be mutually exclusive, or
+	*    should you attempt to match as many as you can guess
 	*/
 	function smart_search($search_string){
+		//var_dump($search_string);
 		$searcharray=explode(" ",$search_string);
 		for($x=0;$x<count($searcharray);$x++){
 			$searcharray[$x]=trim($searcharray[$x]);
@@ -346,6 +376,10 @@ class C_PatientFinder extends Controller {
 			// SSN
 				list($date,$a,$b,$c)=$date;
 				$sqls[]="(identifier='$a-$b-$c' OR identifier='$a$b$c')";
+			}
+			// internal ID
+			elseif (preg_match('/^[0-9]+$/', $searcharray[$x])) {
+				$sqls[] = 'record_number = ' . (int)$searcharray[$x];
 			} else {
 			// Regular name
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
