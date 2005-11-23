@@ -20,9 +20,18 @@ class C_PatientDashboard extends Controller {
 		
 		// If we don't have a valid Patient, display an error message and stop.
 		if (!$p->isPopulated()) {
-			$this->assign('NO_PATIENT', true);
-			$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');
-			return $this->view->render("view.html");
+			if ($this->GET->exists('id')) {
+				// This is a hack patient_id is filled by the first _GET value like it was
+				// or we determine that this is the new method.
+				// DO NOT DUPLICATE!
+				$p =& $this->_loadPatient($this->GET->get('id'));
+			}
+			
+			if (!$p->isPopulate()) {
+				$this->assign('NO_PATIENT', true);
+				$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');
+				return $this->view->render("view.html");
+			}
 		}
 		
 		
