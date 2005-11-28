@@ -311,8 +311,10 @@ function addCPTCode() {
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][code]" value="' + cptCode.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][modifier]" value="' + modifier.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][units]" value="' + units.value  + '">' 
+{if $dentalpractice}
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][tooth]" value="' + tooth.value  + '">' 
 		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][toothside]" value="' + ts.value  + '">' 
+{/if}
 		+ cptText.value + modStr + ' - Units: '+ units.value +' '+tstring+'<br />';
 	cptCode.value = '';
 	cptText.value = '';
