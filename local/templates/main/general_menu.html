@@ -27,10 +27,12 @@
 	{if $nav.children || $nav.reports || $nav.forms || $nav.arrays}
 	<ul class="quicknav">
 		{foreach item=navc from=$nav.children}
+		{if $navc.display_order > 0}
 		{if $translate[$navc.prefix]}
 			<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
 		{else}
 			<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+		{/if}
 		{/if}
 		{/foreach}
 
