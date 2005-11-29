@@ -304,22 +304,20 @@ class Event extends ORDataObject{
 					$result->fields['first_inc'] = false;
 					$result->fields['last_inc'] = false;
 					for($i=1;$i<$di;$i++) {	
+						$events[$key][$key2+($i*$increment)][] = $result->fields;
 						if ($i+1 == $di) {
 							$result->fields['last_inc'] = true;		
 							$events[$key][$key2+($i*$increment)+$increment][] = $result->fields;
 						}
-						$events[$key][$key2+($i*$increment)][] = $result->fields;
 					}
 					break;
 				case "day":
-					//floor to the correct 15 minute increment in seconds
 					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
 					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$result->fields['duration_increments'] = ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$events[$key][] = $result->fields;
 					break;
 				case "day_schedule":
-					//floor to the correct 15 minute increment in seconds
 					$key = ($result->fields['start_ts'] - ($result->fields['start_ts']%$increment));
 					$di=ceil(($result->fields['end_ts'] - $result->fields['start_ts'])/$increment);
 					$result->fields['duration_increments'] = 1;
@@ -331,11 +329,11 @@ class Event extends ORDataObject{
 						$result->fields['color'] = "FFF";
 					}
 					for($i=1;$i<$di;$i++) {	
-						if ($i+1 == $di) {
+						$events[$key+($i*$increment)][] = $result->fields;
+						if ($i + 1 == $di) {
 							$result->fields['last_inc'] = true;		
 							$events[$key+($i*$increment)+$increment][] = $result->fields;
 						}
-						$events[$key+($i*$increment)][] = $result->fields;
 					}
 					break;	
 				case "day_brief":
