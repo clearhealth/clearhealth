@@ -5,13 +5,13 @@
 class EventComparator_General {
 	var $controller;
 
-	function checkDoubleBook($oc,$event) {
+	function checkDoubleBook($oc,$event,$sum) {
 		$start = $oc->get_start();
 		$end = $oc->get_end();
 		$provider_id = $oc->get_user_id();
 		$location_id = $oc->get_location_id();
 		
-		$db = Celini::dbInstance();
+		$db = new clniDb();
 		
 		if (empty($start) || empty($end) || empty($provider_id)){
 			echo "Date or provider information is invalid.";
@@ -21,18 +21,25 @@ class EventComparator_General {
 			$edate = date('Y-m-d H:i:00', strtotime($end));
 		}
 		
-		$sql = 	"SELECT o.id FROM occurences as o LEFT JOIN `events` as e on e.id=o.event_id LEFT JOIN schedules as s on s.id=e.foreign_id ".
-				"WHERE ((((s.schedule_code != 'PS' AND s.schedule_code != 'NS') OR s.schedule_code IS NULL) and o.user_id =" . $db->qstr($provider_id) . ") OR s.schedule_code = 'ADM') AND " .
+		$sql = 	"SELECT o.id FROM occurences as o ".
+			"LEFT JOIN `events` as e on e.id=o.event_id LEFT JOIN schedules as s on s.id=e.foreign_id ".
+			"WHERE ((((s.schedule_code != 'PS' AND s.schedule_code != 'NS') OR s.schedule_code IS NULL) and o.user_id =" . 
+				$db->quote($provider_id) . ") OR s.schedule_code = 'ADM') AND " .
 				"(('$sdate' <= `start` AND '$edate' >= `end`) OR ".
 				"('$edate' > `start` AND '$edate' <= `end`) OR ".
 				"('$sdate' >= `start` AND '$sdate' < `end`)) "; 
 		
 		if (is_numeric($location_id)) {
-			$sql .= " AND o.location_id =" . $db->qstr($location_id);	
+			$sql .= " AND o.location_id =" . $db->quote($location_id);	
 		}
 		
-		$results = $db->query($sql);
+		$results = $db->execute($sql);
 		
+		$ob =& Celini::newOrdo('OccurenceBreakdown');
+		$sumTotal = $sum;
+		$breakdownCheck = true;
+
+		$message = "";
 		while ($results && !$results->EOF) {
 			// Retrieve mock event array and create display
 			$this->controller->assign("ev", $this->_createMockEventArray($oc));
@@ -40,34 +47,61 @@ class EventComparator_General {
 			
 			
 			// Now setup real data
-			$o = new Occurence($results->fields['id']);
-			$e = new Event();
+			$o = Celini::newOrdo('Occurence',$results->fields['id']);
+			$e = Celini::newOrdo('Event');
 			$ea = $e->get_events("o.id = " . $o->get_id());
 			$eak = array_keys($ea);
-			
+
+			// we have a conflict using the standard method lets see if its allowed based on a breakdown
+			if (count($sum) > 0) {
+				$sumConflict = $ob->breakdownSum($o->get('id'));
+				if (count($sumConflict) > 0) {
+					// our occurence has a breakdown so we need to check if each user has enough time
+					$sumTotal = $this->_arraySumMatching($sumTotal,$sumConflict);
+				}
+				else {
+					$breakdownCheck = false;
+				}
+			}
+
 			//the get events function returns events in an array broken out by timestamp, we just want the details on the specific event 
 			if (isset($eak[0]) && !empty($ea[$eak[0]][0])) {
 				$e = $ea[$eak[0]][0];
 			}
 			else {
-				$this->assign("double_book_message", "An event was found that conflicted but its information could not be found, this may be the result of a corrupted event, id: '" . $o->get_id() . "'");
+				$message .=
+					"An event was found that conflicted but its information could not be found, this may be the result ".
+					"of a corrupted event, id: '" . $o->get_id() . "'";
 			}
 			
 			$this->controller->assign("ev",$e);
 			$capp_display = $this->controller->view->render("appointment_inline_blurb.html");
-			$emsg = "";
-			if ($this->controller->isAssigned('double_book_message')) {
-				$emsg = $this->controller->get_template_vars('double_book_message') . "<br />";
+
+			if ($message !== '') {
+				$message .= "<br />";
 			}
-			$this->controller->assign("double_book_message", $emsg."You supplied this information:" . $app_display ."<br />But that collides with another event: <br>" . $capp_display);
+			$message .= "You supplied this information:" . $app_display . "<br />But that collides with another event: <br>" . $capp_display;
+
 			$results->moveNext();
 			if ($results->EOF) {
-				return true;		
+				if (!$breakdownCheck) {
+					return true;
+				}
 			}
-			
 		}
-		
-		return false;
+
+
+		$double = false;
+		$max = strtotime($end)-strtotime($start);
+		foreach($sumTotal as $userId => $length) {
+			if ($length >= $max) {
+				$double = true;
+			}
+		}
+		if ($double) {
+			$this->controller->assign('double_book_message',$message);
+		}
+		return $double;
 	}
 
 	/**
@@ -107,5 +141,20 @@ class EventComparator_General {
 		$returnArray['age']              = $p->get('age');
 		
 		return $returnArray;
+	}
+
+	function _arraySumMatching($one,$two) {
+		$ret = array();
+		foreach($one as $key => $val) {
+			$ret[$key] = $val;
+			if (isset($two[$key])) {
+				$ret[$key] += $two[$key];
+				unset($two[$key]);
+			}
+		}
+		foreach($two as $key => $val) {
+			$ret[$key] = $val;
+		}
+		return $ret;
 	}
 }

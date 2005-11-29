@@ -98,6 +98,19 @@ class OccurenceBreakdown extends ORDataObject {
 		return $ret;
 	}
 
+	function breakdownSum($occurenceId) {
+		$sql = "select user_id, sum(length) length from ".$this->tableName()." where occurence_id = ".$this->dbHelper->quote($occurenceId).' group by user_id';
+		$res = $this->dbHelper->execute($sql);
+
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['user_id']] = $res->fields['length'];
+			$res->MoveNext();
+		}
+		return $ret;
+	}
+
+
 	function nextIndex() {
 		$sql = "select max(`index`) `index` from ".$this->tableName()." where occurence_id = ".$this->get('occurence_id');
 		$res = $this->dbHelper->execute($sql);

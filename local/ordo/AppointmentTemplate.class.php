@@ -67,6 +67,23 @@ class AppointmentTemplate extends ORDataObject {
 		return $ret;
 	}
 
+	/**
+	 * This gives you an array that is the same as doing an fillTemplate and then a breakdownSum on the occurenceId without touchin the db
+	 */
+	function breakdownSum($users) {
+		$breakdowns = $this->breakdownArray();
+
+		$ret = array();
+		foreach($breakdowns as $breakdown) {
+			$user_id = $users[$breakdown['occurence_breakdown_id']];
+			if (!isset($ret[$user_id])) {
+				$ret[$user_id] = 0;
+			}
+			$ret[$user_id] += $breakdown['length'];
+		}
+		return $ret;
+	}
+
 	function fillTemplate($occurence_id,$users) {
 		$breakdowns = $this->breakdownArray();
 

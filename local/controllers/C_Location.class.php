@@ -309,9 +309,11 @@ class C_Location extends Controller {
 			$this->event->populate_array($_POST);
 		}
 
+		$users = array();
 		if (isset($_POST['users']) && count($_POST['users']) > 0) {
 			$tmp =  $_POST['users'];
 			$_POST['user_id'] = array_shift($tmp);
+			$users = $_POST['users'];
 		}
 		
 		$oc->populate_array($_POST);
@@ -328,14 +330,33 @@ class C_Location extends Controller {
 			}
 		}
 
-		$double = false;
-		//check for double book
+		// get a Appointment template from the reason
+		$manager =& EnumManager::getInstance();
+		$list =& $manager->enumList('appointment_reasons');
+		$reason = false;
+		for($list->rewind();$list->valid();$list->next()) {
+			$row = $list->current();
+			if ($row->key == $this->POST->get('reason_id')) {
+				$reason = $row;
+			}
+		}
+		if ($reason && $reason->extra1 !== '') {
+			$template = Celini::newOrdo('AppointmentTemplate',$reason->extra1);
+		}
+		else {
+			$template = Celini::newOrdo('AppointmentTemplate');
+		}
+
+		// check for the walkin flag
 		$walkin = 0;
 		if (isset($_POST['walkin'])) {
 			$walkin = $_POST['walkin'];
 		}
+
+		//check for double book
+		$double = false;
 		if (is_numeric($oc->get_user_id()) && $_POST['occurence_id'] < 1 && $walkin != 1) {
-			$double = $cs->check_double_book($oc,$this->event);
+			$double = $cs->check_double_book($oc,$this->event,$template->breakdownSum($users));
 			if ($double) {
 				if(!$this->sec_obj->acl_qcheck("double_book",$this->_me,"","event",$this,true)) {
 					echo "The event you are trying to add collides with another event. You do not have permission to double book events. You can use the back button of your browser to alter the event so that it does not collide and try again.";
@@ -370,24 +391,13 @@ class C_Location extends Controller {
 		$oc->populate();
 
 
-		$manager =& EnumManager::getInstance();
-		$list =& $manager->enumList('appointment_reasons');
-		$reason = false;
-		for($list->rewind();$list->valid();$list->next()) {
-			$row = $list->current();
-			if ($row->key == $this->POST->get('reason_id')) {
-				$reason = $row;
-			}
-		}
-
-		if ($reason && $reason->extra1 !== '') {
-			$template = Celini::newOrdo('AppointmentTemplate',$reason->extra1);
+		if (isset($_POST['users'])) {
 			$template->fillTemplate($oc->get('id'),$_POST['users']);
 		}
 		else {
-			$template = Celini::newOrdo('AppointmentTemplate');
 			$template->resetTemplate($oc->get('id'));
 		}
+
 		
 		$this->location = null;
 

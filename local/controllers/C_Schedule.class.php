@@ -141,11 +141,11 @@ class C_Schedule extends CalendarController {
 	}
 	
 	
-	function check_double_book($oc,$event) {
+	function check_double_book($oc,$event,$sum) {
 		$GLOBALS['loader']->requireOnce('includes/EventComparator_General.class.php');
 		$calc = new EventComparator_General();
 		$calc->controller =& $this;
-		return $calc->checkDoubleBook($oc,$event);
+		return $calc->checkDoubleBook($oc,$event,$sum);
 	}
 	
 	function set_filter_action($filter) {

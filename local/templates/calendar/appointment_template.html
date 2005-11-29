@@ -24,10 +24,13 @@
 {/literal}
 {/if}
 <div id="appointmentTemplate{$atid}">
-{assign var='inCurrentReason' value='1'}
+{assign var='first' value=1}
 {foreach from=$appointment_templates item=template key=key}
 {assign var='inCurrentReason' value=0}
 {if $edit_oc->get('reason_id') == $key}
+	{assign var='inCurrentReason' value=1}
+{/if}
+{if !$edit_app && $first}
 	{assign var='inCurrentReason' value=1}
 {/if}
 <div {if !$inCurrentReason}style="display:none;"{/if} class="{$key}">
@@ -55,6 +58,7 @@
 		<br>
 		{/foreach}
 	{/if}
+	{assign var='first' value=0}
 </div>
 {/foreach}
 </div>
