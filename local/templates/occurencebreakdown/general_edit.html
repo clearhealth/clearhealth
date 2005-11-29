@@ -1,10 +1,7 @@
 {literal}
 <script type="text/javascript">
 	function add(button) {
-		button.innerHTML = 'Remove';
-		button.onclick = function() { return remove(button); }
-		
-		print('-'+(document.getElementById('breakdown').numSlots+1),0,0);
+		print('-'+(document.getElementById('breakdown').numSlots+1),'',0,0,1);
 		return false;
 	}
 	function remove(button) {
@@ -30,11 +27,11 @@
 			}
 		}
 
-		if (removeFlag) {
-			var button = div.getElementsByTagName('button').item(0);
-			button.innerHTML = 'Remove';
-			button.onclick = function() { return remove(button); }
+		if (!removeFlag) {
+			var buttons = div.getElementsByTagName('button');
+			buttons.item(0).disabled = true;
 		}
+
 		document.getElementById('breakdown').appendChild(div);
 		if (!document.getElementById('breakdown').numSlots) {
 			document.getElementById('breakdown').numSlots = 0;
@@ -47,14 +44,15 @@
 	Name: <input name="OccurenceBreakdown[id][title]">
 	Length: <select name="OccurenceBreakdown[id][length]">{html_options options=$times}</select>
 	Type: <select name="OccurenceBreakdown[id][user_id]">{html_options options=$types}</select>
-	<button onclick="return add(this)">Add Slot</button>
+	<button onclick="return remove(this)">Remove</button>
 </div>
 
 <pre id="debug"></pre>
 <div style="border: solid 1px black; padding: 1em;" id="breakdown">
+	<button onclick="return add(this)">Add Slot</button>
 	<script type="text/javascript">
 	{foreach from=$breakdown item=row name='loop'}
-		{if !$smarty.foreach.loop.last}
+		{if !$smarty.foreach.loop.first}
 			print({$row.occurence_breakdown_id},'{$row.title}',{$row.length},{$row.user_id},true);
 		{else}
 			print({$row.occurence_breakdown_id},'{$row.title}',{$row.length},{$row.user_id},false);
