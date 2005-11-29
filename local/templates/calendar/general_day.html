@@ -65,6 +65,11 @@
 			{/if}
 			{strip}
 			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time}" value="{$time}" onclick="toggleCell(this);">
+			{if $ev.last_inc}
+			<table cellpadding=0 cellspacing=0 width=100%><tr><td align='center'>
+			<input type="checkbox" user="{$ev.user_id}" name="{$ev.id}{$this_days_time}" value="{$time+$CalendarIncrement}" onclick="toggleCell(this);">
+</td></tr></table>
+			{/if}
 			{/strip}
 			</td>
 		{/foreach}
