@@ -62,7 +62,7 @@ class C_Encounter extends Controller {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
 		$this->set('encounter_id',$encounter_id);
-		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
+		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		$person =& Celini::newORDO('Person');
 		$building =& Celini::newORDO('Building',$encounter->get('building_id'));
 		$practice =& Celini::newORDO('Practice',$building->get('practice_id'));
@@ -130,7 +130,7 @@ class C_Encounter extends Controller {
 		//calendar and so prepopulate the defaults
 		if ($appointment_id > 0 && $valid_appointment_id) {
 			$encounter->set("occurence_id",$appointment_id);
-			$encounter->set("patient_id",$this->get("patient_id"));
+			$encounter->set("patient_id",$this->get("patient_id", 'c_patient'));
 			if (isset($appointments[$appointment_id])) {
 				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
 			}
@@ -220,7 +220,7 @@ class C_Encounter extends Controller {
 			return;
 		}
 
-		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id')));
+		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		$encounter->populate_array($_POST['encounter']);
 
 		if (isset($_POST['select_payer'])) {
