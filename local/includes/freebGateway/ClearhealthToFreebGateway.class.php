@@ -46,6 +46,16 @@ class ClearhealthToFreebGateway
 	 */
 	var $_claim_identifier = '';
 	
+	/**
+	 * Are we working with a rebilled claim?
+	 *
+	 * This will also be an empty string or 1 = false or true
+	 *
+	 * @var string|int
+	 * @see send()
+	 */
+	var $_rebill = false;
+	
 	/**#@-*/
 	
 	function ClearhealthToFreebGateway(&$controller, &$encounter) {
@@ -62,6 +72,7 @@ class ClearhealthToFreebGateway
 				$continue = $this->_setupNewClaim();
 				break;
 			case 'rebill' :
+				$this->_rebill = true;
 				$continue = $this->_setupRebillClaim();
 				break;
 		}
@@ -107,6 +118,7 @@ class ClearhealthToFreebGateway
 		$feeSchedule =& Celini::newORDO('FeeSchedule',$this->_encounter->get('current_payer'));
 
 		// add claimlines
+		$indexCounter = $this->_startIndexCounter();
 		foreach($codes as $parent => $data) {
 
 			$claimline = array();
@@ -130,7 +142,7 @@ class ClearhealthToFreebGateway
 			foreach($childCodes as $val) {
 				$claimline['diagnoses'][] = $val['code'];
 			}
-			if (!$this->_freeb2->registerData($this->_claim_identifier,'Claimline',$claimline)) {
+			if (!$this->_freeb2->registerData($this->_claim_identifier,'Claimline',$claimline, $indexCounter)) {
 				trigger_error("Unable to register claimline - ". print_r($this->_freeb2->claimLastError($this->_claim_identifier),true));
 			}
 
@@ -144,6 +156,8 @@ class ClearhealthToFreebGateway
 					$rcd->persist();
 				}
 			}
+			
+			$indexCounter = $this->_advanceIndexCounter($indexCounter);
 		}
 		return true;
 	}
@@ -293,6 +307,9 @@ class ClearhealthToFreebGateway
 	 * @todo break into multiple methods and/or objects
 	 */
 	function _registerClaimData() {
+		// init vars
+		$defaultIndex = $this->_startIndexCounter();
+		
 		// get the objects were going to need
 		$patient =& Celini::newORDO('Patient',$this->_encounter->get('patient_id'));
 		ORDataObject::Factory_include('InsuredRelationship');
@@ -336,18 +353,21 @@ class ClearhealthToFreebGateway
 			$patientData[$date_name] = $EncounterDate->get('date');
 		}
 
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'Patient',$patientData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Patient',$patientData, $defaultIndex)) {
 			trigger_error("Unable to register patient data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
 		// register subscriber data
+		$indexCounter = $defaultIndex;
 		foreach($relationships as $r) {
 			$data = $r->toArray();
 			$tmp = $this->_cleanDataArray($data['subscriber']);
 			unset($data['subscriber']);
 			$data = array_merge($data,$tmp);
 			//echo "C_Patient subscriber data:<br>".var_export($data);
-			$this->_freeb2->registerData($this->_claim_identifier,'Subscriber',$data);
+			$this->_freeb2->registerData($this->_claim_identifier,'Subscriber',$data, $indexCounter);
+			
+			$indexCounter = $this->_advanceIndexCounter($indexCounter);
 		}
 
 		// register payers
@@ -376,6 +396,8 @@ class ClearhealthToFreebGateway
 		}
 
 		$defaultProgram = false;
+		
+		$indexCounter = $defaultIndex;
 		foreach($relationships as $r) {
 			$program =& Celini::newORDO('InsuranceProgram',$r->get('insurance_program_id'));
 			if ($defaultProgram == false) {
@@ -387,10 +409,12 @@ class ClearhealthToFreebGateway
 				$data = $program->toArray();
 				$data = $this->_cleanDataArray($data['company']);
 				$data['identifier'] = $data['name'];
-				$this->_freeb2->registerData($this->_claim_identifier,'Payer',$data);
+				$this->_freeb2->registerData($this->_claim_identifier,'Payer',$data, $indexCounter);
 				if ($clearingHouseData === false) {
 					$clearingHouseData = $data;
 				}
+				
+				$indexCounter = $this->_advanceIndexCounter($indexCounter);
 			}
 		}
 
@@ -425,7 +449,7 @@ class ClearhealthToFreebGateway
 			}
 		}
 		
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'Provider',$providerData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Provider',$providerData, $defaultIndex)) {
 			trigger_error("Unable to register provider data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
@@ -438,8 +462,7 @@ class ClearhealthToFreebGateway
 		$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 		$practiceData['x12_version'] = $defaultProgram->get('x12_version');
 
-		//printf('<pre>%s</pre>', var_export($practiceData , true));
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'Practice',$practiceData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Practice',$practiceData, $defaultIndex)) {
 			trigger_error("Unable to register practice data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
@@ -452,7 +475,7 @@ class ClearhealthToFreebGateway
 			$facilityData['identifier'] = $bpi->get('identifier');
 		}
 		
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'TreatingFacility',$facilityData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'TreatingFacility',$facilityData, $defaultIndex)) {
 			trigger_error("Unable to register treating facility data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 	
@@ -461,7 +484,8 @@ class ClearhealthToFreebGateway
 
 		$EncounterPeople =& Celini::newORDO('EncounterPerson');
 		$encounterPeopleArray=$EncounterPeople->encounterPersonListArray($encounter_id);
-	
+		
+		$indexCounter = $this->_startIndexCounter();
 		foreach($encounterPeopleArray as $encounter_person_id){	
 			$ep =& Celini::newORDO('EncounterPerson',array($encounter_person_id,$encounter_id));
 			$eptl = $this->_encounter->_load_enum("encounter_person_type",false);
@@ -483,7 +507,7 @@ class ClearhealthToFreebGateway
 				//remove the gaps in the enumeration to be FreeB friendly..
 			$encounter_person_type = preg_replace('/\s+/', '', $encounter_person_type);
 
-			if (!$this->_freeb2->registerData($this->_claim_identifier,$encounter_person_type,$pbo_data)) {
+			if (!$this->_freeb2->registerData($this->_claim_identifier,$encounter_person_type,$pbo_data, $indexCounter)) {
 				$freeb_error = $this->_freeb2->claimLastError($this->_claim_identifier);
 				$freeb_error_message = $freeb_error[1];
 				$freeb_error_number = $freeb_error[0];
@@ -500,6 +524,8 @@ class ClearhealthToFreebGateway
 					//no continue here, this should be a show stopper!!
 				}
 			}
+			
+			$indexCounter = $this->_advanceIndexCounter($indexCounter);
 		}
 		// End Encounter People
 
@@ -516,22 +542,22 @@ class ClearhealthToFreebGateway
 			$ClaimData[$ev_name] = $EncounterValue->get('value');
 		}
 		//var_dump($ClaimData);
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'Claim',$ClaimData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'Claim',$ClaimData, $defaultIndex)) {
 			trigger_error("Unable to register Claim data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
 		// register responsible party - patient
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'ResponsibleParty',$patientData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'ResponsibleParty',$patientData, $defaultIndex)) {
 			trigger_error("Unable to register responsible party data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
 		// register biling facility - practice
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingFacility',$practiceData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingFacility',$practiceData, $defaultIndex)) {
 			trigger_error("Unable to register billing facility data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 		
 		// register biling facility - practice
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingContact',$practiceData)) {
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingContact',$practiceData, $defaultIndex)) {
 			trigger_error("Unable to register billing contact data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 	}
@@ -552,6 +578,26 @@ class ClearhealthToFreebGateway
 	function _cleanDataArray($data) {
 		$adapter =& new CHToFBArrayAdapter($data);
 		return $adapter->adapted();
+	}
+	
+	
+	/**
+	 * @access private
+	 */
+	function _startIndexCounter() {
+		return $this->_rebill ? 0 : '';
+	}
+	
+	/**
+	 * Advances <i>$counter</i> by one if this is a rebill, otherwise it returns
+	 * unchanged.
+	 *
+	 * @param  string|int
+	 * @return string|int
+	 * @access private
+	 */
+	function _advanceIndexCounter($counter) {
+		return $this->_rebill ? $counter++ : $counter;
 	}
 }
 
