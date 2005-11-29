@@ -180,5 +180,16 @@ class M_User extends M_Patient {
 			$this->messages->addMessage('Insurance Program Updated');
 		}
 	}
+	
+	/**
+	 * Placeholder for the eventual editing of provider to insurance ID # 
+	 * mapping.
+	 *
+	 * @access protected
+	 * @todo Fill in this stub
+	 */
+	function processEditProviderToInsurance_edit() {
+		
+	}
 }
 ?>

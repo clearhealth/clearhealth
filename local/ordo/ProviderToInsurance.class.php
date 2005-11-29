@@ -110,25 +110,37 @@ class ProviderToInsurance extends ORDataObject {
 
 	
 	/**
-	 * Virtual getter to load the identifier_type's enum value.
+	 * An alias of {@link get_provider_number_type()}
+	 *
+	 * Apparently, the result of an enum being named one thing, and the value
+	 * in the DB being named another.
+	 *
+	 * @see get_provider_number_type()
+	 */
+	function get_identifier_type_value() {
+		return $this->get('provider_number_type');
+	}
+	
+	/**
+	 * Virtual getter to load the provider_number_type's enum value
 	 *
 	 * @return string
 	 * @see lookupProviderNumberType()
 	 */
-	function get_identifier_type_value() {
-		return $this->lookupProviderNumberType($this->get('identifier_type'));
+	function get_provider_number_type() {
+		return $this->lookupProviderNumberType($this->provider_number_type);
 	}
 	
 	/**
 	 * @todo Refractor this into a DS off of the {@link Person} or 
 	 *    {@link Provider} ordo
 	 */
-	function providerToInsuranceList($person_id) {
+	function &providerToInsuranceList($person_id) {
 		settype($person_id,'int');
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "ip.name, provider_number, provider_number_type, group_number, b.name AS building_name",
+				'cols' 	=> "pToI.provider_to_insurance_id, ip.name, provider_number, provider_number_type, group_number, b.name AS building_name, '{$person_id}' AS person_id",
 				'from' 	=> "
 					$this->_table AS pToI
 					INNER JOIN insurance_program AS ip USING(insurance_program_id)
@@ -144,12 +156,13 @@ class ProviderToInsurance extends ORDataObject {
 		);
 
 		$ds->registerFilter('provider_number_type',array(&$this,'lookupProviderNumberType'));
+		$ds->registerFilter('provider_number', array(&$this, '_addLink'));
 		return $ds;
 	}
 
 	function getProviderNumberTypeList() {
-		$list = $this->_load_enum('identifier_type',false);
-		return array_flip($list);
+		$em =& new EnumManager();
+		return $em->enumArray('identifier_type');
 	}
 
 	/**
@@ -162,6 +175,28 @@ class ProviderToInsurance extends ORDataObject {
 		if (isset($this->_typeCache[$type_id])) {
 			return $this->_typeCache[$type_id];
 		}
+	}
+	
+	
+	/**
+	 * Adds a link to the given value.
+	 *
+	 * This is a registered filter of {@link providerToInsuranceList()}.
+	 *
+	 * @param  string|int
+	 * @param  row
+	 * @access private
+	 *
+	 * @todo Make this actually work.  Will need to append "&process=true" to
+	 *    the end of the URL, and will need to adjust the process code to
+	 *    properly handle displaying the field for editing.
+	 * @todo Make this utilize {@link Celini::managerLink()} for continuity.
+	 */
+	function _addLink($value, $row) {
+		return $value;
+		return sprintf('<a href="%s">%s</a>',
+			Celini::link('edit', 'user', true, $row['person_id'], 'editProviderToInsurance') . 'id=' . $row['provider_to_insurance_id'],
+			$value);
 	}
 }
 ?>
