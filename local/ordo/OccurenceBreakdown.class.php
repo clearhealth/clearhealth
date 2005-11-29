@@ -74,7 +74,6 @@ class OccurenceBreakdown extends ORDataObject {
 
 	function get_index() {
 		if ($this->index === false || is_null($this->index)) {
-			var_dump($this->index);
 			$this->index =  $this->nextIndex();
 		}
 		return $this->index;
