@@ -97,7 +97,7 @@ class C_PersonSchedule extends CalendarController {
 		
 		foreach ($WeekGridArray as $d) {
 			$tdate = $d->thisYear() . "-" . $d->thisMonth() . "-" . $d->thisDay();
-			$darr = $this->build_day_increments($tdate, 7,13);
+			$darr = $this->build_day_increments($tdate, $this->config->get('CalendarHourStart',7),$this->config->get('CalendarHourLength',13));
 			$incs[strtotime($tdate)] = $darr;
 			
 		}
@@ -107,7 +107,7 @@ class C_PersonSchedule extends CalendarController {
 		
 		//set to epoch so second counts represent time only, no days
 		
-		$header_increment = $this->build_day_increments("", 7,13, true);
+		$header_increment = $this->build_day_increments("", $this->config->get('CalendarHourStart',7),$this->config->get('CalendarHourLength',13), true);
 		
 		$this->assign("header_increment", $header_increment);	
 		
