@@ -22,7 +22,6 @@ class C_Calendar extends CalendarController {
 
 	var $template_mod;
 	var $location;
-	var $practiceConfig;
 
 	function C_Calendar($template_mod = "general") {
 		parent::CalendarController();
@@ -53,9 +52,6 @@ class C_Calendar extends CalendarController {
 		$this->assign('EDIT_APPOINTMENT_ACTION',Celini::link('edit_appointment','location'));
 		
 		$this->_setupFilterDisplay();
-
-		$this->practiceConfig =& Celini::configInstance('Practice');
-		$this->practiceConfig->loadPractice($_SESSION['defaultpractice']);
 	}
 		
 	function _setupFilterDisplay() {
@@ -261,14 +257,15 @@ class C_Calendar extends CalendarController {
 		
 		foreach ($WeekGridArray as $d) {
 			$tdate = $d->thisYear() . "-" . $d->thisMonth() . "-" . $d->thisDay();
-			$darr = $this->build_day_increments($tdate, 7,13);
+			$darr = $this->build_day_increments($tdate, $this->config->get('CalendarHourStart',7),$this->config->get('CalendarHourLength',13));
 			$incs[strtotime($tdate)] = $darr;
 		}
 		
 		$this->assign("week_increments", $incs);
 		
 		//set to epoch so second counts represent time only, no days
-		$header_increment = $this->build_day_increments("", 7,13, true);
+		$header_increment = $this->build_day_increments("", $this->config->get('CalendarHourStart',7),
+			$this->config->get('CalendarHourLength',13), true);
 		
 		$this->assign("header_increment", $header_increment);	
 		
@@ -316,7 +313,7 @@ class C_Calendar extends CalendarController {
 		$ndate = date("Y-m-d",$DayGrid->nextDay("timestamp")); 
 		$pdate = date("Y-m-d",$DayGrid->prevDay("timestamp"));
 		
-		$incs = $this->build_day_increments($year . "-" . $month . "-" . $day, 7,13);
+		$incs = $this->build_day_increments($year . "-" . $month . "-" . $day, $this->config->get('CalendarHourStart',7),$this->config->get('CalendarHourLength',13));
 		$this->assign("increments", $incs);
 	
 		// Pass it to the decorator and use the decorator from now on...

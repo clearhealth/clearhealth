@@ -2,6 +2,8 @@
 $loader->requireOnce('includes/EnumManager.class.php');
 class CalendarController extends Controller {
 
+	var $config;
+
 	function CalendarController() {
 		parent::Controller();	
 		$this->assign('EVENT_DELETE_ACTION',Celini::link('delete','location'));
@@ -9,7 +11,7 @@ class CalendarController extends Controller {
 		$this->assign('SCHEDULE_LIST_ACTION',Celini::link('schedule_list','location'));
 		$this->assign('EDIT_APPOINTMENT_ACTION',Celini::link('edit_appointment','location'));
 
-		$config =& Celini::configInstance('Practice');
+		$this->config =& Celini::configInstance('Practice');
 
 		$manager =& EnumManager::getInstance();
 		$list =& $manager->enumList('appointment_reasons');
@@ -62,8 +64,7 @@ class CalendarController extends Controller {
 			$base = strtotime($date);	
 		}
 
-		$config =& Celini::configInstance('Practice');
-		$increment = $config->get('CalendarIncrement',900);
+		$increment = $this->config->get('CalendarIncrement',900);
 
 		$numPeriods = ((60*60*$end_hour)-(60*60*$start_hour))/$increment*2;
 				
