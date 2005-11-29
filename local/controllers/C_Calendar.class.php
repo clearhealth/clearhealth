@@ -504,6 +504,9 @@ class C_Calendar extends CalendarController {
 				$this->assign("edit_patient_name", $result->fields['last_name'] . ", " . $result->fields['first_name']);	
 			}
 			$this->assign("edit_oc",$oc);
+
+			$ob =& Celini::newOrdo('OccurenceBreakdown');
+			$this->assign('editOccurenceBreakdown',$ob->breakdownArray($oc->get('id'),true));
 		}
 		else {
 			$oc = new Occurence();

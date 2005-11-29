@@ -60,5 +60,37 @@ class AppointmentTemplate extends ORDataObject {
 	}
 
 	/**#@-*/
+
+	function breakdownArray() {
+		$ob =& Celini::newOrdo('OccurenceBreakdown');
+		$ret = $ob->breakdownArray($this->get('id'));
+		return $ret;
+	}
+
+	function fillTemplate($occurence_id,$users) {
+		$breakdowns = $this->breakdownArray();
+
+		$this->resetTemplate($occurence_id,$breakdowns);
+		foreach($breakdowns as $key => $breakdown) {
+			$b =& Celini::newOrdo('OccurenceBreakdown',array($occurence_id,$breakdown['index']),'ByIndex');
+			$b->set('user_id',$users[$breakdown['occurence_breakdown_id']]);
+			$b->set('offset',$breakdown['offset']);
+			$b->set('length',$breakdown['length']);
+			$b->set('title',$breakdown['title']);
+			$b->persist();
+		}
+	}
+
+	function resetTemplate($occurence_id,$breakdowns = false) {
+		if ($breakdowns === false) {
+			$breakdowns = $this->breakdownArray();
+		}
+		$sql = 'select count(*) c from occurence_breakdown where occurence_id = '.$this->dbHelper->quote($occurence_id);
+		$res = $this->dbHelper->execute($sql);
+		if ($res->fields['c'] != count($breakdowns)) {
+			$sql = 'delete from occurence_breakdown where occurence_id = '.$this->dbHelper->quote($occurence_id);
+			$this->dbHelper->execute($sql);
+		}
+	}
 }
 ?>

@@ -31,6 +31,10 @@
 		<input type="hidden" name="end_time" value="{$end_time}">
 		<input type="hidden" name="notes" value="{$notes}">
 		<input type="hidden" name="process" value="{$PROCESS}">
+
+		{foreach from=$users item='user' key='key'}
+		<input type="hidden" name="users[{$key}]" value="{$user}">
+		{/foreach}
 		</form>
 		</td>
 	</tr>

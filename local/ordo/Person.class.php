@@ -294,7 +294,7 @@ class Person extends ORDataObject {
 		$labels = array('last_name' => 'Last Name', 'first_name' => 'First Name', 'person_type' => 'Type');
 		if ($includeUser) {
 			$from .= " inner join user u using(person_id)";
-			$cols .= ", u.username";
+			$cols .= ", u.username, u.user_id";
 			$labels['username'] = 'Username';
 		}
 

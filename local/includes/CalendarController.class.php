@@ -1,8 +1,7 @@
 <?php
 $loader->requireOnce('includes/EnumManager.class.php');
 class CalendarController extends Controller {
-	
-	
+
 	function CalendarController() {
 		parent::Controller();	
 		$this->assign('EVENT_DELETE_ACTION',Celini::link('delete','location'));
@@ -21,6 +20,31 @@ class CalendarController extends Controller {
 			if ($row->extra1 !== '') {
 				$templates[$row->key] =& Celini::newOrdo('AppointmentTemplate',$row->extra1);
 			}
+			else {
+				$templates[$row->key] = false;
+			}
+		}
+		if (count($templates) > 0) {
+			$p = Celini::newOrdo('Person');
+			$ptList =& $manager->enumList('person_type');
+			$plist = array();
+			for($ptList->rewind();$ptList->valid();$ptList->next()) {
+				$row = $ptList->current();
+				if ($row->extra1 == 1) {
+					$tmp = $p->peopleByType($row->value,true);
+					$plist[$row->key] = $tmp->toArray('user_id','username');
+				}
+			}
+			$tmp = $p->peopleByType($row->value,true);
+			$plist[] = $tmp->toArray('user_id','username');
+			$plist[0] = array();
+			foreach($plist as $pl) {
+				foreach($pl as $key => $val) {
+					$plist[0][$key] = $val;
+				}
+			}
+			asort($plist[0]);
+			$this->assign('peopleByType',$plist);
 		}
 		$this->assign('appointment_templates',$templates);
 	}	

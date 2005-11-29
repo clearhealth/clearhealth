@@ -286,9 +286,6 @@ class C_Location extends Controller {
 	}
 	
 	function edit_appointment_action_process($event_id = "",$confirm =false) {
-		if ($_POST['process'] != "true")
-			return;
-		
 		if (!isset($_POST['occurence_id'])) {
 			$_POST['occurence_id'] = 0;
 		}
@@ -310,6 +307,11 @@ class C_Location extends Controller {
 		else {
 			$this->event = new Event($event_id,false);
 			$this->event->populate_array($_POST);
+		}
+
+		if (isset($_POST['users']) && count($_POST['users']) > 0) {
+			$tmp =  $_POST['users'];
+			$_POST['user_id'] = array_shift($tmp);
 		}
 		
 		$oc->populate_array($_POST);
@@ -366,6 +368,26 @@ class C_Location extends Controller {
 
 		$oc->persist();
 		$oc->populate();
+
+
+		$manager =& EnumManager::getInstance();
+		$list =& $manager->enumList('appointment_reasons');
+		$reason = false;
+		for($list->rewind();$list->valid();$list->next()) {
+			$row = $list->current();
+			if ($row->key == $this->POST->get('reason_id')) {
+				$reason = $row;
+			}
+		}
+
+		if ($reason && $reason->extra1 !== '') {
+			$template = Celini::newOrdo('AppointmentTemplate',$reason->extra1);
+			$template->fillTemplate($oc->get('id'),$_POST['users']);
+		}
+		else {
+			$template = Celini::newOrdo('AppointmentTemplate');
+			$template->resetTemplate($oc->get('id'));
+		}
 		
 		$this->location = null;
 
