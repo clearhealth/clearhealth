@@ -72,6 +72,7 @@ class ProviderToInsurance extends ORDataObject {
 			FROM
 				' . $this->_table . '
 			WHERE
+				person_id = ' . (int)$person_id . ' AND
 				insurance_program_id = ' . (int)$program_id . ' AND
 				(building_id = ' . (int)$building_id . ' OR building_id = 0)
 			ORDER BY building_id DESC
