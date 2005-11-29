@@ -1,4 +1,5 @@
 <?php
+global $menuarrays;
 $menuarrays=array();
 $defPractice=&Celini::newOrdo('Practice',$_SESSION['defaultpractice']);
 $menuarrays[]=array(
