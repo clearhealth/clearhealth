@@ -38,9 +38,11 @@ class EventComparator_General {
 		$ob =& Celini::newOrdo('OccurenceBreakdown');
 		$sumTotal = $sum;
 		$breakdownCheck = true;
+		$double = false;
 
 		$message = "";
 		while ($results && !$results->EOF) {
+			$double = true;
 			// Retrieve mock event array and create display
 			$this->controller->assign("ev", $this->_createMockEventArray($oc));
 			$app_display = $this->controller->view->render("appointment_inline_blurb.html");
@@ -62,6 +64,9 @@ class EventComparator_General {
 				else {
 					$breakdownCheck = false;
 				}
+			}
+			else {
+				$breakdownCheck = false;
 			}
 
 			//the get events function returns events in an array broken out by timestamp, we just want the details on the specific event 
@@ -85,9 +90,14 @@ class EventComparator_General {
 			$results->moveNext();
 			if ($results->EOF) {
 				if (!$breakdownCheck) {
+					$this->controller->assign('double_book_message',$message);
 					return true;
 				}
 			}
+		}
+		if (!$breakdownCheck) {
+			$this->controller->assign('double_book_message',$message);
+			return $double;
 		}
 
 
