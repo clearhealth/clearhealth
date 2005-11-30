@@ -134,7 +134,7 @@ class M_Patient extends Manager {
 			$identifier =& ORDataObject::factory('PersonPerson',$id,$patient_id);
 			$identifier->populate_array($data);
 			$identifier->persist();
-			$this->controller->person_person_id = $identifier->get('id');
+			//$this->controller->person_person_id = $identifier->get('id');
 
 			$this->messages->addMessage('Relationship Updated');
 		}
