@@ -113,5 +113,8 @@ function toggleCell(box) {
         }
     }
 
+	updateAppointmentTemplate('appointmentTemplate');
+	updateAppointmentTemplate('appointmentTemplate1');
+
     return true;
 }

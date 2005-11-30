@@ -3,8 +3,6 @@
 	function updateAp(select,id) {lcb}
 {literal}
 		var divs = document.getElementById(id).getElementsByTagName('div');
-		var length = 0;
-		var form = false;
 		for(var i = 0; i < divs.length; i++) {
 			if (divs[i].className == select.value) {
 				divs[i].style.display = 'block';
@@ -12,17 +10,37 @@
 				for(var b = 0; b < selects.length; b++) {
 					selects[b].disabled = false;
 				}
-				var input = divs[i].getElementsByTagName('input').item(0);
-				if (input) {
-					length = input.value;
-					form = input.form;
-				}
 			}
 			else {
 				divs[i].style.display = 'none';
 				var selects = divs[i].getElementsByTagName('select');
 				for(var b = 0; b < selects.length; b++) {
 					selects[b].disabled = true;
+				}
+			}
+		}
+		updateAppointmentTemplate(id);
+	}
+	function timeToSeconds(time) {
+		var p = time.split(':');
+		return (p[0]*60*60)+(p[1]*60);
+	}
+	function secondsToTime(seconds) {
+		var h = Math.floor(seconds/(60*60));
+		var m = Math.floor( (seconds%(60*60))/60);
+		return h+':'+m;
+	}
+	function updateAppointmentTemplate(id) {
+		var divs = document.getElementById(id).getElementsByTagName('div');
+		var length = 0;
+		var form = false;
+
+		for(var i = 0; i < divs.length; i++) {
+			if (divs[i].style.display != 'none') {
+				var input = divs[i].getElementsByTagName('input').item(0);
+				if (input) {
+					length = input.value;
+					form = input.form;
 				}
 			}
 		}
@@ -42,15 +60,6 @@
 				end.value = secondsToTime(timeToSeconds(start.value)+Math.floor(length));
 			}
 		}
-	}
-	function timeToSeconds(time) {
-		var p = time.split(':');
-		return (p[0]*60*60)+(p[1]*60);
-	}
-	function secondsToTime(seconds) {
-		var h = Math.floor(seconds/(60*60));
-		var m = Math.floor( (seconds%(60*60))/60);
-		return h+':'+m;
 	}
 </script>
 {/literal}
