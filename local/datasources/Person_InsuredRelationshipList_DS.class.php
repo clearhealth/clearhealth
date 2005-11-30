@@ -65,8 +65,8 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 		$this->registerFilter('effective',array($this,'effectiveColorFilter'), false, 'html');
 		$this->registerFilter('program_order',array(&$this,'_movePayer'));
 
-		$c = new C_Patient();
-		$this->patientId = $c->get('patient_id');
+		$c = new Controller();
+		$this->patientId = $c->get('patient_id','c_patient');
 	}
 	
 	
