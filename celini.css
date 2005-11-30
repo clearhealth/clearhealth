@@ -10,6 +10,10 @@ a:hover {
 	background-color: #ddd;
 }
 
+a img {
+	border: 0;
+}
+
 /* Default Layout Rules */
 #header {
 	border: solid 1px gray;
