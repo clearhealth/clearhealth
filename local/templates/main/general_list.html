@@ -27,7 +27,9 @@ eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,lo
 </script>
  
 {/literal}
+{if !noOverlib}
 {popup_init src="`$base_dir`js/overlib.js"}
+{/if}
 <link href="{$base_dir}celini.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
