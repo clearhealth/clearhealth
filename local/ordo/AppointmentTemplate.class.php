@@ -59,6 +59,12 @@ class AppointmentTemplate extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function get_length() {
+		$sql = "select sum(length) l from occurence_breakdown where occurence_id = ".$this->dbHelper->quote($this->get('id'));
+		$res = $this->dbHelper->execute($sql);
+		return $res->fields['l'];
+	}
+
 	/**#@-*/
 
 	function breakdownArray() {

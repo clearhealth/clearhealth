@@ -3,12 +3,19 @@
 	function updateAp(select,id) {lcb}
 {literal}
 		var divs = document.getElementById(id).getElementsByTagName('div');
+		var length = 0;
+		var form = false;
 		for(var i = 0; i < divs.length; i++) {
 			if (divs[i].className == select.value) {
 				divs[i].style.display = 'block';
 				var selects = divs[i].getElementsByTagName('select');
 				for(var b = 0; b < selects.length; b++) {
 					selects[b].disabled = false;
+				}
+				var input = divs[i].getElementsByTagName('input').item(0);
+				if (input) {
+					length = input.value;
+					form = input.form;
 				}
 			}
 			else {
@@ -19,6 +26,31 @@
 				}
 			}
 		}
+		if (form) {
+			var start = false;
+			var end = false;
+			for(var i = 0; i < form.elements.length; i++) {
+				if (form.elements[i].name == 'end_time') {
+					end = form.elements[i];
+				}
+				if (form.elements[i].name == 'start_time') {
+					start = form.elements[i];
+				}
+			}
+
+			if (start.value != '') {
+				end.value = secondsToTime(timeToSeconds(start.value)+Math.floor(length));
+			}
+		}
+	}
+	function timeToSeconds(time) {
+		var p = time.split(':');
+		return (p[0]*60*60)+(p[1]*60);
+	}
+	function secondsToTime(seconds) {
+		var h = Math.floor(seconds/(60*60));
+		var m = Math.floor( (seconds%(60*60))/60);
+		return h+':'+m;
 	}
 </script>
 {/literal}
@@ -45,6 +77,7 @@
 		</select>
 		<br>
 	{else}
+		<input type="hidden" name="templateLength" value="{$template->get('length')}">
 		{foreach from=$template->breakdownArray() item=breakdown}
 		{$breakdown.title}
 
