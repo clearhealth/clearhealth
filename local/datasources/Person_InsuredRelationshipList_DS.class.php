@@ -6,6 +6,8 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 {
 	var $_table = 'insured_relationship';
 	var $_subscriberRelationships = null;
+	var $payerCount = 0;
+	var $patientId = 0;
 	
 	/**
 	 * Stores the case-sensative class name for this ds and should be considered
@@ -61,6 +63,10 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 		$this->addOrderRule('program_order');
 		$this->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
 		$this->registerFilter('effective',array($this,'effectiveColorFilter'), false, 'html');
+		$this->registerFilter('program_order',array(&$this,'_movePayer'));
+
+		$c = new C_Patient();
+		$this->patientId = $c->get('patient_id');
 	}
 	
 	
@@ -99,5 +105,28 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 		$enum = ORDataObject::factory('Enumeration');
 		$this->_subscriberRelationships = $enum->get_enum_list('subscriber_to_patient_relationship');
 	}
-}
 
+	/**
+	 * Grid filter function to add arrows for changing payer order
+	 */
+	function _movePayer($program_order,$row) {
+		$ret = "";
+		if ($program_order > 1) {
+			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipUp',$this->patientId).'id='.$row['insured_relationship_id'].
+			'&process=true"><img src="'.Celini::link('stock','images',false,'s_asc.png').'" border=0></a>';
+		}
+		else {
+			$ret .= "<img src='".Celini::link('stock','images',false,'blank.gif')."' width=12 height=9>";
+		}
+		if ($program_order < $this->payerCount) {
+			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipDown',$this->patientId)
+			.'id='.$row['insured_relationship_id'].'&process=true"><img src="'.Celini::link('stock','images',false,'s_desc.png').'" border=0></a>';
+		}
+		else {
+			$ret .= "<img src='".Celini::link('stock','images',false,'blank.gif')."' width=12 height=9>";
+		}
+		//$ret .=$program_order;
+		return $ret;
+	}
+}
+?>

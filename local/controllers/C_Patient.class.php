@@ -46,7 +46,6 @@ class C_Patient extends Controller {
 		$insuredRelationshipGrid->name = "insuredRelationshipGrid";
 		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Celini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
 		$insuredRelationshipGrid->indexCol = false;
-		$insuredRelationshipGrid->registerFilter('program_order',array(&$this,'_movePayer'));
 
 		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);
 		$this->payerCount = $insuredRelationship->numRelationships($patient_id);
@@ -108,29 +107,6 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('grid',$grid);
 
 		return $this->view->render("list.html");
-	}
-
-	/**
-	 * Grid filter function to add arrows for changing payer order
-	 */
-	function _movePayer($program_order,$row) {
-		$ret = "";
-		if ($program_order > 1) {
-			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipUp',$this->get('patient_id')).'id='.$row['insured_relationship_id'].
-			'&process=true"><img src="'.$this->base_dir.'images/stock/s_asc.png" border=0></a>';
-		}
-		else {
-			$ret .= "<img src='{$this->base_dir}images/stock/blank.gif' width=12 height=9>";
-		}
-		if ($program_order < $this->payerCount) {
-			$ret .= '<a href="'.Celini::ManagerLink('moveInsuredRelationshipDown',$this->get('patient_id'))
-			.'id='.$row['insured_relationship_id'].'&process=true"><img src="'.$this->base_dir.'images/stock/s_desc.png" border=0></a>';
-		}
-		else {
-			$ret .= "<img src='{$this->base_dir}images/stock/blank.gif' width=12 height=9>";
-		}
-		$ret .=$program_order;
-		return $ret;
 	}
 }
 ?>
