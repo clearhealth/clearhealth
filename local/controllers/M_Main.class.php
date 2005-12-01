@@ -12,7 +12,9 @@ class M_Main extends Manager {
 		if(!isset($_SESSION['defaultpractice'])){
 			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}
+	}
 
+	function postProcess() {
 		$patient_id = $this->controller->get('patient_id','c_patient');
 		if ($patient_id > 0) {
 			$patient =& ORDataObject::factory('Patient',$patient_id);
