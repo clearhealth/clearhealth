@@ -95,3 +95,7 @@ div.waitingActive {
 .tooltip {
 	text-decoration: none;
 }
+.dashedLink {
+	text-decoration: none;
+	border-bottom: dotted 1px #333;
+}
