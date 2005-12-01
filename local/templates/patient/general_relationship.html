@@ -1,3 +1,58 @@
+{literal}
+<style>
+	.confirmBox {
+		position: absolute;
+		width: 300px;
+		height: 200px;
+		background-color: white;
+		border: solid 3px  black;
+		padding: 5px;
+	}
+</style>
+{/literal}
+<div style='display:none' id='guarantorPlacement'>
+	<div style="text-align: center">
+		<h2>Guarantor already exists</h2>
+	<p>
+	{$person->get('first_name')} {$person->get('last_name')} already has a guarantor, 
+	would you like to add this person with the top guarantor priority or the bottom?
+	</p>
+	<p>
+	<button onclick="return gSetPriority(-1)">Top Priority</button>
+	<button onclick="return gSetPriority(9999)">Bottom Priority</button>
+	<button onclick="return gCancel()">Cancel</button>
+	</p>
+	</div>
+</div>
+<script type="text/javascript">
+	var hasGuarantor = {$personPerson->get('hasGuarantor')};
+	var gpopup = false;
+	{literal}
+	function checkGuarantor(checkbox) {
+		if (checkbox.checked) {
+			if (!gpopup) {
+				gpopup = new clniPopup('guarantorPlacement');
+			}
+			gpopup.display();
+		}
+		else {
+			document.getElementById('guarantor_priority').value = 0;
+			if (gpopup) {
+				gpopup.hide();
+			}
+		}
+	}
+	function gCancel() {
+		gpopup.hide();
+		document.getElementById('guarantor').checked = false;
+
+	}
+	function gSetPriority(value) {
+		gpopup.hide();
+		document.getElementById('guarantor_priority').value = value;
+	}
+	{/literal}
+</script>
 	<fieldset class="radio" id="relatedPeople">
 		<legend>{l}Related People{/l}</legend>
 
@@ -17,13 +72,16 @@
 				of
 			<input type="hidden" name="personPerson[related_person_id]" id="person_id_1" value="{$personPerson->get('related_person_id')}">
 				</td>
-			</tr>
-			<tr>
 				<td>
 			<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
-				autocomplete="off" value="{$personPerson->get('related_person_id')}">
+				autocomplete="off" value="{$personPerson->get('relatedDisplayName')}">
 			<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
 					class="AutoCompleteBackground"></div></div>
+		</td>
+		<td>
+			<input type="hidden" name="personPerson[guarantor]" value="0">
+			<input type="hidden" name="personPerson[guarantor_priority]" value="0" id="guarantor_priority">
+			<input type="checkbox" name="personPerson[guarantor]" value="1" id="guarantor" {if $personPerson->get('guarantor')}CHECKED{/if} onClick='checkGuarantor(this)'> <label class="inline" for="guarantor">Relation is a Guarantor of</label>
 		</td>
 	</tr>
 	<tr>

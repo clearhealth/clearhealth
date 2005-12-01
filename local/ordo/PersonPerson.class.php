@@ -26,6 +26,8 @@ class PersonPerson extends ORDataObject {
 	var $person_id			= '';
 	var $related_person_id		= '';
 	var $relation_type		= '';
+	var $guarantor			= 0;
+	var $guarantor_priority		= false;
 	/**#@-*/
 
 	var $_typeCache = false;
@@ -88,37 +90,44 @@ class PersonPerson extends ORDataObject {
 		$list = $this->_load_enum('person_to_person_relation_type',false);
 		return array_flip($list);
 	}
+
+	function get_relatedDisplayName() {
+		$p =& Celini::newOrdo('Patient',$this->get('related_person_id'));
+		return $p->get('search_name');
+	}
+
+	function get_hasGuarantor() {
+		$sql = "select max(guarantor) g from ".$this->tableName()." where person_id = ".$this->get('person_id');
+		$res = $this->dbHelper->execute($sql);
+
+		if (!$res->EOF && $res->fields['g'] == 1) {
+			return 1;
+		}
+		return 0;
+	}
+
+	function get_nextGuarantorPriority() {
+		$sql = "select max(guarantor_priority) g from ".$this->tableName()." where person_id = ".$this->get('person_id');
+		$res = $this->dbHelper->execute($sql);
+		return $res->fields['g']+1;
+	}
+
+	function get_guarantor_priority() {
+		if ($this->guarantor_priority === false || $this->guarantor_priority == 9999) {
+			$this->set('guarantor_priority',$this->get('nextGuarantorPriority'));
+		}
+		else if ($this->guarantor_priority == -1) {
+			$this->set('guarantor_priority',0);
+			$this->pushPrioritiesUpOne();
+		}
+
+		return $this->guarantor_priority;
+	}
 	/**#@-*/
 
-	/**
-	 * Get a ds with all the related people
-	 *
-	 * @param	int	$person_id
-	 */
-	function &relatedList($person_id) {
-		settype($person_id,'int');
-		
-		$ds =& new Datasource_sql();
-
-		$ds->setup($this->_db,array(
-			'union' => 
-			array(
-				array(
-				'cols' 	=> "t.person_person_id, concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
-				'from' 	=> "$this->_table t inner join person p on p.person_id = t.person_id inner join person r on r.person_id = t.related_person_id",
-				'where'	=> "t.person_id = $person_id",
-				),
-				array(
-				'cols' 	=> "t.person_person_id, concat_ws(' ',p.first_name, p.last_name) left_name, relation_type, concat_ws(' ',r.first_name, r.last_name) right_name",
-				'from' 	=> "$this->_table t inner join person r on p.person_id = t.person_id inner join person p on r.person_id = t.related_person_id",
-				'where'	=> "t.related_person_id = $person_id",
-				)
-			)
-		),
-		array('left_name' => 'Name', 'relation_type' => 'Relation Of', 'right_name' => 'Name'));
-
-		$ds->registerFilter('relation_type',array(&$this,'lookupRelationType'));
-		return $ds;
+	function pushPrioritiesUpOne() {
+		$sql = "update ".$this->tableName()." set guarantor_priority = guarantor_priority+1 where person_id = ".$this->get('person_id');
+		$this->dbHelper->execute($sql);
 	}
 
 	/**

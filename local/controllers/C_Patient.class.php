@@ -25,6 +25,11 @@ class C_Patient extends Controller {
 			$patient_id = $this->patient_id;
 		}
 
+		$GLOBALS['C_MAIN']['noOverlib'] = true;
+
+		$ajax =& Celini::ajaxInstance();
+		$ajax->jsLibraries[] = array('clnipopup');
+
 		$this->set('patient_id',$patient_id);
 		$this->set('external_id',$patient_id);
 
@@ -55,10 +60,10 @@ class C_Patient extends Controller {
 		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 
-		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id);
+		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id,$patient_id);
 		$personPersonGrid = new cGrid($person->loadDatasource('RelatedList'));
 		$personPersonGrid->name = "personPersonGrid";
-		//$personPersonGrid->registerTemplate('relation_type','<a href="'.Celini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
+		$personPersonGrid->registerTemplate('relation_type','<a href="'.Celini::ManagerLink('editPersonPerson',$patient_id).'id={$person_person_id}&process=true">{$relation_type}</a>');
 
 		$building =& ORDataOBject::factory('Building');
 		$encounter =& ORDataOBject::factory('Encounter');

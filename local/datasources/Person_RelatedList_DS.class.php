@@ -23,9 +23,11 @@ class Person_RelatedList_DS extends Datasource_sql
 		settype($person_id,'int');
 
 		$labels = array(
-			'left_name'     => 'Name',
+			'left_name'     => 'Person',
 			'relation_type' => 'Relation Of',
-			'right_name'    => 'Name');
+			'right_name'    => 'Relation',
+			'guarantor'	=> 'Guarantor?'
+		);
 		$this->setup(Celini::dbInstance(),
 			array(
 				'union' => 
@@ -35,7 +37,9 @@ class Person_RelatedList_DS extends Datasource_sql
 						t.person_person_id, 
 						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
 						relation_type,
-						CONCAT_WS(' ',r.first_name, r.last_name) right_name",
+						CONCAT_WS(' ',r.first_name, r.last_name) right_name,
+						r.person_id right_id,
+						if(guarantor=1,concat('Yes (R of P) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
 						INNER JOIN person AS p ON (p.person_id = t.person_id)
@@ -45,9 +49,11 @@ class Person_RelatedList_DS extends Datasource_sql
 					array(
 					'cols' 	=> "
 						t.person_person_id, 
-						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
+						CONCAT_WS(' ',r.first_name, r.last_name) right_name,
 						relation_type,
-						CONCAT_WS(' ',r.first_name, r.last_name) right_name",
+						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
+						p.person_id right_id,
+						if(guarantor=1,concat('Yes (P of R) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
 						INNER JOIN person AS r ON (p.person_id = t.person_id) 
@@ -59,6 +65,9 @@ class Person_RelatedList_DS extends Datasource_sql
 			$labels);
 
 		$this->registerFilter('relation_type',array(&$this,'_humanReadableRelationshipType'));
+		$this->registerTemplate('right_name','<a class="dashedLink" title="View dashboard for {$right_name}" href="'.
+			Celini::link('view','PatientDashboard').'id={$right_id}">{$right_name}</a>');
+
 	}
 	
 	
