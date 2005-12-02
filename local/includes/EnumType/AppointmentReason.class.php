@@ -1,5 +1,5 @@
 <?php
-$loader->requireOnce('includes/enumType/PerPractice.class.php');
+$loader->requireOnce('includes/EnumType/PerPractice.class.php');
 /**
  * Class the defines the default enumeration type
  */
