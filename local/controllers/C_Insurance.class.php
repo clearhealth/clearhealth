@@ -1,6 +1,5 @@
 <?php
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELINI_ROOT."/includes/Grid.class.php";
+$loader->requireOnce("/includes/Grid.class.php");
 
 /**
  * Controller for the Insurance listing/editing
@@ -12,12 +11,13 @@ class C_Insurance extends Controller {
 	var $identifier_id = 0;
 	var $insurance_program_id = 0;
 	var $building_id = 0;
+	var $similarInCo = false;
 
 	/**
 	 * Edit/Add an Insurance Company
 	 *
 	 */
-	function edit_action_edit($company_id = 0) {
+	function actionEdit($company_id = 0) {
 		if (isset($this->company_id)) {
 			$company_id = $this->company_id;
 		}
@@ -60,13 +60,20 @@ class C_Insurance extends Controller {
 
 		$this->assign('now',date('Y-m-d'));
 
+		if (is_object($this->similarInCo) && $this->similarInCo->numRows() > 0) {
+			$this->similarInCo->registerTemplate('name','<a href="'.Celini::link('edit').'id={$company_id}">{$name}</a>');
+			$sicGrid = new cGrid($this->similarInCo);
+			$this->assign_by_ref('sicGrid',$sicGrid);
+			$company->populateArray($_POST);
+		}
+
 		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
 	}
 
 	/**
 	 * List Insurance Companies
 	 */
-	function list_action_view() {
+	function actionList_view() {
 		$company =& ORDataObject::factory('Company');
 
 		$ds =& $company->companyListForType('Insurance');
@@ -79,7 +86,5 @@ class C_Insurance extends Controller {
 
 		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_list.html"));
 	}
-
-
 }
 ?>

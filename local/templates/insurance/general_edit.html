@@ -1,4 +1,15 @@
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+{if $sicGrid}
+<div style="border: 2px solid rgb(153, 153, 153); width: 325px; background-color: rgb(255, 255, 153);">
+	Some similar companies were found, please check that the company your trying to add doesn't already exists.
+	<br>Submitting this form again will add a new company.
+</div>
+<fieldset>
+	<legend>Similar Insurance Companies</legend>
+	{$sicGrid->render()}
+	<input type="hidden" name="checkSimilar" value="0">
+</fieldset>
+{/if}
 	{include file="contacts/general_company.html"}
 	
 		    {if $company->get('id') > 0}

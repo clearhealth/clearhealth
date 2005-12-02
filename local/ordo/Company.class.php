@@ -6,12 +6,9 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-/**#@+
- * Required Libs
- */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
-require_once CELINI_ROOT.'/includes/Datasource_sql.class.php';
-/**#@-*/
+$loader->requireOnce('/ordo/ORDataObject.class.php');
+$loader->requireOnce('/includes/Datasource_sql.class.php');
+$loader->requireOnce('/includes/EnumManager.class.php');
 
 /**
  * Object Relational Persistence Mapping Class for table: company
@@ -26,11 +23,11 @@ class Company extends ORDataObject {
 	var $notes		= '';
 	var $initials		= '';
 	var $url		= '';
-	var $_phone_numbers = false;
-	var $_addresses = false;
-	var $_types = false;
+	var $_phone_numbers 	= false;
+	var $_addresses 	= false;
+	var $_types 		= false;
 
-	var $_lookup = false;
+	var $_lookup 		= false;
 
 	function Company($db = null) {
 		parent::ORDataObject($db);	
@@ -187,14 +184,6 @@ class Company extends ORDataObject {
 		return $ret;
 	}
 
-
-	/**
-	* Pull data for this record from the database
-	*/
-	function populate() {
-		parent::populate('company_id');
-	}
-
 	/**
 	* Relate a company to another company
 	*/
@@ -236,6 +225,26 @@ class Company extends ORDataObject {
 			$this->_types = false;
 
 		}
+	}
+
+	function checkForSimilar($input) {
+		$check = array('name','initials','email','website');
+		$where = "";
+		foreach($check as $field) {
+			if (isset($input[$field]) && !empty($input[$field])) {
+				$where .= 
+				" or $field like ".$this->dbHelper->quote('%'.$input[$field].'%').
+				" or soundex($field) = soundex(".$this->dbHelper->quote($input[$field]).')';
+			}
+		}
+		$where = substr($where,3);
+		$sql = 'select * from '.$this->tableName()." where $where";
+
+		$query = array('cols'=>'*','from'=>$this->tableName(),'where'=>$where);
+		$ds = new Datasource_sql();
+		$ds->setup(Celini::dbInstance(),$query,array('name'=>'Name','description'=>'Description'));
+
+		return $ds;
 	}
 
 	function people_factory($limit = "") {

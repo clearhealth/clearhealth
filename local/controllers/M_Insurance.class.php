@@ -13,16 +13,26 @@ class M_Insurance extends Manager {
 	/**
 	 * Handle an update from an edit or an add
 	 */
-	function process_update($id =0) {
+	function processUpdate_edit($id =0) {
 
-		$branch =& ORdataObject::factory('Company',$id);
-		$branch->populate_array($_POST);
-		if ($id == 0) {
-			$branch->set_types(array(1)); // set the type to branch
+		$inco =& Celini::newOrdo('Company',$id);
+
+		// check for a similar before adding
+		if ($id == 0 && (!isset($_POST['checkSimilar']) || $_POST['checkSimilar'])) {
+			$this->controller->similarInCo = $inco->checkForSimilar($_POST);
+			if ($this->controller->similarInCo->numRows() > 0) {
+				return;
+			}
 		}
-		$branch->persist();
 
-		$this->controller->company_id = $branch->get('id');
+		$inco->populateArray($_POST);
+
+		if ($id == 0) {
+			$inco->set_types(array(1)); // set the type to insurance company
+		}
+		$inco->persist();
+
+		$this->controller->company_id = $inco->get('id');
 
 		if ($id == 0) {
 			$this->messages->addMessage('Company Created');
