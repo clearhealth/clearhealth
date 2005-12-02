@@ -66,6 +66,9 @@ function toggleCell(box) {
         			
         			//set the provider dropdown
         			var selectbox = document.forms.make_appointment.user_id;
+				if (!selectbox) {
+					selectbox = document.forms.make_appointment.getElementsByTagName('select').item(1);
+				}
         			for (index=0;index<selectbox.length; index++){
        					if (selectbox[index].value==box.getAttribute("user")) {
        						selectbox.selectedIndex=index;
@@ -74,6 +77,9 @@ function toggleCell(box) {
     				}
     				
     				var selectbox = document.forms.make_appointment_popup.user_id;
+				if (!selectbox) {
+					selectbox = document.forms.make_appointment_popup.getElementsByTagName('select').item(1);
+				}
         			for (index=0;index<selectbox.length; index++){
        					if (selectbox[index].value==box.getAttribute("user")) {
        						selectbox.selectedIndex=index;
