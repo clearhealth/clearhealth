@@ -47,7 +47,7 @@ class EnumType_PerPractice extends EnumType_Default {
 				$res = $db->execute($sql);
 				// only do a copy action if there are now ev entries
 				if ($res->EOF) {
-					$sql = "select ev.enumeration_value_id from enumeration_value ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_id is null";
+					$sql = "select ev.enumeration_value_id from enumeration_value ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null";
 					$res = $db->execute($sql);
 					if ($_GET['copy'] === 'true') {
 						while($res && !$res->EOF) {
