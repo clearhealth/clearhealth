@@ -514,7 +514,8 @@ class C_Calendar extends CalendarController {
 		}
 		$this->assign_by_ref("sidebar_months",$months);
 		$this->assign("LINK_BASE",Celini::link($view));
-		$this->assign("appointment_reasons", array_flip($u->_load_enum("appointment_reasons",false)));
+		$manager =& EnumManager::getInstance();
+		$this->assign("appointment_reasons", $manager->enumArray('appointment_reasons'));
 		
 		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_sidebar.html");
 	}
