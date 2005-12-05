@@ -12,6 +12,7 @@ class C_Insurance extends Controller {
 	var $insurance_program_id = 0;
 	var $building_id = 0;
 	var $similarInCo = false;
+	var $similarProgram = false;
 
 	/**
 	 * Edit/Add an Insurance Company
@@ -28,6 +29,16 @@ class C_Insurance extends Controller {
 		
 
 		$insuranceProgram =& ORDataObject::factory('InsuranceProgram',$this->insurance_program_id);
+
+		if (is_object($this->similarProgram) && $this->similarProgram->numRows() > 0) {
+			$this->similarProgram->registerTemplate('company','<a href="'.Celini::link('edit').'id={$company_id}">{$company}</a>');
+			$this->similarProgram->registerTemplate('program','<a href="'.Celini::managerLink('editProgram','edit').
+				'company_id={$company_id}&program_id={$insurance_program_id}">{$program}</a>');
+			$ipGrid = new cGrid($this->similarProgram);
+			$this->assign_by_ref('ipGrid',$ipGrid);
+			$insuranceProgram->populateArray($_POST['insuranceProgram']);
+		}
+
 		$ds =& $insuranceProgram->detailedProgramList($company_id);
 		$ds->registerTemplate('name','<a href="'.Celini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
 		$insuranceProgramGrid =& new cGrid($ds);
@@ -66,6 +77,7 @@ class C_Insurance extends Controller {
 			$this->assign_by_ref('sicGrid',$sicGrid);
 			$company->populateArray($_POST);
 		}
+
 
 		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
 	}

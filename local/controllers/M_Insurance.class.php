@@ -35,6 +35,12 @@ class M_Insurance extends Manager {
 		$this->controller->company_id = $inco->get('id');
 
 		if ($id == 0) {
+			// add a default billing address
+			$addr =& ORDataObject::factory('CompanyAddress',0,$inco->get('id'));
+			$addr->set('name','Default Billing');
+			$addr->set('type',2);
+			$addr->persist();
+
 			$this->messages->addMessage('Company Created');
 		}
 		else {
@@ -69,10 +75,18 @@ class M_Insurance extends Manager {
 			else {
 				unset($data['insurance_program_id']);
 			}
+
+
 			$ip =& ORDataObject::factory('InsuranceProgram',$id,$company_id);
+			if ($id == 0 && (!isset($_POST['checkSimilar']) || $_POST['checkSimilar'])) {
+				$this->controller->similarProgram = $ip->checkForSimilar($_POST['insuranceProgram']);
+				if ($this->controller->similarProgram->numRows() > 0) {
+					return;
+				}
+			}
 			$ip->populate_array($data);
 			$ip->persist();
-			$this->controller->insurance_program_id = $ip->get('id');
+			//$this->controller->insurance_program_id = $ip->get('id');
 
 			$this->messages->addMessage('Insurance Program Updated');
 		}

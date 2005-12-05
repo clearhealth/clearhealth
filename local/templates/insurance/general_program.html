@@ -46,6 +46,14 @@
 </td>
 		</tr>
 		<tr>
+			<td><label>{l}Program Address{/l}</label></td>
+			<td><select name="insuranceProgram[address_id]">
+			{foreach from=$company->get_addresses() item=row}
+			<option value="{$row.id})">{$row.name} ({$row.type})</option>
+			{/foreach}
+			</select></td>
+		</tr>
+		<tr>
 			<td></td>
 			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program">
 				{if $insuranceProgram->get('id') > 0}

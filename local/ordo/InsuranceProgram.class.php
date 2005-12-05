@@ -30,6 +30,7 @@ class InsuranceProgram extends ORDataObject {
 	var $x12_sender_id	= '';
 	var $x12_receiver_id	= '';
 	var $x12_version	= '';
+	var $address_id		= '';
 	/**#@-*/
 
 
@@ -155,6 +156,34 @@ class InsuranceProgram extends ORDataObject {
 		$company =& ORDataObject::factory('Company',$this->get('company_id'));
 		$ret['company'] = $company->toArray();
 		return $ret;
+	}
+
+	function checkForSimilar($input) {
+		$check = array('name','x12_sender_id','x12_receiver_id');
+		$where = "";
+		foreach($check as $field) {
+			if (isset($input[$field]) && !empty($input[$field])) {
+				$where .= 
+				" or ip.$field like ".$this->dbHelper->quote('%'.$input[$field].'%').
+				" or soundex(ip.$field) = soundex(".$this->dbHelper->quote($input[$field]).')';
+			}
+		}
+
+		$manager =& Celini::enumManagerInstance();
+
+		$where = substr($where,3);
+		$query = array('cols'=>'c.company_id, ip.insurance_program_id, c.name company, ip.name program, payer_type.value payer_type, f.label fee_schedule',
+				'from'=>$this->tableName().
+					' ip inner join company c using(company_id) left join fee_schedule f on ip.fee_schedule_id = f.fee_schedule_id'.
+					$manager->joinSql('payer_type','ip.payer_type'),
+				'where'=>$where);
+		$ds = new Datasource_sql();
+		$ds->setup(Celini::dbInstance(),$query,
+			array('company' => 'Company','program'=>'Program','payer_type'=>'Payer Type','fee_schedule'=>'Fee Schedule'));
+		$ds->addDefaultOrderRule('company','DESC',false);
+		$ds->addDefaultOrderRule('program','DESC',false);
+
+		return $ds;
 	}
 }
 ?>
