@@ -207,6 +207,7 @@ class Event extends ORDataObject{
 				n.active AS dnc,
 				rm.name AS room_name, 
 				u3.nickname AS creator_nickname, 
+				u3.username AS creator_username, 
 				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
 				o.`timestamp` AS last_change
 			FROM 
