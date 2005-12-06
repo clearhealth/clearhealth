@@ -24,6 +24,8 @@ class Report extends ORDataObject {
 	var $newTemplates = false;
 	var $deletedTemplates = false;
 
+	var $storage_metadata =  array('int' => array('show_sequence'=>0), 'date' => array(), 'string' => array(), 'text' => array());
+
 	/**
 	*	Constructor expects a reference to and adodb compliant db object.
 	* 	When using frame this is in $GLOBALS['frame']['adodb']['db']
@@ -333,5 +335,13 @@ class Report extends ORDataObject {
 		return $ds;
 	}
 
+	function nextSequence($templateId) {
+
+		$sql = "update report_templates set sequence = sequence + 1 where report_template_id = ".$this->dbHelper->quote($templateId);
+		$this->dbHelper->execute($sql);
+		$sql = "select sequence from report_templates where report_template_id = ".$this->dbHelper->quote($templateId);
+		$res = $this->dbHelper->execute($sql);
+		return $res->fields['sequence'];
+	}
 } 
 ?>
