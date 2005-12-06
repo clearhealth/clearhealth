@@ -25,8 +25,8 @@ class EnumType_PerPractice extends EnumType_Default {
 				'value' => array('label'=>'Value','size'=>15),
 				'extra1' => false,
 				'extra2' => false,
-				'sort' => array('label'=>'Order','type'=>'order'),
-				'status' => array('label'=>'Enabled?','type'=>'boolean')
+				'sort' => array('label'=>'Order&nbsp;','type'=>'order'),
+				'status' => array('label'=>'Enabled','type'=>'boolean')
 			);
 	
 	var $practiceId = -1;
@@ -41,7 +41,7 @@ class EnumType_PerPractice extends EnumType_Default {
 
 			$enumerationId = EnforceType::int($_GET[0]);
 
-			if (isset($_GET['copy'])) {
+			if (isset($_GET['copyData'])) {
 				$db = new clniDB();
 				$sql = "select * from {$this->table} ev inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id where ev.enumeration_id = $enumerationId and evp.practice_id = $this->editingPracticeId order by sort, ev.enumeration_value_id";
 				$res = $db->execute($sql);
@@ -49,7 +49,7 @@ class EnumType_PerPractice extends EnumType_Default {
 				if ($res->EOF) {
 					$sql = "select ev.enumeration_value_id from enumeration_value ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null";
 					$res = $db->execute($sql);
-					if ($_GET['copy'] === 'true') {
+					if ($_GET['copyData'] === 'true') {
 						while($res && !$res->EOF) {
 							$ev =& Celini::newOrdo('EnumerationValue',$res->fields['enumeration_value_id']);
 							$ev->set('enumeration_value_id',0);
@@ -96,7 +96,7 @@ class EnumType_PerPractice extends EnumType_Default {
 		$sql = "select * from {$this->table} ev inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id where ev.enumeration_id = $enumerationId and evp.practice_id = $practiceId order by sort, ev.enumeration_value_id";
 
 		if ($practiceId === -1) {
-			$sql = "select * from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
+			$sql = "select *, ev.enumeration_value_id from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
 		}
 		$db = new clniDB();
 		$res = $db->execute($sql);
@@ -127,9 +127,18 @@ class EnumType_PerPractice extends EnumType_Default {
 		if (isset($data['enumeration_value_id'])) {
 			$id = $data['enumeration_value_id'];
 		}
+		$practiceId = EnforceType::int($this->editingPracticeId);
+
 		$ev =& ORDataObject::Factory($this->ordo,$id);
 		$ev->populate_array($data);
+
 		$ev->persist();
+		if ($practiceId > 0) {
+			$evp =& Celini::newOrdo('EnumerationValuePractice');
+			$evp->set('practice_id',$this->editingPracticeId);
+			$evp->set('enumeration_value_id',$ev->get('id'));
+			$evp->persist();
+		}
 	}
 
 	function widget() {
@@ -164,7 +173,7 @@ class EnumType_PerPractice extends EnumType_Default {
 			if (!inited[select.value]) {
 				copy = confirm("The practice \""+select.options[select.selectedIndex].text+"\" has no custom enumeration values, would you like to copy the default values to it?\n(OK will select the practice copying the values, Cancel will select the practice WITHOUT copying the values.)");
 			}
-			window.location = "'.Celini::link('edit',true,true,$this->enumerationId).'practiceId="+select.value+"&copy="+copy;
+			window.location = "'.Celini::link('edit',true,true,$this->enumerationId).'practiceId="+select.value+"&copyData="+copy;
 		}
 		</script>';
 		$ret .= "<div>Select a Practice to edit Enums for: <select name='practiceId' onchange='return selectPractice(this);'>"

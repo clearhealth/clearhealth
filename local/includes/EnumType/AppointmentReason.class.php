@@ -14,8 +14,8 @@ class EnumType_AppointmentReason extends EnumType_PerPractice {
 				'value' => array('label'=>'Value','size'=>15),
 				'extra1' => array('label'=>'Template','type'=>'AppointmentTemplate'),
 				'extra2' => false,
-				'sort' => array('label'=>'Order','type'=>'order'),
-				'status' => array('label'=>'Enabled?','type'=>'boolean')
+				'sort' => array('label'=>'Order&nbsp;','type'=>'order'),
+				'status' => array('label'=>'Enabled','type'=>'boolean')
 			);
 
 }

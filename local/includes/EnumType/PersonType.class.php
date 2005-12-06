@@ -11,10 +11,10 @@ class EnumType_PersonType extends EnumType_Default {
 				'enumeration_value_id' => array('type'=>'hidden'),
 				'key' 	=> array('label'=>'Key','size'=>5), 
 				'value' => array('label'=>'Value','size'=>15),
-				'extra1' => array('label'=>'Provider?','type'=>'boolean'),
+				'extra1' => array('label'=>'Provider','type'=>'boolean'),
 				'extra2' => false,
-				'sort' => array('label'=>'Order','type'=>'order'),
-				'status' => array('label'=>'Enabled?','type'=>'boolean')
+				'sort' => array('label'=>'Order&nbsp;','type'=>'order'),
+				'status' => array('label'=>'Enabled','type'=>'boolean')
 			);
 }
 ?>
