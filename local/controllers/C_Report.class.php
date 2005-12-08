@@ -124,11 +124,17 @@ class C_Report extends Controller {
 			$id = $this->report_id;
 		}
 		
-		$r = new Report($id);
+		$r =& Celini::newOrdo('Report',$id);
+
+		$manager =& Celini::enumManagerInstance();
+		if ($manager->enumExists('system_reports')) {
+			$sysReports = $manager->enumArray('system_reports','extra1','value');
+			$this->assign('systemReports',$sysReports);
+		}
 		
 		$this->assign("TOP_ACTION", Celini::link('edit',true,true,$id));
 		$this->assign("template_top", Celini::link('edit'));
-		$this->assign("report",$r);
+		$this->assign_by_ref("report",$r);
 		$this->assign("template_edit",Celini::link('edit_template'));
 		$this->assign("template_add",Celini::link("add_template")."report_id=$id");
 		$this->assign("templates",$r->get_templates());

@@ -24,7 +24,7 @@ class Report extends ORDataObject {
 	var $newTemplates = false;
 	var $deletedTemplates = false;
 
-	var $storage_metadata =  array('int' => array('show_sequence'=>0), 'date' => array(), 'string' => array(), 'text' => array());
+	var $storage_metadata =  array('int' => array('show_sequence'=>0), 'date' => array(), 'string' => array('system_report'=>''), 'text' => array());
 
 	/**
 	*	Constructor expects a reference to and adodb compliant db object.
@@ -256,7 +256,7 @@ class Report extends ORDataObject {
 			return array();
 		}
 		if ($this->templates === false) {
-			$res = $this->_db->execute("select * from report_templates where report_id = $this->id order by report_template_id");
+			$res = $this->dbHelper->execute("select * from report_templates where report_id = $this->id order by report_template_id");
 			$this->templates = array();
 			while($res && !$res->EOF) {
 				$this->templates[$res->fields['report_template_id']] = $res->fields;
@@ -264,8 +264,8 @@ class Report extends ORDataObject {
 			}
 			if (count($this->templates) == 0) {
 				// create a default template
-				$new_id = $this->_db->GenID("sequences");
-				$this->_db->execute("insert into report_templates values ($new_id,$this->id,'Default Template','Yes')");
+				$new_id = $this->dbHelper->nextId("sequences");
+				$this->dbHelper->execute("insert into report_templates values ($new_id,$this->id,'Default Template','Yes',10000)");
 				$this->templates = false;
 				$this->get_templates();
 			}
