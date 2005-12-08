@@ -300,13 +300,20 @@ class Report extends ORDataObject {
 		$this->description = $desc;
 	}
 
+	function get_query() {
+		if (empty($this->query)) {
+			return "select 'No Query Found' error";
+		}
+		return $this->query;
+	}
+
 	function set_query($query)
 	{
 		$this->query = $query;
 	}
 	function get_exploded_query() {
 		$ret = array();
-		$this->query = preg_replace('/\s/'," ",$this->query);
+		$this->query = preg_replace('/\s/'," ",$this->get('query'));
 		if (strstr($this->query,'---[')) {
 			$this->query = str_replace(array(" ---[","]--- "),array("\n---[","]---\n"),$this->query);
 			//var_dump($this->query);
