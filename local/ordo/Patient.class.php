@@ -162,6 +162,11 @@ class Patient extends MergeDecorator {
 		$return =& $this->person->numberByType($type,$value);
 		return $return;
 	}
+
+	function get_guarantor() {
+		$pp =& Celini::newOrdo('PersonPerson',array(0,$this->get('id')));
+		return $pp->get('guarantorPerson');
+	}
 	
 	/**
 	 * An alias to {@link Person::numberValueByType()}.
@@ -247,6 +252,24 @@ class Patient extends MergeDecorator {
 		if (isset($list[$loc])) {
 			return $list[$loc];
 		}
+	}
+
+	function get_defaultPractice() {
+		$ps =& ORDataObject::Factory('PatientStatistics',$this->get('id'));
+		$loc = $ps->get('registration_location');
+
+		if (empty($loc)) {
+			return Celini::newOrdo('Practice',$_SESSION['defaultpractice']);
+		}
+
+		$building =& Celini::newOrdo('Building',$loc);
+		return Celini::newOrdo('Practice',$building->get('practice_id'));
+	}
+
+	function &get_defaultProviderPerson() {
+		$user =& Celini::newOrdo('User',$this->get('default_provider'),'ById');
+		$pro =& Celini::newOrdo('Provider',$user->get('person_id'));
+		return $pro;
 	}
 }
 ?>

@@ -182,6 +182,21 @@ class Address extends ORDataObject {
 	    }
     	return $this->state;	
     }
+    function get_stateInitials() {
+    	return $this->get_state(true);
+    }
+    function get_printDisplay() {
+	    $line1 = $this->get('line1');
+	    $line2 = $this->get('line2');
+	    if (!empty($line2)) {
+		    $line2 = "<br>$line2";
+	    }
+	    $city = $this->get('city');
+	    $state = $this->get('stateInitials');
+	    $postal_code = $this->get('postal_code');
+	    $ret = "<div class='address'>$line1\n$line2\n<br>$city, $state $postal_code</div>";
+	    return $ret;
+    }
     function set_state($s) {
     	$this->state = $s;
     }

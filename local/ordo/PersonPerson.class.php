@@ -106,6 +106,17 @@ class PersonPerson extends ORDataObject {
 		return 0;
 	}
 
+	function get_guarantorPerson() {
+		$sql = "select related_person_id id from ".$this->tableName()." where person_id = ".$this->get('person_id')." order by guarantor_priority ASC limit 1";
+		$res = $this->dbHelper->execute($sql);
+		$id = 0;
+		if (!$res->EOF) {
+			$id = $res->fields['id'];
+		}
+		$ret =& Celini::newOrdo('Person',$id);
+		return $ret;
+	}
+
 	function get_nextGuarantorPriority() {
 		$sql = "select max(guarantor_priority) g from ".$this->tableName()." where person_id = ".$this->get('person_id');
 		$res = $this->dbHelper->execute($sql);

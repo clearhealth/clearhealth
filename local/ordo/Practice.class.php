@@ -337,6 +337,29 @@ class Practice extends ORDataObject{
 		return $p->numberList($this->id);
 	}
 
+	function get_billingAddress() {
+		$order = array("Billing","Main");
+		$addrs = $this->get('addresses');
+
+		$id = false;
+		foreach($order as $type) {
+			foreach($addrs as $addr) {
+				if ($addr['type'] == $type) {
+					$id = $addr['address_id'];
+					break;
+				}
+			}
+		}
+
+		if (!$id) {
+			if (count($addrs) > 0) {
+				$tmp = array_shift($addrs);
+				$id = $tmp['address_id'];
+			}
+		}
+		return Celini::newOrdo('Address',$id);
+	}
+
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Employee with this
 	 */
