@@ -77,7 +77,6 @@ function toggleCell(box) {
 				selectbox = document.forms.make_appointment_popup.getElementsByTagName('select').item(1);
         			for (index=0;index<selectbox.length; index++){
        					if (selectbox[index].value==box.getAttribute("user")) {
-						alert('selected index = '+index);
        						selectbox.selectedIndex=index;
         					break;
        					}
