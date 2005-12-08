@@ -1,0 +1,132 @@
+<div style="width: 7in">
+<table width="100%">
+	<tr>
+		<td><div>
+				{* logo goes here *}
+				<h3>{$practice->get('name')}</h3>
+		</div></td>
+		<td>
+
+			<table border=1 cellspacing=0 cellpadding=2>
+				<tr style="text-align:center;">
+					<td colspan=4><b>For questions regarding your account call:</b><br>555-555-1234</td>
+				</tr>
+				<tr>
+					<td><input type="checkbox">Visa</td>
+					<td><input type="checkbox">Mastercard</td>
+					<td><input type="checkbox">Discover</td>
+					<td><input type="checkbox">American Express</td>
+				</tr>
+				<tr>
+					<td colspan=3>Card Number:</td>
+					<td>Exp Date:</td>
+				</tr>
+				<tr>
+					<td colspan=3>Signature:</td>
+					<td>Check #:</td>
+				</tr>
+				<tr style="text-align:center; vertical-align:top">
+					<td>Statement<br>Date<br>{$statement_date}</td>
+					<td>Account<br>Number<br>#{$patient->get('record_number')}</td>
+					<td style="background-color: #ccc">Pay By<br><br>{$pay_by}</td>
+					<td>Amount Paid:<br><br>$_____________</td>
+				</tr>
+				<tr>
+					<td colspan=4 style="text-align:center; font-size: 90%">Statement #: {$statement_number}</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br>
+<table width="100%" style="text-align: center;vertical-align:top" >
+	<tr>
+		<td>
+<div>
+	<br>
+	<br>
+{$guarantor->get('last_name')} {$guarantor->get('first_name')}
+
+{$guarantorAddress->get('printDisplay')}
+</div>
+		</td>
+		<td>
+
+
+<div>
+	<i style="color: red;">Make Checks Payable and Mail to:</i><br>
+	<br>
+{$practice->get('name')}
+{$practiceAddress->get('printDisplay')}
+</div>
+		</td>
+	</tr>
+</table>
+<br>
+<div style="border-bottom: dashed 1px black; text-align:center;"><i>Please detach below and return TOP portion with payment. Thank you.</i></div>
+<br><br>
+
+<table><tr><td width="100%">
+Patient:
+{$patient->get('last_name')} {$patient->get('first_name')} #{$patient->get('record_number')}
+</td><td>
+Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
+</tr>
+<tr>
+	<td>Provider: {$provider->get('first_name')} {$provider->get('last_name')}, {$provider->get('salutation')}</td>
+	<td>Due&nbsp;Date:&nbsp;{$pay_by}</td>
+</tr>
+</table>
+<br><br>
+
+<table class="grid">
+	<tr>
+		<th>Date</th>
+		<th>Procedure</th>
+		<th>Prodcedure Code</th>
+		<th>Charges</th>
+		<th>Credits</th>
+		<th>Outstanding</th>
+	</tr>
+	{foreach from=$lines item=line key=key}
+	<tr {if $key%2 == 0}class="alt"{/if}>
+			<td>{$line.item_date}</td>
+			<td>{$line.code_text}</td>
+			<td>{$line.code}</td>
+			<td>{$line.charge}</td>
+			<td>{$line.credit}</td>
+			<td>{$line.outstanding}</td>
+		</tr>
+	{/foreach}
+	<tr>
+		<th colspan="3" style="background-color: #ccc">Total</th>
+		<td style="background-color: #ccc">{$total_charges|string_format:"%.2f"}</td>
+		<td style="background-color: #ccc">{$total_credits|string_format:"%.2f"}</td>
+		<td style="background-color: #ccc">{$total_outstanding|string_format:"%.2f"}</td>
+	</tr>
+</table>
+
+<br><br>
+
+<table border=1 cellspacing=0 cellpadding=2 style="text-align:center">
+	<tr>
+		<td colspan=5>
+			Account Aging
+		</td>
+	<tr>
+		<td>Current<br>${$aging[0]|string_format:"%.2f"}</td>
+		<td>31-60 Days<br>${$aging[30]|string_format:"%.2f"}</td>
+		<td>61-90 Days<br>${$aging[60]|string_format:"%.2f"}</td>
+		<td>91-120 Days<br>${$aging[90]|string_format:"%.2f"}</td>
+		<td>Over 121 Days<br>${$aging[120]|string_format:"%.2f"}</td>
+	</tr>
+</table>
+<br><br>
+
+<table border=1 cellspacing=0 cellpadding=2>
+	<tr style="text-align: center">
+		<td>Total Account Balance<br>${$total_account_balance}</td>
+		<td>Insurance Pending<br>${$insurance_pending}</td>
+		<td style="background-color:#ccc">Current Balance Due<br>${$current_balance_due}</td>
+	</tr>
+</table>

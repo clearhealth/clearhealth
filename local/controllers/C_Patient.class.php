@@ -114,7 +114,10 @@ class C_Patient extends Controller {
 		return $this->view->render("list.html");
 	}
 
-	function actionStatement_view($patientId) {
+	function actionStatement_view($patientId = false) {
+		if (!$patientId) {
+			$patientId = $this->get('patient_id');
+		}
 		EnforceType::int($patientId);
 
 		$p =& Celini::newOrdo('Patient',$patientId);
@@ -322,6 +325,9 @@ class C_Patient extends Controller {
 		}
 		$this->assign('aging',$aging);
 
+		if (isset($this->noRender) && $this->noRender === true) {
+			return "statement.html";
+		}
 		return $this->view->render("statement.html");
 	}
 }
