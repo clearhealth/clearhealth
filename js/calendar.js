@@ -36,7 +36,10 @@ function toggleCell(box) {
         }
         else {
         	newColor = '#ffffff';
-        	dt = new Date(box.value*1000);
+        	dt = new Date((box.value*1000) + (timeZoneAdjust*60*1000));
+
+
+
         	//alert(dt.toGMTString());
         	document.forms.make_appointment.date.value = (dt.getMonth()+1) + "/" + dt.getDate() + "/" + (dt.getFullYear());
         	document.forms.make_appointment_popup.date.value = (dt.getMonth()+1) + "/" + dt.getDate() + "/" + (dt.getFullYear());
