@@ -82,6 +82,9 @@ Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
 <table class="grid">
 	<tr>
 		<th>Date</th>
+		{if $familyStatement}
+		<th>Patient</th>
+		{/if}
 		<th>Procedure</th>
 		<th>Prodcedure Code</th>
 		<th>Charges</th>
@@ -91,6 +94,9 @@ Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
 	{foreach from=$lines item=line key=key}
 	<tr {if $key%2 == 0}class="alt"{/if}>
 			<td>{$line.item_date}</td>
+			{if $familyStatement}
+			<td>{$line.patient_name}</td>
+			{/if}
 			<td>{$line.code_text}</td>
 			<td>{$line.code}</td>
 			<td>{$line.charge}</td>
@@ -99,7 +105,7 @@ Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
 		</tr>
 	{/foreach}
 	<tr>
-		<th colspan="3" style="background-color: #ccc">Total</th>
+		<th colspan="{if $familyStatement}4{else}3{/if}" style="background-color: #ccc">Total</th>
 		<td style="background-color: #ccc">{$total_charges|string_format:"%.2f"}</td>
 		<td style="background-color: #ccc">{$total_credits|string_format:"%.2f"}</td>
 		<td style="background-color: #ccc">{$total_outstanding|string_format:"%.2f"}</td>

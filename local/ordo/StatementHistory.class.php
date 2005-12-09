@@ -19,6 +19,7 @@ class StatementHistory extends ORDataObject {
 	 * Fields of table: statement_history mapped to class members
 	 */
 	var $id			= '';
+	var $patient_id		= '';
 	var $statement_number	= false;
 	var $date_generated	= false;
 	var $amount		= '';
@@ -74,7 +75,7 @@ class StatementHistory extends ORDataObject {
 	}
 	function get_date_generated() {
 		if ($this->date_generated === false) {
-			$this->_setDate('date_generated', date('Y-m-d'));
+			$this->_setDate('date_generated', date('Y-m-d H:i:s'));
 		}
 		return $this->_getDate('date_generated');
 	}

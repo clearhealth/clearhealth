@@ -114,7 +114,14 @@ class C_Patient extends Controller {
 		return $this->view->render("list.html");
 	}
 
-	function actionStatement_view($patientId = false) {
+	function actionFamilyStatement_view($patientId = false) {
+		return $this->actionStatement_view($patientId,true);
+	}
+
+	/**
+	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
+	 */
+	function actionStatement_view($patientId = false,$includeDependants=false) {
 		if (!$patientId) {
 			$patientId = $this->get('patient_id');
 		}
@@ -165,6 +172,16 @@ class C_Patient extends Controller {
 		$db = new clniDb();
 		$format = DateObject::getFormat();
 
+		$patientSelectSql = "
+		e.patient_id = $patientId
+		";
+		$this->assign('familyStatement',false);
+		if ($includeDependants) {
+			$patientSelectSql = "(e.patient_id =$patientId or e.patient_id 
+				in(select person_id from person_person where related_person_id = $patientId and guarantor = 1))";
+			$this->assign('familyStatement',true);
+		}
+
 		$encounterBalanceSql = "
 		select
 			feeData.encounter_id,
@@ -180,7 +197,7 @@ class C_Patient extends Controller {
 				inner join clearhealth_claim cc using(encounter_id)
 				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
 			where
-				e.patient_id = $patientId
+				$patientSelectSql
 			group by
 				e.encounter_id
 			) feeData
@@ -196,7 +213,7 @@ class C_Patient extends Controller {
 				inner join payment p on cc.claim_id = p.foreign_id
 				inner join payment_claimline pl on p.payment_id = pl.payment_id
 			where
-				e.patient_id = $patientId
+				$patientSelectSql
 			group by
 				e.encounter_id
 			) paymentData on feeData.encounter_id = paymentData.encounter_id
@@ -229,16 +246,18 @@ class C_Patient extends Controller {
 			cc.total_billed charge,
 			0.00 credit,
 			0.00 outstanding,
-			e.encounter_id
+			e.encounter_id,
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
 			inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
+			inner join person pr on e.patient_id = pr.person_id
 		where
 			(e.status = 'billed' or e.status = 'closed') and
-			e.patient_id = $patientId and balance > 0
+			$patientSelectSql and balance > 0
 		";
 
 		// payments from co-pays
@@ -251,16 +270,18 @@ class C_Patient extends Controller {
 			0.00 charge,
 			(pl.paid+pl.writeoff) credit,
 			0.00 outstanding,
-			e.encounter_id
+			e.encounter_id,
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
 			inner join payment p on e.encounter_id = p.encounter_id
 			inner join payment_claimline pl using(payment_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
+			inner join person pr on e.patient_id = pr.person_id
 		where
 			(e.status = 'billed' or e.status = 'closed') and
-			e.patient_id = $patientId
+			$patientSelectSql
 			and balance > 0
 		";
 
@@ -274,7 +295,8 @@ class C_Patient extends Controller {
 			0 charge,
 			(pl.paid+pl.writeoff) credit,
 			0.00,
-			e.encounter_id
+			e.encounter_id,
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
@@ -282,9 +304,11 @@ class C_Patient extends Controller {
 			inner join payment_claimline pl using(payment_id)
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
+			inner join person pr on e.patient_id = pr.person_id
 		where
 			(e.status = 'billed' or e.status = 'closed') and
-			e.patient_id = $patientId and p.encounter_id = 0
+			$patientSelectSql
+			and p.encounter_id = 0
 			and balance > 0
 		) data
 		order by encounter_id DESC , item_date
