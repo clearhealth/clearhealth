@@ -24,6 +24,14 @@ id = day.getTime();
 eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=' + width + ',height=' + height + ',left = 400,top = 150');");
 }
 
+{/literal}
+var serverTimeOffset = {php}echo (date('Z')/60)*-1{/php};
+{literal}
+var d = new Date();
+var timeZoneAdjust = 0;
+if (d.getTimezoneOffset() != serverTimeOffset) {
+	timeZoneAdjust = d.getTimezoneOffset() - serverTimeOffset;
+}
 </script>
  
 {/literal}
