@@ -54,7 +54,7 @@
 				{if $ev.creator_nickname}
 					<br />Entered by: {$ev.creator_nickname} - {$ev.timestamp|date_format:"%m/%d/%Y"}
 				{else}
-					<br />Entered by Username: {$ev.creator_username} - {$ev.timestamp|date_format:"%m/%d/%Y"}
+					<br />Entered by: {$ev.creator_username} - {$ev.timestamp|date_format:"%m/%d/%Y"}
 				{/if}
 				{if $ev.last_change_nickname}
 					<br>Last Edit: {$ev.last_change_nickname} - {$ev.last_change|date_format:"%m/%d/%Y %H:%M:%S"}
