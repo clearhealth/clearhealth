@@ -400,12 +400,21 @@ class C_Encounter extends Controller {
 		return $this->actionEdit($encounter->get('id'));
 	}
 
-	function actionRouteSlip_view($encounterId) {
+	function actionRouteSlip_view($encounterId = false) {
+		if ($encounterId == false) {
+			$encounterId = $this->get('encounter_id');
+		}
 		$rs =& Celini::newOrdo('RouteSlip');
 		$rs->set('encounter_id',$encounterId);
 		$rs->persist();
 
-		return "Route Slip Report";
+		$this->view->assign('route_slip_id',$rs->get('id'));
+
+			if (isset($this->noRender) && $this->noRender === true) {
+			return "routeSlip.html";
+		}
+		return $this->view->render("routeSlip.html");
+
 	}
 }
 ?>
