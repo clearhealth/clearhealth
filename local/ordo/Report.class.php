@@ -55,6 +55,17 @@ class Report extends ORDataObject {
 		}
 	}
 
+	function setupBySystemName($name) {
+		$name = $this->dbHelper->quote($name);
+		$sql = "select foreign_key from storage_string where value_key = 'system_report' and valu = $name";
+
+		$res = $this->dbHelper->execute($sql);
+
+		if (!$res->EOF) {
+			$this->helper->populateFromResults($this,$res);
+		}
+	}
+
 	function getReportDs() {
 		$ds =& new Datasource_sql();
 
