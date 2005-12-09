@@ -28,7 +28,7 @@ class CalendarController extends Controller {
 		}
 		if (count($templates) > 0) {
 			$p = Celini::newOrdo('Person');
-			$ptList =& $manager->enumList('person_type');
+			$ptList = $manager->enumList('person_type');
 			$plist = array();
 			for($ptList->rewind();$ptList->valid();$ptList->next()) {
 				$row = $ptList->current();
