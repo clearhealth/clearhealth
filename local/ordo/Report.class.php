@@ -57,7 +57,7 @@ class Report extends ORDataObject {
 
 	function setupBySystemName($name) {
 		$name = $this->dbHelper->quote($name);
-		$sql = "select foreign_key from storage_string where value_key = 'system_report' and valu = $name";
+		$sql = "select foreign_key from storage_string where value_key = 'system_report' and value = $name";
 
 		$res = $this->dbHelper->execute($sql);
 
