@@ -399,5 +399,13 @@ class C_Encounter extends Controller {
 		$this->_state = false;
 		return $this->actionEdit($encounter->get('id'));
 	}
+
+	function actionRouteSlip_view($encounterId) {
+		$rs =& Celini::newOrdo('RouteSlip');
+		$rs->set('encounter_id',$encounterId);
+		$rs->persist();
+
+		return "Route Slip Report";
+	}
 }
 ?>
