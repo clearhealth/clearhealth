@@ -59,6 +59,10 @@ class C_OccurenceBreakdown extends Controller {
 					$ob->set('id',$key);
 				}
 				$ob->persist();
+
+				if (isset($row['remove'])) {
+					$ob->drop();
+				}
 			}
 		}
 	}

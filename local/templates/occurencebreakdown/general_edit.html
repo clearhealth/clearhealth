@@ -5,6 +5,12 @@
 		return false;
 	}
 	function remove(button) {
+		var rem = document.createElement('input');
+		var id = button.parentNode.getElementsByTagName('input').item(0);
+		rem.name = id.name.replace('title','remove');
+		rem.value = '1';
+		rem.type = 'hidden';
+		button.parentNode.parentNode.appendChild(rem);
 		button.parentNode.parentNode.removeChild(button.parentNode);
 		return false;
 	}
