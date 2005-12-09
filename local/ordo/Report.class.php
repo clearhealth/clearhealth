@@ -62,7 +62,7 @@ class Report extends ORDataObject {
 		$res = $this->dbHelper->execute($sql);
 
 		if (!$res->EOF) {
-			$this->helper->populateFromResults($this,$res);
+			$this->setup($res->fields['foreign_key']);
 		}
 	}
 
