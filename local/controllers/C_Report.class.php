@@ -219,7 +219,7 @@ class C_Report extends Controller {
 				// generate a default template
 				$r = new Report($report_id);
 				$template_id = $r->generateDefaultTemplate();
-				$this->download_template_action_edit($template_id,$report_id);
+				$this->actionDownload_template_edit($template_id,$report_id);
 			}
 		}
 	}

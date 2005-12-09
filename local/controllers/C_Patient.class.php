@@ -145,6 +145,7 @@ class C_Patient extends Controller {
 
 		$sh =& Celini::newOrdo('StatementHistory');
 		$sh->set('patient_id',$patientId);
+		$sh->set('type',1); // 1 is for print 2 is for preview
 		$sh->persist();
 
 		$this->assign('statement_date',$sh->get('date_generated'));
@@ -317,6 +318,7 @@ class C_Patient extends Controller {
 		$this->assign('current_balance_due',number_format($balance,2));
 
 		$sh->set('amount',$balance);
+		$sh->persist();
 
 		$res = $db->execute($agingSql);
 		while($res && !$res->EOF) {
