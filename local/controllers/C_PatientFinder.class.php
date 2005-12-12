@@ -261,7 +261,10 @@ class C_PatientFinder extends Controller {
 		
 		$sqland=$sql . implode(' AND ',$sqls);
 		$sqlor=$sql . implode(' OR ',$sqls);
-
+		if($GLOBALS['namesearch']==true){
+			$sqland.=' ORDER BY last_name ASC';
+			$sqlor.=' ORDER BY last_name ASC';
+		}
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
 		}
@@ -341,6 +344,7 @@ class C_PatientFinder extends Controller {
 	*    should you attempt to match as many as you can guess
 	*/
 	function smart_search($search_string){
+		$GLOBALS['namesearch']=false;
 		//var_dump($search_string);
 		$searcharray=explode(" ",$search_string);
 		for($x=0;$x<count($searcharray);$x++){
@@ -350,6 +354,7 @@ class C_PatientFinder extends Controller {
 			   strpos($searcharray[$x],'-')!==FALSE 
 			   && !ereg('^[0-9].*',$searcharray[$x]) // match date,ssn,etc
 				){
+				$GLOBALS['namesearch']=true;
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
 				$search=explode("-",$searcharray[$x]);
 				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."' OR last_name LIKE '".$search[0]."')\n";
@@ -379,9 +384,10 @@ class C_PatientFinder extends Controller {
 			}
 			// internal ID
 			elseif (preg_match('/^[0-9]+$/', $searcharray[$x])) {
-				$sqls[] = 'record_number = ' . (int)$searcharray[$x];
+				$sqls[] = "record_number = '" . (int)$searcharray[$x]."'";
 			} else {
 			// Regular name
+				$GLOBALS['namesearch']=true;
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
 				$sqls[]="(first_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '%-".$searcharray[$x]."%')";
 			}
