@@ -352,7 +352,7 @@ class C_PatientFinder extends Controller {
 				){
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
 				$search=explode("-",$searcharray[$x]);
-				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."')\n";
+				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."' OR last_name LIKE '".$search[0]."')\n";
 			} elseif(ereg('^[0-9]{1,2}[-\/][0-9]{1,2}[-\/][0-9]{2,4}$',$searcharray[$x]) ||
 			   ereg('^[0-9]{4}[-\/][0-9]{1,2}[-\/][0-9]{1,2}$',$searcharray[$x])){
 			// Date of birth
@@ -383,7 +383,7 @@ class C_PatientFinder extends Controller {
 			} else {
 			// Regular name
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
-				$sqls[]="(first_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '".$searcharray[$x]."%')";
+				$sqls[]="(first_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '%-".$searcharray[$x]."%')";
 			}
 		}
 		return($sqls);
