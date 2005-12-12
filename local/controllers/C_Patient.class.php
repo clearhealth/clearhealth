@@ -15,7 +15,6 @@ class C_Patient extends Controller {
 	var $patient_statistics_id = 0;
 
 
-
 	/**
 	 * Edit/Add an Patient
 	 *
@@ -38,6 +37,7 @@ class C_Patient extends Controller {
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$patient_id);
+
 
 		$nameHistoryGrid =& new cGrid($person->loadDatasource('NameHistoryList'));
 		$nameHistoryGrid->name = "nameHistoryGrid";
@@ -118,6 +118,15 @@ class C_Patient extends Controller {
 		return $this->actionStatement_view($patientId,true);
 	}
 
+	function _ordoSnap($name,&$ordo) {
+		if (isset($this->data['ordo'][$name])) {
+			$ordo->populateArray($this->data['ordo'][$name]);
+		}
+		else {
+			$this->data['ordo'][$name] = $ordo->helper->persistToArray($ordo);
+		}
+	}
+
 	/**
 	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
 	 */
@@ -127,10 +136,25 @@ class C_Patient extends Controller {
 		}
 		EnforceType::int($patientId);
 
+		$fromSnapshot = false;
+		if ($this->GET->get('snapshot') == 'true') {
+			$rs =& Celini::newOrdo('ReportSnapshot');
+			$this->view->rs =& $rs;
+			$this->data = array();
+			$this->data['ordo'] = array();
+		}
+		else if ($this->GET->exists('fromSnapshot')) {
+			$rs =& Celini::newOrdo('reportSnapshot',$this->GET->get('fromSnapshot'));
+			$this->data = unserialize($rs->get('data'));
+			$fromSnapshot = true;
+		}
+
 		$p =& Celini::newOrdo('Patient',$patientId);
+		$this->_ordoSnap('Patient',$p);
 		$this->view->assign_by_ref('patient',$p);
 
 		$g =& $p->get('guarantor');
+		$this->_ordoSnap('Guarantor',$g);
 		if ($g->isPopulated()) {
 			$this->view->assign_by_ref('guarantor',$g);
 			$this->view->assign_by_ref('guarantorAddress',$g->address());
@@ -139,21 +163,30 @@ class C_Patient extends Controller {
 			$this->view->assign_by_ref('guarantor',$p);
 			$this->view->assign_by_ref('guarantorAddress',$p->address());
 		}
+		$this->_ordoSnap('Guarantor',$g);
 
 		
 		$pro =& $p->get('defaultProviderPerson');
+		$this->_ordoSnap('defaultProviderPerson',$pro);
 		$this->view->assign_by_ref('provider',$pro);
 
 		$practice =& $p->get('defaultPractice');
+		$this->_ordoSnap('defaultPractice',$practice);
 		$this->view->assign_by_ref('practice',$practice);
+
 		$practiceAddress =& $practice->get('billingAddress');
+		$this->_ordoSnap('practiceAddress',$practiceAddress);
 		$this->view->assign_by_ref('practiceAddress',$practiceAddress);
 
 
 		$sh =& Celini::newOrdo('StatementHistory');
+		$this->_ordoSnap('StatementHistory',$sh);
 		$sh->set('patient_id',$patientId);
 		$sh->set('type',1); // 1 is for print 2 is for preview
-		$sh->persist();
+
+		if (!$fromSnapshot) {
+			$sh->persist();
+		}
 
 		$this->assign('statement_date',$sh->get('date_generated'));
 		$this->assign('statement_number',$sh->get('statement_number'));
@@ -170,6 +203,82 @@ class C_Patient extends Controller {
 
 
 		$db = new clniDb();
+
+		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
+
+		$res = $db->execute($sql);
+
+		$lines = array();
+		$total_charges = 0;
+		$total_credits = 0;
+		$total_outstanding = 0;
+		while($res && !$res->EOF) {
+			$total_charges += $res->fields['charge'];
+			$total_credits += $res->fields['credit'];
+			$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
+			$lines[] = $res->fields;
+			$res->MoveNext();
+		}
+
+		if ($fromSnapshot && isset($this->data['ordo']['lines'])) {
+			$lines = $this->data['ordo']['lines'];
+		}
+		else {
+			$this->data['ordo']['lines'] = $lines;
+		}
+
+		if ($fromSnapshot && isset($this->data['ordo']['balance'])) {
+			$total_charges = $this->data['ordo']['balance']['total_charges'];
+			$total_credits = $this->data['ordo']['balance']['total_credits'];
+			$total_outstanding = $this->data['ordo']['balance']['total_outstanding'];
+		}
+		else {
+			$this->data['ordo']['balance']['total_charges'] = $total_charges;
+			$this->data['ordo']['balance']['total_credits'] = $total_credits;
+			$this->data['ordo']['balance']['total_outstanding'] = $total_outstanding;
+		}
+
+		$this->assign('lines',$lines);
+
+		$balance = $total_charges-$total_credits;
+
+		$this->assign('total_charges',$total_charges);
+		$this->assign('total_credits',$total_credits);
+		$this->assign('total_outstanding',$balance);
+		
+		$this->assign('total_account_balance',number_format($balance,2));
+		$this->assign('insurance_pending',number_format(0,2));
+		$this->assign('current_balance_due',number_format($balance,2));
+
+		$sh->set('amount',$balance);
+		$sh->persist();
+
+		$res = $db->execute($agingSql);
+		while($res && !$res->EOF) {
+			$aging[$res->fields['period']] += $res->fields['balance'];
+			$res->MoveNext();
+		}
+
+		if ($fromSnapshot && isset($this->data['ordo']['aging'])) {
+			$aging = $this->data['ordo']['aging'];
+		}
+		else {
+			$this->data['ordo']['aging'] = $aging;
+		}
+
+		$this->assign('aging',$aging);
+
+		if (isset($rs)) {
+			$rs->set('data',serialize($this->data));
+		}
+
+		if (isset($this->noRender) && $this->noRender === true) {
+			return "statement.html";
+		}
+		return $this->view->render("statement.html");
+	}
+
+	function _genPatientStatementSql($patientId,$includeDependants) {
 		$format = DateObject::getFormat();
 
 		$patientSelectSql = "
@@ -313,48 +422,7 @@ class C_Patient extends Controller {
 		) data
 		order by encounter_id DESC , item_date
 		";
-
-
-		$res = $db->execute($sql);
-
-		$lines = array();
-		$total_charges = 0;
-		$total_credits = 0;
-		$total_outstanding = 0;
-		while($res && !$res->EOF) {
-			$total_charges += $res->fields['charge'];
-			$total_credits += $res->fields['credit'];
-			$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
-			$lines[] = $res->fields;
-			$res->MoveNext();
-		}
-
-		$this->assign('lines',$lines);
-
-		$balance = $total_charges-$total_credits;
-
-		$this->assign('total_charges',$total_charges);
-		$this->assign('total_credits',$total_credits);
-		$this->assign('total_outstanding',$balance);
-		
-		$this->assign('total_account_balance',number_format($balance,2));
-		$this->assign('insurance_pending',number_format(0,2));
-		$this->assign('current_balance_due',number_format($balance,2));
-
-		$sh->set('amount',$balance);
-		$sh->persist();
-
-		$res = $db->execute($agingSql);
-		while($res && !$res->EOF) {
-			$aging[$res->fields['period']] += $res->fields['balance'];
-			$res->MoveNext();
-		}
-		$this->assign('aging',$aging);
-
-		if (isset($this->noRender) && $this->noRender === true) {
-			return "statement.html";
-		}
-		return $this->view->render("statement.html");
+		return array($sql,$agingSql);
 	}
 }
 ?>

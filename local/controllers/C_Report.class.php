@@ -7,17 +7,16 @@
 
 /**
 */
-require_once CELINI_ROOT . "/controllers/Controller.class.php";
-require_once APP_ROOT . "/local/ordo/Report.class.php";
-require_once APP_ROOT . "/local/ordo/MenuReport.class.php";
-require_once CELINI_ROOT . "/includes/Pager.class.php";
-require_once CELINI_ROOT . "/includes/ReportFilter.class.php";
-require_once CELINI_ROOT . "/includes/Grid.class.php";
-require_once CELINI_ROOT . "/includes/Datasource_sql.class.php";
+$loader->requireOnce("ordo/MenuReport.class.php");
+$loader->requireOnce("/includes/Pager.class.php");
+$loader->requireOnce("/includes/ReportFilter.class.php");
+$loader->requireOnce("/includes/Grid.class.php");
+$loader->requireOnce("/includes/Datasource_sql.class.php");
 
 
 /**
 *
+* @todo switch jpspan usage to html_ajax
 */
 class C_Report extends Controller {
 
@@ -44,12 +43,12 @@ class C_Report extends Controller {
 		$this->assign("EDIT_ACTION", Celini::link('edit'));
 		$this->assign("VIEW_ACTION", Celini::link('view'));
 
-		$r =& ORDataObject::factory('Report');
+		$r =& Celini::newOrdo('Report');
 
 		$reports = new cGrid($r->getReportDs());
 		$this->assign("reports",$reports);
 
-		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_list.html"));
+		return $this->view->render("list.html");
 	}
 
 	/**
@@ -59,7 +58,7 @@ class C_Report extends Controller {
 		$this->assign("FORM_ACTION", Celini::link('connect'));
 		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
-		$r = new Report();
+		$r = Celini::newOrdo('Report');
 		$r->set_id(663);
 
 		$this->assign("report",$r);
@@ -69,7 +68,7 @@ class C_Report extends Controller {
 		//$mr = new MenuReport();
 		//var_dump($mr->getMenuList(7,true));
 
-		return $this->fetch(Celini::getTemplatePath("/report/" . $this->template_mod . "_connect.html"));
+		return $this->view->render("connect.html");
 	}
 
 	/**
@@ -77,7 +76,7 @@ class C_Report extends Controller {
 	*/
 	function actionRemote_edit() {
 		$S = & new JPSpan_Server_PostOffice();
-		$S->addHandler(new Report());
+		$S->addHandler(Celini::newOrdo('Report'));
 		$S->addHandler(new MenuReport());
 		$l = Celini::link('remote',false,'util');
 		$S->setServerUrl(substr($l,0,strlen($l)-1));
@@ -165,7 +164,7 @@ class C_Report extends Controller {
 		if ($_POST['process'] != "true") {
 			return;
 		}
-		$report = new Report($id);
+		$report =& Celini::newOrdo('Report',$id);
 		$report->populate_array($_POST);
 		if (isset($_POST['new_templates'])) {
 			$report->newTemplates = $_POST['new_templates']; 
@@ -217,7 +216,7 @@ class C_Report extends Controller {
 			}
 			else {
 				// generate a default template
-				$r = new Report($report_id);
+				$r = Celini::newOrdo('Report',$report_id);
 				$template_id = $r->generateDefaultTemplate();
 				$this->actionDownload_template_edit($template_id,$report_id);
 			}
