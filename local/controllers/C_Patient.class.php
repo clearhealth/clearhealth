@@ -137,7 +137,7 @@ class C_Patient extends Controller {
 		EnforceType::int($patientId);
 
 		$fromSnapshot = false;
-		if ($this->GET->get('snapshot') == 'true') {
+		if ($this->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) {
 			$rs =& Celini::newOrdo('ReportSnapshot');
 			$this->view->rs =& $rs;
 			$this->data = array();
