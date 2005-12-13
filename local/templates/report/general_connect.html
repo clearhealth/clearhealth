@@ -85,18 +85,18 @@
 </script>
 {/literal}
 <form name="report" id="h3sForm" method="post" action="{$FORM_ACTION}" enctype="multipart/form-data" onSubmit="return false;">
-	<fieldset>
-		<fieldset class="radio">
+		<fieldset class="radio" style="vertical-align:top">
 			<legend>{l}Select Menu Section{/l}</legend>
+			<div style="float:left">
 			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
-					{if $notfirst}<br>{/if}
-					{assign var=notfirst value=1}
+				</div><div style="float:left; padding: 3px;">
 					<b>{$menu}</b><br>
 				{else}
 				<input onclick="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}"><label class="cb" for="r{$menu_id}">{$menu}</label><br>
 				{/if}
 			{/foreach}
+			</div>
 		</fieldset>
 
 		<fieldset class="radio" id="update" style="display:none">
@@ -126,5 +126,4 @@
 				</table>
 			</div>
 		</fieldset>
-	</fieldset>
 </form>
