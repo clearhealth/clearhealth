@@ -1,0 +1,189 @@
+body {
+	margin: 0;
+	padding: 0;
+	background-color: white;
+	font-family: sans-serif;
+	font-size: 10px;
+}
+a { 
+	color: rgb(0, 51, 204);
+}
+
+a:hover { 
+	background-color: #ddd;
+}
+
+a img {
+	border: 0;
+}
+
+table.grid th { padding: 2px;
+	background-color: transparent;
+	vertical-align: bottom;
+	white-space: nowrap;
+}
+table.grid td {
+	margin: 2px;
+	padding: 1px 1px 1px 5px;
+	background-color: white;
+}
+
+table.grid tr.alt td { background-color: #ddd;
+}
+
+table.grid tr.waiting td { background-color: #aaa;
+}
+table.grid a.orderLink {
+	color: #ccc;
+}
+table.grid a.orderLink:hover {
+    color: rgb(0, 51, 204);
+}
+
+/* Form rules */
+.clniAlert {
+	background-color: #CC9999;
+}
+.clniMessageActive {
+	padding: 5px;
+	margin-bottom: 5px;
+	background-color: #CC9999;
+	border: 2px solid rgb(153, 153, 153); 
+	width: 325px;
+}
+
+div.waiting {
+	display: none;
+}
+div.waitingActive {
+	display: block;
+	position: absolute;
+	text-align: center;
+	vertical-align: middle;
+	width: 100%;
+	background-color: white;
+	border: solid 2px black;
+	font-weight: bold;
+}
+
+/* Auto complete rules */
+.AutoCompleteBackground
+{
+        background-color: white;
+	z-index: 10;
+}
+.AutoCompleteHighlight {
+        background-color: #CCCCCC !important;
+}
+.AutoCompleteMatchingText {
+        background-color: yellow !important;
+}
+.tooltip {
+	text-decoration: none;
+}
+.dashedLink {
+	text-decoration: none;
+	border-bottom: dotted 1px #333;
+}
+
+/* Default Layout Rules */
+#header {
+	border-bottom: solid 1px gray;
+}
+#nav {
+	font-size: 75%;
+	vertical-align: top;
+}
+#body {
+	vertical-align: top;
+	font-size: 10px;
+}
+
+/* grid links */
+table.grid { empty-cells: show;
+}
+
+
+#sections {
+	margin-top: -2px;
+	font-size: 10px;
+}
+#sections a {
+	font-size: 10px;
+}
+#header {
+	height: 13px;
+}
+#username {
+	float: right;
+	padding-right: 4px;
+}
+#selectedItem {
+	left: 120px;
+	top: 0px;
+	background-color: white;
+	position: absolute;
+	font-size:8px;
+}
+#selectedItem a {
+	font-size:8px;
+}
+
+/* clearhealth.css stuff */
+div.clear {
+ clear: both;
+}
+.gridInput {
+ width: 10pt;
+}
+.sectionCalendar {
+ background-color: #FFFFE6 !important;
+}
+.sectionPatient  {
+ background-color: #BFCFFF !important;
+}
+.sectionBilling  {
+ background-color: #E6FFBF !important;
+}
+.sectionAdministration  {
+ background-color: #FFDFBF !important;
+}
+
+/* nav stuff */
+#nav {
+	position: absolute;
+	left: 5px;
+	top: 15px;
+	height: 300px;
+	width: 95%;
+	background-color: white;
+	border: solid 1px black;
+	font-size: 10px;
+}
+
+#nav ul {
+	margin: 0px;
+	padding: 0px;
+}
+#nav li {
+	display: inline;
+}
+
+/* size junk */
+table td {
+	font-size: 10px;
+}
+table th {
+	font-size: 10px;
+}
+
+input, select, textarea{
+	font-size: 9px;
+	margin: 0px;
+	padding: 0px;
+}
+
+fieldset {
+	margin: 1px;
+	padding: 2px;
+}
