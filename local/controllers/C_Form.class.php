@@ -110,7 +110,7 @@ class C_Form extends Controller {
 			$this->assign_by_ref('data',$data);
 			$this->secure_dir[] = APP_ROOT."/user/form/";
 		}
-		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_fillout.html"));
+		return $this->view->render("fillout.html");
 	}
 
 	function processFillout_edit($form_id = 0, $form_data_id = 0) {

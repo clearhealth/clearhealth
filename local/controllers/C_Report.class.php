@@ -32,7 +32,7 @@ class C_Report extends Controller {
 	* If no action is specified use the list action
 	*/
 	function default_action_view() {
-		return $this->list_action_view();
+		return $this->actionView();
 	}
 
 	/**
