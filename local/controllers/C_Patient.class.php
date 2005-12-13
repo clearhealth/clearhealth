@@ -137,10 +137,15 @@ class C_Patient extends Controller {
 		EnforceType::int($patientId);
 
 
-		$r =& Celini::newOrdo('Report',$this->GET->get('report_id'));
+		$reportId = $this->GET->get('report_id');
+		if (!$reportId) {
+			$reportId = $_GET[0];
+		}
+		$r =& Celini::newOrdo('Report',$reportId);
 		$fromSnapshot = false;
 		if ($this->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) {
 			$rs =& Celini::newOrdo('ReportSnapshot');
+			$rs->persist();
 			$this->view->rs =& $rs;
 			$this->data = array();
 			$this->data['ordo'] = array();
@@ -185,6 +190,9 @@ class C_Patient extends Controller {
 		$this->_ordoSnap('StatementHistory',$sh);
 		$sh->set('patient_id',$patientId);
 		$sh->set('type',1); // 1 is for print 2 is for preview
+		if (isset($rs)) {
+			$sh->set('report_snapshot_id',$rs->get('id'));
+		}
 
 		if (!$fromSnapshot) {
 			$sh->persist();

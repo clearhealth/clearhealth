@@ -20,6 +20,7 @@ class StatementHistory extends ORDataObject {
 	 */
 	var $id			= '';
 	var $patient_id		= '';
+	var $report_snapshot_id = '';
 	var $statement_number	= false;
 	var $date_generated	= false;
 	var $amount		= '';
