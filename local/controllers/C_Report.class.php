@@ -65,6 +65,18 @@ class C_Report extends Controller {
 
 		$menu = Menu::getInstance();
 		$this->assign_by_ref('menu',$menu);
+
+		$sections = $menu->toDisplayArray();
+
+		$em =& Celini::enumManagerInstance();
+		if ($em->enumExists('chronic_care_codes')) {
+			$chronicCodes = $em->enumArray('chronic_care_codes','enumeration_value_id','value');
+			$sections['ss-chronic'] = 'Chronic Care Codes';
+			foreach($chronicCodes as $key => $val) {
+				$sections[$key] = $val;
+			}
+		}
+		$this->assign('sections',$sections);
 		//$mr = new MenuReport();
 		//var_dump($mr->getMenuList(7,true));
 

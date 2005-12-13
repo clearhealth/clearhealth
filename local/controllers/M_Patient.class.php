@@ -87,6 +87,32 @@ class M_Patient extends Manager {
 		if (isset($_POST['patientStatistics'])) {
 			$this->process_patientStatistics_update($this->controller->patient_id,$_POST['patientStatistics']);
 		}
+		if (isset($_POST['PatientChronicCode'])) {
+			$this->process_patientChronicCode_update($this->controller->patient_id,$_POST['PatientChronicCode']);
+		}
+	}
+
+	function process_patientChronicCode_update($patientId,$data) {
+		$changeHappened = false;
+		foreach($data as $key => $status) {
+			if ($status == 1) {
+				$pcc =& Celini::newOrdo('PatientChronicCode',array($patientId,$key));
+				if (!$pcc->isPopulated()) {
+					$pcc->persist();
+					$changeHappened = true;
+				}
+			}
+			else {
+				$pcc =& Celini::newOrdo('PatientChronicCode',array($patientId,$key));
+				if ($pcc->isPopulated()) {
+					$pcc->drop();
+					$changeHappened = true;
+				}
+			}
+		}
+		if ($changeHappened) {
+			$this->messages->addMessage('Chronic Codes Updated');
+		}
 	}
 
 	/**

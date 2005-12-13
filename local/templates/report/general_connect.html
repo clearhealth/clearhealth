@@ -88,7 +88,7 @@
 		<fieldset class="radio" style="vertical-align:top">
 			<legend>{l}Select Menu Section{/l}</legend>
 			<div style="float:left">
-			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
+			{foreach from=$sections item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
 				</div><div style="float:left; padding: 3px;">
 					<b>{$menu}</b><br>

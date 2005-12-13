@@ -69,6 +69,9 @@ class C_Patient extends Controller {
 		$encounter =& ORDataOBject::factory('Encounter');
 		
 		$patientStatistics =& ORDataObject::factory('PatientStatistics',$patient_id);
+
+		$pcc =& Celini::newOrdo('PatientChronicCode');
+		$chronicCodes = $pcc->patientCodeArray($patient_id,true);
 		
 		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->assign_by_ref('person',$person);
@@ -92,6 +95,7 @@ class C_Patient extends Controller {
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
 		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
 		$this->assign('hide_type',true);
+		$this->assign('chronicCodes',$chronicCodes);
 
 		$this->assign('now',date('Y-m-d'));
 
