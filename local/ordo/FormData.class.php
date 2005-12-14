@@ -66,7 +66,7 @@ class FormData extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "last_edit, form_id, form_data_id, external_id",
 				'from' 	=> "$this->_table d",
-				'orderby' => 'name, last_edit',
+				'orderby' => 'last_edit DESC',
 				'where' => "form_id = $form_id"
 			),
 			array('last_edit'=>'Time of Last Edit'));
