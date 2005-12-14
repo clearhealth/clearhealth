@@ -3,12 +3,14 @@
 <p>{$form->get('description')}</p>
 
 <div style="margin: 1em; border: solid 3px black; padding: 1em;">
+	<div id="messageTarget"></div>
 	{if $form->fileExists()}
 	{include file=$form->get('file_path')}
 	{else}
 		<p>{l}There was an error accessing this form{/l}.</p>
 	{/if}
 </div>
+{clni_register_message_target targetId="messageTarget" formId="h3sform"}
 {else}
 {$grid->render()}
 {/if}
