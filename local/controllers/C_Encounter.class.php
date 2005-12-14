@@ -142,6 +142,21 @@ class C_Encounter extends Controller {
 		$insuredRelationship =& Celini::newORDO('InsuredRelationship');
 
 
+		$pcc =& Celini::newOrdo('PatientChronicCode');
+		$tmp = $pcc->PatientReportArray($encounter->get('patient_id'),false);
+
+		$reports = array();
+		foreach($tmp as $code => $r) {
+			$t = "";
+			foreach($r as $k => $reportData) {
+				$t .= "report_id[$k]=$reportData[report_id]&report_template_id[$k]=$reportData[report_template_id]&";
+			}
+			$reports[] = array('name'=>$code,'num'=>count($r),'url'=>Celini::link('batch','Report').$t);
+		}
+
+		$this->assign('encounterBatchReports',$reports);
+
+
 		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);

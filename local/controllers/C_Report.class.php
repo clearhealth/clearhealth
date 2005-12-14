@@ -236,7 +236,15 @@ class C_Report extends Controller {
 	}
 
 	function actionView($id,$template_id = 0) {
-		return $this->report_action_view($id,$template_id);
+		return $this->actionReport_view($id,$template_id);
+	}
+
+	function actionBatch_view($reportIds,$templateIds) {
+		$ret = '';
+		foreach($reportIds as $key => $id) {
+			$ret .= "<div style='page-break-before: always'></div>$this->actionReport_view($id,$templateIds[$key]);
+		}
+		return $ret;
 	}
 }
 ?>

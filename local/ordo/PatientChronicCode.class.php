@@ -79,7 +79,7 @@ class PatientChronicCode extends ORDataObject {
 		}
 		$sql = "
 		select
-			ev.key, ev.value, (pcc.chronic_care_code is not null) status
+			ev.key, ev.value, (pcc.chronic_care_code is not null) status, ev.enumeration_value_id
 		from
 			enumeration_definition ed
 			inner join enumeration_value ev on ed.enumeration_id = ev.enumeration_id and ev.status = 1
@@ -93,6 +93,36 @@ class PatientChronicCode extends ORDataObject {
 		$ret = array();
 		while($res && !$res->EOF) {
 			$ret[] = $res->fields;
+			$res->moveNext();
+		}
+		return $ret;
+	}
+
+	function patientReportArray($patientId) {
+		EnforceType::int($patientId);
+		$table = $this->tableName();
+
+		$sql = "
+		select
+			ev.value, ev.enumeration_value_id, rt.report_template_id, rt.report_id, mr.title
+		from
+			enumeration_definition ed
+			inner join enumeration_value ev on ed.enumeration_id = ev.enumeration_id and ev.status = 1
+			inner join $table pcc on ev.key = pcc.chronic_care_code
+			inner join menu_report mr on mr.menu_id = ev.enumeration_value_id
+			inner join report_templates rt on mr.report_template_id = rt.report_template_id
+		where
+			ed.name = 'chronic_care_codes' and $patientId 
+		";
+
+		$res = $this->dbHelper->execute($sql);
+
+		$ret = array();
+		while($res && !$res->EOF) {
+			if (!isset($ret[$res->fields['value']])) {
+				$ret[$res->fields['value']] = array();
+			}
+			$ret[$res->fields['value']][] = $res->fields;
 			$res->moveNext();
 		}
 		return $ret;
