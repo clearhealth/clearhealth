@@ -242,9 +242,10 @@ class C_Report extends Controller {
 	function actionBatch_view($reportIds,$templateIds) {
 		$ret = '';
 		foreach($reportIds as $key => $id) {
-			$ret .= "<div style='page-break-before: always'></div>$this->actionReport_view($id,$templateIds[$key]);
+			$ret .= "<div style='page-break-before: always'></div>".$this->actionReport_view($id,$templateIds[$key]);
 		}
 		return $ret;
 	}
 }
+
 ?>
