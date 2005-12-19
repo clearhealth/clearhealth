@@ -75,6 +75,7 @@ class Report extends ORDataObject {
 				'cols'	=> "label label, description, id, if(ss.value is null or ss.value = '','Default','System') type",
 				'from' 	=> "$this->_table r left join storage_string ss on r.id = ss.foreign_key and value_key = 'system_report' ",
 				'orderby' => "label",
+				'where' => "label != ''"
 			),
 			$labels
 		);
