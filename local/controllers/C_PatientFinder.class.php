@@ -257,7 +257,7 @@ class C_PatientFinder extends Controller {
 				LEFT JOIN person_type AS ptype USING(person_id)
 			WHERE ';
 
-		$sqls = $this->smart_search($search_string);
+		$sqls = $this->_smart_search($search_string);
 		
 		$sqland=$sql . implode(' AND ',$sqls);
 		$sqlor=$sql . implode(' OR ',$sqls);
@@ -300,7 +300,7 @@ class C_PatientFinder extends Controller {
 		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type, concat(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string` FROM person psn"
 		." $join_type JOIN patient as pt on psn.person_id=pt.person_id left join person_type ptype using(person_id)\nWHERE\n";
 
-		$sqls = $this->smart_search($search_string);
+		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
 		$sqland=$sql.implode(' AND ',$sqls).' LIMIT 30';
 		$sqlor=$sql.implode(' OR ',$sqls).' LIMIT 30';
@@ -338,17 +338,18 @@ class C_PatientFinder extends Controller {
 	*    statements contain code that could possibly be (or maybe is being) used
 	*    elsewhere in CH.  A perfect example is the date checking.  All of that
 	*    is already handled in DateObject, so there's no need to do it all again
-	* @todo Definitely fix date issue - double eregs when the code already
-	*    exists and is tested inside Celini to handle this.  (issue 4628)
+	*    (now using dateobject)
 	* @todo Determine if all of the if()s should be mutually exclusive, or
 	*    should you attempt to match as many as you can guess
 	*/
-	function smart_search($search_string){
+	function _smart_search($search_string){
 		$GLOBALS['namesearch']=false;
 		//var_dump($search_string);
 		$searcharray=explode(" ",$search_string);
+		$xdate=&new DateObject();
 		for($x=0;$x<count($searcharray);$x++){
 			$searcharray[$x]=trim($searcharray[$x]);
+			$xdate=$xdate->create($searcharray[$x]);
 			// Special sql for name-name if not a date or ssn
 			if(
 			   strpos($searcharray[$x],'-')!==FALSE 
@@ -357,26 +358,10 @@ class C_PatientFinder extends Controller {
 				$GLOBALS['namesearch']=true;
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
 				$search=explode("-",$searcharray[$x]);
-				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."' OR last_name LIKE '".$search[0]."')\n";
-			} elseif(ereg('^[0-9]{1,2}[-\/][0-9]{1,2}[-\/][0-9]{2,4}$',$searcharray[$x]) ||
-			   ereg('^[0-9]{4}[-\/][0-9]{1,2}[-\/][0-9]{1,2}$',$searcharray[$x])){
+				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."' OR last_name = '".$search[0]."' OR last_name = '".$search[1]."')\n";
+			} elseif($xdate->isValid()){
 			// Date of birth
-				$uselike=false;
-				if(ereg('^([0-9]{1,2})[-\/]([0-9]{1,2})[-\/]([0-9]{2,4})$',$searcharray[$x],$date)){
-					list($date,$month,$day,$year)=$date;
-				} elseif(ereg('^([0-9]{4})[-\/]([0-9]{1,2})[-\/]([0-9]{1,2})$',$searcharray[$x],$date)) {
-					list($date,$year,$month,$day)=$date;
-				}
-				if(strlen($month)==1) $month='0'.$month;
-				if(strlen($day)==1) $day='0'.$day;
-				if(strlen($year)==2){
-					$uselike=true;
-				}
-				if($uselike){
-					$sqls[]="date_of_birth LIKE '%$year-$month-$day'";
-				} else {
-					$sqls[]="date_of_birth = '$year-$month-$day'";
-				}
+				$sqls[]="date_of_birth = '".$xdate->toISO()."'";
 			} elseif(ereg('^([0-9]{3})\-?([0-9]{2})\-?([0-9]{4})$',$searcharray[$x],$date)){
 			// SSN
 				list($date,$a,$b,$c)=$date;
