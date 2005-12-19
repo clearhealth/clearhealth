@@ -5,6 +5,6 @@ CREATE TABLE `report_snapshot` (
   `snapshot_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `data` longtext NOT NULL,
   PRIMARY KEY  (`report_snapshot_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
         
 

@@ -20,6 +20,13 @@
 			</td>
 		</tr>
 		<tr>
+			<td><label>{l}Funds Source{/l}:</label></td>
+			<td><select name="insuranceProgram[funds_source]">
+					{html_options options=$funds_source selected=$insuranceProgram->get('funds_source')}
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td><label>{l}Fee Schedule{/l}:</label></td>
 			<td><select name="insuranceProgram[fee_schedule_id]">
 					{html_options options=$feeSchedule->toArray() selected=$insuranceProgram->get('fee_schedule_id')}

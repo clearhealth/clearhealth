@@ -31,6 +31,7 @@ class InsuranceProgram extends ORDataObject {
 	var $x12_receiver_id	= '';
 	var $x12_version	= '';
 	var $address_id		= '';
+	var $funds_source	= '';
 	/**#@-*/
 
 

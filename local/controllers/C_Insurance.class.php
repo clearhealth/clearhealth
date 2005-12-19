@@ -78,6 +78,9 @@ class C_Insurance extends Controller {
 			$company->populateArray($_POST);
 		}
 
+		$m =& Celini::enumManagerInstance();
+		$this->assign('funds_source',$m->enumArray('funds_source'));
+
 
 		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
 	}
