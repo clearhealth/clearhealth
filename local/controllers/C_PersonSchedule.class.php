@@ -147,6 +147,12 @@ class C_PersonSchedule extends CalendarController {
 		$this->assign("LINK_BASE",Celini::link('edit_schedule'));
 		$sidebar = $this->actionSidebar($month."/".$day."/".$year,$id);
 		$this->assign_by_ref("sidebar",$sidebar);
+
+		$increment = $this->config->get('CalendarIncrement',900);
+
+		$rowSpan = ceil((60*60)/$increment);
+		$this->assign('rowSpan',$rowSpan);
+
 		
 		return $this->fetch($GLOBALS['template_dir'] . "person_schedules/" . $this->template_mod . "_edit_schedule.html");
 	}

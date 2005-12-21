@@ -111,7 +111,7 @@ function toggleCell(box) {
 	{foreach name=inc_count from=$header_increment key=time item=inc}
 	<tr>
 	{if ($time/60)%60 eq 0}
-		<td rowspan="4" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
+		<td rowspan="{$rowSpan}" align="center" valign="top" width="60" class="timeborder">{$time|date_format:"%I:%M %p"}</td>
 		{assign var=week_border value="weekborder"}
 	{else}
 		{assign var=week_border value="weekborder2"}
