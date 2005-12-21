@@ -83,7 +83,7 @@ class PatientChronicCode extends ORDataObject {
 		from
 			enumeration_definition ed
 			inner join enumeration_value ev on ed.enumeration_id = ev.enumeration_id and ev.status = 1
-			$join join $table pcc on ev.key = pcc.chronic_care_code
+			$join join $table pcc on ev.key = pcc.chronic_care_code and pcc.patient_id = $patientId
 		where
 			ed.name = 'chronic_care_codes' and (pcc.patient_id = $patientId or pcc.patient_id is null)
 		";
