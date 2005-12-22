@@ -268,7 +268,7 @@ class C_PatientFinder extends Controller {
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
 		}
-		
+	//echo $sqland;exit;	
 		$result_array = $this->_db->GetAll($sqland);
 		if(count($result_array)==0){
 			$andfailed=true;
@@ -345,7 +345,13 @@ class C_PatientFinder extends Controller {
 	function _smart_search($search_string){
 		$GLOBALS['namesearch']=false;
 		//var_dump($search_string);
-		$searcharray=explode(" ",$search_string);
+		if (preg_match('/([a-z0-9]+), ?([a-z0-9]+)/i', $search_string, $matches)) {
+			$searcharray = $matches;
+			array_shift($searcharray);
+		}
+		else {
+			$searcharray=explode(" ",$search_string);
+		}
 		$xdate=&new DateObject();
 		for($x=0;$x<count($searcharray);$x++){
 			$searcharray[$x]=trim($searcharray[$x]);
@@ -373,8 +379,9 @@ class C_PatientFinder extends Controller {
 			} else {
 			// Regular name
 				$GLOBALS['namesearch']=true;
-				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
-				$sqls[]="(first_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '".$searcharray[$x]."%' OR last_name LIKE '%-".$searcharray[$x]."%')";
+				$cleanedValue = mysql_real_escape_string($searcharray[$x]);
+				$cleanedValue = str_replace(array(',', ' '), '', $cleanedValue);
+				$sqls[]="(first_name LIKE '".$cleanedValue."%' OR last_name LIKE '".$cleanedValue."%' OR last_name LIKE '%-".$cleanedValue."%')";
 			}
 		}
 		return($sqls);
