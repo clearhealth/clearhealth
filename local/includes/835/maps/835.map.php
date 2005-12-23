@@ -726,6 +726,47 @@ $map = array(
 				'code'	=> 'SE02'
 			)
 		)
+	),
+	'SVC' => array(
+		'name'	=> 'Service Payment Information',
+		'id'	=> 'ServicePmntInfo',
+		'fields'=> array(
+			array(
+				'name'	=> 'Comp. Med. Proced. ID',
+				'id'	=> 'CompMedProcedID',
+				'code'	=> 'SVC01'
+			),
+			array(
+				'name'	=> 'Monetary Amount',
+				'id'	=> 'MonetaryAmount',
+				'code'	=> 'SVC02'
+			),
+			array(
+				'name'	=> 'Monetary Amount',
+				'id'	=> 'MonetaryAmount2',
+				'code'	=> 'SVC03'
+			),
+			array(
+				'name'	=> 'Product/Service ID',
+				'id'	=> 'ProductServiceID',
+				'code'	=> 'SVC04'
+			),
+			array(
+				'name'	=> 'Quantity',
+				'id'	=> 'Quantity',
+				'code'	=> 'SVC05'
+			),
+			array(
+				'name'	=> 'Comp. Med. Proced. ID',
+				'id'	=> 'CompMedProcedID2',
+				'code'	=> 'SVC06'
+			),
+			array(
+				'name'	=> 'Monetary Amount',
+				'id'	=> 'MonetaryAmount3',
+				'code'	=> 'SVC07'
+			),
+		)
 	)
 );
 
@@ -739,7 +780,7 @@ $children = array(
 	'payer' 		=> array('N1','N3','N4','REF','PER'),
 	'payee'			=> array('N1','N3','N4','REF'),
 	'header_number' 	=> array('LX','TS3','TS2'),
-	'claim_payment_info' 	=> array('CLP','CAS','NM1','NM1','NM1','NM1','NM1','NM1','MIA','MOA','REF','REF','DTM+','PER','AMT','QTY'),
-	'service_payment_information' => array('SVC','DTM','CAS','REF','REF','AMT','QTY','LQ'),
+	'claim_payment_info' 	=> array('CLP','CAS+','NM1','NM1','NM1','NM1','NM1','NM1','MIA','MOA','REF','REF','DTM+','PER','AMT','QTY'),
+	'service_payment_information' => array('SVC','DTM+','CAS+','CLP','CAS','NM1','REF','REF','AMT','QTY','LQ'),
 );
 ?>
