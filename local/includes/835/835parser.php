@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 
 class FileReader {
 	var $file;
@@ -61,11 +62,15 @@ define('STORE_FIELD_DATA',3);
 class X12MapParser {
 	var $_tokenizer;
 	var $_map;
+	var $_mapTree;
+	var $_mapTreeChildren;
 	var $tree = array();
 
 	function loadMap($file) {
 		include $file;
 		$this->_map = $map;
+		$this->_mapTree = $tree;
+		$this->_mapTreeChildren = $children;
 	}
 
 	function loadInput($reader) {
@@ -75,11 +80,9 @@ class X12MapParser {
 
 	function parse() {
 		$this->_tokenizer->parse();
-		$currentBlock = -1;
+		$currentBlock = 0;
 		$field = -1;
 
-		$this->tree[] = new x12Block();
-		$currentBlock++;
 		$state = STORE_BLOCK_DATA;
 
 		for($this->_tokenizer->rewind(); $this->_tokenizer->valid(); $this->_tokenizer->next()) {
@@ -103,14 +106,14 @@ class X12MapParser {
 					$state = STORE_FIELD_DATA;
 					break;
 				case STORE_BLOCK_DATA:
-					if ($field == 0) {
-						$this->tree[] = new x12Block();
-					}
 					if (!empty($token)) {
+						if ($field == 0) {
+							$this->tree[$currentBlock] = new x12Block();
+						}
 						$this->tree[$currentBlock]->code = $token;
 					}
 					else {
-						echo "Warning empty Token\n";
+						echo "Warning empty Token<br>\n";
 					}
 					if (isset($this->_map[$token])) {
 						foreach($this->_map[$token] as $key => $val) {
@@ -143,6 +146,97 @@ class X12MapParser {
 			}
 		}
 
+		$this->_reorder();
+
+	}
+
+	/**
+	 * Apply the map tree putting blocks into loops
+	 */
+	function _reorder() {
+		$this->_tree = array();
+
+		foreach($this->_mapTree as $section => $sectionMap) {
+			foreach($sectionMap as $mapCode) {
+				if (is_array($mapCode)) {
+					$cardinality = array_shift($mapCode);
+					switch($cardinality) {
+						case '+':
+							$loop = true;
+							$l = 0;
+							while($loop) {
+								$loop = false;
+								foreach($mapCode as $c) {
+									$tmp = $this->_processMapCode($section,$c,$l);
+									if ($tmp) {
+										$loop = true;
+									}
+								}
+								$l++;
+							}
+							break;
+					}
+				}
+				else {
+					$this->_processMapCode($section,$mapCode);
+				}
+			}
+		}
+
+		foreach($this->tree as $block) {
+			echo "Unmatched Block Position: $block->code<br>\n";
+		}
+
+		$this->tree = $this->_tree;
+	}
+
+	function _processMapCode($section,$mapCode,$multi = false) {
+		if (isset($this->_mapTreeChildren[$mapCode])) {
+			$ret = false;
+			foreach($this->_mapTreeChildren[$mapCode] as $childCode) {
+				if (substr($childCode,-1) == '+') {
+					$childCode = substr($childCode,0,-1);
+					while($this->_processChildBlock($childCode,$section,$mapCode,$multi)) { $ret = true;}
+				}
+				else {
+					$r = $this->_processChildBlock($childCode,$section,$mapCode,$multi);
+					if ($r) {
+						$ret = true;
+					}
+				}
+			}
+			return $ret;
+		}
+		else {
+			$block = array_shift($this->tree);
+			$code = $block->code;
+			if ($mapCode == $code) {
+				$this->_tree[$section][$code] = $block;
+				return true;
+			}
+			else {
+				array_unshift($this->tree,$block);
+			}
+		}
+		return false;
+	}
+
+	function _processChildBlock($childCode,$section,$parent,$multi) {
+		$block = array_shift($this->tree);
+		$code = $block->code;
+		if ($childCode == $code) {
+			if ($multi !== false) {
+				$this->_tree[$section][$multi][$parent][$code] = $block;
+			}
+			else {
+				$this->_tree[$section][$parent][$code] = $block;
+			}
+			return true;
+		}
+		else {
+			array_unshift($this->tree,$block);
+			return false;
+		}
 	}
 }
 
@@ -150,7 +244,35 @@ $parser = new X12MapParser();
 $parser->loadMap('835.map.php');
 $parser->loadInput(new FileReader('835.x12'));
 $parser->parse();
-var_dump($parser->tree);
+
+treePrinter($parser->tree);
+function treePrinter($tree) {
+	foreach($tree as $sectionName => $section) {
+		echo "<h2 style='margin-bottom:0'>$sectionName</h2>\n<div style='margin-left: 1em'>";
+		foreach($section as $blockName => $block) {
+			if (is_array($block)) {
+				echo "<h3 style='margin:0'>$blockName</h3>\n<div style='margin-left: 1em'>";
+				foreach($block as $bName => $b) {
+					if(is_array($b)) {
+						echo "<h3 style='margin:0'>$bName</h3>\n<div style='margin-left: 1em'>";
+						foreach($b as $_bName => $_b) {
+							echo "<div>$_bName - $_b->name (".count($_b->fields).")</div>\n";
+						}
+						echo "</div>";
+					}
+					else {
+						echo "<div>$bName - $b->name (".count($b->fields).")</div>\n";
+					}
+				}
+				echo "</div>";
+			}
+			else {
+				echo "<div>$blockName - $block->name (".count($block->fields).")</div>\n";
+			}
+		}
+		echo "</div>";
+	}
+}
 
 
 

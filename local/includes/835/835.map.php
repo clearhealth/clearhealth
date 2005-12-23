@@ -728,4 +728,18 @@ $map = array(
 		)
 	)
 );
+
+$tree = array(
+	'header' => array('ST','BPR','TRN','CUR','REF','REF','DTM','payer','payee'),
+	'detail' => array(array('+','header_number','claim_payment_info'),array('+','header_number','service_payment_information')),
+	'summary' => array('PLB','SE')
+	);
+
+$children = array(
+	'payer' 		=> array('N1','N3','N4','REF','PER'),
+	'payee'			=> array('N1','N3','N4','REF'),
+	'header_number' 	=> array('LX','TS3','TS2'),
+	'claim_payment_info' 	=> array('CLP','CAS','NM1','NM1','NM1','NM1','NM1','NM1','MIA','MOA','REF','REF','DTM+','PER','AMT','QTY'),
+	'service_payment_information' => array('SVC','DTM','CAS','REF','REF','AMT','QTY','LQ'),
+);
 ?>
