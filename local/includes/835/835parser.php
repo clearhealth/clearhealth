@@ -28,6 +28,11 @@ class X12Tokenizer {
 		$content = $this->reader->readContents();
 
 		$this->tokens = preg_split('/([*~])[\n\r]*/',$content,0,PREG_SPLIT_DELIM_CAPTURE);
+
+		$token = array_pop($ths->tokens);
+		if (!empty($token)) {
+			trigger_error("X12 format error, trailing data after the last line: '$token'");
+		}
 	}
 
 	function rewind() {
@@ -113,7 +118,7 @@ class X12MapParser {
 						$this->tree[$currentBlock]->code = $token;
 					}
 					else {
-						echo "Warning empty Token<br>\n";
+						trigger_error("Warning empty Token");
 					}
 					if (isset($this->_map[$token])) {
 						foreach($this->_map[$token] as $key => $val) {
@@ -184,7 +189,7 @@ class X12MapParser {
 		}
 
 		foreach($this->tree as $block) {
-			echo "Unmatched Block Position: $block->code<br>\n";
+			trigger_error("Unmatched Block Position: $block->code");
 		}
 
 		$this->tree = $this->_tree;
