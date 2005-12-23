@@ -211,7 +211,7 @@ class X12MapParser {
 			$block = array_shift($this->tree);
 			$code = $block->code;
 			if ($mapCode == $code) {
-				$this->_tree[$section][$code] = $block;
+				$this->_tree[$section][] = $block;
 				return true;
 			}
 			else {
@@ -226,10 +226,10 @@ class X12MapParser {
 		$code = $block->code;
 		if ($childCode == $code) {
 			if ($multi !== false) {
-				$this->_tree[$section][$multi][$parent][$code] = $block;
+				$this->_tree[$section][$multi][$parent][] = $block;
 			}
 			else {
-				$this->_tree[$section][$parent][$code] = $block;
+				$this->_tree[$section][$parent][] = $block;
 			}
 			return true;
 		}
@@ -256,18 +256,18 @@ function treePrinter($tree) {
 					if(is_array($b)) {
 						echo "<h3 style='margin:0'>$bName</h3>\n<div style='margin-left: 1em'>";
 						foreach($b as $_bName => $_b) {
-							echo "<div>$_bName - $_b->name (".count($_b->fields).")</div>\n";
+							echo "<div>$_b->code - $_b->name (".count($_b->fields).")</div>\n";
 						}
 						echo "</div>";
 					}
 					else {
-						echo "<div>$bName - $b->name (".count($b->fields).")</div>\n";
+						echo "<div>$b->code - $b->name (".count($b->fields).")</div>\n";
 					}
 				}
 				echo "</div>";
 			}
 			else {
-				echo "<div>$blockName - $block->name (".count($block->fields).")</div>\n";
+				echo "<div>$block->code - $block->name (".count($block->fields).")</div>\n";
 			}
 		}
 		echo "</div>";
