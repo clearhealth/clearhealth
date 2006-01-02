@@ -154,6 +154,7 @@ class X12MapParser {
 	function _reorder() {
 		$this->_tree = array();
 
+		$l = 0;
 		foreach($this->_mapTree as $section => $sectionMap) {
 			foreach($sectionMap as $mapCode) {
 				if (is_array($mapCode)) {
@@ -161,7 +162,6 @@ class X12MapParser {
 					switch($cardinality) {
 						case '+':
 							$loop = true;
-							$l = 0;
 							while($loop) {
 								$loop = false;
 								foreach($mapCode as $c) {
@@ -170,7 +170,9 @@ class X12MapParser {
 										$loop = true;
 									}
 								}
-								$l++;
+								if ($loop) {
+									$l++;
+								}
 							}
 							break;
 					}
@@ -239,7 +241,9 @@ class X12MapParser {
 				$this->_tree[$section][$multi][$parent][] = $block;
 			}
 			else {
-				$this->debug("[$section][$parent][] = $block->code");
+				if ($this->debug & 2) {
+					$this->debug("[$section][$parent][] = $block->code");
+				}
 				$this->_tree[$section][$parent][] = $block;
 			}
 			return true;
