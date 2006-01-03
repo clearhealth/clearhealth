@@ -77,7 +77,7 @@ class ProviderToInsurance extends ORDataObject {
 				(building_id = ' . (int)$building_id . ' OR building_id = 0)
 			ORDER BY building_id DESC
 			LIMIT 1';
-		$results =& $this->dbHelper->execute($sql);
+		$results = $this->dbHelper->execute($sql);
 		$this->helper->populateFromResults($this, $results);
 	}
 	
