@@ -89,6 +89,10 @@
 			<td colspan=3><input name="bpi[identifier]" value="{$bpi->get('identifier')}" size=30></td>
 		</tr>
 		<tr>
+			<td><label>{l}E-Billing Sender ID{/l}:</label></td>
+			<td colspan="3"><input name="bpi[x12_sender_id]" value="{$bpi->get('x12_sender_id')}" size="30" /></td>
+		</tr>
+		<tr>
 			<td></td>
 			<td colspan=3><input type="submit" value="{if $bpi->_populated}Update{else}Add{/if} Identifier">
 				{if $bpi->_populated}

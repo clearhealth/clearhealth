@@ -25,6 +25,7 @@ class BuildingProgramIdentifier extends ORDataObject {
 	var $building_id	= '';
 	var $program_id		= '';
 	var $identifier		= '';
+	var $x12_sender_id  = '';
 	/**#@-*/
 
 
@@ -54,15 +55,19 @@ class BuildingProgramIdentifier extends ORDataObject {
 		return $b->getBuildingList();
 	}
 
+	
+	/**
+	 * @todo This needs to be pulled out of this ORDO and made into its own DS.
+	 */
 	function &getDs($company_id) {
 		settype($company_id,'int');
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "p.name program, b.name building, i.identifier, i.building_id, i.program_id",
+				'cols' 	=> "p.name program, b.name building, i.identifier, i.building_id, i.program_id, i.x12_sender_id",
 				'from' 	=> "$this->_table i inner join buildings b on b.id = i.building_id inner join insurance_program p on i.program_id = p.insurance_program_id",
 				'where' => " p.company_id = $company_id"
 			),
-			array('program' => 'Program Name','building' => 'Building', 'identifier' => 'Identifier'));
+			array('program' => 'Program Name','building' => 'Building', 'identifier' => 'Identifier', 'x12_sender_id' => 'E-Billing Sender ID'));
 
 		return $ds;
 	}
