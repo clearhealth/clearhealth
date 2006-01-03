@@ -262,8 +262,8 @@ class C_PatientFinder extends Controller {
 		$sqland=$sql . implode(' AND ',$sqls);
 		$sqlor=$sql . implode(' OR ',$sqls);
 		if($GLOBALS['namesearch']==true){
-			$sqland.=' ORDER BY last_name ASC';
-			$sqlor.=' ORDER BY last_name ASC';
+			$sqland.=' ORDER BY last_name, first_name ASC';
+			$sqlor.=' ORDER BY last_name, first_name ASC';
 		}
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
