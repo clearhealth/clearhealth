@@ -113,7 +113,7 @@ class Payment extends ORDataObject {
 	       	$labels['title'] = 'Title';
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, DATE_FORMAT(payment_date, '%m/%d/%Y'), timestamp, title",
+				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, DATE_FORMAT(payment_date, '%m/%d/%Y') payment_date, timestamp, title",
 				'from' 	=> "$this->_table ",
 				'where' => " foreign_id = $foreign_id"
 			),
