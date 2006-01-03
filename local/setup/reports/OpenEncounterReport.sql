@@ -1,7 +1,7 @@
 SELECT 
-	date_format(date_of_treatment,'%m/%d/%Y') date_of_treatment, 
-	date_format(timestamp,'%m/%d/%Y') last_change, 
-	concat_ws(', ',p.last_name,p.first_name) patient,
+	DATE_FORMAT(date_of_treatment,'%m/%d/%Y') AS date_of_treatment, 
+	DATE_FORMAT(timestamp,'%m/%d/%Y') AS last_change, 
+	concat_ws(', ',p.last_name,p.first_name) AS patient,
 	e.encounter_id,
 	b.name AS "facility"
 FROM
