@@ -123,7 +123,7 @@ class InsuranceProgram extends ORDataObject {
 		return $ret;
 	}
 
-	function detailedProgramList($company_id) {
+	function &detailedProgramList($company_id) {
 		settype($company_id,'int');
 
 		$ds =& new Datasource_sql();

@@ -54,7 +54,7 @@ class BuildingProgramIdentifier extends ORDataObject {
 		return $b->getBuildingList();
 	}
 
-	function getDs($company_id) {
+	function &getDs($company_id) {
 		settype($company_id,'int');
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
