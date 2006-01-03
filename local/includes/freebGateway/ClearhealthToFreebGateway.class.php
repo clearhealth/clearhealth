@@ -453,12 +453,21 @@ class ClearhealthToFreebGateway
 			trigger_error("Unable to register provider data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 
+		// Load BuildingProviderIdentifier - contains building-specific identifiers
+		$bpi =& ORDAtaObject::factory('BuildingProgramIdentifier',$facility->get('id'),$defaultProgram->get('id'));
 
 		// register practice
 		$practice =& Celini::newORDO('Practice',$facility->get('practice_id'));
 		$practiceData = $this->_cleanDataArray($practice->toArray());
 
-		$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
+		
+		if ($bpi->get('x12_sender_id') != '') {
+			$practiceData['sender_id'] = $bpi->get('x12_sender_id');
+		}
+		else {
+			$practiceData['sender_id'] = $defaultProgram->get('x12_sender_id');
+		}
+		
 		$practiceData['receiver_id'] = $defaultProgram->get('x12_receiver_id');
 		$practiceData['x12_version'] = $defaultProgram->get('x12_version');
 
@@ -470,8 +479,7 @@ class ClearhealthToFreebGateway
 		$facilityData = $this->_cleanDataArray($facility->toArray());
 
 		// check for an overriding identifier
-		$bpi =& ORDAtaObject::factory('BuildingProgramIdentifier',$facility->get('id'),$defaultProgram->get('id'));
-		if ($bpi->_populated) {
+		if ($bpi->isPopulated()) {
 			$facilityData['identifier'] = $bpi->get('identifier');
 		}
 		
