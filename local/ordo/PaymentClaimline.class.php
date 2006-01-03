@@ -109,6 +109,27 @@ class PaymentClaimline extends ORDataObject {
 		$this->id = $id;
 	}
 
+	/**
+	 * Calculate what carry would be with the current paid value
+	 */
+	function calculateCarry($encounterId) {
+		$table = $this->tableName();
+		$sql = "select 
+				(cd.fee - ifnull(sum(paid),0.00)) carry 
+			from 
+				encounter e 
+				inner join coding_data cd on cd.foreign_id = e.encounter_id
+				left join clearhealth_claim chc on chc.encounter_id = e.encounter_id
+				left join payment p on chc.claim_id = p.foreign_id
+				left join $table pcl on p.payment_id=pcl.payment_id
+			where
+			cd.code_id = ".EnforceType::int($this->get('code_id')) ." and e.encounter_id = ".EnforceType::int($encounterId)."
+			group by e.encounter_id";
+
+		$carry = $this->dbHelper->getOne($sql);
+		$this->set('carry',$carry - $this->get('paid'));
+	}
+
 	/**#@-*/
 }
 ?>
