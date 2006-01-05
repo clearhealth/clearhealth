@@ -166,7 +166,8 @@
 		{if $formDataGrid->empty}
 		<p>{l}Patient has no completed forms{/l}</p>
 		{/if}
-		<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value; {literal}}{/literal}">
+		<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value+
+			'&returnTo={$RETURN_TO}'; {literal}}{/literal}">
 					<option value="0"></option>
 					{html_options options=$formList}
 				</select>

@@ -118,6 +118,8 @@ class C_PatientDashboard extends Controller {
 		$this->assign('NOTE_ACTION',Celini::managerLink('note',$p->get('id')));
 		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$p->get('id')));
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$p->get('id')));
+
+		$this->assign('RETURN_TO',Celini::link('view',true,true,$p->get('id')));
 		
 		return $this->view->render("view.html");
 	}
