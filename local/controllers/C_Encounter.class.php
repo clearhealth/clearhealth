@@ -174,6 +174,7 @@ class C_Encounter extends Controller {
 		
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
+		$this->assign('RETURN_TO',Celini::link('edit',true,true,$encounter_id));
 
 		$pconfig=&$practice->get_config();
 		if($pconfig->get('FacilityType',FALSE)){
