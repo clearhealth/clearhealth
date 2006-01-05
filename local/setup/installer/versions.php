@@ -39,7 +39,7 @@ $version_1rc2->addTest('MysqlVersionOver', array(
 	'password_field' => 'db_password',
 	'server_field' => 'db_server',
 	'port_field' => 'db_port',
-	'version' => '4.0.0'));
+	'version' => '4.1.0'));
 $version_1rc2->addAction('AcceptText', array(dirname(__FILE__).'/LICENSE'));
 $version_1rc2->addAction('SQLFile', array(
 	'username_field' => 'db_user',
