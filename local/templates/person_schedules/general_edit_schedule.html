@@ -42,14 +42,6 @@ function toggleCell(box) {
 <input type="hidden" name="appointment_code" value="schedule" />
 <table CELLSPACING="0" CELLPADDING="3">
 <tr>
-	<td colspan="5">
-	{if $messages }
-	{$messages->render()}
-	{/if}
-	</td>
-</tr>
-
-<tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Title{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" name="title" value="{$schedule->title}"/>
