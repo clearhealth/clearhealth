@@ -73,6 +73,7 @@
 			<tr>
 				<td><label>{l}Insurance Program{/l}:</label></td>
 				<td><select name="insuredRelationship[insurance_program_id]">
+						<option value="0"></option>
 						{html_options options=$insuranceProgram->ProgramList() selected=$insuredRelationship->get('insurance_program_id')}
 					</select>
 				</td>
