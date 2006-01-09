@@ -14,6 +14,23 @@ INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
+NOTAG="true"
+USAGE="You can use the following optional command line parameters
+-r = Overrides the release
+-n = Skips creating the tag in svn
+"
+# Process command line arguments
+while getopts ":n?r:" options; do
+	case $options in
+    r ) RELEASE=$OPTARG;;
+    n ) NOTAG="false";;
+    \? ) echo $USAGE
+         exit 1;;
+    * ) echo $USAGE
+          exit 1;;
+
+  esac
+done
 
 # No need to mess with anything below here
 BUILD_DIR="$BUILD_BASE/$NAME-$RELEASE"
@@ -48,19 +65,21 @@ function clean_release() {
 	fi	
 }
 
-echo "Checking for existing tag in SVN"
-svn ls $TAG_URL >/dev/null 2>&1
-if [ $? -eq 0 ]; then
-	echo "SVN tag already exists at $TAG_URL"
-	echo "Please remove before releasing this version again!"
-	exit 1
-fi
-
-echo "Tagging version in SVN"
-svn copy -m "Tagged release $RELEASE of $NAME" -r $SVN_REV $REPO_URL $TAG_URL
-if [ $? -ne 0 ]; then
-	echo "Could not create tag, aborting!"
-	exit 2
+if [ "$NOTAG" == "true" ]; then
+	echo "Checking for existing tag in SVN"
+	svn ls $TAG_URL >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		echo "SVN tag already exists at $TAG_URL"
+		echo "Please remove before releasing this version again!"
+		exit 1
+	fi
+	
+	echo "Tagging version in SVN"
+	svn copy -m "Tagged release $RELEASE of $NAME" -r $SVN_REV $REPO_URL $TAG_URL
+	if [ $? -ne 0 ]; then
+		echo "Could not create tag, aborting!"
+		exit 2
+	fi
 fi
 
 echo "Building $NAME $RELEASE into $BUILD_DIR"
@@ -68,7 +87,7 @@ echo "Exporting repository $REPO_URL at revision $CURRENT_SVN_REV to $BUILD_DIR"
 svn export -r $SVN_REV $REPO_URL $BUILD_DIR
 
 # Build the sql file
-bash $BUILD_DIR/local/setup/build_sql.sh $RELEASE
+bash $BUILD_DIR/local/setup/build_sql.sh
 
 clean_release "$SCRIPT_HOME/no_package"
 
@@ -83,9 +102,9 @@ clean_release "$BUILD_DIR/freeb2/local/setup/no_package" "freeb2"
 
 # Setup Celini
 if [ "true" == "$CELINI_APP" ]; then
-	echo "Exporting Celini for application at rev $CELINI_REV to $BUILD_DIR/Celini"
-	svn export -r $CELINI_REV https://svn2.uversainc.com/svn/Celini/trunk $BUILD_DIR/Celini
-	clean_release "$BUILD_DIR/Celini/setup/no_package"
+	echo "Exporting Celini for application at rev $CELINI_REV to $BUILD_DIR/celini"
+	svn export -r $CELINI_REV https://svn2.uversainc.com/svn/celini/trunk $BUILD_DIR/celini
+	clean_release "$BUILD_DIR/celini/setup/no_package"
 fi
 
 #Setup installer

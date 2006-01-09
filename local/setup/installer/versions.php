@@ -48,7 +48,7 @@ $version_1rc2->addAction('SQLFile', array(
 	'port_field' => 'db_port',
 	'db_field' => 'db_database',
 	'files' => array(
-		$base_app_path.'/local/setup/clearhealth-1.0RC2.sql', 
+		$base_app_path.'/local/setup/clearhealth.sql', 
 		$base_app_path.'/freeb2/local/setup/freeb2.sql')));
 
 $version_1rc2->addAction('ReplaceString', array(
@@ -74,7 +74,7 @@ $version_1rc2->addAction('SQLOptions', array(
 	'db_field' => 'db_database',
 	'files' => array(
 		$base_app_path.'/local/setup/code_packs', 
-		$base_app_path.'/local/setup/clearhealth_demodata-1.0RC2.sql')));
+		$base_app_path.'/local/setup/clearhealth_demodata.sql')));
 
 $versions->add($version_1rc2);
 ?>
