@@ -46,6 +46,8 @@ CREATE TABLE `person_person` (
   `person_id` int(11) NOT NULL default '0',
   `related_person_id` int(11) NOT NULL default '0',
   `relation_type` int(11) NOT NULL default '0',
+  `guarantor` tinyint(1) NOT NULL default '0',
+  `guarantor_priority` int(11) NOT NULL default'0',
   PRIMARY KEY  (`person_person_id`),
   UNIQUE KEY `person_id` (`person_id`,`related_person_id`,`relation_type`)
 ) TYPE=MyISAM;

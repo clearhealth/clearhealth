@@ -1,39 +1,630 @@
-CREATE TABLE `enumeration` (
-  `name` varchar(100) NOT NULL default '',
-  `title` varchar(100) NOT NULL default '',
-  `description` tinytext NOT NULL,
-  `relation_of_information_code` enum('A - On file','I - Informed Consent','M - Limited Ability','N - Not allowed','O - On file','Y - Has permission') NOT NULL default 'A - On file',
-  `subscriber_to_patient_relationship` enum('Self','Parent','Spouse','Other') NOT NULL default 'Self' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0ÃƒÂ¯Ã‚Â¿Ã‚Â½',
-  `code_modifier` enum('A0','A1','A2','B1','B2','C6') NOT NULL default 'A0',
-  `encounter_reason` enum('Physical','Other') NOT NULL default 'Physical',
-  `payment_type` enum('visa','mastercard','amex','check','cash','remittance') NOT NULL default 'visa',
-  `address_type` enum('Home','Billing','Other','Main','Secondary') NOT NULL default 'Home',
-  `appointment_reasons` enum('Physical','FP','CDP','CHDP','F/U','Sick','Lab Only') NOT NULL default 'Physical',
-  `assigning` enum('A - Assigned','B - Assigned Lab Services Only','C - Not Assigned','P - Assignment Refused') NOT NULL default 'A - Assigned',
-  `company_number_type` enum('Primary','Fax') NOT NULL default 'Primary',
-  `company_type` enum('Insurance') NOT NULL default 'Insurance',
-  `disposition` enum('New','Waiting','Compete') NOT NULL default 'New',
-  `ethnicity` enum('Hispanic','Caucasian') NOT NULL default 'Hispanic',
-  `gender` enum('Male','Female','Unknown') NOT NULL default 'Male',
-  `group_list` enum('All','Arizona','California') NOT NULL default 'All',
-  `identifier_type` enum('SSN','EIN') NOT NULL default 'SSN',
-  `income` enum('Unknown','Under 100% of Poverty','100-200% of Poverty','Above 200% of Poverty') NOT NULL default 'Unknown',
-  `language` enum('English','Spanish','Chinese','Japanese','Korean','Portuguese','Russian','Sign Language','Vietnamese','Tagalog','Punjabi','Hindustani','Armenian','Arabic','Laotian','Hmong','Cambodian','Finnish','Other') NOT NULL default 'English',
-  `marital_status` enum('Single','Married','Other') NOT NULL default 'Single',
-  `migrant_status` enum('Migrant Worker') NOT NULL default 'Migrant Worker',
-  `number_type` enum('Home','Mobile','Work','Emergency','Fax') NOT NULL default 'Home',
-  `payer_type` enum('medicare','champus','medical','private','feca','medicaid','champusva','otherhcfa','litigation') NOT NULL default 'medicare',
-  `person_to_person_relation_type` enum('Dependant','Spouse','Grand Parent','Other') NOT NULL default 'Dependant',
-  `person_type` enum('Patient','Provider','Mid-level','Staff','Subscriber') NOT NULL default 'Patient',
-  `provider_number_type` enum('State License') NOT NULL default 'State License',
-  `provider_reporting_type` enum('MD','RNFP','RN','PA','MA') NOT NULL default 'MD',
-  `quality_of_file` enum('Good','Bad') NOT NULL default 'Good',
-  `race` enum('White/Hispanic','Black','Native American/Alaskan Native','Asian/Pacific Islander','Other/Unknown') NOT NULL default 'White/Hispanic',
-  `state` enum('AL','AK','AZ','AR','CA','CO','CT','DE','DC','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','PR') NOT NULL default 'AL',
-  `subscriber_to_patient` enum('Spouse','Parent') NOT NULL default 'Spouse',
-  `encounter_date_type` enum('date_of_death','date_last_seen','date_of_onset','date_of_initial_treatment','date_of_cant_work_start','date_of_cant_work_end','date_of_hospitalization_start','date_of_hospitalization_end') NOT NULL default 'date_of_death',
-  `encounter_person_type` enum('Referring Provider') NOT NULL default 'Referring Provider',
-  `encounter_value_type` enum('medicaid_resubmission_code','prior_authorization_number','auto_accident_state','original_reference_number','hcfa_10d_comment') NOT NULL default 'medicaid_resubmission_code',
-  PRIMARY KEY  (`name`)
-) TYPE=MyISAM COMMENT='enums stored as new col, metadata 1 row perenumSTARTWITHDATA';
-INSERT INTO `enumeration` VALUES ('gender','Gender','Gender for billing purposes','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('person_type','Person Type','Types of people in the system. Like \"patient\" and the different user types','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('company_type','Company Type','Types of companies like \"insurance\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('state','State','A list of the states in the US','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('number_type','Phone Number Type','Types of phone numbers, like \"home\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('company_number_type','Company Number Type','Company phone number types like \"fax\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('address_type','Address Type','Address Types the system should be aware of. Like \"home\" or \"billing\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('disposition','Disposition','Dispositions like \"new\" \"waiting\" or \"complete\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('quality_of_file','Quality of File','Definable quality of life measures.','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('group_list','File Groups','Arbitrary groups for files','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('identifier_type','Identifier Type','Identifiers for billing, must include SocSec and EIN','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('assigning','Assigning','Various levels of assignment','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('relation_of_information_code','','','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('provider_number_type','Provider Number Type','Numbers tracked for Providers, like the State License number','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('subscriber_to_patient','Subscriber to patient','List of patient relationships for billing purposes','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('payer_type','Payer Type','Different types of payers','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('person_to_person_relation_type','Person to person relation type','List of family relationships to track','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('code_modifier','Code Modifier','Modifiers available for codes.','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('encounter_reason','Encounter Reason','Reasons for an encounter','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('encounter_date_type','Encounter Date Type','Types for extra dates attached to an encounter','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('payment_type','Payment Type','Types of payments','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('ethnicity','Ethnicity','For use in tracking social data. Like \"Hispanic\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('marital_status','Marital Status','Maritial Status primarily for billing','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('language','Languages','List of languages spoken.','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('race','Race','Different classes of race. Like \"black\" or \"white/hispanic\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('income','Income','Income levels for social data. like \"under 100% poverty\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('migrant_status','Migrant Status','Migrant status for social data','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('appointment_reasons','Appointment Reason','Different classes of appointments, like \"physical\"','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('provider_reporting_type','Provider Reporting Type','Type of Provider, for reporting purposes','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('encounter_person_type','Encounter Person Type','People that can be associated with an encounter, like Referring Provider. FreeB must have space for new encounter person types.','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code'),('encounter_value_type','Encounter Value Type','Encounter Values, like medicaid resubmission','A - On file','Self','A0','Physical','visa','Home','Physical','A - Assigned','Primary','Insurance','New','Hispanic','Male','All','SSN','Unknown','English','Single','Migrant Worker','Home','medicare','Dependant','Patient','State License','MD','Good','White/Hispanic','AL','Spouse','date_of_death','Referring Provider','medicaid_resubmission_code');
+CREATE TABLE `enumeration_value` (
+  `enumeration_value_id` int(11) NOT NULL default '0',
+  `enumeration_id` int(11) NOT NULL default '0',
+  `key` int(11) NOT NULL default '0',
+  `value` varchar(255) NOT NULL default '',
+  `sort` int(11) NOT NULL default '0',
+  `extra1` varchar(255) NOT NULL default '',
+  `extra2` varchar(255) NOT NULL default '',
+  `status` int(1) NOT NULL default '1',
+  PRIMARY KEY  (`enumeration_value_id`)
+) TYPE=MyISAM;
+
+
+-- 
+-- Table structure for table `enumeration_definition`
+-- 
+
+CREATE TABLE `enumeration_definition` (
+  `enumeration_id` int(11) NOT NULL default '0',
+  `name` varchar(255) NOT NULL default '',
+  `title` varchar(255) NOT NULL default '',
+  `type` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`enumeration_id`),
+  UNIQUE KEY `name` (`name`)
+) TYPE=MyISAM;
+
+
+CREATE TABLE `enumeration_value_practice` (
+`enumeration_value_id` INT NOT NULL ,
+`practice_id` INT NOT NULL ,
+PRIMARY KEY ( `enumeration_value_id` , `practice_id` )
+);
+
+
+INSERT INTO `enumeration_definition` VALUES (300466,'address_type','Address Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300472,'appointment_reasons','Appointment Reason','AppointmentReason');
+INSERT INTO `enumeration_definition` VALUES (300480,'assigning','Assigning','Default');
+INSERT INTO `enumeration_definition` VALUES (300485,'code_modifier','Code Modifier','Default');
+INSERT INTO `enumeration_definition` VALUES (300492,'company_number_type','Company Number Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300495,'company_type','Company Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300497,'disposition','Disposition','Default');
+INSERT INTO `enumeration_definition` VALUES (300501,'encounter_date_type','Encounter Date Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300510,'encounter_person_type','Encounter Person Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300512,'encounter_reason','Encounter Reason','Default');
+INSERT INTO `enumeration_definition` VALUES (300515,'encounter_value_type','Encounter Value Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300521,'ethnicity','Ethnicity','Default');
+INSERT INTO `enumeration_definition` VALUES (300524,'gender','Gender','Default');
+INSERT INTO `enumeration_definition` VALUES (300528,'group_list','File Groups','Default');
+INSERT INTO `enumeration_definition` VALUES (300532,'identifier_type','Identifier Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300535,'income','Income','Default');
+INSERT INTO `enumeration_definition` VALUES (300540,'language','Languages','Default');
+INSERT INTO `enumeration_definition` VALUES (300560,'marital_status','Marital Status','Default');
+INSERT INTO `enumeration_definition` VALUES (300564,'migrant_status','Migrant Status','Default');
+INSERT INTO `enumeration_definition` VALUES (300566,'number_type','Phone Number Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300572,'payer_type','Payer Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300582,'payment_type','Payment Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300589,'person_to_person_relation_type','Person to person relation type','Default');
+INSERT INTO `enumeration_definition` VALUES (300594,'person_type','Person Type','PersonType');
+INSERT INTO `enumeration_definition` VALUES (300300,'provider_number_type','Provider Number Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300602,'provider_reporting_type','Provider Reporting Type','Default');
+INSERT INTO `enumeration_definition` VALUES (300608,'quality_of_file','Quality of File','Default');
+INSERT INTO `enumeration_definition` VALUES (300611,'race','Race','Default');
+INSERT INTO `enumeration_definition` VALUES (300617,'relation_of_information_code','Relation Of Information Code','Default');
+INSERT INTO `enumeration_definition` VALUES (300624,'state','State','Default');
+INSERT INTO `enumeration_definition` VALUES (300677,'subscriber_to_patient','Subscriber to patient','Default');
+INSERT INTO `enumeration_definition` VALUES (300525,'system_reports','System Reports','Url');
+INSERT INTO `enumeration_definition` VALUES (300818,'chronic_care_codes','Chronic Care Codes','Default');
+INSERT INTO `enumeration_definition` VALUES (300852,'funds_source','Funds Source','Default');
+INSERT INTO `enumeration_definition` VALUES (601041,'depression','Depression','Appointment Reason');
+
+INSERT INTO `enumeration_value` VALUES (300013,300012,1,'Hello',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300014,300012,2,'World',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300016,300015,1,'test',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300017,300015,2,'second test',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (300039,300038,1,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300040,300038,2,'Billing',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300041,300038,3,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300042,300038,4,'Main',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300043,300038,5,'Secondary',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300045,300044,1,'Physical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300046,300044,2,'FP',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (300047,300044,3,'CDP',2,'','',1);
+INSERT INTO `enumeration_value` VALUES (300048,300044,4,'CHDP',3,'','',1);
+INSERT INTO `enumeration_value` VALUES (300049,300044,5,'F/U',4,'','',1);
+INSERT INTO `enumeration_value` VALUES (300050,300044,6,'Sick',5,'','',1);
+INSERT INTO `enumeration_value` VALUES (300051,300044,7,'Lab Only',6,'','',1);
+INSERT INTO `enumeration_value` VALUES (300053,300052,1,'A - Assigned',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300054,300052,2,'B - Assigned Lab Services Only',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300055,300052,3,'C - Not Assigned',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300056,300052,4,'P - Assignment Refused',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300058,300057,1,'A0',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300059,300057,2,'A1',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300060,300057,3,'A2',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300061,300057,4,'B1',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300062,300057,5,'B2',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300063,300057,6,'C6',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300065,300064,1,'Primary',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300066,300064,2,'Fax',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300068,300067,1,'Insurance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300070,300069,1,'New',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300071,300069,2,'Waiting',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300072,300069,3,'Compete',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300074,300073,1,'date_of_death',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300075,300073,2,'date_last_seen',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300076,300073,3,'date_of_onset',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300077,300073,4,'date_of_initial_treatment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300078,300073,5,'date_of_cant_work_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300079,300073,6,'date_of_cant_work_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300080,300073,7,'date_of_hospitalization_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300081,300073,8,'date_of_hospitalization_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300083,300082,1,'Referring Provider',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300085,300084,1,'Physical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300086,300084,2,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300088,300087,1,'medicaid_resubmission_code',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300089,300087,2,'prior_authorization_number',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300090,300087,3,'auto_accident_state',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300091,300087,4,'original_reference_number',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300092,300087,5,'hcfa_10d_comment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300094,300093,1,'Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300095,300093,2,'Caucasian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300097,300096,1,'Male',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300098,300096,2,'Female',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300099,300096,3,'Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300101,300100,1,'All',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300102,300100,2,'Arizona',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300103,300100,3,'California',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300105,300104,1,'SSN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300106,300104,2,'EIN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300108,300107,1,'Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300109,300107,2,'Under 100% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300110,300107,3,'100-200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300111,300107,4,'Above 200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300113,300112,1,'English',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300114,300112,2,'Spanish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300115,300112,3,'Chinese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300116,300112,4,'Japanese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300117,300112,5,'Korean',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300118,300112,6,'Portuguese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300119,300112,7,'Russian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300120,300112,8,'Sign Language',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300121,300112,9,'Vietnamese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300122,300112,10,'Tagalog',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300123,300112,11,'Punjabi',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300124,300112,12,'Hindustani',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300125,300112,13,'Armenian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300126,300112,14,'Arabic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300127,300112,15,'Laotian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300128,300112,16,'Hmong',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300129,300112,17,'Cambodian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300130,300112,18,'Finnish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300131,300112,19,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300133,300132,1,'Single',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300134,300132,2,'Married',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300135,300132,3,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300137,300136,1,'Migrant Worker',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300139,300138,1,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300140,300138,2,'Mobile',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300141,300138,3,'Work',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300142,300138,4,'Emergency',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300143,300138,5,'Fax',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300145,300144,1,'medicare',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300146,300144,2,'champus',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300147,300144,3,'medical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300148,300144,4,'private',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300149,300144,5,'feca',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300150,300144,6,'medicaid',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300151,300144,7,'champusva',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300152,300144,8,'otherhcfa',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300153,300144,9,'litigation',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300155,300154,1,'visa',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300156,300154,2,'mastercard',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300157,300154,3,'amex',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300158,300154,4,'check',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300159,300154,5,'cash',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300160,300154,6,'remittance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300162,300161,1,'Dependant',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300163,300161,2,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300164,300161,3,'Grand Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300165,300161,4,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300167,300166,1,'Patient',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300168,300166,2,'Provider',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300169,300166,3,'Mid-level',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300170,300166,4,'Staff',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300171,300166,5,'Subscriber',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300173,300172,1,'State License',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300175,300174,1,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300176,300174,2,'RNFP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300177,300174,3,'RN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300178,300174,4,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300179,300174,5,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300181,300180,1,'Good',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300182,300180,2,'Bad',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300184,300183,1,'White/Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300185,300183,2,'Black',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300186,300183,3,'Native American/Alaskan Native',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300187,300183,4,'Asian/Pacific Islander',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300188,300183,5,'Other/Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300190,300189,1,'A - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300191,300189,2,'I - Informed Consent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300192,300189,3,'M - Limited Ability',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300193,300189,4,'N - Not allowed',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300194,300189,5,'O - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300195,300189,6,'Y - Has permission',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300197,300196,1,'AL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300198,300196,2,'AK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300199,300196,3,'AZ',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300200,300196,4,'AR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300201,300196,5,'CA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300202,300196,6,'CO',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300203,300196,7,'CT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300204,300196,8,'DE',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300205,300196,9,'DC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300206,300196,10,'FL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300207,300196,11,'GA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300208,300196,12,'HI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300209,300196,13,'ID',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300210,300196,14,'IL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300211,300196,15,'IN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300212,300196,16,'IA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300213,300196,17,'KS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300214,300196,18,'KY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300215,300196,19,'LA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300216,300196,20,'ME',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300217,300196,21,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300218,300196,22,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300219,300196,23,'MI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300220,300196,24,'MN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300221,300196,25,'MS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300222,300196,26,'MO',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300223,300196,27,'MT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300224,300196,28,'NE',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300225,300196,29,'NV',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300226,300196,30,'NH',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300227,300196,31,'NJ',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300228,300196,32,'NM',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300229,300196,33,'NY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300230,300196,34,'NC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300231,300472,1,'Cleaning',0,'300228','',1);
+INSERT INTO `enumeration_value` VALUES (300232,300196,36,'OH',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300233,300196,37,'OK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300234,300196,38,'OR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300235,300196,39,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300236,300196,40,'RI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300237,300196,41,'SC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300238,300196,42,'SD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300239,300196,43,'TN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300240,300196,44,'TX',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300241,300196,45,'UT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300242,300196,46,'VT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300243,300196,47,'VA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300244,300196,48,'WA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300245,300196,49,'WV',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300246,300196,50,'WI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300247,300196,51,'WY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300248,300196,52,'PR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300250,300249,1,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300251,300249,2,'Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300253,300252,1,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300254,300252,2,'Billing',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300255,300252,3,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300256,300472,0,'Root Canal',0,'300265','',1);
+INSERT INTO `enumeration_value` VALUES (300257,300472,0,'',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300259,300258,1,'Physical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300260,300258,2,'FP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300261,300258,3,'CDP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300262,300258,4,'CHDP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300263,300258,5,'F/U',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300264,300258,6,'Sick',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300265,300258,7,'Lab Only',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300267,300266,1,'A - Assigned',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300291,300287,4,'date_of_initial_treatment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300292,300287,5,'date_of_cant_work_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300293,300287,6,'date_of_cant_work_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300294,300287,7,'date_of_hospitalization_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300295,300287,8,'date_of_hospitalization_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300297,300296,1,'Referring Provider',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300299,300298,1,'Physical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300300,300298,2,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300302,300301,1,'medicaid_resubmission_code',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300305,300472,2,'Root Canal',2,'300265','',1);
+INSERT INTO `enumeration_value` VALUES (300306,300301,5,'hcfa_10d_comment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300308,300307,1,'Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300309,300307,2,'Caucasian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300311,300310,1,'Male',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300312,300310,2,'Female',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300313,300310,3,'Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300315,300314,1,'All',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300316,300314,2,'Arizona',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300317,300314,3,'California',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300319,300318,1,'SSN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300320,300318,2,'EIN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300322,300321,1,'Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300323,300321,2,'Under 100% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300324,300321,3,'100-200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300325,300321,4,'Above 200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300327,300326,1,'English',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300328,300326,2,'Spanish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300329,300326,3,'Chinese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300330,300326,4,'Japanese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300331,300326,5,'Korean',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300332,300326,6,'Portuguese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300333,300326,7,'Russian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300334,300326,8,'Sign Language',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300335,300326,9,'Vietnamese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300336,300326,10,'Tagalog',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300337,300326,11,'Punjabi',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300338,300326,12,'Hindustani',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300339,300326,13,'Armenian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300340,300326,14,'Arabic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300341,300326,15,'Laotian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300342,300326,16,'Hmong',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300343,300326,17,'Cambodian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300344,300326,18,'Finnish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300345,300472,3,'Extractions',1,'300327','',1);
+INSERT INTO `enumeration_value` VALUES (300347,300346,1,'Single',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300348,300346,2,'Married',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300349,300346,3,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300351,300350,1,'Migrant Worker',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300353,300352,1,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300354,300352,2,'Mobile',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300355,300352,3,'Work',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300356,300352,4,'Emergency',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300357,300352,5,'Fax',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300359,300358,1,'medicare',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300360,300358,2,'champus',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300361,300358,3,'medical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300362,300358,4,'private',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300363,300358,5,'feca',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300364,300358,6,'medicaid',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300365,300358,7,'champusva',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300366,300358,8,'otherhcfa',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300367,300358,9,'litigation',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300369,300368,1,'visa',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300370,300368,2,'mastercard',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300371,300368,3,'amex',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300372,300368,4,'check',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300373,300368,5,'cash',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300374,300368,6,'remittance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300376,300375,1,'Dependant',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300377,300375,2,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300378,300375,3,'Grand Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300379,300375,4,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300381,300380,1,'Patient',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300382,300380,2,'Provider',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300383,300380,3,'Mid-level',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300384,300380,4,'Staff',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300385,300380,5,'Subscriber',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300387,300386,1,'State License',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300389,300388,1,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300390,300388,2,'RNFP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300391,300388,3,'RN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300392,300388,4,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300393,300388,5,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300395,300394,1,'Good',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300396,300394,2,'Bad',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300398,300397,1,'White/Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300399,300397,2,'Black',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300400,300397,3,'Native American/Alaskan Native',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300401,300397,4,'Asian/Pacific Islander',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300402,300397,5,'Other/Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300404,300403,1,'A - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300405,300403,2,'I - Informed Consent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300406,300403,3,'M - Limited Ability',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300407,300403,4,'N - Not allowed',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300408,300403,5,'O - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300409,300403,6,'Y - Has permission',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300411,300410,1,'AL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300412,300410,2,'AK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300413,300410,3,'AZ',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300414,300410,4,'AR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300415,300410,5,'CA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300416,300410,6,'CO',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300417,300410,7,'CT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300418,300410,8,'DE',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300419,300410,9,'DC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300420,300410,10,'FL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300421,300410,11,'GA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300422,300410,12,'HI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300423,300410,13,'ID',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300424,300410,14,'IL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300425,300410,15,'IN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300426,300410,16,'IA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300427,300410,17,'KS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300428,300410,18,'KY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300429,300410,19,'LA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300430,300410,20,'ME',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300431,300410,21,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300432,300410,22,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300433,300410,23,'MI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300434,300410,24,'MN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300435,300410,25,'MS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300436,300410,26,'MO',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300437,300410,27,'MT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300438,300410,28,'NE',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300439,300410,29,'NV',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300440,300410,30,'NH',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300441,300410,31,'NJ',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300442,300410,32,'NM',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300443,300410,33,'NY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300444,300410,34,'NC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300445,300410,35,'ND',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300446,300410,36,'OH',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300447,300410,37,'OK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300448,300410,38,'OR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300449,300410,39,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300450,300410,40,'RI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300451,300410,41,'SC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300452,300410,42,'SD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300453,300410,43,'TN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300454,300410,44,'TX',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300455,300410,45,'UT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300456,300410,46,'VT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300457,300410,47,'VA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300458,300410,48,'WA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300459,300410,49,'WV',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300460,300410,50,'WI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300461,300410,51,'WY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300462,300410,52,'PR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300464,300463,1,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300465,300463,2,'Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300467,300466,2,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300468,300466,1,'Billing',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (300469,300466,3,'Other',2,'','',1);
+INSERT INTO `enumeration_value` VALUES (300470,300466,4,'Main',3,'','',1);
+INSERT INTO `enumeration_value` VALUES (300471,300466,5,'Secondary',4,'','',1);
+INSERT INTO `enumeration_value` VALUES (300473,300472,1,'Physical',5,'','',1);
+INSERT INTO `enumeration_value` VALUES (300474,300472,2,'FP',6,'','',1);
+INSERT INTO `enumeration_value` VALUES (300475,300472,3,'CDP',7,'','',1);
+INSERT INTO `enumeration_value` VALUES (300476,300472,4,'CHDP',8,'','',1);
+INSERT INTO `enumeration_value` VALUES (300477,300472,5,'F/U',9,'','',1);
+INSERT INTO `enumeration_value` VALUES (300478,300472,6,'Sick',10,'','',1);
+INSERT INTO `enumeration_value` VALUES (300479,300472,7,'Lab Only',11,'','',1);
+INSERT INTO `enumeration_value` VALUES (300481,300480,1,'A - Assigned',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300482,300480,2,'B - Assigned Lab Services Only',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300483,300480,3,'C - Not Assigned',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300484,300480,4,'P - Assignment Refused',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300486,300485,1,'A0',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300487,300485,2,'A1',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300488,300485,3,'A2',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300489,300485,4,'B1',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300490,300485,5,'B2',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300491,300485,6,'C6',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300493,300492,1,'Primary',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300494,300492,2,'Fax',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300496,300495,1,'Insurance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300498,300497,1,'New',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300499,300497,2,'Waiting',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300500,300497,3,'Compete',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300502,300501,1,'date_of_death',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300503,300501,2,'date_last_seen',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300504,300501,3,'date_of_onset',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300505,300501,4,'date_of_initial_treatment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300506,300501,5,'date_of_cant_work_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300507,300501,6,'date_of_cant_work_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300508,300501,7,'date_of_hospitalization_start',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300509,300501,8,'date_of_hospitalization_end',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300511,300510,1,'Referring Provider',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300513,300512,1,'Physical',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300514,300512,2,'Other',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (300516,300515,1,'medicaid_resubmission_code',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300517,300515,2,'prior_authorization_number',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300518,300515,3,'auto_accident_state',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300519,300515,4,'original_reference_number',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300520,300515,5,'hcfa_10d_comment',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300522,300521,1,'Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300523,300521,2,'Caucasian',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (300525,300524,1,'Male',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300526,300525,1,'Patient Statement',0,'/Patient/statement','',1);
+INSERT INTO `enumeration_value` VALUES (300527,300524,3,'Unknown',2,'','',1);
+INSERT INTO `enumeration_value` VALUES (300529,300528,1,'All',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300530,300528,2,'Arizona',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300531,300528,3,'California',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300533,300532,1,'SSN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300534,300532,2,'EIN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300536,300535,1,'Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300537,300535,2,'Under 100% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300538,300535,3,'100-200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300539,300535,4,'Above 200% of Poverty',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300541,300540,1,'English',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300542,300540,2,'Spanish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300543,300540,3,'Chinese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300544,300540,4,'Japanese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300545,300540,5,'Korean',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300546,300540,6,'Portuguese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300547,300540,7,'Russian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300548,300540,8,'Sign Language',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300549,300540,9,'Vietnamese',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300550,300540,10,'Tagalog',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300551,300540,11,'Punjabi',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300552,300540,12,'Hindustani',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300553,300540,13,'Armenian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300554,300540,14,'Arabic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300555,300540,15,'Laotian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300556,300540,16,'Hmong',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300557,300540,17,'Cambodian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300558,300540,18,'Finnish',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300559,300540,19,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300561,300560,1,'Single',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300562,300560,2,'Married',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300563,300560,3,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300565,300564,1,'Migrant Worker',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300567,300566,1,'Home',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300568,300566,2,'Mobile',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300569,300566,3,'Work',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300570,300566,4,'Emergency',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300571,300566,5,'Fax',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300573,300572,1,'medicare',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300574,300572,2,'champus',2,'','',1);
+INSERT INTO `enumeration_value` VALUES (300575,300572,3,'medical',3,'','',1);
+INSERT INTO `enumeration_value` VALUES (300576,300572,4,'private pay',4,'','',1);
+INSERT INTO `enumeration_value` VALUES (300577,300572,5,'feca',5,'','',1);
+INSERT INTO `enumeration_value` VALUES (300578,300572,6,'medicaid',6,'','',1);
+INSERT INTO `enumeration_value` VALUES (300579,300572,7,'champusva',7,'','',1);
+INSERT INTO `enumeration_value` VALUES (300580,300572,8,'otherhcfa',8,'','',1);
+INSERT INTO `enumeration_value` VALUES (300581,300572,9,'litigation',9,'','',1);
+INSERT INTO `enumeration_value` VALUES (300583,300582,1,'visa',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300584,300582,2,'mastercard',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300585,300582,3,'amex',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300586,300582,4,'check',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300587,300582,5,'cash',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300588,300582,6,'remittance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300590,300589,1,'Dependant',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300591,300589,2,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300592,300589,3,'Grand Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300593,300589,4,'Other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300595,300594,1,'Patient',0,'0','',1);
+INSERT INTO `enumeration_value` VALUES (300596,300594,2,'Provider',1,'1','',1);
+INSERT INTO `enumeration_value` VALUES (300597,300594,3,'Mid-level',2,'1','',1);
+INSERT INTO `enumeration_value` VALUES (300598,300594,4,'Staff',3,'1','',1);
+INSERT INTO `enumeration_value` VALUES (300599,300594,5,'Subscriber',4,'0','',1);
+INSERT INTO `enumeration_value` VALUES (300601,300300,1,'State License',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300603,300602,1,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300604,300602,2,'RNFP',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300605,300602,3,'RN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300606,300602,4,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300607,300602,5,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300609,300608,1,'Good',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300610,300608,2,'Bad',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300612,300611,1,'White/Hispanic',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300613,300611,2,'Black',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300614,300611,3,'Native American/Alaskan Native',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300615,300611,4,'Asian/Pacific Islander',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300616,300611,5,'Other/Unknown',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300618,300617,1,'A - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300619,300617,2,'I - Informed Consent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300620,300617,3,'M - Limited Ability',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300621,300617,4,'N - Not allowed',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300622,300617,5,'O - On file',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300623,300617,6,'Y - Has permission',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300625,300624,1,'AL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300626,300624,2,'AK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300627,300624,3,'AZ',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300628,300624,4,'AR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300629,300624,5,'CA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300630,300624,6,'CO',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300631,300624,7,'CT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300632,300624,8,'DE',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300633,300624,9,'DC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300634,300624,10,'FL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300635,300624,11,'GA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300636,300624,12,'HI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300637,300624,13,'ID',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300638,300624,14,'IL',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300639,300624,15,'IN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300640,300624,16,'IA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300641,300624,17,'KS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300642,300624,18,'KY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300643,300624,19,'LA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300644,300624,20,'ME',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300645,300624,21,'MD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300646,300624,22,'MA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300647,300624,23,'MI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300648,300624,24,'MN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300649,300624,25,'MS',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300650,300525,2,'Family Patient Statement',1,'/Patient/familyStatement','',1);
+INSERT INTO `enumeration_value` VALUES (300651,300525,3,'Pull List',2,'/Appointment/pullList','',1);
+INSERT INTO `enumeration_value` VALUES (300652,300472,1,'Physical',5,'','',1);
+INSERT INTO `enumeration_value` VALUES (300653,300472,2,'FP',6,'','',1);
+INSERT INTO `enumeration_value` VALUES (300654,300472,3,'CDP',7,'','',1);
+INSERT INTO `enumeration_value` VALUES (300655,300472,4,'CHDP',8,'','',1);
+INSERT INTO `enumeration_value` VALUES (300656,300472,5,'F/U',9,'','',1);
+INSERT INTO `enumeration_value` VALUES (300657,300472,6,'Sick',10,'','',1);
+INSERT INTO `enumeration_value` VALUES (300658,300472,7,'Lab Only',11,'','',1);
+INSERT INTO `enumeration_value` VALUES (300659,300624,35,'ND',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300660,300624,36,'OH',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300661,300624,37,'OK',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300662,300624,38,'OR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300663,300624,39,'PA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300664,300624,40,'RI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300665,300624,41,'SC',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300666,300624,42,'SD',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300667,300624,43,'TN',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300668,300624,44,'TX',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300669,300624,45,'UT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300670,300624,46,'VT',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300671,300624,47,'VA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300672,300624,48,'WA',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300673,300624,49,'WV',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300674,300624,50,'WI',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300675,300624,51,'WY',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300676,300624,52,'PR',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300678,300677,1,'Spouse',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300679,300677,2,'Parent',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300701,300472,1,'Cleaning',0,'300228','',1);
+INSERT INTO `enumeration_value` VALUES (300747,300525,4,'Route Slip',3,'/Encounter/routeSlip','',1);
+INSERT INTO `enumeration_value` VALUES (300819,300818,1,'Diabetes',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300820,300818,2,'Hypertension',2,'','',1);
+INSERT INTO `enumeration_value` VALUES (300853,300852,1,'Patient',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300854,300852,2,'Private Insurance',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300855,300852,3,'State Program',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300856,300852,4,'Federal Program',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (300932,300818,3,'hrt',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (301031,300472,1,'Physical',5,'','',1);
+INSERT INTO `enumeration_value` VALUES (301032,300472,2,'FP',6,'','',1);
+INSERT INTO `enumeration_value` VALUES (301033,300472,3,'CDP',7,'','',1);
+INSERT INTO `enumeration_value` VALUES (301034,300472,4,'CHDP',8,'','',1);
+INSERT INTO `enumeration_value` VALUES (301035,300472,5,'F/U',9,'','',1);
+INSERT INTO `enumeration_value` VALUES (301036,300472,6,'Sick',10,'','',1);
+INSERT INTO `enumeration_value` VALUES (301037,300472,7,'Lab Only',11,'','',1);
+INSERT INTO `enumeration_value` VALUES (301038,300472,8,'Cleaning',0,'601027','',1);
+INSERT INTO `enumeration_value` VALUES (301042,300472,9,'Depression',0,'601027','',1);
+INSERT INTO `enumeration_value` VALUES (301504,300466,6,'',5,'','',0);
+INSERT INTO `enumeration_value` VALUES (301505,300524,2,'Female',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301506,300512,3,'medical appt',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301507,300521,3,'Asian',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301508,300572,10,' private insurance',1,'','',1);
+INSERT INTO `enumeration_value` VALUES (301522,300564,2,'Seasonal Worker',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301523,300564,3,'No',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301524,300564,4,'other',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (301538,300818,4,'Hypercholestrolemia',0,'','',1);

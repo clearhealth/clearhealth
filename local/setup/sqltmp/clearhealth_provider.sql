@@ -14,5 +14,6 @@ CREATE TABLE `provider_to_insurance` (
   `provider_number` varchar(100) NOT NULL default '',
   `provider_number_type` int(11) NOT NULL default '0',
   `group_number` varchar(100) NOT NULL default '',
+  `building_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`provider_to_insurance_id`)
 ) TYPE=MyISAM;

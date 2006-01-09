@@ -13,6 +13,8 @@ CREATE TABLE `insurance_program` (
   `x12_sender_id` varchar(255) NOT NULL default '',
   `x12_receiver_id` varchar(255) NOT NULL default '',
   `x12_version` varchar(255) NOT NULL default '',
+  `address_id` int(11) NOT NULL default '0',
+  `funds_source` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
 ) TYPE=MyISAM;

@@ -10,5 +10,6 @@ CREATE TABLE `building_program_identifier` (
   `building_id` int(11) NOT NULL default '0',
   `program_id` int(11) NOT NULL default '0',
   `identifier` varchar(255) NOT NULL default '',
+  `x12_sender_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`building_id`,`program_id`)
 ) TYPE=MyISAM;

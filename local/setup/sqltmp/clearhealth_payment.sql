@@ -9,7 +9,7 @@ CREATE TABLE `payment` (
   `timestamp` timestamp NOT NULL,
   `payer_id` int(11) NOT NULL default '0',
   `payment_date` date NOT NULL default '0000-00-00',
-  `title` varchar(50) NOT NULL default '',
+  `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`payment_id`),
   KEY `foreign_id` (`foreign_id`)
 ) TYPE=MyISAM;
