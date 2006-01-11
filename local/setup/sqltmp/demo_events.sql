@@ -5,7 +5,7 @@
 
 /*!40000 ALTER TABLE `events` DISABLE KEYS */;
 LOCK TABLES `events` WRITE;
-INSERT INTO `events` VALUES (502530,'','','','','',0),(502561,'Demo Red','','','','',502559),(502560,'Demo Blue','','','','',502559),(502562,'Demo Yellow','','','','',502559),(502569,'Demo Blue','','','','',502568),(502570,'Demo Red','','','','',502568),(502571,'Demo Yellow','','','','',502568),(502578,'Demo Blue','','','','',502577),(502579,'Demo Red','','','','',502577),(502580,'Demo Yellow','','','','',502577);
+INSERT INTO `events` VALUES (502561,'Demo Red','','','','',502559),(502560,'Demo Blue','','','','',502559),(502562,'Demo Yellow','','','','',502559),(502569,'Demo Blue','','','','',502568),(502570,'Demo Red','','','','',502568),(502571,'Demo Yellow','','','','',502568),(502578,'Demo Blue','','','','',502577),(502579,'Demo Red','','','','',502577),(502580,'Demo Yellow','','','','',502577);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `events` ENABLE KEYS */;
 
