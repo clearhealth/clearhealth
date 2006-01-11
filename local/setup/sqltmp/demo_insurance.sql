@@ -6,7 +6,6 @@
 
 /*!40000 ALTER TABLE `insurance_program` DISABLE KEYS */;
 LOCK TABLES `insurance_program` WRITE;
-INSERT INTO `insurance_program` VALUES (502554,4,502553,'Example Program',502552,'11111111111','22222222222','004010X098A1');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `insurance_program` ENABLE KEYS */;
 
