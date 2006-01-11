@@ -2,14 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `storage_text`;
-CREATE TABLE `storage_text` (
-  `foreign_key` int(11) NOT NULL default '0',
-  `value_key` varchar(255) NOT NULL default '',
-  `value` longtext NOT NULL,
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) TYPE=MyISAM COMMENT='Generic way to string values';
-
 
 /*!40000 ALTER TABLE `storage_text` DISABLE KEYS */;
 LOCK TABLES `storage_text` WRITE;

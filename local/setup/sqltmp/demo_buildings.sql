@@ -2,17 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `buildings`;
-CREATE TABLE `buildings` (
-  `id` int(11) NOT NULL default '0',
-  `description` text NOT NULL,
-  `name` varchar(255) NOT NULL default '',
-  `practice_id` int(11) NOT NULL default '0',
-  `identifier` varchar(255) NOT NULL default '',
-  `facility_code_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM COMMENT='STARTEMPTY';
-
 
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
 LOCK TABLES `buildings` WRITE;

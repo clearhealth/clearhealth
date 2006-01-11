@@ -2,14 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `practices`;
-CREATE TABLE `practices` (
-  `id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `website` varchar(255) NOT NULL default '',
-  `identifer` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
 
 
 /*!40000 ALTER TABLE `practices` DISABLE KEYS */;

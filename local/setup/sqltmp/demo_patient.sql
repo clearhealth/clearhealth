@@ -2,20 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `patient_statistics`;
-CREATE TABLE `patient_statistics` (
-  `person_id` int(11) NOT NULL default '0',
-  `ethnicity` int(11) NOT NULL default '0',
-  `race` int(11) NOT NULL default '0',
-  `income` int(11) NOT NULL default '0',
-  `language` int(11) NOT NULL default '0',
-  `migrant_status` int(11) NOT NULL default '0',
-  `registration_location` int(11) NOT NULL default '0',
-  `sign_in_date` date NOT NULL default '0000-00-00',
-  `monthly_income` int(11) NOT NULL default '0',
-  `family_size` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`person_id`)
-) TYPE=MyISAM;
 
 
 /*!40000 ALTER TABLE `patient_statistics` DISABLE KEYS */;

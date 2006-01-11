@@ -2,16 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `payment_claimline`;
-CREATE TABLE `payment_claimline` (
-  `payment_claimline_id` int(11) NOT NULL default '0',
-  `payment_id` int(11) NOT NULL default '0',
-  `code_id` int(11) NOT NULL default '0',
-  `paid` float(7,2) NOT NULL default '0.00',
-  `writeoff` float(7,2) NOT NULL default '0.00',
-  `carry` float(7,2) NOT NULL default '0.00',
-  PRIMARY KEY  (`payment_claimline_id`)
-) TYPE=MyISAM;
 
 
 /*!40000 ALTER TABLE `payment_claimline` DISABLE KEYS */;

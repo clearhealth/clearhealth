@@ -2,13 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `category_to_document`;
-CREATE TABLE `category_to_document` (
-  `category_id` int(11) NOT NULL default '0',
-  `document_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`category_id`,`document_id`)
-) TYPE=MyISAM COMMENT='STARTEMPTY';
-
 
 /*!40000 ALTER TABLE `category_to_document` DISABLE KEYS */;
 LOCK TABLES `category_to_document` WRITE;

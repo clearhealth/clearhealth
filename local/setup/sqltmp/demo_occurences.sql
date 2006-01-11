@@ -2,23 +2,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO,MYSQL323' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-DROP TABLE IF EXISTS `occurences`;
-CREATE TABLE `occurences` (
-  `id` int(11) NOT NULL default '0',
-  `event_id` int(11) NOT NULL default '0',
-  `start` datetime NOT NULL default '0000-00-00 00:00:00',
-  `end` datetime NOT NULL default '0000-00-00 00:00:00',
-  `notes` varchar(255) NOT NULL default '',
-  `location_id` int(11) NOT NULL default '0',
-  `user_id` int(11) default NULL,
-  `last_change_id` int(11) default NULL,
-  `external_id` int(11) default NULL,
-  `reason_code` int(11) NOT NULL default '0',
-  `timestamp` timestamp NOT NULL,
-  `walkin` tinyint(4) NOT NULL default '0',
-  `group_appointment` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
 
 
 /*!40000 ALTER TABLE `occurences` DISABLE KEYS */;
