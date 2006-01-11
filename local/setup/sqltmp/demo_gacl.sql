@@ -5,7 +5,6 @@
 
 /*!40000 ALTER TABLE `gacl_phpgacl` DISABLE KEYS */;
 LOCK TABLES `gacl_phpgacl` WRITE;
-INSERT INTO `gacl_phpgacl` VALUES ('version','3.3.3'),('schema_version','2.1');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_phpgacl` ENABLE KEYS */;
 
