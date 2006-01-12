@@ -95,6 +95,12 @@ class C_Form extends Controller {
 	function actionFillout_edit($form_id = 0,$form_data_id = 0) {
 		$form_data_id = EnforceType::int($form_data_id);
 
+		$retTo = "";
+		if ($this->GET->exists('returnTo')) {
+			$this->assign('returnTo',$this->GET->get('returnTo'));
+			$retTo = "&returnTo=".$this->GET->get('returnTo');
+		}
+
 		$form =& ORDataObject::factory('Form',$form_id);
 		if ($form_id == false) {
 			$ds =& $form->formList();
@@ -106,16 +112,13 @@ class C_Form extends Controller {
 			if (isset($this->form_data_id)) {
 				$form_data_id = $this->form_data_id;
 			}
-			$this->assign('FORM_ACTION',Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id");
+			$this->assign('FORM_ACTION',Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id$retTo");
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$this->assign_by_ref('form',$form);
 			$this->assign_by_ref('data',$data);
 			$this->secure_dir[] = APP_ROOT."/user/form/";
 		}
 
-		if ($this->GET->exists('returnTo')) {
-			$this->assign('returnTo',$this->GET->get('returnTo'));
-		}
 
 		return $this->view->render("fillout.html");
 	}

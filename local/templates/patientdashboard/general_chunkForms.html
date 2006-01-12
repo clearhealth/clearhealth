@@ -1,0 +1,13 @@
+	<fieldset class="radio" id="forms">
+		<legend>{l}Forms{/l} {clni_section_links name="forms"}</legend>
+		{$formDataGrid->render()}
+		{if $formDataGrid->empty}
+		<p>{l}Patient has no completed forms{/l}</p>
+		{/if}
+		<p>Fill out form: <select onclick="if (this.value > 0) {literal}{{/literal} window.location = '{$FORM_FILLOUT_ACTION}id='+this.value+
+			'&returnTo={$RETURN_TO}'; {literal}}{/literal}">
+					<option value="0"></option>
+					{html_options options=$formList}
+				</select>
+				</p>
+	</fieldset>

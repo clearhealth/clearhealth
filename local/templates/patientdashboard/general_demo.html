@@ -1,0 +1,66 @@
+<table class="columns" border="0">
+<tr>
+<td colspan="2">
+	{include file="patientdashboard/general_chunkPatient.html"}
+</div>
+</td></tr></table>
+	</fieldset>
+	</td>
+	</tr>
+	<tr>
+	<td>
+	<fieldset class="radio" id="notes">
+		<legend>{l}Notes{/l}</legend>
+		{$noteGrid->render()}
+		{if $noteGrid->empty && $depnoteGrid->empty}
+		<p>Patient has no Notes</p>
+		{/if}
+
+
+	{clni_form action=$NOTE_ACTION process=$PROCESS}
+		<input type="hidden" name="note[note_id]" value="{$note->get('id')}">
+		<div>
+			<textarea name="note[note]" cols="80" rows="2">{$note->get('note')}</textarea>
+		</div>
+		<div style="float:left; margin: 6px 0 0 0;">
+			<label class="inline">Priority: </label>{html_options options=$note->priorityList() selected=$note->get('priority') name="note[priority]"}
+		</div>
+		<div style="margin: 6px 0 0 0;">
+			<input type="submit" name="add_note" value="{if $note->get('id') > 0}Update{else}Add{/if} Note" style="margin: 0 0 0 10px;">
+		</div>
+	</form>
+	</fieldset>
+	
+	<fieldset class="radio" id="insurer">
+		<legend>{l}Insurers{/l}</legend>
+		{$insuredRelationshipGrid->render()}
+		{if $insuredRelationshipGrid->empty}
+			<p>{l}Patient has no Insurers Assigned{/l}</p>
+		{/if}
+	</fieldset>
+	<fieldset class="radio" id="encounters">
+		<legend>{l}Encounters{/l} {clni_section_links name="encounters"}</legend>
+		{$encounterGrid->render()}
+		{if $encounterGrid->empty}
+			<p>{l}Patient has no Encounters{/l}</p>
+		{/if}
+		<p><a href="{$ENCOUNTER_ACTION}">Add Encounter</a></p>
+	</fieldset>
+
+	<fieldset class="radio" id="Appointments">
+		<legend>{l}Appointments{/l} {clni_section_links name="appointments"}</legend>
+		{$appointmentGrid->render()}
+		{if $appointmentGrid->empty}
+		<p>{l}Patient has no Future appoinments{/l}</p>
+		{/if}
+	</fieldset>
+	</td>
+	<td>
+	
+	{include file="patientdashboard/general_chunkAccountInfo.html}
+
+
+	</td>
+</tr>
+</table>
+{include file="patientdashboard/general_tab.html" demo="true"}

@@ -1,0 +1,19 @@
+<fieldset class="radio" id="encounters">
+		<legend>{l}Account Information{/l} {clni_section_links name="account_information"}</legend>
+		{if count($accountStatus.total_billed) > 0}
+		<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>
+		<table>
+			<tr>
+				<td><label>{l}Total Billed{/l}: </label></td><td>{$accountStatus.total_billed}</td>
+			</tr>
+			<tr>
+				<td><label>{l}Total Paid{/l}: </label></td><td>{$accountStatus.total_paid}</td>
+			</tr>
+			<tr>
+				<td><label>{l}Balance{/l}: </label></td><td style="border-top: solid 1px black;">{$accountStatus.total_balance}</td>
+			</tr>
+		</table>
+		{else}
+		<p>{l}No Account Information{/l}</p>
+		{/if}
+	</fieldset>

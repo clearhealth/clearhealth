@@ -1,0 +1,45 @@
+<style type="text/css">
+	{literal}
+	body {
+	{/literal}
+		background-position: top right;
+		background-image: url({$base_dir}images/dashboard/tabBorder.png);
+		background-repeat: repeat-y;
+	{literal}
+	}
+	#dashboardTabs {
+		position: absolute;
+		right: 4px;
+		top: 43px;
+		width: 41px;
+		height: 505px;
+		padding-top: 5px;
+		margin-left: 2px;
+	}
+	#dashboardTabs div {
+		height: 160px;
+		border: solid 1px black;
+		border-left: 0;
+		background-color: #BFCFFF;
+		margin-bottom: 4px;
+	}
+	#dashboardTabs div.selected {
+		background-color: #edb325;
+		margin-left: -2px;
+	}
+	#dashboardTabs a {
+		text-decoration: none;
+	}
+	#dashboardTabs a:hover {
+		text-decoration: none;
+	}
+	{/literal}
+</style>
+<div id="dashboardTabs">
+
+	<div {if $demo}class="selected"{/if}><a href="{$DEMOTAB_ACTION}"><img alt="Demographics" src="{$base_dir}images/dashboard/demo_{if $demo}orange{else}blue{/if}.png"></a></div>
+
+	<div {if $emr}class="selected"{/if}><a href="{$EMRTAB_ACTION}"><img alt="EMR" src="{$base_dir}images/dashboard/emr_{if $emr}orange{else}blue{/if}.png"></a></div>
+
+	<div {if $case}class="selected"{/if}><a href="{$CASETAB_ACTION}"><img alr="Case Management" src="{$base_dir}images/dashboard/case_{if $case}orange{else}blue{/if}.png"></a></div>
+</div>
