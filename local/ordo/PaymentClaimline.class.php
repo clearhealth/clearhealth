@@ -121,7 +121,7 @@ class PaymentClaimline extends ORDataObject {
 				inner join coding_data cd on cd.foreign_id = e.encounter_id
 				left join clearhealth_claim chc on chc.encounter_id = e.encounter_id
 				left join payment p on chc.claim_id = p.foreign_id
-				left join $table pcl on p.payment_id=pcl.payment_id
+				left join $table pcl on p.payment_id=pcl.payment_id and pcl.code_id = ".EnforceType::int($this->get('code_id')) ."
 			where
 			cd.code_id = ".EnforceType::int($this->get('code_id')) ." and e.encounter_id = ".EnforceType::int($encounterId)."
 			group by e.encounter_id";
