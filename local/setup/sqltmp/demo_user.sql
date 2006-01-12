@@ -6,7 +6,7 @@
 
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 LOCK TABLES `user` WRITE;
-INSERT INTO `user` VALUES (1,'admin','admin','','',NULL,'no',502549),(502567,'mtrotter','mtrotter','mt','00FFFF',502566,'no',502550),(502558,'aeinstein','aeinstein','emc2','FFCC99',502557,'no',502549),(502576,'mminksi','mminski','mm','CC99FF',502575,'no',502551);
+INSERT INTO `user` VALUES (502567,'mtrotter','mtrotter','mt','00FFFF',502566,'no',502550),(502558,'aeinstein','aeinstein','emc2','FFCC99',502557,'no',502549),(502576,'mminksi','mminski','mm','CC99FF',502575,'no',502551);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
