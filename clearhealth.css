@@ -60,11 +60,11 @@ body {
 }
  
 #body {
- width:98%;
+ width:100%;
  margin:0px auto;
  text-align:left;
- padding: 1%;
- padding-top: 10px;
+ padding: 1em;
+ padding-right: 2em;
  background-color:#eee;
 }
 div#nav {
