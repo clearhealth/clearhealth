@@ -23,6 +23,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign('DEMOTAB_ACTION',Celini::link('demo',true,true,$patientId));
 		$this->assign('EMRTAB_ACTION',Celini::link('EMR',true,true,$patientId));
 		$this->assign('CASETAB_ACTION',Celini::link('case',true,true,$patientId));
+		$GLOBALS['C_MAIN']['extra_css'] = array('patientDashboard.css');
 	}
 
 	function actionView($patientId = '') {
