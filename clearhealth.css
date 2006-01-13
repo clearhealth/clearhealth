@@ -1,9 +1,9 @@
 body {
  margin:0px; padding:0px;
  /*text-align:center;*/
- background-color:#eee;
  font-family: sans-serif;
  font-size: 90%;
+ background-color:#eee;
 }
 #username {
  font-size: 8pt;
@@ -65,6 +65,7 @@ body {
  text-align:left;
  padding: 1%;
  padding-top: 10px;
+ background-color:#eee;
 }
 div#nav {
  position: absolute;
