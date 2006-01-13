@@ -1,20 +1,19 @@
 <style type="text/css">
 	{literal}
-	body {
-	{/literal}
-		background-position: top right;
-		background-image: url({$base_dir}images/dashboard/tabBorder.png);
-		background-repeat: repeat-y;
-	{literal}
+	#body {
+		padding: 0;
+		margin: 0;
+		width: 100%;
 	}
-	#dashboardTabs {
-		position: absolute;
-		right: 4px;
-		top: 43px;
-		width: 41px;
-		height: 505px;
-		padding-top: 5px;
-		margin-left: 2px;
+	#tabBody {
+		padding: 1em;
+	}
+	#tabBack {
+		border-left: solid 2px black;
+		background-color: white;
+		padding: 0;
+		padding-top: 2em;
+		padding-right: .5em;
 	}
 	#dashboardTabs div {
 		height: 160px;
@@ -32,6 +31,9 @@
 	}
 	#dashboardTabs a:hover {
 		text-decoration: none;
+	}
+	#body {
+		margin-right: 48px;
 	}
 	{/literal}
 </style>
