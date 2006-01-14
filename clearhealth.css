@@ -62,8 +62,7 @@ body {
 #body {
  margin:0px auto;
  text-align:left;
- padding: 1em;
- padding-right: 2em;
+ padding: 10px 15px;
  background-color:#eee;
 }
 div#nav {
