@@ -3,7 +3,6 @@
 
 // configure js libraries in the ajax helper
 $ajax =& Celini::ajaxInstance();
-$ajax->jsLibraries[] = 'validate';
 $ajax->jsLibraries[] = 'calendar';
 
 // todo: where should this setting end up, does it really make sense to have it user configurable
