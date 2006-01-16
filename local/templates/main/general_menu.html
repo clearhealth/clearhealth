@@ -21,7 +21,7 @@
 			<div class="topLevel"><a href="{$NAV_ACTION}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
 			{/if}
 	{else}
-		{$nav.title}
+		<a>{$nav.title}</a>
 	{/if}
 
 	{if $nav.children || $nav.reports || $nav.forms || $nav.arrays}

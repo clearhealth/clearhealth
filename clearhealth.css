@@ -1,3 +1,6 @@
+html {
+	margin: 0; padding: 0;
+}
 body {
  margin:0px; padding:0px;
  /*text-align:center;*/
@@ -49,7 +52,7 @@ body {
  text-align: left;
  left: 0px;
  top: 0px;
- height: 31pt;
+ height: 41px;
 }
 #header h1 {
  margin: 0px;
@@ -67,59 +70,55 @@ body {
 }
 div#nav {
  position: absolute;
- top: 18pt;
+ top: 23px;
  left: 0px;
  margin: 0px;
  padding: 0px;
 }
+
 div#nav div.section {
  position: relative;
- left: 10pt;
+ left: 12px;
  float: left;
  border: solid 1px #ccc;
  margin: 0px;
- margin-right: 10pt;
+ margin-right: 12px;
 }
 div#nav div.topLevel {
  font-weight: bold;
 }
 div#nav div ul {
- margin: 0px;
- margin-top: -2px;
- padding: 0px;
  position: absolute;
- border: solid 1px black;
- top: 11pt;
+ top: 14px;
  left: -1px;
+ width: 121px;
+
+ margin: 0;
+ padding: 0;
+ border: solid 1px black;
  background-color: #eee;
  visibility: hidden;
- width: 101pt;
  text-align: left;
  z-index:10;
 }
-div#nav div:hover > ul { visibility: visible;
-}
-div#nav div.section:hover {
- background-color: #eee;
- border: solid 1px black;
+
+div#nav a {
+ cursor: pointer;
+ padding-left: 2px;
+ padding-right: 2px;
 }
 div#nav div ul li{
  display: block;
  list-style-type: none;
- margin: 0px;
- padding: 1pt;
- width: 100pt;
-}
-div#nav > div a {
- display: block;
- padding: 0px;
- padding-left: 1pt;
- padding-right: 1pt;
- z-index: 11;
+ margin: 0;
+ padding: 0;
+ width: 120px;
 }
 div#nav a {
  display: block;
 }
+
+
 div.clear {
  clear: both;
 }
