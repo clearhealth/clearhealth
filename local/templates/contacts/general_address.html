@@ -33,6 +33,7 @@
 			  <td><label>{l}Type{/l}:</label> </td>
 			  <td>
 					<select name="address[type]" tabindex="31">
+						<option></option>
 						{html_options options=$address->getTypeList() selected=$address->get('type')}
 					</select>
 			  </td>
