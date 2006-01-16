@@ -140,11 +140,6 @@ var C_PatientFinder = function find_remoting(searchString) {
 {clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
 {clni_register_validation_rule id="initialphone" rule="required" message="A Phone Number is required"}
 {/if}
-
-	
-{if $person->get_person_id() > 0}
-{clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
-{/if}
 	{*
 		    <p>
 		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
@@ -197,6 +192,9 @@ var C_PatientFinder = function find_remoting(searchString) {
 
                         </tr>
 		</table>
+		{if $person->get_person_id() > 0}
+			{clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
+		{/if}
 	</fieldset>
 
 		    {include file="contacts/general_address.html"}
