@@ -1,6 +1,8 @@
 <?php
-require_once CELINI_ROOT ."/includes/Grid.class.php";
-require_once APP_ROOT ."/local/includes/CodingDatasource.class.php";
+$loader->requireOnce("/includes/Grid.class.php");
+$loader->requireOnce("includes/CodingDatasource.class.php");
+$loader->requireOnce("includes/Datasource_array.class.php");
+$loader->requireOnce("includes/transaction/TransactionManager.class.php");
 
 class C_Coding extends Controller {
 	var $foreign_id = 0;
@@ -12,10 +14,56 @@ class C_Coding extends Controller {
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
 	}
 
+	function _CalculateEncounterFees($encounterId) {
+		$manager = new TransactionManager();
+		$trans = $manager->createTransaction('EstimateClaim');
+		$trans->setEncounterId($encounterId);
+
+		$encounter =& Celini::newORDO('Encounter',$encounterId);
+		$trans->setPayerId($encounter->get('current_payer'));
+
+		$fees = $manager->processTransaction($trans);
+
+		$ds = new Datasource_array();
+		$ds->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+
+		$grid =& new cGrid($ds);
+		$grid->indexCol = false;
+		$this->view->assign_by_ref('feeGrid',$grid);
+
+		$ps =& Celini::newOrdo('PatientStatistics',$encounter->get('patient_id'));
+		$familySize = $ps->get('family_size');
+		$income = $ps->get('monthly_income');
+		$practiceId = $_SESSION['defaultpractice'];
+
+		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
+
+		if($fsdLevel->isPopulated()) {
+			$trans = $manager->createTransaction('EstimateDiscountedClaim');
+			$trans->setEncounterId($encounterId);
+			$trans->setPayerId($encounter->get('current_payer'));
+			$trans->setDiscount($fsdLevel->get('discount'));
+			$fees = $manager->processTransaction($trans);
+			$ds2 = new Datasource_array();
+			$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+
+			$grid2 =& new cGrid($ds2);
+			$grid2->indexCol = false;
+			$this->view->assign_by_ref('discountGrid',$grid2);
+			$this->view->assign('discountRate',$fsdLevel->get('discount'));
+		}
+	}
+
 	function update_action_edit($foreign_id = 0, $parent_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
 		$encounter_id = $foreign_id; //Makes so much more sense...
+
+
+
+		// tie in for calculating how much this encounter will be billed for when closed
+		$this->_calculateEncounterFees($encounter_id);
+
 	//	echo "encounter id = $encounter_id <br>\n";
 	//	echo "codelookup id = $parent_id <br>\n";
 		//if($parent_id == 0)

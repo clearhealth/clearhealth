@@ -1,3 +1,6 @@
+{*
+TODO: Pull out teeth map html into its own file so this this is readable again
+*}
 <script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
 <SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete2.js"></script>
 {literal}
@@ -1165,6 +1168,7 @@ function addCPTCode() {
 {/if}
 <fieldset class="radio" id="Code List">
 <legend>{l}Claim Lines{/l}</legend>
+<table><tr><td valign='top'>
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
 {if $encounter->get('status') != 'closed'}
@@ -1180,5 +1184,24 @@ Tooth: {$code.tooth} Side {$code.toothside}
 {/foreach}<br />
 {/foreach}
 &nbsp;
+</td>
+<td valign='top'>
+	{if count(children) > 0}
+		<fieldset>
+			<legend>{l}Fee Totals{/l}</legend>
+			{if $discountGrid}
+			<table><tr><td style="vertical-align:top">
+				<div><b>Normal Rate</b></div>
+			{/if}
+			{$feeGrid->render()}
+			{if $discountGrid}
+				</td><td>&nbsp;</td><td style="vertical-align:top">
+				<div><b>Discounted Rate ({$discountRate}%)</b></div>
+				{$discountGrid->render()}<br>
+				</td></tr></table>
+			{/if}
+		</fieldset>
+	{/if}
+</td></tr></table>
 </fieldset>
 </form>

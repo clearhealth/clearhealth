@@ -43,5 +43,24 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			$this->set('discount',$discount);
 		}
 	}
+
+	function setupByPracticeIncomeSize($practiceId,$income,$size) {
+		$practiceId = EnforceType::int($practiceId);
+		$income = $this->dbHelper->quote($income);
+		$size = EnforceType::int($size);
+		$table = $this->tableName();
+
+		$sql = "
+			select * 
+			from 
+				$table l
+			inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
+			inner join fee_schedule_discount d using(fee_schedule_discount_id)
+			where
+				i.family_size = $size and income <= $income and d.practice_id = $practiceId
+			";
+		$res = $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this,$res);
+	}
 }
 ?>
