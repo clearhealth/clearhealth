@@ -88,6 +88,7 @@ class C_Coding extends Controller {
 	//NewWay	$child_codes[$parent_code['code_data_id']] = $code_data->getChildCodes($parent_code);
 //		var_dump($child_codes);
 		$code_list = $code_data->getCodeList($encounter_id);
+		$GLOBALS['currentCodeList'] = $code_list;
 		if(is_array($child_codes) && count($child_codes) > 0){
 			foreach($child_codes as $code){
 				if($code['coding_data_id'] != 0){
