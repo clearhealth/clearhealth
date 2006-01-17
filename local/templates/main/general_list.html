@@ -65,10 +65,12 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 <title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
 </head>
 <body>
-	{if $confidentiality == 5}
+	{if $confidentiality > 2}
 		<div id="confidentialOverlay">
 			<div>
-				<a href="#" onclick="document.getElementById('confidentialOverlay').style.display = 'none';">Continue</a>
+This patient has requested or has participated in a process which requires you to pay special attention to the privacy of their information and to respect guidelines for redistribution, attempts to communicate and  communication of information to parties outside our staff. These processes usually involve relatives, payers, contacting the patient themselves and other scenarios.
+
+<a href="#" onclick="document.getElementById('confidentialOverlay').style.display = 'none';">Click to proceed if you understand the appropriate clinic procedures in this case.</a>
 			</div>
 		</div>
 	{/if}
