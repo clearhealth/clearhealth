@@ -3,8 +3,6 @@
  * @package	com.uversainc.clearhealth
  */
 
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-
 /**
  * Patient Manager
  */
@@ -23,8 +21,9 @@ class M_Patient extends Manager {
 		else {
 			$patient =& ORdataObject::factory('Patient',$id);
 		}
-		$patient->populate_array($_POST['person']);
-			$patient->persist();
+		$patient->populateArray($_POST['person']);
+		$patient->persist();
+
 		$this->controller->patient_id = $patient->get('id');
 
 		/*
