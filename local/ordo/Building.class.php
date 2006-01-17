@@ -1,8 +1,8 @@
 <?php
 
-require_once CELINI_ROOT . "/ordo/ORDataObject.class.php";
-ORdataObject::factory_include('Address');
-ORdataObject::factory_include('BuildingAddress');
+$loader->requireOnce('ordo/ORDataObject.class.php');
+$loader->requireOnce('ordo/Address.class.php');
+$loader->requireOnce('ordo/BuildingAddress.class.php');
 /**
  * 
  */
