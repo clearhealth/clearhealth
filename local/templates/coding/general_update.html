@@ -1166,9 +1166,9 @@ function addCPTCode() {
 {clni_register_validation_rule id="parent_code" rule="hascpt"}
 {clni_register_validation_rule id="child_code" rule="hasicd"}
 {/if}
+<table><tr><td valign='top'>
 <fieldset class="radio" id="Code List">
 <legend>{l}Claim Lines{/l}</legend>
-<table><tr><td valign='top'>
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
 {if $encounter->get('status') != 'closed'}
@@ -1184,6 +1184,7 @@ Tooth: {$code.tooth} Side {$code.toothside}
 {/foreach}<br />
 {/foreach}
 &nbsp;
+</fieldset>
 </td>
 <td valign='top'>
 	{if $feeGrid}
@@ -1203,5 +1204,4 @@ Tooth: {$code.tooth} Side {$code.toothside}
 		</fieldset>
 	{/if}
 </td></tr></table>
-</fieldset>
 </form>
