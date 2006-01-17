@@ -1,7 +1,5 @@
 <?php
 
-$loader->requireOnce('ordo/ORDataObject.class.php');
-$loader->requireOnce('ordo/Address.class.php');
 $loader->requireOnce('ordo/BuildingAddress.class.php');
 /**
  * 
