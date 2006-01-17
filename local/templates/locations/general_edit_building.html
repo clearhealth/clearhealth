@@ -46,6 +46,12 @@
 	</td>
 </tr>
 <tr>
+	<td><acronym title="Clinical Laboratory Improvement Amendment">CLIA</acronym> Number</td>
+	<td colspan="2">
+		<input type="text" size="20" name="clia_number" value="{$building->get('clia_number')}" />
+	</td>
+</tr>
+<tr>
 	<td>{l}Facility Code{/l}</td>
 	<td colspan="2">
 		{html_options name="facility_code_id" options=$facilityCodeList selected=$building->get('facility_code_id')}

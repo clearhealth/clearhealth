@@ -49,6 +49,16 @@ class Building extends ORDataObject{
 	var $facility_code_id = '';
 
 
+	/**
+	 * {@inheritdoc}
+	 */
+	var $storage_metadata = array(
+		'int' => array(), 
+		'date' => array(), 
+		'string' => array(
+			'clia_number' => ''
+		), 
+		'text' => array());
     /**
 	 * Constructor sets all attributes to their default value
 	 *  
