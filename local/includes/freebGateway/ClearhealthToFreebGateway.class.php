@@ -117,6 +117,18 @@ class ClearhealthToFreebGateway
 
 		$feeSchedule =& Celini::newORDO('FeeSchedule',$this->_encounter->get('current_payer'));
 
+		// calculate discount
+		$ps =& Celini::newOrdo('PatientStatistics',$this->_encounter->get('patient_id'));
+		$familySize = $ps->get('family_size');
+		$income = $ps->get('monthly_income');
+		$practiceId = $_SESSION['defaultpractice'];
+		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
+
+		$discount = 1;
+		if ($fsdLevel->isPopulated()) {
+			$discount = $fsdLevel->get('discount')/100;
+		}
+
 		// add claimlines
 		$indexCounter = $this->_startIndexCounter();
 		foreach($codes as $parent => $data) {
@@ -126,7 +138,7 @@ class ClearhealthToFreebGateway
 			$claimline['procedure'] = $data['code'];
 			$claimline['modifier'] = $data['modifier'];
 			$claimline['units'] = $data['units'];
-			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id']);
+			$claimline['amount'] = $feeSchedule->getFeeFromCodeId($data['code_id'])*$discount;
 			$mapped_code=$feeSchedule->getMappedCodeFromCodeId($data['code_id']);
 			//echo "<br>CPatient Code ".$data['code_id']." maps to $mapped_code<br>";
 			if(strlen($mapped_code)>0){// then there is a mapped code which we should use.
