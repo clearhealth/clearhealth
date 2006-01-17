@@ -8,7 +8,6 @@ class TransactionEstimateClaim {
 	var $amount = 0.00;
 	var $payerId = false;
 	var $fees = false;
-	var $paymentType = 'Insurance Payment';
 
 	/**
 	 * Set the encounterId
