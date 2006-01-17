@@ -26,10 +26,11 @@ class C_Coding extends Controller {
 
 		$ds = new Datasource_array();
 		$ds->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
-
-		$grid =& new cGrid($ds);
-		$grid->indexCol = false;
-		$this->view->assign_by_ref('feeGrid',$grid);
+		if ($ds->numRows() > 0) {
+			$grid =& new cGrid($ds);
+			$grid->indexCol = false;
+			$this->view->assign_by_ref('feeGrid',$grid);
+		}
 
 		$ps =& Celini::newOrdo('PatientStatistics',$encounter->get('patient_id'));
 		$familySize = $ps->get('family_size');
