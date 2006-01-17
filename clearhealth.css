@@ -165,3 +165,20 @@ h3 {
  padding: 0px;
  margin-top: 12pt;
 }
+#confidentialOverlay {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	background-color: #ddd;
+	z-index: 1000;
+}
+#confidentialOverlay div {
+	position: absolute;
+	top: 20%;
+	left: 30%;
+	width: 40%;
+	border: solid 1px black;
+	text-align: center;
+}
