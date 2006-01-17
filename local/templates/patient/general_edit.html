@@ -101,6 +101,16 @@ var C_PatientFinder = function find_remoting(searchString) {
 					</select>&nbsp;&nbsp;
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<label>{l}Confidentiality{/l}:</label>
+				</td>
+				<td colspan="3">
+					<select name="person[confidentiality]">
+						{enum_options name="confidentiality_levels" selected=$person->get('confidentiality')}
+					</select>&nbsp;&nbsp;
+				</td>
+			</tr>
 		    {if $person->get_person_id() == 0}
 		    <tr>
 			    <td><label>{l}Home Phone{/l}:</label></td>

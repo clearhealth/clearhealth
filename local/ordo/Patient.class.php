@@ -23,7 +23,7 @@ class Patient extends MergeDecorator {
 	/**#@+
 	 * Fields of table: Patient mapped to class members
 	 */
-	var $id = "";
+	var $person_id = "";
 	/**#@-*/
 
 	/**
@@ -33,16 +33,17 @@ class Patient extends MergeDecorator {
 	var $record_number = "";
 	var $employer_name = "";
 	var $default_provider = "";
+	var $confidentiality = "";
 
+	var $_table = 'patient';
+	var $_key = 'person_id';
 	
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
 	function Patient($db = null) {
-		parent::ORDataObject($db);
-		$this->_table = 'patient';
-		$this->_sequence_name = 'sequences';
+		$this->ORDataObject($db);
 		$this->merge('person',ORDataObject::factory('Person'));
 		
 	}
@@ -95,17 +96,14 @@ class Patient extends MergeDecorator {
 
 
 	/**
-	 * Getter for Primary Key: person_id
+	 * Setter for Primary Key: person_id
+	 * This are just here for bc, some stuff was calling them directly
 	 */
 	function get_person_id() {
-		return $this->id;
+		return $this->person_id;
 	}
-
-	/**
-	 * Setter for Primary Key: person_id
-	 */
 	function set_person_id($id)  {
-		$this->id = $id;
+		$this->person_id = $id;
 	}
 
 	function get_search_name() {
