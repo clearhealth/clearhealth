@@ -97,8 +97,10 @@ This patient has requested or has participated in a process which requires you t
 
 		{if $menu_group == "patient"}
 			{if $selectedPatient}
-			<div id="selectedItem" {if $selectedPatient->get('confidentiality') == 5}style='background-color: red'{elseif $selectedPatient->get('confidentiality') > 2}style='background-color: yellow'{/if}>Patient: <a 
-					href="{link action="view" controller="PatientDashboard" defaultArg=$selectedPatient->get("person_id")}">{$selectedPatient->get('last_name')}, {$selectedPatient->get('first_name')}</a> #{$selectedPatient->get('record_number')}, Age {$selectedPatient->get('age')}</div>
+			<div id="selectedItem" {if $showConfidentialityBanner}{if $selectedPatient->get('confidentiality') == 5}style='background-color: red'{elseif $selectedPatient->get('confidentiality') > 2}style='background-color: yellow'{/if}{/if}>Patient: <a 
+					href="{link action="view" controller="PatientDashboard" defaultArg=$selectedPatient->get("person_id")}">{$selectedPatient->get('last_name')}, {$selectedPatient->get('first_name')}</a> #{$selectedPatient->get('record_number')}, 
+				Age {$selectedPatient->get('age')}{if $showConfidentialityBanner}, C: {enum_lookup name="confidentiality_levels" value=$selectedPatient->get('confidentiality')}{/if}
+			</div>
 			{/if}
 		{/if}
 		<div class="section" id="username">Logged in As: {$me->get_username()}</div>

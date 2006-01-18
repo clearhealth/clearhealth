@@ -21,9 +21,9 @@ class M_Main extends Manager {
 			$this->controller->assign_by_ref('selectedPatient',$patient);
 
 			// confidentiality overlay code
+			$this->controller->view->assign('showConfidentialityBanner',false);
 			$c = $patient->get('confidentiality');
 			if ($c > 2) {
-				unset($_SESSION['confidentiality']);
 				$showScreen = false;
 				if (!isset($_SESSION['confidentiality'][$patient_id])) {
 					$showScreen = true;
@@ -36,6 +36,7 @@ class M_Main extends Manager {
 						if (isset($actionsList[$controller]['*']) || isset($actionsList[$controller][$action])) {
 							$this->controller->view->assign('confidentiality',$c);
 						}
+						$this->controller->view->assign('showConfidentialityBanner',true);
 					}
 				}
 				if ($c == 3 || $c == 4) {
@@ -51,12 +52,13 @@ class M_Main extends Manager {
 						foreach ($GLOBALS['currentCodeList'] as $code) {
 							if (in_array($code['code'],$codes)) {
 								$conf = true;
+								$this->controller->view->assign('showConfidentialityBanner',true);
 								break;
 							}
 						}
 					}
 
-					if ($conf) {
+					if ($conf && $showScreen) {
 						$this->controller->view->assign('confidentiality',$c);
 					}
 				}
