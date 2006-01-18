@@ -80,7 +80,7 @@ class Practice extends ORDataObject{
 
 		$this->_table = "practices";
 
-		$number =& ORDataobject::factory('Number');
+		$number =& Celini::newORDO('Number');
 		$this->phone_types = array_flip($number->getTypeList());
 
 		if ($id != "") {
