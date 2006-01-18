@@ -169,7 +169,7 @@ var C_PatientFinder = function find_remoting(searchString) {
 	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
 		<td><a href="{$EDIT_NUMBER_ACTION}id={$row.number_id}&process=true">{$row.number}</a></td>
 		<td>{$row.number_type}</td>
-		<td>{if !$row.active}DNC{/if}</td>
+		<td>{if !$row.active}<div class="tooltip">DNC<div class="tooltipMessage">{$row.dnc_note}</div></div>{/if}</td>
 		<td>{$row.notes}</td>
 		<td><a onClick="return confirm('Delete Number {$row.number_type}:{$row.number}?')" href="{$DELETE_NUMBER_ACTION}id={$row.number_id}&process=true">delete</a></td>
         </tr>
@@ -191,8 +191,16 @@ var C_PatientFinder = function find_remoting(searchString) {
 			  </td>
 				<td><label>{l}Number{/l}: </label></td>
 				<input type="hidden" value="0" name="number[active]">
-				<td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > <label>{l}DNC{/l}: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" {if $number->get('active') == 0}checked{/if}></td>
+				<td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > <label class='inline'>{l}DNC{/l}: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" 
+					onclick="{literal}if(this.checked) { document.getElementById('dncNote').style.display=''; } else {
+					document.getElementById('dncNote').style.display='none';
+					}{/literal}"
+					{if $number->get('active') == 0}checked{/if}></td>
                         </tr>
+			<tr id="dncNote" {if $number->get('active')}style='display:none'{/if}>
+				<td><label>{l}DNC Note{/l}: </label></td>
+				<td colspan="3"><textarea rows=2 cols=30 name="number[dnc_note]">{$number->get('dnc_note')}</textarea></td>
+			</tr>
                         <tr>
 				<td><label>{l}Notes{/l}: </label></td>
                           <td colspan="3"><textarea name="number[notes]" rows="2" cols="35" >{$number->get('notes')}</textarea></td>

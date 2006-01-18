@@ -182,3 +182,13 @@ h3 {
 	border: solid 1px black;
 	text-align: center;
 }
+.tooltip {
+	border-bottom: dotted 1px gray;
+}
+.tooltipMessage {
+	display: none;
+	border: solid 1px black;
+	background-color: white;
+	position: absolute;
+	padding: 2px;
+}

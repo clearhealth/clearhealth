@@ -41,3 +41,48 @@ Behavior.register(
 		HTML_AJAX_Util.registerEvent(element,'click',handler);
 	}
 );
+var toolTipTimeout = false;
+var toolTip = false;
+Behavior.register(
+	".tooltip",
+	function(element) {
+
+		var handler = function(e) {
+			var target = HTML_AJAX_Util.eventTarget(e);
+
+			var mousePos = clniUtil.mouseXY(e);
+
+			var divs = target.getElementsByTagName('div');
+			for(var i = 0; i < divs.length; i++) {
+				if (divs[i].className == 'tooltipMessage') {
+					var el = divs[i];
+					if (toolTip == false) {
+						toolTipTimeout = window.setTimeout(function(e) { el.style.display = 'block'; toolTipTimeout = false; toolTip = true;}, 400);
+						divs[i].style.left = (mousePos.x) + 'px';
+						divs[i].style.top = (mousePos.y-target.clientHeight-5) + 'px';
+					}
+				}
+			}
+		}
+
+		var ohandler = function(e) {
+			var target = HTML_AJAX_Util.eventTarget(e);
+
+			if (toolTipTimeout) {
+				window.cancelTimeout(toolTipTimeout);
+				toolTipTimeout = false;
+			}
+
+			var divs = target.getElementsByTagName('div');
+			for(var i = 0; i < divs.length; i++) {
+				if (divs[i].className == 'tooltipMessage') {
+					divs[i].style.display = 'none';
+				}
+			}
+			toolTip = false;
+		}
+
+		HTML_AJAX_Util.registerEvent(element,'mouseover',handler);
+		HTML_AJAX_Util.registerEvent(element,'mouseout',ohandler);
+	}
+);
