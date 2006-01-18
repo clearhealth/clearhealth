@@ -20,7 +20,14 @@ class Number extends ORDataObject {
 	var $_table = 'number';
 	var $_key = 'number_id';
 	
-	var $storage_metadata = array('int'=>array(),'string'=>array(),'date'=>array(),'text'=>array('dnc_note'=>''));
+	var $storage_metadata = array(
+		'int' => array(),
+		'string' => array(),
+		'date' => array(),
+		'text' => array(
+			'dnc_note' => ''
+		)
+	);
 
 	function setup($id = 0,$parent=false,$parent_type="person") {
 		if ($id !== 0) {
