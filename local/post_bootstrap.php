@@ -4,6 +4,7 @@
 // configure js libraries in the ajax helper
 $ajax =& Celini::ajaxInstance();
 $ajax->jsLibraries[] = 'calendar';
+$ajax->jsLibraries[] = 'clniUtil';
 
 // todo: where should this setting end up, does it really make sense to have it user configurable
 $conf =& Celini::configInstance();
