@@ -84,11 +84,17 @@ class AppointmentTemplate extends ORDataObject {
 
 		$ret = array();
 		foreach($breakdowns as $breakdown) {
-			$user_id = $users[$breakdown['occurence_breakdown_id']];
-			if (!isset($ret[$user_id])) {
-				$ret[$user_id] = 0;
+			if(isset($users[$breakdown['occurence_breakdown_id']])) {
+				$user_id = $users[$breakdown['occurence_breakdown_id']];
+				if (!isset($ret[$user_id])) {
+					$ret[$user_id] = 0;
+				}
+				$ret[$user_id] += $breakdown['length'];
 			}
-			$ret[$user_id] += $breakdown['length'];
+			else {
+				echo ('A provider is required for each slot of the appointment, press the back button select a provider for each slot');
+				die();
+			}
 		}
 		return $ret;
 	}
