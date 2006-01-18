@@ -94,7 +94,6 @@ class Number extends ORDataObject {
 			$numbers[$res->fields['number_id']] = $res->fields;
 			$res->MoveNext();
 		}
-		var_dump($numbers);
 		return $numbers;
 	}
 
