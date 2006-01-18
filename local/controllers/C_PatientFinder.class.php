@@ -302,8 +302,8 @@ class C_PatientFinder extends Controller {
 
 		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
-		$sqland=$sql.implode(' AND ',$sqls).' LIMIT 30';
-		$sqlor=$sql.implode(' OR ',$sqls).' LIMIT 30';
+		$sqland=$sql.implode(' AND ',$sqls).' ORDER BY last_name,first_name LIMIT 30';
+		$sqlor=$sql.implode(' OR ',$sqls).' ORDER BY last_name,first_name LIMIT 30';
 
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
