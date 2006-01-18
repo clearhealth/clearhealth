@@ -254,13 +254,35 @@ class Event extends ORDataObject{
 		$e = new Event();
 		
 		
-		$sql = "SELECT o.*,e.*,c.*, o.id as occurence_id, c.id as schedule_id, UNIX_TIMESTAMP(o.start) as start_ts,UNIX_TIMESTAMP(o.end) as end_ts, "
-		." UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) as start_day, b.name as building, r.name as room, IF(schedule_code = 'PS',1,0) as schedule_sort,"
-		." u.color as color, u.nickname as nickname, u2.nickname as last_change_nickname, psn.last_name as p_lastname, psn.person_id as person_id, psn.first_name as p_firstname, DATE_FORMAT(psn.date_of_birth,'%m/%d/%Y') as dob, " 
-		." pt.record_number as p_record_number, pt.record_number as p_patient_number, n.number as p_phone, n.active as dnc, rm.name as room_name, "
-		." DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age"
-		.", o.`timestamp` last_change "
-		." FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
+		$sql = "SELECT 
+				o.*,
+				e.*,
+				c.*, 
+				o.id as occurence_id, 
+				c.id as schedule_id, 
+				UNIX_TIMESTAMP(o.start) as start_ts,
+				UNIX_TIMESTAMP(o.end) as end_ts, 
+				UNIX_TIMESTAMP(DATE_FORMAT(o.start,'%Y-%m-%d')) as start_day, 
+				b.name as building, 
+				r.name as room, 
+				IF(schedule_code = 'PS',1,0) as schedule_sort,
+				u.color as color, 
+				u.nickname as nickname, 
+				u2.nickname as last_change_nickname, 
+				psn.last_name as p_lastname, 
+				psn.person_id as person_id, 
+				psn.first_name as p_firstname, 
+				DATE_FORMAT(psn.date_of_birth,'%m/%d/%Y') as dob,  
+				pt.record_number as p_record_number, 
+				pt.record_number as p_patient_number, 
+				n.number as p_phone, 
+				n.active as dnc, 
+				rm.name as room_name, 
+				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - 
+					(DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
+				o.`timestamp` last_change 
+			FROM `".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences as o 
+			LEFT JOIN `".$e->_prefix."events` as e on o.event_id = e.id LEFT JOIN ".$e->_prefix."schedules as c on c.id = e.foreign_id "
 		." LEFT JOIN rooms as rm on c.room_id=rm.id "
 		." LEFT JOIN ".$e->_prefix."rooms as r on r.id = o.location_id LEFT JOIN ".$e->_prefix."buildings as b on b.id = r.building_id LEFT JOIN ".$e->_prefix."user as u on u.user_id= o.user_id"
 		." LEFT JOIN ".$e->_prefix."user as u2 on u2.user_id = o.last_change_id "
