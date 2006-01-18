@@ -568,7 +568,9 @@ class ClearhealthToFreebGateway
 		}
 
 		// register biling facility - practice
-		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingFacility',$practiceData, $defaultIndex)) {
+		$billingFacilityData = $practiceData;
+		$billingFacilityData['clia_number'] = $facility->get('clia_number');
+		if (!$this->_freeb2->registerData($this->_claim_identifier,'BillingFacility',$billingFacilityData, $defaultIndex)) {
 			trigger_error("Unable to register billing facility data - ".$this->_freeb2->claimLastError($this->_claim_identifier));
 		}
 		
