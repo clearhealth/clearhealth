@@ -21,7 +21,7 @@
 				{if $ev.group_appointment}
 					<b>{l}Group Appointment{/l}</b>
 				{else}
-					<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone}
+				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone} {if $ev.dnc}DNC{/if}
 				{/if}
 					{if $ev.notes}
 					<br>
