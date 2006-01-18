@@ -19,6 +19,49 @@ class M_Main extends Manager {
 		if ($patient_id > 0) {
 			$patient =& ORDataObject::factory('Patient',$patient_id);
 			$this->controller->assign_by_ref('selectedPatient',$patient);
+
+			// confidentiality overlay code
+			$c = $patient->get('confidentiality');
+			if ($c > 2) {
+				unset($_SESSION['confidentiality']);
+				$showScreen = false;
+				if (!isset($_SESSION['confidentiality'][$patient_id])) {
+					$showScreen = true;
+					if ($c == 5) {
+						$config =& Celini::ConfigInstance();
+						$actionsList = $config->get('confidentialActions',array());
+						$controller = strtolower(Celini::getCurrentController());
+						$action = strtolower(Celini::getCurrentAction());
+
+						if (isset($actionsList[$controller]['*']) || isset($actionsList[$controller][$action])) {
+							$this->controller->view->assign('confidentiality',$c);
+						}
+					}
+				}
+				if ($c == 3 || $c == 4) {
+					$em =& Celini::enumManagerInstance();
+					if ($c == 3) {
+						$codes = $em->enumArray('confidential_family_planning_codes');
+					}
+					else {
+						$codes = $em->enumArray('disease_family_planning_codes');
+					}
+					$conf = false;
+					if (isset($GLOBALS['currentCodeList'])) {
+						foreach ($GLOBALS['currentCodeList'] as $code) {
+							if (in_array($code['code'],$codes)) {
+								$conf = true;
+								break;
+							}
+						}
+					}
+
+					if ($conf) {
+						$this->controller->view->assign('confidentiality',$c);
+					}
+				}
+				$_SESSION['confidentiality'][$patient_id] = true;
+			}
 		}
 	}
 }

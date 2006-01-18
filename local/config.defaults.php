@@ -6,6 +6,6 @@
 // and confidentaility level is set to 5
 $config['confidentialActions'] = array();
 $config['confidentialActions']['patient']['*'] = true; 
-$config['confidentialActions']['patientDashboard']['*'] = true; 
+$config['confidentialActions']['patientdashboard']['*'] = true; 
 $config['confidentialActions']['encounter']['*'] = true; 
 ?>
