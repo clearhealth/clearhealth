@@ -274,8 +274,8 @@ class InsuredRelationship extends ORDataObject {
 	}
 
 	function getSubscriberToPatientRelationshipList() {
-		$list = $this->_load_enum('subscriber_to_patient_relationship',false);
-		return array_flip($list);
+		$em =& Celini::enumManagerInstance();
+		return $em->enumArray('subscriber_to_patient_relationship');
 	}
 
 	var $_Cache = false;
