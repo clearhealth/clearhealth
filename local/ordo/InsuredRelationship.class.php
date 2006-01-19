@@ -273,7 +273,7 @@ class InsuredRelationship extends ORDataObject {
 		return array_flip($list);
 	}
 
-	function getSubscriberToPatientRelationshiplist() {
+	function getSubscriberToPatientRelationshipList() {
 		$list = $this->_load_enum('subscriber_to_patient_relationship',false);
 		return array_flip($list);
 	}
@@ -284,7 +284,7 @@ class InsuredRelationship extends ORDataObject {
 	 */
 	function lookupSubscriberRelationship($id) {
 		if ($this->_Cache === false) {
-			$this->_Cache = $this->getSubscriberToPatientRelationshiplist();
+			$this->_Cache = $this->getSubscriberToPatientRelationshipList();
 		}
 		if (isset($this->_Cache[$id])) {
 			return $this->_Cache[$id];
