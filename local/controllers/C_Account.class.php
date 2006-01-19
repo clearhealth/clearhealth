@@ -2,9 +2,10 @@
 
 $loader->requireOnce("/controllers/Controller.class.php");
 $loader->requireOnce("/includes/Grid.class.php");
-$loader->requireOnce("/includes/Datasource_sql.class.php");
 $loader->requireOnce("/local/includes/Datasource_AccountHistory.class.php");
 $loader->requireOnce("/local/includes/Grid_Renderer_AccountHistory.class.php");
+$loader->requireOnce("/datasources/AccountNote_DS.class.php");
+$loader->requireOnce("/lib/pear/HTML/AJAX/Serializer/JSON.php");
 
 /**
  * Actions for working with an Account in Clearhealth, in this context this is a Patients Account
@@ -39,13 +40,47 @@ class C_Account extends Controller {
 
 		$ip =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$ip);
+
+		$nds =& new AccountNote_DS($patient_id);
+		$tmp = $nds->toArray();
+
+		$data = array();
+		foreach($tmp as $row) {
+			$row['note'] = nl2br($row['note']);
+			if ($row['claim_id'] == 0) {
+				$data['general'][] = $row;
+			}
+			else {
+				$data[$row['claim_id']][] = $row;
+			}
+		}
+
+		$serializer = new HTML_AJAX_Serializer_Json();
+		$this->view->assign('notes',$serializer->serialize($data));
+
+
+		$an =& Celini::newOrdo('AccountNote');
+		$this->assign_by_ref('accountNote',$an);
+
+		$this->assign('FORM_ACTION',celini::link(true,true,true,$patient_id));
 		
 		return $this->fetch(Celini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
 	}
 
 	function processHistory_view($patient_id) {
-		$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)] = $_POST['filter'];
+		if ($this->POST->exists('filter')) {
+			$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)] = $_POST['filter'];
+		}
 		$this->assign("filters",$this->filters);
+
+		if ($this->POST->exists('account_note')) {
+			$an =& Celini::newOrdo('AccountNote');
+			$an->populateArray($this->POST->get('account_note'));
+			$an->set('patient_id',$patient_id);
+			$an->set('user_id',$this->_me->get_id());
+			$an->set('date_posted',date('Y-m-d H:i:s'));
+			$an->persist();
+		}
 	}
 }
 
