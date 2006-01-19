@@ -232,15 +232,19 @@ class Company extends ORDataObject {
 		$where = "";
 		foreach($check as $field) {
 			if (isset($input[$field]) && !empty($input[$field])) {
+				$v = $input[$field];
+				if ($field == 'email') {
+					$field = 'ss.value';
+				}
 				$where .= 
-				" or $field like ".$this->dbHelper->quote('%'.$input[$field].'%').
-				" or soundex($field) = soundex(".$this->dbHelper->quote($input[$field]).')';
+				" or $field like ".$this->dbHelper->quote('%'.$v.'%').
+				" or soundex($field) = soundex(".$this->dbHelper->quote($v).')';
 			}
 		}
 		$where = substr($where,3);
 		$sql = 'select * from '.$this->tableName()." where $where";
 
-		$query = array('cols'=>'*','from'=>$this->tableName(),'where'=>$where);
+		$query = array('cols'=>'*, ss.value email','from'=>$this->tableName()." c inner join storage_string ss on ss.foreign_key = c.company_id and ss.value_key = 'email'",'where'=>$where);
 		$ds = new Datasource_sql();
 		$ds->setup(Celini::dbInstance(),$query,array('name'=>'Name','description'=>'Description'));
 
