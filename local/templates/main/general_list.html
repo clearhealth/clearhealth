@@ -89,7 +89,7 @@ This patient has requested or has participated in a process which requires you t
 		<a href="{$base_dir}index.php/main/PatientFinder" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_billing")}
-		<a href="{$freeb2_dir}freeb2/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;
+		<a href="{$base_dir}index.php/main/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_admin")}
 		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>

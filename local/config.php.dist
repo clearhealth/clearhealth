@@ -46,10 +46,9 @@ $config['CalendarHourLength'] = 13;
 
 
 ################################################################################
-# freeb2 integration
+# Modules
 ################################################################################
-$GLOBALS['C_ALL']['freeb2_dir'] = "/INSTALL_BASE_DIR/freeb2/index.php/";
-$config['translate']['freeb2'] = "/INSTALL_BASE_DIR/freeb2/index.php/";
+$config['module_paths']['billing'] = realpath(APP_ROOT . '/modules/billing');
 
 
 ################################################################################

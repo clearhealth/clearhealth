@@ -8,4 +8,6 @@ $config['confidentialActions'] = array();
 $config['confidentialActions']['patient']['*'] = true; 
 $config['confidentialActions']['patientdashboard']['*'] = true; 
 $config['confidentialActions']['encounter']['*'] = true; 
+
+$config['module_paths'] = array();
 ?>
