@@ -192,3 +192,6 @@ h3 {
 	position: absolute;
 	padding: 2px;
 }
+#HTML_AJAX_LOADING {
+	z-index: 9999;
+}
