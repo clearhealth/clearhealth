@@ -86,3 +86,27 @@ Behavior.register(
 		HTML_AJAX_Util.registerEvent(element,'mouseout',ohandler);
 	}
 );
+
+Behavior.register(
+	".element",
+	function(element) {
+		var a = document.createElement('a');
+		a.innerHTML = '<img src="../../Images/stock/information.gif">';
+		a.className = 'elementLink';
+		element.appendChild(a);
+
+		var handler = function(e) {
+			var target = HTML_AJAX_Util.eventTarget(e);
+			var parent = target.parentNode.parentNode;
+			var info = HTML_AJAX_Util.getElementsByClassName('elementInfo',parent)[0];
+			if (info.style.display == 'block') {
+				info.style.display = 'none';
+			}
+			else {
+				info.style.display = 'block';
+				info.style.height = parent.offsetHeight+'px';
+			}
+		}
+		HTML_AJAX_Util.registerEvent(a,'click',handler);
+	}
+);
