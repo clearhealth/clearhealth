@@ -210,7 +210,8 @@ class Event extends ORDataObject{
 				u3.username AS creator_username, 
 				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
 				o.`timestamp` AS last_change,
-				if(pt.confidentiality < 2,reason_code,0) reason_code
+				if(pt.confidentiality < 2,reason_code,0) reason_code,
+				ab.*
 			FROM 
 				`".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences AS o
 				LEFT JOIN `".$e->_prefix."events` AS e ON o.event_id = e.id
@@ -227,6 +228,8 @@ class Event extends ORDataObject{
 				
 				/* this will be the first value in the number_types enum */
 				LEFT JOIN number AS n ON n.number_id=p2n.number_id and n.number_type =1
+
+				LEFT JOIN (".Event::_accountBalanceSql().") ab on pt.person_id = ab.patient_id
 			WHERE 
 				o.start BETWEEN '$start'  AND '$end' AND 
 				(c.schedule_code != 'NS' OR c.schedule_code IS NULL) 
@@ -243,6 +246,56 @@ class Event extends ORDataObject{
 		$result = $e->_Execute($sql);
 		
 		return Event::event_array_builder($result,$key_type);
+	}
+
+	function _accountBalanceSql() {
+		return
+		'
+		select
+			feeData.patient_id,
+                        charge,
+                        (ifnull(credit,0.00) + ifnull(coPay.amount,0.00)) credit,
+			(charge - (ifnull(credit,0.00)+ifnull(coPay.amount,0.00))) balance
+		from
+			/* Fee total */
+			(
+			select
+				e.patient_id,
+				sum(cd.fee) charge
+			from
+				encounter e
+				inner join clearhealth_claim cc using(encounter_id)
+				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
+			group by
+				e.patient_id
+			) feeData
+			left join
+			/* Payment totals */
+			(
+			select
+				e.patient_id,
+				(sum(pl.paid) + sum(pl.writeoff)) credit
+			from
+				encounter e
+				inner join clearhealth_claim cc using(encounter_id)
+				inner join payment p on cc.claim_id = p.foreign_id
+				inner join payment_claimline pl on p.payment_id = pl.payment_id
+			group by
+				e.patient_id
+			) paymentData on feeData.patient_id = paymentData.patient_id
+                        left join
+                        /* Co-Pay Totals */
+                        (
+                        select
+                            p.foreign_id patient_id,
+                            sum(p.amount) amount
+                        from
+                            payment p
+                        where encounter_id = 0
+                        group by
+                            p.foreign_id
+                        ) coPay on feeData.patient_id = coPay.patient_id
+		';
 	}
 	
 	/**

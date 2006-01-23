@@ -13,7 +13,8 @@
 		<td height="13" class="eventborder"><span class="eventfont">{$ev.start_ts|date_format:"%I:%M%p"}&nbsp;-&nbsp;{$ev.end_ts|date_format:"%I:%M%p"} {$ev.nickname}</span></td>
 	</tr>
 	<tr>
-		<td colspan="1" valign="top" >
+		<td colspan="1" valign="top">
+<div class="element">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="calendarBlurb">
 		<tr>
 			<td class="eventbg_1">
@@ -21,8 +22,9 @@
 				{if $ev.group_appointment}
 					<b>{l}Group Appointment{/l}</b>
 				{else}
-				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}<br>{$ev.p_phone} {if $ev.dnc}DNC{/if}
+				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}&nbsp; &nbsp; &nbsp;
 				{/if}
+				<br>{$ev.p_phone} {if $ev.dnc}DNC{/if}
 					{if $ev.notes}
 					<br>
 					{$ev.notes}
@@ -30,6 +32,7 @@
 					{if $ev.reason_code > 0}
 					<br />{enum_lookup name="appointment_reasons" value=$ev.reason_code}
 					{/if}
+				&nbsp; {if $ev.walkin}{l}WI{/l}{/if}
 					{if $ev_edit == true}
 					<br><a href="{$APPOINTMENT_ACTION}appointment_id={$ev.occurence_id}">edit</a>,
 					<a href="{$EVENT_DELETE_ACTION}id={$ev.occurence_id}&object=occurence&process=1">del</a>, 
@@ -51,6 +54,17 @@
 					{/if}
 					{$ev.notes}
 				{/if}
+			</td>
+		</tr>
+		</table>
+<div class="elementInfo">
+				{if $ev.p_record_number > 0 || $ev.group_appointment}
+				{if $ev.group_appointment}
+					<b>{l}Group Appointment{/l}</b>
+				{else}
+				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}
+				{/if}
+
 				{if $ev.creator_nickname}
 					<br />Entered by: {$ev.creator_nickname} - {$ev.timestamp|date_format:"%m/%d/%Y"}
 				{else}
@@ -59,10 +73,13 @@
 				{if $ev.last_change_nickname}
 					<br>Last Edit: {$ev.last_change_nickname} - {$ev.last_change|date_format:"%m/%d/%Y %H:%M:%S"}
 				{/if}
-				&nbsp; {if $ev.walkin}{l}WI{/l}{/if}
-			</td>
-		</tr>
-		</table>
+
+				{if $ev.balance}
+				<br><b>{l}Account Balance{/l}:</b> ${$ev.balance}
+				{/if}
+{/if}
+</div>
+</div>
 		</td>
 	</tr>
 	</table>

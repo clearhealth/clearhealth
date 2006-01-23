@@ -95,6 +95,7 @@ This patient has requested or has participated in a process which requires you t
 		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
 		{/if}
 
+	</div>
 		{if $menu_group == "patient"}
 			{if $selectedPatient}
 			<div id="selectedItem" {if $showConfidentialityBanner}{if $selectedPatient->get('confidentiality') == 5}style='background-color: red'{elseif $selectedPatient->get('confidentiality') > 2}style='background-color: yellow'{/if}{/if}>Patient: <a 
@@ -103,7 +104,6 @@ This patient has requested or has participated in a process which requires you t
 			</div>
 			{/if}
 		{/if}
-	</div>
 	{/if}
 	{include file="main/general_menu.html"}
 	</td><td>
