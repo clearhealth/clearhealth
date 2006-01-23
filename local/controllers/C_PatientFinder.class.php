@@ -21,7 +21,6 @@ class C_PatientFinder extends Controller {
 		$this->template_mod = $template_mod;
 		$this->assign("FORM_ACTION", Celini::link(true,true,false) . $_SERVER['QUERY_STRING']);
 		$this->assign("CURRENT_ACTION", Celini::link('patient_finder'));
-		$this->limit = 50;
 		
 		//remove the trail entries for this because it is a popup
 		//$trail = $_SESSION['trail'];
@@ -90,6 +89,7 @@ class C_PatientFinder extends Controller {
 			//last and first at least
 			$sql = $this->search_by_FullName($sql,$search_string);
 		}
+
 		
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);
@@ -268,6 +268,9 @@ class C_PatientFinder extends Controller {
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
 		}
+
+		$sqland .= " limit $this->limit";
+		$sqlor .= " limit $this->limit";
 	//echo $sqland;exit;	
 		$result_array = $this->_db->GetAll($sqland);
 		if(count($result_array)==0){
