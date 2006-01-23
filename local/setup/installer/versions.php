@@ -49,13 +49,12 @@ $version_1rc2->addAction('SQLFile', array(
 	'db_field' => 'db_database',
 	'files' => array(
 		$base_app_path.'/local/setup/clearhealth.sql', 
-		$base_app_path.'/freeb2/local/setup/freeb2.sql')));
+		$base_app_path.'/modules/billing/local/setup/billing.sql')));
 
 $version_1rc2->addAction('ReplaceString', array(
 	'message' => "Saved database configuration information!",
 	'files' => array(
-		$base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php',
-		$base_app_path.'/freeb2/local/config.php.dist' => $base_app_path.'/freeb2/local/config.php'),
+		$base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php'),
 	'fields' => array(
 		'INSTALL_DB_USERNAME' => 'db_user',
 		'INSTALL_DB_PASSWORD' => 'db_password', 

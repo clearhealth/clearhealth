@@ -14,6 +14,7 @@ INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
+MODULES="billing"
 NOTAG="true"
 USAGE="You can use the following optional command line parameters
 -r = Overrides the release
@@ -91,14 +92,16 @@ bash $BUILD_DIR/local/setup/build_sql.sh
 
 clean_release "$SCRIPT_HOME/no_package"
 
-# Setup freeb2
-echo "Exporting freeb2 to $BUILD_DIR/freeb2"
-svn export https://svn2.uversainc.com/svn/freeb2/trunk $BUILD_DIR/freeb2
-if [ $? -ne 0 ]; then
-	echo "Could not export freeb2!"
-	exit 3
-fi
-clean_release "$BUILD_DIR/freeb2/local/setup/no_package" "freeb2"
+# Setup modules
+for MODULE in $MODULES; do
+	echo "Exporting module $MODULE to $BUILD_DIR/modules/$MODULE"
+	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/trunk $BUILD_DIR/modules/$MODULE
+	if [ $? -ne 0 ]; then
+		echo "Could not export module $MODULE!"
+		exit 3
+	fi
+	clean_release "$BUILD_DIR/modules/4MODULE/local/setup/no_package" "modules/$MODULE"
+done;
 
 # Setup Celini
 if [ "true" == "$CELINI_APP" ]; then
@@ -119,8 +122,6 @@ cp $INSTALLER_VERSIONS $BUILD_DIR/installer
 
 echo "creating blank config files..."
 touch $BUILD_DIR/local/config.php
-touch $BUILD_DIR/freeb2/local/config.php
-
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
 CUR_DIR=`pwd`
