@@ -5,21 +5,26 @@ body {
  margin:0px; padding:0px;
  /*text-align:center;*/
  font-family: sans-serif;
- font-size: 90%;
+ font-size: 8pt;
  background-color:#eee;
 }
-#username {
+td th p {
+ font-family: sans-serif;
  font-size: 8pt;
- line-height: 7pt;
+}
+#username {
+ font-size: 7pt;
  font-weight:normal;
- padding-top: 6pt;
- padding-right: 2pt;
+ margin: 0;
+ padding: 0;
+ text-align: right;
+}
+#rightBlock {
+ position: relative;
  float:right;
- display:block;
- 
 }
 #sections {
- position: absolute;
+ position: relative;
  left: 5pt;
  font-size: 14pt;
 }
@@ -48,18 +53,13 @@ body {
 #header {
  background-color: #ccc;
  position: relative;
- z-index: 2;
  text-align: left;
- left: 0px;
- top: 0px;
- height: 41px;
 }
 #header h1 {
- margin: 0px;
- padding: 0px;
- vertical-align: top;
- float: right;
- font-size: 20pt;
+ position: relative;
+ margin: 0;
+ padding: 0;
+ font-size: 16pt;
 }
  
 #body {
@@ -69,18 +69,16 @@ body {
  background-color:#eee;
 }
 div#nav {
- position: absolute;
- top: 23px;
- left: 0px;
+ position: relative;
  margin: 0px;
  padding: 0px;
 }
 
 div#nav div.section {
+ border: solid 1px #ccc;
  position: relative;
  left: 12px;
  float: left;
- border: solid 1px #ccc;
  margin: 0px;
  margin-right: 12px;
 }
@@ -125,6 +123,7 @@ div.clear {
 .gridInput {
  width: 30pt;
 }
+
 .sectionCalendar {
  background-color: #FFFFE6 !important;
 }
@@ -137,6 +136,7 @@ div.clear {
 .sectionAdministration  {
  background-color: #FFDFBF !important;
 }
+
 fieldset table.data td {
  margin: 2px;
  padding: 2px;
@@ -151,7 +151,6 @@ table.columns {
 }
 table.columns td {
  vertical-align: top;
- font-size: 100%;
 }
 table td label {
  text-align: right;
@@ -194,4 +193,16 @@ h3 {
 }
 #HTML_AJAX_LOADING {
 	z-index: 9999;
+}
+.element {
+	position: relative;
+}
+.elementInfo {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	font-size: 8pt;
+	background-color: white;
+	display: none;
 }

@@ -44,7 +44,7 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 <link href="{$base_dir}celini.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
 <link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
-<link href="{$base_dir}suggest.css" rel="stylesheet" type="text/css">
+{*<link href="{$base_dir}suggest.css" rel="stylesheet" type="text/css">*}
 {if $extra_css}
 {foreach from=$extra_css item=css_file}
 <link href="{$base_dir}{$css_file}" rel="stylesheet" type="text/css" />
@@ -79,7 +79,7 @@ This patient has requested or has participated in a process which requires you t
 		</div>
 	{/if}
 	<div id="header" class="section{$section_name}">
-	<h1>ClearHealth</h1>
+		<table cellpadding=0 cellspacing=0><tr><td width="100%">
 	{if $me->get_id() > 0}
 	<div id="sections">
 		{if $sec_obj->check("usage","main_calendar")}
@@ -103,10 +103,15 @@ This patient has requested or has participated in a process which requires you t
 			</div>
 			{/if}
 		{/if}
-		<div class="section" id="username">Logged in As: {$me->get_username()}</div>
 	</div>
 	{/if}
 	{include file="main/general_menu.html"}
+	</td><td>
+
+		<h1>ClearHealth</h1>
+		<div id="username">Logged in As: {$me->get_username()}</div>
+</td></tr></table>
+	<div class="clear"></div>
 </div>
 <div id="body">
 	{if is_object($messages)}

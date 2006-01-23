@@ -49,6 +49,7 @@ class CalendarController extends Controller {
 			$this->assign('peopleByType',$plist);
 		}
 		$this->assign('appointment_templates',$templates);
+		$GLOBALS['C_MAIN']['extra_css'] = array('calendar.css');
 	}	
 	
 	function build_day_increments($date ="",$start_hour = 0, $end_hour = 24,$header_time = false) {
