@@ -35,9 +35,9 @@ td th p {
  font-weight: bold;
 }
 #selectedItem {
- position: relative;
+ position: absolute;
  left: 23em;
- top: -16pt;
+ top: 1px;
  font-size: 10pt;
  z-index: 10;
  border: solid 1px black;
@@ -205,4 +205,10 @@ h3 {
 	font-size: 8pt;
 	background-color: white;
 	display: none;
+}
+.elementLink {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	cursor: pointer;
 }
