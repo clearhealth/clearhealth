@@ -31,9 +31,7 @@ $version_1rc2->addTest('PHPMagicQuotes', array('Off'));
 $version_1rc2->addTest('PHPRegisterGlobals', array('Off'));
 $version_1rc2->addTest('PHPExtension', array('mysql'));
 $version_1rc2->addTest('WritableLocation', array($base_app_path.'/tmp'));
-$version_1rc2->addTest('WritableLocation', array($base_app_path.'/freeb2/tmp'));
 $version_1rc2->addTest('WritableLocation', array($base_app_path.'/local/config.php'));
-$version_1rc2->addTest('WritableLocation', array($base_app_path.'/freeb2/local/config.php'));
 $version_1rc2->addTest('MysqlVersionOver', array(
 	'username_field' => 'db_user',
 	'password_field' => 'db_password',
@@ -48,7 +46,7 @@ $version_1rc2->addAction('SQLFile', array(
 	'port_field' => 'db_port',
 	'db_field' => 'db_database',
 	'files' => array(
-		$base_app_path.'/local/setup/clearhealth.sql', 
+		$base_app_path.'/local/setup/clearhealth-1.0RC2.sql', 
 		$base_app_path.'/modules/billing/local/setup/billing.sql')));
 
 $version_1rc2->addAction('ReplaceString', array(

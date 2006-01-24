@@ -88,7 +88,7 @@ echo "Exporting repository $REPO_URL at revision $CURRENT_SVN_REV to $BUILD_DIR"
 svn export -r $SVN_REV $REPO_URL $BUILD_DIR
 
 # Build the sql file
-bash $BUILD_DIR/local/setup/build_sql.sh
+#bash $BUILD_DIR/local/setup/build_sql.sh
 
 clean_release "$SCRIPT_HOME/no_package"
 
@@ -100,7 +100,7 @@ for MODULE in $MODULES; do
 		echo "Could not export module $MODULE!"
 		exit 3
 	fi
-	clean_release "$BUILD_DIR/modules/4MODULE/local/setup/no_package" "modules/$MODULE"
+	clean_release "$BUILD_DIR/modules/$MODULE/local/setup/no_package" "modules/$MODULE"
 done;
 
 # Setup Celini
