@@ -35,7 +35,9 @@ class EnumType_PerPractice extends EnumType_Default {
 	var $enumerationId = false;
 
 	function EnumType_PerPractice() {
-		$this->practiceId = $_SESSION['defaultpractice'];
+		if (isset($_SESSION['defaultpractice'])) {
+			$this->practiceId = $_SESSION['defaultpractice'];
+		}
 		if (isset($_GET['practiceId'])) {
 			$this->editingPracticeId = EnforceType::int($_GET['practiceId']);
 
