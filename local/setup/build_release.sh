@@ -88,7 +88,7 @@ echo "Exporting repository $REPO_URL at revision $CURRENT_SVN_REV to $BUILD_DIR"
 svn export -r $SVN_REV $REPO_URL $BUILD_DIR
 
 # Build the sql file
-#bash $BUILD_DIR/local/setup/build_sql.sh
+bash $BUILD_DIR/local/setup/build_sql.sh
 
 clean_release "$SCRIPT_HOME/no_package"
 
