@@ -1656,4 +1656,33 @@
 		<status>1</status>
 	</enum>
 </enumeration>
+<enumeration name="subscriber_to_patient_relationship" title="Subscriber to Patient Relationship" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Self</value>
+		<sort>0</sort>
+		<extra1></extra1>
+		<extra2></extra2>
+		<status>1</status>
+
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Parent</value>
+		<sort>0</sort>
+		<extra1></extra1>
+		<extra2></extra2>
+
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Spouse</value>
+		<sort>1</sort>
+		<extra1></extra1>
+
+		<extra2></extra2>
+		<status>1</status>
+	</enum>
+</enumeration>
 </enumerations>
