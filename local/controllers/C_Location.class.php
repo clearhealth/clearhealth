@@ -569,7 +569,7 @@ class C_Location extends Controller {
 		$trail->skipActions = array('update_schedule');
 		$action = $trail->lastItem();
 		header("Location: ".$action->link());
-		return;
+		exit;
 	}
 
 	function edit_practice_action($id = 0) {
