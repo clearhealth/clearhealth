@@ -60,7 +60,7 @@ class C_PatientDashboard extends Controller {
 		$encounterGrid =& new cGrid($p->loadDatasource('EncounterList'));
 		$encounterGrid->name = "encounterGrid";
 		$encounterGrid->registerTemplate('date_of_treatment','<a href="'.Celini::link('edit', 'encounter').'id={$encounter_id}">{$date_of_treatment}</a>');
-		$encounterGrid->pageSize = 5;
+		$encounterGrid->pageSize = 10;
 		$encounterGrid->setExternalId($p->get('id'));
 
 		
