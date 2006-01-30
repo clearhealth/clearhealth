@@ -233,64 +233,11 @@ class C_PatientFinder extends Controller {
 	}
 	
 	function smartsearch_action_process() {
-
-		if ($_POST['process'] != "true")
-			return;
 		$search_string = $_POST['searchstring'];
-		$join_type = "INNER";
-		if ($this->showNonPatients === true) {
-			$join_type = "LEFT";
-		}
-		//get the db connection and pass it to the helper functions
-		$sql = '
-			SELECT 
-				CONCAT(last_name, ", ", first_name, " ", middle_name) AS name,
-				date_of_birth AS DOB, 
-				psn.person_id AS id,
-				record_number AS pubpid, 
-				psn.identifier AS ss,
-				person_type,
-				CONCAT(last_name, ", ", first_name, " ", middle_name, "#", record_number)  AS `string`
-			FROM
-				person psn
-				' . $join_type . ' JOIN patient AS pt ON(psn.person_id=pt.person_id)
-				LEFT JOIN person_type AS ptype USING(person_id)
-			WHERE ';
+		$result_array = $this->SmartSearch($search_string,$this->showNonPatients);
 
-		$sqls = $this->_smart_search($search_string);
-		
-		$sqland=$sql . implode(' AND ',$sqls);
-		$sqlor=$sql . implode(' OR ',$sqls);
-		if($GLOBALS['namesearch']==true){
-			$sqland.=' ORDER BY last_name, first_name ASC';
-			$sqlor.=' ORDER BY last_name, first_name ASC';
-		}
-		if(count($sqls)==0){
-			return(array('','Invalid Search'));
-		}
-
-		$sqland .= " limit $this->limit";
-		$sqlor .= " limit $this->limit";
-	//echo $sqland;exit;	
-		$result_array = $this->_db->GetAll($sqland);
-		if(count($result_array)==0){
-			$andfailed=true;
-			$result_array=$this->_db->GetAll($sqlor);
-		}
-		if ($this->showNonPatients) {
-			$person =& ORDataObject::factory('Person');
-			foreach($result_array as $key => $row) {
-				if (empty($row['person_type'])) {
-					$row['person_type'] = 1;
-				}
-				$result_array[$key]['person_type'] = $person->lookupType($row['person_type']);
-				$result_array[$key]['string'] = $result_array[$key]['name'] .'('.$result_array[$key]['person_type'].')';
-			}
-		}
 		$this->assign('search_string',$search_string);
 		$this->assign('result_set', $result_array);
-		// we're done
-		$_POST['process'] = "";
 	}
 
 	function SmartSearch($search_string,$showNonPatients=false) {
@@ -305,8 +252,9 @@ class C_PatientFinder extends Controller {
 
 		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
-		$sqland=$sql.implode(' AND ',$sqls).' ORDER BY last_name,first_name LIMIT 30';
-		$sqlor=$sql.implode(' OR ',$sqls).' ORDER BY last_name,first_name LIMIT 30';
+		$cleanedValue = mysql_real_escape_string($search_string);
+		$sqland=$sql.implode(' AND ',$sqls)." ORDER BY (last_name = '$cleanedValue') DESC, (first_name = '$cleanedValue') DESC, last_name,first_name LIMIT $this->limit";
+		$sqlor=$sql.implode(' OR ',$sqls)." ORDER BY (last_name = '$cleanedValue') DESC, (first_name = '$cleanedValue') DESC, last_name,first_name LIMIT $this->limit";
 
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
@@ -354,6 +302,7 @@ class C_PatientFinder extends Controller {
 		}
 		else {
 			$searcharray=explode(" ",$search_string);
+			array_unshift($searcharray,$search_string);
 		}
 		$xdate=&new DateObject();
 		for($x=0;$x<count($searcharray);$x++){
