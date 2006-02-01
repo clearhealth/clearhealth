@@ -151,7 +151,27 @@ class C_Location extends Controller {
 		// share this object with the rest of the controller so the DB doesn't
 		// have to be requeried.
 		$this->location =& $location;
+		
+		//creat an event for a new room
+		if ($_POST['id'] == 0)
+			$this->_populateevents($location);
 	}
+	
+	
+	function _populateevents($room) {
+		//get a list of current schedules
+		$schedule =& celini::newOrdo('schedule');
+		$schedules = $schedule->schedules_factory();
+		//loop over the schedules
+		foreach ($schedules as $s) {
+			echo($s->get('name'));	
+		//add an event group named after the room inside each schedule			
+			$e =& ORDataObject::factory('Event');
+			$e->set('title',$room->get('name'));
+			$e->set('foreign_id',$s->get('id'));
+			$e->persist();
+		}
+	}	
 	
 	function edit_schedule_action($id = "") {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
