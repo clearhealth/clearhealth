@@ -18,18 +18,25 @@ left join encounter_value ev on e.encounter_id = ev.encounter_id  AND ev.value_t
 left JOIN user u on e.created_by_user_id = u.user_id 
 left JOIN person per on per.person_id = u.person_id
 where 
-
-(if ('[user]',e.created_by_user_id ='[user:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',1)
-or
-if ('[user2]',e.created_by_user_id ='[user2:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',0)
-or
-if ('[user3]',e.created_by_user_id ='[user3:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',0)
+(
+	IF (
+		'[user]',
+		e.created_by_user_id ='[user:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',
+		1
+	) OR
+	IF (
+		'[user2]',
+		e.created_by_user_id ='[user2:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',
+		0
+	) OR
+	IF (
+		'[user3]',
+		e.created_by_user_id ='[user3:query:select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) order by last_name, first_name]',
+		0
+	)
 )
-
-
- and e.date_of_treatment = '[date:date]'
-and if('[facility]',e.building_id = '[facility:query:select id, name from buildings order by name]',1)
-
+AND pay.payment_date = '[date:date]' 
+AND if('[facility]',e.building_id = '[facility:query:select id, name from buildings order by name]',1)
 /***
 dsFilters-Payment Type|enumLookup&ds|payment_type
 ***/
@@ -117,7 +124,6 @@ left join person pro on e.treating_person_id = pro.person_id
 where 
 (if ('[user]',e.created_by_user_id = '[user]',1) and pay.payment_date = '[date:date]' and if('[facility]',e.building_id = '[facility]',1)
 or
-if ('[user2]',e.created_by_user_id = '[user2]',2) and pay.payment_date = '[date:date]' and if('[facility]',e.building_id = '[facility]',1)
+if ('[user2]',e.created_by_user_id = '[user2]',2) and pay.payment_date = '[date:date]' and if('[facility]',e.building_id = '[facility]',0)
 or
-if ('[user3]',e.created_by_user_id = '[user3]',3) and pay.payment_date = '[date:date]' and if('[facility]',e.building_id = '[facility]',1))
-
+if ('[user3]',e.created_by_user_id = '[user3]',3) and pay.payment_date = '[date:date]' and if('[facility]',e.building_id = '[facility]',0))
