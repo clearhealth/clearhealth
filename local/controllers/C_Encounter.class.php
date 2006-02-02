@@ -1,7 +1,7 @@
 <?php
 $loader->requireOnce('controllers/C_Coding.class.php');
 $loader->requireOnce('controllers/C_FreeBGateway.class.php');
-$loader->requireOnce('local/includes/freebGateway/CHToFBArrayAdapter.class.php');
+$loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
 
 /**
  * A patient Encounter
@@ -388,7 +388,7 @@ class C_Encounter extends Controller {
 		assert('$type == "new" || $type == "rebill"');
 		// load gateway
 		global $loader;
-		$loader->requireOnce('local/includes/freebGateway/ClearhealthToFreebGateway.class.php');
+		$loader->requireOnce('includes/freebGateway/ClearhealthToFreebGateway.class.php');
 		
 		$gateway =& new ClearhealthToFreebGateway($this, $encounter);
 		$gateway->send($type);
