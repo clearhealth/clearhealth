@@ -54,7 +54,7 @@ class EventComparator_General {
 			$ea = $e->get_events("o.id = " . $o->get_id());
 			$eak = array_keys($ea);
 
-			var_dump($sum);
+			//var_dump($sum);
 			// we have a conflict using the standard method lets see if its allowed based on a breakdown
 			if (count($sum) > 0) {
 				$sumConflict = $ob->breakdownSum($o->get('id'));
