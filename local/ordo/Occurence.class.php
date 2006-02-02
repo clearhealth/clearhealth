@@ -534,7 +534,7 @@ class Occurence extends ORDataObject{
 	 * @access	protected
 	 */
 	function get_end_time() {
-		if (empty($this->end)) {
+		if (empty($this->end) || !is_object($this->end)) {
 			return '';
 		}
 		
