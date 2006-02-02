@@ -307,7 +307,9 @@ class Event extends ORDataObject{
 		$events = array();
 		$e = new Event();
 		
-		
+		if(empty($where_sql)){
+			$where_sql = '1';
+		}
 		$sql = "SELECT 
 				o.*,
 				e.*,

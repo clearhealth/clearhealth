@@ -7,16 +7,16 @@ require_once CALENDAR_ROOT . 'Month/Weeks.php';
 require_once CALENDAR_ROOT . 'Day.php';
 require_once CALENDAR_ROOT . 'Week.php';
 require_once CALENDAR_ROOT . 'Decorator.php';
-require_once APP_ROOT . "/local/includes/CalendarController.class.php";
-require_once APP_ROOT . "/local/ordo/Practice.class.php";
-require_once APP_ROOT . "/local/ordo/Building.class.php";
-require_once APP_ROOT . "/local/ordo/Room.class.php";
-require_once APP_ROOT . "/local/ordo/Schedule.class.php";
-require_once APP_ROOT . "/local/includes/calendarDecorators/MonthDecorator.class.php";
-require_once APP_ROOT . "/local/includes/calendarDecorators/WeekDecorator.class.php";
-require_once APP_ROOT . "/local/includes/calendarDecorators/WeekGridDecorator.class.php";
-require_once APP_ROOT . "/local/includes/calendarDecorators/DayDecorator.class.php";
-require_once APP_ROOT . "/local/includes/calendarDecorators/DayBriefDecorator.class.php";
+$loader->requireOnce('includes/CalendarController.class.php');
+$loader->requireOnce('ordo/Practice.class.php');
+$loader->requireOnce('ordo/Building.class.php');
+$loader->requireOnce('ordo/Room.class.php');
+$loader->requireOnce('ordo/Schedule.class.php');
+$loader->requireOnce('includes/calendarDecorators/MonthDecorator.class.php');
+$loader->requireOnce('includes/calendarDecorators/WeekDecorator.class.php');
+$loader->requireOnce('includes/calendarDecorators/WeekGridDecorator.class.php');
+$loader->requireOnce('includes/calendarDecorators/DayDecorator.class.php');
+$loader->requireOnce('includes/calendarDecorators/DayBriefDecorator.class.php');
 
 class C_Calendar extends CalendarController {
 
@@ -577,8 +577,18 @@ class C_Calendar extends CalendarController {
 	function search_action_process() {
 		$e = new Event();
 		$where = array();
-		if (isset($_POST['find_first']) && $_POST['find_first'] == 1 && isset($_POST['provider']) && $_POST['facility']) {
-			$sql = "SELECT o.start, o.end from schedules s LEFT JOIN events e on e.foreign_id = s.id LEFT JOIN occurences o on o.event_id = e.id "
+		// Assume today if no start date
+		if(empty($_POST['from'])){
+			$_POST['from']=date('m/d/Y');
+		}
+		// Assume a week from the start date if no end date
+		if(empty($_POST['to'])){
+			$_POST['to']=date('m/d/Y',strtotime('+1 Week',strtotime($_POST['from'])));
+		}
+
+		if (isset($_POST['find_first']) && $_POST['find_first'] == 1){
+			if(isset($_POST['provider']) && !empty($_POST['provider']) && isset($_POST['facility']) && !empty($_POST['facility'])) {
+				$sql = "SELECT o.start, o.end from schedules s LEFT JOIN events e on e.foreign_id = s.id LEFT JOIN occurences o on o.event_id = e.id "
 				." WHERE s.schedule_code = 'PS' and s.user_id =" .(int)$_POST['provider'];
 				 
 				$ff_sql = " c.schedule_code = 'PS' and c.user_id =" .(int)$_POST['provider'] . " and o.start BETWEEN '".$e->_mysqlDate($_POST['from'])."' and '"
@@ -593,13 +603,22 @@ class C_Calendar extends CalendarController {
 				//var_dump($events2);
 				$ffevents = array_diff($events,$events2);
 				//var_dump($ffevents);
-				$this->assign("free_time", $ffevents);
+				$ffevents2=null;
+				if(count($ffevents) > 0){
+					$keys=array_keys($ffevents);
+					$ffevents2 = $ffevents[@$keys[0]];
+				} else {
+					$this->messages->addMessage('No free time found within the dates given.');
+				}
+				$this->assign("free_time", count($ffevents) > 0 ? array($ffevents2) : array());
 				$this->assign("APPOINTMENT_ACTION",Celini::link("day"));
 				return;
 				/*foreach($ffevents as $free) {
 					echo date("m/d/Y", $free) . " from " . date("H:i", $free)  . " to " . date("H:i", $free + 900) . "<br>";	
 				}*/
-				
+			} else {
+				$this->messages->addMessage('You must specify a Provider and Facility when using "Find First"');
+			}
 		}
 		foreach($_POST as $key => $val) {
 			if (empty($val)) {
