@@ -153,20 +153,21 @@ class C_Location extends Controller {
 		$this->location =& $location;
 		
 		//creat an event for a new room
-		if ($_POST['id'] == 0)
+		if ($_POST['id'] == 0) {
 			$this->_populateevents($location);
+		}
 	}
 	
 	
 	function _populateevents($room) {
 		//get a list of current schedules
-		$schedule =& celini::newOrdo('schedule');
+		$schedule =& Celini::newOrdo('Schedule');
 		$schedules = $schedule->schedules_factory();
 		//loop over the schedules
 		foreach ($schedules as $s) {
 			echo($s->get('name'));	
 		//add an event group named after the room inside each schedule			
-			$e =& ORDataObject::factory('Event');
+			$e =& Celini::newORDO('Event');
 			$e->set('title',$room->get('name'));
 			$e->set('foreign_id',$s->get('id'));
 			$e->persist();
