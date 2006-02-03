@@ -204,7 +204,7 @@ class Event extends ORDataObject{
 				pt.record_number AS p_record_number, 
 				pt.record_number AS p_patient_number,
 				n.number AS p_phone,
-				n.active AS dnc,
+				IF(n.active, 0, 1) AS dnc,
 				rm.name AS room_name, 
 				u3.nickname AS creator_nickname, 
 				u3.username AS creator_username, 
