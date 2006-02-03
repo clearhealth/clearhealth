@@ -151,6 +151,8 @@ class C_PatientDashboard extends Controller {
 
 		$this->assign_by_ref('labGrid',$labGrid);
 
+		$this->assign('GRAPH_ACTION',Celini::link('graph','Form',true,'emr'));
+
 		$this->assign('formList',$formList);
 		$this->assign_by_ref('formDataGrid',$formDataGrid);
 		$this->assign_by_ref('reportGrid',$reportGrid);
