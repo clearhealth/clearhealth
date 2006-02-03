@@ -18,6 +18,10 @@
 	</fieldset>
 	<fieldset>
 		<legend>Lab Results</legend>
+		{$labGrid->render()}
+		{if $labGrid->empty}
+			<p>Patient has no lab results</p>
+		{/if}
 	</fieldset>
 	<fieldset>
 		<legend>Risk Profiles</legend>

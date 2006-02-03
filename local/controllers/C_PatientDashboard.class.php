@@ -110,6 +110,7 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionEMR_view($patientId) {
+		$GLOBALS['loader']->requireOnce('datasources/Lab_DS.class.php');
 		$p =& $this->_loadPatient($patientId);
 		
 		// If we don't have a valid Patient, display an error message and stop.
@@ -144,6 +145,11 @@ class C_PatientDashboard extends Controller {
 			}	
 		}
 
+		// lab result list
+		$lds =& new Lab_DS($p->get('id'));
+		$labGrid =& new cGrid($lds);
+
+		$this->assign_by_ref('labGrid',$labGrid);
 
 		$this->assign('formList',$formList);
 		$this->assign_by_ref('formDataGrid',$formDataGrid);
