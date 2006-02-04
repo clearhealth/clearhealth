@@ -46,7 +46,7 @@ class M_Main extends Manager {
 						$codes = $em->enumArray('confidential_family_planning_codes');
 					}
 					else {
-						$codes = $em->enumArray('disease_family_planning_codes');
+						$codes = $em->enumArray('confidential_disease_codes');
 					}
 					$conf = false;
 					if (isset($GLOBALS['currentCodeList'])) {
