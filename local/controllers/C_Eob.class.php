@@ -1,5 +1,6 @@
 <?php
 require_once CELINI_ROOT ."/includes/Grid.class.php";
+$loader->requireOnce('includes/transaction/TransactionManager.class.php');
 
 class C_Eob extends Controller {
 
@@ -42,12 +43,18 @@ class C_Eob extends Controller {
 
 		$billList = array();
 
+		$tmanager = new TransactionManager();
+		$trans = $tmanager->createTransaction('EstimateDiscountedClaim');
+		$trans->setAllFromEncounterId($claim->get('encounter_id'));
+		$trans->resultsInMap = true;
+		$fees = $tmanager->processTransaction($trans);
+
 		$i = 0;
 		foreach($codeList as $code) {
 			$billList[$i]['code'] = $code['code'];
 			$billList[$i]['code_id'] = $code['code_id'];
 			$billList[$i]['description'] = $code['description'];
-			$billList[$i]['amount'] = $code['fee'];
+			$billList[$i]['amount'] = $fees[$code['code']];
 			$billList[$i]['paid'] = 0;
 			$billList[$i]['writeoff'] = 0;
 			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['code_id']);
