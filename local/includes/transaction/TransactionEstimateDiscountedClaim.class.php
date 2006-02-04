@@ -14,7 +14,7 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 
 		$total = 0;
 		foreach($fees as $key => $row) {
-			$dfee = $row['fee']*$this->discount;
+			$dfee = $row['fee']*(1-$this->discount);
 
 			if ($this->resultsInMap) {
 				$fees[$row['code']] = $dfee;
