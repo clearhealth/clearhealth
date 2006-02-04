@@ -5,7 +5,7 @@ $loader->requireOnce("/includes/Grid.class.php");
 $loader->requireOnce("/local/includes/Datasource_AccountHistory.class.php");
 $loader->requireOnce("/local/includes/Grid_Renderer_AccountHistory.class.php");
 $loader->requireOnce("/datasources/AccountNote_DS.class.php");
-$loader->requireOnce("/lib/pear/HTML/AJAX/Serializer/JSON.php");
+$loader->requireOnce("lib/PEAR/HTML/AJAX/Serializer/JSON.php");
 
 /**
  * Actions for working with an Account in Clearhealth, in this context this is a Patients Account
