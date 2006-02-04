@@ -46,9 +46,10 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 
 	function setupByPracticeIncomeSize($practiceId,$income,$size) {
 		$practiceId = EnforceType::int($practiceId);
-		$income = $this->dbHelper->quote($income);
+		$income = EnforceType::int($income);
 		$size = EnforceType::int($size);
 		$table = $this->tableName();
+
 
 		$sql = "
 			select * 
@@ -57,7 +58,8 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
 			inner join fee_schedule_discount d using(fee_schedule_discount_id)
 			where
-				i.family_size = $size and income <= $income and d.practice_id = $practiceId
+				i.family_size = $size and i.income >= $income and d.practice_id = $practiceId
+			order by i.income asc
 			";
 		$res = $this->dbHelper->execute($sql);
 		$this->helper->populateFromResults($this,$res);
