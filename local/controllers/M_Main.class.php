@@ -24,6 +24,7 @@ class M_Main extends Manager {
 			$this->controller->view->assign('showConfidentialityBanner',false);
 			$c = $patient->get('confidentiality');
 			if ($c > 2) {
+				$this->controller->view->assign('showConfidentialityBanner',true);
 				$showScreen = false;
 				if (!isset($_SESSION['confidentiality'][$patient_id])) {
 					$showScreen = true;
