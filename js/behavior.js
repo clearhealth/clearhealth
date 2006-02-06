@@ -58,7 +58,7 @@ Behavior.register(
 					var el = divs[i];
 					if (toolTip == false) {
 						toolTipTimeout = window.setTimeout(function(e) { el.style.display = 'block'; toolTipTimeout = false; toolTip = true;}, 400);
-						divs[i].style.left = (mousePos.x) + 'px';
+						divs[i].style.left = (mousePos.x+20) + 'px';
 						divs[i].style.top = (mousePos.y-target.clientHeight-5) + 'px';
 					}
 				}
@@ -69,7 +69,7 @@ Behavior.register(
 			var target = HTML_AJAX_Util.eventTarget(e);
 
 			if (toolTipTimeout) {
-				window.cancelTimeout(toolTipTimeout);
+				window.clearTimeout(toolTipTimeout);
 				toolTipTimeout = false;
 			}
 
