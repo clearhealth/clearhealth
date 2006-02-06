@@ -1,13 +1,13 @@
 <script type="text/javascript" src="{$base_dir}js/zipcode.js"></script>
-	<fieldset class="radio" id="address">
+	<fieldset id="address">
 		<legend>{l}Addresses{/l} {clni_section_links name="address"}</legend>
-<table class="data" border="0" cellspacing="1" cellpadding="0">
+<table class="grid" border="0" cellspacing="1" cellpadding="0">
         {$pager}
-        <tr bgcolor="EFEFEF">
+	<tr>
 		<th>{l}Name{/l}</th><th>{l}Type{/l}</th><th>{l}Address{/l}</th><th>{l}City{/l}</th><th>{l}Zip{/l}</th>
         </tr>
-        {foreach from=$parent->get_addresses() item=row}
-	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
+        {foreach from=$parent->get_addresses() item=row name="address"}
+	<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{else}{if $smarty.foreach.address.iteration %2 == 1}class="alt"{/if}{/if}>
 		<td><a href="{$EDIT_ADDRESS_ACTION}id={$row.address_id}&process=true">{$row.name}</a></td>
 		<td>{$row.type}</td>
 		<td class="address">
@@ -20,7 +20,9 @@
         </tr>
         {foreachelse}
         <tr>
-                <td colspan="5">{l}No Addresses{/l}</td>
+		<td colspan="5">{l}No Addresses{/l}
+			{assign var="addressRequired" value=1}
+		</td>
         </tr>
         {/foreach}
 </table>
@@ -30,56 +32,87 @@
                     <table>
                         <tr>
 				<td><label>{l}Name{/l}:</label> </td>
-                          <td><input name="address[name]" size="20" value="{$address->get('name')}" tabindex="31"></td>
+				<td><input id="addrName" name="address[name]" size="20" value="{$address->get('name')}"></td>
 			  <td><label>{l}Type{/l}:</label> </td>
 			  <td>
-					<select name="address[type]" tabindex="31">
-						<option></option>
-						{html_options options=$address->getTypeList() selected=$address->get('type')}
-					</select>
+				<select name="address[type]" class="requiredIfAny">
+					<option></option>
+					{html_options options=$address->getTypeList() selected=$address->get('type')}
+				</select>
 			  </td>
                         </tr>
+
                         <tr>
 				<td><label>{l}Address{/l}:</label> </td>
 			  <td colspan="3">
-				  <input name="address[line1]" size="30" value="{$address->get('line1')}" tabindex="32"><br>
-				  <input name="address[line2]" size="30" value="{$address->get('line2')}" tabindex="32">
+				  <input name="address[line1]" size="30" value="{$address->get('line1')}"><br>
+				  <input name="address[line2]" size="30" value="{$address->get('line2')}">
 			  </td>
                         </tr>
                         <tr>
 				<td><label>{l}City{/l}:</label> </td>
-				<td><input name="address[city]" id="addresscity" size="15" value="{$address->get('city')}" tabindex="33"></td>
+				<td><input name="address[city]" id="addresscity" size="15" value="{$address->get('city')}"></td>
 				{*<td><label>{l}State{/l}:</label> </td>*}
 				<td>
-					<select name="address[state]" id="addressstate" tabindex="34">
+					<select name="address[state]" id="addressstate">
+						<option value=0>State</option>
 					{html_options options=$address->getStateList() selected=$address->get('state')}
 					</select>
 				</td>	
 				<td><label class="inline">{l}Zip{/l}:</label> 
-				<input name="address[postal_code]" size="10" id="addresspostalcode" value="{$address->get('postal_code')}" tabindex="35" onkeyup="if(this.value.length==5) zipGrab(this.value);"></td>
+				<input name="address[postal_code]" size="10" id="addresspostalcode" value="{$address->get('postal_code')}" onkeyup="if(this.value.length==5) zipGrab(this.value);"></td>
       </tr>
-				{*
-      <tr>
-				<td><label>{l}County{/l}:</label> </td>
-				<td>
-					<select name="address[county]" tabindex="36">
-					{html_options options=$address->getCountyList() selected=$address->get('county')}
-					</select>
-				</td>
-				<td><label>{l}Region{/l}:</label> </td>
-				<td>
-					<select name="address[region]" tabindex="37">
-					{html_options options=$address->getRegionList() selected=$address->get('region')}
-					</select>
-				</td>
-			</tr>
-				*}
                         <tr>
 				<td><label>{l}Notes{/l}:</label> </td>
-				<td colspan=3"><textarea name="address[notes]" rows="2" cols="35" tabindex="38">{$address->get('notes')}</textarea></td>
+				<td colspan=3"><textarea name="address[notes]" rows="2" cols="35">{$address->get('notes')}</textarea></td>
                         </tr>
                         <tr>
-				<td></td><td colspan="3"><input type="submit" tabindex="39"{if $address->get('address_id') > 0}value="Update"><input type="submit" value="Add as New" name="address[add_as_new]" tabindex="39">{else}value="Add">{/if}</td>
+				<td></td><td colspan="3"><input type="submit" {if $address->get('address_id') > 0}value="Update"><input type="submit" value="Add as New" name="address[add_as_new]">{else}value="Add">{/if}</td>
                         </tr>
 		</table>
 	</fieldset>
+{if $addressRequired}
+{clni_register_validation_rule id="addrName" message="Every Patient requires an Address, if this patient doesn't have an address add one with a name of \"No Address\" to signify this."}
+{/if}
+{literal}
+<script type="text/javascript">
+	var addressElements = [];
+	Behavior.register('#address',function(element) 
+		{
+			var inputs = element.getElementsByTagName('input');
+			for(var i = 0; i < inputs.length; i++) {
+				if (inputs[i].type != 'submit' && inputs[i].type != 'hidden') {
+					clni_register_validation_rule_hash({obj:inputs[i],rule:'addressRequiredIf'});
+					addressElements.push(inputs[i]);
+				}
+			}
+			var selects = element.getElementsByTagName('select');
+			for(var i = 0; i < selects.length; i++) {
+				clni_register_validation_rule_hash({obj:selects[i],rule:'addressRequiredIf'});
+				addressElements.push(selects[i]);
+			}
+		}
+	);
+
+	function  clni_rule_addressRequiredIf(element) {
+		var required = false;
+		// if any of the elements are filled out all are required
+		for(var i =0; i < addressElements.length; i++) {
+			if ( !(addressElements[i].value == 0 || addressElements[i].value == '')) {
+				required = true;
+			}
+		}
+		if (addressElements[0].value == 'No Address') {
+			required = false;
+		}
+		if (required) {
+			if (element.tagName == 'SELECT' && (element.value == 0 || element.value == '')) {
+				return false;
+			} else if (element.value == '') {
+				return false;
+			}
+		}
+		return true;
+	}
+</script>
+{/literal}
