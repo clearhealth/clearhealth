@@ -35,7 +35,7 @@
 				<td><input id="addrName" name="address[name]" size="20" value="{$address->get('name')}"></td>
 			  <td><label>{l}Type{/l}:</label> </td>
 			  <td>
-				<select name="address[type]" class="requiredIfAny">
+				<select name="address[type]" class="requiredIfAny" onclick="updateAddrName(this)">
 					<option></option>
 					{html_options options=$address->getTypeList() selected=$address->get('type')}
 				</select>
@@ -105,6 +105,9 @@
 		if (addressElements[0].value == 'No Address') {
 			required = false;
 		}
+		if (element.name.match(/line2\]$/)) {
+			return true;
+		}
 		if (required) {
 			if (element.tagName == 'SELECT' && (element.value == 0 || element.value == '')) {
 				return false;
@@ -113,6 +116,13 @@
 			}
 		}
 		return true;
+	}
+
+	function updateAddrName(select) {
+		var name = document.getElementById('addrName');
+		if (name.value == '') {
+			name.value = select.options[select.selectedIndex].text;
+		}
 	}
 </script>
 {/literal}
