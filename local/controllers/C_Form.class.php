@@ -229,7 +229,9 @@ class C_Form extends Controller {
 		$format = DateObject::getFormat();
 
 		$sql = "select date_format(last_edit,'$format') last_edit $select 
-			from form_data fd $join where external_id = $patientId group by fd.form_data_id";
+			from form_data fd $join where external_id = $patientId or external_id in
+			 (select encounter_id from encounter where patient_id = $patientId)
+			 group by fd.form_data_id";
 
 		$res = $db->execute($sql,ADODB_FETCH_NUM);
 
