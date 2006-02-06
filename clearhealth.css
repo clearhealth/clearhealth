@@ -183,6 +183,7 @@ h3 {
 }
 .tooltip {
 	border-bottom: dotted 1px gray;
+	cursor: help;
 }
 .tooltipMessage {
 	display: none;
