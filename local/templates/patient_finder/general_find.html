@@ -34,7 +34,19 @@ a {
 <form name="patientfinder" method="post" action="{$FORM_ACTION}">
 <table>
 	<tr>
-		<td colspan="2"><a href="#" class="tooltip" {popup text="'smith' for lastname, ',john' for first name, 'smith,john' for first & last name, '1233' for record number, '01/01/1980' for dob, '000-00-0000' for ssn"}><label style="display:inline;">{l}Search{/l}: </label></a></td>
+		<td colspan="2"><div class="tooltip">
+				{l}Search{/l}:
+				<div class="tooltipMessage">
+					<b>Search Options:</b><br>
+					'smith' for lastname, <br>
+					',john' for first name, <br>
+					'smith,john' for first & last name, <br>
+					'1233' for record number, <br>
+					'01/01/1980' for dob, <br>
+					'000-00-0000' for ssn
+				</div>
+			</div>
+		</td>
 		<td>
 			<input type="text" size="40" name="searchstring" value=""/>&nbsp;&nbsp;<input type="submit" value="search"/>
 		</td>
