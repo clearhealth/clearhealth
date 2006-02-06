@@ -36,13 +36,13 @@
 	<div align="left" style="float: right">
 	<fieldset class="radio" id="number" style="vertical-align:top;">
 	<legend>{l}Phone Numbers{/l} {clni_section_links name="number"}</legend>
-	<table class="data" border="0" cellspacing="1" cellpadding="0">
+	<table class="grid" border="0" cellspacing="1" cellpadding="0">
         {$pager}
-        <tr bgcolor="EFEFEF">
+	<tr>
 		<th>{l}Number{/l}</th><th>{l}Type{/l}</th><th>{l}Status{/l}</th><th>{l}Notes{/l}</th>
         </tr>
-        {foreach from=$parent->get_numbers() item=row}
-			<tr {if $row.number_id == $number->get('id')}class="selectedRow"{/if}>
+        {foreach from=$parent->get_numbers() item=row name="phone"}
+		<tr {if $row.number_id == $number->get('id')}class="selectedRow"{else}{if $smarty.foreach.phone.iteration %2 == 1}class="alt"{/if}{/if}>
 			<td>{formatPhoneNumber number=$row.number}</td>
 			<td>{$row.number_type}</td>
 			<td>{if !$row.active}DNC{/if}</td>
@@ -57,13 +57,13 @@
 	</fieldset>
     <fieldset class="radio" id="address" style="vertical-align:top;">
 		<legend>{l}Addresses{/l} {clni_section_links name="address"}</legend>
-		<table class="data" border="0" cellspacing="1" cellpadding="0">
+		<table class="grid" border="0" cellspacing="1" cellpadding="0">
         {$pager}
-        <tr bgcolor="EFEFEF">
+	<tr>
 		<th>{l}Name{/l}</th><th>{l}Type{/l}</th><th>{l}Address{/l}</th><th>{l}City{/l}</th><th>{l}Zip{/l}</th>
         </tr>
-        {foreach from=$parent->get_addresses() item=row}
-		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{/if}>
+        {foreach from=$parent->get_addresses() item=row name="address"}
+		<tr {if $row.address_id == $address->get('address_id')}class="selectedRow"{else}{if $smarty.foreach.address.iteration %2 == 1}class="alt"{/if}{/if}>
 		<td>{$row.name}</td>
 		<td>{$row.type}</td>
 		<td class="address">{$row.line1}<br>{$row.line2}</td>
