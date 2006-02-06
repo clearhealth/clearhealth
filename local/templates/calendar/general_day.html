@@ -59,7 +59,7 @@
 
 			<td colspan="1" width="15" valign="top" style="background-color:#{$bgcolor};" class="schedule_border" align="center">
 			{if $ev.first_inc}
-				{if $ev.nickname}{$ev.nickname}<br>{/if}
+			{if $ev.nickname}<acronym class="tooltip" title="{$ev.provider_name}">{$ev.nickname}</acronym><br>{/if}
 				{if $ev.room_name}{$ev.room_name}<br>{/if}
 			{/if}
 			{strip}

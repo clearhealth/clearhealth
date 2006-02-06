@@ -211,7 +211,8 @@ class Event extends ORDataObject{
 				DATE_FORMAT(NOW(), '%Y') - DATE_FORMAT(psn.date_of_birth, '%Y') - (DATE_FORMAT(NOW(), '00-%m-%d') < DATE_FORMAT(psn.date_of_birth, '00-%m-%d')) AS age, 
 				o.`timestamp` AS last_change,
 				if(pt.confidentiality < 2,reason_code,0) reason_code,
-				ab.*
+				ab.*,
+				concat(pro.first_name,' ',pro.last_name) provider_name
 			FROM 
 				`".$GLOBALS['frame']['config']['db_name']."`.".$e->_prefix."occurences AS o
 				LEFT JOIN `".$e->_prefix."events` AS e ON o.event_id = e.id
@@ -225,6 +226,7 @@ class Event extends ORDataObject{
 				LEFT JOIN patient AS pt ON pt.person_id=o.external_id
 				LEFT JOIN person AS psn ON psn.person_id=pt.person_id
 				LEFT JOIN person_number AS p2n ON psn.person_id=p2n.person_id
+				LEFT JOIN person AS pro ON u.person_id = pro.person_id
 				
 				/* this will be the first value in the number_types enum */
 				LEFT JOIN number AS n ON n.number_id=p2n.number_id and n.number_type =1
