@@ -212,3 +212,6 @@ h3 {
 	right: 2px;
 	cursor: pointer;
 }
+tr.selectedRow td {
+	background-color: #9cd2d1;
+}
