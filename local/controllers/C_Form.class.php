@@ -233,6 +233,7 @@ class C_Form extends Controller {
 
 		$res = $db->execute($sql,ADODB_FETCH_NUM);
 
+		$data = array();
 		while($res && !$res->EOF) {
 			$data[] = $res->fields;
 			$res->MoveNext();
