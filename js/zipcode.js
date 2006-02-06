@@ -5,16 +5,18 @@ function zipGrab(zip) {
 }
 
 function zipCallback(resultSet) {
-	document.getElementById('addresscity').value = resultSet['city'];
-	var i = 0;
-	while(i<document.getElementById('addressstate').options.length) {
-		if (document.getElementById('addressstate').options[i].innerHTML == resultSet['state']){
-			document.getElementById('addressstate').options[i].selected = true;
-		} else {
-			document.getElementById('addressstate').options[i].selected = false;
+	if(!resultSet==false){
+		document.getElementById('addresscity').value = resultSet['city'];
+		var i = 0;
+		while(i<document.getElementById('addressstate').options.length) {
+			if (document.getElementById('addressstate').options[i].innerHTML == resultSet['state']){
+				document.getElementById('addressstate').options[i].selected = true;
+			} else {
+				document.getElementById('addressstate').options[i].selected = false;
+			}
+			i+=1;
 		}
-		i+=1;
+		document.getElementById('addresspostalcode').value = resultSet['zip'];
 	}
 
-	document.getElementById('addresspostalcode').value = resultSet['zip'];
 }
