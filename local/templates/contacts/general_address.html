@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{$base_dir}js/zipcode.js"></script>
 	<fieldset class="radio" id="address">
 		<legend>{l}Addresses{/l} {clni_section_links name="address"}</legend>
 <table class="data" border="0" cellspacing="1" cellpadding="0">
@@ -47,15 +48,15 @@
                         </tr>
                         <tr>
 				<td><label>{l}City{/l}:</label> </td>
-				<td><input name="address[city]" size="15" value="{$address->get('city')}" tabindex="33"></td>
+				<td><input name="address[city]" id="addresscity" size="15" value="{$address->get('city')}" tabindex="33"></td>
 				{*<td><label>{l}State{/l}:</label> </td>*}
 				<td>
-					<select name="address[state]" tabindex="34">
+					<select name="address[state]" id="addressstate" tabindex="34">
 					{html_options options=$address->getStateList() selected=$address->get('state')}
 					</select>
 				</td>	
 				<td><label class="inline">{l}Zip{/l}:</label> 
-				<input name="address[postal_code]" size="10" value="{$address->get('postal_code')}" tabindex="35"></td>
+				<input name="address[postal_code]" size="10" id="addresspostalcode" value="{$address->get('postal_code')}" tabindex="35" onkeyup="if(this.value.length==5) zipGrab(this.value);"></td>
       </tr>
 				{*
       <tr>
