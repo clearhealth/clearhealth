@@ -65,8 +65,16 @@ class ClearhealthClaim extends ORDataObject {
 	
 	function accountStatus($patient_id,$encounter_id = false) {
 		$status = array();
-		$sql = "SELECT sum(total_billed) as total_billed, sum(total_paid) as total_paid, (sum(total_billed) - sum(total_paid)) as total_balance "
-				." FROM encounter e inner join clearhealth_claim using (encounter_id) where patient_id = " . (int)$patient_id;
+		$sql = '
+			SELECT 
+				sum(total_billed) as total_billed, 
+				sum(total_paid) as total_paid,
+				(sum(total_billed) - sum(total_paid)) as total_balance 
+			FROM 
+				encounter AS e
+				INNER JOIN clearhealth_claim AS cc USING(encounter_id)
+			WHERE 
+				patient_id = ' . (int)$patient_id;
 
 		if ($encounter_id) {
 			$sql .= " and e.encounter_id = ".(int)$encounter_id;
