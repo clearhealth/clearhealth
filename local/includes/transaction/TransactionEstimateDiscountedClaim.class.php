@@ -3,7 +3,7 @@ $loader->requireOnce('includes/transaction/TransactionEstimateClaim.class.php');
 
 class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 	var $resultsInMap = false;
-	var $discount = 1;
+	var $discount = 0;
 
 	function setDiscount($discount) {
 		$this->discount = $discount/100;
@@ -11,7 +11,6 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 
 	function processClaim() {
 		$fees = parent::processClaim();
-
 		$total = 0;
 		foreach($fees as $key => $row) {
 			$dfee = $row['fee']*(1-$this->discount);
@@ -48,7 +47,6 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 		$practiceId = $_SESSION['defaultpractice'];
 		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
 
-		$this->discount = 1;
 		if ($fsdLevel->isPopulated()) {
 			$this->discount = $fsdLevel->get('discount')/100;
 		}
