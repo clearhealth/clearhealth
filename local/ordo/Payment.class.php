@@ -98,7 +98,7 @@ class Payment extends ORDataObject {
 	/**
 	 * Get datasource for payments from the db
 	 */
-	function paymentList($foreign_id,$extraCols = false) {
+	function &paymentList($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
 		if ($foreign_id == 0) $foreign_id = "NULL";
 		
