@@ -123,18 +123,24 @@ class InsuranceProgram extends ORDataObject {
 		return $ret;
 	}
 
+	/**
+	 * This method should no longer be used.  Instead use:
+	 *
+	 * <code>
+	 *    $company =& Celini::newORDO('Company', 1234);
+	 *    $ds =& $company->loadDatasource('DetailedProgramList');
+	 * </code>
+	 *
+	 * @deprecated
+	 */
 	function &detailedProgramList($company_id) {
-		settype($company_id,'int');
-
-		$ds =& new Datasource_sql();
-		$ds->setup($this->_db,array(
-				'cols' 	=> "ip.name, payer_type, fsd.label as fee_schedule_name, insurance_program_id",
-				'from' 	=> "$this->_table ip left join fee_schedule fsd using (fee_schedule_id)",
-				'where' => " company_id = $company_id"
-			),
-			array('name' => 'Program Name','payer_type' => 'Payer Type', 'fee_schedule_name' => 'Fee Schedule'));
-
-		$ds->registerFilter('payer_type',array(&$this,'lookupPayerType'));
+		Celini::deprecatedWarning('Call to InsuranceProgram::detailProgramList() - should use datasource');
+		
+		global $loader;
+		$loader->requireOnce('includes/DatasourceFileLoader.class.php');
+		$dsLoader =& new DatasourceFileLoader();
+		$dsLoader->load('Company_DetailedProgramList_DS');
+		$ds =& new Company_DetailedProgramList_DS($company_id);
 		return $ds;
 	}
 

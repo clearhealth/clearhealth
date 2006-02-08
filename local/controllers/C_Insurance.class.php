@@ -39,7 +39,7 @@ class C_Insurance extends Controller {
 			$insuranceProgram->populateArray($_POST['insuranceProgram']);
 		}
 
-		$ds =& $insuranceProgram->detailedProgramList($company_id);
+		$ds =& $company->loadDatasource('DetailedProgramList');
 		$ds->registerTemplate('name','<a href="'.Celini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
 		$insuranceProgramGrid =& new cGrid($ds);
 		
