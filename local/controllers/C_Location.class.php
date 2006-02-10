@@ -440,7 +440,7 @@ class C_Location extends Controller {
 		$this->location->populate_array($_POST);
 		$this->location->persist();
 		
-		$this->location->populate($this->location->get_id());
+		$this->location->populate($this->location->get('id'));
 		$_POST['process'] = "";
 		$this->_state = false;
 		$this->location = null;
