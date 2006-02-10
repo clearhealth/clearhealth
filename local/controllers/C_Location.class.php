@@ -249,7 +249,7 @@ class C_Location extends Controller {
 				}
 			}
 		
-			$next_url =  Celini::link('edit_schedule',true,true);
+			$next_url =  Celini::link('edit_schedule',true,true) . 'id=' . $this->GET->getTyped('id', 'int');
 			//if the object was deleted then we cannot refer to it...
 		}else{
 			$next_url = Celini::link('edit_schedule',true,true,$id);
