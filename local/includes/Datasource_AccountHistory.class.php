@@ -135,10 +135,6 @@ class Datasource_AccountHistory extends Datasource {
 		$payment =& ORDataObject::factory("Payment");
 		
 		$ds =& new Datasource_sql();
-
-		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount');
-		$labels['writeoff'] = "Write Off";
-		$labels['payer_id'] = "Payer";
 		$ds->registerFilter('payer_id',array(&$payment,'lookupPayer'));
 
 		$ds->setup($payment->_db,array(
@@ -164,7 +160,13 @@ class Datasource_AccountHistory extends Datasource {
 					) AND
 					chc.claim_id = ' . $claim_id
 			),
-			$labels
+			array(
+				'payment_type' => 'Type',
+				'payment_date' => 'Payment Date',
+				'amount' => 'Amount',
+				'writeoff' => 'Write Off',
+				'payer_id' => 'Payer'
+			)
 		);
 		//echo $ds->preview();
 		$ds->registerFilter('payment_type',array(&$payment,'lookupPaymentType'));
