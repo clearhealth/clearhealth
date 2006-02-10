@@ -152,18 +152,35 @@ class ClearhealthClaim extends ORDataObject {
 		if ($foreign_id == 0) $foreign_id = "NULL";
 		
 		$ds =& new Datasource_sql();
-
-		$labels = array('identifier' => 'Id','date_of_treatment' => 'Date', 'total_billed' => 'Billed','total_paid' => 'Paid', 'balance'=>'Balance');
-
 		$ds->setup($this->_db,array(
-				'cols' 	=> "chc.claim_id, chc.identifier, date_format(e.date_of_treatment,'%Y-%m-%d') date_of_treatment, chc.total_billed,"
-			       			. " chc.total_paid, b.name facility, concat_ws(',',pro.last_name,pro.first_name) provider, "
-						. " (chc.total_billed - chc.total_paid) as balance, sum(pcl.writeoff) as writeoff",
-				'from' 	=> "$this->_table chc inner join encounter as e using (encounter_id) left join payment pa on pa.foreign_id = chc.claim_id left join payment_claimline as pcl on pcl.payment_id = pa.payment_id left join occurences o on e.occurence_id = o.id left join buildings b on e.building_id = b.id left join person pro on e.treating_person_id = pro.person_id",
-				'where' => " e.patient_id = $patient_id $where",
-				'groupby' => " chc.claim_id "
+				'cols' 	=> '
+					chc.claim_id, 
+					chc.identifier,
+					date_format(e.date_of_treatment,"%Y-%m-%d") AS date_of_treatment, 
+					chc.total_billed,
+					chc.total_paid,
+					b.name facility,
+					concat_ws(",",pro.last_name,pro.first_name) AS provider,
+					(chc.total_billed - chc.total_paid) AS balance, 
+					SUM(pcl.writeoff) AS writeoff',
+				'from' 	=> 
+					$this->_table . ' AS chc 
+					INNER JOIN encounter AS e USING(encounter_id)
+					LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)
+					LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)
+					LEFT JOIN occurences AS o ON(e.occurence_id = o.id)
+					LEFT JOIN buildings AS b ON(e.building_id = b.id)
+					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)',
+				'where' => ' e.patient_id = ' . $patient_id . $where,
+				'groupby' => 'chc.claim_id'
 			),
-			$labels
+			array(
+				'identifier' => 'Id',
+				'date_of_treatment' => 'Date', 
+				'total_billed' => 'Billed',
+				'total_paid' => 'Paid',
+				'balance' => 'Balance'
+			)
 		);
 		//echo $ds->preview();
 		return $ds;
