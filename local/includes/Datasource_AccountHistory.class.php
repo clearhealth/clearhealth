@@ -39,6 +39,8 @@ class Datasource_AccountHistory extends Datasource {
 		$this->claims = $claim->claimList($person_id,true,$this->filters);
 		$this->_labels = array ( 
 			'identifier' 	=> 'Id', 
+			'current_payer' => 'Payer Name',
+			'billing_date' => 'Date Billed',
 			'date_of_treatment' => 'Date', 
 			'total_billed' 	=> 'Billed', 
 			'total_paid' 	=> 'Paid', 

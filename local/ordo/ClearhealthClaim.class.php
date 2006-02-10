@@ -103,6 +103,8 @@ class ClearhealthClaim extends ORDataObject {
 	
 	/**
 	 * Get datasource for claims from the db
+	 *
+	 * @todo Move to local/datasources/ and create its own DS file
 	 */
 	function &claimList($patient_id,$show_lines = false,$filters = false) {
 		settype($foreign_id,'int');
@@ -156,9 +158,11 @@ class ClearhealthClaim extends ORDataObject {
 				'cols' 	=> '
 					chc.claim_id, 
 					chc.identifier,
+					date_format(fbc.date_sent, "%Y-%m-%d") AS billing_date,
 					date_format(e.date_of_treatment,"%Y-%m-%d") AS date_of_treatment, 
 					chc.total_billed,
 					chc.total_paid,
+					fbco.name AS "current_payer",
 					b.name facility,
 					concat_ws(",",pro.last_name,pro.first_name) AS provider,
 					(chc.total_billed - chc.total_paid) AS balance, 
@@ -170,16 +174,21 @@ class ClearhealthClaim extends ORDataObject {
 					LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)
 					LEFT JOIN occurences AS o ON(e.occurence_id = o.id)
 					LEFT JOIN buildings AS b ON(e.building_id = b.id)
-					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)',
+					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)
+					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
+					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
+					',
 				'where' => ' e.patient_id = ' . $patient_id . $where,
 				'groupby' => 'chc.claim_id'
 			),
 			array(
 				'identifier' => 'Id',
+				'billing_date' => 'Billing Date',
 				'date_of_treatment' => 'Date', 
 				'total_billed' => 'Billed',
 				'total_paid' => 'Paid',
-				'balance' => 'Balance'
+				'balance' => 'Balance',
+				'current_payer' => 'Payer Name'
 			)
 		);
 		//echo $ds->preview();
