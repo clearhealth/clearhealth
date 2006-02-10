@@ -97,6 +97,12 @@ class Occurence extends ORDataObject{
 	 */
 	var $creator_id=0;
 	
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	var $_key = 'id';
+	
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -141,6 +147,14 @@ class Occurence extends ORDataObject{
 			}
 		}
 		parent::persist();
+	}
+	
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	function populate() {
+		parent::populate($this->_key);
 	}
 	
 	/**
