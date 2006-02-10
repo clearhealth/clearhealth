@@ -109,7 +109,9 @@ This patient has requested or has participated in a process which requires you t
 	</td><td>
 
 		<h1>ClearHealth</h1>
-		<div id="username">Logged in As: {$me->get_username()}</div>
+		{if $me->get_username()}
+			<div id="username">Logged in As: {$me->get_username()}</div>
+		{/if}
 </td></tr></table>
 	<div class="clear"></div>
 </div>
