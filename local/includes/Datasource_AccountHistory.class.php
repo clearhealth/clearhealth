@@ -142,11 +142,27 @@ class Datasource_AccountHistory extends Datasource {
 		$ds->registerFilter('payer_id',array(&$payment,'lookupPayer'));
 
 		$ds->setup($payment->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, payment_date, pa.timestamp",
-				'from' 	=> " payment pa left join encounter e using(encounter_id) left join person p on e.patient_id = p.person_id "
-						." left join clearhealth_claim chc on chc.claim_id = pa.foreign_id "
-						." left join encounter e2 on chc.encounter_id = e2.encounter_id ",
-				'where' => " (e.patient_id = $patient_id or e2.patient_id = $patient_id) and chc.claim_id = $claim_id"
+				'cols' 	=> '
+					payment_id,
+					foreign_id,
+					payment_type, 
+					amount,
+					writeoff,
+					payer_id,
+					payment_date,
+					pa.timestamp',
+				'from' 	=> '
+					payment AS pa
+					LEFT JOIN encounter AS e USING(encounter_id)
+					LEFT JOIN person AS p ON (e.patient_id = p.person_id)
+					LEFT JOIN clearhealth_claim AS chc ON (chc.claim_id = pa.foreign_id)
+					LEFT JOIN encounter AS e2 ON(chc.encounter_id = e2.encounter_id)',
+				'where' => '
+					(
+						e.patient_id = ' . $patient_id . ' OR
+						e2.patient_id = ' . $patient_id . '
+					) AND
+					chc.claim_id = ' . $claim_id
 			),
 			$labels
 		);
