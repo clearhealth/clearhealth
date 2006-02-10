@@ -81,6 +81,12 @@ class C_PatientDashboard extends Controller {
 		$appointmentGrid->pageSize = 10;
 		$appointmentGrid->setExternalId($p->get('id'));
 		
+		// Retrieve PatientStatistics view
+		global $loader;
+		$loader->requireOnce('controllers/C_PatientStatistics.class.php');
+		$patientStatsController =& new C_PatientStatistics();
+		$this->view->assign('patientStatisticsView', $patientStatsController->actionView($p->get('id')));
+		
 		$this->assign_by_ref("person",$p);
 		$this->assign_by_ref('number',$number);
 		$this->assign_by_ref('address',$address);

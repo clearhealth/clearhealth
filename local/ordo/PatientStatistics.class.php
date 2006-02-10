@@ -34,7 +34,12 @@ class PatientStatistics extends ORDataObject {
 	var $family_size	= '';
 	/**#@-*/
 
-
+	/**#@+
+	 * {@inheritdoc}
+	 */
+	var $_enumList = array('ethnicity', 'race', 'income', 'language', 'migrant_status');
+	/**#@-*/
+	
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
@@ -64,6 +69,7 @@ class PatientStatistics extends ORDataObject {
 
 	/**#@+
 	 * Enumeration getters
+	 * @todo Deprecate this
 	 */
 	function getEthnicityList() {
 		$list = $this->_load_enum('ethnicity');
@@ -173,7 +179,20 @@ class PatientStatistics extends ORDataObject {
 	function get_sign_in_date() {
 		return $this->_getDate('sign_in_date');
 	}
-
 	/**#@-*/
+	
+	
+	/**#@+
+	 * Value accessors for various properties
+	 *
+	 * @return string
+	 */
+	
+	function value_registration_location() {
+		$ordo =& Celini::newORDO('Building', $this->get('registration_location'));
+		return $ordo->get('name');
+	}
+	/**#@-*/
+
 }
 ?>
