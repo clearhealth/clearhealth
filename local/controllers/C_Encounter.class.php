@@ -226,6 +226,12 @@ class C_Encounter extends Controller {
 			}
 		}
 
+		// before we view, make sure the current patient_id is setup for display with the current
+		// encounter's patient info.
+		if ($encounter->get('patient_id') > 0) {
+			$this->set('patient_id', $encounter->get('patient_id'), 'c_patient');
+		}
+		
 		return $this->view->render("edit.html");
 	}
 
