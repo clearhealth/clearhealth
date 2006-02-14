@@ -79,7 +79,13 @@
 {if count($billList) > 0}
 <table class="grid">
 	<tr>
-		<th>{l}Code{/l}</th><th>{l}Amount{/l}<br> {l}Billed{/l}</th><th>{l}Current{/l}<br> {l}Paid{/l}</th><th>{l}Current{/l}<br> {l}Writeoff{/l}</th><th>{l}Payment{/l}<br> {l}Amount{/l}</th><th>{l}Carry{/l}</th><th>{l}Payment{/l}<br> {l}Writeoff{/l}</th>
+		<th>{l}Code{/l}</th>
+		<th>{l}Amount{/l}<br>{l}Billed{/l}</th>
+		<th>{l}Current{/l}<br>{l}Paid{/l}</th>
+		<th>{l}Current{/l}<br>{l}Writeoff{/l}</th>
+		<th>{l}Payment{/l}<br>{l}Amount{/l}</th>
+		<th>{l}Carry{/l}</th
+		><th>{l}Payment{/l}<br>{l}Writeoff{/l}</th>
 	</tr>
 	{foreach from=$billList item=code}
 	<tr>
