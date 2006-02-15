@@ -59,6 +59,7 @@ class C_Eob extends Controller {
 			$billList[$i]['writeoff'] = 0;
 			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['code_id']);
 			$billList[$i]['current_writeoff'] = $payment->totalWriteoffForCodeId($code['code_id']);
+			$billList[$i]['payment_date'] = $payment->get('payment_date');
 			$billList[$i]['carry'] = $billList[$i]['amount'] - $billList[$i]['current_paid'] - $billList[$i]['current_writeoff'];
 
 			$i++;
@@ -83,6 +84,8 @@ class C_Eob extends Controller {
 
 		$payment->set('user_id',$this->_me->get_id());
 		$payment->set('payer_id',$_POST['payment']['payer']);
+		$payment->set('payment_date', $_POST['payment']['payment_date']);
+			
 		$payment->persist();
 
 		$payment_id = $payment->get('id');
@@ -100,6 +103,10 @@ class C_Eob extends Controller {
 				$pcl->persist();
 				$total_paid += $pcl->get('paid');
 				$total_writeoff += $pcl->get('writeoff');
+				
+				if (isset($line['payment_date'])) {
+					$payment->set('payment_date', $line['payment_date']);
+				}
 			}
 
 			$payment->set('amount',$total_paid);

@@ -74,8 +74,11 @@
 {/if}
 
 <br>
-<h3 style="margin: 0px; padding:0px;">Make Payment</h3>
+<fieldset>
+	<legend>Make Payment</legend>
 {clni_form action=$FORM_ACTION process=$PROCESS}
+	<label>Date of Payment</label>
+	{clni_input_date name="payment[payment_date]" value=$code.payment_date}
 {if count($billList) > 0}
 <table class="grid">
 	<tr>

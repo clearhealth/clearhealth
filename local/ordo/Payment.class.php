@@ -204,14 +204,14 @@ class Payment extends ORDataObject {
 	}
 
 	function set_payment_date($date) {
-		$this->payment_date = $this->_mysqlDate($date);
+		$this->_setDate('payment_date', $date);
 	}
 
 	function get_payment_date() {
 		if (empty($this->payment_date)) {
-			$this->payment_date = date('Y-m-d');
+			$this->set('payment_date', date('m/d/Y'));
 		}
-		return $this->payment_date;
+		return $this->_getDate('payment_date');
 	}
 
 	/**#@-*/
