@@ -91,7 +91,7 @@ Behavior.register(
 	".element",
 	function(element) {
 		var a = document.createElement('a');
-		a.innerHTML = '<img src="../../Images/stock/information.gif">';
+		a.innerHTML = '<img src="' + base_dir + 'index.php/Images/stock/information.gif">';
 		a.className = 'elementLink';
 		element.appendChild(a);
 
