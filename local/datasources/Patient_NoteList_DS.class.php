@@ -53,7 +53,7 @@ class Patient_NoteList_DS extends Datasource_sql
 
 		$this->registerFilter('note',     array($this, 'multiLineFilter'));
 		$this->registerFilter('priority', array($this, 'colorLineFilter'), false, 'html');
-		//$this->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
+		$this->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
 	}
 	
 	
