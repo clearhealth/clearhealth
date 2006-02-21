@@ -50,6 +50,12 @@ class ClearhealthClaim extends ORDataObject {
 		}
 	}
 
+	function setupByIdentifier($ident) {
+		$sql = "select * from ".$this->tableName()." where identifier = ".$this->dbHelper->quote($ident);
+		$res = $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this,$res);
+	}
+
 	function &fromEncounterId($encounter_id) {
 		settype($encounter_id,'int');
 
