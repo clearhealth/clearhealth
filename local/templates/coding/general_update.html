@@ -42,6 +42,7 @@ function captureEnter (field, event) {
 						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" autofield="parent_id"
 							name="parent_code" id="parent_code" {if $dentalpractice}SIZE="25"{else}SIZE="35"{/if} autocomplete="off" value="{$parent_code->getCodeDesc()}">
 						<select name="modifier" STYLE="z-index: 1;" id="modifier">
+							<option></option>
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
 {if $dentalpractice}
