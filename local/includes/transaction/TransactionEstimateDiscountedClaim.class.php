@@ -48,7 +48,7 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
 
 		if ($fsdLevel->isPopulated()) {
-			$this->discount = $fsdLevel->get('discount')/100;
+			$this->setDiscount($fsdLevel->get('discount'));
 		}
 	}
 }
