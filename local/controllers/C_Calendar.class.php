@@ -517,7 +517,7 @@ class C_Calendar extends CalendarController {
 		$manager =& EnumManager::getInstance();
 		$this->assign("appointment_reasons", $manager->enumArray('appointment_reasons'));
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_sidebar.html");
+		return $this->view->render('sidebar.html');
 	}
 	
 	function appointment_popup_action($date="", $start_time = "", $end_time = "", $title = "", $user_id = "", $patient = "") {
