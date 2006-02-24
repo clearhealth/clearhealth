@@ -74,11 +74,10 @@
 {/if}
 
 <br>
-<fieldset>
-	<legend>Make Payment</legend>
 {clni_form action=$FORM_ACTION process=$PROCESS id="eobForm"}
-	<label>Date of Payment</label>
-	{clni_input_date name="payment[payment_date]" value=$payment_date}
+<fieldset>
+	<legend>{l}Make Payment{/l}</legend>
+
 {if count($billList) > 0}
 <table class="grid">
 	<thead>
@@ -104,9 +103,15 @@
 		<td><input name="bill[{$code.code}][writeoff]" value="{$code.writeoff}" size=4 onchange="updateRow(this)"></td>
 	</tr>
 	{/foreach}
+</tbody>
 </table>
 
 <table>
+	<tbody>
+	<tr>
+		<td><label>{l}Date of Payment{/l}:</label></td>
+		<td>{clni_input_date name="payment[payment_date]" value=$payment_date}</td>
+	</tr>
 	<tr>
 		<td><label>{l}Payer{/l}:</label></td>
 		<td><select name="payment[payer]">
@@ -132,4 +137,5 @@
 {else}
 <p>There are no codes to add payments on for this claim.</p>
 {/if}
+</fieldset>
 </form>
