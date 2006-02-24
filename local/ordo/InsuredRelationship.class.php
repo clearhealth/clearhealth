@@ -63,6 +63,16 @@ class InsuredRelationship extends ORDataObject {
 		}
 	}
 
+	function setupByGroup($person_id,$group_name,$group_number) {
+		$p = EnforceType::int($person_id);
+		$g = $this->dbHelper->quote($group_name);
+		$gn = $this->dbHelper->quote($group_number);
+		$sql = "select * from ".$this->tableName()." where person_id = $p and group_name = $g and group_number = $gn";
+
+		$res = $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this,$res);
+	}
+
 	/**
 	 * return an array of InsuredRelationship objects that correspond to a personid
 	 */
