@@ -357,7 +357,7 @@ class C_Calendar extends CalendarController {
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day","calendar",$start,$end);
 		$this->assign_by_ref("sidebar",$sidebar);
 
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day.html");
+		return $this->view->render('day.html');
 	}
 	
 	function day_brief_action($date = "") {
