@@ -1,6 +1,10 @@
 <?php
 $loader->requireOnce('datasources/FeeSchedule_DS.class.php');
 $loader->requireOnce('/includes/clni/clniActiveGrid.class.php');
+
+$loader->requireOnce('/includes/transaction/TransactionManager.class.php');
+
+
 class C_Test extends Controller {
 
 	function actionScroll() {
@@ -34,6 +38,25 @@ class C_Test extends Controller {
 		$person->set('gender',new ClniValueRaw('gender + 1'));
 		$person->persist();
 		var_dump($person->get('gender'));
+	}
+
+	function actionTrans() {
+		$tm = new TransactionManager();
+
+		$trans = $tm->createTransaction('Claim');
+
+		$trans->setClaim('206530-4290-201442');
+		$trans->setPayer('CHDP','CHDP');
+
+		$trans->type = 'credit';
+		$trans->amount = 13.00;
+		$trans->paymentDate = date('Y-m-d');
+
+		$tm->processTransaction($trans);
+	}
+
+	function actionRadio() {
+		return $this->view->render('radio.html');
 	}
 }
 ?>

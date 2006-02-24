@@ -1,30 +1,28 @@
 <?php
-require_once CELINI_ROOT ."/includes/Grid.class.php";
+$loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce('includes/transaction/TransactionManager.class.php');
 
 class C_Eob extends Controller {
 
-	function payment_action_edit($claim_id) {
+	function actionPayment_edit($claim_id) {
 
-		$claim =& ORDataObject::Factory('ClearhealthClaim',$claim_id);
-		$encounter =& ORDataObject::factory('Encounter',$claim->get('encounter_id'));
-		$patient =& ORDataObject::factory('Patient',$encounter->get('patient_id'));
+		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
+		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
+		$patient =& Celini::newOrdo('Patient',$encounter->get('patient_id'));
 
 
-		$codingData =& ORDataOBject::Factory('CodingData');
+		$codingData =& Celini::newOrdo('CodingData');
 		$codeList = $codingData->getCodeList($claim->get('encounter_id'));
 
-		//ORdataObject::Factory_include('FeeSchedule');
-		//$feeSchedule = FeeSchedule::defaultFeeSchedule();
-
-		$company =& ORDataObject::Factory('Company');
+		$company =& Celini::newOrdo('Company');
 
 		$payer_ds = $company->companyListForType('Insurance');
 
+		// next 2 lines still need to be updated
 		ORDataObject::factory_include('Payment');
 		$payments =& Payment::fromForeignId($claim_id);
 		
-		$payment = ORDataObject::factory("Payment");
+		$payment = Celini::newOrdo("Payment");
 		$payment->set("foreign_id",$claim_id);		
 		// get the newest payment
 		if (count($payments) >0) {
@@ -36,7 +34,7 @@ class C_Eob extends Controller {
 
 		$payers = array(' '=>' ');
 
-		$insuranceProgram =& ORDataOBject::Factory('InsuranceProgram');
+		$insuranceProgram =& Celini::newOrdo('InsuranceProgram');
 		foreach($insuranceProgram->programList() as $key => $val) {
 			$payers[$key] = $val;
 		}
@@ -74,12 +72,12 @@ class C_Eob extends Controller {
 		
 		$this->assign('FORM_ACTION',Celini::link('payment',true,true,$claim_id));
 
-		return $this->fetch(Celini::getTemplatePath("/eob/" . $this->template_mod . "_payment.html"));
+		return $this->view->render("payment.html");
 	}
 
-	function payment_action_process($claim_id) {
+	function processPayment_edit($claim_id) {
 
-		$payment =& ORDataObject::factory('Payment');
+		$payment =& Celini::newOrdo('Payment');
 		$payment->set('foreign_id',$claim_id);
 
 		$payment->set('user_id',$this->_me->get_id());
@@ -90,15 +88,26 @@ class C_Eob extends Controller {
 
 		$payment_id = $payment->get('id');
 
+		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
+		// store a note if its not empty
+		if(!empty($_POST['note']['note'])) {
+			$note =& Celini::newOrdo('AccountNote');
+			$note->populateArray($_POST['note']);
+
+			$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
+			$note->set('patient_id',$encounter->get('patient_id'));
+			$note->set('user_id',$this->_me->get_id());
+			$note->set('date_posted',date('Y-m-d H:i:s'));
+			$note->persist();
+		}
+
 		$total_paid = 0;
 		$total_writeoff = 0;
-
-		
 
 		if (isset($_POST['bill']) && count($_POST['bill']) > 0) {
 			foreach($_POST['bill'] as $line) {
 				unset($pcl);
-				$pcl =& ORDataObject::factory('PaymentClaimline',0,$payment_id);
+				$pcl =& Celini::newOrdo('PaymentClaimline',array(0,$payment_id));
 				$pcl->populate_array($line);
 				$pcl->persist();
 				$total_paid += $pcl->get('paid');
@@ -115,9 +124,9 @@ class C_Eob extends Controller {
 			$payment->persist();
 	
 			// update claim total
-			$claim =& ORDataObject::factory('ClearhealthClaim',$claim_id);
 			$claim->set('total_paid',$claim->get('total_paid')+$total_paid);
 			$claim->persist();
+
 		}
 	}
 }

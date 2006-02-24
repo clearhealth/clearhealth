@@ -2,7 +2,7 @@
 <script type="text/javascript">
 	function updateRow(input) {
 		var row = input.parentNode.parentNode;
-		var match = input.name.match(/bill\[([\w]+)\]\[([\w]+)\]/);
+		var match = input.name.match(/bill\[(.+)\]\[(.+)\]/);
 		var code = match[1];
 		var type = match[2];
 
@@ -20,15 +20,15 @@
 
 		if (paid > amount) {
 			paid = amount;
-			paidNode.value = paid;
+			paidNode.value = Math.round(paid*100)/100;
 		}
 		if (carry > amount) {
 			carry = amount;
-			carryNode.value = carry;
+			carryNode.value = Math.round(carry*100)/100;
 		}
 		if (writeoff > amount) {
 			writeoff = amount;
-			writeoffNode.value = writeoff;
+			writeoffNode.value = Math.round(writeoff*100)/100;
 		}
 
 		if (type == "paid" || type == "writeoff") {
@@ -38,26 +38,26 @@
 			if (carry < 0) {
 				if (type == "paid") {
 					paid = amount-writeoff;
-					paidNode.value = paid;
+					paidNode.value = Math.round(paid*100)/100;
 				}
 				if (type == "writeoff") {
 					writeoff = amount-paid;
-					writeoffNode.value = writeoff;
+					writeoffNode.value = Math.round(writeoff*100)/100;
 				}
 				carry = 0;
 			}
 
-			carryNode.value = carry;
+			carryNode.value = Math.round(carry*100)/100;
 		}
 		else if (type == "carry") {
 			// update writeoff value
 			writeoff = amount - paid - carry;
 			if (writeoff < 0) {
 				carry = amount-paid;
-				carryNode.value = carry;
+				carryNode.value = Math.round(carry*100)/100;
 				writeoff = 0;
 			}
-			writeoffNode.value = writeoff;
+			writeoffNode.value = Math.round(writeoff*100)/100;
 		}
 	}
 </script>
@@ -76,11 +76,12 @@
 <br>
 <fieldset>
 	<legend>Make Payment</legend>
-{clni_form action=$FORM_ACTION process=$PROCESS}
+{clni_form action=$FORM_ACTION process=$PROCESS id="eobForm"}
 	<label>Date of Payment</label>
 	{clni_input_date name="payment[payment_date]" value=$code.payment_date}
 {if count($billList) > 0}
 <table class="grid">
+	<thead>
 	<tr>
 		<th>{l}Code{/l}</th>
 		<th>{l}Amount{/l}<br>{l}Billed{/l}</th>
@@ -90,6 +91,8 @@
 		<th>{l}Carry{/l}</th
 		><th>{l}Payment{/l}<br>{l}Writeoff{/l}</th>
 	</tr>
+</thead>
+<tbody>
 	{foreach from=$billList item=code}
 	<tr>
 		<td>{$code.description}<input type="hidden" name="bill[{$code.code}][code_id]" value="{$code.code_id}"></td>
@@ -112,10 +115,20 @@
 		</td>
 	</tr>
 	<tr>
+		<td><label>{l}Note Type{/l}:</label></td>
+		<td><select name="note[note_type]">{enum_options name="account_note_type"}</select></td>
+	</tr>
+	<tr>
+		<td><label>{l}Notes{/l}:</label></td>
+		<td><textarea name="note[note]" rows="3" cols="60"></textarea></td>
+	</tr>
+	<tr>
 		<td></td>
 		<td><input type="submit" value="Record Payment"></td>
 	</tr>
+</tbody>
 </table>
+<input type="hidden" name="note[claim_id]" value="{$claim->get('identifier')}">
 {else}
 <p>There are no codes to add payments on for this claim.</p>
 {/if}

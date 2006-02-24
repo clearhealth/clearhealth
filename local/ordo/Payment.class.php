@@ -9,7 +9,6 @@
 /**#@+
  * Required Libs
  */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
 require_once CELINI_ROOT."/includes/Datasource_sql.class.php";
 /**#@-*/
 
@@ -23,7 +22,7 @@ class Payment extends ORDataObject {
 	/**#@+
 	 * Fields of table: payment mapped to class members
 	 */
-	var $id			= '';
+	var $payment_id		= '';
 	var $foreign_id		= '';
 	var $encounter_id	= '';
 	var $payment_type	= '';
@@ -36,15 +35,9 @@ class Payment extends ORDataObject {
 	/**#@-*/
 
 
-	/**
-	 * Setup some basic attributes
-	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
-	 */
-	function Payment($db = null) {
-		parent::ORDataObject($db);	
-		$this->_table = 'payment';
-		$this->_sequence_name = 'sequences';	
-	}
+	var $_table = 'payment';
+	var $_sequence_name = 'sequences';	
+	var $_key = 'payment_id';
 
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Payment with this
@@ -61,6 +54,7 @@ class Payment extends ORDataObject {
 
 	/**
 	 * make sure that user_id gets set
+	 * @todo: move to getter
 	 */
 	function persist() {
 		$u = $this->get('user_id');
@@ -72,16 +66,12 @@ class Payment extends ORDataObject {
 	}
 
 	/**
-	 * Populate the class from the db
+	 * @todo: move to an ordo collection
 	 */
-	function populate() {
-		parent::populate('payment_id');
-	}
-	
 	function &fromForeignId($id) {
 		settype($id,'int');
 
-		$p =& ORDAtaObject::Factory('Payment');
+		$p =& Celini::newOrdo('Payment');
 		$res = $p->_execute("select * from $p->_table where foreign_id = $id order by timestamp");
 
 		$ret = array();
@@ -97,6 +87,7 @@ class Payment extends ORDataObject {
 	
 	/**
 	 * Get datasource for payments from the db
+	 * @todo: move Datasource to its own class
 	 */
 	function &paymentList($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
@@ -125,6 +116,7 @@ class Payment extends ORDataObject {
 	
 	/**
 	 * Get datasource for payments from the db for a specific encounter
+	 * @todo: move Datasource to its own class
 	 */
 	function &paymentsFromEncounterId($foreign_id,$extraCols = false) {
 		settype($foreign_id,'int');
@@ -153,6 +145,7 @@ class Payment extends ORDataObject {
 	
 	/**#@+
 	 * Enumeration getters
+	 * @todo: Upgrade to new enum code
 	 */
 	function getPaymentTypeList() {
 		$list = $this->_load_enum('payment_type',false);
@@ -163,6 +156,7 @@ class Payment extends ORDataObject {
 	var $_edCache = false;
 	/**
 	 * Cached lookup for date_type
+	 * @todo: Upgrade to new enum code
 	 */
 	function lookupPaymentType($id) {
 		if ($this->_edCache === false) {
@@ -174,6 +168,9 @@ class Payment extends ORDataObject {
 	}
 
 	var $_pCache = false;
+	/**
+	 * @todo: Upgrade to new enum code
+	 */
 	function lookupPayer($id) {
 		if ($this->_pCache === false) {
 			$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
@@ -189,20 +186,6 @@ class Payment extends ORDataObject {
 	 * Getters and Setters for Table: payment
 	 */
 	
-	/**
-	 * Getter for Primary Key: payment_id
-	 */
-	function get_payment_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: payment_id
-	 */
-	function set_payment_id($id)  {
-		$this->id = $id;
-	}
-
 	function set_payment_date($date) {
 		$this->_setDate('payment_date', $date);
 	}
