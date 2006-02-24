@@ -69,6 +69,7 @@ class C_Eob extends Controller {
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
 		$this->assign('billList',$billList);
 		$this->assign('payers',$payers);
+		$this->assign('payment_date',$payment->get('payment_date'));
 		
 		$this->assign('FORM_ACTION',Celini::link('payment',true,true,$claim_id));
 

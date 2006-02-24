@@ -78,7 +78,7 @@
 	<legend>Make Payment</legend>
 {clni_form action=$FORM_ACTION process=$PROCESS id="eobForm"}
 	<label>Date of Payment</label>
-	{clni_input_date name="payment[payment_date]" value=$code.payment_date}
+	{clni_input_date name="payment[payment_date]" value=$payment_date}
 {if count($billList) > 0}
 <table class="grid">
 	<thead>

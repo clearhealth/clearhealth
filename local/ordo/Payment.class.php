@@ -191,7 +191,7 @@ class Payment extends ORDataObject {
 	}
 
 	function get_payment_date() {
-		if (empty($this->payment_date)) {
+		if ($this->payment_date->isEmpty()) {
 			$this->set('payment_date', date('m/d/Y'));
 		}
 		return $this->_getDate('payment_date');
