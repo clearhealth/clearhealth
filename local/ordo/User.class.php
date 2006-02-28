@@ -35,11 +35,20 @@ class User extends Base_User {
 			//op-en-hcs way of doing it
 			//  $sql .= " LEFT JOIN ".$this->_prefix."users_groups as ug on ug.user_id=u.user_id LEFT JOIN ".$this->_prefix."groups as g on g.id = ug.group_id where g.name =" . $this->_db->qstr($group);
 			if ($group =="provider") {
-				
+				//get provider key
+				$sql = "SELECT ev.key
+						FROM enumeration_definition AS ed
+							INNER JOIN enumeration_value AS ev USING(enumeration_id)
+						WHERE ed.name = 'person_type' AND ev.value = 'Provider' ";
+  							
+				$results = $this->_db->Execute($sql) or die ("Database Error: " . $this->_db->ErrorMsg());
+				$provider_key =  $results->fields['key'];
+			
+				//select provider person_type based on provider_key
 				$sql = "SELECT distinct(u.user_id )
 				FROM user AS u 
 					INNER JOIN person_type AS pt USING (person_id) 
-				WHERE pt.person_type = '2'";
+				WHERE pt.person_type = '$provider_key'";
 
 			}
 		}
