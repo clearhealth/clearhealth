@@ -129,6 +129,7 @@ class C_Eob extends Controller {
 			$claim->persist();
 
 		}
+		$this->payment_id = $payment_id;
 	}
 }
 ?>
