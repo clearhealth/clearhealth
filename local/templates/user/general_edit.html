@@ -79,7 +79,18 @@ var cp2 = new ColorPicker(); // DIV style
 	
 		<td style="text-align:right"><span class="tooltip">{l}Color{/l}:
 				<div class="tooltipMessage">This is the color which will be the background of the user associated information on the calendar and elsewhere.</div></span></td>
-		<td><input type="text" name="user[color]" size="6" value="{$user->get("color")}"><A HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">{l}Pick{/l}</A></td>
+		<td><input id="user_color" type="text" name="user[color]" size="6" value="{$user->get("color")}" 
+			{literal}
+			onkeyup="if(this.value.length == 3 || this.value.length == 6) { this.style.backgroundColor = '#'+this.value; }"
+			{/literal}
+			{if $user->get("color")}style="background-color: #{$user->get("color")}"{/if}
+			><a HREF="#" onClick="cp2.select(document.users['user[color]'],'pick2');return false;" NAME="pick2" ID="pick2">{l}Pick{/l}</a>
+			{literal}
+		<script type="text/javascript">
+			document.getElementById('user_color').onColor = function() { this.style.backgroundColor = '#'+this.value; }
+		</script>
+			{/literal}
+		</td>
 	</tr>
 
 	<tr>
