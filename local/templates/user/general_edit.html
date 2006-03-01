@@ -2,7 +2,9 @@
 <SCRIPT LANGUAGE="JavaScript">
 var cp2 = new ColorPicker(); // DIV style
 </SCRIPT>
-{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users"}
+<div id="FormMessageBox"></div>
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users" id="usersForm"}
+{clni_register_message_target formId="usersForm" targetId="FormMessageBox"}
 {assign var="detail_section_title" value="User Details"}
 <fieldset class="radio" id="person">
 		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
