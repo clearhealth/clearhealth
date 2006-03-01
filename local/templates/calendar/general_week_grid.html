@@ -71,11 +71,7 @@
     	{assign var=sevents value=$schedule_events.$dts}
     	
 		{foreach name=evs from=$sevents.$this_days_time item=ev}
-			{if $ev.room_name}
-			{assign var=bgcolor value="FFA500"}
-			{else}
 			{assign var=bgcolor value=`$ev.color`}
-			{/if}
 			<td colspan="1" width="15" valign="top" style="background-color:#{$bgcolor};" class="schedule_border" align="center">
 			{if $ev.first_inc}
 				{if $ev.nickname}{$ev.nickname}<br>{/if}
