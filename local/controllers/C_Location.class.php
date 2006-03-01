@@ -165,7 +165,6 @@ class C_Location extends Controller {
 		$schedules = $schedule->schedules_factory();
 		//loop over the schedules
 		foreach ($schedules as $s) {
-			echo($s->get('name'));	
 		//add an event group named after the room inside each schedule			
 			$e =& Celini::newORDO('Event');
 			$e->set('title',$room->get('name'));
