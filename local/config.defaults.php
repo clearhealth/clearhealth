@@ -9,7 +9,11 @@ $config['confidentialActions']['patient']['*'] = true;
 $config['confidentialActions']['patientdashboard']['*'] = true; 
 $config['confidentialActions']['encounter']['*'] = true; 
 
-$config['module_paths'] = array();
+################################################################################
+# Modules
+################################################################################
+$config['module_paths']['billing'] = APP_ROOT . '/modules/billing';
+$config['module_paths']['labs']    = APP_ROOT . '/modules/labs';
 
 ################################################################################
 # Celini Options 
