@@ -46,7 +46,7 @@ class C_PatientFinder extends Controller {
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('find',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
-		return $this->fetch($GLOBALS['template_dir'] . "patient_finder/" . $this->template_mod . "_find.html");
+		return $this->view->fetch("patient_finder/" . $this->template_mod . "_find.html");
 	}
 	
 	/**
@@ -229,7 +229,7 @@ class C_PatientFinder extends Controller {
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('smartsearch',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
-		return $this->fetch($GLOBALS['template_dir'] . "patient_finder/" . $this->template_mod . "_find.html");
+		return $this->view->fetch("patient_finder/" . $this->template_mod . "_find.html");
 	}
 	
 	function smartsearch_action_process() {

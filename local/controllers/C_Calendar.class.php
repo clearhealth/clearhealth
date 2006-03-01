@@ -167,7 +167,7 @@ class C_Calendar extends CalendarController {
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "month");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_month.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_month.html");
 	}
 	
 	function week_action($date = "") {
@@ -214,7 +214,7 @@ class C_Calendar extends CalendarController {
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "week");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_week.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_week.html");
 	}
 		
 	function week_grid_action($date = "") {
@@ -288,7 +288,7 @@ class C_Calendar extends CalendarController {
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "week_grid");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_week_grid.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_week_grid.html");
 	}
 
 	function day_action($date="",$start="",$end="") {
@@ -404,7 +404,7 @@ class C_Calendar extends CalendarController {
 		$sidebar = $this->sidebar_action($month."/".$day."/".$year, "day_brief");
 		$this->assign_by_ref("sidebar",$sidebar);
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_day_brief.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_day_brief.html");
 	}
 
 	function sidebar_action($date = "",$view="week_grid",$controller="calendar",$start="",$end="") {
@@ -554,7 +554,7 @@ class C_Calendar extends CalendarController {
 		}
 		$this->assign("edit_oc",$oc);
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_appointment_popup.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_appointment_popup.html");
 	}
 	
 	function search_action() {
@@ -571,7 +571,7 @@ class C_Calendar extends CalendarController {
 			$this->assign("facility",$r->rooms_practice_factory($pa[0]->get_id(),false));
         }
 
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_search.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_search.html");
 	}
 
 	function search_action_process() {

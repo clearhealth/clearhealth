@@ -177,7 +177,7 @@ class C_Document extends Controller {
 		}
 		//$this->_state = false;
 		$_POST['process'] = "";
-		//return $this->fetch($GLOBALS['template_dir'] . "documents/" . $this->template_mod . "_upload.html");
+		//return $this->view->fetch("documents/" . $this->template_mod . "_upload.html");
 	}
 	
 	function note_action_process($project_id) {

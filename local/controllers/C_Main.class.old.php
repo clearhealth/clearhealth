@@ -26,10 +26,10 @@ class C_Main extends Controller {
 		$this->assign("display",$display);
 		
 		if ($this->_print_view) {
-			echo $this->fetch($GLOBALS['template_dir'] . "main/" . $this->template_mod . "_print.html");
+			echo $this->view->fetch("main/" . $this->template_mod . "_print.html");
 		}
 		else {
-			echo $this->fetch($GLOBALS['template_dir'] . "main/" . $this->template_mod . "_list.html");
+			echo $this->view->fetch("main/" . $this->template_mod . "_list.html");
 		}
 	}
 

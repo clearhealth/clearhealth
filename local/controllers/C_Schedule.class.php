@@ -55,7 +55,7 @@ class C_Schedule extends CalendarController {
 		}
 		$this->assign("FORM_ACTION", Celini::link('confirm','schedule',false));
 		
-		return $this->fetch($GLOBALS['template_dir'] . "calendar/" . $this->template_mod . "_confirm.html");
+		return $this->view->fetch("calendar/" . $this->template_mod . "_confirm.html");
 	}
 	
 	function confirm_action_process() {
