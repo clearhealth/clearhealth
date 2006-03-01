@@ -4,6 +4,7 @@ CREATE TABLE `patient` (
   `default_provider` int(11) NOT NULL default '0',
   `record_number` int(11) NOT NULL default '0',
   `employer_name` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0ï¿½',
+  `confidentiality` int(11) NOT NULL,
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
 ) TYPE=MyISAM COMMENT='An patient extends the person entity';
