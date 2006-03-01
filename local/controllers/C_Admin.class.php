@@ -12,7 +12,7 @@ class C_Admin extends Controller {
 	}
 
 	function default_action_view() {
-		return $this->fetch($GLOBALS['frame']['config']['template_dir'] ."/default/" . $this->template_mod . "_default.html");
+		return $this->view->fetch("default/" . $this->template_mod . "_default.html");
 	}
 
 	function acl_action_edit() {
