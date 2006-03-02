@@ -52,8 +52,10 @@ class C_Document extends Controller {
 
 		// if there is no user lets goto the patient search page
 		if (is_null($_GET['id'])) {
-			header('Location: '.Celini::link('smartsearch','PatientFinder'));
-			die();
+			$this->messages->addMessage(
+				'No Patient Selected', 
+				'Please select a patient before attempting to view patient documents.');
+			Celini::redirect('PatientFinder', 'default');
 		}
 
 		$this->file_path = $this->_config['repository'] . preg_replace("/[^A-Za-z0-9]/","_",$_GET['id']) . "/";
