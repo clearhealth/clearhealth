@@ -16,7 +16,7 @@ function zipCallback(resultSet) {
 			}
 			i+=1;
 		}
-		document.getElementById('addresspostalcode').value = resultSet['zip'];
+//		document.getElementById('addresspostalcode').value = resultSet['zip'];
 	}
 
 }
