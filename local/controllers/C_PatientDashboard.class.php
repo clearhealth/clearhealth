@@ -82,8 +82,7 @@ class C_PatientDashboard extends Controller {
 		$appointmentGrid->setExternalId($p->get('id'));
 		
 		// Retrieve PatientStatistics view
-		global $loader;
-		$loader->requireOnce('controllers/C_PatientStatistics.class.php');
+		$GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
 		$patientStatsController =& new C_PatientStatistics();
 		$this->view->assign('patientStatisticsView', $patientStatsController->actionView($p->get('id')));
 		
