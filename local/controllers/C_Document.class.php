@@ -49,6 +49,13 @@ class C_Document extends Controller {
 		if(!isset($_GET['id'])) {
 			$_GET['id'] = $this->get('patient_id','c_patient');
 		}
+
+		// if there is no user lets goto the patient search page
+		if (is_null($_GET['id'])) {
+			header('Location: '.Celini::link('smartsearch','PatientFinder'));
+			die();
+		}
+
 		$this->file_path = $this->_config['repository'] . preg_replace("/[^A-Za-z0-9]/","_",$_GET['id']) . "/";
 
 		$this->_args = array("project_id" => $_GET['project_id']);
