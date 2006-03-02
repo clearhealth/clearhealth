@@ -81,7 +81,19 @@ class C_User extends Controller {
 	function list_action_view() {
 		$person =& ORDataObject::factory('Person');
 
-		$ds =& $person->peopleByType(array('Provider','Staff','Mid-Level'),true);
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+
+		$types = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1 == 1) {
+				$types[] = $row->value;
+			}
+		}
+		
+
+		$ds =& $person->peopleByType($types,true);
 		$ds->template['last_name'] = "<a href='".Celini::link('edit')."id={\$person_id}'>{\$last_name}</a>";
 		$grid =& new cGrid($ds);
 
