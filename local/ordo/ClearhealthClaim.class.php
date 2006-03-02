@@ -71,24 +71,28 @@ class ClearhealthClaim extends ORDataObject {
 	
 	function accountStatus($patient_id,$encounter_id = false) {
 		$status = array();
-		$sql = 'SELECT
-			        sum(total_billed) as total_billed,
-				sum(total_paid) as total_paid,
-				sum(writeoffs.writeoff) as total_writeoff,
-				(sum(total_billed) - (sum(total_paid) + sum(writeoffs.writeoff))) as total_balance
+		$sql = '
+			SELECT
+				SUM(total_billed) AS total_billed,
+				SUM(total_paid) AS total_paid,
+				SUM(writeoffs.writeoff) AS total_writeoff,
+				(SUM(total_billed) - (SUM(total_paid) + SUM(writeoffs.writeoff))) AS total_balance
 			FROM
 				encounter AS e
 				INNER JOIN clearhealth_claim AS cc USING(encounter_id)
 				LEFT JOIN (
-					select
+					SELECT
 						foreign_id,
-						sum(writeoff) as writeoff
-					from
-						payment where encounter_id = 0
-						group by foreign_id
-				) writeoffs on writeoffs.foreign_id = cc.claim_id
+						SUM(writeoff) AS writeoff
+					FROM
+						payment 
+					WHERE
+						encounter_id = 0
+					GROUP BY
+						foreign_id
+				) writeoffs ON(writeoffs.foreign_id = cc.claim_id)
 			WHERE 
-				patient_id = ' . (int)$patient_id;
+				patient_id = ' . $this->dbHelper->quote($patient_id);
 
 		if ($encounter_id) {
 			$sql .= " and e.encounter_id = ".(int)$encounter_id;
