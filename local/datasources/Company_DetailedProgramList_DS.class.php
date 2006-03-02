@@ -22,7 +22,8 @@ class Company_DetailedProgramList_DS extends Datasource_sql
 				'from' 	=> 
 					'insurance_program AS ip 
 					LEFT JOIN fee_schedule AS fsd USING(fee_schedule_id)',
-				'where' => ' company_id = ' . $db->quote($company_id)
+				'where' => ' company_id = ' . $db->quote($company_id),
+				'orderby' => 'ip.name'
 			),
 			array(
 				'name' => 'Program Name',
