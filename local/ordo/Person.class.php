@@ -545,6 +545,24 @@ class Person extends ORDataObject {
 			return $res->fields['age'];
 		}
 	}
+	
+	function value_age() {
+		$age = $this->get('age');
+		if ($age > 0) {
+			return $age;
+		}
+		else {
+			$sql = '
+				SELECT
+					 ROUND(DATEDIFF(NOW(), date_of_birth) / 7) AS age
+				FROM 
+					' . $this->tableName() . '
+				WHERE
+					person_id = ' . $this->dbHelper->quote($this->get('id'));
+			$result = $this->dbHelper->execute($sql);
+			return $result->fields['age'] . ' wk.';
+		}
+	}
 
 	function getMaritalStatusList() {
 		$list = $this->_load_enum('marital_status',false);

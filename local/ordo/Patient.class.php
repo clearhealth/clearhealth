@@ -169,6 +169,10 @@ class Patient extends MergeDecorator {
 		return $pp->get('guarantorPerson');
 	}
 	
+	function value_age() {
+		return $this->person->value('age');
+	}
+	
 	/**
 	 * An alias to {@link Person::numberValueByType()}.
 	 *
