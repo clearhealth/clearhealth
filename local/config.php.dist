@@ -48,6 +48,9 @@ $config['CalendarHourLength'] = 13;
 ################################################################################
 # Modules
 ################################################################################
+$config['module_paths']['billing'] = realpath(APP_ROOT . '/modules/billing');
+$config['module_paths']['labs'] = realpath(APP_ROOT . '/modules/labs');
+$config['module_paths']['x12import'] = realpath(APP_ROOT . '/modules/x12import');
 
 
 ################################################################################

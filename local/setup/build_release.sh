@@ -3,7 +3,7 @@
 SCRIPT_HOME=`dirname $0`
 
 NAME="clearhealth"
-RELEASE="1.0RC2"
+RELEASE="1.0RC3"
 REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/trunk"
 SVN_REV="HEAD"
 TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"

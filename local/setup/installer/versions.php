@@ -21,33 +21,34 @@ $versions->collectData('db_password', 'Database Password', 'text', '');
 $versions->collectData('db_server', 'Database Server', 'text', 'localhost');
 $versions->collectData('db_database', 'Database Name', 'text', '');
 
-$version_1rc2 = new Version('1.0RC2');
-$version_1rc2->addTest('PHPVersionOver', array('4.3.0'));
-$version_1rc2->addTest('PHPVersionUnder', array('5.0.0'));
-$version_1rc2->addTest('PHPMemory', array('8M'));
-$version_1rc2->addTest('PHPMagicQuotes', array('Off'));
-$version_1rc2->addTest('PHPRegisterGlobals', array('Off'));
-$version_1rc2->addTest('PHPExtension', array('mysql'));
-$version_1rc2->addTest('WritableLocation', array($base_app_path.'/tmp'));
-$version_1rc2->addTest('WritableLocation', array($base_app_path.'/local/config.php'));
-$version_1rc2->addTest('MysqlVersionOver', array(
+$version_1rc3 = new Version('1.0RC3');
+$version_1rc3->addTest('PHPVersionOver', array('4.3.0'));
+$version_1rc3->addTest('PHPVersionUnder', array('5.0.0'));
+$version_1rc3->addTest('PHPMemory', array('8M'));
+$version_1rc3->addTest('PHPMagicQuotes', array('Off'));
+$version_1rc3->addTest('PHPRegisterGlobals', array('Off'));
+$version_1rc3->addTest('PHPExtension', array('mysql'));
+$version_1rc3->addTest('WritableLocation', array($base_app_path.'/tmp'));
+$version_1rc3->addTest('WritableLocation', array($base_app_path.'/local/config.php'));
+$version_1rc3->addTest('MysqlVersionOver', array(
 	'username_field' => 'db_user',
 	'password_field' => 'db_password',
 	'server_field' => 'db_server',
 	'port_field' => 'db_port',
 	'version' => '4.1.0'));
-$version_1rc2->addAction('AcceptText', array(dirname(__FILE__).'/LICENSE'));
-$version_1rc2->addAction('SQLFile', array(
+$version_1rc3->addAction('AcceptText', array(dirname(__FILE__).'/LICENSE'));
+$version_1rc3->addAction('SQLFile', array(
 	'username_field' => 'db_user',
 	'password_field' => 'db_password',
 	'server_field' => 'db_server',
 	'port_field' => 'db_port',
 	'db_field' => 'db_database',
 	'files' => array(
-		$base_app_path.'/local/setup/clearhealth-1.0RC2.sql', 
-		$base_app_path.'/modules/billing/local/setup/billing.sql')));
+		$base_app_path.'/local/setup/clearhealth-1.0RC3.sql',	
+		$base_app_path.'/local/setup/clearhealth-1.0RC3-data.sql'		
+	)));
 
-$version_1rc2->addAction('ReplaceString', array(
+$version_1rc3->addAction('ReplaceString', array(
 	'message' => "Saved database configuration information!",
 	'files' => array(
 		$base_app_path.'/local/config.php.dist' => $base_app_path.'/local/config.php'),
@@ -61,7 +62,7 @@ $version_1rc2->addAction('ReplaceString', array(
 	));
 
 
-$version_1rc2->addAction('SQLOptions', array(
+$version_1rc3->addAction('SQLOptions', array(
 	'username_field' => 'db_user',
 	'password_field' => 'db_password',
 	'server_field' => 'db_server',
@@ -71,5 +72,5 @@ $version_1rc2->addAction('SQLOptions', array(
 		$base_app_path.'/local/setup/code_packs', 
 		$base_app_path.'/local/setup/clearhealth_demodata.sql')));
 
-$versions->add($version_1rc2);
+$versions->add($version_1rc3);
 ?>
