@@ -28,7 +28,7 @@ class C_PatientFinder extends Controller {
 		//$_SESSION['trail'] = $trail;
 	}
 
-	function default_action($form_name='') {
+	function actionDefault($form_name='') {
 		return $this->smartsearch_action($form_name);
 	}
 	
