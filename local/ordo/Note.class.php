@@ -60,7 +60,7 @@ class Note extends ORDataObject{
 		$this->_table = "note";
 		
 		$this->note = "";
-		$this->date = date("Y-m-d H:i:s");
+		$this->set('date', date("Y-m-d H:i:s"));
 		
 		if ($id != "") {
 			$this->populate();
