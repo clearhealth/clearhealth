@@ -14,6 +14,8 @@ $config['confidentialActions']['encounter']['*'] = true;
 ################################################################################
 $config['module_paths']['billing'] = APP_ROOT . '/modules/billing';
 $config['module_paths']['labs']    = APP_ROOT . '/modules/labs';
+$config['module_paths']['x12import'] = APP_ROOT . '/modules/x12_importer';
+
 
 ################################################################################
 # Celini Options 
