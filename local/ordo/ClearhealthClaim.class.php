@@ -90,7 +90,7 @@ class ClearhealthClaim extends ORDataObject {
 						encounter_id = 0
 					GROUP BY
 						foreign_id
-				) writeoffs ON(writeoffs.foreign_id = cc.claim_id)
+				) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
 			WHERE 
 				patient_id = ' . $this->dbHelper->quote($patient_id);
 
