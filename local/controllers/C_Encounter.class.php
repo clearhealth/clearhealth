@@ -58,6 +58,14 @@ class C_Encounter extends Controller {
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id,'c_patient');
 		}
+		
+		if ($this->get('patient_id', 'c_patient') <= 0) {
+			$this->messages->addMessage(
+				'No Patient Selected', 
+				'Please select a patient before attempting to add an encounter.');
+			Celini::redirect('PatientFinder', 'default');
+		}
+		
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
