@@ -1,6 +1,6 @@
 <?php
 $loader->requireOnce('includes/TypeFileLoader.class.php');
-require_once APP_ROOT."/local/includes/PracticeConfig.class.php";
+$loader->requireOnce('includes/PracticeConfig.class.php');
 /**
  * Controller for editing a clearhealth practice
  */
