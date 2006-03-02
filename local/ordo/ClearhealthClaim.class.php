@@ -98,6 +98,7 @@ class ClearhealthClaim extends ORDataObject {
 		if ($res && !$res->EOF) {
 			$status['total_billed'] = $res->fields['total_billed'];
 			$status['total_paid'] = $res->fields['total_paid'];
+			$status['total_writeoff'] = $res->fields['total_writeoff'];
 			$status['total_balance'] = $res->fields['total_balance'];
 		}
 		return $status;
