@@ -11,4 +11,4 @@ CREATE TABLE `user` (
   UNIQUE KEY `username` (`username`),
   KEY `person_id` (`person_id`)
 ) TYPE=MyISAM COMMENT='Users in the System';
-INSERT INTO `user` VALUES (1,'admin','admin','','',NULL,'no',500009);
+INSERT INTO `user` VALUES (1,'admin','admin','','',NULL,'no',0);
