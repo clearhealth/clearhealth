@@ -16,14 +16,12 @@ $base_app_path = realpath(dirname(__FILE__).'/../');
 $webpath = substr($_SERVER['PHP_SELF'],1,strpos(strtolower($_SERVER['PHP_SELF']),"/installer/index.php")-1);
 if ($webpath == "") $webpath = "/";
 $versions = new VersionSet();
+$versions->collectData('db_user', 'Database Username', 'text', 'root');
+$versions->collectData('db_password', 'Database Password', 'text', '');
+$versions->collectData('db_server', 'Database Server', 'text', 'localhost');
+$versions->collectData('db_database', 'Database Name', 'text', '');
 
 $version_1rc2 = new Version('1.0RC2');
-
-$version_1rc2->collectData('db_user', 'Database Username', 'text', 'root');
-$version_1rc2->collectData('db_password', 'Database Password', 'text', '');
-$version_1rc2->collectData('db_server', 'Database Server', 'text', 'localhost');
-$version_1rc2->collectData('db_database', 'Database Name', 'text', '');
-
 $version_1rc2->addTest('PHPVersionOver', array('4.3.0'));
 $version_1rc2->addTest('PHPVersionUnder', array('5.0.0'));
 $version_1rc2->addTest('PHPMemory', array('8M'));
