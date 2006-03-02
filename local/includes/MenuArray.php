@@ -4,7 +4,6 @@ $menuarrays=array();
 if (isset($_SESSION['defaultpractice'])) {
 	$defPractice=&Celini::newOrdo('Practice',$_SESSION['defaultpractice']);
 	$trail =& Celini::trailInstance();
-	var_dump($trail['currentPage']);
 	$menuarrays[]=array(
 		'menus'=>array(112,113,114,115),
 		'sql'=>"
