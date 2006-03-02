@@ -81,6 +81,7 @@ class CalendarController extends Controller {
 		}
 
 		$cps = $numPeriods / (($end_hour-$start_hour)*2);
+		$cps = $cps %2 == 0 ? $cps / 2 : $cps;
 		$this->assign('CalendarPeriodSize',$cps);
 		$this->assign('CalendarIncrement',$increment);
 		

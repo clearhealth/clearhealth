@@ -99,7 +99,6 @@ class PersonPerson extends ORDataObject {
 	function get_hasGuarantor() {
 		$sql = "select max(guarantor) g from ".$this->tableName()." where person_id = ".$this->get('person_id');
 		$res = $this->dbHelper->execute($sql);
-
 		if (!$res->EOF && $res->fields['g'] == 1) {
 			return 1;
 		}

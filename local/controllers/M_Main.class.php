@@ -12,6 +12,7 @@ class M_Main extends Manager {
 		if(!isset($_SESSION['defaultpractice'])){
 			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}
+		//var_dump($_SESSION);
 	}
 
 	function postProcess() {
