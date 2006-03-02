@@ -176,7 +176,7 @@ class M_User extends M_Patient {
 			$pti->populate_array($data);
 			$pti->persist();
 
-			$this->controller->provider_to_insurance_id = $pti->get('id');
+			//$this->controller->provider_to_insurance_id = $pti->get('id');
 			$this->messages->addMessage('Insurance Program Updated');
 		}
 	}

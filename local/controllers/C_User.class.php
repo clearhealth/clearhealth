@@ -20,6 +20,10 @@ class C_User extends Controller {
 		if (isset($this->person_id)) {
 			$person_id = $this->person_id;
 		}
+		
+		if ($this->GET->exists('provider_to_insurance_id')) {
+			$this->provider_to_insurance_id = $this->GET->getTyped('provider_to_insurance_id', 'int');
+		}
 
 		$person =& ORdataObject::factory('Person',$person_id);
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$person_id);
@@ -40,6 +44,11 @@ class C_User extends Controller {
 			$this->view->assign_by_ref('providerToInsurance',$providerToInsurance);
 
 			$providerToInsuranceGrid =& new cGrid($providerToInsurance->providerToInsuranceList($person_id));
+			$providerToInsuranceGrid->setLabel('edit', false);
+			$providerToInsuranceGrid->registerTemplate('edit', 
+				'<a href="' . Celini::link(true, true) . 'person_id=' . $person_id . '&provider_to_insurance_id={$provider_to_insurance_id}">Edit</a>'
+			);
+			
 			$this->view->assign_by_ref('providerToInsuranceGrid',$providerToInsuranceGrid);
 
 			$insuranceProgram =& Celini::newORDO('InsuranceProgram');
