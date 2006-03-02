@@ -24,4 +24,19 @@ $config['module_paths']['x12import'] = APP_ROOT . '/modules/x12_importer';
 $config['require_login'] = true;
 $config['use_text_storage'] = true;
 $config['autoAcl'] = true;
+
+// menu config
+$config['use_menu'] = true;
+$config['menu']['attachReports'] = true;
+$config['menu']['attachForms'] = true;
+$config['menu']['attachArrays'] = true;
+
+// document management
+$config['document_manager']['documents_on_tree'] = true;
+$config['document_manager']['category_view'] = false;
+$config['document_manager']['type_type'] = false;
+
+// Show extra acl and db debugging info
+$config['debug'] = false;
+
 ?>
