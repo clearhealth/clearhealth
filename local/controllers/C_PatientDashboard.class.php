@@ -39,9 +39,10 @@ class C_PatientDashboard extends Controller {
 		
 		// If we don't have a valid Patient, display an error message and stop.
 		if (!$p->isPopulated()) {
-			$this->assign('NO_PATIENT', true);
-			$this->messages->addMessage('There is no currently selected patient or an invalid patient number was supplied.');
-			return $this->view->render("error.html");
+			$this->messages->addMessage(
+				'No Patient Selected', 
+				'Please select a patient before attempting to view the Patient Dashboard.');
+			Celini::redirect('PatientFinder', 'default');
 		}
 		
 		
