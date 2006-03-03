@@ -7,16 +7,16 @@
 	{if $me->get_id() > 0}
 	<div id="sections">
 		{if $sec_obj->check("usage","main_calendar")}
-		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selected"{/if}>Calendar</a> &middot;
+		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selectedSection"{/if}>Calendar</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_patient")}
-		<a href="{$base_dir}index.php/main/PatientFinder" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
+		<a href="{$base_dir}index.php/main/PatientFinder" {if $menu_group == "patient"}class="selectedSection"{/if}>Patient</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_billing")}
-		<a href="{$base_dir}index.php/main/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;
+		<a href="{$base_dir}index.php/main/Claim/list" {if $menu_group == "billing"}class="selectedSection"{/if}>Billing</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_admin")}
-		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
+		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selectedSection"{/if}>Admin</a>
 		{/if}
 
 	</div>
