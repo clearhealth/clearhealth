@@ -92,12 +92,15 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsdId = $this->GET->get(0);
 
 		$levels = $data['level'];
+		$originalLevels = $data['original_level'];
 		unset($data['level']);
+		unset($data['original_level']);
 
 		$levelMap = array();
-		foreach($levels as $key => $discount) {
+		foreach($originalLevels as $key => $discount) {
 			$fsdl =& Celini::newOrdo('FeeScheduleDiscountLevel',array($fsdId,$discount),'byDiscount');
 			$fsdl->set('disp_order',$key);
+			$fsdl->set('discount', $levels[$key]);
 			$fsdl->persist();
 
 			$levelMap[$key] = $fsdl->get('id');

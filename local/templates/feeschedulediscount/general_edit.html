@@ -141,7 +141,10 @@ function updateSize(form) {
 	<tr class="top">
 		<th class="left">Size</th>
 		{foreach from=$discountLevels item=level key=id}
-		<th><input size=5 value="{$level}" name="FeeScheduleDiscount[level][{$id}]"></th>
+		<th>
+			<input size="5" value="{$level}" name="FeeScheduleDiscount[level][{$id}]" />
+			<input type="hidden" value="{$level}" name="FeeScheduleDiscount[original_level][{$id}]" />
+		</th>
 		{/foreach}
 	</tr>
 	</thead>
