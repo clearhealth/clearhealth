@@ -194,8 +194,12 @@ class C_Location extends Controller {
 		$u = new User(null,null);
 		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
 		
-		if (!isset($this->_tpl_vars['edit_event']))	$this->assign("edit_event",new Event());
-		if (!isset($this->_tpl_vars['edit_timeplace']))	$this->assign("edit_timeplace",new Occurence());
+		if (!$this->isAssigned('edit_event')) {
+			$this->assign("edit_event",new Event());
+		}
+		if (!$this->isAssigned('edit_timeplace')) {
+			$this->assign("edit_timeplace",new Occurence());
+		}
 		$this->assign("process",true);
 		$this->assign("EVENT_ACTION", Celini::link("edit_event") . "id=$id");
 		$this->assign("OCCURENCE_ACTION", Celini::link("edit_occurence") . "id=$id");
