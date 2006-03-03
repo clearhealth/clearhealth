@@ -115,6 +115,10 @@ class C_FeeScheduleDiscount extends Controller {
 				$fsdi->persist();
 			}
 		}
+		
+		if (Celini::getCurrentAction() == 'add') {
+			Celini::redirectURL(Celini::link('edit', true, true, $fsdId));
+		}
 	}
 }
 ?>
