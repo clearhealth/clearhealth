@@ -1,0 +1,59 @@
+{* DTD Selection Information: http://hsivonen.iki.fi/doctype/ *}
+{* Quirks Mode DTD *}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+{* Almost Standards Mode DTD *}
+{* <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> *}
+<html>
+<head>
+<!--generated from main/general_list.html -->
+
+{if $me->get_id() > 0}
+{ajax action="setupAJAX"}
+<script type="text/javascript">var base_dir = "{$base_dir}"; </script>
+<script type="text/javascript" src="{$base_dir}js/behavior.js"></script>
+{/if}
+
+{literal}
+<SCRIPT LANGUAGE="JavaScript">
+function popUp(URL,width,height) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=' + width + ',height=' + height + ',left = 400,top = 150');");
+}
+
+{/literal}
+var serverTimeOffset = {php}echo (date('Z')/60)*-1{/php};
+{literal}
+var d = new Date();
+var timeZoneAdjust = 0;
+if (d.getTimezoneOffset() != serverTimeOffset) {
+	timeZoneAdjust = d.getTimezoneOffset() - serverTimeOffset;
+}
+</script>
+ 
+{/literal}
+{if !$noOverlib}
+{popup_init src="`$base_dir`js/overlib.js"}
+{/if}
+<link href="{$base_dir}index.php/css/celini.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
+{*<link href="{$base_dir}suggest.css" rel="stylesheet" type="text/css">*}
+{if $extra_css}
+{foreach from=$extra_css item=css_file}
+<link href="{$base_dir}{$css_file}" rel="stylesheet" type="text/css" />
+{/foreach}
+{/if}
+{if $menu_group === "default"}
+	{assign var="section_name" value="Calendar"}
+{/if}
+{if $menu_group === "patient"}
+	{assign var="section_name" value="Patient"}
+{/if}
+{if $menu_group === "billing"}
+	{assign var="section_name" value="Billing"}
+{/if}
+{if $menu_group === "admin"}
+	{assign var="section_name" value="Administration"}
+{/if}
+<title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
