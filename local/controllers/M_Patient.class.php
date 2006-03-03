@@ -191,7 +191,7 @@ class M_Patient extends Manager {
 			if (isset($_POST['searchSubscriber'])) {
 				$ir->set('subscriber_id',$_POST['searchSubscriber']['person_id']);
 			}
-			if (isset($_POST['newSubscriber'])) {
+			if (isset($_POST['newSubscriber']) && !empty($_POST['newSubscriber']['last_name'])) {
 				$person =& ORDataObject::factory('Person',$_POST['newSubscriber']['person_id']);
 				$person->set('type',$person->idFromType('Subscriber'));
 				$person->populate_array($_POST['newSubscriber']);
@@ -200,8 +200,9 @@ class M_Patient extends Manager {
 				$address->populate_array($_POST['newSubscriber']);
 				$address->persist();
 				$number =& $person->numberByType('Home');
-				$number->populate_array($_POST['newSubscriber']);
+				$number->set('number',$_POST['newSubscriber']['number']);
 				$number->persist();
+
 				$ir->set('subscriber_id',$person->get('id'));
 			}
 			$ir->persist();
