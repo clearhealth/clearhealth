@@ -1,0 +1,125 @@
+	{assign var="detail_section_title" value="Patient Details"}
+	<fieldset class="radio" id="person">
+		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
+			{clni_section_links name="detail"}
+			</legend>
+			<table>
+			<tbody>
+			<tr>
+				<td><label>{l}Last Name{/l}: </label></td>
+				<td colspan="2"><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+			</tr>
+			<tr>
+				<td><label>{l}First Name{/l}: </label></td>
+				<td style="white-space: nowrap;" colspan="2"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
+				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
+			</tr>
+			<tr>
+				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>
+				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}">
+				</td>
+				<td style="white-space:nowrap;"><label>{l}Id #{/l}: </label></td>
+				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="{$person->get('identifier')}">
+					<select name="person[identifier_type]" >
+						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
+					</select>
+				</td>
+			</tr>
+			{if !$hide_type}
+	        <tr>
+				<td style="vertical-align:top;"><label>{l}Type{/l}:</label></td>
+				<td>
+				  <select name="person[type]">
+					  <option></option>
+					  {html_options options=$person->getTypeList() selected=$person->get('type')}
+				  </select>
+				 </td>
+            </tr>
+		 	{/if}
+		 	<tr>
+		 		<td>
+			  		<label>{l}DOB{/l}:</label>
+				</td>
+				<td>
+					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]" id="date_of_birth"}
+				</td>
+				<td colspan="2">
+					<label class="inline" for="hipaa">{l}Signed HIPAA:{/l}</label>
+					<input id="hipaa" type="hidden" value=0 name="person[signed_hipaa]"><input type="checkbox" value="1" 
+					name="person[signed_hipaa]"{if $person->get('signed_hipaa')} CHECKED{/if}>
+				</td>
+		 	</tr>
+            <tr>
+				<td><label>{l}Gender{/l}:</label> </td>
+				<td>
+					<select name="person[gender]" id="gender">
+						<option></option>
+						{html_options options=$person->getGenderList() selected=$person->get('gender')}
+					</select>&nbsp;&nbsp;
+				</td>
+				<td colspan="2">
+					{l}Marital Status{/l}:&nbsp;
+					{html_options name="person[marital_status]" options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
+					&nbsp;&nbsp;
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>{l}Default Provider{/l}:</label>
+				</td>
+				<td colspan="3">
+					<select name="person[default_provider]" id="default_provider">
+						<option></option>
+						{html_options options=$providers_array selected=$person->get('default_provider')}
+					</select>&nbsp;&nbsp;
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>{l}Confidentiality{/l}:</label>
+				</td>
+				<td colspan="3">
+					<select name="person[confidentiality]">
+						{enum_options name="confidentiality_levels" selected=$person->get('confidentiality')}
+					</select>&nbsp;&nbsp;
+				</td>
+			</tr>
+		    {if $person->get_person_id() == 0}
+		    <tr>
+			    <td><label>{l}Home Phone{/l}:</label></td>
+			    <td>
+			    <input id="initialphone" name="number[number]" size="16">
+			    <input type="hidden" name="number[active]" value="1">
+			    <input type="hidden" name="number[number_type]" value="1">
+			   	</td>
+			</tr>
+			<tr>
+			   	<td>
+				<label class="inline">{l}Registration Location{/l}: </label>
+				</td>
+				<td colspan="3">
+				    <select name="patientStatistics[registration_location]">
+					    {html_options options=$building->getBuildingList()}
+				    </select>
+			    </td>
+		    </tr>
+		    {/if}
+			<tr>
+				<td></td>
+				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
+			</tr>
+			</tbody>
+		</table>
+		</fieldset>
+{clni_register_message_target formId="patientGeneralEditForm" targetId="patientGeneralEditMessages"}
+{clni_register_validation_rule id="last_name" message="Last Name is Required"}
+{clni_register_validation_rule id="first_name" message="First Name is Required"}
+{clni_register_validation_rule id="date_of_birth" message="Date of Birth is Required"}
+{clni_register_validation_rule id="gender" message="Gender is Required"}
+{clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
+{clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
+{clni_register_validation_rule id="record_number" rule="greaterthanzero" message="Record # must be greater than 0"}
+{if $person->get_person_id() == 0}
+{clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
+{clni_register_validation_rule id="initialphone" rule="required" message="A Phone Number is required"}
+{/if}

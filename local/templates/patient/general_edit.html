@@ -1,240 +1,30 @@
-<script type='text/javascript' src='{$base_dir}jpspan_server.php?client'></script>
-<SCRIPT type='text/javascript' src="{$base_dir}js/autocomplete2.js"></script>
-{literal}
-<script language="javascript" type="text/javascript">
-function captureEnter (field, event) {
-		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-		if (keyCode == 13) {
-			var i;
-			for (i = 0; i < field.form.elements.length; i++)
-				if (field == field.form.elements[i])
-					break;
-			i = (i + 1) % field.form.elements.length;
-			field.form.elements[i].focus();
-			return false;
-		} 
-		else
-		return true;
-	}      
-
-var C_PatientFinder = function find_remoting(searchString) {
-        var h = new c_patientfinder(this.dataHandler);
-        h.Sync();
-                                                                                
-        var results = h.find_remoting(searchString);
-        return results;
-}
-</script>
-{/literal}
+{include file="patient/general_setupJS.html"}
 
 <div id="patientGeneralEditMessages"></div>
 {clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
-	{assign var="detail_section_title" value="Patient Details"}
-	<table class="columns"><tr><td>
-		<fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
-			{clni_section_links name="detail"}
-			</legend>
-			<table>
-			<tbody>
-			<tr>
-				<td><label>{l}Last Name{/l}: </label></td>
-				<td colspan="2"><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
-			</tr>
-			<tr>
-				<td><label>{l}First Name{/l}: </label></td>
-				<td style="white-space: nowrap;" colspan="2"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
-				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
-			</tr>
-			<tr>
-				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>
-				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}">
-				</td>
-				<td style="white-space:nowrap;"><label>{l}Id #{/l}: </label></td>
-				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="{$person->get('identifier')}">
-					<select name="person[identifier_type]" >
-						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
-					</select>
-				</td>
-			</tr>
-			{if !$hide_type}
-	        <tr>
-				<td style="vertical-align:top;"><label>{l}Type{/l}:</label></td>
-				<td>
-				  <select name="person[type]">
-					  <option></option>
-					  {html_options options=$person->getTypeList() selected=$person->get('type')}
-				  </select>
-				 </td>
-            </tr>
-		 	{/if}
-		 	<tr>
-		 		<td>
-			  		<label>{l}DOB{/l}:</label>
-				</td>
-				<td>
-					{clni_input_date value=$person->get('date_of_birth') name="person[date_of_birth]" id="date_of_birth"}
-				</td>
-				<td colspan="2">
-					<label class="inline" for="hipaa">{l}Signed HIPAA:{/l}</label>
-					<input id="hipaa" type="hidden" value=0 name="person[signed_hipaa]"><input type="checkbox" value="1" 
-					name="person[signed_hipaa]"{if $person->get('signed_hipaa')} CHECKED{/if}>
-				</td>
-		 	</tr>
-            <tr>
-				<td><label>{l}Gender{/l}:</label> </td>
-				<td>
-					<select name="person[gender]" id="gender">
-						<option></option>
-						{html_options options=$person->getGenderList() selected=$person->get('gender')}
-					</select>&nbsp;&nbsp;
-				</td>
-				<td colspan="2">
-					{l}Marital Status{/l}:&nbsp;
-					{html_options name="person[marital_status]" options=$person->getMaritalStatusList() selected=$person->get('marital_status')}
-					&nbsp;&nbsp;
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label>{l}Default Provider{/l}:</label>
-				</td>
-				<td colspan="3">
-					<select name="person[default_provider]" id="default_provider">
-						<option></option>
-						{html_options options=$providers_array selected=$person->get('default_provider')}
-					</select>&nbsp;&nbsp;
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label>{l}Confidentiality{/l}:</label>
-				</td>
-				<td colspan="3">
-					<select name="person[confidentiality]">
-						{enum_options name="confidentiality_levels" selected=$person->get('confidentiality')}
-					</select>&nbsp;&nbsp;
-				</td>
-			</tr>
-		    {if $person->get_person_id() == 0}
-		    <tr>
-			    <td><label>{l}Home Phone{/l}:</label></td>
-			    <td>
-			    <input id="initialphone" name="number[number]" size="16">
-			    <input type="hidden" name="number[active]" value="1">
-			    <input type="hidden" name="number[number_type]" value="1">
-			   	</td>
-			</tr>
-			<tr>
-			   	<td>
-				<label class="inline">{l}Registration Location{/l}: </label>
-				</td>
-				<td colspan="3">
-				    <select name="patientStatistics[registration_location]">
-					    {html_options options=$building->getBuildingList()}
-				    </select>
-			    </td>
-		    </tr>
-		    {/if}
-			<tr>
-				<td></td>
-				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
-			</tr>
-			</tbody>
-		</table>
-		</fieldset>
-{clni_register_message_target formId="patientGeneralEditForm" targetId="patientGeneralEditMessages"}
-{clni_register_validation_rule id="last_name" message="Last Name is Required"}
-{clni_register_validation_rule id="first_name" message="First Name is Required"}
-{clni_register_validation_rule id="date_of_birth" message="Date of Birth is Required"}
-{clni_register_validation_rule id="gender" message="Gender is Required"}
-{clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
-{clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
-{clni_register_validation_rule id="record_number" rule="greaterthanzero" message="Record # must be greater than 0"}
+
 {if $person->get_person_id() == 0}
-{clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
-{clni_register_validation_rule id="initialphone" rule="required" message="A Phone Number is required"}
-{/if}
-	{*
-		    <p>
-		    <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit">
-		    </p>
-		    *}
+	{include file="patient/general_patientDemo.html"}
+{else}
+	{assign var="parent" value=$person}
 
-		    {if $person->get_person_id() > 0}
-		    {assign var="parent" value=$person}
-		    <fieldset class="radio" id="number">
-		<legend>Phone Numbers {clni_section_links name="number"}</legend>
-<table class="grid" border="0" cellspacing="1" cellpadding="0">
-        {$pager}
+
+<table class="columns">
 	<tr>
-		<th>{l}Number{/l}</th><th>{l}Type{/l}</th><th>{l}Status{/l}</th><th>{l}Notes{/l}</th>
-        </tr>
-        {foreach from=$parent->get_numbers() item=row name="phone"}
-	<tr {if $row.number_id == $number->get('id')}class="selectedRow"{else}{if $smarty.foreach.phone.iteration %2 == 1}class="alt"{/if}{/if}>
-		<td><a href="{$EDIT_NUMBER_ACTION}id={$row.number_id}&process=true">{$row.number}</a></td>
-		<td>{$row.number_type}</td>
-		<td>{if !$row.active}<div class="tooltip">DNC<div class="tooltipMessage">{$row.dnc_note}</div></div>{/if}</td>
-		<td>{$row.notes}</td>
-		<td><a onClick="return confirm('Delete Number {$row.number_type}:{$row.number}?')" href="{$DELETE_NUMBER_ACTION}id={$row.number_id}&process=true">delete</a></td>
-        </tr>
-        {foreachelse}
-        <tr>
-                <td colspan="3">{l}No Phone Numbers{/l}</td>
-        </tr>
-        {/foreach}
+		<td>
+			{include file="patient/general_patientDemo.html"}
+			{include file="patient/general_patientNumber.html"}
+			{include file="contacts/general_address.html"}
+			{include file="patient/general_chronic_codes.html"}
+		</td>
+		<td>
+			{include file="patient/general_insurer.html"}
+			{include file="patient/general_relationship.html"}
+			{include file="contacts/general_identifier.html"}
+			{include file="contacts/general_name_history.html"}
+			{include file="patient/general_patient_statistics.html"}
+		</td>
+	</tr>
 </table>
-		{if $number->get('id') > 0}
-		<input type="hidden" name="number[number_id]" value="{$number->get('id')}">
-		{/if}
-                    <table>
-                        <tr>
-				<td><label>{l}Type{/l}: </label></td>
-                <td><select name="number[number_type]" >
-				{html_options options=$number->getTypeList() selected=$number->get('number_type')}
-				</select>
-			  </td>
-				<td><label>{l}Number{/l}: </label></td>
-				<input type="hidden" value="0" name="number[active]">
-				<td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > <label class='inline'>{l}DNC{/l}: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]" 
-					onclick="{literal}if(this.checked) { document.getElementById('dncNote').style.display=''; } else {
-					document.getElementById('dncNote').style.display='none';
-					}{/literal}"
-					{if $number->get('active') == 0}checked{/if}></td>
-                        </tr>
-			<tr id="dncNote" {if $number->get('active')}style='display:none'{/if}>
-				<td><label>{l}DNC Note{/l}: </label></td>
-				<td colspan="3"><textarea rows=2 cols=30 name="number[dnc_note]">{$number->get('dnc_note')}</textarea></td>
-			</tr>
-                        <tr>
-				<td><label>{l}Notes{/l}: </label></td>
-                          <td colspan="3"><textarea name="number[notes]" rows="2" cols="35" >{$number->get('notes')}</textarea></td>
-                        </tr>
-                        <tr>
-				<td></td><td><input type="submit" {if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" >{else}value="Add">{/if}</td>
-
-                        </tr>
-		</table>
-		{if $person->get_person_id() > 0}
-			{clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
-		{/if}
-	</fieldset>
-
-		    {include file="contacts/general_address.html"}
-
-		    {include file="patient/general_chronic_codes.html"}
-	    </td>
-	    <td>
-		    {include file="patient/general_insurer.html"}
-		    {include file="patient/general_relationship.html"}
-		    {include file="contacts/general_identifier.html"}
-		    {include file="contacts/general_name_history.html"}
-		    {include file="patient/general_patient_statistics.html"}
-	    </td>
-    </tr>
-    </table>
-		    
-		    {*{include file="contacts/general_related_companies.html"}*}
-		    {/if}
+{/if}
 </form>
-
