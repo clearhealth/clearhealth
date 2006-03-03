@@ -454,6 +454,7 @@ class Person extends ORDataObject {
 			$number_id = $res->fields['number_id'];
 		}
 		$addr =& ORDataObject::factory('PersonNumber',$number_id,$this->id);
+		$addr->set('number_type',$type_id);
 		return $addr;
 	}
 	
