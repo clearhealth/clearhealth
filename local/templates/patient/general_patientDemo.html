@@ -45,8 +45,7 @@
 				</td>
 				<td colspan="2">
 					<label class="inline" for="hipaa">{l}Signed HIPAA:{/l}</label>
-					<input id="hipaa" type="hidden" value=0 name="person[signed_hipaa]"><input type="checkbox" value="1" 
-					name="person[signed_hipaa]"{if $person->get('signed_hipaa')} CHECKED{/if}>
+					{clni_input_date name="person[signed_hipaa]" value=$person->get('signed_hipaa')}
 				</td>
 		 	</tr>
             <tr>

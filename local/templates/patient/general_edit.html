@@ -3,7 +3,7 @@
 <div id="patientGeneralEditMessages"></div>
 {clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 
-{if $person->get_person_id() == 0}
+{if !$person->isPopulated()}
 	{include file="patient/general_patientDemo.html"}
 {else}
 	{assign var="parent" value=$person}

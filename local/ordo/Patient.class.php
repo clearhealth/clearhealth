@@ -38,7 +38,7 @@ class Patient extends MergeDecorator {
 	var $_table = 'patient';
 	var $_key = 'person_id';
 
-	var $storage_metadata =  array('int' => array('signed_hipaa'=>0), 'date' => array(), 'string' => array(), 'text' => array());
+	var $storage_metadata =  array('int' => array(), 'date' => array('signed_hipaa'=>''), 'string' => array(), 'text' => array());
 	
 	
 	/**

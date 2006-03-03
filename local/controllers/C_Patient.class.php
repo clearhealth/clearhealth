@@ -29,14 +29,16 @@ class C_Patient extends Controller {
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = array('clnipopup');
 
-		$this->set('patient_id',$patient_id);
-		$this->set('external_id',$patient_id);
-
 		$user =& ORdataObject::factory('User');
 		$person =& ORdataObject::factory('Patient',$patient_id);
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$patient_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patient_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$patient_id);
+		
+		if ($person->isPopulated()) {
+			$this->set('patient_id',$person->get('id'));
+			$this->set('external_id',$person->get('id'));
+		}
 
 
 		$nameHistoryGrid =& new cGrid($person->loadDatasource('NameHistoryList'));
