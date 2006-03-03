@@ -1,0 +1,22 @@
+{include file="patient/general_setupJS.html"}
+
+<div id="patientGeneralEditMessages"></div>
+{clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+
+{if $person->get_person_id() == 0}
+	{include file="patient/general_patientDemo.html"}
+{else}
+	{assign var="parent" value=$person}
+
+
+			{include file="patient/general_patientDemo.html"}
+			{include file="patient/general_patientNumber.html"}
+			{include file="contacts/general_address.html"}
+			{include file="patient/general_chronic_codes.html"}
+			{include file="patient/general_insurer.html"}
+			{include file="patient/general_relationship.html"}
+			{include file="contacts/general_identifier.html"}
+			{include file="contacts/general_name_history.html"}
+			{include file="patient/general_patient_statistics.html"}
+{/if}
+</form>
