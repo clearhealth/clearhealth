@@ -99,6 +99,9 @@ class C_Patient extends Controller {
 
 		$this->assign('now',date('Y-m-d'));
 
+		if ($this->GET->exists('view') && $this->GET->get('view') === 'narrow') {
+			return $this->view->render("singleColEdit.html");
+		}
 		return $this->view->render("edit.html");
 	}
 
