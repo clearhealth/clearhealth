@@ -180,12 +180,25 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 								<td colspan=2><label>{l}Last Name{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[last_name]" value="{$subscriber->get('last_name')}" onChange="userEntered = true;"></td>
 							</tr>
-							<!--<tr>
-								<td colspan=2><label>{l}Phone #{/l}:</label></td>
-								<td colspan=2><input name="newSubscriber[number]" value="{$subscriberNumber}" onChange="userEntered = true;"></td>
-							<tr>-->
+							<tr>
 								<td colspan=2><label>{l}SSN{/l}:</label></td>
 								<td colspan=2><input name="newSubscriber[identifier]" value="{$subscriber->get("identifier")}" onChange="userEntered = true;"></td>
+							</tr>
+							<tr>
+								<td colspan=2><label>{l}DOB{/l}:</label></td>
+								<td colspan=2>{clni_input_date name="newSubscriber[date_of_birth]" 
+									value=$subscriber->get("date_of_birth") onChange="userEntered = true;"}</td>
+							</tr>
+							<tr>
+								<td colspan=2><label>{l}Gender{/l}:</label></td>
+								<td colspan=2><select name="newSubscriber[gender]" onChange="userEntered = true;">
+								<option></option>
+								{enum_options name="gender" selected=$subscriber->get("gender")} 
+								</select></td>
+							</tr>
+							<tr>
+								<td colspan=2><label>{l}Phone #{/l}:</label></td>
+								<td colspan=2><input name="newSubscriber[number]" value="{$subscriberNumber}" onChange="userEntered = true;"></td>
 							</tr>
 							<tr>
 								<td valign="top" colspan=2><label>{l}Address{/l}:</label></td>
