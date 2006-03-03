@@ -44,16 +44,4 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 <link href="{$base_dir}{$css_file}" rel="stylesheet" type="text/css" />
 {/foreach}
 {/if}
-{if $menu_group === "default"}
-	{assign var="section_name" value="Calendar"}
-{/if}
-{if $menu_group === "patient"}
-	{assign var="section_name" value="Patient"}
-{/if}
-{if $menu_group === "billing"}
-	{assign var="section_name" value="Billing"}
-{/if}
-{if $menu_group === "admin"}
-	{assign var="section_name" value="Administration"}
-{/if}
 <title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
