@@ -32,8 +32,17 @@ class Patient_EncounterList_DS extends Datasource_sql
 
 		$this->setup(Celini::dbInstance(), 
 			array(
-				'cols' 	=> sprintf("date_format(date_of_treatment,'%s') AS date_of_treatment, encounter_reason, b.name building, concat_ws(' ',p.first_name,p.last_name) treating_person, status, encounter_id", DateObject::getFormat()),
-				'from' 	=> "encounter e left join buildings b on b.id = e.building_id left join person p on e.treating_person_id = p.person_id",
+				'cols' 	=> '
+					DATE_FORMAT(date_of_treatment,"' . DateObject::getFormat() . '") AS date_of_treatment, 
+					encounter_reason,
+					b.name building,
+					CONCAT_WS(" ",p.first_name,p.last_name) AS treating_person,
+					e.status, 
+					encounter_id',
+				'from' 	=> '
+					encounter AS e
+					LEFT JOIN buildings AS b ON(b.id = e.building_id)
+					LEFT JOIN person AS p ON(e.treating_person_id = p.person_id)',
 				'where' => " patient_id = $patient_id",
 				'orderby' => 'date_of_treatment DESC'
 			),
