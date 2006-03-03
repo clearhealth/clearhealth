@@ -1,5 +1,6 @@
-{literal}
 <script type="text/javascript">
+var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal"}';
+{literal}
 	var userEntered = false;
 	var first = true;
 	function selectSubscriber(select) {
@@ -10,6 +11,7 @@
 		}
 		else {
 			document.getElementById('subscriber').style.display = "block";
+
 
 			if (!first) {
 				document.getElementById('rscn').checked = false;
@@ -28,10 +30,32 @@
 		}
 	}
 
+	function editSubscriber() {
+		if (document.getElementById('rscn').checked) {
+		}
+		else {
+			var id = document.getElementById('subscriber_id').value;
+		}
+		
+		if (!id) {
+			alert('A subscriber must be selected before you can edit them');
+			return;
+		}
+		var URL = patientEditURL+"patient_id="+id+"&view=narrow";
+		
+		var subWin = window.open(URL, 'subWin', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=650,height=500');
+	}
+
 	function swapSubscriber(type) {
 		_disable(document.getElementById('subscriber'));
 		_setDisabled(document.getElementById(type+'Subscriber'),'input',false);
 		_setDisabled(document.getElementById(type+'Subscriber'),'select',false);
+		if (type == 'new') {
+			document.getElementById('editSubscriberLink').style.visibility = 'hidden';
+		}
+		else {
+			document.getElementById('editSubscriberLink').style.visibility = 'visible';
+		}
 
 		if (!userEntered && !first) {
 			// clear values from new subscriber
@@ -123,17 +147,20 @@
 					{/if}
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('search')" id="rscs" {if $subscriberIsAPatient}checked{/if}>
-					<label class="inline" for="rscs">{l}Search Persons{/l}</label>
+					<label class="inline" for="rscs">{l}Search Current Patients{/l}</label>
 
 					<input type="radio" name="subscriber_choice" onclick="swapSubscriber('new')" id="rscn" {if !$subscriberIsAPatient}checked{/if}>
 					<label class="inline" for="rscn">{if $subscriberIsAPatient}{l}New{/l}{else}{l}Update{/l}{/if} {l}Subscriber{/l}</label>
 					<div id="searchSubscriber">
 						<input type="hidden" name="searchSubscriber[person_id]" id="subscriber_id" value="{$subscriber->get('id')}">
+
 						<table>
 							<tr>
 								<td><label>{l}Search{/l}:</label></td>
 								<td>
-									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}><br>
+									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}>
+						<a id="editSubscriberLink" href="#" onclick="editSubscriber()" {if $subscriberIsAPatient}style="visibility:hidden"{/if}>Edit Subscriber</a>
+									<br>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
 					class="AutoCompleteBackground"></div></div>
 								</td>
