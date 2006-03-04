@@ -160,6 +160,7 @@ class InsuranceProgram extends ORDataObject {
 		$ret = array();
 		$ret['name'] = $this->get('name');
 		$ret['payer_type'] = $this->lookupPayerType($this->get('payer_type'));
+		$ret['program_name'] = $this->get('name');
 		$company =& ORDataObject::factory('Company',$this->get('company_id'));
 		$ret['company'] = $company->toArray();
 		return $ret;
