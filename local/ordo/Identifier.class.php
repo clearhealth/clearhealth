@@ -31,6 +31,7 @@ class Identifier extends ORDataObject {
 
 	var $_typeCache = false;
 
+	var $_table = 'identifier';
 
 	/**
 	 * Setup some basic attributes
@@ -38,7 +39,6 @@ class Identifier extends ORDataObject {
 	 */
 	function Identifier($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'identifier';
 		$this->_sequence_name = 'sequences';	
 	}
 

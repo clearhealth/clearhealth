@@ -56,6 +56,7 @@ class Event extends ORDataObject{
 	 *	@var occurences
 	 */
 	var $occurences;
+	$_table = "events";
 
 	/**
 	 * Constructor sets all attributes to their default value
@@ -77,7 +78,6 @@ class Event extends ORDataObject{
 		$this->load_occurences = $load_occurences;
 		$this->occurences = array();
 		
-		$this->_table = "events";
 		
 		if ($id != "") {
 			$this->populate();

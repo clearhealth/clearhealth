@@ -38,6 +38,7 @@ class Room extends ORDataObject{
 	 */
 	var $name;
 	
+	var $_table = "rooms";
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -54,7 +55,6 @@ class Room extends ORDataObject{
 		$building_id = "";
 		$name = "";
 	
-		$this->_table = "rooms";
 		
 		if ($id > 0) {
 			$this->populate();

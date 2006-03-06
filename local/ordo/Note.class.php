@@ -47,6 +47,8 @@ class Note extends ORDataObject{
 	*/
 	var $revision;
 
+	$_table = "note";
+
 	/**
 	 * Constructor sets all Note attributes to their default value
 	 * @param int $id optional existing id of a specific note, if omitted a "blank" note is created 
@@ -57,7 +59,6 @@ class Note extends ORDataObject{
 		
 		//shore up the most basic ORDataObject bits
 		$this->id = $id;
-		$this->_table = "note";
 		
 		$this->note = "";
 		$this->set('date', date("Y-m-d H:i:s"));

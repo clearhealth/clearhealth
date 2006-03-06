@@ -28,6 +28,7 @@ class Form extends ORDataObject {
 	var $description	= '';
 	/**#@-*/
 
+	$_table = 'form';
 
 	/**
 	 * Setup some basic attributes
@@ -35,7 +36,6 @@ class Form extends ORDataObject {
 	 */
 	function Form($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'form';
 		$this->_sequence_name = 'sequences';	
 	}
 

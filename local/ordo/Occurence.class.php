@@ -102,6 +102,8 @@ class Occurence extends ORDataObject{
 	 * {@inheritdoc}
 	 */
 	var $_key = 'id';
+
+	var $_table = "occurences";
 	
 	/**
 	 * Constructor sets all attributes to their default value
@@ -120,7 +122,6 @@ class Occurence extends ORDataObject{
 		$this->location_id = "";
 		$this->date = "0000-00-00";
 	
-		$this->_table = "occurences";
 
 		$this->setup($id);
 		

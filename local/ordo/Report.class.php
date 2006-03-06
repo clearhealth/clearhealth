@@ -25,6 +25,7 @@ class Report extends ORDataObject {
 	var $deletedTemplates = false;
 
 	var $storage_metadata =  array('int' => array('show_sequence'=>0,'snapshot_style'=>0), 'date' => array(), 'string' => array('system_report'=>''), 'text' => array());
+	var $_table = "reports";
 
 	/**
 	*	Constructor expects a reference to and adodb compliant db object.
@@ -35,7 +36,6 @@ class Report extends ORDataObject {
 	*/
 	function Report($report_id=0,$db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = "reports";
 		$this->_sequence_name = "sequences";	
     	
 		if (!empty($report_id))

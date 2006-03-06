@@ -29,6 +29,7 @@ class FormData extends ORDataObject {
 	var $last_edit		= '';
 	/**#@-*/
 
+	$_table = 'form_data';
 
 	/**
 	 * Setup some basic attributes
@@ -36,7 +37,6 @@ class FormData extends ORDataObject {
 	 */
 	function FormData($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'form_data';
 		$this->_sequence_name = 'sequences';	
 	}
 

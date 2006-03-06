@@ -21,6 +21,7 @@ class PatientChronicCode extends ORDataObject {
 	var $id		= '';
 	var $chronic_care_code		= '';
 	/**#@-*/
+	var $_table = 'patient_chronic_code';
 
 
 	/**
@@ -29,7 +30,6 @@ class PatientChronicCode extends ORDataObject {
 	 */
 	function PatientChronicCode($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'patient_chronic_code';
 		$this->_sequence_name = 'sequences';	
 	}
 

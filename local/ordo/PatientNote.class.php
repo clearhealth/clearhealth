@@ -32,13 +32,13 @@ class PatientNote extends ORDataObject {
 	/**#@-*/
 
 
+	var $_table = 'patient_note';
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
 	function PatientNote($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'patient_note';
 		$this->_sequence_name = 'sequences';	
 	}
 

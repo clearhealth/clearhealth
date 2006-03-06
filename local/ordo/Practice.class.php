@@ -52,6 +52,7 @@ class Practice extends ORDataObject{
 	 */
 	var $identifier = '';
 	
+	$_table = "practices";
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -78,7 +79,6 @@ class Practice extends ORDataObject{
 			$this->secondary_address->set_type($tlist["Secondary"]);
 		}
 
-		$this->_table = "practices";
 
 		$number =& Celini::newORDO('Number');
 		$this->phone_types = array_flip($number->getTypeList());

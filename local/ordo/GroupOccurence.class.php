@@ -27,6 +27,7 @@ class GroupOccurence extends ORDataObject {
 	var $patient_id		= '';
 	/**#@-*/
 
+	$_table = 'group_occurence';
 
 	/**
 	 * Setup some basic attributes
@@ -34,7 +35,6 @@ class GroupOccurence extends ORDataObject {
 	 */
 	function GroupOccurence($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'group_occurence';
 		$this->_sequence_name = 'sequences';	
 	}
 
