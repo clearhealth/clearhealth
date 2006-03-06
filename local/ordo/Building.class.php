@@ -57,6 +57,8 @@ class Building extends ORDataObject{
 			'clia_number' => ''
 		), 
 		'text' => array());
+	
+	var $_table = "buildings";
     /**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -74,8 +76,6 @@ class Building extends ORDataObject{
 		$this->address = new BuildingAddress();
 		$this->address->set_type("main");
 
-		$this->_table = "buildings";
-		
 		if ($id != "") {
 			$this->populate();
 		}
