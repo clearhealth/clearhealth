@@ -43,9 +43,9 @@ $version_1rc3->addAction('SQLFile', array(
 	'server_field' => 'db_server',
 	'port_field' => 'db_port',
 	'db_field' => 'db_database',
-	'files' => array(
-		$base_app_path.'/local/setup/clearhealth-1.0RC3.sql',	
-		$base_app_path.'/local/setup/clearhealth-1.0RC3-data.sql'		
+	'cache_files' => array(
+		$base_app_path.'/local/setup/clearhealth-1.0RC3.sql.cache',	
+		$base_app_path.'/local/setup/clearhealth-1.0RC3-data.sql.cache'		
 	)));
 
 $version_1rc3->addAction('ReplaceString', array(
