@@ -41,6 +41,7 @@ class Encounter extends ORDataObject {
 		'date' => array(),
 		'string' => array()
 	);
+	var $_table = 'encounter';
 
 	/**
 	 * Setup some basic attributes
@@ -48,7 +49,6 @@ class Encounter extends ORDataObject {
 	 */
 	function Encounter($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter';
 		$this->_sequence_name = 'sequences';
 		$this->set('date_of_treatment', date("Y-m-d"));
 	}

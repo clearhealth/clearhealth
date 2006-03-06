@@ -96,6 +96,7 @@ class Document extends ORDataObject{
 	 */
 	var $enumTable = "dm_document";
 
+	var $_table = "document";
 	/**
 	 * Constructor sets all Document attributes to their default value
 	 * @param int $id optional existing id of a specific document, if omitted a "blank" document is created 
@@ -106,7 +107,6 @@ class Document extends ORDataObject{
 		
 		//shore up the most basic ORDataObject bits
 		$this->id = $id;
-		$this->_table = "document";
 		
 		//load the enum type from the db using the parent helper function, this uses psuedo-class variables so it is really cheap
 		$this->type_array = $this->_load_enum("type");
