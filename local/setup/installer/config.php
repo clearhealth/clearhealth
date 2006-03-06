@@ -59,7 +59,7 @@ $version_detection_class = 'VersionCheck';
 /*
  * Writable directory for smarty compile dir
  */
-$writable_dir = realpath(dirname(__FILE__).'/../../tmp').'/tmp';
+$writable_dir = realpath(dirname(__FILE__)).'/tmp';
 
 /*
  * Template directory
