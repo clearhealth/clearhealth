@@ -5,17 +5,18 @@ SCRIPT_HOME=`dirname $0`
 NAME="clearhealth"
 RELEASE="1.0RC3"
 REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/trunk"
-SVN_REV="HEAD"
+SVN_REV="2083"
 TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"
 BUILD_BASE="/tmp"
 CELINI_APP="true"
+CELINI_URL="https://svn2.uversainc.com/svn/celini/branches/clearhealth-1.0RC3"
 CELINI_REV="HEAD"
 INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
 MODULES="billing labs x12_importer"
-NOTAG="true"
+TAG="true"
 USAGE="You can use the following optional command line parameters
 -r = Overrides the release
 -n = Skips creating the tag in svn
@@ -24,7 +25,7 @@ USAGE="You can use the following optional command line parameters
 while getopts ":n?r:" options; do
 	case $options in
     r ) RELEASE=$OPTARG;;
-    n ) NOTAG="false";;
+    n ) TAG="false";;
     \? ) echo $USAGE
          exit 1;;
     * ) echo $USAGE
@@ -66,7 +67,7 @@ function clean_release() {
 	fi	
 }
 
-if [ "$NOTAG" == "true" ]; then
+if [ "$TAG" == "true" ]; then
 	echo "Checking for existing tag in SVN"
 	svn ls $TAG_URL >/dev/null 2>&1
 	if [ $? -eq 0 ]; then
@@ -106,7 +107,7 @@ done;
 # Setup Celini
 if [ "true" == "$CELINI_APP" ]; then
 	echo "Exporting Celini for application at rev $CELINI_REV to $BUILD_DIR/celini"
-	svn export -r $CELINI_REV https://svn2.uversainc.com/svn/celini/trunk $BUILD_DIR/celini
+	svn export -r $CELINI_REV $CELINI_URL $BUILD_DIR/celini
 	clean_release "$BUILD_DIR/celini/setup/no_package"
 fi
 
@@ -122,6 +123,13 @@ cp $INSTALLER_VERSIONS $BUILD_DIR/installer
 
 echo "creating blank config files..."
 touch $BUILD_DIR/local/config.php
+
+echo "Building db cache files for installer..."
+$BUILD_DIR/installer/create_db_file_cache.php $BUILD_DIR/local/setup/clearhealth-1.0RC3.sql $BUILD_DIR/local/setup/clearhealth-1.0RC3-data.sql
+if [ $? -ne 0 ]; then
+	echo "Error creating db cache files"
+	exit 4
+fi
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
 CUR_DIR=`pwd`
