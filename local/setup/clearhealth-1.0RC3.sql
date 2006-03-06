@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 02, 2006 at 08:45 AM
+-- Generation Time: Mar 06, 2006 at 11:11 AM
 -- Server version: 4.1.15
 -- PHP Version: 4.4.2-1
 -- 
@@ -1319,7 +1319,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=122 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=124 ;
 
 -- --------------------------------------------------------
 
@@ -1786,6 +1786,22 @@ CREATE TABLE `record_sequence` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `relationship`
+-- 
+
+CREATE TABLE `relationship` (
+  `relationship_id` int(11) NOT NULL auto_increment,
+  `parent_type` varchar(255) NOT NULL default '',
+  `parent_id` int(11) NOT NULL default '0',
+  `child_type` varchar(255) NOT NULL default '',
+  `child_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`relationship_id`),
+  KEY `index` (`parent_type`,`parent_id`,`child_type`,`child_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
