@@ -29,7 +29,7 @@ class FormData extends ORDataObject {
 	var $last_edit		= '';
 	/**#@-*/
 
-	$_table = 'form_data';
+	var $_table = 'form_data';
 
 	/**
 	 * Setup some basic attributes

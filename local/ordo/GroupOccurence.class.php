@@ -27,7 +27,7 @@ class GroupOccurence extends ORDataObject {
 	var $patient_id		= '';
 	/**#@-*/
 
-	$_table = 'group_occurence';
+	var $_table = 'group_occurence';
 
 	/**
 	 * Setup some basic attributes

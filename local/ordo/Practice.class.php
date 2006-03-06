@@ -52,7 +52,7 @@ class Practice extends ORDataObject{
 	 */
 	var $identifier = '';
 	
-	$_table = "practices";
+	var $_table = "practices";
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  

@@ -56,7 +56,7 @@ class Event extends ORDataObject{
 	 *	@var occurences
 	 */
 	var $occurences;
-	$_table = "events";
+	var $_table = "events";
 
 	/**
 	 * Constructor sets all attributes to their default value

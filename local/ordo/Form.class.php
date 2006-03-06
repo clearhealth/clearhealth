@@ -28,7 +28,7 @@ class Form extends ORDataObject {
 	var $description	= '';
 	/**#@-*/
 
-	$_table = 'form';
+	var $_table = 'form';
 
 	/**
 	 * Setup some basic attributes
