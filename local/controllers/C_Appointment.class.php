@@ -27,7 +27,7 @@ class C_Appointment extends Controller {
 		$this->assign('patientList',$patientList);
 		$this->assign('patientListCount',$patientListCount);
 
-		return $this->render("editGroup.html");
+		return $this->view->render("editGroup.html");
 	}
 
 	function editGroup_action_process($appointment_id) {
