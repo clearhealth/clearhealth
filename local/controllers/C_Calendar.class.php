@@ -383,7 +383,7 @@ class C_Calendar extends CalendarController {
 		$ndate = date("Y-m-d",$Day->nextDay("timestamp")); 
 		$pdate = date("Y-m-d",$Day->prevDay("timestamp"));
 		$DayArray = array();
-		$DayArray[0] = $Day->render();
+		$DayArray[0] = $Day->fetch();
 		$dda_keys = array_keys($DayArray);
 		$start_timestamp = $DayArray[$dda_keys[0]]->gettimestamp();
 		$end_timestamp = $DayArray[$dda_keys[count($dda_keys)-1]]->gettimestamp();
