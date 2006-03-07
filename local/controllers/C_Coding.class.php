@@ -124,7 +124,7 @@ class C_Coding extends Controller {
 		$this->assign_by_ref("code_list", $code_list);
 	//	echo "DEBUG C_Coding: code_list <br>\n";
 	//	printf('<pre>%s</pre>', var_export($code_list , true));
-		return $this->fetch(Celini::getTemplatePath("/coding/" . $this->template_mod . "_update.html"));	
+		return $this->render("update.html"));
 	}
 	
 	function update_action_process(){
@@ -243,7 +243,7 @@ class C_Coding extends Controller {
 		$gcpt =& new cGrid($cpt,$renderer_cpt);
 		$this->assign_by_ref('cpt',$gcpt);
 
-		return $this->fetch(Celini::getTemplatePath("/coding/" . $this->template_mod . "_update_dg.html"));	
+		return $this->render("update_dg.html"));
 	}
 	
 	/**

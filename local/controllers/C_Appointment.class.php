@@ -27,7 +27,7 @@ class C_Appointment extends Controller {
 		$this->assign('patientList',$patientList);
 		$this->assign('patientListCount',$patientListCount);
 
-		return $this->fetch(Celini::getTemplatePath("/appointment/" . $this->template_mod . "_editGroup.html"));
+		return $this->render("editGroup.html");
 	}
 
 	function editGroup_action_process($appointment_id) {

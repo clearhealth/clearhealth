@@ -21,6 +21,8 @@ class C_PatientFinder extends Controller {
 		$this->template_mod = $template_mod;
 		$this->assign("FORM_ACTION", Celini::link(true,true,false) . $_SERVER['QUERY_STRING']);
 		$this->assign("CURRENT_ACTION", Celini::link('patient_finder'));
+
+		$this->view->path = 'patient_finder';
 		
 		//remove the trail entries for this because it is a popup
 		//$trail = $_SESSION['trail'];
@@ -46,7 +48,7 @@ class C_PatientFinder extends Controller {
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('find',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
-		return $this->view->fetch("patient_finder/" . $this->template_mod . "_find.html");
+		return $this->view->render("find.html");
 	}
 	
 	/**
@@ -229,7 +231,7 @@ class C_PatientFinder extends Controller {
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('smartsearch',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
-		return $this->view->fetch("patient_finder/" . $this->template_mod . "_find.html");
+		return $this->view->render("find.html");
 	}
 	
 	function smartsearch_action_process() {

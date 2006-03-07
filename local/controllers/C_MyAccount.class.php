@@ -8,14 +8,15 @@ require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
 class C_MyAccount extends Controller {
 
 	/**
-	 * Update hte password of the currently logged in user
+	 * Update the password of the currently logged in user
 	 */
 	function password_action_edit() {
 		$user =& $this->_me->get_user();
 
 		$this->assign_by_ref('user',$user);
-		
-		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
+
+		$this->view->path = 'user';
+		return $this->render("password.html"));
 	}
 
 	function password_action_process() {

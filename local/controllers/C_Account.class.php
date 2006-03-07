@@ -64,7 +64,7 @@ class C_Account extends Controller {
 
 		$this->assign('FORM_ACTION',celini::link(true,true,true,$patient_id));
 		
-		return $this->fetch(Celini::getTemplatePath("/account/" . $this->template_mod . "_history.html"));
+		return $this->redner("history.html");
 	}
 
 	function processHistory_view($patient_id) {

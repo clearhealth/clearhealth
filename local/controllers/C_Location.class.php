@@ -32,6 +32,8 @@ class C_Location extends Controller {
 		$this->assign('SCHEDULE_LIST_ACTION', Celini::link('schedule_list'));
 		$this->assign('UPDATE_SCHEDULE_ACTION', Celini::link('update_schedule'));
 		$this->assign('EDIT_TIMEPLACE_ACTION', Celini::link('edit_timeplace'));
+
+		$this->view->path = 'locations';
 	}
 
 	function default_action() {
@@ -49,7 +51,7 @@ class C_Location extends Controller {
 		$r = new Room();
 		$this->assign("rooms",$r->rooms_factory());
 		
-		return $this->view->fetch("locations/" . $this->template_mod . "_list.html");
+		return $this->view->render("list.html");
 	}
 
 	// todo: move to a different controller
@@ -57,7 +59,7 @@ class C_Location extends Controller {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
-		return $this->view->fetch("locations/" . $this->template_mod . "_schedules.html");
+		return $this->view->render("schedules.html");
 	}
 	
 	function schedule_list_action() {
@@ -65,7 +67,7 @@ class C_Location extends Controller {
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
 		
-		return $this->view->fetch("locations/" . $this->template_mod . "_schedule_list.html");
+		return $this->view->render("schedule_list.html");
 	}
 
 	function edit_building_action($id = "") {
@@ -83,7 +85,7 @@ class C_Location extends Controller {
 		$this->assign('facilityCodeList', $fc->valueListForDropDown()); 
 
 		$this->assign("process",true);
-		return $this->view->fetch("locations/" . $this->template_mod . "_edit_building.html");
+		return $this->view->render("edit_building.html");
 	}
 	
 		
@@ -116,7 +118,7 @@ class C_Location extends Controller {
 		$this->assign("buildings",$this->utility_array($b->buildings_factory(),"id","name"));
 
 		$this->assign("process",true);
-		return $this->view->fetch("locations/" . $this->template_mod . "_edit_room.html");
+		return $this->view->render("edit_room.html");
 	}
 	
 		
@@ -205,7 +207,7 @@ class C_Location extends Controller {
 		$this->assign("OCCURENCE_ACTION", Celini::link("edit_occurence") . "id=$id");
 		$this->assign("SELECTED_ACTION", Celini::link("selected_occurence") . "id=$id");
 		//$this->assign("OCCURENCE_ACTION", "controller.php?" . str_replace("edit_schedule","edit_occurence",$_SERVER['QUERY_STRING']));
-		return $this->view->fetch("locations/" . $this->template_mod . "_edit_schedule.html");
+		return $this->view->render("edit_schedule.html");
 	}
 
 	function selected_occurence_action($id) {
@@ -248,7 +250,7 @@ class C_Location extends Controller {
 				if ($error) {
 					$this->assign("error",true);
 					$this->_state = false;
-					return $this->view->fetch("locations/" . $this->template_mod . "_delete.html");	
+					return $this->view->render("delete.html");
 				}
 			}
 		
@@ -487,7 +489,7 @@ class C_Location extends Controller {
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
 		$this->assign("DELETE_ACTION", Celini::link('delete')."id=$id&object_class=$object_class");
-		return $this->view->fetch("locations/" . $this->template_mod . "_delete.html");
+		return $this->view->render("delete.html");
 	}
 	
 	function delete_action_process($id = "",$object_class ="") {
@@ -541,7 +543,7 @@ class C_Location extends Controller {
 		if ($error) {
 			$this->assign("error",true);
 			$this->_state = false;
-			return $this->view->fetch("locations/" . $this->template_mod . "_delete.html");	
+			return $this->view->render("delete.html");
 		}
 
 		$this->_redirLast();

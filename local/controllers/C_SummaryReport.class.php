@@ -66,7 +66,8 @@ class C_SummaryReport extends Controller {
 		$patient =& ORDataObject::factory('Patient',$patient_id);
 		$this->assign_by_ref('patient',$patient);
 
-		return $this->fetch(Celini::getTemplatePath("/patient/" . $this->template_mod . "_summary_report.html"));
+		$this->view->path = 'patient';
+		return $this->render("summary_report.html"));
 	}
 
 	function processPatient_view($options = false) {

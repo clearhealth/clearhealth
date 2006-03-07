@@ -24,6 +24,8 @@ class C_Document extends Controller {
 		$this->documents = array();
 		$this->template_mod = $template_mod;
 		$this->assign("CURRENT_ACTION", Celini::link(true));
+
+		$this->view->path = 'documents';
 		
 		//get global config options
 		$this->_config = $GLOBALS['config']['document_manager'];
@@ -110,7 +112,7 @@ class C_Document extends Controller {
 			$group_list = $document->getGroupList();
 			$this->assign("group_list",$group_list);
 
-			$activity .= $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_upload.html"));
+			$activity .= $this->render("upload.html"));
 		}
 		$this->assign("activity", $activity);
 
@@ -186,7 +188,7 @@ class C_Document extends Controller {
 		}
 		//$this->_state = false;
 		$_POST['process'] = "";
-		//return $this->view->fetch("documents/" . $this->template_mod . "_upload.html");
+		//return $this->view->render("upload.html");
 	}
 	
 	function note_action_process($project_id) {
@@ -223,7 +225,7 @@ class C_Document extends Controller {
 		$this->assign('VIEW_LINK',substr($l,0,strlen($l)-1)."/");
 
 
-		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_viewCategory.html"));
+		return $this->render("viewCategory.html"));
 	}
 
 	function &_build_category_view($array,$category_names) {
@@ -269,7 +271,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		$activity = $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_view.html"));
+		$activity = $this->render("view.html"));
 		$this->assign("activity", $activity);
 		
 		return $this->list_action_view($project_id);
@@ -344,7 +346,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_queue.html"));
+		return $this->render("queue.html"));
 	}
 	
 	function move_action_process($project_id="",$document_id) {
@@ -448,7 +450,7 @@ class C_Document extends Controller {
 		$this->assign("GROUP_ACTION", Celini::ManagerLink('changeGroup',$this->id).$_SERVER['QUERY_STRING']);
 
 		
-		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_list.html"));
+		return $this->render("list.html"));
 	}
 	
 	/*
@@ -563,7 +565,7 @@ class C_Document extends Controller {
 		$this->assign('LIST_ACTION',Celini::link('list',true,true,$this->id));
 		$this->assign('categories',$this->_pullCats);
 		$this->assign('parent',$parent_id);
-		return $this->fetch(Celini::getTemplatePath("documents/" . $this->template_mod . "_multiUpload.html"));
+		return $this->render("multiUpload.html"));
 	}
 
 	function multi_upload_action_process($project_id) {

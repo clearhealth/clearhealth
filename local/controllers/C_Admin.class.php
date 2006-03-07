@@ -9,10 +9,12 @@ class C_Admin extends Controller {
 	function C_Admin ($template_mod = "general") {
 		parent::Controller();
 		$this->template_mod = $template_mod;
+
+		$this->view->path = 'default';
 	}
 
 	function default_action_view() {
-		return $this->view->fetch("default/" . $this->template_mod . "_default.html");
+		return $this->view->render("default.html");
 	}
 
 	function acl_action_edit() {

@@ -54,7 +54,7 @@ class C_Preferences extends Controller {
 			$treeMenu = &new HTML_TreeMenu_DHTML($menu, $treeOptions);
 			$this->assign("tree_html",$treeMenu->toHTML());
 		}
-		return $this->view->fetch("preferences/" . $this->template_mod . "_list.html");
+		return $this->view->render("list.html");
 	}
 	
 	function delete_node_action_process($id) {

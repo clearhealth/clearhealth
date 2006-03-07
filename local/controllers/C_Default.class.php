@@ -12,7 +12,7 @@ class C_Default extends Controller {
 	}
 
 	function default_action() {
-		return $this->view->fetch("default/" . $this->template_mod . "_default.html");
+		return $this->view->render("default.html");
 	}
 
 

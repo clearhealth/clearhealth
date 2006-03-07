@@ -16,7 +16,9 @@ class C_FeeSchedule extends Controller {
 
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
-		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_list.html"));	
+
+		$this->view->path = 'fee_schedule';
+		return $this->render("list.html");
 	}
 
 	function edit_action($fee_schedule_id = 0) {
@@ -26,8 +28,9 @@ class C_FeeSchedule extends Controller {
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$fee_schedule_id));
 		$this->assign('DEFAULT_ACTION',Celini::link('setdefault',true,true,$fee_schedule_id));
 		$this->assign('UPDATE_ACTION',Celini::link('update',true,true,$fee_schedule_id));
-		
-		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_edit.html"));	
+
+		$this->view->path = 'fee_schedule';
+		return $this->render("edit.html");
 	}
 
 	function setdefault_action($fee_schedule_id = 0) {
@@ -94,8 +97,9 @@ class C_FeeSchedule extends Controller {
 		echo "fee4 S2053: " . $feeSchedule->getFee("S2053") . "<br>";
 		echo "fee4 S2052: " . $feeSchedule->getFee("S2052") . "<br>";
 		echo "fee4 S2085: " . $feeSchedule->getFee("S2085") . "<br>";*/
-		
-		return $this->fetch(Celini::getTemplatePath("/fee_schedule/" . $this->template_mod . "_update.html"));	
+
+		$this->view->path = 'fee_schedule';
+		return $this->render("update.html");
 	}
 }
 ?>

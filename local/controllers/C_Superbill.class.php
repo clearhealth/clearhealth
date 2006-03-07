@@ -12,7 +12,7 @@ class C_Superbill extends Controller {
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->fetch(Celini::getTemplatePath("/superbill/" . $this->template_mod . "_list.html"));
+		return $this->render("list.html"));
 	}
 	
 	function update_action_edit($superbill_id) {
@@ -24,7 +24,7 @@ class C_Superbill extends Controller {
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->fetch(Celini::getTemplatePath("/superbill/" . $this->template_mod . "_update.html"));	
+		return $this->render("update.html"));
 	}
 }
 ?>

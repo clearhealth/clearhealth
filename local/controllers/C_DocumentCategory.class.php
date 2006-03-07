@@ -19,6 +19,8 @@ class C_DocumentCategory extends Controller {
 		$this->assign("CURRENT_ACTION", Celini::link('document_category'));
 		$this->link = Celini::link('document_category');
 		$this->assign("STYLE", $GLOBALS['style']);
+
+		$this->view->path = 'document_categories';
 		
 		$t = new CategoryTree(1);
 		//print_r($t->tree);
@@ -43,7 +45,7 @@ class C_DocumentCategory extends Controller {
 		$treeMenu = &new HTML_TreeMenu_DHTML($menu, array('images' => $this->base_dir.'images/stock', 'defaultClass' => 'treeMenuDefault'));
 		$this->assign("tree_html",$treeMenu->toHTML());
 		
-		return $this->fetch(Celini::getTemplatePath("document_categories/" . $this->template_mod . "_list.html"));
+		return $this->render("list.html"));
 	}
 	
 	function add_node_action($parent_is) {

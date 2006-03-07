@@ -28,6 +28,8 @@ class C_PersonSchedule extends CalendarController {
 		$this->assign("FORM_ACTION", Celini::link(true) . $_SERVER['QUERY_STRING']);
 		$this->assign("TOP_ACTION", "don't use me");
 		$this->assign("DAY_ACTION", Celini::link('day_action'));
+
+		$this->view->path = 'locations';
 	}
 
 	function actionDefault() {
@@ -47,7 +49,7 @@ class C_PersonSchedule extends CalendarController {
 		$r = new Room();
 		$this->assign("rooms",$r->rooms_factory());
 		
-		return $this->view->fetch("locations/" . $this->template_mod . "_list.html");
+		return $this->view->render("list.html");
 	}
 	
 	function actionSchedule_list() {
@@ -55,7 +57,7 @@ class C_PersonSchedule extends CalendarController {
 		$c = new Schedule();
 		$this->assign("schedules",$c->schedules_factory());
 		
-		return $this->view->fetch("locations/" . $this->template_mod . "_schedule_list.html");
+		return $this->view->render("schedule_list.html");
 	}
 		
 	function actionEdit_schedule($id = "",$date="") {
@@ -153,8 +155,8 @@ class C_PersonSchedule extends CalendarController {
 		$rowSpan = ceil((60*60)/$increment);
 		$this->assign('rowSpan',$rowSpan);
 
-		
-		return $this->view->fetch("person_schedules/" . $this->template_mod . "_edit_schedule.html");
+		$this->view->path = 'person_schedules';
+		return $this->view->render("edit_schedule.html");
 	}
 	
 	function processEdit_schedule() {
@@ -317,7 +319,7 @@ class C_PersonSchedule extends CalendarController {
 		$this->assign("message",$message);
 		$this->assign("allow_delete",$allow_delete);
 		$this->assign("DELETE_ACTION", Celini::link("delete",true) . "id=$id&object_class=$object_class");
-		return $this->view->fetch("locations/" . $this->template_mod . "_delete.html");
+		return $this->view->render("delete.html");
 	}
 	
 	function processDelete($id = "",$object_class ="") {
@@ -365,7 +367,7 @@ class C_PersonSchedule extends CalendarController {
 		if ($error) {
 			$this->assign("error",true);
 			$this->_state = false;
-			return $this->view->fetch("locations/" . $this->template_mod . "_delete.html");	
+			return $this->view->render("delete.html");
 		}
 		$trail =& Celini::trailInstance();
 		$trail->skipActions = array('delete');
@@ -458,8 +460,9 @@ class C_PersonSchedule extends CalendarController {
 		
 		$this->assign_by_ref("sidebar_months",$months);
 		$this->assign("LINK_BASE",Celini::link('edit_schedule') . "id=" . $id . "&");
-		 
-		return $this->view->fetch("person_schedules/" . $this->template_mod . "_sidebar.html");
+
+		$this->view->path = 'person_schedules';
+		return $this->view->render("sidebar.html");
 	}
 	
 }
