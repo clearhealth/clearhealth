@@ -112,7 +112,7 @@ class C_Document extends Controller {
 			$group_list = $document->getGroupList();
 			$this->assign("group_list",$group_list);
 
-			$activity .= $this->render("upload.html"));
+			$activity .= $this->render("upload.html");
 		}
 		$this->assign("activity", $activity);
 
@@ -225,7 +225,7 @@ class C_Document extends Controller {
 		$this->assign('VIEW_LINK',substr($l,0,strlen($l)-1)."/");
 
 
-		return $this->render("viewCategory.html"));
+		return $this->render("viewCategory.html");
 	}
 
 	function &_build_category_view($array,$category_names) {
@@ -271,7 +271,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		$activity = $this->render("view.html"));
+		$activity = $this->render("view.html");
 		$this->assign("activity", $activity);
 		
 		return $this->list_action_view($project_id);
@@ -346,7 +346,7 @@ class C_Document extends Controller {
 		
 		$this->assign("tree_html_listbox",$treeMenu_listbox->toHTML());
 		
-		return $this->render("queue.html"));
+		return $this->render("queue.html");
 	}
 	
 	function move_action_process($project_id="",$document_id) {
@@ -450,7 +450,7 @@ class C_Document extends Controller {
 		$this->assign("GROUP_ACTION", Celini::ManagerLink('changeGroup',$this->id).$_SERVER['QUERY_STRING']);
 
 		
-		return $this->render("list.html"));
+		return $this->render("list.html");
 	}
 	
 	/*
@@ -565,7 +565,7 @@ class C_Document extends Controller {
 		$this->assign('LIST_ACTION',Celini::link('list',true,true,$this->id));
 		$this->assign('categories',$this->_pullCats);
 		$this->assign('parent',$parent_id);
-		return $this->render("multiUpload.html"));
+		return $this->render("multiUpload.html");
 	}
 
 	function multi_upload_action_process($project_id) {
