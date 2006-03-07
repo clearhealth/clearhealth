@@ -108,7 +108,7 @@ class C_User extends Controller {
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->view->render("list.html"));
+		return $this->view->render("list.html");
 	}
 
 
