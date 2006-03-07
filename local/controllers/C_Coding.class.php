@@ -124,7 +124,7 @@ class C_Coding extends Controller {
 		$this->assign_by_ref("code_list", $code_list);
 	//	echo "DEBUG C_Coding: code_list <br>\n";
 	//	printf('<pre>%s</pre>', var_export($code_list , true));
-		return $this->render("update.html");
+		return $this->view->render("update.html");
 	}
 	
 	function update_action_process(){
