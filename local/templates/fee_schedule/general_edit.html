@@ -22,8 +22,7 @@
 </script>
 {/literal}
 {clni_register_message_target targetId="messageTarget" formId="h3sform"}
-{clni_register_validation id="feeSchedule__name" rules="alphanum" message="Names may not contain spaces"}
-{clni_register_validation id="feeSchedule__name" rules="alphastart" message="Names may not contain spaces"}
+{clni_register_validation id="feeSchedule__name" rules="alphanum|alphastart" message="Names may not contain spaces"}
 {if ($feeSchedule->get('id') > 0)}
 {clni_register_validation_rule id="default_value" rule="confirm"}
 {/if}

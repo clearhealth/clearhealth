@@ -160,7 +160,7 @@ class C_Patient extends Controller {
 			$this->data['ordo'] = array();
 		}
 		else if ($this->GET->exists('fromSnapshot')) {
-			$rs =& Celini::newOrdo('reportSnapshot',$this->GET->get('fromSnapshot'));
+			$rs =& Celini::newOrdo('ReportSnapshot',$this->GET->get('fromSnapshot'));
 			$this->data = unserialize($rs->get('data'));
 			$fromSnapshot = true;
 		}
