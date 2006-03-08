@@ -76,6 +76,10 @@ class FeeScheduleData extends ORDataObject {
 	function set_code_id($id)  {
 		$this->id = $id;
 	}
+	
+	function get_revision_id() {
+		return 0;
+	}
 
 	/**#@-*/
 }
