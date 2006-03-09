@@ -21,7 +21,7 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 						left join fee_schedule_discount d on d.practice_id = p.id",
 				'orderby' => 'practice'
 			),
-			array('practice' => 'Practice','name'=>'Fee Scheudle Discount','edit'=>false));
+			array('practice' => 'Practice','name'=>'Fee Schedule Discount','edit'=>false));
 	
 		$this->registerFilter('edit',array(&$this,'editLink'));
 	}
