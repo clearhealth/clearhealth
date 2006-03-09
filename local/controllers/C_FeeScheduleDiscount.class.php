@@ -21,6 +21,8 @@ class C_FeeScheduleDiscount extends Controller {
 	function actionAdd() {
 		$practiceId = $this->GET->getTyped('practiceId','int');
 	
+			
+	
 		$p =& Celini::newOrdo('Practice',$practiceId);
 		$pName = $p->get('name');
 
@@ -38,7 +40,8 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 
 		$db = new clniDb();
-
+		
+		
 
 		// where should this code live longterm, should i put it in a ds just so its in a standard place
 		$sql = "
@@ -100,8 +103,15 @@ class C_FeeScheduleDiscount extends Controller {
 
 	function process($data) {
 		
+		
 		$fsdId = $this->GET->get(0);
-
+		
+		$program = $data['insurance_program_id'];
+		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
+		$fsd->set('insurance_program_id',$program);
+		$fsd->persist();
+	
+		
 		$levels = $data['level'];
 		$originalLevels = $data['original_level'];
 		unset($data['level']);
