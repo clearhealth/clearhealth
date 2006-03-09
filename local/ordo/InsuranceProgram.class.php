@@ -193,5 +193,23 @@ class InsuranceProgram extends ORDataObject {
 
 		return $ds;
 	}
+	
+	function genericList(){
+				
+		$db = new clniDb();
+		$sql = "select insurance_program_id as id, name from insurance_program where 1";
+		$result = $db->execute($sql);
+		$programList = array();
+		while($result && !$result->EOF) {
+			$programList [$result->fields['id']] = $result->fields['name'] ;
+			$result->MoveNext();
+		}
+
+
+		return $programList;
+	}
+	
+	
+	
 }
 ?>
