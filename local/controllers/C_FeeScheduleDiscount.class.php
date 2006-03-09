@@ -110,7 +110,7 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 		$fsd->set('insurance_program_id',$program);
 		$fsd->persist();
-	
+		unset ($data['insurance_program_id']);
 		
 		$levels = $data['level'];
 		$originalLevels = $data['original_level'];
