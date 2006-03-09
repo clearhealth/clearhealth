@@ -11,7 +11,6 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 	 * @var string
 	 */
 	var $_type = 'html';
-//EW-NOTE: I edited the first and second ar
 
 	function FeeScheduleDiscount_DS() {
 		$this->setup(Celini::dbInstance(),
@@ -21,7 +20,7 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 						left join fee_schedule_discount d on d.practice_id = p.id",
 				'orderby' => 'practice'
 			),
-			array('practice' => 'Practice','name'=>'Fee Schedule Discount','edit'=>false));
+			array('practice' => 'Practice','edit'=>false));
 	
 		$this->registerFilter('edit',array(&$this,'editLink'));
 	}
@@ -32,5 +31,6 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 		}
 		return '<a href="'.Celini::link('edit','FeeScheduleDiscount',true,$fsdId).'">Edit Discount Table</a>';
 	}
+
 }
 
