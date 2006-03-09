@@ -390,14 +390,14 @@ class Practice extends ORDataObject{
 			
 			$db = new clniDb();
 			$sql = "select id, name from practices where 1";
-			$result = $db;
-			
+			$result = $db->execute($sql);
+			$practiceList = array();
 			while($result && !$result->EOF) {
 				$practiceList [$result->fields['id']] = $result->fields['name'] ;
 				$result->MoveNext();
 			}
 			
-			$this->view->assign('practiceList',$practiceList);
+			
 			return $practiceList;
 	}
 
