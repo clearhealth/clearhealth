@@ -5,16 +5,22 @@ class C_FeeScheduleDiscount extends Controller {
 	function actionList() {
 
 		$ds = new FeeScheduleDiscount_DS();
-
 		$grid =& new cGrid($ds);
-
+					
+		$this->view->assign_by_ref('fsd', Celini::newORDO('FeeScheduleDiscount'));
+		$this->view->assign('ADD_ACTION', Celini::link('add', 'FeeScheduleDiscount'));
+		
 		$this->view->assign_by_ref('grid',$grid);
 		return $this->view->render('list.html');
 	}
-
+	
+	
+	
+	
+	
 	function actionAdd() {
 		$practiceId = $this->GET->getTyped('practiceId','int');
-
+	
 		$p =& Celini::newOrdo('Practice',$practiceId);
 		$pName = $p->get('name');
 
@@ -32,6 +38,7 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 
 		$db = new clniDb();
+
 
 		// where should this code live longterm, should i put it in a ds just so its in a standard place
 		$sql = "
@@ -61,6 +68,8 @@ class C_FeeScheduleDiscount extends Controller {
 		$familySize = array_values($familySize);
 
 
+
+
 		// default case
 		if (count($cells) == 0) {
 			$familySize = array(1,2,3,4,5,6,7,8,9,10);
@@ -75,7 +84,8 @@ class C_FeeScheduleDiscount extends Controller {
 
 		$numLevels = count($discountLevels);
 		$maxFamilySize = count($familySize);
-
+		
+		
 		$this->view->assign('familySize',$familySize);
 		$this->view->assign('discountLevels',$discountLevels);
 		$this->view->assign('maxFamilySize',$maxFamilySize);
@@ -89,6 +99,7 @@ class C_FeeScheduleDiscount extends Controller {
 	}
 
 	function process($data) {
+		
 		$fsdId = $this->GET->get(0);
 
 		$levels = $data['level'];
