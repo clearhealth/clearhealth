@@ -26,6 +26,7 @@ class FeeScheduleDiscount extends ORDataObject {
 	 */
 	var $_key = 'fee_schedule_discount_id';
 
-	var $_foreignKeyList = array('practice_id' => 'Practice');
+	var $_foreignKeyList = array('practice_id' => 'Practice','insurance_program_id' => 'InsuranceProgram');
+	
 }
 ?>
