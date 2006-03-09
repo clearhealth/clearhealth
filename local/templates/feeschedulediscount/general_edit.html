@@ -19,7 +19,7 @@ var currentMaxFamilySize = {$maxFamilySize}
 {literal}
 function discountLevelEditor(form) { this.form = form; }
 discountLevelEditor.prototype = {
-	updateNumRows: function(rows) 
+	updateNumRows: function(rows)
 	{
 		var rows = new Number(rows); // i was having casting problems
 		var length = this.table().tBodies[0].rows.length;
@@ -41,7 +41,7 @@ discountLevelEditor.prototype = {
 			}
 		}
 	},
-	updateNumCols: function(cols) 
+	updateNumCols: function(cols)
 	{
 		var cols = new Number(cols)+1;
 		var width = this.table().rows[0].cells.length;
@@ -64,7 +64,7 @@ discountLevelEditor.prototype = {
 			}
 		}
 	},
-	table: function() 
+	table: function()
 	{
 		return this.form.getElementsByTagName('table').item(0);
 	}
@@ -105,7 +105,11 @@ function updateSize(form) {
 <p>Editing Notes
 <ul>
 	<li>Size refers to family size</li>
-	<li>Column heading is the discount % to apply</li>
+	<li>Column heading can refer either to a % discount to apply or a flat fee to charge</li>
+	<ul>
+		<li>use a % symbol to indicate a percent discount (example: 10%)</li>
+		<li>use this format $##.00 to indicate a flat discounted fee (example: $10.00)</li>
+	</ul>
 	<li>Cells in the table body are the families monthly income</li>
 </ul>
 </p>
@@ -125,6 +129,7 @@ function updateSize(form) {
 			<td><label>Maximum family Size:</label></td>
 			<td><input name="FeeScheduleDiscount[maxFamilySize]" class="requiredNumber" value="{$maxFamilySize}" size=2></td>
 		</tr>
+
 		<tr>
 			<td></td>
 			<td><input type="submit" value="Update Editor"></td>
@@ -158,6 +163,23 @@ function updateSize(form) {
 	</tr>
 	{/foreach}
 	</tbody>
+
+
+
+</table>
+<table>
+<tr>
+<td>
+Associate an Insurance program:
+
+</td>
+<td>
+<select name="insurance_program">
+<option value=''>Default</option>
+{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
+</select>
+</td>
+</tr>
 </table>
 <br>
 <input type="submit" value="Update Discount Levels">
