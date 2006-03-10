@@ -168,18 +168,20 @@ function updateSize(form) {
 
 </table>
 <table>
-<tr>
-<td>
-Associate an Insurance program:
+	<tr>
+		<td>
+		Associate an Insurance program:
 
-</td>
-<td>
-<select name="insurance_program">
-<option value=''>Default</option>
-{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
-</select>
-</td>
-</tr>
+		</td>
+		<td>
+		<select name="FeeScheduleDiscount[insurance_program_id]">
+		<option value='-1'>No Program</option>
+		{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
+		</select>
+		<br>
+		Choose: No Program to make this your default.
+		</td>
+	</tr>
 </table>
 <br>
 <input type="submit" value="Update Discount Levels">
