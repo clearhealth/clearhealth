@@ -197,15 +197,14 @@ function updateSize(form) {
 		<td colspan="2">
 
 			<div id="default" style="font-size:12px;border:1px solid black;padding:5px; width:300px; display:none;{if $fsd->get('type') == "default"} display:block;. } {/if}">
-				{if $fsd->get('type') == "default"}
-					Your default fee schedule discount
-					will be used if you do not have one
-					specified for a particular insurance program
-				{else}
-				{if $defaultExists != 0}
+				{if $defaultExists != 0 && $fsd->get('type') != "default" }
 					Be aware, you allready have a fee shedule discount
 					specified as your default.
-				{/if}
+
+				{else}
+					Your default fee schedule discount
+					will be used if you do not have one
+					specified for a particular insurance program.
 				{/if}
 
 			</div>
