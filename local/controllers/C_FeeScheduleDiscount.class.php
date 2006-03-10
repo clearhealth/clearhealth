@@ -40,8 +40,7 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 
 		$db = new clniDb();
-		
-		
+			
 
 		// where should this code live longterm, should i put it in a ds just so its in a standard place
 		$sql = "
@@ -105,28 +104,54 @@ class C_FeeScheduleDiscount extends Controller {
 		
 		
 		$fsdId = $this->GET->get(0);
-		
+		$type = $data['type'];	
 		$program = $data['insurance_program_id'];
+				
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 		$practice_id = $fsd->practice_id;
 		
+		unset ($data['insurance_program_id']);
+		unset ($data['type']);
 		
 		//error checking
 		$db = new clniDb();
 		
+		if($type == 'program'){
 		
-		$sql="select count(*) as count from fee_schedule_discount where insurance_program_id = $program and practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
-		$result=$db->execute($sql);
-		if( $result->fields['count'] > 0){
-			//this means there is allready a schedule for that program 
-			$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
-			unset ($data['insurance_program_id']);
+			$sql="select count(*) as count from fee_schedule_discount where insurance_program_id = $program and practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
+					$result=$db->execute($sql);
+					if( $result->fields['count'] > 0){
+						//this means there is allready a schedule for that program 
+						$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
+
+					}else{
+
+					$fsd->set('insurance_program_id',$program);
+					
+
+			}
+				
 		}else{
+		
+			$sql="select count(*) as count from fee_schedule_discount where type = 'default' and  practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
+			$result = $db->execute($sql);
+			if($result->fields['count'] > 0){
+				$this->messages->addMessage('Conflict', 'You have allready designated another Fee Schedule Discount as Default');
+
+				
+			}else{
 			
-		$fsd->set('insurance_program_id',$program);
-		$fsd->persist();
-		unset ($data['insurance_program_id']);
+				$fsd->set('insurance_program_id','0');
+				
+			}
+			
 		}
+		
+		$fsd->set('type',$type);
+		$fsd->persist();
+		
+		
+		
 		
 		$levels = $data['level'];
 		$originalLevels = $data['original_level'];
