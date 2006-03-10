@@ -167,21 +167,43 @@ function updateSize(form) {
 
 
 </table>
-<table>
+<table >
 	<tr>
-		<td>
-		Associate an Insurance program:
 
+		<td>
+		<label><input name="FeeScheduleDiscount[type]" type="radio" value="default"
+			{if $fsd->get('type') == "default"}
+			 checked.
+			 }
+			 {/if}
+
+			onclick="document.getElementById('program').style.display='none';document.getElementById('default').style.display='block';" />
+			Default</label>
+		<label>
 		</td>
 		<td>
-		<select name="FeeScheduleDiscount[insurance_program_id]">
-		<option value='-1'>No Program</option>
-		{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
-		</select>
-		<br>
-		Choose: No Program to make this your default.
+		<input name="FeeScheduleDiscount[type]" type="radio" value="program"
+			onclick="document.getElementById('default').style.display='none';document.getElementById('program').style.display='block';" />
+			Program</label>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="2">
+			<div id="default" style="font-size:12px;border:1px solid black;padding:5px; width:200px; display:none;">
+				Your default fee schedule discount will be used if you do not have one specified for a particular insurance program
+			</div>
+			<div id="program" style=" width:200px; display:none;">
+					Select a program
+					<select name="FeeScheduleDiscount[insurance_program_id]">
+							<option value=''>Choose...</option>
+							{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
+					</select>
+			</div>
+
+		</td>
+	</tr>
+
+
 </table>
 <br>
 <input type="submit" value="Update Discount Levels">
