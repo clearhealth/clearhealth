@@ -40,6 +40,7 @@ class Person extends ORDataObject {
 	var $identifier		= '';
 	var $identifier_type	= '';
 	var $marital_status	= '';
+	var $inactive = '';
 	/**#@-*/
 
 	var $nameHistory = false;
@@ -114,7 +115,7 @@ class Person extends ORDataObject {
 	}
 
 	/**
-	 * helper function for lookup, matchn an id with initials
+	 * Helper function for lookup, match an id with initials
 	 */
 	function _lookupInitials($key) {
 		if ($this->_lookupi === false) {

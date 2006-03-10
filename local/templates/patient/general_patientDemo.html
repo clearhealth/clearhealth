@@ -66,11 +66,16 @@
 				<td>
 					<label>{l}Default Provider{/l}:</label>
 				</td>
-				<td colspan="3">
+				<td>
 					<select name="person[default_provider]" id="default_provider">
 						<option></option>
 						{html_options options=$providers_array selected=$person->get('default_provider')}
 					</select>&nbsp;&nbsp;
+				</td>
+				<td colspan="2">
+					{l}Inactive{/l}:&nbsp;
+					<input name="person[inactive]" type="radio" value="1" {if $person->get('inactive') == 1}checked="checked"{/if} />{l}Yes{/l}
+					<input name="person[inactive]" type="radio" value="0" {if $person->get('inactive') != 1}checked="checked"{/if} />{l}No{/l}
 				</td>
 			</tr>
 			<tr>
