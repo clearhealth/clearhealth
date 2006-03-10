@@ -119,7 +119,7 @@ class C_FeeScheduleDiscount extends Controller {
 		$result=$db->execute($sql);
 		if( $result->fields['count'] > 0){
 			//this means there is allready a schedule for that program 
-			$this->messages->addMessage('Insurance program conflic', 'Please choose another insurance program');
+			$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
 			unset ($data['insurance_program_id']);
 		}else{
 			
