@@ -108,9 +108,25 @@ class C_FeeScheduleDiscount extends Controller {
 		
 		$program = $data['insurance_program_id'];
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
+		$practice_id = $fsd->practice_id;
+		
+		
+		//error checking
+		$db = new clniDb();
+		
+		
+		$sql="select count(*) as count from fee_schedule_discount where insurance_program_id = $program and practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
+		$result=$db->execute($sql);
+		if( $result->fields['count'] > 0){
+			//this means there is allready a schedule for that program 
+			$this->messages->addMessage('Insurance program conflic', 'Please choose another insurance program');
+			unset ($data['insurance_program_id']);
+		}else{
+			
 		$fsd->set('insurance_program_id',$program);
 		$fsd->persist();
 		unset ($data['insurance_program_id']);
+		}
 		
 		$levels = $data['level'];
 		$originalLevels = $data['original_level'];
