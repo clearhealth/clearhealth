@@ -173,7 +173,7 @@ function updateSize(form) {
 		<td>
 		<label><input name="FeeScheduleDiscount[type]" type="radio" value="default"
 			{if $fsd->get('type') == "default"}
-			 checked.
+			 checked="checked"
 			 }
 			 {/if}
 
@@ -185,7 +185,7 @@ function updateSize(form) {
 		<label>
 		<input name="FeeScheduleDiscount[type]" type="radio" value="program"
 			{if $fsd->get('type') == "program"}
-			 checked.
+			 checked="checked"
 			 }
 			 {/if}
 
