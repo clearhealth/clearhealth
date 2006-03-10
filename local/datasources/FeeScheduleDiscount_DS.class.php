@@ -26,7 +26,7 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 			array('practice' => 'Practice','progName'=>'Insurance Program','edit'=>false));
 	
 		$this->registerFilter('edit',array(&$this,'editLink'));
-	echo $this->preview();//debug
+
 	}
 
 	function editLink($fsdId,$row) {
