@@ -11,21 +11,22 @@ class FeeScheduleDiscount_DS extends Datasource_sql
 	 * @var string
 	 */
 	var $_type = 'html';
-
+	
 	function FeeScheduleDiscount_DS() {
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "p.name as practice,d.name as 'dname',d.insurance_program_id, 
-							  i.name 
+				'cols'    => "p.name as practice,d.name ,d.insurance_program_id, 
+							   IF (i.name IS NULL, 'Default', i.name) as 'progName'
 							 ,p.id practice_id, d.fee_schedule_discount_id edit",
 				'from'    => "practices p
 						left join fee_schedule_discount d on d.practice_id = p.id
 						left join insurance_program i on d.insurance_program_id = i.insurance_program_id",
 				'orderby' => 'practice'
 			),
-			array('practice' => 'Practice','name'=>'Insurance Program','edit'=>false));
+			array('practice' => 'Practice','progName'=>'Insurance Program','edit'=>false));
 	
 		$this->registerFilter('edit',array(&$this,'editLink'));
+	echo $this->preview();//debug
 	}
 
 	function editLink($fsdId,$row) {
