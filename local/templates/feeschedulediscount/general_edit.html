@@ -195,18 +195,32 @@ function updateSize(form) {
 	</tr>
 	<tr>
 		<td colspan="2">
-			<div id="default" style="font-size:12px;border:1px solid black;padding:5px; width:200px; display:none;">
-				Your default fee schedule discount will be used if you do not have one specified for a particular insurance program
+
+			<div id="default" style="font-size:12px;border:1px solid black;padding:5px; width:300px; display:none;{if $fsd->get('type') == "default"} display:block;. } {/if}">
+				{if $fsd->get('type') == "default"}
+					Your default fee schedule discount
+					will be used if you do not have one
+					specified for a particular insurance program
+				{else}
+				{if $defaultExists != 0}
+					Be aware, you allready have a fee shedule discount
+					specified as your default.
+				{/if}
+				{/if}
+
 			</div>
-			<div id="program" style=" width:200px;
+
+			<div id="defaultExists" style="font-size:12px;border:1px solid black;padding:5px; width:300px; display:none ;">
 
 
-			display:none; {if $fsd->get('type') == "program"} display:block;. } {/if} ">
+			</div>
+
+			<div id="program" style=" width:300px;display:none; {if $fsd->get('type') == "program"} display:block;. } {/if} ">
 					Select a program
-					<select name="FeeScheduleDiscount[insurance_program_id]">
-							<option value=''>Choose...</option>
-							{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
-					</select>
+				<select name="FeeScheduleDiscount[insurance_program_id]">
+						<option value=''>Choose...</option>
+						{html_options options=$fsd->valueList('insurance_program_id') selected=$fsd->get('insurance_program_id') }
+				</select>
 			</div>
 
 		</td>
