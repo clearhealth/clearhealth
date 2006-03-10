@@ -40,7 +40,14 @@ class C_FeeScheduleDiscount extends Controller {
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 
 		$db = new clniDb();
-			
+		
+		
+		$practiceId = $fsd->practice_id;
+		
+		$sql = "SELECT count(*) AS count FROM fee_schedule_discount WHERE practice_id = $practiceId and type = 'default'";
+		$result = $db->execute($sql);
+		$this->view->assign('defaultExists',$result->fields['count']);
+
 
 		// where should this code live longterm, should i put it in a ds just so its in a standard place
 		$sql = "
