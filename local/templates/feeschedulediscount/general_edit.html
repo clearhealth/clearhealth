@@ -184,6 +184,11 @@ function updateSize(form) {
 		<td>
 		<label>
 		<input name="FeeScheduleDiscount[type]" type="radio" value="program"
+			{if $fsd->get('type') == "program"}
+			 checked.
+			 }
+			 {/if}
+
 			onclick="document.getElementById('default').style.display='none';document.getElementById('program').style.display='block';" />
 			Program</label>
 		</td>
@@ -193,7 +198,10 @@ function updateSize(form) {
 			<div id="default" style="font-size:12px;border:1px solid black;padding:5px; width:200px; display:none;">
 				Your default fee schedule discount will be used if you do not have one specified for a particular insurance program
 			</div>
-			<div id="program" style=" width:200px; display:none;">
+			<div id="program" style=" width:200px;
+
+
+			display:none; {if $fsd->get('type') == "program"} display:block;. } {/if} ">
 					Select a program
 					<select name="FeeScheduleDiscount[insurance_program_id]">
 							<option value=''>Choose...</option>
