@@ -127,8 +127,7 @@ class C_FeeScheduleDiscount extends Controller {
 					}else{
 
 					$fsd->set('insurance_program_id',$program);
-					
-
+					$fsd->set('type',$type);
 			}
 				
 		}else{
@@ -142,12 +141,12 @@ class C_FeeScheduleDiscount extends Controller {
 			}else{
 			
 				$fsd->set('insurance_program_id','0');
-				
+				$fsd->set('type',$type);
 			}
 			
 		}
 		
-		$fsd->set('type',$type);
+		
 		$fsd->persist();
 		
 		
