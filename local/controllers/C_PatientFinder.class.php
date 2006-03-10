@@ -92,6 +92,9 @@ class C_PatientFinder extends Controller {
 			$sql = $this->search_by_FullName($sql,$search_string);
 		}
 
+		if(!isset($_POST['search_inactive']) || $_POST['search_inactive'] != 1){
+			$sql = str_replace('WHERE', 'WHERE inactive = 0 AND', $sql);
+		}
 		
 		//print "SQL is $sql \n";
 		$result_array = $this->_db->GetAll($sql);

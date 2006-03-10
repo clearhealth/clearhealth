@@ -34,7 +34,7 @@ a {
 <form name="patientfinder" method="post" action="{$FORM_ACTION}">
 <table>
 	<tr>
-		<td colspan="2"><div class="tooltip">
+		<td><div class="tooltip">
 				{l}Search{/l}:
 				<div class="tooltipMessage">
 					<b>Search Options:</b><br>
@@ -49,6 +49,13 @@ a {
 		</td>
 		<td>
 			<input type="text" size="40" name="searchstring" value=""/>&nbsp;&nbsp;<input type="submit" value="search"/>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			{l}Search Inactive{/l}:
+			<input type="checkbox" id="search_inactive" name="search_inactive" value="1" />
 		</td>
 	</tr>
 </table>
