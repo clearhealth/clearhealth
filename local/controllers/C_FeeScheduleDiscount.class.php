@@ -15,9 +15,6 @@ class C_FeeScheduleDiscount extends Controller {
 	}
 	
 	
-	
-	
-	
 	function actionAdd() {
 		$practiceId = $this->GET->getTyped('practiceId','int');
 	
@@ -36,23 +33,18 @@ class C_FeeScheduleDiscount extends Controller {
 
 	function actionEdit($fsdId) {
 		$fsdId = EnforceType::int($fsdId);
-
 		$fsd =& Celini::newOrdo('FeeScheduleDiscount',$fsdId);
 
 		$db = new clniDb();
-		
-		
 		$practiceId = $fsd->practice_id;
-		
 		$sql = "SELECT count(*) AS count FROM fee_schedule_discount WHERE practice_id = $practiceId and type = 'default'";
 		$result = $db->execute($sql);
 		$this->view->assign('defaultExists',$result->fields['count']);
 
-
 		// where should this code live longterm, should i put it in a ds just so its in a standard place
 		$sql = "
 		select
-			fsdi.family_size, fsdi.fee_schedule_discount_id level, fsdi.income, fsdl.discount, fsdl.disp_order
+			fsdi.family_size, fsdi.fee_schedule_discount_id level, fsdi.income, fsdl.discount,fsdl.type, fsdl.disp_order
 		from
 			fee_schedule_discount_income fsdi
 			inner join fee_schedule_discount_level fsdl using(fee_schedule_discount_level_id)
@@ -70,14 +62,17 @@ class C_FeeScheduleDiscount extends Controller {
 			$l = $res->fields['disp_order'];
 			$fs = ($res->fields['family_size']-1);
 			$cells[$fs][$l] = array('size'=>$fs,'level'=>$l,'value'=>$res->fields['income']);
-			$discountLevels[$res->fields['disp_order']] = round($res->fields['discount']); // should really only round if were .00
+			if($res->fields['type'] == 'percent'){
+				$discountLevels[$res->fields['disp_order']] = round($res->fields['discount']);//; // should really only round if were .00
+			}else{
+				$discountLevels[$res->fields['disp_order']] = $res->fields['discount'];//round(); // should really only round if were .00
+			
+			}
+			
 			$familySize[$res->fields['family_size']] = $res->fields['family_size'];
 			$res->MoveNext();
 		}
 		$familySize = array_values($familySize);
-
-
-
 
 		// default case
 		if (count($cells) == 0) {
@@ -93,17 +88,15 @@ class C_FeeScheduleDiscount extends Controller {
 
 		$numLevels = count($discountLevels);
 		$maxFamilySize = count($familySize);
-		
-		
+				
 		$this->view->assign('familySize',$familySize);
 		$this->view->assign('discountLevels',$discountLevels);
 		$this->view->assign('maxFamilySize',$maxFamilySize);
 		$this->view->assign('numLevels',$numLevels);
 		$this->view->assign('cells',$cells);
-
 		$this->view->assign('FORM_ACTION',Celini::link(true,true,true,$fsdId));
-
 		$this->view->assign_by_ref('fsd',$fsd);
+		
 		return $this->view->render('edit.html');
 	}
 
@@ -126,39 +119,29 @@ class C_FeeScheduleDiscount extends Controller {
 		if($type == 'program'){
 		
 			$sql="select count(*) as count from fee_schedule_discount where insurance_program_id = $program and practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
-					$result=$db->execute($sql);
-					if( $result->fields['count'] > 0){
-						//this means there is allready a schedule for that program 
-						$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
-
-					}else{
-
-					$fsd->set('insurance_program_id',$program);
-					$fsd->set('type',$type);
+			$result=$db->execute($sql);
+			if( $result->fields['count'] > 0){
+				//this means there is allready a schedule for that program 
+				$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
+			}else{
+				$fsd->set('insurance_program_id',$program);
+				$fsd->set('type',$type);
 			}
 				
 		}else{
-		
 			$sql="select count(*) as count from fee_schedule_discount where type = 'default' and  practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
 			$result = $db->execute($sql);
 			if($result->fields['count'] > 0){
 				$this->messages->addMessage('Conflict', 'You have allready designated another Fee Schedule Discount as Default');
-
-				
 			}else{
-			
 				$fsd->set('insurance_program_id','0');
 				$fsd->set('type',$type);
 			}
-			
 		}
 		
-		
 		$fsd->persist();
-		
-		
-		
-		
+
+		///below this pertains to fsdl//
 		$levels = $data['level'];
 		$originalLevels = $data['original_level'];
 		unset($data['level']);
@@ -169,6 +152,13 @@ class C_FeeScheduleDiscount extends Controller {
 			$fsdl =& Celini::newOrdo('FeeScheduleDiscountLevel',array($fsdId,$discount),'byDiscount');
 			$fsdl->set('disp_order',$key);
 			$fsdl->set('discount', $levels[$key]);
+					
+			if(strstr($levels[$key],".")){
+				$fsdl->set('type','flat');
+			}else{
+				$fsdl->set('type','percent');
+			}
+			
 			$fsdl->persist();
 
 			$levelMap[$key] = $fsdl->get('id');
