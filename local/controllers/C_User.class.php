@@ -88,7 +88,7 @@ class C_User extends Controller {
 	 * List Users
 	 */
 	function list_action_view() {
-		$person =& ORDataObject::factory('Person');
+		$person =& Celini::newORDO('Person');
 
 		$em =& Celini::enumManagerInstance();
 		$list =& $em->enumList('person_type');
