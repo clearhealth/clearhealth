@@ -13,6 +13,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 	var $fee_schedule_discount_level_id	= '';
 	var $fee_schedule_discount_id		= '';
 	var $discount				= '';
+	var $type					= '';
 	var $disp_order				= '';
 	/**#@-*/
 
@@ -31,9 +32,16 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 	function setupByDiscount($fsdId,$discount) {
 		$fsdId = EnforceType::int($fsdId);
 		$discountQ = $this->dbHelper->quote($discount);
+	
 		$table = $this->tableName();
-
+		//TODO fix this.
+		if(strstr($discountQ,".")){
+			$sql = "select * from $table where fee_schedule_discount_id = $fsdId and discount like $discountQ";
+		}else{
+		
 		$sql = "select * from $table where fee_schedule_discount_id = $fsdId and discount = $discountQ";
+		}
+		
 		$res = $this->dbHelper->execute($sql);
 
 		$this->helper->populateFromResults($this,$res);
