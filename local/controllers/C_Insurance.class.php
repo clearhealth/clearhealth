@@ -82,7 +82,7 @@ class C_Insurance extends Controller {
 		$this->assign('funds_source',$m->enumArray('funds_source'));
 
 
-		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_edit.html"));
+		return $this->view->render('edit.html');
 	}
 
 	/**
@@ -99,7 +99,7 @@ class C_Insurance extends Controller {
 
 
 
-		return $this->fetch(Celini::getTemplatePath("/insurance/" . $this->template_mod . "_list.html"));
+		return $this->view->render('list.html');
 	}
 }
 ?>
