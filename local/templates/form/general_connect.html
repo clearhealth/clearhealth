@@ -62,15 +62,18 @@
 	<fieldset>
 		<fieldset class="radio">
 			<legend>{l}Select Menu Section{/l}</legend>
-			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
+			<table border="1"><tr>
+			{foreach name="menu_list" "from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
-					{if $notfirst}<br>{/if}
-					{assign var=notfirst value=1}
-					<b>{$menu}</b><br>
+					{if $smarty.foreach.menu_list.first ne true}</td>{/if}
+					<td valign="top"><b>{$menu}</b><br>
 				{else}
-				<input onChange="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}"><label class="cb" for="r{$menu_id}">{$menu}</label><br>
+				<input onChange="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}" style="display:inline;"><label style="display:inline;" class="cb" for="r{$menu_id}">{$menu}</label><br>
 				{/if}
+				{if $smarty.foreach.menu_list.last eq true}</td>{/if}
 			{/foreach}
+			</tr>
+			</table>
 		</fieldset>
 
 		<fieldset class="radio" id="update" style="display:none">
