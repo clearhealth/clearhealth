@@ -1,4 +1,21 @@
 	{assign var="detail_section_title" value="Patient Details"}
+	{literal}
+	<script language="javascript">
+		// This code is intended to update the patient field on the calendar page when
+		// a new patient is added from a pop-up window
+		function updateParent() {
+			if(opener != null && !opener.closed) {
+				var fname = document.getElementById('first_name').value;
+				var lname = document.getElementById('last_name').value;
+				var rn = document.getElementById('record_number').value;
+				var dest = opener.document.getElementById('patient_name_1');
+				if(fname != '' && lname != '' && rn != '') {
+					dest.value = lname + ', ' + fname + ' #' + rn;
+				}
+			}
+		}
+	</script>
+	{/literal}
 	<fieldset class="radio" id="person">
 		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
 			{clni_section_links name="detail"}
@@ -110,7 +127,7 @@
 		    {/if}
 			<tr>
 				<td></td>
-				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit"></td>
+				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit" onClick="updateParent();"></td>
 			</tr>
 			</tbody>
 		</table>

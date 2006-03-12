@@ -6,6 +6,13 @@
 <script type='text/javascript' src='{$base_dir}index.php/ajax?stub=PatientFinder'></script>
 {literal}
 <script language="javascript">
+	function newPatient() {
+		var patientEditURL = '{/literal}{link controller='Patient' action='edit' pageType='minimal'}{literal}';
+		var URL = patientEditURL+'patient_id=0&view=narrow';
+		var subWin = window.open(URL, 'subWin', 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');
+		subWin.opener = self;
+	}
+
 function captureEnter (field, event) {
 		var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
 		if (keyCode == 13) {
@@ -105,7 +112,7 @@ var clni_ignore_missing_elements = true;
 				<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
 				</tr>
 				<tr>
-					<td colspan="2" id="ghide1">{l}Patient{/l}&nbsp;&nbsp;<a href="{php}echo Celini::link("edit","patient");{/php}">{l}New{/l}</a>&nbsp;&nbsp;
+					<td colspan="2" id="ghide1">{l}Patient{/l}&nbsp;&nbsp;<a href="javascript:newPatient();">{l}New{/l}</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
@@ -215,7 +222,7 @@ Reason {html_options name="reason_id" options=$appointment_reasons selected=$edi
 				<td colspan="2"><input type="text" name="notes" size="15" value="{$edit_oc->get_notes()}"></td>
 				</tr>
 				<tr>
-				<td colspan="2" id="ghide3">{l}Patient{/l}&nbsp;&nbsp;<a href="{php}echo Celini::link("edit","patient");{/php}" target="_top">New</a>&nbsp;&nbsp;
+				<td colspan="2" id="ghide3">{l}Patient{/l}&nbsp;&nbsp;<a href="javascript:newPatient();">New</a>&nbsp;&nbsp;
 					</td>
 				</tr>
 				<tr>
