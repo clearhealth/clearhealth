@@ -22,9 +22,10 @@ class Address extends ORDataObject {
 	var $type		= '';
 	var $_parent = false;
 	var $storage_metadata = array(
-									'int' => array('returned_mail'=>0)
-								);
-
+		'int' => array('returned_mail'=> 0), 
+		'date' => array(),
+		'string' => array()
+	);
 
 	function Address($db = null) {
 		parent::ORDataObject($db);
@@ -197,7 +198,7 @@ class Address extends ORDataObject {
 	    $city = $this->get('city');
 	    $state = $this->get('stateInitials');
 	    $postal_code = $this->get('postal_code');
-			$returned_mail = $this->get('returned_mail');
+		$returned_mail = $this->get('returned_mail');
 	    $ret = "<div class='address'>$line1\n$line2\n<br>$city, $state $postal_code</div>";
 	    return $ret;
     }
@@ -220,13 +221,6 @@ class Address extends ORDataObject {
 	}
 	function set_zip($c) {
 		$this->postal_code = $c;
-	}
-
-	function get_returned_mail() {
-		return $this->returned_mail ;
-	}
-	function set_returned_mail($c) {
-		$this->returned_mail = $c ;
 	}
 
 	function get_notes() {
