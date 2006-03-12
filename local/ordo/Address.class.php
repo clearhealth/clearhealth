@@ -20,9 +20,10 @@ class Address extends ORDataObject {
 	var $postal_code	= '';
 	var $notes		= '';
 	var $type		= '';
-	var $returned_mail = array('int' => array('returned_mail'=>0)) ;
-
 	var $_parent = false;
+	var $storage_metadata = array(
+									'int' => array('returned_mail'=>0)
+								);
 
 
 	function Address($db = null) {
@@ -31,6 +32,7 @@ class Address extends ORDataObject {
 		$this->_sequence_name = "sequences";
 		$this->groups = array();
 	}
+	
 	function setup($id = 0,$parent = false, $parent_type = "person") {
 		if ($id !== 0) {
 			$this->set('id',$id);
