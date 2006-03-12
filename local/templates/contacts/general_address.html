@@ -65,6 +65,7 @@
                         <tr>
 				<td><label>{l}Notes{/l}:</label> </td>
 				<td colspan=3"><textarea name="address[notes]" rows="2" cols="35">{$address->get('notes')}</textarea><br />
+				<input id="returned_mail" type="hidden" name="address[returned_mail]" value='0'>
 				<input id="returned_mail" type="checkbox" name="address[returned_mail]" value='1' {if $address->get('returned_mail') > 0}CHECKED{/if} /> {l}Returned to Sender/Bad Address{/l}
 				</td>
                         </tr>
