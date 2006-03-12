@@ -189,7 +189,7 @@ class Practice extends ORDataObject{
 	 * Alias to get_id() to avoid JS reserved word conflict
 	 */
 	function get_practice_id() {
-		return $this->get_id;
+		return $this->get_id();
 	}
 	
 	
