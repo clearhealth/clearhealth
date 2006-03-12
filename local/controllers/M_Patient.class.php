@@ -234,10 +234,10 @@ class M_Patient extends Manager {
 			else {
 				unset($data['address_id']);
 			}
-			$number =& ORDataObject::factory('PersonAddress',$id,$patient_id);
-			$number->populate_array($data);
-			$number->persist();
-			$this->controller->address_id = $number->get('id');
+			$address =& ORDataObject::factory('PersonAddress',$id,$patient_id);
+			$address->helper->populateFromArray($address,$data);
+			$address->persist();
+			$this->controller->address_id = $address->get('id');
 
 			$this->messages->addMessage('Address Updated');
 		}
