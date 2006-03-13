@@ -118,5 +118,29 @@ class Provider extends MergeDecorator {
 		}
 		return $ret;
 	}
+
+	function valueList_username() {
+		$sql = 'SELECT
+				DISTINCT u.user_id, u.username
+			FROM
+				user AS u
+				INNER JOIN person AS p USING(person_id)
+				INNER JOIN person_type AS pt USING(person_id)
+				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
+				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
+			WHERE
+				ed.name = "person_type" AND
+				ev.value = "Provider" AND
+				p.inactive = 0
+			ORDER BY
+				u.username';
+		$res = $this->_execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['user_id']] = $res->fields['username'];
+			$res->moveNext();
+		}
+		return $ret;
+	}
 }
 ?>

@@ -483,8 +483,10 @@ class C_Calendar extends CalendarController {
 		
 		$locations=$r->rooms_practice_factory($pa->get_id());
 		$this->assign("rooms_practice_array",$locations,false);
-		$u = new User(null,null);
-		$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
+		//$u = new User(null,null);
+		//$this->assign("users_array",$this->utility_array($u->users_factory("provider"),"id","username"));
+		$provider =& Celini::newORDO('Provider');
+		$this->assign('users_array', $provider->valueList('username'));
 		if (isset($_SESSION['calendar']['filters']['user'])) {
 			$this->assign("selected_user",$_SESSION['calendar']['filters']['user']);
 		}
@@ -560,8 +562,8 @@ class C_Calendar extends CalendarController {
 	function search_action() {
 
 		$this->assign('search',$_POST);
-		$u = new User(null,null);
-		$this->assign("providers",$this->utility_array($u->users_factory("provider"),"id","username"));
+		$provider =& Celini::newORDO('Provider');
+		$this->assign('users_array', $provider->valueList('username'));
 
 		$p = new Practice();
 		$pa = $p->practices_factory();
