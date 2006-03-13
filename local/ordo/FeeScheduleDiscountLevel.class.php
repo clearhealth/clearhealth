@@ -36,12 +36,8 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		$discountQ = $this->dbHelper->quote($discount);
 	
 		$table = $this->tableName();
-		
-		
-		$sql = "select * from $table where fee_schedule_discount_id = $fsdId and discount = $discountQ";
-		
-		echo "$sql<br>";//debug
 				
+		$sql = "select * from $table where fee_schedule_discount_id = $fsdId and discount = $discountQ";
 		$res = $this->dbHelper->execute($sql);
 
 		$this->helper->populateFromResults($this,$res);
