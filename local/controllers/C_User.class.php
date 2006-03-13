@@ -120,7 +120,7 @@ class C_User extends Controller {
 
 		$this->assign_by_ref('user',$user);
 		
-		return $this->fetch(Celini::getTemplatePath("/user/" . $this->template_mod . "_password.html"));
+		return $this->view->render("password.html"));
 	}
 
 	function password_action_process() {
