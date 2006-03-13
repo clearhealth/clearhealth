@@ -31,7 +31,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 
 	function setupByDiscount($fsdId,$discount) {
 		$fsdId = EnforceType::int($fsdId);
-		
+		$discount = ereg_replace('\$|%',"",$discount);
 		$discountQ = $this->dbHelper->quote($discount);
 	
 		$table = $this->tableName();
@@ -55,6 +55,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		else{
 			$this->type = 'percent';
 		}
+		
 		$discount = ereg_replace('\$|%',"",$discount);
 		$this->discount = $discount;
 	}
