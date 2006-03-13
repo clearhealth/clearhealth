@@ -63,9 +63,9 @@ class C_FeeScheduleDiscount extends Controller {
 			$fs = ($res->fields['family_size']-1);
 			$cells[$fs][$l] = array('size'=>$fs,'level'=>$l,'value'=>$res->fields['income']);
 			if($res->fields['type'] == 'percent'){
-				$discountLevels[$res->fields['disp_order']] = round($res->fields['discount']);//; // should really only round if were .00
+				$discountLevels[$res->fields['disp_order']] = $res->fields['discount']."%";//round(); // should really only round if were .00
 			}else{
-				$discountLevels[$res->fields['disp_order']] = $res->fields['discount'];//round(); // should really only round if were .00
+				$discountLevels[$res->fields['disp_order']] = "$".$res->fields['discount'];//round(); // should really only round if were .00
 			
 			}
 			
@@ -77,7 +77,7 @@ class C_FeeScheduleDiscount extends Controller {
 		// default case
 		if (count($cells) == 0) {
 			$familySize = array(1,2,3,4,5,6,7,8,9,10);
-			$discountLevels = array(25,50,75,100);
+			$discountLevels = array('25.00%','50.00%','75.00%','100.00%');
 
 			foreach(array_keys($familySize) as $size) {
 				foreach(array_keys($discountLevels) as $level) {
@@ -151,14 +151,19 @@ class C_FeeScheduleDiscount extends Controller {
 		foreach($originalLevels as $key => $discount) {
 			$fsdl =& Celini::newOrdo('FeeScheduleDiscountLevel',array($fsdId,$discount),'byDiscount');
 			$fsdl->set('disp_order',$key);
-			$fsdl->set('discount', $levels[$key]);
+			
 					
-			if(strstr($levels[$key],".")){
+			if(strstr($levels[$key],"$")){
 				$fsdl->set('type','flat');
-			}else{
+			}
+			else{
 				$fsdl->set('type','percent');
 			}
 			
+			$symbols = array("$","%");
+			$levels[$key] = str_replace($symbols,"",$levels[$key]);
+			
+			$fsdl->set('discount', $levels[$key]);
 			$fsdl->persist();
 
 			$levelMap[$key] = $fsdl->get('id');
