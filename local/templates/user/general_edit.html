@@ -103,6 +103,13 @@ var cp2 = new ColorPicker(); // DIV style
 			<textarea name="person[notes]" rows="3" cols="35" wrap="virtual">{$person->get('notes')}</textarea>
 		</td>
 	</tr>
+	<tr>
+		<td><label>{l}Active{/l}:</label> </td>
+		<td>
+			<input name="person[inactive]" type="radio" value="0" {if $person->get('inactive') == 0}checked="checked"{/if} />{l}Yes{/l}
+			<input name="person[inactive]" type="radio" value="1" {if $person->get('inactive') == 1}checked="checked"{/if} />{l}No{/l}
+		</td>
+	</tr>
 	</tbody>
 	</table>
 </fieldset>

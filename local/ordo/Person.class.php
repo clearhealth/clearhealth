@@ -291,13 +291,15 @@ class Person extends ORDataObject {
 		}
 		
 		$from = "$this->_table p inner join person_type pt using(person_id) ";
-		$cols = "p.person_id, last_name, first_name, pt.person_type, inactive";
-		$labels = array('last_name' => 'Last Name', 'first_name' => 'First Name', 'person_type' => 'Type', 'inactive' => 'Inactive');
+		$cols = "p.person_id, last_name, first_name, pt.person_type, IF(inactive = 0, 'Yes', 'No') AS active";
+		$labels = array('last_name' => 'Last Name', 'first_name' => 'First Name', 'person_type' => 'Type');
 		if ($includeUser) {
 			$from .= " inner join user u using(person_id)";
 			$cols .= ", u.username, u.user_id";
 			$labels['username'] = 'Username';
 		}
+		// Put active flag column at the end
+		$labels['active'] = 'Active';
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(

@@ -27,7 +27,7 @@
 					{l}Registration Location:{/l} {$person->get('print_registration_location')}</td>
 			</tr>
 			<tr>
-				<td><label class="inline">{l}Inactive{/l}: </label>{if $person->get('inactive') == 1}Yes{else}No{/if}</td>
+				<td><label class="inline">{l}Active{/l}: </label>{if $person->get('inactive') == 0}Yes{else}No{/if}</td>
 			</tr>
 			<tr>
 				<td><a href="{$EDIT_ACTION}">Edit</a></td>
