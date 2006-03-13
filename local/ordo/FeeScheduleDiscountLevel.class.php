@@ -31,8 +31,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 
 	function setupByDiscount($fsdId,$discount) {
 		$fsdId = EnforceType::int($fsdId);
-		$symbols = array("$","%");
-		$discount = str_replace($symbols,"",$discount);
+		
 		$discountQ = $this->dbHelper->quote($discount);
 	
 		$table = $this->tableName();
@@ -46,6 +45,18 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			$this->set('fee_schedule_discount_id',$fsdId);
 			$this->set('discount',$discount);
 		}
+	}
+
+	function set_discount($discount){
+			
+		if(strstr($discount,"$")){
+			$this->type = 'flat';
+		}
+		else{
+			$this->type = 'percent';
+		}
+		$discount = ereg_replace('\$|%',"",$discount);
+		$this->discount = $discount;
 	}
 
 	function setupByPracticeIncomeSize($practiceId,$income,$size) {
