@@ -151,18 +151,6 @@ class C_FeeScheduleDiscount extends Controller {
 		foreach($originalLevels as $key => $discount) {
 			$fsdl =& Celini::newOrdo('FeeScheduleDiscountLevel',array($fsdId,$discount),'byDiscount');
 			$fsdl->set('disp_order',$key);
-			
-					
-			if(strstr($levels[$key],"$")){
-				$fsdl->set('type','flat');
-			}
-			else{
-				$fsdl->set('type','percent');
-			}
-			
-			$symbols = array("$","%");
-			$levels[$key] = str_replace($symbols,"",$levels[$key]);
-			
 			$fsdl->set('discount', $levels[$key]);
 			$fsdl->persist();
 
