@@ -113,14 +113,14 @@ class C_User extends Controller {
 
 
 	/**
-	 * Update hte password of the currently logged in user
+	 * Update the password of the currently logged in user
 	 */
 	function password_action_edit() {
 		$user =& $this->_me->get_user();
 
 		$this->assign_by_ref('user',$user);
 		
-		return $this->view->render("password.html"));
+		return $this->view->render("password.html");
 	}
 
 	function password_action_process() {
