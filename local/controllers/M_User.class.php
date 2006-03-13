@@ -7,7 +7,7 @@ class M_User extends M_Patient {
 	var $messageType = "User";
 
 	function process_update($id = 0) {
-		if (!$this->_continueProcessing()) {
+		if (!$this->_continueProcessing($id)) {
 			return;
 		}		
 		parent::process_update($id,true);
@@ -31,10 +31,10 @@ class M_User extends M_Patient {
 	 * @return boolean
 	 * @access private
 	 */
-	function _continueProcessing() {
+	function _continueProcessing($id) {
 		$username = $_POST['user']['username'];
 		$u =& User::fromUsername($username);
-		if ($username == 'admin' && $u->get('person_id') > 0) {
+		if ($username == 'admin' && $u->get('person_id') != $id) {
 			$this->messages->addMessage('Admin user already tied to an existing person');
 			return false;
 		}
