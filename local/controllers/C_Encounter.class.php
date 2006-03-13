@@ -20,6 +20,13 @@ class C_Encounter extends Controller {
 	}
 
 	function actionAdd() {
+		if ($this->get('patient_id', 'c_patient') <= 0) {
+			$this->messages->addMessage(
+				'No Patient Selected', 
+				'Please select a patient before attempting to add an encounter.');
+			Celini::redirect('PatientFinder', 'default');
+		}
+		
 		return $this->actionEdit();
 	}
 
@@ -57,13 +64,6 @@ class C_Encounter extends Controller {
 		}
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id,'c_patient');
-		}
-		
-		if ($this->get('patient_id', 'c_patient') <= 0) {
-			$this->messages->addMessage(
-				'No Patient Selected', 
-				'Please select a patient before attempting to add an encounter.');
-			Celini::redirect('PatientFinder', 'default');
 		}
 		
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
@@ -150,18 +150,19 @@ class C_Encounter extends Controller {
 		$insuredRelationship =& Celini::newORDO('InsuredRelationship');
 
 
-		$pcc =& Celini::newOrdo('PatientChronicCode');
-		$tmp = $pcc->PatientReportArray($encounter->get('patient_id'),false);
-
 		$reports = array();
-		foreach($tmp as $code => $r) {
-			$t = "";
-			foreach($r as $k => $reportData) {
-				$t .= "report_id[$k]=$reportData[report_id]&report_template_id[$k]=$reportData[report_template_id]&";
+		if ($encounter->get('patient_id') > 0) {
+			$pcc =& Celini::newOrdo('PatientChronicCode');
+			$tmp = $pcc->PatientReportArray($encounter->get('patient_id'),false);
+	
+			foreach($tmp as $code => $r) {
+				$t = "";
+				foreach($r as $k => $reportData) {
+					$t .= "report_id[$k]=$reportData[report_id]&report_template_id[$k]=$reportData[report_template_id]&";
+				}
+				$reports[] = array('name'=>$code,'num'=>count($r),'url'=>Celini::link('batch','Report').$t);
 			}
-			$reports[] = array('name'=>$code,'num'=>count($r),'url'=>Celini::link('batch','Report').$t);
 		}
-
 		$this->assign('encounterBatchReports',$reports);
 
 
