@@ -44,7 +44,7 @@ class M_Insurance extends Manager {
 			$this->messages->addMessage('Company Created');
 		}
 		else {
-			$this->messages->addmessage('Company Update');
+			$this->messages->addmessage('Company Updated');
 		}
 
 
@@ -87,6 +87,8 @@ class M_Insurance extends Manager {
 			$ip->populate_array($data);
 			$ip->persist();
 			//$this->controller->insurance_program_id = $ip->get('id');
+			// By commenting out the above line in this function and similar others herein the form
+			// is kicked out of update mode and put back into add mode once an update is complete
 
 			$this->messages->addMessage('Insurance Program Updated');
 		}
@@ -107,7 +109,7 @@ class M_Insurance extends Manager {
 			$number =& ORDataObject::factory('CompanyNumber',$id,$company_id);
 			$number->populate_array($data);
 			$number->persist();
-			$this->controller->number_id = $number->get('id');
+			//$this->controller->number_id = $number->get('id');
 
 			$this->messages->addMessage('Number Updated');
 		}
@@ -117,7 +119,7 @@ class M_Insurance extends Manager {
 		if (!empty($data['identifier'])) {
 			$building_id = $data['building_id'];
 			$program_id = $data['program_id'];
-			$bpi =& ORDAtaObject::Factory('BuildingProgramIdentifier',$building_id,$program_id);
+			$bpi =& ORDataObject::Factory('BuildingProgramIdentifier',$building_id,$program_id);
 			$bpi->populate_array($data);
 			$bpi->persist();
 
@@ -149,7 +151,7 @@ class M_Insurance extends Manager {
 			$number =& ORDataObject::factory('CompanyAddress',$id,$company_id);
 			$number->populate_array($data);
 			$number->persist();
-			$this->controller->address_id = $number->get('id');
+			//$this->controller->address_id = $number->get('id');
 
 			$this->messages->addMessage('Address Updated');
 		}

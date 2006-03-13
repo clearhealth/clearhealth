@@ -62,10 +62,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update{else}Add{/if} Insurance Program">
-				{if $insuranceProgram->get('id') > 0}
-				<input type="button" value="New Program" onclick="window.location = '{$NEW_PROGRAM}';">
-				{/if}
+			<td><input type="submit" value="{if $insuranceProgram->get('id') > 0}Update" /><input type="submit" value="Add as New" name="insuranceProgram[add_as_new]{else}Add{/if}" />
 			</td>
 		</tr>
 	</table>
@@ -94,10 +91,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td colspan=3><input type="submit" value="{if $bpi->_populated}Update{else}Add{/if} Identifier">
-				{if $bpi->_populated}
-				<input type="button" value="New Identifier" onclick="window.location = '{$NEW_PROGRAM}';">
-				{/if}
+			<td colspan=3><input type="submit" value="{if $bpi->_populated}Update" /><input type="submit" value="Add as New" name="bpi[add_as_new]{else}Add{/if}" />
 			</td>
 		</tr>
 	</table>
