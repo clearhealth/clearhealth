@@ -64,7 +64,7 @@ class C_Account extends Controller {
 
 		$this->assign('FORM_ACTION',celini::link(true,true,true,$patient_id));
 		
-		return $this->redner("history.html");
+		return $this->view->render("history.html");
 	}
 
 	function processHistory_view($patient_id) {
