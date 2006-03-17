@@ -21,7 +21,7 @@
 				<td><label>{l}Provider Number{/l}:</label></td>
 				<td><input name="providerToInsurance[provider_number]" value="{$providerToInsurance->get('provider_number')}">
 					<select name="providerToInsurance[provider_number_type]">
-						{html_options options=$providerToInsurance->getProviderNumberTypeList() selected=$providerToInsurance->geT('provider_number_type')}
+						{html_options options=$providerToInsurance->getProviderNumberTypeList() selected=$providerToInsurance->get('provider_number_type')}
 					</select>
 				</td>
 			</tr>
