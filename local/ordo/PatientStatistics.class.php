@@ -37,7 +37,12 @@ class PatientStatistics extends ORDataObject {
 	/**#@+
 	 * {@inheritdoc}
 	 */
-	var $_enumList = array('ethnicity', 'race', 'income', 'language', 'migrant_status');
+	var $_enumList = array(
+		'ethnicity' => 'ethnicity',
+		'race' => 'race',
+		'income' => 'income',
+		'language' => 'language',
+		'migrant_status' => 'migrant_status');
 	/**#@-*/
 	
 	/**
