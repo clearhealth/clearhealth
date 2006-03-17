@@ -24,7 +24,7 @@ class C_Superbill extends Controller {
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->render("update.html"));
+		return $this->render("update.html");
 	}
 }
 ?>
