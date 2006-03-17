@@ -22,7 +22,7 @@
 				{if $ev.group_appointment}
 					<b>{l}Group Appointment{/l}</b>
 				{else}
-				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}&nbsp; &nbsp; &nbsp;
+				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_record_number} {$ev.dob}-{$ev.age}&nbsp; &nbsp; &nbsp;
 				{/if}
 				<br>{$ev.p_phone} {if $ev.dnc}DNC{/if}
 					{if $ev.notes}
@@ -62,7 +62,7 @@
 				{if $ev.group_appointment}
 					<b>{l}Group Appointment{/l}</b>
 				{else}
-				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_patient_number} {$ev.dob}-{$ev.age}
+				<b><a href="{$PATIENT_DASHBOARD_LINK}id={$ev.person_id}">{$ev.p_lastname}</a>, {$ev.p_firstname}</b> #{$ev.p_record_number} {$ev.dob}-{$ev.age}
 				{/if}
 
 				{if $ev.creator_nickname}

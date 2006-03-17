@@ -276,5 +276,9 @@ class Patient extends MergeDecorator {
 		$pro =& Celini::newOrdo('Provider',$user->get('person_id'));
 		return $pro;
 	}
+
+	function get_phone() {
+		return($this->person->numberValueByType('Home'));
+	}
 }
 ?>
