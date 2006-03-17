@@ -33,7 +33,7 @@
 		<status>1</status>
 	</enum>
 
-
+</enumeration>
 <enumeration name="account_note_type" title="Account Note Type" type="Default">
 	<enum>
 		<key>0</key>
