@@ -14,10 +14,9 @@ class clniTypeBillingType {
 	}
 
 	function widget($name,$currentValue) {
-		$types=array(
-			0=>'Testing',
-			1=>'Production'
-		);
+		$em =& Celini::enumManagerInstance();
+		$types = $em->enumArray('billing_mode');
+		
 		$ret = "";
 		foreach($types as $key=>$type) {
 			$sel = "";
