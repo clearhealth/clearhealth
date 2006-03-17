@@ -1,4 +1,39 @@
 <enumerations>
+<enumeration name="audit_type" title="Audit Type" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Insert</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Update</value>
+		<sort>1</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Delete</value>
+		<sort>2</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>4</key>
+		<value>Process</value>
+		<sort>3</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+
+
 <enumeration name="account_note_type" title="Account Note Type" type="Default">
 	<enum>
 		<key>0</key>
