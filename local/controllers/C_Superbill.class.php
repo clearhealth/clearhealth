@@ -12,7 +12,7 @@ class C_Superbill extends Controller {
 
 		$this->assign_by_ref('grid',$grid);
 
-		return $this->render("list.html"));
+		return $this->render("list.html");
 	}
 	
 	function update_action_edit($superbill_id) {
