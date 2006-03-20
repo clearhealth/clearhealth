@@ -85,12 +85,14 @@ div#nav div.section {
 div#nav div.topLevel {
  font-weight: bold;
 }
+* html div#nav div ul {
+ width: 121px;
+}
 div#nav div ul {
  position: absolute;
  top: 14px;
  left: -1px;
- width: 121px;
-
+ min-width: 121px;
  margin: 0;
  padding: 0;
  border: solid 1px black;
@@ -105,12 +107,14 @@ div#nav a {
  padding-left: 2px;
  padding-right: 2px;
 }
+* html div#nav div ul li {
+ width: 120px;
+}
 div#nav div ul li{
  display: block;
  list-style-type: none;
  margin: 0;
  padding: 0;
- width: 120px;
 }
 div#nav a {
  display: block;
