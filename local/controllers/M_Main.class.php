@@ -16,6 +16,11 @@ class M_Main extends Manager {
 	}
 
 	function postProcess() {
+		if($this->controller->session->get('patient_action') == null) {
+			$this->controller->session->set('patient_action', $base_dir.'index.php/main/PatientFinder');
+		}
+		$this->controller->view->assign('patient_action', $this->controller->session->get('patient_action'));
+	
 		$patient_id = $this->controller->get('patient_id','c_patient');
 		if ($patient_id > 0) {
 			$patient =& ORDataObject::factory('Patient',$patient_id);

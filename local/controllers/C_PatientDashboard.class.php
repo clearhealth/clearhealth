@@ -27,6 +27,9 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionView($patientId = '') {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
+		
 		return $this->actionDemo_view($patientId);
 	}
 	/**
@@ -35,6 +38,9 @@ class C_PatientDashboard extends Controller {
 	 *
 	 */
 	function actionDemo_view($patient_id = '') {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
+		
 		$p =& $this->_loadPatient($patient_id);
 		
 		// If we don't have a valid Patient, display an error message and stop.
@@ -112,10 +118,16 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionCase_view($patientId) {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
+		
 		return $this->view->render("case.html");
 	}
 
 	function actionEMR_view($patientId) {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
+		
 		$GLOBALS['loader']->requireOnce('datasources/Lab_DS.class.php');
 		$p =& $this->_loadPatient($patientId);
 		

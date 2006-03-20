@@ -22,7 +22,7 @@
 		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selected"{/if}>Calendar</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_patient")}
-		<a href="{$base_dir}index.php/main/PatientFinder" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
+		<a href="{$patient_action}" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> &middot;
 		{/if}
 		{if $sec_obj->check("usage","main_billing")}
 		<a href="{$base_dir}index.php/main/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Billing</a> &middot;

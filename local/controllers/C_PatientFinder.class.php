@@ -31,6 +31,9 @@ class C_PatientFinder extends Controller {
 	}
 
 	function actionDefault($form_name='') {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
+		
 		return $this->smartsearch_action($form_name);
 	}
 	
@@ -39,12 +42,14 @@ class C_PatientFinder extends Controller {
 	*	the user to input search parameters to find a patient id.
 	*/
 	function find_action($form_name='') {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
 		
 		//fix any magic quotes meddling
 		if (get_magic_quotes_gpc()) {$form_name = stripslashes($form_name);}
 		
-        //prevent javascript injection, whitespace and semi-colons are the worry
-        $form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
+		//prevent javascript injection, whitespace and semi-colons are the worry
+		$form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('find',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
@@ -225,12 +230,14 @@ class C_PatientFinder extends Controller {
 	*	the user to input search parameters to find a patient id.
 	*/
 	function smartsearch_action($form_name='') {
+		$current = $this->trail->current();
+		$this->session->set('patient_action', $current->link());
 		
 		//fix any magic quotes meddling
 		if (get_magic_quotes_gpc()) {$form_name = stripslashes($form_name);}
 		
-        //prevent javascript injection, whitespace and semi-colons are the worry
-        $form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
+		//prevent javascript injection, whitespace and semi-colons are the worry
+		$form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
 		$this->assign("FORM_ACTION", Celini::link('smartsearch',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
