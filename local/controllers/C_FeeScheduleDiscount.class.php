@@ -40,8 +40,7 @@ class C_FeeScheduleDiscount extends Controller {
 		$sql = "SELECT count(*) AS count FROM fee_schedule_discount WHERE practice_id = $practiceId and type = 'default'";
 		$result = $db->execute($sql);
 		$this->view->assign('defaultExists',$result->fields['count']);
-
-		// where should this code live longterm, should i put it in a ds just so its in a standard place
+		
 		$sql = "
 		select
 			fsdi.family_size, fsdi.fee_schedule_discount_id level, fsdi.income, fsdl.discount,fsdl.type, fsdl.disp_order
@@ -103,7 +102,7 @@ class C_FeeScheduleDiscount extends Controller {
 	function process($data) {
 		
 		
-		$fsdId = $this->GET->get(0);
+		$fsdId = $this->GET->getTyped(0, 'int');
 		$type = $data['type'];	
 		$program = $data['insurance_program_id'];
 				
@@ -115,10 +114,19 @@ class C_FeeScheduleDiscount extends Controller {
 		
 		//error checking
 		$db = new clniDb();
+		$qPractice_id = $db->quote($practice_id);
 		
 		if($type == 'program'){
-		
-			$sql="select count(*) as count from fee_schedule_discount where insurance_program_id = $program and practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
+			$qProgram = $db->quote($program);
+			$sql= "
+				SELECT
+					COUNT(*) AS count
+				FROM
+					fee_schedule_discount
+				WHERE
+					insurance_program_id = {$qProgram} AND
+					practice_id = {$qPractice_id} AND
+					fee_schedule_discount_id <> {$fsdId}";
 			$result=$db->execute($sql);
 			if( $result->fields['count'] > 0){
 				//this means there is allready a schedule for that program 
@@ -128,8 +136,17 @@ class C_FeeScheduleDiscount extends Controller {
 				$fsd->set('type',$type);
 			}
 				
-		}else{
-			$sql="select count(*) as count from fee_schedule_discount where type = 'default' and  practice_id = $practice_id and fee_schedule_discount_id <> $fsdId";
+		}
+		else {
+			$sql= "
+				SELECT
+					COUNT(*) AS count
+				FROM
+					fee_schedule_discount 
+				WHERE 
+					type = 'default' AND
+					practice_id = {$qPractice_id} AND
+					fee_schedule_discount_id <> {$fsdId}";
 			$result = $db->execute($sql);
 			if($result->fields['count'] > 0){
 				$this->messages->addMessage('Conflict', 'You have allready designated another Fee Schedule Discount as Default');
