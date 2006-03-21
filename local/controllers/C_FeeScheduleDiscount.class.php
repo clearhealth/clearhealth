@@ -128,10 +128,11 @@ class C_FeeScheduleDiscount extends Controller {
 					practice_id = {$qPractice_id} AND
 					fee_schedule_discount_id <> {$fsdId}";
 			$result=$db->execute($sql);
-			if( $result->fields['count'] > 0){
+			if( $result->fields['count'] > 0) {
 				//this means there is allready a schedule for that program 
 				$this->messages->addMessage('Insurance program conflict', 'Please choose another insurance program');
-			}else{
+			}
+			else {
 				$fsd->set('insurance_program_id',$program);
 				$fsd->set('type',$type);
 			}
@@ -148,9 +149,10 @@ class C_FeeScheduleDiscount extends Controller {
 					practice_id = {$qPractice_id} AND
 					fee_schedule_discount_id <> {$fsdId}";
 			$result = $db->execute($sql);
-			if($result->fields['count'] > 0){
+			if($result->fields['count'] > 0) {
 				$this->messages->addMessage('Conflict', 'You have allready designated another Fee Schedule Discount as Default');
-			}else{
+			} 
+			else {
 				$fsd->set('insurance_program_id','0');
 				$fsd->set('type',$type);
 			}
