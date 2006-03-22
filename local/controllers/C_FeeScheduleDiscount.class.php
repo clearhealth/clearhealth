@@ -41,38 +41,83 @@ class C_FeeScheduleDiscount extends Controller {
 		$result = $db->execute($sql);
 		$this->view->assign('defaultExists',$result->fields['count']);
 		
-		$sql = "
-		select
-			fsdi.family_size, fsdi.fee_schedule_discount_id level, fsdi.income, fsdl.discount,fsdl.type, fsdl.disp_order
-		from
-			fee_schedule_discount_income fsdi
-			inner join fee_schedule_discount_level fsdl using(fee_schedule_discount_level_id)
-		where
-			fsdi.fee_schedule_discount_id = $fsdId
-		order by
-			family_size,disp_order
-		";
-
+		$practiceConfig =& Celini::configInstance('Practice');
+		$practiceConfig->loadPractice($fsd->get('practice_id'));
+		$isDentist = ($practiceConfig->get('FacilityType') == 1);
+		
 		$cells = array();
 		$discountLevels = array();
 		$familySize = array();
-		$res = $db->execute($sql);
-		while($res && !$res->EOF) {
-			$l = $res->fields['disp_order'];
-			$fs = ($res->fields['family_size']-1);
-			$cells[$fs][$l] = array('size'=>$fs,'level'=>$l,'value'=>$res->fields['income']);
-			if($res->fields['type'] == 'percent'){
-				$discountLevels[$res->fields['disp_order']] = $res->fields['discount']."%";//round(); // should really only round if were .00
-			}else{
-				$discountLevels[$res->fields['disp_order']] = "$".$res->fields['discount'];//round(); // should really only round if were .00
-			
+		if ($isDentist) {
+			$sql = "
+				SELECT
+					fsdc.code_pattern,
+					fsdc.fee_schedule_discount_id AS level,
+					fsdl.discount,
+					fsdl.type,
+					fsdl.disp_order
+				FROM
+					fee_schedule_discount_by_code AS fsdc
+					INNER JOIN fee_schedule_discount_level AS fsdl USING(fee_schedule_discount_level_id)
+				WHERE
+					fsdc.fee_schedule_discount_id = $fsdId
+				ORDER BY
+					disp_order";
+			$res = $db->execute($sql);
+			$oldDispOrder = null;
+			while ($res && !$res->EOF) {
+				if ($oldDispOrder !== $res->fields['disp_order']) {
+					$counter = 0;
+				}
+				$l = $res->fields['disp_order'];
+				if($res->fields['type'] == 'percent'){
+					$discountLevels[$res->fields['disp_order']] = $res->fields['discount']."%";
+				} 
+				else {
+					$discountLevels[$res->fields['disp_order']] = "$".$res->fields['discount'];
+				}
+				
+				$cells[$counter][$l] = array('size'=>$counter,'level'=>$l,'value'=>$res->fields['code_pattern']);
+				
+				$familySize[$counter+1] = $counter+1;
+				$counter++;
+				$oldDispOrder = $res->fields['disp_order'];
+				
+				$res->MoveNext();
 			}
-			
-			$familySize[$res->fields['family_size']] = $res->fields['family_size'];
-			$res->MoveNext();
+			$familySize = array_keys($familySize);
 		}
-		$familySize = array_values($familySize);
-
+		else {		
+			$sql = "
+			select
+				fsdi.family_size, fsdi.fee_schedule_discount_id level, fsdi.income, fsdl.discount,fsdl.type, fsdl.disp_order
+			from
+				fee_schedule_discount_income fsdi
+				inner join fee_schedule_discount_level fsdl using(fee_schedule_discount_level_id)
+			where
+				fsdi.fee_schedule_discount_id = $fsdId
+			order by
+				family_size,disp_order
+			";
+	
+			$res = $db->execute($sql);
+			while($res && !$res->EOF) {
+				$l = $res->fields['disp_order'];
+				$fs = ($res->fields['family_size']-1);
+				$cells[$fs][$l] = array('size'=>$fs,'level'=>$l,'value'=>$res->fields['income']);
+				if($res->fields['type'] == 'percent'){
+					$discountLevels[$res->fields['disp_order']] = $res->fields['discount']."%";//round(); // should really only round if were .00
+				}else{
+					$discountLevels[$res->fields['disp_order']] = "$".$res->fields['discount'];//round(); // should really only round if were .00
+				
+				}
+				
+				$familySize[$res->fields['family_size']] = $res->fields['family_size'];
+				$res->MoveNext();
+			}
+			$familySize = array_values($familySize);
+		}
+		
 		// default case
 		if (count($cells) == 0) {
 			$familySize = array(1,2,3,4,5,6,7,8,9,10);
@@ -84,10 +129,12 @@ class C_FeeScheduleDiscount extends Controller {
 				}
 			}
 		}
-
+		
 		$numLevels = count($discountLevels);
 		$maxFamilySize = count($familySize);
-				
+		
+		$this->view->assign('isDentist', $isDentist);
+		
 		$this->view->assign('familySize',$familySize);
 		$this->view->assign('discountLevels',$discountLevels);
 		$this->view->assign('maxFamilySize',$maxFamilySize);
@@ -174,10 +221,45 @@ class C_FeeScheduleDiscount extends Controller {
 			$fsdl->set('discount', $levels[$key]);
 			$fsdl->persist();
 
+			unset($levels[$key]);
 			$levelMap[$key] = $fsdl->get('id');
 		}
+		
+		// if there's anything new, add it
+		if (count($levels) > 0) {
+			foreach ($levels as $key => $discount) {
+				$fsdl =& Celini::newOrdo('FeeScheduleDiscountLevel',array($fsdId,$discount),'byDiscount');
+				$fsdl->set('disp_order',$key);
+				$fsdl->set('discount', $levels[$key]);
+				$fsdl->persist();
 
-		foreach($data as $key => $row) {
+				$levelMap[$key] = $fsdl->get('id'); 
+			}
+		}
+		
+		$practiceConfig =& Celini::configInstance('Practice');
+		$practiceConfig->loadPractice($fsd->get('practice_id'));
+		switch ($practiceConfig->get('FacilityType')) {
+			case 1 :
+				$this->_createDiscountByCode($fsdId, $data, $levelMap);
+				break;
+			default :
+				$this->_createDiscountByIncome($fsdId, $data, $levelMap);
+				break;
+		}
+		
+
+		
+		if (Celini::getCurrentAction() == 'add') {
+			Celini::redirectURL(Celini::link('edit', true, true, $fsdId));
+		}
+	}
+	
+	/**#@+
+	 * @access private
+	 */
+	function _createDiscountByIncome($fsdId, $array, $levelMap) {
+		foreach($array as $key => $row) {
 			$size = $key+1;
 
 			foreach($row as $level => $income) {
@@ -186,10 +268,17 @@ class C_FeeScheduleDiscount extends Controller {
 				$fsdi->persist();
 			}
 		}
-		
-		if (Celini::getCurrentAction() == 'add') {
-			Celini::redirectURL(Celini::link('edit', true, true, $fsdId));
+	}
+	
+	function _createDiscountByCode($fsdId, $data, $levelMap) {
+		foreach($data as $key => $row) {
+			foreach($row as $level => $codePattern) {
+				$fsdc =& Celini::newOrdo('FeeScheduleDiscountByCode', array($fsdId,$codePattern,$levelMap[$level]),'ByCodeLevel');
+				$fsdc->set('code_pattern', $codePattern);
+				$fsdc->persist();
+			}
 		}
 	}
+	/**#@-*/
 }
 ?>

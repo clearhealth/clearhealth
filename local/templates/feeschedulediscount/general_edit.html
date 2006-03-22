@@ -51,7 +51,14 @@ discountLevelEditor.prototype = {
 				for(var r = 0; r < this.table().rows.length; r++) {
 					var row = this.table().rows[r];
 					var newTd = row.cells[1].cloneNode(true);
+					var inputs = newTd.getElementsByTagName('input');
+					for (i2 = 0; i2 < inputs.length; i2++) {
+						if (inputs[i2].type == "hidden") {
+							newTd.removeChild(inputs[i2]);
+						}
+					}
 					row.appendChild(newTd);
+					newTd.innerHTML = newTd.innerHTML.replace(/\[0\]/g, "[" + (i + (cols - 2)) + "]");
 				}
 			}
 		}
@@ -126,7 +133,15 @@ function updateSize(form) {
 			<td><input name="FeeScheduleDiscount[numLevels]" class="requiredNumber" value="{$numLevels}" size=2></td>
 		</tr>
 		<tr>
-			<td><label>Maximum family Size:</label></td>
+			<td>
+				<label>
+					{if $isDentist}
+					Maximum number of codes:
+					{else}
+					Maximum family size:
+					{/if}
+				</label>
+			</td>
 			<td><input name="FeeScheduleDiscount[maxFamilySize]" class="requiredNumber" value="{$maxFamilySize}" size=2></td>
 		</tr>
 
@@ -141,32 +156,11 @@ function updateSize(form) {
 {clni_form id="dlEditor" process="generic"}
 	<fieldset>
 		<legend>Discount Level Editor</legend>
-<table cellspacing=0 cellpadding=0>
-	<thead>
-	<tr class="top">
-		<th class="left">Size</th>
-		{foreach from=$discountLevels item=level key=id}
-		<th>
-			<input size="5" value="{$level}" name="FeeScheduleDiscount[level][{$id}]" />
-			<input type="hidden" value="{$level}" name="FeeScheduleDiscount[original_level][{$id}]" />
-		</th>
-		{/foreach}
-	</tr>
-	</thead>
-	<tbody>
-	{foreach from=$familySize item=size key=id}
-	<tr>
-		<th class="left">{$size}</th>
-		{foreach from=$cells.$id item=cell}
-		<td><input name="FeeScheduleDiscount[{$cell.size}][{$cell.level}]" value="{$cell.value}" size="5" class="validateNumber"></td>
-		{/foreach}
-	</tr>
-	{/foreach}
-	</tbody>
-
-
-
-</table>
+{if $isDentist}
+	{include file="feeschedulediscount/general_chunkByCode.html"}
+{else}
+	{include file="feeschedulediscount/general_chunkByIncome.html"}
+{/if}
 <table >
 	<tr>
 
