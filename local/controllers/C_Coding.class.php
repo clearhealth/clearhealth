@@ -32,26 +32,60 @@ class C_Coding extends Controller {
 			$this->view->assign_by_ref('feeGrid',$grid);
 		}
 
-		$ps =& Celini::newOrdo('PatientStatistics',$encounter->get('patient_id'));
-		$familySize = $ps->get('family_size');
-		$income = $ps->get('monthly_income');
 		$practiceId = $_SESSION['defaultpractice'];
 
-		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
-
-		if($fsdLevel->isPopulated()) {
-			$trans = $manager->createTransaction('EstimateDiscountedClaim');
-			$trans->setEncounterId($encounterId);
-			$trans->setPayerId($encounter->get('current_payer'));
-			$trans->setDiscount($fsdLevel->get('discount'));
-			$fees = $manager->processTransaction($trans);
-			$ds2 = new Datasource_array();
-			$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
-
-			$grid2 =& new cGrid($ds2);
-			$grid2->indexCol = false;
-			$this->view->assign_by_ref('discountGrid',$grid2);
-			$this->view->assign('discountRate',$fsdLevel->get('discount'));
+		$practiceConfig =& Celini::configInstance('Practice');
+		$practiceConfig->loadPractice($_SESSION['defaultpractice']);
+		$isDentist = ($practiceConfig->get('FacilityType') == 1);
+		if ($isDentist) {
+			$newFees = array();
+			$trans = false;
+			foreach ($fees as $codeFee) {
+				$fsdLevel =& Celini::newORDO(
+					'FeeScheduleDiscountLevel',
+					array($practiceId, $codeFee),
+					'ByPracticeCode');
+				if ($fsdLevel->isPopulated()) {
+					if (!$trans) {
+						$trans = $manager->createTransaction('EstimateDiscountedClaimByClaimline');
+						$trans->setEncounterId($encounterId);
+						$trans->setPayerId($encounter->get('current_payer'));
+					}
+					$trans->setDiscount($fsdLevel->value('discount'), $codeFee['code']);
+					$curIndex = count($newFees);
+				}
+			}
+			
+			if ($trans !== false) {
+				$newFees = $manager->processTransaction($trans);
+				$ds2 =& new Datasource_array();
+				$ds2->setup(array('code' => 'Code', 'fee' => 'Fee'), $newFees);
+				$grid2 =& new cGrid($ds2);
+				$grid2->indexCol = false;
+				$this->view->assign_by_ref('discountGrid', $grid2);
+			}
+			
+		} 
+		else {
+			$ps =& Celini::newOrdo('PatientStatistics',$encounter->get('patient_id'));
+			$familySize = $ps->get('family_size');
+			$income = $ps->get('monthly_income');
+			$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
+			
+			if($fsdLevel->isPopulated()) {
+				$trans = $manager->createTransaction('EstimateDiscountedClaim');
+				$trans->setEncounterId($encounterId);
+				$trans->setPayerId($encounter->get('current_payer'));
+				$trans->setDiscount($fsdLevel->get('discount'));
+				$fees = $manager->processTransaction($trans);
+				$ds2 = new Datasource_array();
+				$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+	
+				$grid2 =& new cGrid($ds2);
+				$grid2->indexCol = false;
+				$this->view->assign_by_ref('discountGrid',$grid2);
+				$this->view->assign('discountRate',$fsdLevel->get('discount'));
+			}
 		}
 	}
 

@@ -7,7 +7,9 @@ class TransactionManager {
 	function createTransaction($type) {
 		$class = "Transaction$type";
 		if (!class_exists($class)) {
-			$GLOBALS['loader']->requireOnce("includes/transaction/$class.class.php");
+			if ($GLOBALS['loader']->requireOnce("includes/transaction/$class.class.php") === false) {
+				Celini::raiseError("Can't find transaction class for {$type}");
+			}
 		}
 		$trans = new $class();
 		return $trans;

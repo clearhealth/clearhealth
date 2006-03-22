@@ -57,27 +57,46 @@ class TransactionEstimateClaim {
 			Celini::raiseError("Credit not possible: Estimating payments doesn't make sense");
 		}
 		else {
-			// we don't have an indivdual claimline breakdown so lets spread the payment among all the claims lines
-			$codingData =& Celini::newOrdo('CodingData');
-			$codeList = $codingData->getCodeList($this->encounterId);
-
-			$numCodes = count($codeList);
-
-			$this->fees = array();
-			$total = 0;
-			$i = 0;
-			foreach($codeList as $key => $code) {
-				$this->fees[$i]['code'] = $code['code'];
-				$this->fees[$i]['fee'] = $code['fee'];
-				$i++;
-				$total += $code['fee'];
-			}
-			if ($total > 0) {
-				$this->fees[$i]['code'] = '<b>Total</b>';
-				$this->fees[$i]['fee'] 	= number_format($total,2);
-			}
+			$this->_populateFeesArray();
 		}
 		return $this->fees;
+	}
+	
+	
+	/**
+	 * Handles populated the fees array from {@link $encounterId}
+	 *
+	 * @access protected
+	 */
+	function _populateFeesArray() {
+		if ($this->encounterId <= 0) {
+			return;
+		}
+		
+		// we don't have an indivdual claimline breakdown so lets spread the payment among all the claims lines
+		$codingData =& Celini::newOrdo('CodingData');
+		$codeList = $codingData->getCodeList($this->encounterId);
+
+		$numCodes = count($codeList);
+
+		$this->fees = array();
+		$total = 0;
+		$i = 0;
+		foreach($codeList as $key => $code) {
+			$this->fees[$i]['code'] = $code['code'];
+			$this->fees[$i]['fee']  = $code['fee'];
+			$i++;
+			$total += $code['fee'];
+		}
+		if ($total > 0) {
+			$this->_addTotalRow($total);
+		}
+	}
+	
+	function _addTotalRow($total) {
+		$index = count($this->fees);
+		$this->fees[$index]['code'] = '<b>Total</b>';
+		$this->fees[$index]['fee']  = number_format($total,2);
 	}
 }
 ?>

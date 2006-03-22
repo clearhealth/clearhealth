@@ -60,6 +60,19 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		$this->discount = $discount;
 	}
 
+	function value_discount() {
+		switch ($this->get('type')) {
+			case 'flat' :
+				return '$' . $this->get('discount');
+				break;
+			
+			case 'percent' :
+				return $this->get('discount') . '%';
+				break;
+		}
+	}
+	
+	
 	function setupByPracticeIncomeSize($practiceId,$income,$size) {
 		$practiceId = EnforceType::int($practiceId);
 		$income = EnforceType::int($income);
@@ -79,6 +92,24 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			";
 		$res = $this->dbHelper->execute($sql);
 		$this->helper->populateFromResults($this,$res);
+	}
+	
+	function setupByPracticeCode($practiceId, $fee) {
+		$qPracticeId = $this->dbHelper->quote($practiceId);
+		$table = $this->tableName();
+		$qCodePattern = $this->dbHelper->quote($fee['code']);
+		$sql = "
+			SELECT
+				*
+			FROM 
+				{$table} AS fsdl
+				INNER JOIN fee_schedule_discount_by_code AS fsdc USING(fee_schedule_discount_level_id)
+				INNER JOIN fee_schedule_discount AS fsd USING(fee_schedule_discount_id)
+			WHERE
+				fsdc.code_pattern = {$qCodePattern} AND
+				fsd.practice_id = {$qPracticeId}";
+		$res = $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this, $res);
 	}
 }
 ?>
