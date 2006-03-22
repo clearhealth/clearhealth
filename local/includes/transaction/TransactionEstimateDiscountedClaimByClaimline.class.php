@@ -27,7 +27,7 @@ class TransactionEstimateDiscountedClaimByClaimline extends TransactionEstimateC
 				$this->discounts[$row['code']] = 0;
 			}
 			if ($this->discounts[$row['code']]['type'] == 'flat') {
-				$dfee = $row['fee'] - $this->discounts[$row['code']]['discount'];
+				$dfee = $this->discounts[$row['code']]['discount'];
 			}
 			else {
 				$dfee = $row['fee'] * (1- ($this->discounts[$row['code']]['discount'] / 100));

@@ -76,7 +76,7 @@ class C_Coding extends Controller {
 				$trans = $manager->createTransaction('EstimateDiscountedClaim');
 				$trans->setEncounterId($encounterId);
 				$trans->setPayerId($encounter->get('current_payer'));
-				$trans->setDiscount($fsdLevel->get('discount'));
+				$trans->setDiscount($fsdLevel->value('discount'));
 				$fees = $manager->processTransaction($trans);
 				$ds2 = new Datasource_array();
 				$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
@@ -84,7 +84,7 @@ class C_Coding extends Controller {
 				$grid2 =& new cGrid($ds2);
 				$grid2->indexCol = false;
 				$this->view->assign_by_ref('discountGrid',$grid2);
-				$this->view->assign('discountRate',$fsdLevel->get('discount'));
+				$this->view->assign('discountRate',$fsdLevel->value('discount'));
 			}
 		}
 	}

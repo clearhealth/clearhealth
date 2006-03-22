@@ -3,17 +3,31 @@ $loader->requireOnce('includes/transaction/TransactionEstimateClaim.class.php');
 
 class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 	var $resultsInMap = false;
-	var $discount = 0;
+	var $discount = array('discount' => 0);
 
 	function setDiscount($discount) {
-		$this->discount = $discount/100;
+		preg_match('/(\$?)(([0-9]*)\.?([0-9]*))(%?)/', $discount, $matches);
+		list(,$isDollarSign, $realDiscount) = $matches;
+		if (!empty($isDollarSign)) {
+			$this->discount['type'] = 'flat';
+		}
+		else {
+			$this->discount['type'] = 'percentage';
+			
+		}
+		$this->discount['discount'] = $realDiscount;
 	}
 
 	function processClaim() {
 		$fees = parent::processClaim();
 		$total = 0;
 		foreach($fees as $key => $row) {
-			$dfee = $row['fee']*(1-$this->discount);
+			if ($this->discount['type'] == 'flat') {
+				$dfee = $this->discount['discount'];
+			}
+			else {
+				$dfee = $row['fee']*(1- ($this->discount['discount'] / 100));
+			}
 
 			if ($this->resultsInMap) {
 				$fees[$row['code']] = $dfee;

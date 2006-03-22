@@ -81,7 +81,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 
 
 		$sql = "
-			select * 
+			select l.* 
 			from 
 				$table l
 			inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
@@ -100,7 +100,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		$qCodePattern = $this->dbHelper->quote($fee['code']);
 		$sql = "
 			SELECT
-				*
+				fsdl.*
 			FROM 
 				{$table} AS fsdl
 				INNER JOIN fee_schedule_discount_by_code AS fsdc USING(fee_schedule_discount_level_id)
