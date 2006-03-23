@@ -111,5 +111,24 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		$res = $this->dbHelper->execute($sql);
 		$this->helper->populateFromResults($this, $res);
 	}
+	
+	
+	function setupByPracticeCodeWildcard($practiceId, $fee) {
+		$qPracticeId = $this->dbHelper->quote($practiceId);
+		$table = $this->tableName();
+		$qCodePattern = $this->dbHelper->quote($fee['code']);
+		$sql = "
+			SELECT
+				fsdl.*
+			FROM 
+				{$table} AS fsdl
+				INNER JOIN fee_schedule_discount_by_code AS fsdc USING(fee_schedule_discount_level_id)
+				INNER JOIN fee_schedule_discount AS fsd USING(fee_schedule_discount_id)
+			WHERE
+				{$qCodePattern} LIKE fsdc.code_pattern AND
+				fsd.practice_id = {$qPracticeId}";
+		$res = $this->dbHelper->execute($sql);
+		$this->helper->populateFromResults($this, $res);
+	}
 }
 ?>

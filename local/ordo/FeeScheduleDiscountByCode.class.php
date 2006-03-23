@@ -37,6 +37,10 @@ class FeeScheduleDiscountByCode extends ORDataObject
 			$this->set('code_pattern', $codePattern);
 		}
 	}
-
+	
+	
+	function set_code_pattern($value) {
+		$this->code_pattern = str_replace('*', '%', $value);
+	}
 }
 

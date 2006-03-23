@@ -51,7 +51,8 @@ class C_FeeScheduleDiscount extends Controller {
 		if ($isDentist) {
 			$sql = "
 				SELECT
-					fsdc.code_pattern,
+					REPLACE(fsdc.code_pattern, '%', '*') AS code_pattern,
+					fsdc.code_pattern AS original_code_pattern,
 					fsdc.fee_schedule_discount_id AS level,
 					fsdl.discount,
 					fsdl.type,
@@ -77,7 +78,12 @@ class C_FeeScheduleDiscount extends Controller {
 					$discountLevels[$res->fields['disp_order']] = "$".$res->fields['discount'];
 				}
 				
-				$cells[$counter][$l] = array('size'=>$counter,'level'=>$l,'value'=>$res->fields['code_pattern']);
+				$cells[$counter][$l] = array(
+					'size' => $counter,
+					'level' => $l,
+					'value' => $res->fields['code_pattern'],
+					'original_value' => $res->fields['original_code_pattern']
+				);
 				
 				$familySize[$counter+1] = $counter+1;
 				$counter++;

@@ -45,6 +45,15 @@ class C_Coding extends Controller {
 					'FeeScheduleDiscountLevel',
 					array($practiceId, $codeFee),
 					'ByPracticeCode');
+				
+				// If nothing specific is found, try wildcard lookup
+				if (!$fsdLevel->isPopulated()) {
+					$fsdLevel =& Celini::newORDO(
+						'FeeScheduleDiscountLevel',
+						array($practiceId, $codeFee),
+						'ByPracticeCodeWildcard');
+				}
+				
 				if ($fsdLevel->isPopulated()) {
 					if (!$trans) {
 						$trans = $manager->createTransaction('EstimateDiscountedClaimByClaimline');
