@@ -16,7 +16,8 @@
 		<th class="left">{$size}</th>
 		{foreach from=$cells.$id item=cell}
 		<td>
-			<input name="FeeScheduleDiscount[{$cell.size}][{$cell.level}]" value="{$cell.value}" size="5">
+			<input name="FeeScheduleDiscount[real][{$cell.size}][{$cell.level}]" value="{$cell.value}" size="5" />
+			<input type="hidden" name="FeeScheduleDiscount[original][{$cell.size}][{$cell.level}]" value="{$cell.value}" />
 		</td>
 		{/foreach}
 	</tr>

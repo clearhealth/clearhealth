@@ -271,10 +271,10 @@ class C_FeeScheduleDiscount extends Controller {
 	}
 	
 	function _createDiscountByCode($fsdId, $data, $levelMap) {
-		foreach($data as $key => $row) {
+		foreach($data['original'] as $key => $row) {
 			foreach($row as $level => $codePattern) {
 				$fsdc =& Celini::newOrdo('FeeScheduleDiscountByCode', array($fsdId,$codePattern,$levelMap[$level]),'ByCodeLevel');
-				$fsdc->set('code_pattern', $codePattern);
+				$fsdc->set('code_pattern', $data['real'][$key][$level]);
 				$fsdc->persist();
 			}
 		}
