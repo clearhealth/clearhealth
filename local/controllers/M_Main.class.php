@@ -17,7 +17,7 @@ class M_Main extends Manager {
 
 	function postProcess() {
 		if($this->controller->session->get('patient_action') == null) {
-			$this->controller->session->set('patient_action', $GLOBALS['config']['base_dir'].'index.php/main/PatientFinder');
+			$this->controller->session->set('patient_action', $this->controller->base_dir .'index.php/main/PatientFinder');
 		}
 		$this->controller->view->assign('patient_action', $this->controller->session->get('patient_action'));
 	
