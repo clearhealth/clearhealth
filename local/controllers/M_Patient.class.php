@@ -22,7 +22,7 @@ class M_Patient extends Manager {
 		if ($noPatient == false) { // if we're adding a patient:
 			if (!$this->similarPatientChecked) { // check for duplicates
 				$duplicate_count = $this->_checkDuplicatePatient() ;
-				$continue = 0 ;
+				$continue = ($duplicate_count <= 0) ;
 			}
 			// if our dupe count was 0 or if we're overriding the check to submit a new possible dupe, then continue
 			if ($duplicate_count <= 0 || $this->similarPatientChecked) {
@@ -443,6 +443,8 @@ class M_Patient extends Manager {
 			}
 		}
 		$this->controller->assign_by_ref('OriginalPost',$newPost) ;
+		$this->similarPatientChecked = true ;
+		$this->controller->assign_by_ref('duplicate_count',$duplicate_count) ;
 		return $duplicate_count ;
 	}
 }
