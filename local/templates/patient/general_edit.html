@@ -1,5 +1,50 @@
 {include file="patient/general_setupJS.html"}
 
+{if $DuplicateList}
+<div style="border: 2px solid rgb(153, 153, 153); width: 450px; background-color: rgb(255, 255, 153);">
+<div style="padding: 3px;">
+{if $duplicate_count > 10}
+<p><b>Warning!</b> The system has detected that {$duplicate_count} patient records closely match the
+details you have just entered. It is possible that this patient already exists in the system. Please
+use the Patient Search field to find matching records.
+<br>Clicking the 'Submit New Record Anyway' button will create a new patient record.
+{else}
+<p><b>Warning!</b> The system has found a few patient records that closely match the details you have
+just entered. Please check the following list of existing patient records to see if there is a match.
+<br>Clicking the 'Submit New Record Anyway' button will create a new patient record.
+{/if}
+</div>
+</div>
+{if $duplicate_count <= 10}
+<p>
+<table class="grid">
+<tr>
+<td>{l}Patient Name{/l}</td>
+<td>{l}Date of Birth{/l}</td>
+<td>{l}Gender{/l}</td>
+<td>{l}SSN{/l}</td>
+</tr>
+		{foreach from=$DuplicateList item=patient key=key}
+	<tr {if $key%2 == 0}class="alt"{/if}>
+			<td valign="top"><a href="{$patient.edit_url}">{$patient.last_name}, {$patient.first_name}{if $patient.middle_name} {$patient.middle_name}{/if}</a></td>
+			<td valign="top">{$patient.date_of_birth}</td>
+			<td valign="top">({if $patient->gender==0}Male{elseif $patient->gender==1}Female{else}Unknown{/if})</td>
+			<td valign="top">{if $patient.identifier_type==1}{$patient.identifier}{/if}</td>
+		</tr>
+		{/foreach}
+{else}
+<table>
+{/if}
+	<tr><td>
+{clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+<input type="submit" name="DuplicateChecked" value="Submit New Record Anyway" />
+{foreach from=$OriginalPost item=value key=key}
+<input type="hidden" name="{$key}" value="{$value}" />
+{/foreach}
+</form>
+</td></tr>
+</table>
+{else}
 <div id="patientGeneralEditMessages"></div>
 {clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 
@@ -7,7 +52,6 @@
 	{include file="patient/general_patientDemo.html"}
 {else}
 	{assign var="parent" value=$person}
-
 
 <table class="columns">
 	<tr>
@@ -28,3 +72,5 @@
 </table>
 {/if}
 </form>
+
+{/if}
