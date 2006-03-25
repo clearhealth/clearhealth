@@ -9,85 +9,97 @@
 class M_Patient extends Manager {
 
 	var $messageType = "Patient";
+	var $similarPatientChecked = false; // dupe checking
 
 	/**
 	 * Handle an update from an edit or an add
 	 */
 	function process_update($id =0,$noPatient = false) {
-
-		if ($noPatient) {
-			$patient =& ORdataObject::factory('Person',$id);
-		}
-		else {
+		// check if the "submit duplicate record anyqay button has been clicked
+		$this->similarPatientChecked = isset($_POST['DuplicateChecked']) ;
+		$continue = 1 ;
+		$duplicate_count = -1 ;
+		if ($noPatient == false) { // if we're adding a patient:
+			if (!$this->similarPatientChecked) { // check for duplicates
+				$duplicate_count = $this->_checkDuplicatePatient() ;
+				$continue = 0 ;
+			}
+			// if our dupe count was 0 or if we're overriding the check to submit a new possible dupe, then continue
+			if ($duplicate_count <= 0 || $this->similarPatientChecked) {
+				$patient =& ORdataObject::factory('Person',$id);
+			}
+		} else { // otherwise, edit an existing patient
 			$patient =& ORdataObject::factory('Patient',$id);
 		}
-		$patient->populateArray($_POST['person']);
-		$patient->persist();
+		if ($continue) {
+			$patient->populateArray($_POST['person']);
+			$patient->persist();
 
-		$this->controller->patient_id = $patient->get('id');
+			$this->controller->patient_id = $patient->get('id');
 
 		/*
-		ORDataObject::factory_include('User');
-		$u = new User();
-		$user =& $u->fromPersonId($this->controller->patient_id);
-		$user->populate_array($_POST['user']);
-		$user->set('person_id',$this->controller->patient_id);
+			ORDataObject::factory_include('User');
+			$u = new User();
+			$user =& $u->fromPersonId($this->controller->patient_id);
+			$user->populate_array($_POST['user']);
+			$user->set('person_id',$this->controller->patient_id);
 
-		//map patient type to the matchng user group
+			//map patient type to the matchng user group
 
-		$user->persist();
+			$user->persist();
 		 */
-		if ($id == 0) {
-			$this->messages->addMessage($this->messageType.' Created');
-		}
-		else {
-			$this->messages->addmessage($this->messageType.' Updated');
-		}
+			if ($id == 0) {
+				$this->messages->addMessage($this->messageType.' Created');
+			}
+			else {
+				$this->messages->addmessage($this->messageType.' Updated');
+			}
 
-		$t_list = $patient->getTypeList();
-		$types = $patient->get('types');
+			$t_list = $patient->getTypeList();
+			$types = $patient->get('types');
 
 		/*
-		if (count($types) > 0) {
-			$type = array_shift($types);
-			if ($type > 0) {
-				$group = strtolower(str_replace(' ','_',$t_list[$type]));
-				$gacl_groups = $this->controller->security->sort_groups();
-				$user->groups = array();
-				foreach($gacl_groups[10] as $id => $name) {
-					$data = $this->controller->security->get_group_data($id);
-					if ($data[2] == $group) {
-						$gid = $data[0];
-						$user->groups[$gid] = array('id'=>$data[0]);
-						$user->persist();
-						break;
+			if (count($types) > 0) {
+				$type = array_shift($types);
+				if ($type > 0) {
+					$group = strtolower(str_replace(' ','_',$t_list[$type]));
+					$gacl_groups = $this->controller->security->sort_groups();
+					$user->groups = array();
+					foreach($gacl_groups[10] as $id => $name) {
+						$data = $this->controller->security->get_group_data($id);
+						if ($data[2] == $group) {
+							$gid = $data[0];
+							$user->groups[$gid] = array('id'=>$data[0]);
+							$user->persist();
+							break;
+						}
 					}
 				}
 			}
-		}
 		*/
 
-		// handle sub actions that are submitted with the main one
-		if (isset($_POST['number'])) {
-			$this->process_phone_update($this->controller->patient_id,$_POST['number']);
-		}
-		if (isset($_POST['address'])) {
-			$this->process_address_update($this->controller->patient_id,$_POST['address']);
-		}
-		if (isset($_POST['identifier'])) {
-			$this->process_identifier_update($this->controller->patient_id,$_POST['identifier']);
-		}
-		if (isset($_POST['insuredRelationship'])) {
-			$this->process_insuredRelationship_update($this->controller->patient_id,$_POST['insuredRelationship']);
-		}
-		if (isset($_POST['personPerson'])) {
-			$this->process_personPerson_update($this->controller->patient_id,$_POST['personPerson']);
-		}
-		if (isset($_POST['patientStatistics'])) {
-			$this->process_patientStatistics_update($this->controller->patient_id,$_POST['patientStatistics']);
-		}
-		if (isset($_POST['PatientChronicCode'])) {
-			$this->process_patientChronicCode_update($this->controller->patient_id,$_POST['PatientChronicCode']);
+			// handle sub actions that are submitted with the main one
+			if (isset($_POST['number'])) {
+				$this->process_phone_update($this->controller->patient_id,$_POST['number']);
+			}
+			if (isset($_POST['address'])) {
+				$this->process_address_update($this->controller->patient_id,$_POST['address']);
+			}
+			if (isset($_POST['identifier'])) {
+				$this->process_identifier_update($this->controller->patient_id,$_POST['identifier']);
+			}
+			if (isset($_POST['insuredRelationship'])) {
+				$this->process_insuredRelationship_update($this->controller->patient_id,$_POST['insuredRelationship']);
+			}
+			if (isset($_POST['personPerson'])) {
+				$this->process_personPerson_update($this->controller->patient_id,$_POST['personPerson']);
+			}
+			if (isset($_POST['patientStatistics'])) {
+				$this->process_patientStatistics_update($this->controller->patient_id,$_POST['patientStatistics']);
+			}
+			if (isset($_POST['PatientChronicCode'])) {
+				$this->process_patientChronicCode_update($this->controller->patient_id,$_POST['PatientChronicCode']);
+			}
 		}
 	}
 
@@ -217,6 +229,7 @@ class M_Patient extends Manager {
 	 * Handle updating an address
 	 */
 	function process_address_update($patient_id,$data) {
+		var_dump($data) ;
 		$process = false;
 		foreach($data as $key => $val) {
 			if ($key !== 'add_as_new' && $key !== "state") {
@@ -354,6 +367,83 @@ class M_Patient extends Manager {
 	function process_moveInsuredRelationshipUp($patient_id,$insured_relationship_id) {
 		$ir =& ORDataObject::factory('InsuredRelationship',$insured_relationship_id);
 		$ir->moveUp();
+	}
+
+	function _checkDuplicatePatient() {
+		$db =& new clniDB();
+		// take $_POST array, and check for existing users in the database
+		// last name, first name, ssn, address
+		// build a new view template for displaying the data
+		$person = $_POST['person'] ;
+		$last_name = $person['last_name'] ;
+		//$last_name = $db->quote("$last_name") ;
+		$first_name = $person['first_name'] ;
+		//$first_name = $db->quote("$first_name") ;
+		$first_initial = substr($first_name,0,1) ;
+		$gender = $person['gender'] ; // 1=Male,2=Female
+		$dob = $person['date_of_birth'] ;
+		
+		$duplicates = Array() ;
+		
+		$sql = "
+			SELECT 
+				person_id,
+				last_name,
+				first_name,
+				middle_name,
+				gender,
+				date_of_birth,
+				identifier,
+				identifier_type
+			FROM 
+				person
+			WHERE 
+				(
+					(
+						last_name like '$last_name' OR 
+						last_name like '$last_name%'
+					)
+					AND 
+					(
+						first_name like '$first_name' OR 
+						first_name like '$first_name%' OR 
+						(SUBSTRING(first_name,1,1) like '$first_initial' AND gender='$gender') OR 
+						date_of_birth='$dob'
+					)
+				)
+			ORDER BY 
+				last_name,
+				first_name,
+				middle_name,
+				date_of_birth
+			" ;
+		$res = $db->execute($sql);
+		$duplicate_count = 0 ;
+		while($res && !$res->EOF) {
+			$duplicates[$duplicate_count] =  $res->fields ;
+			$duplicates[$duplicate_count]['edit_url'] = Celini::link('view','PatientDashboard')."id=".$res->fields['person_id'];
+			$duplicate_count++ ;
+			$res->MoveNext();
+		}
+		$this->controller->assign_by_ref('DuplicateList',$duplicates) ;
+
+		// rebuild $_POST as person[last_name] elements again
+		$newPost = Array() ;
+		foreach ($_POST as $key => $value) {
+			$keystr = $key ;
+			$valstr = $value ;
+			if (is_array($value)) {
+				foreach ($value as $key2 => $value2) {
+					$keystr = "$key".'['.$key2.']' ;
+					$valstr = $value2 ;
+					$newPost[$keystr] = $valstr ;
+				}
+			} else {
+				$newPost[$keystr] = $valstr ;
+			}
+		}
+		$this->controller->assign_by_ref('OriginalPost',$newPost) ;
+		return $duplicate_count ;
 	}
 }
 ?>
