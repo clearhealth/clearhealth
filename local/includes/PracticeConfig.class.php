@@ -15,7 +15,6 @@ class PracticeConfig extends clniConfig {
 	var $_schema = array(
 		'CalendarIncrement' => array('label'=>'Calendar Interval','type'=>'PartialHour'),
 		'FacilityType' => array('label'=>'Facility Type','type'=>'facilitytype'),
-		'BillingType' => array('label'=>'Billing Type','type'=>'BillingType')
 	);
 
 	function getSchema() {
