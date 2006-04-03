@@ -19,6 +19,13 @@ class M_Patient extends Manager {
 		$this->similarPatientChecked = isset($_POST['DuplicateChecked']) ;
 		$continue = 1 ;
 		$duplicate_count = -1 ;
+
+		// hack to test for a patient existing correctly
+		$p =& ORdataObject::factory('Patient',$id);
+		if ($p->isPopulated()) {
+			$noPatient = true;
+		}
+
 		if ($noPatient == false) { // if we're adding a patient:
 			if (!$this->similarPatientChecked) { // check for duplicates
 				$duplicate_count = $this->_checkDuplicatePatient() ;
@@ -229,7 +236,6 @@ class M_Patient extends Manager {
 	 * Handle updating an address
 	 */
 	function process_address_update($patient_id,$data) {
-		var_dump($data) ;
 		$process = false;
 		foreach($data as $key => $val) {
 			if ($key !== 'add_as_new' && $key !== "state") {
