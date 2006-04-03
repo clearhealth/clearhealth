@@ -36,9 +36,17 @@
 </enumeration>
 <enumeration name="account_note_type" title="Account Note Type" type="Default">
 	<enum>
-		<key>0</key>
-		<value>Test</value>
+		<key>1</key>
+		<value>X12</value>
 		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Batch</value>
+		<sort>1</sort>
 		<extra1/>
 		<extra2/>
 		<status>1</status>
@@ -180,6 +188,40 @@
 		<key>4</key>
 		<value>P - Assignment Refused</value>
 		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
+<enumeration name="audit_type" title="Audit Type" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Insert</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Update</value>
+		<sort>1</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Delete</value>
+		<sort>2</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>4</key>
+		<value>Process</value>
+		<sort>3</sort>
 		<extra1/>
 		<extra2/>
 		<status>1</status>
@@ -337,6 +379,64 @@
 	<enum>
 		<key>0</key>
 		<value>S2095</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
+<enumeration name="days_of_week" title="Days of Week" type="Default">
+	<enum>
+		<key>7</key>
+		<value>Sunday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>1</key>
+		<value>Monday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Tuesday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Wednesday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>4</key>
+		<value>Thursday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>5</key>
+		<value>Friday</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>6</key>
+		<value>Saturday</value>
 		<sort>0</sort>
 		<extra1/>
 		<extra2/>
@@ -548,6 +648,8 @@
 		<extra2/>
 		<status>1</status>
 	</enum>
+</enumeration>
+<enumeration name="funds_source" title="Funds Source" type="Default">
 </enumeration>
 <enumeration name="gender" title="Gender" type="Default">
 	<enum>
@@ -811,6 +913,104 @@
 	<enum>
 		<key>1</key>
 		<value>Migrant Worker</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
+<enumeration name="months_of_year" title="Months of Year" type="Default">
+	<enum>
+		<key>1</key>
+		<value>January</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>February</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>March</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>4</key>
+		<value>April</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>5</key>
+		<value>May</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>6</key>
+		<value>June</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>7</key>
+		<value>July</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>8</key>
+		<value>August</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>9</key>
+		<value>September</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>10</key>
+		<value>October</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>11</key>
+		<value>November</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>12</key>
+		<value>December</value>
 		<sort>0</sort>
 		<extra1/>
 		<extra2/>
@@ -1167,6 +1367,48 @@
 		<value>Other/Unknown</value>
 		<sort>0</sort>
 		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
+<enumeration name="recurrence_pattern_type" title="Recurrence Pattern Type" type="MappedValue">
+	<enum>
+		<key>1</key>
+		<value>By Day (Every 3 Days)</value>
+		<sort>0</sort>
+		<extra1>day</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>By Weekday Per Month (Every Third Tuesday)</value>
+		<sort>1</sort>
+		<extra1>monthweek</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>By Day of Month (Every Fifth)</value>
+		<sort>2</sort>
+		<extra1>monthday</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>4</key>
+		<value>By Day of Month Per Year (Every December 3rd)</value>
+		<sort>3</sort>
+		<extra1>yearmonthday</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>5</key>
+		<value>By Weekday Per Month Per Year (Every Third Tuesday of November)</value>
+		<sort>4</sort>
+		<extra1>yearmonthweek</extra1>
 		<extra2/>
 		<status>1</status>
 	</enum>
@@ -1657,6 +1899,32 @@
 		<status>1</status>
 	</enum>
 </enumeration>
+<enumeration name="subscriber_to_patient_relationship" title="Subscriber to Patient Relationship" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Self</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Parent</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Spouse</value>
+		<sort>1</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
 <enumeration name="system_reports" title="System Reports" type="Url">
 	<enum>
 		<key>1</key>
@@ -1691,32 +1959,45 @@
 		<status>1</status>
 	</enum>
 </enumeration>
-<enumeration name="subscriber_to_patient_relationship" title="Subscriber to Patient Relationship" type="Default">
+<enumeration name="weeks_of_month" title="Weeks of Month" type="Default">
 	<enum>
-		<key>1</key>
-		<value>Self</value>
+		<key>0</key>
+		<value>First</value>
 		<sort>0</sort>
-		<extra1></extra1>
-		<extra2></extra2>
-		<status>1</status>
-
-	</enum>
-	<enum>
-		<key>3</key>
-		<value>Parent</value>
-		<sort>0</sort>
-		<extra1></extra1>
-		<extra2></extra2>
-
+		<extra1/>
+		<extra2/>
 		<status>1</status>
 	</enum>
 	<enum>
-		<key>2</key>
-		<value>Spouse</value>
+		<key>0</key>
+		<value>Second</value>
 		<sort>1</sort>
-		<extra1></extra1>
-
-		<extra2></extra2>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>0</key>
+		<value>Third</value>
+		<sort>2</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>0</key>
+		<value>Fourth</value>
+		<sort>3</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>0</key>
+		<value>Last</value>
+		<sort>4</sort>
+		<extra1/>
+		<extra2/>
 		<status>1</status>
 	</enum>
 </enumeration>
