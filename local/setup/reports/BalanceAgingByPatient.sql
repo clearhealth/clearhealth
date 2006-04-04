@@ -76,7 +76,6 @@ ORDER BY
 SELECT
 	CONCAT(per.last_name, ', ', per.first_name) AS 'patient_name',
 	pat.record_number,
-	CONCAT(c.name, ' > ', ip.name) AS payer,
 	(SUM(total_billed) - (SUM(total_paid) + IF(writeoffs.writeoff IS NULL, 0.00, SUM(writeoffs.writeoff)))) AS total_balance
 FROM
 	person AS per
@@ -98,8 +97,7 @@ FROM
 	INNER JOIN insurance_program AS ip ON(current_payer.value = ip.insurance_program_id)
 	INNER JOIN company AS c USING(company_id)
 GROUP BY
-	per.person_id,
-	payer
+	per.person_id
 ORDER BY
 	per.last_name
 
