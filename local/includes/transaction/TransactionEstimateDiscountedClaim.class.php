@@ -3,7 +3,7 @@ $loader->requireOnce('includes/transaction/TransactionEstimateClaim.class.php');
 
 class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 	var $resultsInMap = false;
-	var $discount = array('discount' => 0);
+	var $discount = array('discount' => 0,'type'=>'flat');
 
 	function setDiscount($discount) {
 		preg_match('/(\$?)(([0-9]*)\.?([0-9]*))(%?)/', $discount, $matches);
