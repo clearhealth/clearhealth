@@ -28,7 +28,7 @@ just entered. Please check the following list of existing patient records to see
 	<tr {if $key%2 == 0}class="alt"{/if}>
 			<td valign="top"><a href="{$patient.edit_url}">{$patient.last_name}, {$patient.first_name}{if $patient.middle_name} {$patient.middle_name}{/if}</a></td>
 			<td valign="top">{$patient.date_of_birth}</td>
-			<td valign="top">({if $patient->gender==0}Male{elseif $patient->gender==1}Female{else}Unknown{/if})</td>
+			<td valign="top">{enum_lookup name="gender" value=$patient.gender}</td>
 			<td valign="top">{if $patient.identifier_type==1}{$patient.identifier}{/if}</td>
 		</tr>
 		{/foreach}
