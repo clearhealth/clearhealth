@@ -19,7 +19,7 @@
 		<td><a onClick="return confirm('Delete Address {$row.name}?:\n{$row.line1}\n{$row.line2}\n{$row.city} {$row.state}, {$row.postal_code}')" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a></td>
         </tr>
         {foreachelse}
-        <tr>
+        <tr id="noAddresses">
 		<td colspan="5">{l}No Addresses{/l}
 			{assign var="addressRequired" value=1}
 		</td>
@@ -74,9 +74,8 @@
                         </tr>
 		</table>
 	</fieldset>
-{clni_register_validation_rule id="addrName" message="Every Patient requires an Address, if this patient doesn't have an address add one with a name of \"No Address\" to signify this."}
-{literal}
-<script type="text/javascript">
+{clni_register_validation_rule id="addrName" message="Every Patient requires an Address, if this patient doesn't have an address add one with a name of \"No Address\" to signify this." rule="address"}
+{head type="js"}
 	var addressElements = [];
 	Behavior.register('#address',function(element) 
 		{
@@ -95,7 +94,14 @@
 		}
 	);
 
-	function  clni_rule_addressRequiredIf(element) {
+	function clni_rule_address(element) {
+		if (document.getElementById('noAddresses')) {
+			return clni_rule_required(element);
+		}
+		return true;
+	}
+
+	function clni_rule_addressRequiredIf(element) {
 		var required = false;
 		// if any of the elements are filled out all are required
 		for(var i =0; i < addressElements.length; i++) {
@@ -125,5 +131,4 @@
 			name.value = select.options[select.selectedIndex].text;
 		}
 	}
-</script>
-{/literal}
+{/head}
