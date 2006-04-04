@@ -65,27 +65,10 @@ class C_Schedule extends CalendarController {
 			return;
 		
 		if (isset($_POST['cancel'])) {
-			$location = Celini::link('list','location');
-			$trail = $_SESSION['trail'];
-			foreach($trail as $stop) {
-					if (!isset($stop['edit_appointment']) && $stop['action'] != "edit_appointment" &&
-						!isset($stop['confirm']) && $stop['action'] != "confirm") {
-						if (isset($stop['main'])) array_shift($stop);
-						$aks = array_keys($stop);
-						$location = Celini::link($stop[$aks[1]],$stop[$aks[0]]);
-						unset($stop[$aks[0]]);
-						unset($stop[$aks[1]]);
-						foreach ($stop as $qn => $qi) {
-						//they were coming from editing this appointment which they are now cancelling, don't send this and put them back in to edit mode
-						if ($qn === "appointment_id") continue;
-						$location .= "$qn";
-						if (!empty($qi)) $location .= "=$qi";
-							$location .="&";
-						}
-						break;
-					}
-			}
-			header("Location: " . $location);
+			$trail =& Celini::trailInstance();
+			$trail->skipActions = array('edit_appointment','confirm','find','appointment_popup');
+			$action = $trail->lastItem();
+			header("Location: " . $action->link());
 			exit;
 		}
 	
