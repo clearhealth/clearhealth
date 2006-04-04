@@ -3,50 +3,68 @@ SELECT
 	CONCAT(per.last_name, ', ', per.first_name) AS 'patient_name',
 	pat.record_number,
 	CONCAT(c.name, ' > ', ip.name) AS payer,
-	SUM(CASE
-		WHEN
-			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY)
-		THEN
-			total_billed
-		ELSE
-			0
-		END) AS `current`,
-	SUM(CASE
-		WHEN
-			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND 
-			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 31 DAY) 
-		THEN
-			total_billed
-		ELSE
-			0
-		END) AS `31 - 60`,
-	SUM(CASE
-		WHEN
-			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 90 DAY) AND 
-			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 61 DAY) 
-		THEN
-			total_billed
-		ELSE
-			0
-		END) AS `61 - 90`,
-	SUM(CASE
-		WHEN
-			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 120 DAY) AND 
-			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 91 DAY) 
-		THEN
-			total_billed
-		ELSE
-			0
-		END) AS `91 - 120`,
-	SUM(CASE
-		WHEN 
-			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 121 DAY) 
-		THEN
-			total_billed
-		ELSE
-			0
-		END) AS `121+`
-
+	(
+		SUM(CASE WHEN e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN total_billed ELSE 0 END) - 
+		(
+			SUM(CASE WHEN e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN total_paid ELSE 0 END) +
+			SUM(CASE WHEN e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN IF(writeoffs.writeoff IS NULL, 0, writeoffs.writeoff) ELSE 0 END)
+		)
+	) AS `current`,
+	(
+		SUM(CASE WHEN 
+			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND
+			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 31 DAY)
+			THEN total_billed ELSE 0 END) - 
+		(
+			SUM(CASE WHEN
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 31 DAY)
+				THEN total_paid ELSE 0 END) +
+			SUM(CASE WHEN 
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 60 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 31 DAY)
+				THEN IF(writeoffs.writeoff IS NULL, 0, writeoffs.writeoff) ELSE 0 END)
+		)
+	) AS `31 - 60`,
+	(
+		SUM(CASE WHEN 
+			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 90 DAY) AND
+			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 61 DAY)
+			THEN total_billed ELSE 0 END) - 
+		(
+			SUM(CASE WHEN
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 90 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 61 DAY)
+				THEN total_paid ELSE 0 END) +
+			SUM(CASE WHEN 
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 90 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 61 DAY)
+				THEN IF(writeoffs.writeoff IS NULL, 0, writeoffs.writeoff) ELSE 0 END)
+		)
+	) AS `61 - 90`,
+	(
+		SUM(CASE WHEN 
+			e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 120 DAY) AND
+			e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 91 DAY)
+			THEN total_billed ELSE 0 END) - 
+		(
+			SUM(CASE WHEN
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 120 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 91 DAY)
+				THEN total_paid ELSE 0 END) +
+			SUM(CASE WHEN 
+				e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 120 DAY) AND
+				e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 91 DAY)
+				THEN IF(writeoffs.writeoff IS NULL, 0, writeoffs.writeoff) ELSE 0 END)
+		)
+	) AS `91 - 120`,
+	(
+		SUM(CASE WHEN e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 121 DAY) THEN total_billed ELSE 0 END) - 
+		(
+			SUM(CASE WHEN e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 121 DAY) THEN total_paid ELSE 0 END) +
+			SUM(CASE WHEN e.date_of_treatment <= DATE_SUB(NOW(), INTERVAL 121 DAY) THEN IF(writeoffs.writeoff IS NULL, 0, writeoffs.writeoff) ELSE 0 END)
+		)
+	) AS `121+`
 FROM
 	person AS per
 	INNER JOIN patient AS pat USING(person_id)
