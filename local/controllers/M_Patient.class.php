@@ -21,7 +21,7 @@ class M_Patient extends Manager {
 		$duplicate_count = -1 ;
 
 		// hack to test for a patient existing correctly
-		$p =& ORdataObject::factory('Patient',$id);
+		$p =& Celini::newOrdo('Patient',$id);
 		if ($p->isPopulated()) {
 			$noPatient = true;
 		}
@@ -33,7 +33,7 @@ class M_Patient extends Manager {
 			}
 			// if our dupe count was 0 or if we're overriding the check to submit a new possible dupe, then continue
 			if ($duplicate_count <= 0 || $this->similarPatientChecked) {
-				$patient =& ORdataObject::factory('Person',$id);
+				$patient =& ORdataObject::factory('Patient',$id);
 			}
 		} else { // otherwise, edit an existing patient
 			$patient =& ORdataObject::factory('Patient',$id);
@@ -44,17 +44,6 @@ class M_Patient extends Manager {
 
 			$this->controller->patient_id = $patient->get('id');
 
-		/*
-			ORDataObject::factory_include('User');
-			$u = new User();
-			$user =& $u->fromPersonId($this->controller->patient_id);
-			$user->populate_array($_POST['user']);
-			$user->set('person_id',$this->controller->patient_id);
-
-			//map patient type to the matchng user group
-
-			$user->persist();
-		 */
 			if ($id == 0) {
 				$this->messages->addMessage($this->messageType.' Created');
 			}
@@ -64,26 +53,6 @@ class M_Patient extends Manager {
 
 			$t_list = $patient->getTypeList();
 			$types = $patient->get('types');
-
-		/*
-			if (count($types) > 0) {
-				$type = array_shift($types);
-				if ($type > 0) {
-					$group = strtolower(str_replace(' ','_',$t_list[$type]));
-					$gacl_groups = $this->controller->security->sort_groups();
-					$user->groups = array();
-					foreach($gacl_groups[10] as $id => $name) {
-						$data = $this->controller->security->get_group_data($id);
-						if ($data[2] == $group) {
-							$gid = $data[0];
-							$user->groups[$gid] = array('id'=>$data[0]);
-							$user->persist();
-							break;
-						}
-					}
-				}
-			}
-		*/
 
 			// handle sub actions that are submitted with the main one
 			if (isset($_POST['number'])) {
