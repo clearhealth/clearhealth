@@ -94,8 +94,20 @@ class Address extends ORDataObject {
 		$this->_execute("delete from {$this->_prefix}$this->_table where address_id = ". (int)$this->id);
 	}
 
+	
+	/**
+	 * @todo refractor into a real datasoruce and use it's toArray() to make the array that's
+	 *     expected here.
+	 */
 	function addressList($parent_id) {
-		$sql ="select * from $this->_table inner join $this->_relation using(address_id) where $this->_fkey = ".(int)$parent_id;
+		$sql ="
+			select 
+				*
+			from 
+				{$this->_table} 
+				inner join {$this->_relation} using(address_id) 
+			where 
+				{$this->_fkey} = ".(int)$parent_id;
 		$res = $this->_execute($sql);
 
 		$regionl = $this->getRegionList();
