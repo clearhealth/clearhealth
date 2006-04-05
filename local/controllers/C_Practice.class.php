@@ -19,9 +19,9 @@ class C_Practice extends Controller {
 		$this->assign_by_ref("practice",$this->location);
 		
 		$this->assign("process",true);
-		$this->assign("FORM_ACTION",Celini::link('edit',true,true,$id));
+		$this->assign("FORM_ACTION",Celini::link('edit',true,true,$this->location->get('id')));
 
-		$this->assign('settings',$this->_practiceSettings($id));
+		$this->assign('settings',$this->_practiceSettings($this->location->get('id')));
 		return $this->view->render("edit.html");
 	}
 	
