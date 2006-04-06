@@ -56,6 +56,14 @@ class Person extends ORDataObject {
 	 * Person type
 	 */
 	var $_types	= false;
+	
+	
+	/**#@+
+	 * {@inheritdoc}
+	 */
+	var $_table = 'person';
+	var $_key = 'person_id';
+	/**#@-*/
 
 
 	/**
@@ -64,7 +72,6 @@ class Person extends ORDataObject {
 	 */
 	function Person($db = null) {
 		parent::ORDataObject($db);
-		$this->_table = 'person';
 		$this->_sequence_name = 'sequences';
 	}
 
