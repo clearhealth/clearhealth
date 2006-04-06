@@ -7,10 +7,16 @@
 	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEditTemplate')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
 	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressTemplate')" type="radio" name="_addressType" />Add Address From Related Person</label>
 {/if}
-	
 	<div id="addressEditTemplate" style="display:none;">
 		{if $address->value('isMultiple')}
-		<p>This address belongs to other people too</p>
+		<p>
+			This address belongs to the following people as well:
+			<ul>
+				{foreach from=$address->valueList('otherPeople') item=personName key=personId}
+				<li><a href="{link controller='PatientDashboard' action='view' defaultArg=$personId}">{$personName}</a></li>
+				{/foreach}
+			</ul>
+		</p>
 		{/if}
 		{include file="contacts/general_addressEdit.html"}
 	</div>
