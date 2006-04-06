@@ -45,7 +45,7 @@ class C_DocumentCategory extends Controller {
 		$treeMenu = &new HTML_TreeMenu_DHTML($menu, array('images' => $this->base_dir.'images/stock', 'defaultClass' => 'treeMenuDefault'));
 		$this->assign("tree_html",$treeMenu->toHTML());
 		
-		return $this->render("list.html"));
+		return $this->view->render('list.html');
 	}
 	
 	function add_node_action($parent_is) {

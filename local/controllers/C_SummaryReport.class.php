@@ -67,7 +67,7 @@ class C_SummaryReport extends Controller {
 		$this->assign_by_ref('patient',$patient);
 
 		$this->view->path = 'patient';
-		return $this->render("summary_report.html"));
+		return $this->view->render('summary_report.html');
 	}
 
 	function processPatient_view($options = false) {
