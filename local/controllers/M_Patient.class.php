@@ -55,11 +55,15 @@ class M_Patient extends Manager {
 			$types = $patient->get('types');
 
 			// handle sub actions that are submitted with the main one
+			var_dump($_POST);
 			if (isset($_POST['number'])) {
 				$this->process_phone_update($this->controller->patient_id,$_POST['number']);
 			}
 			if (isset($_POST['address'])) {
 				$this->process_address_update($this->controller->patient_id,$_POST['address']);
+			}
+			if (isset($_POST['relatedAddress'])) {
+				$this->process_relatedAddress_update($this->controller->patient_id, $_POST['relatedAddress']);
 			}
 			if (isset($_POST['identifier'])) {
 				$this->process_identifier_update($this->controller->patient_id,$_POST['identifier']);
@@ -228,6 +232,30 @@ class M_Patient extends Manager {
 			$this->controller->address_id = $address->get('id');
 
 			$this->messages->addMessage('Address Updated');
+		}
+	}
+	
+	/**
+	 * Handle adding a related person's address
+	 */
+	function process_relatedAddress_update($patient_id, $data) {
+		//var_dump($data);
+		$message = '';
+		foreach ($data as $address) {
+			if (!isset($address['person_id'])) {
+				continue;
+			}
+		
+			$newAddress =& Celini::newORDO('PersonAddress', array($address['address_id'], $address['person_id']));
+			$newAddress->set('address_id', $address['address_id']);
+			$newAddress->set('person_id', $address['person_id']);
+			$newAddress->persist();
+			
+			$message = empty($message) ? 'Added Address' : 'Added Addresses';
+		}
+		
+		if (!empty($message)) {
+			$this->messages->addMessage($message);
 		}
 	}
 

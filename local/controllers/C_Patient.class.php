@@ -78,6 +78,11 @@ class C_Patient extends Controller {
 		$pcc =& Celini::newOrdo('PatientChronicCode');
 		$chronicCodes = $pcc->patientCodeArray($patient_id,true);
 		
+		$relatedAddressList =& $person->loadDatasource('RelatedAddressList');
+		$relatedAddressGrid =& new cGrid($relatedAddressList);
+		$relatedAddressGrid->indexCol = false;
+		$this->assign_by_ref('relatedAddressGrid', $relatedAddressGrid);
+		
 		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);

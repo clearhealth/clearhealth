@@ -1,0 +1,30 @@
+<fieldset>
+	<legend>Patient Addresses</legend>
+	
+	{include file="contacts/general_addressList.html"}
+
+{if $address->get('id') <= 0}	
+	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEditTemplate')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
+	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressTemplate')" type="radio" name="_addressType" />Add Address From Related Person</label>
+{/if}
+	
+	<div id="addressEditTemplate" style="display:none;">
+		{include file="contacts/general_addressEdit.html"}
+	</div>
+	
+	<div id="relatedAddressTemplate" style="display:none;">
+		{include file="patient/general_relatedAddresses.html"}
+	</div>
+	
+	<div id="addressEditBox"></div>
+</fieldset>
+
+{literal}
+<script type="text/javascript">
+function switchAddressEditMode(newTemplate) {
+	document.getElementById('addressEditBox').innerHTML = document.getElementById(newTemplate).innerHTML;
+}
+switchAddressEditMode('addressEditTemplate');
+//switchAddressEditMode('relatedAddressTemplate');
+</script>
+{/literal}
