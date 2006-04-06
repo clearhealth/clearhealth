@@ -1,6 +1,6 @@
 <?php
-require_once CELINI_ROOT ."/includes/Grid.class.php";
-require_once APP_ROOT ."/local/includes/SuperbillDatasource.class.php";
+$loader->requireOnce('includes/Grid.class.php');
+$loader->requireOnce('includes/SuperbillDatasource.class.php');
 
 class C_Superbill extends Controller {
 

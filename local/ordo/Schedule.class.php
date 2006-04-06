@@ -1,7 +1,6 @@
 <?php
 
-require_once CELINI_ROOT . "/ordo/ORDataObject.class.php";
-require_once APP_ROOT . "/local/ordo/Event.class.php";
+$loader->requireOnce('ordo/Event.class.php');
 
 /**
  * 

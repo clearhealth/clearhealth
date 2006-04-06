@@ -8,10 +8,10 @@
 /**
 */
 $loader->requireOnce("ordo/MenuReport.class.php");
-$loader->requireOnce("/includes/Pager.class.php");
-$loader->requireOnce("/includes/ReportFilter.class.php");
-$loader->requireOnce("/includes/Grid.class.php");
-$loader->requireOnce("/includes/Datasource_sql.class.php");
+$loader->requireOnce("includes/Pager.class.php");
+$loader->requireOnce("includes/ReportFilter.class.php");
+$loader->requireOnce("includes/Grid.class.php");
+$loader->requireOnce("includes/Datasource_sql.class.php");
 
 
 /**

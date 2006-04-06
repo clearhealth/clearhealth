@@ -14,8 +14,6 @@ define("TYPE_CELL",3);
 define("TYPE_EMERGENCY",4);
 define("TYPE_FAX",5);
 
-require_once CELINI_ROOT . "/ordo/ORDataObject.class.php";
-
 /**
  * class Address
  *

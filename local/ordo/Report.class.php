@@ -1,13 +1,13 @@
 <?php
 
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELINI_ROOT."/includes/Table.class.php";
-require_once CELINI_ROOT."/includes/ReportFilter.class.php";
+$loader->requireOnce('ordo/ORDataObject.class.php');
+$loader->requireOnce('includes/Table.class.php');
+$loader->requireOnce('includes/ReportFilter.class.php');
 
 /**
 * Compat functions
 */
-require_once CELINI_ROOT.'/lib/PHP_Compat/Compat/Function/file_put_contents.php';
+$loader->requireOnce('lib/PHP_Compat/Compat/Function/file_put_contents.php');
 
 
 /**

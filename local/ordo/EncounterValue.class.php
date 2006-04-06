@@ -6,12 +6,6 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-/**#@+
- * Required Libs
- */
-$loader->requireOnce('ordo/ORDataObject.class.php');
-$loader->requireOnce('includes/EnumManager.class.php');
-/**#@-*/
 
 /**
  * Object Relational Persistence Mapping Class for table: encounter_value

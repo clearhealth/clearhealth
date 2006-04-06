@@ -1,5 +1,4 @@
 <?php
-require_once CELINI_ROOT . "/controllers/Controller.class.php";
 
 /**
  * @todo Refractor internal names.  There are way too many methods with 

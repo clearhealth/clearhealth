@@ -1,6 +1,6 @@
 <?php
 
-require_once APP_ROOT . "/local/controllers/M_Patient.class.php";
+$loader->requireOnce('controllers/M_Patient.class.php');
 
 class M_User extends M_Patient {
 

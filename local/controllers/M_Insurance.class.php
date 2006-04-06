@@ -3,7 +3,6 @@
  * @package	com.uversainc.clearhealth
  */
 
-require_once CELINI_ROOT."/controllers/Manager.class.php";
 
 /**
  * Insurance Manager

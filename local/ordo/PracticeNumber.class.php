@@ -1,6 +1,7 @@
 <?php
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-ORdataObject::factory_include('Number');
+
+$loader->requireOnce('ordo/Number.class.php');
+
 class PracticeNumber extends Number {
 	var $_relation = "practice_number";
 	var $_fkey = "practice_id";

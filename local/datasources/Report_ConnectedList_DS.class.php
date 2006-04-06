@@ -1,6 +1,6 @@
 <?php
 
-require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
+$loader->requireOnce('/includes/Datasource_sql.class.php');
 
 class Report_ConnectedList_DS extends Datasource_sql
 {

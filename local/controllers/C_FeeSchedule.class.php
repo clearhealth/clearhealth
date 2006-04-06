@@ -1,6 +1,6 @@
 <?php
-require_once CELINI_ROOT ."/includes/Grid.class.php";
-require_once APP_ROOT ."/local/includes/FeeScheduleDatasource.class.php";
+$loader->requireOnce('includes/Grid.class.php');
+$loader->requireOnce('includes/FeeScheduleDatasource.class.php');
 
 class C_FeeSchedule extends Controller {
 

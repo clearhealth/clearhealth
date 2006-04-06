@@ -1,14 +1,13 @@
 <?php
 
-require_once CELINI_ROOT."/controllers/Controller.class.php";
-//require_once APP_ROOT . "/local/controllers/C_Main.class.php";
-require_once APP_ROOT . "/local/controllers/C_Schedule.class.php";
+//$loader->requireOnce('controllers/C_Main.class.php');
+$loader->requireOnce('controllers/C_Schedule.class.php');
 
-require_once APP_ROOT . "/local/ordo/Practice.class.php";
-require_once APP_ROOT . "/local/ordo/Building.class.php";
-require_once APP_ROOT . "/local/ordo/Room.class.php";
-require_once APP_ROOT . "/local/ordo/Schedule.class.php";
-require_once APP_ROOT . "/local/ordo/FacilityCode.class.php";
+$loader->requireOnce('ordo/Practice.class.php');
+$loader->requireOnce('ordo/Building.class.php');
+$loader->requireOnce('ordo/Room.class.php');
+$loader->requireOnce('ordo/Schedule.class.php');
+$loader->requireOnce('ordo/FacilityCode.class.php');
 
 
 class C_Location extends Controller {
@@ -143,7 +142,7 @@ class C_Location extends Controller {
 		// If no rooms were set prior to creating this one, utilize the pseudo
 		// visitor ChangeDefaultRoomForUsers() to update the default rooms.
 		if ($setDefaultRoom) {
-			include_once APP_ROOT . '/local/includes/ChangeDefaultRoomForUsers.class.php';
+			$loader->requireOnce('includes/ChangeDefaultRoomForUsers.class.php');
 			$updater =& new ChangeDefaultRoomForUsers($location);
 			
 			$user =& ORDataObject::factory('User');

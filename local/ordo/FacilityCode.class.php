@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * This file contains {@link FacilityCode}
  *
@@ -7,13 +6,6 @@
  * @author   Travis Swicegood <tswicegood@uversainc.com>
  */
  
-
-/**
- * Require necessary file(s)
- */
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-
-
 /** 
  * Facility Codes utilized by x12 generators.
  *

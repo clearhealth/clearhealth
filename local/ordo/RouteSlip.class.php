@@ -6,8 +6,6 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-$loader->requireOnce('ordo/ORDataObject.class.php');
-
 /**
  * Object Relational Persistence Mapping Class for table: route_slip
  *

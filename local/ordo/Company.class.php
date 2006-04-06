@@ -6,9 +6,7 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-$loader->requireOnce('/ordo/ORDataObject.class.php');
-$loader->requireOnce('/includes/Datasource_sql.class.php');
-$loader->requireOnce('/includes/EnumManager.class.php');
+$loader->requireOnce('includes/Datasource_sql.class.php');
 
 /**
  * Object Relational Persistence Mapping Class for table: company

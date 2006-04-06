@@ -7,10 +7,10 @@ else {
 }
 
 if (file_exists(CELINI_ROOT."/controllers/Dispatcher.class.php")) {
-	require_once CELINI_ROOT."/controllers/Dispatcher.class.php";
+	$loader->requireOnce('controllers/Dispatcher.class.php');
 }
 else {
-	require_once CELINI_ROOT."/controllers/Controller.class.php";
+	$loader->requireOnce('controllers/Controller.class.php');
 }
 
 if ($config['dir_style_paths']) {

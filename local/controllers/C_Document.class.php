@@ -1,10 +1,9 @@
 <?php
 
-require_once CELINI_ROOT. "/controllers/Controller.class.php";
-require_once APP_ROOT . "/local/ordo/Document.class.php";
-require_once APP_ROOT . "/local/includes/CategoryTree.class.php";
-require_once CELINI_ROOT. "/lib/TreeMenu.php";
-require_once APP_ROOT . "/local/ordo/Note.class.php";
+$loader->requireOnce('/local/ordo/Document.class.php');
+$loader->requireOnce('/local/includes/CategoryTree.class.php');
+$loader->requireOnce('/lib/TreeMenu.php');
+$loader->requireOnce('local/ordo/Note.class.php');
 
 class C_Document extends Controller {
 

@@ -1,20 +1,20 @@
 <?php
 if (!defined('CALENDAR_ROOT')) {
-	define("CALENDAR_ROOT",APP_ROOT. "/local/lib/Calendar/");
+	define('CALENDAR_ROOT', 'lib/Calendar/');
 }
-require_once CALENDAR_ROOT . 'Month/Weekdays.php';
-require_once CALENDAR_ROOT . 'Month/Weeks.php';
-require_once CALENDAR_ROOT . 'Day.php';
-require_once CALENDAR_ROOT . 'Week.php';
-require_once CALENDAR_ROOT . 'Decorator.php';
+$loader->requireOnce(CALENDAR_ROOT . 'Month/Weekdays.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Month/Weeks.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Day.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Week.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Decorator.php');
 
-require_once APP_ROOT . "/local/controllers/C_Calendar.class.php";
-require_once APP_ROOT . "/local/includes/CalendarController.class.php";
+$loader->requireOnce('controllers/C_Calendar.class.php');
+$loader->requireOnce('includes/CalendarController.class.php');
 
-require_once APP_ROOT . "/local/ordo/Schedule.class.php";
-require_once APP_ROOT . "/local/ordo/Practice.class.php";
-require_once APP_ROOT . "/local/ordo/Building.class.php";
-require_once APP_ROOT . "/local/ordo/Room.class.php";
+$loader->requireOnce('ordo/Schedule.class.php');
+$loader->requireOnce('ordo/Practice.class.php');
+$loader->requireOnce('ordo/Building.class.php');
+$loader->requireOnce('ordo/Room.class.php');
 
 
 class C_PersonSchedule extends CalendarController {

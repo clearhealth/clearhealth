@@ -6,7 +6,7 @@
 /**
  * include the abstract datasource
  */
-require_once CELINI_ROOT ."/includes/Datasource.class.php";
+$loader->requireOnce('includes/Datasource.class.php');
 
 /**
  * Specialized datasource for managing account history

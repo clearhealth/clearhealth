@@ -1,6 +1,5 @@
 <?php
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-require_once CELINI_ROOT."/includes/Grid.class.php";
+$loader->requireOnce('includes/Grid.class.php');
 
 /**
  * Controller for the Clearhealth users

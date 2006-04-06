@@ -6,12 +6,6 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-/**#@+
- * Required Libs
- */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
-/**#@-*/
-
 /**
  * Object Relational Persistence Mapping Class for table: patient_statistics
  *

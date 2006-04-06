@@ -1,8 +1,8 @@
 <?php
 
-require_once CELINI_ROOT.'/controllers/C_Base_Access.class.php';
-require_once APP_ROOT.'/local/controllers/C_Calendar.class.php';
-require_once APP_ROOT.'/local/controllers/M_Calendar.class.php';
+$loader->requireOnce('controllers/C_Base_Access.class.php');
+$loader->requireOnce('controllers/C_Calendar.class.php');
+$loader->requireOnce('controllers/M_Calendar.class.php');
 
 class C_Access extends C_Base_Access {
                                                                                 

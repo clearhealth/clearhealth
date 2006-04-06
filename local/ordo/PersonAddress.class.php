@@ -1,6 +1,7 @@
 <?php
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-ORdataObject::factory_include('Address');
+
+$loader->requireOnce('ordo/Address.class.php');
+
 class PersonAddress extends Address {
 	var $_relation = "person_address";
 	var $_fkey = "person_id";

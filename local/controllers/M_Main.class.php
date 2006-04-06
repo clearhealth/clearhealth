@@ -1,7 +1,5 @@
 <?php
 
-require_once CELINI_ROOT . "/controllers/Manager.class.php";
-
 class M_Main extends Manager {
 	function preProcess() {
 		$me =& Me::getInstance();

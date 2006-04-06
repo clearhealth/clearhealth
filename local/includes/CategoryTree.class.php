@@ -1,6 +1,6 @@
 <?php
 
-require_once CELINI_ROOT."/includes/Tree.class.php";
+$loader->requireOnce('includes/Tree.class.php');
 
 /**
  * class CategoryTree

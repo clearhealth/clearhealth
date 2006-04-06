@@ -1,7 +1,6 @@
 <?php
 
-require_once CELINI_ROOT. "/ordo/ORDataObject.class.php";
-require_once CELINI_ROOT. "/includes/MimeLookup.class.php";
+$loader->requireOnce('includes/MimeLookup.class.php');
 
 /**
  * class Document

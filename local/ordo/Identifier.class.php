@@ -9,8 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
-require_once CELINI_ROOT.'/includes/Datasource_sql.class.php';
+$loader->requireOnce('includes/Datasource_sql.class.php');
 /**#@-*/
 
 /**

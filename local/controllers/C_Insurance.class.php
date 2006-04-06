@@ -1,5 +1,5 @@
 <?php
-$loader->requireOnce("/includes/Grid.class.php");
+$loader->requireOnce("includes/Grid.class.php");
 
 /**
  * Controller for the Insurance listing/editing

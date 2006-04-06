@@ -1,8 +1,8 @@
 <?php
 $loader->requireOnce('datasources/FeeSchedule_DS.class.php');
-$loader->requireOnce('/includes/clni/clniActiveGrid.class.php');
+$loader->requireOnce('includes/clni/clniActiveGrid.class.php');
 
-$loader->requireOnce('/includes/transaction/TransactionManager.class.php');
+$loader->requireOnce('includes/transaction/TransactionManager.class.php');
 
 
 class C_Test extends Controller {

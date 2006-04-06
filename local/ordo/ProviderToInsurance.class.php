@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
+$loader->requireOnce('ordo/ORDataObject.class.php');
 /**#@-*/
 
 /**

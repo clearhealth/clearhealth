@@ -60,16 +60,16 @@ require_once JPSPAN . 'Server/PostOffice.php';
 
 
 // Some class you've written...
-require_once APP_ROOT. '/local/controllers/C_PatientFinder.class.php';
-require_once APP_ROOT. '/local/controllers/C_Coding.class.php';
-require_once APP_ROOT. '/local/includes/FeeScheduleDatasource.class.php';
-require_once APP_ROOT. '/local/includes/SuperbillDatasource.class.php';
-require_once APP_ROOT. '/local/includes/CodingDatasource.class.php';
-require_once APP_ROOT. '/local/ordo/Report.class.php';
-require_once APP_ROOT. '/local/ordo/MenuReport.class.php';
-require_once APP_ROOT. '/local/ordo/Form.class.php';
-require_once APP_ROOT. '/local/ordo/MenuForm.class.php';
-require_once APP_ROOT. '/local/ordo/Encounter.class.php';
+$loader->requireOnce('controllers/C_PatientFinder.class.php');
+$loader->requireOnce('controllers/C_Coding.class.php');
+$loader->requireOnce('includes/FeeScheduleDatasource.class.php');
+$loader->requireOnce('includes/SuperbillDatasource.class.php');
+$loader->requireOnce('includes/CodingDatasource.class.php');
+$loader->requireOnce('ordo/Report.class.php');
+$loader->requireOnce('ordo/MenuReport.class.php');
+$loader->requireOnce('ordo/Form.class.php');
+$loader->requireOnce('ordo/MenuForm.class.php');
+$loader->requireOnce('ordo/Encounter.class.php');
 
 // Create the PostOffice server
 $S = & new JPSpan_Server_PostOffice();

@@ -1,6 +1,6 @@
 <?php
 
-require_once CELINI_ROOT."/includes/Grid.class.php";
+$loader->requireOnce('includes/Grid.class.php');
 
 class Grid_Renderer_AccountHistory extends Grid_Renderer_HTML {
 

@@ -1,8 +1,8 @@
 <?php
-ORdataObject::factory_include('Address');
-ORdataObject::factory_include('PracticeAddress');
-ORdataObject::factory_include('PersonNumber');
-ORdataObject::factory_include('PhoneNumber');
+$loader->requireOnce('ordo/Address.class.php');
+$loader->requireOnce('ordo/PracticeAddress.class.php');
+$loader->requireOnce('ordo/PersonNumber.class.php');
+$loader->requireOnce('ordo/PhoneNumber.class.php');
 
 /**
  *
@@ -380,7 +380,7 @@ class Practice extends ORDataObject{
 	}
 
 	function &get_config(){
-		require_once APP_ROOT.'/local/includes/PracticeConfig.class.php';
+		$loader->requireOnce('includes/PracticeConfig.class.php');
 		$config =& Celini::configInstance('practice');
 		$config->loadPractice($this->get('id'));
 		return $config;

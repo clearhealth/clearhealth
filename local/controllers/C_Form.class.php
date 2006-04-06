@@ -1,7 +1,6 @@
 <?php
 
-require_once CELINI_ROOT."/controllers/Controller.class.php";
-require_once CELINI_ROOT."/includes/Grid.class.php";
+$loader->requireOnce('includes/Grid.class.php');
 
 /**
  * Controller for generic form processing

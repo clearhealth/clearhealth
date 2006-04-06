@@ -1,7 +1,5 @@
 <?php
 
-require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
-
 /**
 *	This class is a data model object for representation of address information.
 *

@@ -1,5 +1,6 @@
 <?php
-require_once APP_ROOT ."/local/includes/SuperbillDatasource.class.php";
+
+$loader->requireOnce('includes/SuperbillDatasource.class.php');
 
 class CodingDatasource extends SuperbillDatasource {
 

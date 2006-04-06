@@ -9,7 +9,7 @@
 /**#@+
  * Required Libs
  */
-require_once CELINI_ROOT."/includes/Datasource_sql.class.php";
+$loader->requireOnce('includes/Datasource_sql.class.php');
 /**#@-*/
 
 /**

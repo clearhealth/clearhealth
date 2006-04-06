@@ -1,7 +1,5 @@
 <?php
 
-require_once CELINI_ROOT. "/ordo/ORDataObject.class.php";
-
 /**
  * class Note
  * This class offers functionality to store sequential comments/notes about an external object or anything with a unique id.

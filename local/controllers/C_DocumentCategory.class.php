@@ -1,8 +1,8 @@
 <?php
 
-require_once CELINI_ROOT . "/controllers/Controller.class.php";
-require_once APP_ROOT. "/local/includes/CategoryTree.class.php";
-require_once CELINI_ROOT. "/lib/TreeMenu.php";
+$loader->requireOnce('controllers/Controller.class.php');
+$loader->requireOnce('includes/CategoryTree.class.php');
+$loader->requireOnce('lib/TreeMenu.php');
 
 class C_DocumentCategory extends Controller {
 

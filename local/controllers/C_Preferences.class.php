@@ -1,8 +1,7 @@
 <?php
 
-require_once CELINI_ROOT . "/controllers/Controller.class.php";
-require_once CELINI_ROOT . "/includes/PreferenceTree.class.php";
-require_once CELINI_ROOT . "/lib/TreeMenu.php";
+$loader->requireOnce('includes/PreferenceTree.class.php');
+$loader->requireOnce('lib/TreeMenu.php');
 
 /**
 *	Controller class the handles the default case of access that leads to login

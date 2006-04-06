@@ -1,4 +1,5 @@
 <?php
+$loader->requireOnce('/includes/Datasource_sql.class.php');
 
 class Company_DetailedProgramList_DS extends Datasource_sql
 {

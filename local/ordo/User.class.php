@@ -6,11 +6,7 @@
  * @author  Joshua Eichorn <jeichorn@mail.com>
  */
 
-/**#@+
- * Required Libs
- */
-require_once CELINI_ROOT.'/ordo/Base_User.class.php';
-/**#@-*/
+$loader->requireOnce('ordo/Base_User.class.php');
 
 /**
  * Stub user class

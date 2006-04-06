@@ -1,5 +1,5 @@
 <?php
-require_once CELINI_ROOT ."/includes/Datasource_editable.class.php";
+$loader->requireOnce('includes/Datasource_editable.class.php');
 
 class SuperbillDatasource extends Datasource_editable {
 
