@@ -9,6 +9,9 @@
 {/if}
 	
 	<div id="addressEditTemplate" style="display:none;">
+		{if $address->value('isMultiple')}
+		<p>This address belongs to other people too</p>
+		{/if}
 		{include file="contacts/general_addressEdit.html"}
 	</div>
 	

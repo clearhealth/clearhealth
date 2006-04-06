@@ -9,4 +9,22 @@ class PersonAddress extends Address {
 		//var_dump("new PersonAddress",get_class($this));
 		parent::setup($id,$parent,$type);
 	}
+	
+	
+	/**
+	 * Returns true if this address is tied to multiple people
+	 *
+	 * @return boolean
+	 */
+	function value_isMultiple() {
+		if (!$this->isPopulated()) {
+			return false;
+		}
+		
+		$qAddressId = $this->dbHelper->quote($this->get('address_id'));
+		$sql = "SELECT COUNT(*) AS `total` FROM {$this->_relation} WHERE address_id = {$qAddressId}";
+		$row = $this->dbHelper->getOne($sql);
+		return ($row['total'] > 1);
+			
+	}
 }
