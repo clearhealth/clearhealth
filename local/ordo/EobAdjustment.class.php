@@ -12,6 +12,7 @@ class EobAdjustment extends ORDataObject {
 	 */
 	var $eob_adjustment_id		= '';
 	var $payment_id		= '';
+	var $payment_claimline_id		= '';
 	var $adjustment_type		= '';
 	var $value		= '';
 	/**#@-*/
