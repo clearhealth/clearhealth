@@ -55,7 +55,6 @@ class M_Patient extends Manager {
 			$types = $patient->get('types');
 
 			// handle sub actions that are submitted with the main one
-			var_dump($_POST);
 			if (isset($_POST['number'])) {
 				$this->process_phone_update($this->controller->patient_id,$_POST['number']);
 			}
