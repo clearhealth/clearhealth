@@ -81,9 +81,9 @@ function toggleCell(box) {
 		<td colspan="22">
 			<table width="100%">
 			<tr>
-				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
+				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}index.php/images/left_day.gif" alt="[Previous Week]" border="0" align="right"></a></td>
 				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
-      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[Next Week]" border="0" align="left"></a></td>
+      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}index.php/images/right_day.gif" alt="[Next Week]" border="0" align="left"></a></td>
 			</tr>
 			</table>
 		</td>
@@ -94,7 +94,7 @@ function toggleCell(box) {
 	{foreach from=$WeekGridArray item=Day}
 		{assign var=dts value=$Day->gettimestamp()}
     	<td width="70" colspan="{$week_maxcols.$dts}" valign="top" align="center" class="dateback"><span class="V9">
-    	<img src="{$base_dir}images/spacer.gif" width="70" height="1"><br>
+    	<img src="{$base_dir}index.php/images/spacer.gif" width="70" height="1"><br>
     	<a class="psf" href="{$DAY_ACTION}&year={$Day->thisYear()}&month={$Day->thisMonth()}&day={$Day->thisDay()}">{$Day->gettimestamp()|date_format:"%a, %b %d"}</a></span></td>
     {/foreach}
     

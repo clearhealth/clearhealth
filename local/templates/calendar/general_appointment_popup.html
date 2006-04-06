@@ -57,7 +57,7 @@ function make_appointment_parent() {
 				</tr>
 				<tr>
 					<td valign="top"><input type="text" name="external_id" size="6"  value="{$edit_oc->get_external_id()}"><br>
-						<a href="javascript:{literal}{}{/literal}" onclick="var URL='{$base_dir}index.php/patientFinder?find&form_name=make_appointment%5B%27external_id%27%5D'; window.open(URL, 'queue', 'toolbar=0,scrollbars=1,location=0,statusbar=1,menubar=0,resizable=1,width=450,height=400,left = 425,top = 250');"><img src="{$base_dir}images/stock_search-16.png" border="0"></a>&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>
+						<a href="javascript:{literal}{}{/literal}" onclick="var URL='{$base_dir}index.php/patientFinder?find&form_name=make_appointment%5B%27external_id%27%5D'; window.open(URL, 'queue', 'toolbar=0,scrollbars=1,location=0,statusbar=1,menubar=0,resizable=1,width=450,height=400,left = 425,top = 250');"><img src="{$base_dir}index.php/images/stock_search-16.png" border="0"></a>&nbsp;&nbsp;<a href="/openemr/interface/new/new_patient.php" target="_top">New</a>
 					</td>
 					<td><input type="text" name="start_time" size="5" value="{$edit_oc->get_start_time()}"><br>
 						<input type="text" name="end_time" size="5" value="{$edit_oc->get_end_time()}">

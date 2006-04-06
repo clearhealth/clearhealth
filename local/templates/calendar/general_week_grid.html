@@ -10,14 +10,14 @@
 		<td colspan="35">
 			<table width="100%">
 			<tr>
-				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[{l}Previous Week{/l}]" border="0" align="right"></a></td>
+				<td align="right" width="40%" class="navback"><a class="psf" href="{$WEEK_PREV_ACTION}"><img src="{$base_dir}index.php/images/left_day.gif" alt="[{l}Previous Week{/l}]" border="0" align="right"></a></td>
 				<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$start_timestamp|date_format:"%a, %b %d"} - {$end_timestamp|date_format:"%a, %b %d"}</span></td>
-      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[{l}Next Week{/l}]" border="0" align="left"></a>
+      			<td align="left" width="40%" class="navback"><a class="psf" href="{$WEEK_NEXT_ACTION}"><img src="{$base_dir}index.php/images/right_day.gif" alt="[{l}Next Week{/l}]" border="0" align="left"></a>
       			<div style="float:right">
-      			<a href="{link action="day"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
-      			<a href="{link action="week_grid"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
-      			<a href="{link action="month"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
-      			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
+      			<a href="{link action="day"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/day_on.gif"></a>
+      			<a href="{link action="week_grid"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/week_on.gif"></a>
+      			<a href="{link action="month"}date={$WeekGrid->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/month_on.gif"></a>
+      			<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}index.php/images/print_icon.png"></a>
       			</div>
       			</td>
 			</tr>
@@ -41,7 +41,7 @@
 		{foreach from=$WeekGridArray item=Day}
     		{assign var=dts value=$Day->gettimestamp()}
     		<td width="70" colspan="{$week_maxcols.$dts+$week_smaxcols.$dts}" valign="top" align="center" class="dateback" style="border-top: 1px solid #A1A5A9;border-right: 1px solid #A1A5A9;">
-    		<img src="{$base_dir}images/spacer.gif" width="70" height="1"><br>
+    		<img src="{$base_dir}index.php/images/spacer.gif" width="70" height="1"><br>
     		<span class="V9"><a class="psf" href="{$DAY_ACTION}&date={$Day->thisMonth()}/{$Day->thisDay()}/{$Day->thisYear()}">{$Day->gettimestamp()|date_format:"%a, %b %d"}</a></span></td>
     	{/foreach}
     </tr>

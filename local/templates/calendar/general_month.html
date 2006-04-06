@@ -5,14 +5,14 @@
 	<td colspan="7">
 		<table width="100%">
 		<tr>
-			<td align="right" width="40%" class="navback"><a class="psf" href="{$MONTH_PREV_ACTION}"><img src="{$base_dir}images/left_day.gif" alt="[{l}Previous Month{/l}]" border="0" align="right"></a></td>
+			<td align="right" width="40%" class="navback"><a class="psf" href="{$MONTH_PREV_ACTION}"><img src="{$base_dir}index.php/images/left_day.gif" alt="[{l}Previous Month{/l}]" border="0" align="right"></a></td>
 			<td align="center" width="20%" class="navback" nowrap valign="middle"><span class="H20">{$Month->gettimestamp()|date_format:"%B, %Y"}</span></td>
-		<td align="left" width="40%" class="navback"><a class="psf" href="{$MONTH_NEXT_ACTION}"><img src="{$base_dir}images/right_day.gif" alt="[{l}Next Month{/l}]" border="0" align="left"></a>
+		<td align="left" width="40%" class="navback"><a class="psf" href="{$MONTH_NEXT_ACTION}"><img src="{$base_dir}index.php/images/right_day.gif" alt="[{l}Next Month{/l}]" border="0" align="left"></a>
 		<div style="float:right">
-		<a href="{link action="day"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/day_on.gif"></a>
-		<a href="{link action="week_grid"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/week_on.gif"></a>
-		<a href="{link action="month"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}images/month_on.gif"></a>
-		<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}images/print_icon.png"></a>
+		<a href="{link action="day"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/day_on.gif"></a>
+		<a href="{link action="week_grid"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/week_on.gif"></a>
+		<a href="{link action="month"}date={$Month->gettimestamp()|date_format:"%m/%d/%Y"}"><img src="{$base_dir}index.php/images/month_on.gif"></a>
+		<a href="{$FORM_ACTION}&set_print_view" target="_new"><img src="{$base_dir}index.php/images/print_icon.png"></a>
 		</div>
 		</td>
 		</tr>
