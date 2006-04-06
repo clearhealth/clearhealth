@@ -6,6 +6,10 @@ $ajax =& Celini::ajaxInstance();
 $ajax->jsLibraries[] = 'calendar';
 $ajax->jsLibraries[] = 'clniUtil';
 
+// Add application-specific js libraries
+$ajaxServer =& Celini::ajaxServerInstance();
+$ajaxServer->registerJSLibrary('chBehaviors', 'behavior.js', realpath(dirname(__FILE__) . '/..') . '/js/');
+
 // todo: where should this setting end up, does it really make sense to have it user configurable
 $conf =& Celini::configInstance();
 $ajaxConf = (array)$conf->get('ajaxConfClasses');
