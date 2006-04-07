@@ -5,6 +5,7 @@
 $ajax =& Celini::ajaxInstance();
 $ajax->jsLibraries[] = 'calendar';
 $ajax->jsLibraries[] = 'clniUtil';
+$ajax->jsLibraries[] = 'chBehaviors';
 
 // Add application-specific js libraries
 $ajaxServer =& Celini::ajaxServerInstance();
