@@ -605,6 +605,32 @@
 		<status>1</status>
 	</enum>
 </enumeration>
+<enumeration name="eob_adjustment_type" title="Eob Adjustment Type" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Patient Responsibilty</value>
+		<sort>1</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Total Charge</value>
+		<sort>2</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>3</key>
+		<value>Plan Type</value>
+		<sort>3</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+</enumeration>
 <enumeration name="ethnicity" title="Ethnicity" type="Default">
 	<enum>
 		<key>1</key>
