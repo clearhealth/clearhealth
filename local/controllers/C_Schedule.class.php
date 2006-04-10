@@ -1,10 +1,10 @@
 <?php
-define('CALENDAR_ROOT', 'lib/Calendar/');
-$loader->requireOnce(CALENDAR_ROOT . 'Month/Weekdays.php');
-$loader->requireOnce(CALENDAR_ROOT . 'Month/Weeks.php');
-$loader->requireOnce(CALENDAR_ROOT . 'Day.php');
-$loader->requireOnce(CALENDAR_ROOT . 'Week.php');
-$loader->requireOnce(CALENDAR_ROOT . 'Decorator.php');
+define('CALENDAR_ROOT', realpath(dirname(__FILE__) . '/../') . '/lib/Calendar/');
+$loader->requireOnce('lib/Calendar/Month/Weekdays.php');
+$loader->requireOnce('lib/Calendar/Month/Weeks.php');
+$loader->requireOnce('lib/Calendar/Day.php');
+$loader->requireOnce('lib/Calendar/Week.php');
+$loader->requireOnce('lib/Calendar/Decorator.php');
 
 $loader->requireOnce('includes/CalendarController.class.php');
 $loader->requireOnce('controllers/C_Location.class.php');
