@@ -17,6 +17,7 @@ $loader->requireOnce('lib/PHP_Compat/Compat/Function/file_put_contents.php');
 class Report extends ORDataObject {
 
 	var $id = 0;
+	var $custom_id = '';
 	var $label = '';
 	var $description = '';
 	var $query = '';
@@ -277,7 +278,7 @@ class Report extends ORDataObject {
 			if (count($this->templates) == 0) {
 				// create a default template
 				$new_id = $this->dbHelper->nextId("sequences");
-				$this->dbHelper->execute("insert into report_templates values ($new_id,$this->id,'Default Template','Yes',10000)");
+				$this->dbHelper->execute("insert into report_templates values ($new_id,$this->id,'Default Template','Yes',10000,'')");
 				$this->templates = false;
 				$this->get_templates();
 			}
@@ -292,6 +293,13 @@ class Report extends ORDataObject {
 	function set_id($id)
 	{
 		return $this->id = $id;
+	}
+
+	function get_custom_id() {
+		return $this->custom_id;
+	}
+	function set_custom_id($custom_id) {
+		return $this->custom_id = $custom_id;
 	}
 
 	function get_label()

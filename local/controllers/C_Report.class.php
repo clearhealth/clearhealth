@@ -246,6 +246,25 @@ class C_Report extends Controller {
 		}
 		return $ret;
 	}
+
+	function actionViewByCID($cid, $template_cid = '') {
+		$ordo =& Celini::newOrdo('Report', 0);
+		$results = $ordo->_execute("SELECT id FROM reports WHERE custom_id = '$cid';");
+		if (is_array($results->fields)) {
+			$id = $results->fields['id'];
+		} else {
+			$id = 0;
+		}
+
+		$results = $ordo->_execute("SELECT report_template_id FROM report_templates WHERE custom_id = '$template_cid';");
+		if (is_array($results->fields)) {
+			$template_id = $results->fields['report_template_id'];
+		} else {
+			$template_id = 0;
+		}
+		
+		return $this->actionView($id, $template_id);
+	}
 }
 
 ?>

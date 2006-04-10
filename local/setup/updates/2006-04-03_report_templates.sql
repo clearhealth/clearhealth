@@ -1,0 +1,1 @@
+ALTER TABLE report_templates ADD COLUMN custom_id VARCHAR(255) NOT NULL DEFAULT '';
