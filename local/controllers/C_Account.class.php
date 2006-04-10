@@ -1,10 +1,10 @@
 <?php
 
-$loader->requireOnce("/controllers/Controller.class.php");
-$loader->requireOnce("/includes/Grid.class.php");
-$loader->requireOnce("/local/includes/Datasource_AccountHistory.class.php");
-$loader->requireOnce("/local/includes/Grid_Renderer_AccountHistory.class.php");
-$loader->requireOnce("/datasources/AccountNote_DS.class.php");
+$loader->requireOnce("controllers/Controller.class.php");
+$loader->requireOnce("includes/Grid.class.php");
+$loader->requireOnce("includes/Datasource_AccountHistory.class.php");
+$loader->requireOnce("includes/Grid_Renderer_AccountHistory.class.php");
+$loader->requireOnce("datasources/AccountNote_DS.class.php");
 $loader->requireOnce("lib/PEAR/HTML/AJAX/Serializer/JSON.php");
 
 /**
