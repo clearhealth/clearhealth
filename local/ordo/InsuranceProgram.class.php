@@ -106,15 +106,16 @@ class InsuranceProgram extends ORDataObject {
 		return array_flip($list);
 	}
 
+	
+	/**
+	 * This method should no longer be used, instead use
+	 * <code>$insuranceProgram->valueList('programs')</code>
+	 *
+	 * @deprecated
+	 * @see valueList_programs()
+	 */
 	function programList() {
-		$sql = "select insurance_program_id, concat_ws('->',c.name,ip.name) as name from $this->_table ip inner join company c using(company_id) order by c.name, ip.name";
-		$res = $this->_execute($sql);
-		$ret = array();
-		while($res && !$res->EOF) {
-			$ret[$res->fields['insurance_program_id']] = $res->fields['name'];
-			$res->MoveNext();
-		}
-		return $ret;
+		return $this->valueList('programs');
 	}
 
 	/**
@@ -203,7 +204,30 @@ class InsuranceProgram extends ORDataObject {
 		return $programList;
 	}
 	
-	
-	
+	/**
+	 * Creates a list of programs including the company name.
+	 *
+	 * @access protected
+	 */
+	function valueList_programs() {
+		$tableName = $this->tableName();
+		$sql = "
+			SELECT
+				insurance_program_id,
+				CONCAT_WS('->',c.name,ip.name) AS name
+			FROM 
+				$tableName AS ip
+				INNER JOIN company AS c USING(company_id)
+			ORDER BY
+				c.name,
+				ip.name";
+		$res = $this->dbHelper->execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['insurance_program_id']] = $res->fields['name'];
+			$res->MoveNext();
+		}
+		return $ret;
+	}
 }
 ?>

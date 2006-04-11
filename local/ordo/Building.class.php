@@ -260,14 +260,48 @@ class Building extends ORDataObject{
 		return $ret;
 	}
 
+	/** 
+	 * This method should no longer be used, instead use <code>$building->valueList('rooms')</code>
+	 *
+	 * @deprecated
+	 * @see valueList_rooms()
+	 */
 	function getRoomList() {
-		$res = $this->_execute("select r.id, concat_ws('->',b.name,r.name) name from $this->_table b inner join rooms r on building_id = b.id order by b.name, r.name");
-		$ret = array();
-		while($res && !$res->EOF) {
-			$ret[$res->fields['id']] = $res->fields['name'];
-			$res->moveNext();
+		return $this->valueList('rooms');
+	}
+	
+	
+	function genericList() {
+		$tableName = $this->tableName();
+		$sql = "SELECT b.id, b.name FROM {$tableName} AS b ORDER BY b.name";
+		return $this->_buildValueList($this->dbHelper->execute($sql));
+	}
+	
+	function valueList_rooms() {
+		$room =& Celini::newORDO('Room');
+		$tableName = $this->tableName();
+		$roomTable = $room->tableName();
+		
+		$sql = "
+			SELECT
+				r.id,
+				CONCAT_WS('->',b.name,r.name) AS name
+			FROM
+				{$tableName} AS b
+				INNER JOIN {$roomTable} AS r ON(r.building_id = b.id)
+			ORDER BY
+				b.name,
+				r.name";
+		return $this->_buildValueList($this->dbHelper->execute($sql));
+	}
+	
+	function _buildValueList($result) {
+		$valueList = array();
+		while ($result && !$result->EOF) {
+			$valueList[$result->fields['id']] = $result->fields['name'];
+			$result->moveNext();
 		}
-		return $ret;
+		return $valueList;
 	}
 
 } // end of Class
