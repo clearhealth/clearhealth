@@ -1,0 +1,66 @@
+<fieldset>
+	<legend>{l}Filter{/l}</legend>
+	{clni_form action=$FILTER_ACTION}
+		<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+			<label>{l}Date of Service{/l}: </label>
+			{clni_input_date name="filter[dos_start]" value=$filters.dos_start} 
+			to
+			{clni_input_date name="filter[dos_end]" value=$filters.dos_end}
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+			<label>
+				{l}Name{/l}:
+				<input type="text" name="filter[name]" value="{$filters.name}" />
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				{l}Facility{/l}: 
+				<select name="filter[facility]">
+					<option></option>
+					{html_options options=$roomList selected=$filters.facility}
+				</select>
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+			<label>
+				{l}Identifier{/l}: 
+				<input type="text" name="filter[claim_identifier]" value="{$filters.claim_identifier}" />
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				{l}Payer{/l}:
+				<select name="filter[payer]">
+					<option></option>
+					{html_options options=$programList selected=$filters.payer}
+				</select>
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				{l}Provider{/l}:
+				<select name="filter[provider]">
+					<option></option>
+					{html_options options=$providerList selected=$filters.provider}
+				</select>
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				{l}Billed Amount{/l}:
+				<input type="text" name="filter[billed_amount]" value="{$filters.billed_amount}" />
+			</label>
+		</div>
+		
+		<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<input type="submit" value="Filter" />
+		</div>
+	</form>
+</fieldset>
