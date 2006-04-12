@@ -238,16 +238,11 @@ class M_Patient extends Manager {
 	 * Handle adding a related person's address
 	 */
 	function process_relatedAddress_update($patient_id, $data) {
-		//var_dump($data);
 		$message = '';
 		foreach ($data as $address) {
-			if (!isset($address['person_id'])) {
-				continue;
-			}
-		
-			$newAddress =& Celini::newORDO('PersonAddress', array($address['address_id'], $address['person_id']));
+			$newAddress =& Celini::newORDO('PersonAddress', array($address['address_id'], $patient_id));
 			$newAddress->set('address_id', $address['address_id']);
-			$newAddress->set('person_id', $address['person_id']);
+			$newAddress->set('person_id', $patient_id);
 			$newAddress->persist();
 			
 			$message = empty($message) ? 'Added Address' : 'Added Addresses';

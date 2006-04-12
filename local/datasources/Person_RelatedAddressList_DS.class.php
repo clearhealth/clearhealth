@@ -19,26 +19,52 @@ class Person_RelatedAddressList_DS extends Datasource_sql {
 	 */
 	var $_type = 'html';
 	
+	var $_personId = '';
+	
 	function Person_RelatedAddressList_DS($person_id) {
+		$this->_personId = $person_id;
+		
 		$qPersonId = clniDB::quote($person_id);
 		$this->setup(Celini::dbInstance(),
-			array(
-				'cols' 	=> "
-					r.person_id,
-					a.address_id,
-					CONCAT_WS(' ', r.first_name, r.last_name) AS related_name,
-					pa.address_type,
-					a.line1,
-					a.line2,
-					a.city,
-					a.postal_code",
-				'from' 	=> "
-					person_person AS t
-					INNER JOIN person AS r ON (p.person_id = t.person_id) 
-					INNER JOIN person AS p ON (r.person_id = t.related_person_id)
-					INNER JOIN person_address AS pa USING(person_id)
-					INNER JOIN address AS a USING(address_id)", 
-				'where'	=> "t.person_id = {$qPersonId}"
+			array('union' =>
+				array(
+					array(
+						'cols' 	=> "
+							r.person_id,
+							a.address_id,
+							CONCAT_WS(' ', r.first_name, r.last_name) AS related_name,
+							pa.address_type,
+							a.line1,
+							a.line2,
+							a.city,
+							a.postal_code",
+						'from' 	=> "
+							person_person AS t
+							INNER JOIN person AS me ON (me.person_id = t.person_id)
+							INNER JOIN person AS r ON (r.person_id = t.related_person_id)
+							INNER JOIN person_address AS pa USING(person_id)
+							INNER JOIN address AS a USING(address_id)", 
+						'where'	=> "t.person_id = {$qPersonId}"
+					),
+					array(
+						'cols' 	=> "
+							r.person_id,
+							a.address_id,
+							CONCAT_WS(' ', r.first_name, r.last_name) AS related_name,
+							pa.address_type,
+							a.line1,
+							a.line2,
+							a.city,
+							a.postal_code",
+						'from' 	=> "
+							person_person AS t
+							INNER JOIN person AS me ON (me.person_id = t.related_person_id) 
+							INNER JOIN person AS r ON (r.person_id = t.person_id)
+							INNER JOIN person_address AS pa USING(person_id)
+							INNER JOIN address AS a USING(address_id)", 
+						'where'	=> "t.related_person_id = {$qPersonId}"
+					)
+				)
 			),
 			array(
 				'related_name' => 'Patient',
@@ -50,6 +76,7 @@ class Person_RelatedAddressList_DS extends Datasource_sql {
 			)
 		);
 		
+		//var_dump($this->preview());
 		$this->registerFilter('address_type', array(&$this, '_addressTypeLookup'));
 		$this->registerFilter('line1', array(&$this, '_twoLineFormatting'));
 		$this->registerFilter('action_select', array(&$this, '_actionSelect'));
@@ -74,9 +101,8 @@ class Person_RelatedAddressList_DS extends Datasource_sql {
 	var $_cursor = 0;
 	function _actionSelect($v, $row) {
 		$cursor = $this->_cursor;
-		$return = '';
-		$return .= "<input type='checkbox' name='relatedAddress[{$cursor}][person_id]' value='{$row['person_id']}' />";
-		$return .= "<input type='hidden' name='relatedAddress[{$cursor}][address_id]' value='{$row['address_id']}' />";
+		
+		$return = "<input type='checkbox' name='relatedAddress[{$cursor}][address_id]' value='{$row['address_id']}' />";
 		$this->_cursor++;
 		return $return;
 	}

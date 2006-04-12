@@ -15,6 +15,21 @@ class PersonAddress extends Address {
 	}
 	
 	
+	function drop() {
+		$qAddressId = $this->dbHelper->quote($this->get('address_id'));
+		$sql = "SELECT COUNT(DISTINCT person_id) AS total FROM {$this->_relation} WHERE address_id = {$qAddressId}";
+		$row = $this->dbHelper->getOne($sql);
+		if ($row['total'] > 1) {
+			$qPersonId = $this->get('person_id');
+			$sql = "DELETE FROM {$this->_relation} WHERE address_id = {$qAddressId} AND person_id = {$qPersonId} LIMIT 1";
+			$this->dbHelper->execute($sql);
+		}
+		else {
+			parent::drop();
+		}
+	}
+	
+	
 	/**
 	 * Returns true if this address is tied to multiple people
 	 *
