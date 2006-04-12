@@ -15,7 +15,7 @@ class C_Patient extends Controller {
 
 	function _storeCurrentAction() {
 		$current = $this->trail->current();
-		if (!strstr($current->link(),'minimal')) {
+		if ($current->controller == 'Patient' && !strstr($current->link(),'minimal')) {
 			$this->session->set('patient_action', $current->link());
 		}
 	}
