@@ -67,6 +67,7 @@ INSERT INTO `enumeration_definition` VALUES (300525,'system_reports','System Rep
 INSERT INTO `enumeration_definition` VALUES (300818,'chronic_care_codes','Chronic Care Codes','Default');
 INSERT INTO `enumeration_definition` VALUES (300852,'funds_source','Funds Source','Default');
 INSERT INTO `enumeration_definition` VALUES (601041,'depression','Depression','Appointment Reason');
+INSERT INTO `enumeration_definition` VALUES (602407, 'billing_mode', 'Billing Mode', 'Mappedvalue');
 
 INSERT INTO `enumeration_value` VALUES (300013,300012,1,'Hello',0,'','',1);
 INSERT INTO `enumeration_value` VALUES (300014,300012,2,'World',0,'','',1);
@@ -628,3 +629,6 @@ INSERT INTO `enumeration_value` VALUES (301522,300564,2,'Seasonal Worker',0,'','
 INSERT INTO `enumeration_value` VALUES (301523,300564,3,'No',0,'','',1);
 INSERT INTO `enumeration_value` VALUES (301524,300564,4,'other',0,'','',1);
 INSERT INTO `enumeration_value` VALUES (301538,300818,4,'Hypercholestrolemia',0,'','',1);
+INSERT INTO `enumeration_value` VALUES (602408, 602407, 0, 'Production', 0, 'P', '', 1);
+INSERT INTO `enumeration_value` VALUES (602409, 602407, 1, 'Testing', 0, 'T', '', 1);
+INSERT INTO `enumeration_value` VALUES (607547, 300038, '6', 'Employer', 6, '', '', 1);

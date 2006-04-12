@@ -5,5 +5,6 @@ CREATE TABLE `reports` (
   `label` varchar(255) NOT NULL default '',
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
+  `custom_id` VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM COMMENT='Report definitions TODO: change to Generic Seq';

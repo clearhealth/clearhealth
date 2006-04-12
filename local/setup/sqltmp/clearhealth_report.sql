@@ -4,6 +4,7 @@ CREATE TABLE `report_templates` (
   `name` varchar(255) NOT NULL default '',
   `is_default` enum('yes','no') NOT NULL default 'yes',
   `sequence` int(11) NOT NULL default '100000',
+  `custom_id` VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
 ) TYPE=MyISAM COMMENT='Report templates';

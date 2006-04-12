@@ -16,6 +16,7 @@ CREATE TABLE `person` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   `marital_status` int(11) NOT NULL default '0',
+  `inactive` int(1) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) TYPE=MyISAM COMMENT='A person in the system';
 CREATE TABLE `person_address` (
