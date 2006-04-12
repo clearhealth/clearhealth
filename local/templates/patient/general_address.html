@@ -31,7 +31,13 @@
 {literal}
 <script type="text/javascript">
 function switchAddressEditMode(newTemplate) {
-	document.getElementById('addressEditBox').innerHTML = document.getElementById(newTemplate).innerHTML;
+	if(newTemplate=='addressEditTemplate') {
+		document.getElementById('addressEditTemplate').style.display='block';
+		document.getElementById('addressEditBox').innerHTML = '';
+	} else {
+		document.getElementById('addressEditTemplate').style.display='none';
+		document.getElementById('addressEditBox').innerHTML = document.getElementById(newTemplate).innerHTML;
+	}
 }
 switchAddressEditMode('addressEditTemplate');
 //switchAddressEditMode('relatedAddressTemplate');

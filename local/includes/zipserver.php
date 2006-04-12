@@ -24,14 +24,16 @@ class zipcode{
 	}
 
 	// grab the zip, return the data	
-	function getData($id){
+	function getData($id,$addressid){
 		$db=&new clniDB();
 
 		$result = $db->execute("SELECT  zip,city,state,lat,lon,tz_offset,dst,country"
 			." FROM zipcodes WHERE zip = ".$db->quote($id));
 
 		if($result && !$result->EOF){
-			return $result->fields;
+			$res = $result->fields;
+			$res['addressid'] = $addressid;
+			return $res;
 		} else {
 			return false;
 		}

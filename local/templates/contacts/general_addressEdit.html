@@ -21,17 +21,17 @@
     
 	<tr>
 		<td><label>{l}City{/l}:</label> </td>
-		<td><input name="address[city]" id="addresscity" size="15" value="{$address->get('city')}"></td>
+		<td><input name="address[city]" id="zaddresscity{if $address->get('id') > 0}{$address->get('id')}{else}0{/if}" size="15" value="{$address->get('city')}"></td>
 		{*<td><label>{l}State{/l}:</label> </td>*}
 		<td>
-			<select name="address[state]" id="addressstate">
+			<select name="address[state]" id="zaddressstate{if $address->get('id') > 0}{$address->get('id')}{else}0{/if}">
 				<option value=0>State</option>
 				{html_options options=$address->getStateList() selected=$address->get('state')}
 			</select>
 		</td>	
 		<td>
 			<label class="inline">{l}Zip{/l}:</label> 
-			<input name="address[postal_code]" size="10" id="addresspostalcode" value="{$address->get('postal_code')}" onkeyup="if(this.value.length==5) zipGrab(this.value);">
+			<input name="address[postal_code]" size="10" id="zaddresspostalcode{$address->get('id')}" value="{$address->get('postal_code')}" onkeyup="if(this.value.length==5) zipGrab(this.value,{if $address->get('id') > 0}{$address->get('id')}{else}0{/if});">
 		</td>
 	</tr>
     
