@@ -62,11 +62,11 @@
 	<fieldset>
 		<fieldset class="radio">
 			<legend>{l}Select Menu Section{/l}</legend>
-			<table border="1"><tr>
+			<table border="0"><tr>
 			{foreach name="menu_list" "from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
 					{if $smarty.foreach.menu_list.first ne true}</td>{/if}
-					<td valign="top"><b>{$menu}</b><br>
+					<td>&nbsp;&nbsp;</td><td valign="top"><b>{$menu}</b><br>
 				{else}
 				<input onChange="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}" style="display:inline;"><label style="display:inline;" class="cb" for="r{$menu_id}">{$menu}</label><br>
 				{/if}
