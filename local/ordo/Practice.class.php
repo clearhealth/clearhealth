@@ -380,7 +380,7 @@ class Practice extends ORDataObject{
 	}
 
 	function &get_config(){
-		$loader->requireOnce('includes/PracticeConfig.class.php');
+		$GLOBALS['loader']->requireOnce('includes/PracticeConfig.class.php');
 		$config =& Celini::configInstance('practice');
 		$config->loadPractice($this->get('id'));
 		return $config;
