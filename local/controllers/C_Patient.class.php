@@ -188,7 +188,7 @@ class C_Patient extends Controller {
 		$this->_ordoSnap('Patient',$p);
 		$this->view->assign_by_ref('patient',$p);
 
-		$g =& $p->get('guarantor');
+		$g = $p->get('guarantor');
 		$this->_ordoSnap('Guarantor',$g);
 		if ($g->isPopulated()) {
 			$this->view->assign_by_ref('guarantor',$g);
@@ -201,15 +201,15 @@ class C_Patient extends Controller {
 		$this->_ordoSnap('Guarantor',$g);
 
 		
-		$pro =& $p->get('defaultProviderPerson');
+		$pro = $p->get('defaultProviderPerson');
 		$this->_ordoSnap('defaultProviderPerson',$pro);
 		$this->view->assign_by_ref('provider',$pro);
 
-		$practice =& $p->get('defaultPractice');
+		$practice = $p->get('defaultPractice');
 		$this->_ordoSnap('defaultPractice',$practice);
 		$this->view->assign_by_ref('practice',$practice);
 
-		$practiceAddress =& $practice->get('billingAddress');
+		$practiceAddress = $practice->get('billingAddress');
 		$this->_ordoSnap('practiceAddress',$practiceAddress);
 		$this->view->assign_by_ref('practiceAddress',$practiceAddress);
 
