@@ -262,6 +262,7 @@ class C_Encounter extends Controller {
 				
 		$encounter->persist();
 		$this->encounter_id = $encounter->get('id');
+		$_GET[0] = $this->encounter_id;
 
 		if (isset($_POST['encounterDate']) && !empty($_POST['encounterDate']['date'])) {
 			$this->encounter_date_id = $_POST['encounterDate']['encounter_date_id'];
