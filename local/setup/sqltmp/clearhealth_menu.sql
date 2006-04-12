@@ -109,7 +109,10 @@ INSERT INTO `menu` VALUES (1,'',1,'','children',0,'','','main'),
 ('115', 'default', '1', '', 'children', '5000', 'Practice', '', 'main'),
 ('116', 'admin', '5', '', 'children', '300', 'List Appointment Templates', 'AppointmentTemplate/list', 'main'),
 ('117', 'admin', '5', '', 'children', '310', 'Add Appointment Template', 'AppointmentTemplate/add', 'main'),
-('118', 'admin', '5', '', 'children', '0', 'Edit Appointment Template', 'AppointmentTemplate/edit', 'main');
+('118', 'admin', '5', '', 'children', '0', 'Edit Appointment Template', 'AppointmentTemplate/edit', 'main'),
+(124, 'admin', 110, '', 'children', 80, 'List Claim Templates', 'CodingTemplate/List', 'main'),
+(125, 'admin', 110, '', 'children', 90, 'Add Claim Template', 'CodingTemplate/Edit', 'main');
+
 CREATE TABLE `menu_form` (
   `menu_form_id` int(11) NOT NULL default '0',
   `menu_id` int(11) NOT NULL default '0',
