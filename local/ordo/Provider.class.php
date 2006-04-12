@@ -142,5 +142,15 @@ class Provider extends MergeDecorator {
 		}
 		return $ret;
 	}
+	
+	function genericList() {
+		$sql = '
+			SELECT
+				per.person_id, CONCAT_WS(", ", per.last_name, per.first_name) AS name
+			FROM
+				provider AS pro
+				INNER JOIN person AS per USING(person_id)';
+		return $this->dbHelper->getAssoc($sql);
+	}
 }
 ?>
