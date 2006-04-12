@@ -13,14 +13,20 @@ class C_Patient extends Controller {
 	var $person_person_id = 0;
 	var $patient_statistics_id = 0;
 
+	function _storeCurrentAction() {
+		$current = $this->trail->current();
+		if (!strstr($current->link(),'minimal')) {
+			$this->session->set('patient_action', $current->link());
+		}
+	}
+
 	
 	/**
 	 * Edit/Add an Patient
 	 *
 	 */
 	function actionEdit($patient_id = 0) {
-		$current = $this->trail->current();
-		$this->session->set('patient_action', $current->link());
+		$this->_storeCurrentAction ();
 		
 		if (isset($this->patient_id)) {
 			$patient_id = $this->patient_id;
@@ -118,8 +124,7 @@ class C_Patient extends Controller {
 	 * List Patients
 	 */
 	function actionList_view() {
-		$current = $this->trail->current();
-		$this->session->set('patient_action', $current->link());
+		$this->_storeCurrentAction ();
 		
 		$person =& ORDataObject::factory('Patient');
 
@@ -134,8 +139,7 @@ class C_Patient extends Controller {
 	}
 
 	function actionFamilyStatement_view($patientId = false) {
-		$current = $this->trail->current();
-		$this->session->set('patient_action', $current->link());
+		$this->_storeCurrentAction ();
 		
 		return $this->actionStatement_view($patientId,true);
 	}
@@ -153,8 +157,7 @@ class C_Patient extends Controller {
 	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
-		$current = $this->trail->current();
-		$this->session->set('patient_action', $current->link());
+		$this->_storeCurrentAction ();
 		
 		if (!$patientId) {
 			$patientId = $this->get('patient_id');
