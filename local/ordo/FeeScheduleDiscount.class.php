@@ -13,7 +13,7 @@ class FeeScheduleDiscount extends ORDataObject {
 	var $fee_schedule_discount_id		= '';
 	var $practice_id		= '';
 	var $insurance_program_id = '';
-	var $type	=	'';
+	var $type	=	'default';
 	var $name		= '';
 	/**#@-*/
 
