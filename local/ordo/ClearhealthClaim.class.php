@@ -178,8 +178,8 @@ class ClearhealthClaim extends ORDataObject {
 					fbco.name AS "current_payer",
 					b.name facility,
 					concat_ws(",",pro.last_name,pro.first_name) AS provider,
-					(chc.total_billed - chc.total_paid - SUM(pcl.writeoff)) AS balance, 
-					SUM(pcl.writeoff) AS writeoff',
+					(chc.total_billed - chc.total_paid - SUM(IFNULL(pcl.writeoff,0))) AS balance, 
+					SUM(IFNULL(pcl.writeoff,0)) AS writeoff',
 				'from' 	=> 
 					$this->_table . ' AS chc 
 					INNER JOIN encounter AS e USING(encounter_id)
