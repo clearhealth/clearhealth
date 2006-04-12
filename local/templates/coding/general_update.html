@@ -43,7 +43,7 @@ function captureEnter (field, event) {
 							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
 						</select>
 {if $dentalpractice}
-{inclide file='coding/general_dental.html'}
+{include file='coding/general_dental.html'}
 {/if}
 						<input type="button" name="add_cpt" value="Add CPT" onClick="addCPTCode()">
 						<div id="cptlist">
