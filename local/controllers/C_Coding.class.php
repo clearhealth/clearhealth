@@ -2,6 +2,7 @@
 $loader->requireOnce("/includes/Grid.class.php");
 $loader->requireOnce("includes/CodingDatasource.class.php");
 $loader->requireOnce("includes/Datasource_array.class.php");
+$loader->requireOnce("datasources/Superbill_DS.class.php");
 $loader->requireOnce("includes/transaction/TransactionManager.class.php");
 
 class C_Coding extends Controller {
@@ -102,6 +103,15 @@ class C_Coding extends Controller {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
 		$encounter_id = $foreign_id; //Makes so much more sense...
+
+
+		$ds =& new Superbill_DS($this->superbill);
+		$grid =& new cGrid($ds);
+		$grid->orderLinks = false;
+		$this->view->assign_by_ref('sblGrid',$grid);
+
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('scriptaculous');
 
 
 

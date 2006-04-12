@@ -20,9 +20,26 @@ function captureEnter (field, event) {
 </script>
 {/literal}
 
+{head type="js"}
+function showSuperBill() {
+	new Effect.Grow('superBillList');
+}
+function hideSuperBill() {
+	new Effect.Shrink('superBillList');
+}
+{/head}
+
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
 {if $encounter->get('status') != 'closed'}
+<div style="position: relative">
+<div id="superBillList" style="position: absolute; top: -405px; padding: 5px; height: 400px; border: solid 1px black; background: white; display:none;">
+<b>Superbill</b> (<a href="#" onclick="hideSuperBill()">Hide</a>)
+<div style="overflow: auto; height: 385px">
+{$sblGrid->render()}
+</div>
+</div>
+</div>
 <fieldset id="coding_data">
 <legend>{l}Edit Claim Line{/l}</legend>
 <div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
@@ -56,7 +73,7 @@ function captureEnter (field, event) {
 					</td>
 					<td>
 						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
-						&nbsp;<label style="display:inline;">{l}SuperBill{/l}</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
+						&nbsp;<label style="display:inline;"><a href="#superbill" onclick="showSuperBill();">{l}SuperBill{/l}</a></label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
 					</td>
 				</tr>
 			</table>
