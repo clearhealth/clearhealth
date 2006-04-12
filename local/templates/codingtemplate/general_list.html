@@ -1,0 +1,19 @@
+<h2>{l}Encounter Code Templates{/l}</h2>
+<a href="{link action='Edit'}">{l}Add Template{/l}</a>
+<table>
+{foreach from=$templatelist item=p key=practicename}
+<tr>
+	<td colspan=2>
+<h3>{$practicename}</h3>
+	</td>
+</tr>
+<tr>
+	<td style="padding-left:10px;">
+	{foreach from=$p.templates item=templatetitle key=templateid}
+		<a href="{link action='Edit'}template_id={$templateid}">{$templatetitle}</a>
+		<a href="{$FORM_ACTION}delete={$templateid}">D</a><br />
+	{/foreach}
+	</td>
+</tr>
+{/foreach}
+</table>

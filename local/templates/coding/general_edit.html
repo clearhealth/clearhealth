@@ -15,89 +15,13 @@ function captureEnter (field, event) {
 		} 
 		else
 		return true;
-	}      
+}      
 
 </script>
 {/literal}
-
+{assign var='codingsubmit' value=true}
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
-<input type="hidden" name="foreign_id" value="{$foreign_id}">
-{if $encounter->get('status') != 'closed'}
-<fieldset id="coding_data">
-<legend>{l}Edit Claim Line{/l}</legend>
-<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div class="AutoCompleteBackground"></div></div>
-<table>
-	<tr>
-		<td valign="top">
-			<table>
-				<tr>
-					<td valign="top">
-						<label>{l}CPT Code{/l}: </label>
-					</td>
-					<td valign="top">
-						<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
-						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" autofield="parent_id"
-							name="parent_code" id="parent_code" {if $dentalpractice}SIZE="25"{else}SIZE="35"{/if} autocomplete="off" value="{$parent_code->getCodeDesc()}">
-						<select name="modifier" STYLE="z-index: 1;" id="modifier">
-							<option></option>
-							{html_options options=$code_data->getModifierList() selected=$code_data->get('modifier')}
-						</select>
-{if $dentalpractice}
-{inclide file='coding/general_dental.html'}
-{/if}
-						<input type="button" name="add_cpt" value="Add CPT" onClick="addCPTCode()">
-						<div id="cptlist">
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td valign="top">
-						<label style="display:inline;">{l}Units{/l}: </label></b>
-					</td>
-					<td>
-						<input TYPE="text" CLASS="input_text" name="units" id="units" SIZE="7" value="{$code_data->get('units')}">
-						&nbsp;<label style="display:inline;">{l}SuperBill{/l}</label> <input type="checkbox" name="superbill" value="1" {if $superbill}checked{/if}>
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td valign="top">
-			<table>
-				<tr>
-					<td valign="top">
-						<label>{l}ICD Code{/l}:</label>
-					</td>
-					<td valign="top">
-						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="">
-						<input TYPE="text" onkeypress="return captureEnter(this, event)" CLASS="input_text" 
-						name="child_code" id="child_code" SIZE="35" autocomplete="off" value="">
-						<input type="button" name="add_code" value="Add ICD" onClick="addICDCode()">
-						
-						<div id="child_codes">
-			  			{foreach name="icd_list" from=$child_codes item=code}
-			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
-			  			{if $smart.foreach.icd_list.first}
-						<strong>{$code.description}</strong><br />
-						{else}
-						{$code.description}<br />
-						{/if}
-						
-						{/foreach}
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="right">
-			<input type="submit" name="saveCode" value="Add Claim Line">
-  		</td>
-	</tr>
-</table>
-</fieldset>
-
-
+{include file='coding/general_update.html'}
 
 {literal}
 <script language="javascript">
@@ -245,45 +169,5 @@ function addCPTCode() {
 }
 </script>
 {/literal}
-{clni_register_validation_rule id="parent_code" rule="hascpt"}
-{clni_register_validation_rule id="child_code" rule="hasicd"}
-{/if}
-<table><tr><td valign='top'>
-<fieldset class="radio" id="Code List">
-<legend>{l}Claim Lines{/l}</legend>
-{foreach from=$code_list item=code}
-{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
-{if $encounter->get('status') != 'closed'}
-<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
-{/if}
-<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
-{if $dentalpractice}
-Tooth: {$code.tooth} Side {$code.toothside}
-{/if}
-<br />
-{foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
-{/foreach}<br />
-{/foreach}
-&nbsp;
-</fieldset>
-</td>
-<td valign='top'>
-	{if $feeGrid}
-		<fieldset>
-			<legend>{l}Fee Totals{/l}</legend>
-			{if $discountGrid}
-			<table><tr><td style="vertical-align:top">
-				<div><b>Normal Rate</b></div>
-			{/if}
-			{$feeGrid->render()}
-			{if $discountGrid}
-				</td><td>&nbsp;</td><td style="vertical-align:top">
-				<div><b>Discounted Rate{if $discountRate} ({$discountRate}){/if}</b></div>
-				{$discountGrid->render()}<br>
-				</td></tr></table>
-			{/if}
-		</fieldset>
-	{/if}
-</td></tr></table>
+
 </form>
