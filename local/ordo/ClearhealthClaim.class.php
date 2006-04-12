@@ -69,16 +69,16 @@ class ClearhealthClaim extends ORDataObject {
 		$sql = '
 			SELECT
 				SUM(total_billed) AS total_billed,
-				SUM(total_paid) AS total_paid,
-				SUM(writeoffs.writeoff) AS total_writeoff,
-				(SUM(total_billed) - (SUM(total_paid) + SUM(writeoffs.writeoff))) AS total_balance
+				SUM(IFNULL(total_paid,0)) AS total_paid,
+				SUM(IFNULL(writeoffs.writeoff,0)) AS total_writeoff,
+				(SUM(IFNULL(total_billed,0)) - (SUM(IFNULL(total_paid,0)) + SUM(IFNULL(writeoffs.writeoff,0)))) AS total_balance
 			FROM
 				encounter AS e
 				INNER JOIN clearhealth_claim AS cc USING(encounter_id)
 				LEFT JOIN (
 					SELECT
 						foreign_id,
-						SUM(writeoff) AS writeoff
+						SUM(ifnull(writeoff,0)) AS writeoff
 					FROM
 						payment 
 					WHERE
