@@ -12,6 +12,7 @@ class CodingTemplate extends ORDataObject {
 	 */
 	var $coding_template_id		= '';
 	var $practice_id 			= '';
+	var $reason_id				= '';
 	var $title		= '';
 	var $coding_parent_id		= '';
 	/**#@-*/
@@ -45,9 +46,9 @@ class CodingTemplate extends ORDataObject {
 		parent::drop();
 	}
 	
-	function valueList($id='all') {
+	function valueList($id='all',$reason_id=0) {
 		if(is_numeric($id)) {
-			$out = $this->getForPractice($id);
+			$out = $this->getForPractice($id,$reason_id);
 		}
 		elseif($id=='all') {
 			$p =& Celini::newORDO('Practice');
@@ -63,9 +64,13 @@ class CodingTemplate extends ORDataObject {
 		return $out;
 	}
 	
-	function getForPractice($practice_id) {
+	function getForPractice($practice_id,$reason_id = 0) {
 		$db =& Celini::dbInstance();
-		$sql = 'SELECT coding_template_id,title FROM '.$this->_table.' WHERE practice_id='.$db->quote($practice_id).' ORDER BY title ASC';
+		if($reason_id > 0) {
+			$sql = 'SELECT coding_template_id,title FROM '.$this->_table.' WHERE practice_id='.$db->quote($practice_id).' AND reason_id='.$db->quote($reason_id).' ORDER BY title ASC';
+		} else {
+			$sql = 'SELECT coding_template_id,title FROM '.$this->_table.' WHERE practice_id='.$db->quote($practice_id).' ORDER BY title ASC';
+		}
 		$res = $db->execute($sql);
 		$out = array();
 		while($res && !$res->EOF) {

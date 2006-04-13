@@ -40,6 +40,16 @@ function captureEnter (field, event) {
 		</tr>
 	</table>
 	</fieldset>
+{if $encountertemplatelist}
+<fieldset>
+<legend>{l}Encounter Code Template{/l}</legend>
+{l}Reason:{/l} <select name="coding_template_id">
+<option value=''></option>
+{html_options options=$encountertemplatelist}
+</select>
+<input type="submit" value="{l}Add Codes{/l}" />
+</fieldset>
+{/if}
 </form>
 {clni_register_validation_rule id="date_of_treatment"}
 

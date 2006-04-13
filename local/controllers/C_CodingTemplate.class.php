@@ -36,6 +36,10 @@ class C_CodingTemplate extends Controller
 	}
 	
 	function actionEdit($template_id=0) {
+		if($this->GET->get('delete_id') > 0) {
+			$c =& Celini::newORDO('CodingData',$this->GET->get('delete_id'));
+			$c->drop();
+		}
 		$this->coding->assign('incodingtemplate',true);
 		if(is_null($this->template)) {
 			if($template_id == 0) {
@@ -77,6 +81,9 @@ class C_CodingTemplate extends Controller
 		$codingHtml = $this->coding->update_action_edit($template->get('id'),$parent_id);
 		$this->view->assign('codinghtml',$codingHtml);
 		$this->view->assign_by_ref('template',$template);
+		$em =& Celini::enumManagerInstance();
+		$reasons = $em->enumArray('encounter_reason');
+		$this->view->assign('reasons',$reasons);
 		$this->view->assign('FORM_ACTION',Celini::link('Edit','CodingTemplate').'template_id='.$template->get('coding_template_id'));
 		$this->coding->view->assign('FORM_ACTION',Celini::link('Edit','CodingTemplate').'template_id='.$template->get('coding_template_id'));
 		return $this->view->render('edit.html');
@@ -91,8 +98,10 @@ class C_CodingTemplate extends Controller
 		$this->coding->foreign_id = $template->get('id');
 		$_POST['foreign_id']=$template->get('id');
 		$code_data = $this->coding->process($_POST,true);
-		$template->set('coding_parent_id',$code_data->get('id'));
-		$template->persist();
+		if($code_data !== false) {
+			$template->set('coding_parent_id',$code_data->get('id'));
+			$template->persist();
+		}
 	}
 }
 

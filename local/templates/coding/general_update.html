@@ -115,7 +115,54 @@ function hideSuperBill() {
 </fieldset>
 
 
+{if !$incodingtemplate}
+{clni_register_validation_rule id="parent_code" rule="hascpt"}
+{clni_register_validation_rule id="child_code" rule="hasicd"}
+{/if}
+{/if}
+<table><tr><td valign='top'>
+<fieldset class="radio" id="Code List">
+<legend>{l}Claim Lines{/l}</legend>
+{foreach from=$code_list item=code}
+{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
+{if $encounter && $encounter->get('status') != 'closed'}
+<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
+{/if}
+{if $incodingtemplate}
+<a href="{link action='Edit' }template_id={$foreign_id}&delete_id={$code.coding_data_id}">X</a>&nbsp;
+{/if}
 
+<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
+{if $dentalpractice}
+Tooth: {$code.tooth} Side {$code.toothside}
+{/if}
+<br />
+{foreach from=$children item=child}
+&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
+{/foreach}<br />
+{/foreach}
+&nbsp;
+</fieldset>
+</td>
+<td valign='top'>
+	{if $feeGrid}
+		<fieldset>
+			<legend>{l}Fee Totals{/l}</legend>
+			{if $discountGrid}
+			<table><tr><td style="vertical-align:top">
+				<div><b>Normal Rate</b></div>
+			{/if}
+			{$feeGrid->render()}
+			{if $discountGrid}
+				</td><td>&nbsp;</td><td style="vertical-align:top">
+				<div><b>Discounted Rate{if $discountRate} ({$discountRate}){/if}</b></div>
+				{$discountGrid->render()}<br>
+				</td></tr></table>
+			{/if}
+		</fieldset>
+	{/if}
+</td></tr></table>
+</form>
 {literal}
 <script language="javascript">
 function setupAutoComplete(){
@@ -186,37 +233,6 @@ function addICDCode(){
 	icdCodeText.value = '';
 	icdCodeText.focus();
 }
-setupAutoComplete();
-
-function clni_rule_hasicd(element) {
-	var childDiv = document.getElementById('child_codes');
-	var cptDiv = document.getElementById('cptlist');
-	if (document.getElementById('parent_id').value == '' && cptDiv.childNodes.length == 1 &&
-			childDiv.childNodes.length == 1 && document.getElementById('child_code').value == '') {
-		return true;
-	}
-	if (childDiv.childNodes.length == 1) {
-		return false;
-	}
-	return true;
-}
-function clni_rule_hascpt(element) {
-	// if the cpt is empty and icd list is empty then were valid
-	var childDiv = document.getElementById('child_codes');
-	var cptDiv = document.getElementById('cptlist');
-	if (document.getElementById('parent_id').value == '' && cptDiv.childNodes.length == 1 &&
-			childDiv.childNodes.length == 1 && document.getElementById('child_code').value == '') {
-		return true;
-	}
-	if (document.getElementById('parent_id').value > 0) {
-		return true;
-	}
-	if (cptDiv.childNodes.length == 1) {
-		return false;
-	}
-	return true;
-
-}
 
 function addCPTCode() {
 	var listDiv = document.getElementById('cptlist');
@@ -260,47 +276,7 @@ function addCPTCode() {
 	modifier.selectedIndex = 0;
 	cptText.focus();
 }
+
+setupAutoComplete();
 </script>
 {/literal}
-{clni_register_validation_rule id="parent_code" rule="hascpt"}
-{clni_register_validation_rule id="child_code" rule="hasicd"}
-{/if}
-<table><tr><td valign='top'>
-<fieldset class="radio" id="Code List">
-<legend>{l}Claim Lines{/l}</legend>
-{foreach from=$code_list item=code}
-{assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
-{if $encounter && $encounter->get('status') != 'closed'}
-<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
-{/if}
-<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
-{if $dentalpractice}
-Tooth: {$code.tooth} Side {$code.toothside}
-{/if}
-<br />
-{foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
-{/foreach}<br />
-{/foreach}
-&nbsp;
-</fieldset>
-</td>
-<td valign='top'>
-	{if $feeGrid}
-		<fieldset>
-			<legend>{l}Fee Totals{/l}</legend>
-			{if $discountGrid}
-			<table><tr><td style="vertical-align:top">
-				<div><b>Normal Rate</b></div>
-			{/if}
-			{$feeGrid->render()}
-			{if $discountGrid}
-				</td><td>&nbsp;</td><td style="vertical-align:top">
-				<div><b>Discounted Rate{if $discountRate} ({$discountRate}){/if}</b></div>
-				{$discountGrid->render()}<br>
-				</td></tr></table>
-			{/if}
-		</fieldset>
-	{/if}
-</td></tr></table>
-</form>

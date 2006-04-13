@@ -390,6 +390,96 @@ class C_Coding extends Controller {
 			
 		return null;
 	}
-	
+
+	function process($data,$return = false){
+		if(!isset($data['parent_codes'])) {
+			return false;
+		}
+		$this->foreign_id = $data['foreign_id'];
+		$this->parent_id = $data['parent_id'];
+		if (isset($data['superbill']))  {
+			$this->superbill = $data['superbill'];
+		}
+		else {
+			$this->super = "";
+		}	
+		
+
+		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
+
+		// get the patients primary insured relationship
+		ORDataobject::factory_include('InsuredRelationship');
+		$irs =& InsuredRelationship::fromPersonId($encounter->get('patient_id'));
+		if (isset($irs[0])) {
+			$ir =& $irs[0];
+			// get the fee schedule from that insurance_program_id
+
+			$ip =& ORDataObject::factory('InsuranceProgram',$ir->get('insurance_program_id'));
+			$feeSchedule =& ORDataObject::factory('FeeSchedule',$ip->get('fee_schedule_id')); 
+		}
+		else {
+			// patient has no payers just grab the default fee schedule
+			ORdataObject::Factory_include('FeeSchedule');
+			$feeSchedule =& FeeSchedule::defaultFeeSchedule();
+		}
+
+
+		if (!isset($data['parent_codes'])) {
+			$data['parent_codes'] = array();
+		}
+		// add current code in if needed
+		if (intval($data['parent_id']) > 0) {
+			$data['parent_codes'][$data['parent_id']]['code'] = $data['parent_id'];
+			$data['parent_codes'][$data['parent_id']]['units'] = $data['units'];
+			$data['parent_codes'][$data['parent_id']]['modifier'] = $data['modifier'];
+			if(isset($data['tooth'])){
+				$data['parent_codes'][$data['parent_id']]['tooth'] = $data['tooth'];
+				$data['parent_codes'][$data['parent_id']]['toothside'] = $data['toothside'];
+			}
+		}
+
+		foreach($data['parent_codes'] as $parent) {
+			$thecode = $parent['code'];
+			unset($code_data);
+			$code_data =& ORdataObject::factory('CodingData');
+			$code_data->populate_array($parent);
+			$code_data->set('code_id',$thecode);
+			$code_data->set('parent_id',0); // There is no parent for the parent...
+			$code_data->set('foreign_id',$data['foreign_id']); 
+			$code_data->set('fee',$feeSchedule->getFeeFromCodeId($thecode));
+			$code_data->set("id", 0);
+			$code_data->persist();
+			$parent_id=$code_data->get('id');
+			if(isset($parent['tooth'])){
+				$this->_db->Execute("DELETE FROM coding_data_dental WHERE coding_data_id='$parent_id'");
+				$sql="INSERT INTO coding_data_dental (coding_data_id,tooth,toothside) VALUES ('".$code_data->get('id')."','".mysql_real_escape_string($parent['tooth'])."','".mysql_real_escape_string($parent['toothside'])."')";
+				$this->_db->Execute($sql);
+			}
+			//var_dump($code_data);
+
+			unset($child_code_data);		
+			$child_code_data =& ORdataObject::factory('CodingData');
+
+			if(isset($data['child_codes']) && is_array($data['child_codes'])){
+				foreach($data['child_codes'] as $code_id){
+					if(intval($code_id) == 0)
+						continue;
+			
+							
+					$child_code_data->set("id", 0);
+					$child_code_data->set('code_id', $code_id);
+					$child_code_data->set('parent_id', $parent_id);
+					$child_code_data->set('foreign_id',$data['foreign_id']); 
+					$child_code_data->persist();
+					// TODO: Should I set the primary_code class to 2 or something?
+					//var_dump($child_code_data);
+				}	
+			}
+		}
+		if($return == true) {
+			return $code_data;
+		}
+		
+	}
 }
 ?>

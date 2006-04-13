@@ -25,76 +25,6 @@ function captureEnter (field, event) {
 
 {literal}
 <script language="javascript">
-function setupAutoComplete(){
-	var ac = new AutoComplete(
-		CPTSearch,
-	    'parent_code',
-	    'parent_id',
-	    'acDiv',
-	    true,
-	    600
-	);
-
-	var ac = new AutoComplete(
-		ICDSearch,
-	    'child_code',
-	    'child_id',
-	    'acDiv',
-	    true,
-	    600
-	);
-}
-
-var CPTSearch = function cpt_search(searchString) {
-        var h = new c_coding(this.dataHandler);
-        h.Sync();
-                                                                                
-		if(searchString.length > 0){
-        	var results = h.cpt_search(searchString,document.forms.coding_form.superbill.checked);
-        	return results;
-		}
-		
-		return;
-}
-
-var ICDSearch = function icd_search(searchString) {
-        var h = new c_coding(this.dataHandler);
-        h.Sync();
-                                                                                
-		if(searchString.length > 0){
-        	var results = h.icd_search(searchString,document.forms.coding_form.superbill.checked);
-        	return results;
-		}
-		
-		return;
-}
-
-function addICDCode(){
-	//TODO: Move the current code to the bottom of the list
-	var childDiv = document.getElementById('child_codes');
-	var icdCode = document.getElementById('child_id');
-	var icdCodeText = document.getElementById('child_code');
-
-	if (icdCode.value == "" ) {
-		clni_notify_alert(icdCodeText);
-		return false;
-	}
-	else {
-		clni_notify_alert_reset(icdCodeText);
-	}
-//	alert('Adding ICD Code ' + icdCode.value)
-	if (childDiv.childNodes.length == 1) {
-		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '"><strong>' + icdCodeText.value  + '</strong><br />';
-	}
-	else {
-		childDiv.innerHTML = childDiv.innerHTML + '<input TYPE="hidden" name="child_codes[' + icdCode.value  + ']" value="' + icdCode.value  + '">' + icdCodeText.value  + '<br />';
-	}
-	icdCode.value = '';
-	icdCodeText.value = '';
-	icdCodeText.focus();
-}
-setupAutoComplete();
-
 function clni_rule_hasicd(element) {
 	var childDiv = document.getElementById('child_codes');
 	var cptDiv = document.getElementById('cptlist');
@@ -125,48 +55,7 @@ function clni_rule_hascpt(element) {
 
 }
 
-function addCPTCode() {
-	var listDiv = document.getElementById('cptlist');
-	var cptCode = document.getElementById('parent_id');
-	var cptText = document.getElementById('parent_code');
-	var units = document.getElementById('units');
-	var modifier = document.getElementById('modifier');
 
-	if(document.getElementById('tooth')){
-		var tooth=document.getElementById('tooth');
-		var ts=document.getElementById('toothside');
-		var tstring='Tooth/Teeth: '+tooth.value+', Side: '+ts.value;
-	} else {
-		var tstring='';
-	}
-	if (cptCode.value == "") {
-		clni_notify_alert(cptText);
-		return false;
-	}
-	else {
-		clni_notify_alert_reset(cptText);
-	}
-
-	var modStr = "";
-	if (modifier.value > 0) {
-		modStr = ' ('+modifier.options[modifier.selectedIndex].text+')';
-	}
-
-	listDiv.innerHTML = listDiv.innerHTML  
-		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][code]" value="' + cptCode.value  + '">' 
-		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][modifier]" value="' + modifier.value  + '">' 
-		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][units]" value="' + units.value  + '">' 
-{/literal}{if $dentalpractice}{literal}
-		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][tooth]" value="' + tooth.value  + '">' 
-		+ '<input TYPE="hidden" name="parent_codes[' + cptCode.value  + '][toothside]" value="' + ts.value  + '">' 
-{/literal}{/if}{literal}
-		+ cptText.value + modStr + ' - Units: '+ units.value +' '+tstring+'<br />';
-	cptCode.value = '';
-	cptText.value = '';
-	units.value = '1.00';
-	modifier.selectedIndex = 0;
-	cptText.focus();
-}
 </script>
 {/literal}
 

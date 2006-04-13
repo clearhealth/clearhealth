@@ -14,11 +14,17 @@
 	</td>
 </tr>
 <tr>
+	<td>{l}Reason{/l}</td>
+	<td>
+	{html_options name='CodingTemplate[reason_id]' options=$reasons selected=$template->get('reason_id')}
+	</td>
+</tr>
+<tr>
 	<td colspan=2>
 {$codinghtml}
 	</td>
 </tr>
 </table>
-<input type="submit" value="Submit" />
+<input type="submit" value="{if $template->get('id') > 0}Update{else}Add{/if}" />
 </fieldset>
 </form>
