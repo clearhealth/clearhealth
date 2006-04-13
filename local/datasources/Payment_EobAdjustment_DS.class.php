@@ -17,7 +17,6 @@ class Payment_EobAdjustment extends Datasource_sql
 		$paymentId = EnforceType::int($paymentId);
 
 		$em =& Celini::enumManagerInstance();
-		$
 		
 		$this->setup(Celini::dbInstance(),
 			array(
