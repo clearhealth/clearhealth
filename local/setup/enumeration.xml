@@ -2,7 +2,7 @@
 <enumeration name="audit_type" title="Audit Type" type="Default">
 	<enum>
 		<key>1</key>
-		<value>Insert</value>
+		<value>insert</value>
 		<sort>0</sort>
 		<extra1/>
 		<extra2/>
@@ -10,7 +10,7 @@
 	</enum>
 	<enum>
 		<key>2</key>
-		<value>Update</value>
+		<value>update</value>
 		<sort>1</sort>
 		<extra1/>
 		<extra2/>
@@ -18,7 +18,7 @@
 	</enum>
 	<enum>
 		<key>3</key>
-		<value>Delete</value>
+		<value>delete</value>
 		<sort>2</sort>
 		<extra1/>
 		<extra2/>
@@ -26,7 +26,7 @@
 	</enum>
 	<enum>
 		<key>4</key>
-		<value>Process</value>
+		<value>process</value>
 		<sort>3</sort>
 		<extra1/>
 		<extra2/>
