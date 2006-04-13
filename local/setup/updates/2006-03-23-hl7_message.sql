@@ -4,4 +4,4 @@ CREATE TABLE `hl7_message` (
   `message` longtext NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `control_id` (`control_id`)
-) ENGINE=MyISAM DEFAULT ;
+) ENGINE=MyISAM;
