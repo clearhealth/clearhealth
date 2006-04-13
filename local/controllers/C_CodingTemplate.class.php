@@ -36,6 +36,7 @@ class C_CodingTemplate extends Controller
 	}
 	
 	function actionEdit($template_id=0) {
+		$this->coding->assign('incodingtemplate',true);
 		if(is_null($this->template)) {
 			if($template_id == 0) {
 				$template_id = $this->GET->get('template_id',0);

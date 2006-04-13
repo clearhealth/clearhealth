@@ -27,7 +27,7 @@ class C_Coding extends Controller {
 
 		$ds = new Datasource_array();
 		$ds->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
-		if ($ds->numRows() > 0) {
+		if ($ds->numRows() > 0 && $encounterId > 0) {
 			$grid =& new cGrid($ds);
 			$grid->indexCol = false;
 			$this->view->assign_by_ref('feeGrid',$grid);
@@ -135,7 +135,7 @@ class C_Coding extends Controller {
 	
 		
 	//OldWay
-		$child_codes = $code_data->getChildCodes($foreign_id, $parent_id);
+		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($foreign_id, $parent_id);
 	//NewWay	$parent_codes = $code_data->getParentCodes($encounter_id);
 	///NewWay	foreach $parent_codes as $parent_code
 	//NewWay	$child_codes[$parent_code['code_data_id']] = $code_data->getChildCodes($parent_code);

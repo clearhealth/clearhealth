@@ -31,9 +31,9 @@ function hideSuperBill() {
 
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
-{if $encounter->get('status') != 'closed'}
+{if !$encounter || $encounter->get('status') != 'closed'}
 <div style="position: relative">
-<div id="superBillList" style="position: absolute; top: -405px; padding: 5px; height: 400px; border: solid 1px black; background: white; display:none;">
+<div id="superBillList" style="position: absolute; top: {if $incodingtemplate}80{else}-405{/if}px; padding: 5px; height: 400px; border: solid 1px black; background: white; display:none;">
 <b>Superbill</b> (<a href="#" onclick="hideSuperBill()">Hide</a>)
 <div style="overflow: auto; height: 385px">
 {$sblGrid->render()}
@@ -270,7 +270,7 @@ function addCPTCode() {
 <legend>{l}Claim Lines{/l}</legend>
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
-{if $encounter->get('status') != 'closed'}
+{if $encounter && $encounter->get('status') != 'closed'}
 <a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
 {/if}
 <a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
