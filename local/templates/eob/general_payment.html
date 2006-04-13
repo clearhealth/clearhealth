@@ -60,6 +60,56 @@
 			writeoffNode.value = Math.round(writeoff*100)/100;
 		}
 	}
+
+	function addAdjustment() {
+		$('adjustmentList').style.display = 'table';
+		var row = document.createElement('tr');
+		var tdC = document.createElement('td');
+		var tdT = document.createElement('td');
+		var tdV = document.createElement('td');
+
+		var type = $('adjType').options[$('adjType').selectedIndex];
+
+		var i = $('adjustmentList').tBodies[0].rows.length;
+		var select = $('adjType').cloneNode(true);
+		var input = $('adjValue').cloneNode(true);
+		var selCode = $('adjCode').cloneNode(true);
+
+		select.name = 'adjustment['+i+'][type]';
+		select.id = '';
+		select.selectedIndex = $('adjType').selectedIndex;
+		input.name = 'adjustment['+i+'][value]';
+		input.id = '';
+		input.selectedIndex = $('adjType').selectedIndex;
+		selCode.name = 'adjustment['+i+'][code]';
+		selCode.id = '';
+		selCode.selectedIndex = $('adjCode').selectedIndex;
+
+		$('adjValue').value = '';
+		$('adjType').selectedIndex = 0;
+		$('adjCode').selectedIndex = 0;
+
+		tdC.appendChild(selCode);
+		tdT.appendChild(select);
+		tdV.appendChild(input);
+
+		row.appendChild(tdC);
+		row.appendChild(tdT);
+		row.appendChild(tdV);
+		$('adjustmentList').tBodies[0].appendChild(row);
+		
+		return false;
+	}
+
+	function populateAdjCodes() {
+		var rows = $('codeTable').tBodies[0].rows;
+		var select = $('adjCode');
+		for(var i = 0; i < rows.length; i++) {
+			var code = rows[i].cells[0].innerHTML.split(':')[0];
+			var code_id = rows[i].cells[0].innerHTML.match(/value="(.+)" /);
+			select.options[i+1] = new Option('Line: '+code,code_id[1]);
+		}
+	}
 </script>
 {/literal}
 
@@ -79,7 +129,7 @@
 	<legend>{l}Make Payment{/l}</legend>
 
 {if count($billList) > 0}
-<table class="grid">
+<table class="grid" id="codeTable">
 	<thead>
 	<tr>
 		<th>{l}Code{/l}</th>
@@ -105,6 +155,27 @@
 	{/foreach}
 </tbody>
 </table>
+
+<h3>Adjustments</h3>
+<table id="adjustmentList" class="grid" style="display:none">
+	<thead>
+		<tr>
+			<th>Applied To</th>
+			<th>Type</th>
+			<th>Value</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+<br>
+<select id="adjCode"><option value="0">Payment</option></select>
+<select id="adjType">{enum_options name="eob_adjustment_type"}</select>
+<input id="adjValue" size=10>
+<button onclick="return addAdjustment()">Add Adjustment</button>
+<br>
+
+<script type="text/javascript">populateAdjCodes();</script>
 
 <table>
 	<tbody>

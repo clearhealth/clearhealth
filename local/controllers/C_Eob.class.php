@@ -105,12 +105,15 @@ class C_Eob extends Controller {
 		$total_paid = 0;
 		$total_writeoff = 0;
 
+		$lineLookup = array(0=>0);
+
 		if (isset($_POST['bill']) && count($_POST['bill']) > 0) {
 			foreach($_POST['bill'] as $line) {
 				unset($pcl);
 				$pcl =& Celini::newOrdo('PaymentClaimline',array(0,$payment_id));
 				$pcl->populate_array($line);
 				$pcl->persist();
+				$lineLookup[$line['code_id']] = $pcl->get('id');
 				$total_paid += $pcl->get('paid');
 				$total_writeoff += $pcl->get('writeoff');
 				
@@ -128,6 +131,17 @@ class C_Eob extends Controller {
 			$claim->set('total_paid',$claim->get('total_paid')+$total_paid);
 			$claim->persist();
 
+		}
+
+		if ($this->POST->exists('adjustment')) {
+			foreach($this->POST->get('adjustment') as $adjustment) {
+				$adj =& Celini::newOrdo('EobAdjustment');
+				$adj->set('payment_id',$payment_id);
+				$adj->set('payment_claimline_id',$lineLookup[$adjustment['code']]);
+				$adj->set('adjustment_type',$adjustment['type']);
+				$adj->set('value',$adjustment['value']);
+				$adj->persist();
+			}
 		}
 		$this->payment_id = $payment_id;
 	}
