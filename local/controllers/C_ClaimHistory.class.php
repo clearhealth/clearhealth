@@ -23,8 +23,10 @@ class C_ClaimHistory extends Controller
 			$row = $ds->get();
 			if (isset($row['payment_id'])) {
 				$pds =& new Payment_EobAdjustment_DS($row['payment_id']);
-				$adjustments[$row['payment_id']]['grid'] = new cGrid($pds);
-				$adjustments[$row['payment_id']]['row'] = $row;
+				if ($pds->numRows() > 0) {
+					$adjustments[$row['payment_id']]['grid'] = new cGrid($pds);
+					$adjustments[$row['payment_id']]['row'] = $row;
+				}
 			}
 
 		}
