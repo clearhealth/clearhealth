@@ -354,7 +354,34 @@ class C_Location extends Controller {
 				//echo "this event is NOT within providers schedule<br>";
 			}
 		}
-
+		
+		// Check for no-shows
+		$noshows = 0;
+		if(!$confirm) {
+			$db =& Celini::dbInstance();
+			$sql = "SELECT occurences.id AS oc_id,events.title
+			FROM occurences
+			LEFT JOIN events ON events.id=occurences.event_id
+			WHERE occurences.external_id=".$oc->get('external_id')."
+			AND UNIX_TIMESTAMP(occurences.start) < ".$db->quote(strtotime($oc->get('start')))."
+			ORDER BY occurences.start DESC
+			LIMIT 0,3
+			";
+			$res = $db->execute($sql);
+			if($res && !$res->EOF) {
+				for($i=0;$i<$res->numRows();$i++) {
+					if($res->fields['title'] == 'No Shows') {
+						$noshows++;
+					} else {
+						$noshows = 0;
+					}
+					$res->MoveNext();
+				}
+			}
+			if($noshows == 3) {
+				$cs->messages->addMessage('Patient has not shown up for three consecutive appointments prior to this one.');
+			}
+		}
 		// get a Appointment template from the reason
 		$manager =& EnumManager::getInstance();
 		$list =& $manager->enumList('appointment_reasons');
@@ -393,8 +420,7 @@ class C_Location extends Controller {
 				//echo "this event is NOT double booking<br>";
 			}
 		}
-		
-		if (!($availability && !$double) && !$confirm) {
+		if (!($availability && !$double && $noshows < 3) && !$confirm) {
 			return $cs->confirm_action($_POST);	
 		}
 		
