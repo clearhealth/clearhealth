@@ -30,6 +30,10 @@ class MasterAccountHistory_DS extends Datasource {
 		$this->setup();
 	}
 
+	function setLimit($start,$rows) {
+		$this->claims->setLimit($start,$rows);
+	}
+
 	/**
 	 * Set the person to get account history for and pull in the person's data
 	 */
