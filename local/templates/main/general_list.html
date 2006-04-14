@@ -56,9 +56,9 @@
 	{$messages->render()}
 	{elseif is_array($messages)}
 		{foreach from=$messages item=message}
-			{$message}<br>
+			{if !is_array($message)}{$message}<br>{/if}
 		{/foreach}
-	{elseif strlen($messages) >0}
+	{elseif strlen($messages) > 0}
 	{$messages}
 	{/if}
 	{$display}
