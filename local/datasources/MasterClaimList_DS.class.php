@@ -117,6 +117,7 @@ class MasterClaimList_DS extends Datasource_sql
 		);
 		
 		$this->registerFilter('patient_name', array(&$this, '_patientHistoryLink'));
+		$this->registerFilter('identifier', array(&$this, '_claimHistoryLink'));
 	}
 	
 	
@@ -126,6 +127,11 @@ class MasterClaimList_DS extends Datasource_sql
 	function _patientHistoryLink($value, $row) {
 		$url = Celini::link('history', 'Account') . 'id=' . $row['patient_id'];
 		return "<a href='{$url}'>$value</a>"; 
+	}
+	
+	function _claimHistoryLink($value, $row) {
+		$url = Celini::link('view', 'ClaimHistory') . 'patient_id=' . $row['patient_id'] . '&claim_id=' . $row['claim_id'];
+		return "<a href='{$url}'>{$value}</a>";
 	}
 	/**#@-*/
 }

@@ -1,0 +1,16 @@
+<fieldset>
+	<legend>Claim History</legend>
+	
+	<div>{$claimHistory->render()}</div>
+</fieldset>
+
+
+<fieldset>
+	<legend>Notes</legend>
+	
+	<div>{$claimNotes->render()}</div>
+	
+	{if $claimNotes->empty}
+	<div><p>No notes have been attached to this claim</p></div>
+	{/if}
+</fieldset>
