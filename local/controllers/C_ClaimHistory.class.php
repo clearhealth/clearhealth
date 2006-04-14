@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('includes/Grid_Renderer_AccountHistory.class.php');
+$loader->requireOnce('datasources/Payment_EobAdjustment_DS.class.php');
 
 class C_ClaimHistory extends Controller
 {
@@ -12,21 +13,24 @@ class C_ClaimHistory extends Controller
 		$claimHistory =& new cGrid($ds, $renderer);
 		$this->view->assign_by_ref('claimHistory', $claimHistory);
 		
-		$ds =& $claim->loadDatasource('Notes');
-		$claimNotes =& new cGrid($ds);
+		$nds =& $claim->loadDatasource('Notes');
+		$claimNotes =& new cGrid($nds);
 		$this->view->assign_by_ref('claimNotes', $claimNotes);
-		
-		$paymentCollection =& $claim->getChildren('eobAdjustments');
-		$i = 0;
-		var_dump($paymentCollection->count());
-		while ($paymentCollection->valid()) {
-			$cur =& $paymentCollection->current();
-			echo "Found $i:" . $cur->name() . '<br />';
-			$i++;
-			
-			$paymentCollection->next();
+
+		$adjustments = array();
+		$ds =& $patient->loadDatasource('ClaimHistory');
+		for($ds->rewind(); $ds->valid(); $ds->next()) {
+			$row = $ds->get();
+			if (isset($row['payment_id'])) {
+				$pds =& new Payment_EobAdjustment_DS($row['payment_id']);
+				$adjustments[$row['payment_id']]['grid'] = new cGrid($pds);
+				$adjustments[$row['payment_id']]['row'] = $row;
+			}
+
 		}
-		
+
+		$this->view->assign_by_ref('adjustments',$adjustments);
+
 		return $this->view->render('view.html');
 	}
 }

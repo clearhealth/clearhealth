@@ -24,7 +24,7 @@ class C_MasterAccountHistory extends Controller {
 		parent::Controller();
 		$this->template_mod = $template_mod;
 
-		unset($_SESSION['clearhealth']['filters'][get_class($this)]);
+		//unset($_SESSION['clearhealth']['filters'][get_class($this)]);
 		if (!isset($_SESSION['clearhealth']['filters'][get_class($this)])) {
 			$_SESSION['clearhealth']['filters'][get_class($this)] = array();
 		}

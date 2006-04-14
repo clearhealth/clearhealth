@@ -4,13 +4,21 @@
 	<div>{$claimHistory->render()}</div>
 </fieldset>
 
-
 <fieldset>
-	<legend>Notes</legend>
-	
+	<legend>Claim Notes</legend>
+
 	<div>{$claimNotes->render()}</div>
-	
 	{if $claimNotes->empty}
 	<div><p>No notes have been attached to this claim</p></div>
 	{/if}
+</fieldset>
+
+<fieldset>
+	<legend>Claim Adjustments</legend>
+	{foreach from=$adjustments item=adjustment}
+	<div>
+		<h4>{$adjustment.row.payment_date}, {$adjustment.row.identifier}</h4>
+		{$adjustment.grid->render()}
+	</div>
+	{/foreach}
 </fieldset>
