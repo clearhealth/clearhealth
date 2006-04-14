@@ -41,7 +41,7 @@ INSERT INTO `enumeration_definition` VALUES (300495,'company_type','Company Type
 INSERT INTO `enumeration_definition` VALUES (300497,'disposition','Disposition','Default');
 INSERT INTO `enumeration_definition` VALUES (300501,'encounter_date_type','Encounter Date Type','Default');
 INSERT INTO `enumeration_definition` VALUES (300510,'encounter_person_type','Encounter Person Type','Default');
-INSERT INTO `enumeration_definition` VALUES (300512,'encounter_reason','Encounter Reason','Default');
+INSERT INTO `enumeration_definition` VALUES (300512,'encounter_reason','Encounter Reason','EncounterReason');
 INSERT INTO `enumeration_definition` VALUES (300515,'encounter_value_type','Encounter Value Type','Default');
 INSERT INTO `enumeration_definition` VALUES (300521,'ethnicity','Ethnicity','Default');
 INSERT INTO `enumeration_definition` VALUES (300524,'gender','Gender','Default');
