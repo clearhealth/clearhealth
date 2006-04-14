@@ -1,8 +1,10 @@
+{if !$ajax}
 <fieldset>
 	<legend>Claim History</legend>
 	
 	<div>{$claimHistory->render()}</div>
 </fieldset>
+{/if}
 
 <fieldset>
 	<legend>Claim Notes</legend>
@@ -20,5 +22,7 @@
 		<h4>{$adjustment.row.payment_date}, {$adjustment.row.identifier}</h4>
 		{$adjustment.grid->render()}
 	</div>
+	{foreachelse}
+	<p>No adjustments have been added to this claim</p>
 	{/foreach}
 </fieldset>

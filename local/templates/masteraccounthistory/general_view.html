@@ -1,9 +1,43 @@
+{head type="css"}
+#accountHistory .highlight td {
+	background-color: yellow;
+}
+{/head}
+{head type="js"}
+var remote = new Controller( {
+	dispatchAction: function(result) {
+		$('claimDetails').innerHTML = result;
+		new Effect.Highlight('claimDetails');
+	}
+});
+function selectClaim(link,personId,claimId) {
+	remote.dispatchAction('ClaimHistory','view',{'patient_id':personId,'claim_id':claimId,'ajax':true});
+
+	var grid = $u.getElementsByCssSelector('#accountHistory .grid tbody')[0];
+
+	for(var i = 0; i < grid.rows.length; i++) {
+		$u.removeClass(grid.rows[i],'highlight');
+	}
+
+	var tr = clniUtil.findParentOfTagName(link,'tr');
+	$u.addClass(tr,'highlight');
+
+}
+{/head}
 {include file="masteraccounthistory/general_chunkFilters.html"}
 
 <fieldset>
 	<legend>Account Histories</legend>
 	
-	<div>
+	<div id="accountHistory">
 		{$accountHistoryGrid->render()}
+	</div>
+</fieldset>
+
+<fieldset>
+	<legend>Claim Details</legend>
+
+	<div id="claimDetails">
+		<p>Select a claim above to view its details</p>
 	</div>
 </fieldset>

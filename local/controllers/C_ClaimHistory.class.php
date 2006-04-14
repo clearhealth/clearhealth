@@ -5,8 +5,27 @@ $loader->requireOnce('datasources/Payment_EobAdjustment_DS.class.php');
 class C_ClaimHistory extends Controller
 {
 	function actionView() {
-		$patient =& Celini::newORDO('Patient', $this->GET->getTyped('patient_id', 'int'));
-		$claim =& Celini::newORDO('ClearhealthClaim', $this->GET->getTyped('claim_id', 'int'));
+		$post =& Celini::filteredPost();
+		if ($post->exists('patient_id')) {
+			$patientId = $post->getTyped('patient_id', 'int');
+		}
+		else {
+			$patientId = $this->GET->getTyped('patient_id', 'int');
+		}
+		if ($post->exists('claim_id')) {
+			$claimId = $post->getTyped('claim_id', 'int');
+			$this->GET->set('claim_id',$claimId); // this is needed because the Patient_Claim_DS checks GET for claim_id which it shouldn't do
+		}
+		else {
+			$claimId = $this->GET->getTyped('claim_id', 'int');
+		}
+
+		if ($post->exists('ajax')) {
+			$this->view->assign('ajax',true);
+		}
+
+		$patient =& Celini::newORDO('Patient', $patientId);
+		$claim =& Celini::newORDO('ClearhealthClaim', $claimId);
 		$renderer =& new Grid_Renderer_AccountHistory();
 		
 		$ds =& $patient->loadDatasource('ClaimHistory');

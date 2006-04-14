@@ -130,7 +130,7 @@ class MasterClaimList_DS extends Datasource_sql
 	}
 	
 	function _claimHistoryLink($value, $row) {
-		return "<a href='#details' onclick=\"selectClaim('{$row['patient_id']}','{$row['claim_id']}');\">{$value}</a>";
+		return "<a href='#details' onclick=\"selectClaim(this,'{$row['patient_id']}','{$row['claim_id']}');\">{$value}</a>";
 	}
 	/**#@-*/
 }

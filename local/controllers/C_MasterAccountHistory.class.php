@@ -30,6 +30,11 @@ class C_MasterAccountHistory extends Controller {
 		}
 		$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)];
 		$this->assign('filters',$this->filters);
+
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('scriptaculous');
+		$ajax =& Celini::ajaxInstance();
+		$ajax->stubs[] = 'controller';
 	}
 
 	function actionDefault_view() {
@@ -55,8 +60,10 @@ class C_MasterAccountHistory extends Controller {
 		
 		// setup actual grid
 		$ds =& new MasterAccountHistory_DS($this->filters);
+		
 		$renderer =& new Grid_Renderer_AccountHistory();
 		$accountHistoryGrid =& new cGrid($ds, $renderer);
+		$accountHistoryGrid->pageSize = 10;
 		
 		$this->view->assign_by_ref('accountHistoryGrid', $accountHistoryGrid);
 		
