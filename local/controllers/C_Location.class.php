@@ -379,7 +379,7 @@ class C_Location extends Controller {
 				}
 			}
 			if($noshows == 3) {
-				$cs->messages->addMessage('Patient has not shown up for three consecutive appointments prior to this one.');
+				$this->messages->addMessage('Patient has not shown up for three consecutive appointments prior to this one.');
 			}
 		}
 		// get a Appointment template from the reason
@@ -420,7 +420,7 @@ class C_Location extends Controller {
 				//echo "this event is NOT double booking<br>";
 			}
 		}
-		if (!($availability && !$double && $noshows < 3) && !$confirm) {
+		if (!($availability && !$double) && !$confirm) {
 			return $cs->confirm_action($_POST);	
 		}
 		
@@ -449,7 +449,6 @@ class C_Location extends Controller {
 			$template->resetTemplate($oc->get('id'));
 		}
 
-		
 		$this->location = null;
 
 		$trail =& Celini::trailInstance();
@@ -598,7 +597,38 @@ class C_Location extends Controller {
 			$oc = new Occurence($id);
 			$s = new Schedule();
 			$sa = $s->schedules_factory();
-			
+			// Check for no-shows
+			if($schedule_code == 'NS') {
+				$db =& Celini::dbInstance();
+				$noshows = array();
+				$sql = "SELECT occurences.id AS oc_id,events.title, occurences.start
+			FROM occurences
+			LEFT JOIN events ON events.id=occurences.event_id
+			WHERE occurences.external_id=".$oc->get('external_id')."
+			AND UNIX_TIMESTAMP(occurences.start) < ".$db->quote(strtotime($oc->get('start')))."
+			ORDER BY occurences.start DESC
+			LIMIT 0,2
+			";
+				$res = $db->execute($sql);
+				if($res && !$res->EOF) {
+					for($i=0;$i<$res->numRows();$i++) {
+						if($res->fields['title'] == 'No Shows') {
+							$noshows[] = $res->fields['start'];
+						}
+						$res->MoveNext();
+					}
+				}
+				if(count($noshows) == 2) {
+					$noshows[] = $oc->get('start');
+					$note =& Celini::newORDO('PatientNote');
+					$note->set('user_id',$this->_me->get_user_id());
+					$note->set('patient_id',$oc->get('external_id'));
+					$note->set('note_date',date('Y-m-d'));
+					$note->set('note','Patient has three consecutive no-shows: '.implode(', ',$noshows));
+					$note->persist();
+				}
+			}
+
 			foreach ($sa as $schedule) {
 				if ($schedule->get_schedule_code() == $schedule_code) {
 					$ea = $schedule->get_events();
