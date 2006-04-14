@@ -87,8 +87,8 @@ class MasterClaimList_DS extends Datasource_sql
 					fbco.name AS "current_payer",
 					b.name facility,
 					CONCAT_WS(",",pro.last_name,pro.first_name) AS provider,
-					(chc.total_billed - chc.total_paid - SUM(pcl.writeoff)) AS balance, 
-					SUM(pcl.writeoff) AS writeoff',
+					(chc.total_billed - chc.total_paid - SUM(ifnull(pcl.writeoff,0))) AS balance, 
+					SUM(ifnull(pcl.writeoff,0)) AS writeoff',
 				'from' 	=> 
 					$claimTableName . ' AS chc 
 					INNER JOIN encounter AS e USING(encounter_id) 
@@ -130,8 +130,7 @@ class MasterClaimList_DS extends Datasource_sql
 	}
 	
 	function _claimHistoryLink($value, $row) {
-		$url = Celini::link('view', 'ClaimHistory') . 'patient_id=' . $row['patient_id'] . '&claim_id=' . $row['claim_id'];
-		return "<a href='{$url}'>{$value}</a>";
+		return "<a href='#details' onclick=\"selectClaim('{$row['patient_id']}','{$row['claim_id']}');\">{$value}</a>";
 	}
 	/**#@-*/
 }
