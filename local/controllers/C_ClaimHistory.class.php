@@ -1,6 +1,7 @@
 <?php
 $loader->requireOnce('includes/Grid_Renderer_AccountHistory.class.php');
 $loader->requireOnce('datasources/Payment_EobAdjustment_DS.class.php');
+$loader->requireOnce('datasources/ClearhealthClaim_Claimlines_DS.class.php');
 
 class C_ClaimHistory extends Controller
 {
@@ -51,6 +52,11 @@ class C_ClaimHistory extends Controller
 		}
 
 		$this->view->assign_by_ref('adjustments',$adjustments);
+
+
+		$ds = new ClearhealthClaim_Claimlines_DS($claimId);
+		$clGrid = new cGrid($ds);
+		$this->view->assign_by_ref('claimlines',$clGrid);
 
 		return $this->view->render('view.html');
 	}

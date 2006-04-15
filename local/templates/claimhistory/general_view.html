@@ -7,6 +7,16 @@
 {/if}
 
 <fieldset>
+	<legend>Claim Lines</legend>
+
+	{$claimlines->render()}
+
+	{if $claimlines->empty}
+	<p>Claim has no claim lines</p>
+	{/if}
+</fieldset>
+
+<fieldset>
 	<legend>Claim Notes</legend>
 
 	<div>{$claimNotes->render()}</div>
