@@ -69,6 +69,12 @@ INSERT INTO `enumeration_definition` VALUES (300852,'funds_source','Funds Source
 INSERT INTO `enumeration_definition` VALUES (601041,'depression','Depression','Appointment Reason');
 INSERT INTO `enumeration_definition` VALUES (602407, 'billing_mode', 'Billing Mode', 'Mappedvalue');
 
+-- confidentiality --
+INSERT INTO `enumeration_definition` VALUES (607816, 'confidential_disease_codes', 'Confidential_disease_codes', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607814, 'confidential_family_planning_codes', 'Confidential family planning codes', 'Default');
+INSERT INTO `enumeration_definition` VALUES (601227, 'confidentiality_levels', 'Confidentiality Levels', 'Default');
+INSERT INTO `enumeration_definition` VALUES (608378, 'confidential_family_planning_and_disease_codes', 'Confidential Family Planning and Disease Codes', 'ConfidentialFamilyPlanningAndDisease');
+
 INSERT INTO `enumeration_value` VALUES (300013,300012,1,'Hello',0,'','',1);
 INSERT INTO `enumeration_value` VALUES (300014,300012,2,'World',0,'','',1);
 INSERT INTO `enumeration_value` VALUES (300016,300015,1,'test',0,'','',1);
@@ -632,3 +638,11 @@ INSERT INTO `enumeration_value` VALUES (301538,300818,4,'Hypercholestrolemia',0,
 INSERT INTO `enumeration_value` VALUES (602408, 602407, 0, 'Production', 0, 'P', '', 1);
 INSERT INTO `enumeration_value` VALUES (602409, 602407, 1, 'Testing', 0, 'T', '', 1);
 INSERT INTO `enumeration_value` VALUES (607547, 300038, '6', 'Employer', 6, '', '', 1);
+
+-- Confidentiality --
+INSERT INTO `enumeration_value` VALUES (601228, 601227, 1, '1 - No Special Restrictions', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601229, 601227, 2, '2 - Basic Confidentiality', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601230, 601227, 3, '3 - Family Planning', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601231, 601227, 4, '4 - Disease Confidentiality', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601232, 601227, 5, '6 - Extreme Confidentiality', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608377, 601227, 6, '5 - Disease and Family Planning Confidentiality', 4, '', '', 1);

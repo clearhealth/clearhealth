@@ -44,13 +44,15 @@ class M_Main extends Manager {
 						$this->controller->view->assign('showConfidentialityBanner',true);
 					}
 				}
-				if ($c == 3 || $c == 4) {
+				if ($c == 3 || $c == 4 || $c == 6) {
 					$em =& Celini::enumManagerInstance();
 					if ($c == 3) {
 						$codes = $em->enumArray('confidential_family_planning_codes');
 					}
-					else {
+					elseif ($c == 4) {
 						$codes = $em->enumArray('confidential_disease_codes');
+					} elseif ($c == 6) {
+						$codes = $em->enumArray('confidential_family_planning_and_disease_codes');
 					}
 					$conf = false;
 					if (isset($GLOBALS['currentCodeList'])) {
