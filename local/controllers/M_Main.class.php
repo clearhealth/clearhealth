@@ -59,6 +59,7 @@ class M_Main extends Manager {
 						foreach ($GLOBALS['currentCodeList'] as $code) {
 							if (in_array($code['code'],$codes)) {
 								$conf = true;
+								$this->controller->view->assign('confidentiality',$c);
 								$this->controller->view->assign('showConfidentialityBanner',true);
 								break;
 							}

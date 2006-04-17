@@ -61,13 +61,14 @@ class EnumType_ConfidentialFamilyPlanningAndDisease extends EnumType_Default {
 		WHERE famdef.name='confidential_family_planning_codes'
 		AND disdef.name='confidential_disease_codes'";
 		$idres = $db->execute($sql);
-		$i = 0;
+		$i = 1;
 		foreach($idres->fields as $enumid) {
 			$sql = "SELECT * FROM
 			{$this->table} WHERE enumeration_id = $enumid ORDER BY sort";
 			$res = $db->execute($sql);
 			while($res && !$res->EOF) {
 				$res->fields['sort'] = $i;
+				$res->fields['key'] = $i;
 				$ret[] = $res->fields;
 				$i++;
 				$res->moveNext();
