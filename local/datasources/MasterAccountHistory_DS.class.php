@@ -79,6 +79,12 @@ class MasterAccountHistory_DS extends Datasource {
 		$this->_valid = $this->claims->valid();
 	}
 
+	function addOrderRule($column,$direction='ASC',$order=0) {
+
+		parent::addOrderRule($column,$direction,$order);
+		$this->claims->addOrderRule($column,$direction,$order);
+	}
+
 	function next() {
 		$nextClaim = true;
 		if (isset($this->_res->fields['claim_id'])) {
