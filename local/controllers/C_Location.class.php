@@ -142,7 +142,7 @@ class C_Location extends Controller {
 		// If no rooms were set prior to creating this one, utilize the pseudo
 		// visitor ChangeDefaultRoomForUsers() to update the default rooms.
 		if ($setDefaultRoom) {
-			$loader->requireOnce('includes/ChangeDefaultRoomForUsers.class.php');
+			$GLOBALS['loader']->requireOnce('includes/ChangeDefaultRoomForUsers.class.php');
 			$updater =& new ChangeDefaultRoomForUsers($location);
 			
 			$user =& ORDataObject::factory('User');
