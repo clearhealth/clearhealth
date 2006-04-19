@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 19, 2006 at 07:55 AM
+-- Generation Time: Apr 19, 2006 at 11:13 AM
 -- Server version: 4.1.15
 -- PHP Version: 4.4.2-1
 -- 
@@ -11,10 +11,1300 @@
 -- 
 
 -- 
+-- Dumping data for table `enumeration_definition`
+-- 
+
+INSERT INTO `enumeration_definition` VALUES (300466, 'address_type', 'Address Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300472, 'appointment_reasons', 'Appointment Reason', 'AppointmentReason');
+INSERT INTO `enumeration_definition` VALUES (300480, 'assigning', 'Assigning', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300485, 'code_modifier', 'Code Modifier', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300492, 'company_number_type', 'Company Number Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300495, 'company_type', 'Company Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300497, 'disposition', 'Disposition', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300501, 'encounter_date_type', 'Encounter Date Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300510, 'encounter_person_type', 'Encounter Person Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300512, 'encounter_reason', 'Encounter Reason', 'EncounterReason');
+INSERT INTO `enumeration_definition` VALUES (300515, 'encounter_value_type', 'Encounter Value Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300521, 'ethnicity', 'Ethnicity', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300524, 'gender', 'Gender', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300528, 'group_list', 'File Groups', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300532, 'identifier_type', 'Identifier Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300535, 'income', 'Income', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300540, 'language', 'Languages', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300560, 'marital_status', 'Marital Status', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300564, 'migrant_status', 'Migrant Status', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300566, 'number_type', 'Phone Number Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300572, 'payer_type', 'Payer Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300582, 'payment_type', 'Payment Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300589, 'person_to_person_relation_type', 'Person to person relation type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300594, 'person_type', 'Person Type', 'PersonType');
+INSERT INTO `enumeration_definition` VALUES (608614, 'provider_number_type', 'Provider Number Type', 'MappedValue');
+INSERT INTO `enumeration_definition` VALUES (300602, 'provider_reporting_type', 'Provider Reporting Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300608, 'quality_of_file', 'Quality of File', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300611, 'race', 'Race', 'Default');
+INSERT INTO `enumeration_definition` VALUES (608378, 'confidential_family_planning_and_disease_codes', 'Confidential Family Planning and Disease Codes', 'ConfidentialFamilyPlanningAndDisease');
+INSERT INTO `enumeration_definition` VALUES (300624, 'state', 'State', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300677, 'subscriber_to_patient_relationship', 'Subscriber to patient relationship', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300525, 'system_reports', 'System Reports', 'Url');
+INSERT INTO `enumeration_definition` VALUES (300818, 'chronic_care_codes', 'Chronic Care Codes', 'Default');
+INSERT INTO `enumeration_definition` VALUES (300852, 'funds_source', 'Funds Source', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607809, 'audit_type', 'Audit Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (601227, 'confidentiality_levels', 'Confidentiality Levels', 'Default');
+INSERT INTO `enumeration_definition` VALUES (601942, 'account_note_type', 'Account Note Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607814, 'confidential_family_planning_codes', 'Confidential family planning codes', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607816, 'confidential_disease_codes', 'Confidential_disease_codes', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607818, 'days_of_week', 'Days of Week', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607826, 'eob_adjustment_type', 'Eob Adjustment Type', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607830, 'months_of_year', 'Months of Year', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607843, 'recurrence_pattern_type', 'Recurrence Pattern Type', 'MappedValue');
+INSERT INTO `enumeration_definition` VALUES (607849, 'subscriber_to_patient', 'Subscriber to patient', 'Default');
+INSERT INTO `enumeration_definition` VALUES (607852, 'weeks_of_month', 'Weeks of Month', 'Default');
+
+-- 
+-- Dumping data for table `enumeration_value`
+-- 
+
+INSERT INTO `enumeration_value` VALUES (300013, 300012, 1, 'Hello', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300014, 300012, 2, 'World', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300016, 300015, 1, 'test', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300017, 300015, 2, 'second test', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300039, 300038, 1, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300040, 300038, 2, 'Billing', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300041, 300038, 3, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300042, 300038, 4, 'Main', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300043, 300038, 5, 'Secondary', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300045, 300044, 1, 'Physical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300046, 300044, 2, 'FP', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300047, 300044, 3, 'CDP', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300048, 300044, 4, 'CHDP', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300049, 300044, 5, 'F/U', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300050, 300044, 6, 'Sick', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300051, 300044, 7, 'Lab Only', 6, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300053, 300052, 1, 'A - Assigned', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300054, 300052, 2, 'B - Assigned Lab Services Only', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300055, 300052, 3, 'C - Not Assigned', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300056, 300052, 4, 'P - Assignment Refused', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300058, 300057, 1, 'A0', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300059, 300057, 2, 'A1', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300060, 300057, 3, 'A2', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300061, 300057, 4, 'B1', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300062, 300057, 5, 'B2', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300063, 300057, 6, 'C6', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300065, 300064, 1, 'Primary', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300066, 300064, 2, 'Fax', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300068, 300067, 1, 'Insurance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300070, 300069, 1, 'New', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300071, 300069, 2, 'Waiting', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300072, 300069, 3, 'Compete', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300074, 300073, 1, 'date_of_death', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300075, 300073, 2, 'date_last_seen', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300076, 300073, 3, 'date_of_onset', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300077, 300073, 4, 'date_of_initial_treatment', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300078, 300073, 5, 'date_of_cant_work_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300079, 300073, 6, 'date_of_cant_work_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300080, 300073, 7, 'date_of_hospitalization_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300081, 300073, 8, 'date_of_hospitalization_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300083, 300082, 1, 'Referring Provider', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300085, 300084, 1, 'Physical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300086, 300084, 2, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300088, 300087, 1, 'medicaid_resubmission_code', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300089, 300087, 2, 'prior_authorization_number', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300090, 300087, 3, 'auto_accident_state', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300091, 300087, 4, 'original_reference_number', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300092, 300087, 5, 'hcfa_10d_comment', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300094, 300093, 1, 'Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300095, 300093, 2, 'Caucasian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300097, 300096, 1, 'Male', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300098, 300096, 2, 'Female', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300099, 300096, 3, 'Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300101, 300100, 1, 'All', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300102, 300100, 2, 'Arizona', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300103, 300100, 3, 'California', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300105, 300104, 1, 'SSN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300106, 300104, 2, 'EIN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300108, 300107, 1, 'Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300109, 300107, 2, 'Under 100% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300110, 300107, 3, '100-200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300111, 300107, 4, 'Above 200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300113, 300112, 1, 'English', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300114, 300112, 2, 'Spanish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300115, 300112, 3, 'Chinese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300116, 300112, 4, 'Japanese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300117, 300112, 5, 'Korean', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300118, 300112, 6, 'Portuguese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300119, 300112, 7, 'Russian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300120, 300112, 8, 'Sign Language', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300121, 300112, 9, 'Vietnamese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300122, 300112, 10, 'Tagalog', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300123, 300112, 11, 'Punjabi', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300124, 300112, 12, 'Hindustani', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300125, 300112, 13, 'Armenian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300126, 300112, 14, 'Arabic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300127, 300112, 15, 'Laotian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300128, 300112, 16, 'Hmong', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300129, 300112, 17, 'Cambodian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300130, 300112, 18, 'Finnish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300131, 300112, 19, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300133, 300132, 1, 'Single', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300134, 300132, 2, 'Married', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300135, 300132, 3, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300137, 300136, 1, 'Migrant Worker', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300139, 300138, 1, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300140, 300138, 2, 'Mobile', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300141, 300138, 3, 'Work', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300142, 300138, 4, 'Emergency', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300143, 300138, 5, 'Fax', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300145, 300144, 1, 'medicare', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300146, 300144, 2, 'champus', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300147, 300144, 3, 'medical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300148, 300144, 4, 'private', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300149, 300144, 5, 'feca', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300150, 300144, 6, 'medicaid', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300151, 300144, 7, 'champusva', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300152, 300144, 8, 'otherhcfa', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300153, 300144, 9, 'litigation', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300155, 300154, 1, 'visa', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300156, 300154, 2, 'mastercard', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300157, 300154, 3, 'amex', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300158, 300154, 4, 'check', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300159, 300154, 5, 'cash', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300160, 300154, 6, 'remittance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300162, 300161, 1, 'Dependant', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300163, 300161, 2, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300164, 300161, 3, 'Grand Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300165, 300161, 4, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300167, 300166, 1, 'Patient', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300168, 300166, 2, 'Provider', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300169, 300166, 3, 'Mid-level', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300170, 300166, 4, 'Staff', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300171, 300166, 5, 'Subscriber', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300173, 300172, 1, 'State License', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300175, 300174, 1, 'MD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300176, 300174, 2, 'RNFP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300177, 300174, 3, 'RN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300178, 300174, 4, 'PA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300179, 300174, 5, 'MA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300181, 300180, 1, 'Good', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300182, 300180, 2, 'Bad', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300184, 300183, 1, 'White/Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300185, 300183, 2, 'Black', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300186, 300183, 3, 'Native American/Alaskan Native', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300187, 300183, 4, 'Asian/Pacific Islander', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300188, 300183, 5, 'Other/Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300190, 300189, 1, 'A - On file', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300191, 300189, 2, 'I - Informed Consent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300192, 300189, 3, 'M - Limited Ability', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300193, 300189, 4, 'N - Not allowed', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300194, 300189, 5, 'O - On file', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300195, 300189, 6, 'Y - Has permission', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300197, 300196, 1, 'AL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300198, 300196, 2, 'AK', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300199, 300196, 3, 'AZ', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300200, 300196, 4, 'AR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300201, 300196, 5, 'CA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300202, 300196, 6, 'CO', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300203, 300196, 7, 'CT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300204, 300196, 8, 'DE', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300205, 300196, 9, 'DC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300206, 300196, 10, 'FL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300207, 300196, 11, 'GA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300208, 300196, 12, 'HI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300209, 300196, 13, 'ID', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300210, 300196, 14, 'IL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300211, 300196, 15, 'IN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300212, 300196, 16, 'IA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300213, 300196, 17, 'KS', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300214, 300196, 18, 'KY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300215, 300196, 19, 'LA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300216, 300196, 20, 'ME', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300217, 300196, 21, 'MD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300218, 300196, 22, 'MA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300219, 300196, 23, 'MI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300220, 300196, 24, 'MN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300221, 300196, 25, 'MS', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300222, 300196, 26, 'MO', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300223, 300196, 27, 'MT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300224, 300196, 28, 'NE', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300225, 300196, 29, 'NV', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300226, 300196, 30, 'NH', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300227, 300196, 31, 'NJ', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300228, 300196, 32, 'NM', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300229, 300196, 33, 'NY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300230, 300196, 34, 'NC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300232, 300196, 36, 'OH', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300233, 300196, 37, 'OK', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300234, 300196, 38, 'OR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300235, 300196, 39, 'PA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300236, 300196, 40, 'RI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300237, 300196, 41, 'SC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300238, 300196, 42, 'SD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300239, 300196, 43, 'TN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300240, 300196, 44, 'TX', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300241, 300196, 45, 'UT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300242, 300196, 46, 'VT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300243, 300196, 47, 'VA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300244, 300196, 48, 'WA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300245, 300196, 49, 'WV', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300246, 300196, 50, 'WI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300247, 300196, 51, 'WY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300248, 300196, 52, 'PR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300250, 300249, 1, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300251, 300249, 2, 'Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300253, 300252, 1, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300254, 300252, 2, 'Billing', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300255, 300252, 3, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300259, 300258, 1, 'Physical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300260, 300258, 2, 'FP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300261, 300258, 3, 'CDP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300262, 300258, 4, 'CHDP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300263, 300258, 5, 'F/U', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300264, 300258, 6, 'Sick', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300265, 300258, 7, 'Lab Only', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300267, 300266, 1, 'A - Assigned', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300291, 300287, 4, 'date_of_initial_treatment', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300292, 300287, 5, 'date_of_cant_work_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300293, 300287, 6, 'date_of_cant_work_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300294, 300287, 7, 'date_of_hospitalization_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300295, 300287, 8, 'date_of_hospitalization_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300297, 300296, 1, 'Referring Provider', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300299, 300298, 1, 'Physical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300300, 300298, 2, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300302, 300301, 1, 'medicaid_resubmission_code', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300306, 300301, 5, 'hcfa_10d_comment', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300308, 300307, 1, 'Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300309, 300307, 2, 'Caucasian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300311, 300310, 1, 'Male', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300312, 300310, 2, 'Female', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300313, 300310, 3, 'Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300315, 300314, 1, 'All', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300316, 300314, 2, 'Arizona', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300317, 300314, 3, 'California', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300319, 300318, 1, 'SSN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300320, 300318, 2, 'EIN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300322, 300321, 1, 'Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300323, 300321, 2, 'Under 100% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300324, 300321, 3, '100-200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300325, 300321, 4, 'Above 200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300327, 300326, 1, 'English', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300328, 300326, 2, 'Spanish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300329, 300326, 3, 'Chinese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300330, 300326, 4, 'Japanese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300331, 300326, 5, 'Korean', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300332, 300326, 6, 'Portuguese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300333, 300326, 7, 'Russian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300334, 300326, 8, 'Sign Language', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300335, 300326, 9, 'Vietnamese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300336, 300326, 10, 'Tagalog', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300337, 300326, 11, 'Punjabi', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300338, 300326, 12, 'Hindustani', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300339, 300326, 13, 'Armenian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300340, 300326, 14, 'Arabic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300341, 300326, 15, 'Laotian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300342, 300326, 16, 'Hmong', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300343, 300326, 17, 'Cambodian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300344, 300326, 18, 'Finnish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300347, 300346, 1, 'Single', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300348, 300346, 2, 'Married', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300349, 300346, 3, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300351, 300350, 1, 'Migrant Worker', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300353, 300352, 1, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300354, 300352, 2, 'Mobile', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300355, 300352, 3, 'Work', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300356, 300352, 4, 'Emergency', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300357, 300352, 5, 'Fax', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300359, 300358, 1, 'medicare', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300360, 300358, 2, 'champus', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300361, 300358, 3, 'medical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300362, 300358, 4, 'private', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300363, 300358, 5, 'feca', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300364, 300358, 6, 'medicaid', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300365, 300358, 7, 'champusva', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300366, 300358, 8, 'otherhcfa', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300367, 300358, 9, 'litigation', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300369, 300368, 1, 'visa', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300370, 300368, 2, 'mastercard', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300371, 300368, 3, 'amex', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300372, 300368, 4, 'check', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300373, 300368, 5, 'cash', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300374, 300368, 6, 'remittance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300376, 300375, 1, 'Dependant', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300377, 300375, 2, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300378, 300375, 3, 'Grand Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300379, 300375, 4, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300381, 300380, 1, 'Patient', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300382, 300380, 2, 'Provider', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300383, 300380, 3, 'Mid-level', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300384, 300380, 4, 'Staff', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300385, 300380, 5, 'Subscriber', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300387, 300386, 1, 'State License', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300389, 300388, 1, 'MD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300390, 300388, 2, 'RNFP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300391, 300388, 3, 'RN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300392, 300388, 4, 'PA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300393, 300388, 5, 'MA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300395, 300394, 1, 'Good', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300396, 300394, 2, 'Bad', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300398, 300397, 1, 'White/Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300399, 300397, 2, 'Black', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300400, 300397, 3, 'Native American/Alaskan Native', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300401, 300397, 4, 'Asian/Pacific Islander', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300402, 300397, 5, 'Other/Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300404, 300403, 1, 'A - On file', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300405, 300403, 2, 'I - Informed Consent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300406, 300403, 3, 'M - Limited Ability', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300407, 300403, 4, 'N - Not allowed', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300408, 300403, 5, 'O - On file', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300409, 300403, 6, 'Y - Has permission', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300411, 300410, 1, 'AL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300412, 300410, 2, 'AK', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300413, 300410, 3, 'AZ', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300414, 300410, 4, 'AR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300415, 300410, 5, 'CA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300416, 300410, 6, 'CO', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300417, 300410, 7, 'CT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300418, 300410, 8, 'DE', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300419, 300410, 9, 'DC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300420, 300410, 10, 'FL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300421, 300410, 11, 'GA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300422, 300410, 12, 'HI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300423, 300410, 13, 'ID', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300424, 300410, 14, 'IL', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300425, 300410, 15, 'IN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300426, 300410, 16, 'IA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300427, 300410, 17, 'KS', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300428, 300410, 18, 'KY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300429, 300410, 19, 'LA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300430, 300410, 20, 'ME', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300431, 300410, 21, 'MD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300432, 300410, 22, 'MA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300433, 300410, 23, 'MI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300434, 300410, 24, 'MN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300435, 300410, 25, 'MS', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300436, 300410, 26, 'MO', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300437, 300410, 27, 'MT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300438, 300410, 28, 'NE', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300439, 300410, 29, 'NV', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300440, 300410, 30, 'NH', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300441, 300410, 31, 'NJ', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300442, 300410, 32, 'NM', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300443, 300410, 33, 'NY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300444, 300410, 34, 'NC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300445, 300410, 35, 'ND', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300446, 300410, 36, 'OH', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300447, 300410, 37, 'OK', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300448, 300410, 38, 'OR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300449, 300410, 39, 'PA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300450, 300410, 40, 'RI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300451, 300410, 41, 'SC', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300452, 300410, 42, 'SD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300453, 300410, 43, 'TN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300454, 300410, 44, 'TX', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300455, 300410, 45, 'UT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300456, 300410, 46, 'VT', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300457, 300410, 47, 'VA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300458, 300410, 48, 'WA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300459, 300410, 49, 'WV', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300460, 300410, 50, 'WI', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300461, 300410, 51, 'WY', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300462, 300410, 52, 'PR', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300464, 300463, 1, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300465, 300463, 2, 'Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300467, 300466, 2, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300468, 300466, 1, 'Billing', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300469, 300466, 3, 'Other', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300470, 300466, 4, 'Main', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300471, 300466, 5, 'Secondary', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300474, 300472, 2, 'FP', 11, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300475, 300472, 3, 'CDP', 14, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300476, 300472, 4, 'CHDP', 17, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300477, 300472, 5, 'F/U', 20, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300478, 300472, 6, 'Sick', 23, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300479, 300472, 7, 'Lab Only', 26, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300481, 300480, 1, 'A - Assigned', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300482, 300480, 2, 'B - Assigned Lab Services Only', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300483, 300480, 3, 'C - Not Assigned', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300484, 300480, 4, 'P - Assignment Refused', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300486, 300485, 1, 'A0', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300487, 300485, 2, 'A1', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300488, 300485, 3, 'A2', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300489, 300485, 4, 'B1', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300490, 300485, 5, 'B2', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300491, 300485, 6, 'C6', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300493, 300492, 1, 'Primary', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300494, 300492, 2, 'Fax', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300496, 300495, 1, 'Insurance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300498, 300497, 1, 'New', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300499, 300497, 2, 'Waiting', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300500, 300497, 3, 'Compete', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300502, 300501, 1, 'date_of_death', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300503, 300501, 2, 'date_last_seen', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300504, 300501, 3, 'date_of_onset', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300505, 300501, 4, 'date_of_initial_treatment', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300506, 300501, 5, 'date_of_cant_work_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300507, 300501, 6, 'date_of_cant_work_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300508, 300501, 7, 'date_of_hospitalization_start', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300509, 300501, 8, 'date_of_hospitalization_end', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300511, 300510, 1, 'Referring Provider', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300513, 300512, 1, 'Physical', 1, '608145', '', 1);
+INSERT INTO `enumeration_value` VALUES (300514, 300512, 2, 'Other', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300516, 300515, 1, 'medicaid_resubmission_code', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300517, 300515, 2, 'prior_authorization_number', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300518, 300515, 3, 'auto_accident_state', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300519, 300515, 4, 'original_reference_number', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300520, 300515, 5, 'hcfa_10d_comment', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300522, 300521, 1, 'Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300523, 300521, 2, 'Caucasian', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300525, 300524, 1, 'Male', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300526, 300525, 1, 'Patient Statement', 0, '/Patient/statement', '', 1);
+INSERT INTO `enumeration_value` VALUES (300527, 300524, 3, 'Unknown', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300529, 300528, 1, 'All', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300530, 300528, 2, 'Arizona', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300531, 300528, 3, 'California', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300533, 300532, 1, 'SSN', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300534, 300532, 2, 'EIN', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300536, 300535, 1, 'Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300537, 300535, 2, 'Under 100% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300538, 300535, 3, '100-200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300539, 300535, 4, 'Above 200% of Poverty', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300541, 300540, 1, 'English', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300542, 300540, 2, 'Spanish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300543, 300540, 3, 'Chinese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300544, 300540, 4, 'Japanese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300545, 300540, 5, 'Korean', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300546, 300540, 6, 'Portuguese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300547, 300540, 7, 'Russian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300548, 300540, 8, 'Sign Language', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300549, 300540, 9, 'Vietnamese', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300550, 300540, 10, 'Tagalog', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300551, 300540, 11, 'Punjabi', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300552, 300540, 12, 'Hindustani', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300553, 300540, 13, 'Armenian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300554, 300540, 14, 'Arabic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300555, 300540, 15, 'Laotian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300556, 300540, 16, 'Hmong', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300557, 300540, 17, 'Cambodian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300558, 300540, 18, 'Finnish', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300559, 300540, 19, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300561, 300560, 1, 'Single', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300562, 300560, 2, 'Married', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300563, 300560, 3, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300565, 300564, 1, 'Migrant Worker', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300567, 300566, 1, 'Home', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300568, 300566, 2, 'Mobile', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300569, 300566, 3, 'Work', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300570, 300566, 4, 'Emergency', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300571, 300566, 5, 'Fax', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300573, 300572, 1, 'medicare', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300574, 300572, 2, 'champus', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300575, 300572, 3, 'medical', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300576, 300572, 4, 'private pay', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300577, 300572, 5, 'feca', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300578, 300572, 6, 'medicaid', 6, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300579, 300572, 7, 'champusva', 7, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300580, 300572, 8, 'otherhcfa', 8, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300581, 300572, 9, 'litigation', 9, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300583, 300582, 1, 'visa', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300584, 300582, 2, 'mastercard', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300585, 300582, 3, 'amex', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300586, 300582, 4, 'check', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300587, 300582, 5, 'cash', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300588, 300582, 6, 'remittance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300590, 300589, 1, 'Dependant', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300591, 300589, 2, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300592, 300589, 3, 'Grand Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300593, 300589, 4, 'Other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300595, 300594, 1, 'Patient', 0, '0', '', 1);
+INSERT INTO `enumeration_value` VALUES (300596, 300594, 2, 'Provider', 1, '1', '', 1);
+INSERT INTO `enumeration_value` VALUES (300597, 300594, 3, 'Mid-level', 2, '1', '', 1);
+INSERT INTO `enumeration_value` VALUES (300598, 300594, 4, 'Staff', 3, '1', '', 1);
+INSERT INTO `enumeration_value` VALUES (300599, 300594, 5, 'Subscriber', 4, '0', '', 1);
+INSERT INTO `enumeration_value` VALUES (300601, 300300, 1, 'State License', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300603, 300602, 1, 'MD', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300604, 300602, 2, 'RNFP', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300605, 300602, 3, 'RN', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300606, 300602, 4, 'PA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300607, 300602, 5, 'MA', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300609, 300608, 1, 'Good', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300610, 300608, 2, 'Bad', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300612, 300611, 1, 'White/Hispanic', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300613, 300611, 2, 'Black', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300614, 300611, 3, 'Native American/Alaskan Native', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300615, 300611, 4, 'Asian/Pacific Islander', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300616, 300611, 5, 'Other/Unknown', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608159, 300472, 2, 'Other', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300625, 300624, 1, 'AL', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300626, 300624, 2, 'AK', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300627, 300624, 3, 'AZ', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300628, 300624, 4, 'AR', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300629, 300624, 5, 'CA', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300630, 300624, 6, 'CO', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300631, 300624, 7, 'CT', 6, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300632, 300624, 8, 'DE', 8, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300633, 300624, 9, 'DC', 7, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300634, 300624, 10, 'FL', 9, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300635, 300624, 11, 'GA', 10, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300636, 300624, 12, 'HI', 11, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300637, 300624, 13, 'ID', 13, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300638, 300624, 14, 'IL', 14, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300639, 300624, 15, 'IN', 15, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300640, 300624, 16, 'IA', 12, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300641, 300624, 17, 'KS', 16, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300642, 300624, 18, 'KY', 17, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300643, 300624, 19, 'LA', 18, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300644, 300624, 20, 'ME', 21, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300645, 300624, 21, 'MD', 20, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300646, 300624, 22, 'MA', 19, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300647, 300624, 23, 'MI', 22, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300648, 300624, 24, 'MN', 23, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300649, 300624, 25, 'MS', 25, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300650, 300525, 2, 'Family Patient Statement', 1, '/Patient/familyStatement', '', 1);
+INSERT INTO `enumeration_value` VALUES (300651, 300525, 3, 'Pull List', 2, '/Appointment/pullList', '', 1);
+INSERT INTO `enumeration_value` VALUES (300659, 300624, 35, 'ND', 28, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300660, 300624, 36, 'OH', 34, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300661, 300624, 37, 'OK', 35, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300662, 300624, 38, 'OR', 36, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300663, 300624, 39, 'PA', 37, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300664, 300624, 40, 'RI', 39, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300665, 300624, 41, 'SC', 40, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300666, 300624, 42, 'SD', 41, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300667, 300624, 43, 'TN', 42, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300668, 300624, 44, 'TX', 43, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300669, 300624, 45, 'UT', 44, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300670, 300624, 46, 'VT', 46, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300671, 300624, 47, 'VA', 45, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300672, 300624, 48, 'WA', 47, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300673, 300624, 49, 'WV', 49, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300674, 300624, 50, 'WI', 48, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300675, 300624, 51, 'WY', 50, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300676, 300624, 52, 'PR', 38, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300678, 300677, 1, 'Self', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300679, 300677, 2, 'Spouse', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601943, 601942, 1, 'x12', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300747, 300525, 4, 'Route Slip', 3, '/Encounter/routeSlip', '', 1);
+INSERT INTO `enumeration_value` VALUES (300819, 300818, 1, 'Diabetes', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300820, 300818, 2, 'Hypertension', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300853, 300852, 1, 'Patient', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300854, 300852, 2, 'Private Insurance', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300855, 300852, 3, 'State Program', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300856, 300852, 4, 'Federal Program', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (300932, 300818, 3, 'hrt', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301031, 300472, 1, 'Physical', 10, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301505, 300524, 2, 'Female', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301506, 300512, 3, 'medical appt', 1, '608327', '', 1);
+INSERT INTO `enumeration_value` VALUES (301507, 300521, 3, 'Asian', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301508, 300572, 10, ' private insurance', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301522, 300564, 2, 'Seasonal Worker', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301523, 300564, 3, 'No', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301524, 300564, 4, 'other', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (301538, 300818, 4, 'Hypercholestrolemia', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601222, 300472, 1, 'Cleaning', 0, '601219', '', 1);
+INSERT INTO `enumeration_value` VALUES (601228, 601227, 1, '1 - No Special Restrictions', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601229, 601227, 2, '2 - Basic Confidentiality', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601230, 601227, 3, '3 - Family Planning', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601231, 601227, 4, '4 - Disease Confidentiality', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601232, 601227, 5, '6 - Extreme Confidentiality', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601244, 300677, 3, 'Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (601245, 300472, 2, 'General Visit', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607182, 300624, 53, 'MO', 24, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607183, 300624, 54, 'MT', 26, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607184, 300624, 55, 'NV', 32, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607185, 300624, 56, 'NH', 29, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607186, 300624, 57, 'NJ', 30, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607187, 300624, 58, 'NM', 31, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607188, 300624, 59, 'NY', 33, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607189, 300624, 60, 'NC', 27, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607547, 300038, 6, 'Employer', 6, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607776, 300466, 6, 'Employer', 6, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607810, 607809, 1, 'insert', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607811, 607809, 2, 'update', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607812, 607809, 3, 'delete', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607813, 607809, 4, 'process', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607815, 607814, 0, 'A4770', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607817, 607816, 0, 'S2095', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607819, 607818, 7, 'Sunday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607820, 607818, 1, 'Monday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607821, 607818, 2, 'Tuesday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607822, 607818, 3, 'Wednesday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607823, 607818, 4, 'Thursday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607824, 607818, 5, 'Friday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607825, 607818, 6, 'Saturday', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607827, 607826, 1, 'Patient Responsibilty', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607828, 607826, 2, 'Total Charge', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607829, 607826, 3, 'Plan Type', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607831, 607830, 1, 'January', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607832, 607830, 2, 'February', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607833, 607830, 3, 'March', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607834, 607830, 4, 'April', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607835, 607830, 5, 'May', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607836, 607830, 6, 'June', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607837, 607830, 7, 'July', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607838, 607830, 8, 'August', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607839, 607830, 9, 'September', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607840, 607830, 10, 'October', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607841, 607830, 11, 'November', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607842, 607830, 12, 'December', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607844, 607843, 1, 'By Day (Every 3 Days)', 0, 'day', '', 1);
+INSERT INTO `enumeration_value` VALUES (607845, 607843, 2, 'By Weekday Per Month (Every Third Tuesday)', 1, 'monthweek', '', 1);
+INSERT INTO `enumeration_value` VALUES (607846, 607843, 3, 'By Day of Month (Every Fifth)', 2, 'monthday', '', 1);
+INSERT INTO `enumeration_value` VALUES (607847, 607843, 4, 'By Day of Month Per Year (Every December 3rd)', 3, 'yearmonthday', '', 1);
+INSERT INTO `enumeration_value` VALUES (607848, 607843, 5, 'By Weekday Per Month Per Year (Every Third Tuesday of November)', 4, 'yearmonthweek', '', 1);
+INSERT INTO `enumeration_value` VALUES (607850, 607849, 1, 'Spouse', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607851, 607849, 2, 'Parent', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607853, 607852, 0, 'First', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607854, 607852, 0, 'Second', 1, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607855, 607852, 0, 'Third', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607856, 607852, 0, 'Fourth', 3, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607857, 607852, 0, 'Last', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607969, 300472, 8, 'Cleaning', 8, '601219', '', 1);
+INSERT INTO `enumeration_value` VALUES (607981, 300472, 0, 'Physical', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607982, 300472, 2, 'FP', 11, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607983, 300472, 3, 'CDP', 14, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607984, 300472, 4, 'CHDP', 17, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607985, 300472, 5, 'F/U', 20, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607986, 300472, 6, 'Sick', 23, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607987, 300472, 7, 'Lab Only', 26, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607988, 300472, 1, 'Physical', 10, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607989, 300472, 8, 'Cleaning', 8, '601219', '', 1);
+INSERT INTO `enumeration_value` VALUES (607990, 300515, 6, 'clia_number', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (607996, 300515, 7, 'claim_filing_code', 7, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608026, 300472, 2, 'FP', 11, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608027, 300472, 3, 'CDP', 14, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608028, 300472, 4, 'CHDP', 17, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608029, 300472, 5, 'F/U', 20, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608030, 300472, 6, 'Sick', 23, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608031, 300472, 7, 'Lab Only', 26, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608032, 300472, 1, 'Physical', 10, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608033, 300472, 8, 'Cleaning', 8, '601219', '', 1);
+INSERT INTO `enumeration_value` VALUES (608143, 300532, 3, 'UPIN', 2, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608377, 601227, 6, '5 - Disease and Family Planning Confidentiality', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608409, 607814, 1, '', 1, '608410', '1', 1);
+INSERT INTO `enumeration_value` VALUES (608410, 607816, 1, 'testo', 1, '', '1', 1);
+INSERT INTO `enumeration_value` VALUES (608411, 607814, 2, '', 2, '608412', '1', 1);
+INSERT INTO `enumeration_value` VALUES (608412, 607816, 2, 'adsf', 1, '', '1', 1);
+INSERT INTO `enumeration_value` VALUES (608447, 300472, 9, 'Yearly', 9, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608448, 300472, 0, '', 0, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608449, 300472, 2, 'FP', 11, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608450, 300472, 3, 'CDP', 14, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608451, 300472, 4, 'CHDP', 17, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608452, 300472, 5, 'F/U', 20, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608453, 300472, 6, 'Sick', 23, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608454, 300472, 7, 'Lab Only', 26, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608455, 300472, 1, 'Physical', 10, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608456, 300472, 8, 'Cleaning', 8, '601219', '', 1);
+INSERT INTO `enumeration_value` VALUES (608457, 300472, 9, 'Yearly', 9, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608458, 300512, 4, 'Yearly', 4, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608459, 300512, 5, 'Clearning', 5, '', '', 1);
+INSERT INTO `enumeration_value` VALUES (608615, 608614, 1, 'State License Number', 1, '0B', '', 1);
+INSERT INTO `enumeration_value` VALUES (608616, 608614, 2, 'Blue Cross Provider Number', 2, '1A', '', 1);
+INSERT INTO `enumeration_value` VALUES (608617, 608614, 3, 'Blue Shield Provider Number', 3, '1B', '', 1);
+INSERT INTO `enumeration_value` VALUES (608618, 608614, 4, 'Medicare Provider Number', 4, '1C', '', 1);
+INSERT INTO `enumeration_value` VALUES (608619, 608614, 5, 'Medicaid Provider Number', 5, '1D', '', 1);
+INSERT INTO `enumeration_value` VALUES (608620, 608614, 6, 'Medi-cal', 6, '1D', '', 1);
+INSERT INTO `enumeration_value` VALUES (608621, 608614, 7, 'Provider UPIN Number', 7, '1G', '', 1);
+INSERT INTO `enumeration_value` VALUES (608622, 608614, 8, 'CHAMPUS Identification Number', 8, '1H', '', 1);
+INSERT INTO `enumeration_value` VALUES (608623, 608614, 9, 'Facility ID Number', 9, '1J', '', 1);
+INSERT INTO `enumeration_value` VALUES (608624, 608614, 10, 'Preferred Provider Organization Number', 10, 'B3', '', 1);
+INSERT INTO `enumeration_value` VALUES (608625, 608614, 11, 'Health Maintenance Organization Code Number', 11, 'BQ', '', 1);
+INSERT INTO `enumeration_value` VALUES (608626, 608614, 12, 'Employer''s Identification Number', 12, 'EI', '', 1);
+INSERT INTO `enumeration_value` VALUES (608627, 608614, 13, 'Clinic Number', 13, 'FH', '', 1);
+INSERT INTO `enumeration_value` VALUES (608628, 608614, 14, 'Provider Commercial Number', 14, 'G2', '', 1);
+INSERT INTO `enumeration_value` VALUES (608629, 608614, 15, 'Provider Site Number', 15, 'G5', '', 1);
+
+-- 
+-- Dumping data for table `gacl_acl`
+-- 
+
+INSERT INTO `gacl_acl` VALUES (26, 'user', 1, 1, '', 'Give Superadmn and access to everything even when no resource is selected', 1141314213);
+INSERT INTO `gacl_acl` VALUES (24, 'user', 1, 1, '', 'Give Super Admin access to everything ', 1141314481);
+INSERT INTO `gacl_acl` VALUES (38, 'user', 1, 1, '', '', 1129066412);
+INSERT INTO `gacl_acl` VALUES (40, 'user', 1, 1, '', '', 1129066435);
+INSERT INTO `gacl_acl` VALUES (36, 'user', 1, 1, '', '', 1129066460);
+INSERT INTO `gacl_acl` VALUES (37, 'user', 1, 1, '', '', 1119041365);
+INSERT INTO `gacl_acl` VALUES (32, 'user', 1, 1, '', 'Give billing users basic access to those sections', 1129066489);
+INSERT INTO `gacl_acl` VALUES (33, 'user', 1, 1, '', 'Give all users of the system access to basic app sections', 1112057091);
+INSERT INTO `gacl_acl` VALUES (39, 'user', 1, 1, '', '', 1129066506);
+
+-- 
+-- Dumping data for table `gacl_acl_sections`
+-- 
+
+INSERT INTO `gacl_acl_sections` VALUES (1, 'system', 1, 'System', 0);
+INSERT INTO `gacl_acl_sections` VALUES (2, 'user', 2, 'User', 0);
+
+-- 
+-- Dumping data for table `gacl_acl_seq`
+-- 
+
+INSERT INTO `gacl_acl_seq` VALUES (40);
+INSERT INTO `gacl_acl_seq` VALUES (40);
+
+-- 
+-- Dumping data for table `gacl_aco`
+-- 
+
+INSERT INTO `gacl_aco` VALUES (11, 'actions', 'view', 10, 'view', 0);
+INSERT INTO `gacl_aco` VALUES (12, 'actions', 'edit', 11, 'edit', 0);
+INSERT INTO `gacl_aco` VALUES (13, 'actions', 'add', 12, 'add', 0);
+INSERT INTO `gacl_aco` VALUES (14, 'actions', 'delete', 13, 'delete', 0);
+INSERT INTO `gacl_aco` VALUES (16, 'actions', 'usage', 9, 'usage', 0);
+INSERT INTO `gacl_aco` VALUES (17, 'actions', 'uploadFile', 14, 'Upload A file', 0);
+INSERT INTO `gacl_aco` VALUES (18, 'actions', 'delete_owner', 15, 'Delete Owner', 0);
+INSERT INTO `gacl_aco` VALUES (19, 'actions', 'edit_owner', 16, 'Edit Owner', 0);
+INSERT INTO `gacl_aco` VALUES (20, 'actions', 'double_book', 17, 'Double Book Apointment', 0);
+
+-- 
+-- Dumping data for table `gacl_aco_map`
+-- 
+
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (24, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (26, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (32, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (33, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (36, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (37, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (38, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (39, 'actions', 'view');
+INSERT INTO `gacl_aco_map` VALUES (40, 'actions', 'add');
+INSERT INTO `gacl_aco_map` VALUES (40, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` VALUES (40, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` VALUES (40, 'actions', 'view');
+
+-- 
+-- Dumping data for table `gacl_aco_sections`
+-- 
+
+INSERT INTO `gacl_aco_sections` VALUES (11, 'actions', 10, 'Actions', 0);
+
+-- 
+-- Dumping data for table `gacl_aco_sections_seq`
+-- 
+
+INSERT INTO `gacl_aco_sections_seq` VALUES (11);
+INSERT INTO `gacl_aco_sections_seq` VALUES (11);
+
+-- 
+-- Dumping data for table `gacl_aco_seq`
+-- 
+
+INSERT INTO `gacl_aco_seq` VALUES (20);
+INSERT INTO `gacl_aco_seq` VALUES (20);
+
+-- 
+-- Dumping data for table `gacl_aro`
+-- 
+
+INSERT INTO `gacl_aro` VALUES (15, 'users', 'admin', 10, 'Admin', 0);
+INSERT INTO `gacl_aro` VALUES (40, 'users', 'rsmith', 600044, 'rsmith', 1);
+INSERT INTO `gacl_aro` VALUES (41, 'users', 'doc', 600053, 'doc', 1);
+INSERT INTO `gacl_aro` VALUES (42, 'users', 'ssittle', 601224, 'ssittle', 1);
+INSERT INTO `gacl_aro` VALUES (43, 'users', 'tes', 601255, 'tes', 1);
+INSERT INTO `gacl_aro` VALUES (44, 'users', 'trumfield', 601257, 'trumfield', 1);
+INSERT INTO `gacl_aro` VALUES (45, 'users', 'mhoover', 601814, 'mhoover', 1);
+INSERT INTO `gacl_aro` VALUES (46, 'users', 'flynn', 601816, 'flynn', 1);
+INSERT INTO `gacl_aro` VALUES (47, 'users', 'fmiller', 607763, 'fmiller', 1);
+INSERT INTO `gacl_aro` VALUES (48, 'users', 'egrove', 608931, 'egrove', 1);
+
+-- 
+-- Dumping data for table `gacl_aro_groups`
+-- 
+
+INSERT INTO `gacl_aro_groups` VALUES (10, 0, 1, 26, 'Root', 'root');
+INSERT INTO `gacl_aro_groups` VALUES (12, 23, 11, 12, 'System Admin', 'admin');
+INSERT INTO `gacl_aro_groups` VALUES (19, 10, 2, 9, 'User Types', 'users');
+INSERT INTO `gacl_aro_groups` VALUES (20, 19, 3, 4, 'Provider', 'provider');
+INSERT INTO `gacl_aro_groups` VALUES (21, 19, 5, 6, 'Mid-level', 'mid-level');
+INSERT INTO `gacl_aro_groups` VALUES (22, 19, 7, 8, 'Staff', 'staff');
+INSERT INTO `gacl_aro_groups` VALUES (23, 10, 10, 25, 'Roles', 'roles');
+INSERT INTO `gacl_aro_groups` VALUES (24, 23, 13, 14, 'Supervisor', 'supervisor');
+INSERT INTO `gacl_aro_groups` VALUES (26, 23, 15, 16, 'Front Office', 'front_office');
+INSERT INTO `gacl_aro_groups` VALUES (31, 23, 23, 24, 'Staff', 'role_staff');
+INSERT INTO `gacl_aro_groups` VALUES (28, 23, 17, 18, 'Biller', 'billing_user');
+INSERT INTO `gacl_aro_groups` VALUES (29, 23, 19, 20, 'Provider', 'medical_assistant');
+
+-- 
+-- Dumping data for table `gacl_aro_groups_id_seq`
+-- 
+
+INSERT INTO `gacl_aro_groups_id_seq` VALUES (31);
+INSERT INTO `gacl_aro_groups_id_seq` VALUES (31);
+
+-- 
+-- Dumping data for table `gacl_aro_groups_map`
+-- 
+
+INSERT INTO `gacl_aro_groups_map` VALUES (24, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (26, 12);
+INSERT INTO `gacl_aro_groups_map` VALUES (32, 28);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 20);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 21);
+INSERT INTO `gacl_aro_groups_map` VALUES (33, 22);
+INSERT INTO `gacl_aro_groups_map` VALUES (36, 31);
+INSERT INTO `gacl_aro_groups_map` VALUES (37, 31);
+INSERT INTO `gacl_aro_groups_map` VALUES (38, 29);
+INSERT INTO `gacl_aro_groups_map` VALUES (39, 24);
+INSERT INTO `gacl_aro_groups_map` VALUES (40, 28);
+
+-- 
+-- Dumping data for table `gacl_aro_map`
+-- 
+
+
+-- 
+-- Dumping data for table `gacl_aro_sections`
+-- 
+
+INSERT INTO `gacl_aro_sections` VALUES (10, 'users', 10, 'Users', 0);
+
+-- 
+-- Dumping data for table `gacl_aro_sections_seq`
+-- 
+
+INSERT INTO `gacl_aro_sections_seq` VALUES (11);
+INSERT INTO `gacl_aro_sections_seq` VALUES (11);
+
+-- 
+-- Dumping data for table `gacl_aro_seq`
+-- 
+
+INSERT INTO `gacl_aro_seq` VALUES (48);
+INSERT INTO `gacl_aro_seq` VALUES (48);
+
+-- 
+-- Dumping data for table `gacl_axo`
+-- 
+
+INSERT INTO `gacl_axo` VALUES (0, 'resources', 'main', 10, 'Section - Main', 0);
+INSERT INTO `gacl_axo` VALUES (19, 'resources', 'preferences', 10, 'Section - Preferences', 0);
+INSERT INTO `gacl_axo` VALUES (17, 'resources', 'default', 10, 'Section - Default', 0);
+INSERT INTO `gacl_axo` VALUES (16, 'resources', 'access', 10, 'Section - Access', 0);
+INSERT INTO `gacl_axo` VALUES (44, 'resources', 'practice', 10, 'Section - Practice', 0);
+INSERT INTO `gacl_axo` VALUES (43, 'resources', 'personschedule', 10, 'Section - PersonSchedule', 0);
+INSERT INTO `gacl_axo` VALUES (42, 'resources', 'patientfinder', 10, 'Section - PatientFinder', 0);
+INSERT INTO `gacl_axo` VALUES (41, 'resources', 'patient', 10, 'Section - Patient', 0);
+INSERT INTO `gacl_axo` VALUES (40, 'resources', 'location', 10, 'Section - Location', 0);
+INSERT INTO `gacl_axo` VALUES (39, 'resources', 'feeschedule', 10, 'Section - FeeSchedule', 0);
+INSERT INTO `gacl_axo` VALUES (38, 'resources', 'calendar', 10, 'Section - Calendar', 0);
+INSERT INTO `gacl_axo` VALUES (37, 'resources', 'user', 10, 'Section - User', 0);
+INSERT INTO `gacl_axo` VALUES (36, 'resources', 'enumeration', 10, 'Section - Enumeration', 0);
+INSERT INTO `gacl_axo` VALUES (45, 'resources', 'report', 10, 'Section - Report', 0);
+INSERT INTO `gacl_axo` VALUES (46, 'resources', 'schedule', 10, 'Section - Schedule', 0);
+INSERT INTO `gacl_axo` VALUES (47, 'resources', 'form', 10, 'Section - Form', 0);
+INSERT INTO `gacl_axo` VALUES (48, 'resources', 'billing', 10, 'Section - Billing', 0);
+INSERT INTO `gacl_axo` VALUES (49, 'resources', 'admin', 10, 'Section - Admin', 0);
+INSERT INTO `gacl_axo` VALUES (50, 'resources', 'document', 10, 'Section - Document', 0);
+INSERT INTO `gacl_axo` VALUES (51, 'resources', 'documentcategory', 10, 'Section - DocumentCategory', 0);
+INSERT INTO `gacl_axo` VALUES (52, 'resources', 'insurance', 10, 'Section - Insurance', 0);
+INSERT INTO `gacl_axo` VALUES (53, 'resources', 'superbill', 10, 'Section - Superbill', 0);
+INSERT INTO `gacl_axo` VALUES (54, 'resources', 'event', 10, 'Section - Event', 0);
+INSERT INTO `gacl_axo` VALUES (55, 'resources', 'occurence', 10, 'Section - Occurence', 0);
+INSERT INTO `gacl_axo` VALUES (56, 'resources', 'building', 10, 'Building', 0);
+INSERT INTO `gacl_axo` VALUES (57, 'resources', 'room', 10, 'room', 0);
+INSERT INTO `gacl_axo` VALUES (58, 'resources', 'pdf', 10, 'Section - PDF', 0);
+INSERT INTO `gacl_axo` VALUES (59, 'resources', 'coding', 10, 'Section - Coding', 0);
+INSERT INTO `gacl_axo` VALUES (60, 'resources', 'docs', 10, 'Section - Docs', 0);
+INSERT INTO `gacl_axo` VALUES (61, 'resources', 'eob', 10, 'Section - Eob', 0);
+INSERT INTO `gacl_axo` VALUES (62, 'resources', 'claim', 10, 'Section - Claim', 0);
+INSERT INTO `gacl_axo` VALUES (63, 'resources', 'freebgateway', 10, 'Section - FreeBGateway', 0);
+INSERT INTO `gacl_axo` VALUES (64, 'resources', 'main_calendar', 1, 'Main Group Calendar', 0);
+INSERT INTO `gacl_axo` VALUES (65, 'resources', 'main_billing', 2, 'Main Group Billing', 0);
+INSERT INTO `gacl_axo` VALUES (66, 'resources', 'main_patient', 3, 'Main Group Patient', 0);
+INSERT INTO `gacl_axo` VALUES (67, 'resources', 'main_admin', 4, 'Main Group Admin', 0);
+INSERT INTO `gacl_axo` VALUES (68, 'resources', 'account', 10, 'Section - Account', 0);
+INSERT INTO `gacl_axo` VALUES (69, 'resources', 'appointment', 10, 'Section - Appointment', 0);
+INSERT INTO `gacl_axo` VALUES (70, 'resources', 'appointmenttemplate', 10, 'Section - AppointmentTemplate', 0);
+INSERT INTO `gacl_axo` VALUES (71, 'resources', 'summaryreport', 10, 'Section - SummaryReport', 0);
+INSERT INTO `gacl_axo` VALUES (72, 'resources', 'patientdashboard', 10, 'Section - PatientDashboard', 0);
+INSERT INTO `gacl_axo` VALUES (73, 'resources', 'myaccount', 10, 'Section - MyAccount', 0);
+INSERT INTO `gacl_axo` VALUES (74, 'resources', 'encounter', 10, 'Section - Encounter', 0);
+INSERT INTO `gacl_axo` VALUES (75, 'resources', 'test', 10, 'Section - Test', 0);
+INSERT INTO `gacl_axo` VALUES (76, 'resources', 'patientstatistics', 10, 'Section - PatientStatistics', 0);
+INSERT INTO `gacl_axo` VALUES (77, 'resources', 'feeschedulediscount', 10, 'Section - FeeScheduleDiscount', 0);
+INSERT INTO `gacl_axo` VALUES (78, 'resources', 'occurencebreakdown', 10, 'Section - OccurenceBreakdown', 0);
+INSERT INTO `gacl_axo` VALUES (79, 'resources', 'queue', 10, 'Section - Queue', 0);
+INSERT INTO `gacl_axo` VALUES (80, 'resources', 'labimporter', 10, 'Section - LabImporter', 0);
+INSERT INTO `gacl_axo` VALUES (81, 'resources', 'labs', 10, 'Section - Labs', 0);
+INSERT INTO `gacl_axo` VALUES (82, 'resources', 'x12import', 10, 'Section - X12Import', 0);
+INSERT INTO `gacl_axo` VALUES (83, 'resources', 'x12apply', 10, 'Section - X12Apply', 0);
+INSERT INTO `gacl_axo` VALUES (84, 'resources', 'ajax', 10, 'Section - Ajax', 0);
+INSERT INTO `gacl_axo` VALUES (85, 'resources', 'ie7', 10, 'Section - Ie7', 0);
+INSERT INTO `gacl_axo` VALUES (86, 'resources', 'minimal', 10, 'Section - Minimal', 0);
+INSERT INTO `gacl_axo` VALUES (87, 'resources', 'css', 10, 'Section - Css', 0);
+INSERT INTO `gacl_axo` VALUES (88, 'resources', 'base_access', 10, 'Section - Base_Access', 0);
+INSERT INTO `gacl_axo` VALUES (89, 'resources', 'print', 10, 'Section - Print', 0);
+INSERT INTO `gacl_axo` VALUES (90, 'resources', 'crud', 10, 'Section - CRUD', 0);
+INSERT INTO `gacl_axo` VALUES (91, 'resources', 'images', 10, 'Section - Images', 0);
+INSERT INTO `gacl_axo` VALUES (92, 'resources', 'cronable', 10, 'Section - Cronable', 0);
+INSERT INTO `gacl_axo` VALUES (93, 'resources', 'codingtemplate', 10, 'Section - CodingTemplate', 0);
+INSERT INTO `gacl_axo` VALUES (94, 'resources', 'masteraccounthistory', 10, 'Section - MasterAccountHistory', 0);
+INSERT INTO `gacl_axo` VALUES (95, 'resources', 'claimhistory', 10, 'Section - ClaimHistory', 0);
+
+-- 
+-- Dumping data for table `gacl_axo_groups`
+-- 
+
+INSERT INTO `gacl_axo_groups` VALUES (10, 0, 1, 4, 'Root', 'root');
+INSERT INTO `gacl_axo_groups` VALUES (11, 10, 2, 3, 'All Site Sections', 'sections');
+
+-- 
+-- Dumping data for table `gacl_axo_groups_id_seq`
+-- 
+
+INSERT INTO `gacl_axo_groups_id_seq` VALUES (11);
+
+-- 
+-- Dumping data for table `gacl_axo_groups_map`
+-- 
+
+INSERT INTO `gacl_axo_groups_map` VALUES (24, 11);
+
+-- 
+-- Dumping data for table `gacl_axo_map`
+-- 
+
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'billing');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'claim');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'coding');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'document');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'eob');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'main_billing');
+INSERT INTO `gacl_axo_map` VALUES (32, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'access');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'default');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'docs');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'pdf');
+INSERT INTO `gacl_axo_map` VALUES (33, 'resources', 'preferences');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'location');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'main_calendar');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'main_patient');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (36, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` VALUES (37, 'resources', 'appointment');
+INSERT INTO `gacl_axo_map` VALUES (37, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (37, 'resources', 'location');
+INSERT INTO `gacl_axo_map` VALUES (37, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (37, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'appointment');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'location');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'main_calendar');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (38, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'appointment');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'event');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'location');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'main_calendar');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'occurence');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` VALUES (39, 'resources', 'schedule');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'admin');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'appointment');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'billing');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'calendar');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'claim');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'coding');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'eob');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'event');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'feeschedule');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'insurance');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'location');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'main_billing');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'main_calendar');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'main_patient');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'occurence');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'personschedule');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'practice');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'schedule');
+INSERT INTO `gacl_axo_map` VALUES (40, 'resources', 'superbill');
+
+-- 
+-- Dumping data for table `gacl_axo_sections`
+-- 
+
+INSERT INTO `gacl_axo_sections` VALUES (0, 'resources', 10, 'Resources', 0);
+
+-- 
+-- Dumping data for table `gacl_axo_sections_seq`
+-- 
+
+INSERT INTO `gacl_axo_sections_seq` VALUES (44);
+
+-- 
+-- Dumping data for table `gacl_axo_seq`
+-- 
+
+INSERT INTO `gacl_axo_seq` VALUES (95);
+
+-- 
+-- Dumping data for table `gacl_groups_aro_map`
+-- 
+
+INSERT INTO `gacl_groups_aro_map` VALUES (12, 15);
+INSERT INTO `gacl_groups_aro_map` VALUES (12, 43);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 40);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 41);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 44);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 47);
+INSERT INTO `gacl_groups_aro_map` VALUES (20, 48);
+INSERT INTO `gacl_groups_aro_map` VALUES (21, 42);
+INSERT INTO `gacl_groups_aro_map` VALUES (21, 46);
+INSERT INTO `gacl_groups_aro_map` VALUES (22, 43);
+INSERT INTO `gacl_groups_aro_map` VALUES (22, 45);
+INSERT INTO `gacl_groups_aro_map` VALUES (26, 46);
+INSERT INTO `gacl_groups_aro_map` VALUES (29, 42);
+INSERT INTO `gacl_groups_aro_map` VALUES (29, 48);
+INSERT INTO `gacl_groups_aro_map` VALUES (31, 40);
+INSERT INTO `gacl_groups_aro_map` VALUES (31, 44);
+INSERT INTO `gacl_groups_aro_map` VALUES (31, 45);
+
+-- 
+-- Dumping data for table `gacl_groups_axo_map`
+-- 
+
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 0);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 16);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 17);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 18);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 19);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 36);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 37);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 38);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 39);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 40);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 41);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 42);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 43);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 44);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 45);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 46);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 47);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 48);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 49);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 50);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 51);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 52);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 53);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 54);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 55);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 56);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 57);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 58);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 59);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 60);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 61);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 62);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 63);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 64);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 65);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 66);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 67);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 68);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 69);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 70);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 71);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 72);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 73);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 74);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 75);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 76);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 77);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 78);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 79);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 80);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 81);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 82);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 83);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 84);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 85);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 86);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 87);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 88);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 89);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 90);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 91);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 92);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 93);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 94);
+INSERT INTO `gacl_groups_axo_map` VALUES (11, 95);
+
+-- 
+-- Dumping data for table `gacl_phpgacl`
+-- 
+
+INSERT INTO `gacl_phpgacl` VALUES ('version', '3.3.3');
+INSERT INTO `gacl_phpgacl` VALUES ('schema_version', '2.1');
+
+-- 
+-- Dumping data for table `menu`
+-- 
+
+INSERT INTO `menu` VALUES (1, '', 1, '', 'children', 0, '', '', 'main');
+INSERT INTO `menu` VALUES (2, 'default', 39, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (3, 'default', 39, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (4, 'admin', 1, '', 'children', 800, 'Reports', '', 'main/Admin');
+INSERT INTO `menu` VALUES (5, 'admin', 1, '', 'children', 400, 'Schedules', '', '');
+INSERT INTO `menu` VALUES (7, 'admin', 5, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule', 'main');
+INSERT INTO `menu` VALUES (8, 'default', 5, '', 'children', 20, 'Add New Practice', 'Location/edit_practive', 'main');
+INSERT INTO `menu` VALUES (9, 'admin', 80, '', 'children', 30, 'Add New Building', 'Location/edit_building', 'main');
+INSERT INTO `menu` VALUES (10, 'admin', 80, '', 'children', 40, 'Add New Room', 'Location/edit_room', 'main');
+INSERT INTO `menu` VALUES (82, 'admin', 26, '', 'children', 10, 'List Forms', 'Form/list', 'main');
+INSERT INTO `menu` VALUES (12, 'default', 65, '', 'children', 10, 'Day', 'Calendar/day', 'main');
+INSERT INTO `menu` VALUES (13, 'default', 65, '', 'children', 50, 'Week Brief', 'Calendar/week', 'main');
+INSERT INTO `menu` VALUES (14, 'default', 65, '', 'children', 20, 'Week', 'Calendar/week_grid', 'main');
+INSERT INTO `menu` VALUES (15, 'default', 65, '', 'children', 30, 'Month', 'Calendar/month', 'main');
+INSERT INTO `menu` VALUES (16, 'default', 65, '', 'children', 40, 'Day Brief', 'Calendar/day_brief', 'main');
+INSERT INTO `menu` VALUES (17, 'default', 65, '', 'children', 60, 'Search', 'Calendar/search', 'main');
+INSERT INTO `menu` VALUES (18, 'admin', 45, '', 'children', 10, 'List Fee Schedules', 'FeeSchedule/default', 'main');
+INSERT INTO `menu` VALUES (19, 'admin', 45, '', 'children', 20, 'Add Fee Schedule', 'FeeSchedule/edit', 'main');
+INSERT INTO `menu` VALUES (20, 'admin', 4, '', 'children', 10, 'Add Report', 'Report/edit', 'main');
+INSERT INTO `menu` VALUES (21, 'admin', 81, '', 'children', 10, 'List Users', 'User/list', 'main');
+INSERT INTO `menu` VALUES (22, 'admin', 81, '', 'children', 20, 'Add User', 'User/edit', 'main');
+INSERT INTO `menu` VALUES (80, 'admin', 1, '', 'children', 100, 'Facilities', '', '');
+INSERT INTO `menu` VALUES (24, 'admin', 110, '', 'children', 30, 'List Enumerations', 'Enumeration/list', 'main');
+INSERT INTO `menu` VALUES (25, 'admin', 110, '', 'children', 40, 'Add Enumeration', 'Enumeration/edit', 'main');
+INSERT INTO `menu` VALUES (26, 'admin', 1, '', 'children', 750, 'Forms', '', '');
+INSERT INTO `menu` VALUES (27, 'admin', 26, '', 'children', 20, 'Add Form', 'Form/edit', 'main');
+INSERT INTO `menu` VALUES (28, 'admin', 26, '', 'children', 30, 'View Form Data', 'Form/view', 'main');
+INSERT INTO `menu` VALUES (29, 'patient', 68, '', 'children', 10, 'Fillout Form', 'Form/fillout', 'main');
+INSERT INTO `menu` VALUES (30, 'patient', 1, '', 'children', 100, 'Patients', '', '');
+INSERT INTO `menu` VALUES (31, 'patient', 30, '', 'children', 20, 'Add Patient', 'Patient/edit', 'main');
+INSERT INTO `menu` VALUES (32, 'admin', 109, '', 'children', 160, 'List Payers', 'Insurance/list', 'main');
+INSERT INTO `menu` VALUES (33, 'admin', 109, '', 'children', 170, 'Add Payer', 'Insurance/edit', 'main');
+INSERT INTO `menu` VALUES (36, 'admin', 110, '', 'children', 50, 'Document Categories', 'DocumentCategory/list', 'main');
+INSERT INTO `menu` VALUES (37, 'patient', 68, '', 'children', 20, 'Documents', 'Document/list', 'main');
+INSERT INTO `menu` VALUES (38, 'admin', 45, '', 'children', 30, 'Edit Superbill', 'Superbill/list', 'main');
+INSERT INTO `menu` VALUES (39, 'default', 1, '', 'children', 300, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (81, 'admin', 1, '', 'children', 300, 'Users', '', '');
+INSERT INTO `menu` VALUES (42, 'billing', 1, '', 'children', 300, 'Reports', '', 'main/Billing');
+INSERT INTO `menu` VALUES (43, 'default', 1, '', 'children', 200, 'Reports', '', 'main/Calendar');
+INSERT INTO `menu` VALUES (44, 'patient', 1, '', 'children', 300, 'Reports', '', 'main/Patient');
+INSERT INTO `menu` VALUES (45, 'admin', 1, '', 'children', 200, 'Billing', '', 'main');
+INSERT INTO `menu` VALUES (46, 'patient', 1, '', 'children', 400, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (47, 'patient', 46, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (48, 'patient', 46, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (49, 'billing', 1, '', 'children', 500, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (57, 'billing', 49, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (58, 'billing', 49, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (59, 'admin', 1, '', 'children', 900, 'My Account', '', 'main');
+INSERT INTO `menu` VALUES (60, 'admin', 59, '', 'children', 100, 'Logout', 'Access/logout', 'main');
+INSERT INTO `menu` VALUES (61, 'admin', 59, '', 'children', 10, 'Preferences', 'Preferences/list', 'main');
+INSERT INTO `menu` VALUES (62, 'billing', 1, '', 'children', 100, 'Claims', '', 'main');
+INSERT INTO `menu` VALUES (63, 'billing', 62, '', 'children', 10, 'List Claims', 'Claim/list', 'main');
+INSERT INTO `menu` VALUES (64, 'billing', 62, '', 'children', 20, 'Add Claim', 'Claim/edit', 'main');
+INSERT INTO `menu` VALUES (65, 'default', 1, '', 'children', 100, 'View', '', '');
+INSERT INTO `menu` VALUES (66, 'default', 1, '', 'children', 400, 'Help', '', '');
+INSERT INTO `menu` VALUES (67, 'patient', 30, '', 'children', 10, 'List Patients', 'Patient/list', 'main');
+INSERT INTO `menu` VALUES (68, 'patient', 1, '', 'children', 200, 'Actions', '', '');
+INSERT INTO `menu` VALUES (69, 'patient', 30, '', 'children', 30, 'Search', 'PatientFinder/find', 'main');
+INSERT INTO `menu` VALUES (70, 'patient', 68, '', 'children', 30, 'Encounter', 'Encounter/add', 'main');
+INSERT INTO `menu` VALUES (72, 'patient', 68, '', 'children', 5, 'Dashboard', 'PatientDashboard/view', 'main');
+INSERT INTO `menu` VALUES (74, 'patient', 1, '', 'children', 500, 'Help', '', '');
+INSERT INTO `menu` VALUES (123, 'patient', 68, '', 'children', 0, 'Acccount History', 'Account/history', 'main');
+INSERT INTO `menu` VALUES (76, 'billing', 1, '', 'children', 600, 'Help', '', '');
+INSERT INTO `menu` VALUES (78, 'admin', 1, '', 'children', 1000, 'Help', '', '');
+INSERT INTO `menu` VALUES (122, 'admin', 110, '', 'children', 80, 'Import X12 835 Remittance', 'X12Import/upload', 'main');
+INSERT INTO `menu` VALUES (83, 'admin', 80, '', 'children', 5, 'List Facilities', 'Location/list', 'main');
+INSERT INTO `menu` VALUES (84, 'admin', 80, '', 'children', 20, 'Add New Practice', 'Practice/edit', 'main');
+INSERT INTO `menu` VALUES (85, 'admin', 4, '', 'children', 5, 'List Reports', 'Report/list', 'main');
+INSERT INTO `menu` VALUES (86, 'admin', 1, '', 'children', 900, '', 'Admin/default', 'main');
+INSERT INTO `menu` VALUES (87, 'admin', 4, '', 'children', 50, 'Connect Report', 'Report/connect', 'main');
+INSERT INTO `menu` VALUES (88, 'billing', 1, '', 'children', 0, '', 'Billing/default', 'main');
+INSERT INTO `menu` VALUES (89, 'patient', 1, '', 'children', -1, 'Dashboard Reports', '', 'main/Patient');
+INSERT INTO `menu` VALUES (90, 'patient', 1, '', 'children', -1, 'Dashboard Forms', '', 'main/Patient');
+INSERT INTO `menu` VALUES (91, 'patient', 1, '', 'children', -1, 'Encounter Forms', '', 'main/Encounter');
+INSERT INTO `menu` VALUES (92, 'admin', 26, '', 'children', 100, 'Connect', 'Form/connect', 'main');
+INSERT INTO `menu` VALUES (93, 'billing', 1, '', 'children', 0, '', 'Eob/Payment', 'main');
+INSERT INTO `menu` VALUES (94, 'default', 39, '', 'children', 50, 'Change Password', 'MyAccount/password', 'main');
+INSERT INTO `menu` VALUES (95, 'patient', 46, '', 'children', 50, 'Change Password', 'MyAccount/password', 'main');
+INSERT INTO `menu` VALUES (96, 'billing', 49, '', 'children', 50, 'Change Password', 'MyAccount/password', 'main');
+INSERT INTO `menu` VALUES (97, 'admin', 59, '', 'children', 50, 'Change Password', 'MyAccount/password', 'main');
+INSERT INTO `menu` VALUES (98, 'admin', 110, '', 'children', 800, 'ACL Editor', 'Admin/acl', 'main');
+INSERT INTO `menu` VALUES (100, 'admin', 5, '', 'children', 4, 'List Schedules', 'Location/schedules', 'main');
+INSERT INTO `menu` VALUES (101, 'default', 1, '', 'children', 700, 'Admin', '', 'main');
+INSERT INTO `menu` VALUES (102, 'default', 101, '', 'children', 10, 'Add New Schedule', 'Location/edit_schedule', 'main');
+INSERT INTO `menu` VALUES (103, 'default', 101, '', 'children', 4, 'List Schedules', 'Location/schedules', 'main');
+INSERT INTO `menu` VALUES (104, 'billing', 1, '', 'children', 800, 'Admin', '', 'main');
+INSERT INTO `menu` VALUES (105, 'billing', 104, '', 'children', 160, 'List Payers', 'Insurance/list', 'main');
+INSERT INTO `menu` VALUES (106, 'billing', 104, '', 'children', 170, 'Add Payers', 'Insurance/edit', 'main');
+INSERT INTO `menu` VALUES (109, 'admin', 1, '', 'children', 250, 'Payers', '', 'main');
+INSERT INTO `menu` VALUES (110, 'admin', 1, '', 'children', 700, 'System', '', 'main');
+INSERT INTO `menu` VALUES (111, 'default', 0, '', 'children', 0, '', '', 'main');
+INSERT INTO `menu` VALUES (112, 'admin', 1, '', 'children', 5000, 'Practice', '', 'main');
+INSERT INTO `menu` VALUES (113, 'billing', 1, '', 'children', 5000, 'Practice', '', 'main');
+INSERT INTO `menu` VALUES (114, 'patient', 1, '', 'children', 5000, 'Practice', '', 'main');
+INSERT INTO `menu` VALUES (115, 'default', 1, '', 'children', 5000, 'Practice', '', 'main');
+INSERT INTO `menu` VALUES (116, 'admin', 5, '', 'children', 300, 'List Appointment Templates', 'AppointmentTemplate/list', 'main');
+INSERT INTO `menu` VALUES (117, 'admin', 5, '', 'children', 310, 'Add Appointment Template', 'AppointmentTemplate/add', 'main');
+INSERT INTO `menu` VALUES (118, 'admin', 5, '', 'children', 0, 'Edit Appointment Template', 'AppointmentTemplate/edit', 'main');
+INSERT INTO `menu` VALUES (119, 'admin', 110, '', 'children', 60, 'Import Labs', 'LabImporter/upload', 'main');
+INSERT INTO `menu` VALUES (120, 'admin', 110, '', 'children', 70, 'View Labs', 'Labs/list', 'main');
+INSERT INTO `menu` VALUES (121, 'admin', 45, '', 'children', 40, 'Fee Schedule Discounts', 'FeeScheduleDiscount/list', 'main');
+INSERT INTO `menu` VALUES (124, 'admin', 110, '', 'children', 80, 'List Claim Templates', 'CodingTemplate/List', 'main');
+INSERT INTO `menu` VALUES (125, 'admin', 110, '', 'children', 90, 'Add Claim Template', 'CodingTemplate/Edit', 'main');
+INSERT INTO `menu` VALUES (126, 'billing', 42, '', 'children', 1, 'Master Account History', 'MasterAccountHistory/view', 'main');
+INSERT INTO `menu` VALUES (127, 'billing', 42, '', 'children', 0, 'Claim History', 'ClaimHistory/view', 'main');
+
+-- 
+-- Dumping data for table `sequences`
+-- 
+
+INSERT INTO `sequences` VALUES (609174);
+
+-- 
 -- Dumping data for table `user`
 -- 
 
 INSERT INTO `user` VALUES (607544, 'admin', 'admin', '', '', 607543, 'no', 0);
+INSERT INTO `user` VALUES (600044, 'rsmith', '', 'RPS', '99FFFF', 600043, 'no', 600017);
+INSERT INTO `user` VALUES (600053, 'doc', 'test', 'Doc', 'CCFF66', 600052, 'no', 600021);
+INSERT INTO `user` VALUES (601224, 'ssittle', '', 'SPS', '99FFCC', 601223, 'no', 600028);
+INSERT INTO `user` VALUES (601255, 'tes', 'test', 'tes', 'CCCC00', 601254, 'no', 600017);
+INSERT INTO `user` VALUES (601257, 'trumfield', '', 'TTR', '0000000', 601256, 'no', 600028);
+INSERT INTO `user` VALUES (601814, 'mhoover', '', 'MPH', '99FFFF', 601813, 'no', 600017);
+INSERT INTO `user` VALUES (601816, 'flynn', '', '', '', 601815, 'no', 0);
+INSERT INTO `user` VALUES (607763, 'fmiller', '', '', '', 607762, 'no', 0);
+INSERT INTO `user` VALUES (608931, 'egrove', 'egrove', 'EAG', '33FF99', 608930, 'no', 600034);
 
 -- 
 -- Dumping data for table `zipcodes`
