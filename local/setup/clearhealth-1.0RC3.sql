@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Mar 06, 2006 at 11:11 AM
+-- Generation Time: Apr 19, 2006 at 07:51 AM
 -- Server version: 4.1.15
 -- PHP Version: 4.4.2-1
 -- 
@@ -67,6 +67,41 @@ CREATE TABLE `appointment_template` (
   `appointment_template_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`appointment_template_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `audit_log`
+-- 
+
+CREATE TABLE `audit_log` (
+  `audit_log_id` int(11) NOT NULL default '0',
+  `ordo` varchar(255) NOT NULL default '',
+  `ordo_id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '0',
+  `type` int(11) NOT NULL default '0',
+  `message` text NOT NULL,
+  `log_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`audit_log_id`),
+  KEY `ordo` (`ordo`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `audit_log_field`
+-- 
+
+CREATE TABLE `audit_log_field` (
+  `audit_log_field_id` int(11) NOT NULL default '0',
+  `audit_log_id` int(11) NOT NULL default '0',
+  `field` varchar(255) NOT NULL default '',
+  `old_value` text NOT NULL,
+  `new_value` text NOT NULL,
+  PRIMARY KEY  (`audit_log_field_id`),
+  UNIQUE KEY `audit_log_id` (`audit_log_id`,`field`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -176,7 +211,7 @@ CREATE TABLE `codes` (
   `fee` decimal(7,2) default NULL,
   `superbill` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`code_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=27493 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -208,6 +243,22 @@ CREATE TABLE `coding_data_dental` (
   `tooth` enum('N/A','All','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','All (Primary)','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T') NOT NULL default 'N/A',
   `toothside` enum('N/A','Front','Back','Top','Left','Right') NOT NULL default 'N/A',
   PRIMARY KEY  (`coding_data_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `coding_template`
+-- 
+
+CREATE TABLE `coding_template` (
+  `coding_template_id` int(11) NOT NULL default '0',
+  `practice_id` int(11) NOT NULL default '0',
+  `reason_id` int(11) NOT NULL default '0',
+  `title` varchar(255) NOT NULL default '',
+  `coding_parent_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`coding_template_id`),
+  KEY `practice_id` (`practice_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -297,6 +348,29 @@ CREATE TABLE `countries` (
   `countries_iso_code_3` char(3) NOT NULL default '',
   PRIMARY KEY  (`countries_iso_code_3`),
   KEY `IDX_COUNTRIES_NAME` (`countries_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `cronable`
+-- 
+
+CREATE TABLE `cronable` (
+  `cronable_id` int(11) NOT NULL default '0',
+  `label` varchar(255) NOT NULL default '',
+  `minute` varchar(8) NOT NULL default '0',
+  `hour` varchar(8) NOT NULL default '0',
+  `day_of_month` varchar(8) NOT NULL default '0',
+  `month` varchar(8) NOT NULL default '0',
+  `day_of_week` varchar(8) NOT NULL default '0',
+  `year` varchar(8) NOT NULL default '0',
+  `at_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `controller` varchar(255) NOT NULL default '',
+  `action` varchar(255) NOT NULL default '',
+  `arguments` text NOT NULL,
+  `last_run` datetime default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`cronable_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -441,6 +515,21 @@ CREATE TABLE `enumeration_value_practice` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `eob_adjustment`
+-- 
+
+CREATE TABLE `eob_adjustment` (
+  `eob_adjustment_id` int(11) NOT NULL default '0',
+  `payment_id` int(11) NOT NULL default '0',
+  `payment_claimline_id` int(11) NOT NULL default '0',
+  `adjustment_type` int(11) NOT NULL default '0',
+  `value` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`eob_adjustment_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `events`
 -- 
 
@@ -466,7 +555,7 @@ CREATE TABLE `facility_codes` (
   `code` varchar(5) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`facility_code_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores x12 facility_code code/human name combos' AUTO_INCREMENT=30 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Stores x12 facility_code code/human name combos';
 
 -- --------------------------------------------------------
 
@@ -676,9 +765,25 @@ CREATE TABLE `fee_schedule_data` (
 CREATE TABLE `fee_schedule_discount` (
   `fee_schedule_discount_id` int(11) NOT NULL default '0',
   `practice_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `type` enum('default','program') NOT NULL default 'default',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`fee_schedule_discount_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `fee_schedule_discount_by_code`
+-- 
+
+CREATE TABLE `fee_schedule_discount_by_code` (
+  `fee_schedule_discount_by_code_id` int(11) NOT NULL default '0',
+  `fee_schedule_discount_id` int(11) NOT NULL default '0',
+  `fee_schedule_discount_level_id` int(11) NOT NULL default '0',
+  `code_pattern` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`fee_schedule_discount_by_code_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -705,6 +810,7 @@ CREATE TABLE `fee_schedule_discount_level` (
   `fee_schedule_discount_level_id` int(11) NOT NULL default '0',
   `fee_schedule_discount_id` int(11) NOT NULL default '0',
   `discount` float(5,2) NOT NULL default '0.00',
+  `type` enum('percent','flat') NOT NULL default 'percent',
   `disp_order` int(11) NOT NULL default '0',
   PRIMARY KEY  (`fee_schedule_discount_level_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -1149,6 +1255,20 @@ CREATE TABLE `groups` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `hl7_message`
+-- 
+
+CREATE TABLE `hl7_message` (
+  `id` int(11) NOT NULL default '0',
+  `control_id` varchar(50) NOT NULL default '',
+  `message` longtext NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `control_id` (`control_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `identifier`
 -- 
 
@@ -1319,7 +1439,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=124 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1588,6 +1708,7 @@ CREATE TABLE `person` (
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   `marital_status` int(11) NOT NULL default '0',
+  `inactive` int(1) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A person in the system';
 
@@ -1801,7 +1922,7 @@ CREATE TABLE `relationship` (
   `child_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`relationship_id`),
   KEY `index` (`parent_type`,`parent_id`,`child_type`,`child_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -1830,6 +1951,7 @@ CREATE TABLE `report_templates` (
   `name` varchar(255) NOT NULL default '',
   `is_default` enum('yes','no') NOT NULL default 'yes',
   `sequence` int(11) NOT NULL default '100000',
+  `custom_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report templates';
@@ -1847,8 +1969,9 @@ CREATE TABLE `reports` (
   `label` varchar(255) NOT NULL default '',
   `query` text NOT NULL,
   `description` mediumtext NOT NULL,
+  `custom_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq' AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
 
 -- --------------------------------------------------------
 
@@ -1915,12 +2038,22 @@ CREATE TABLE `sequences` (
 CREATE TABLE `statement_history` (
   `statement_history_id` int(11) NOT NULL default '0',
   `patient_id` int(11) NOT NULL default '0',
-  `report_statement_id` int(11) NOT NULL default '0',
+  `report_snapshot_id` int(11) NOT NULL default '0',
   `statement_number` int(11) NOT NULL default '0',
   `date_generated` datetime NOT NULL default '0000-00-00 00:00:00',
   `amount` float(7,2) NOT NULL default '0.00',
   `type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`statement_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `statement_sequence`
+-- 
+
+CREATE TABLE `statement_sequence` (
+  `id` int(11) NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -2038,6 +2171,40 @@ CREATE TABLE `users_groups` (
   `table` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `x12transaction_data`
+-- 
+
+CREATE TABLE `x12transaction_data` (
+  `transaction_data_id` int(11) NOT NULL default '0',
+  `history_id` int(11) NOT NULL default '0',
+  `raw` longtext NOT NULL,
+  `transaction_status` varchar(255) NOT NULL default '',
+  `payment_amount` float(7,2) NOT NULL default '0.00',
+  `total_charge` float(7,2) NOT NULL default '0.00',
+  `patient_responsibility` float(7,2) NOT NULL default '0.00',
+  PRIMARY KEY  (`transaction_data_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `x12transaction_history`
+-- 
+
+CREATE TABLE `x12transaction_history` (
+  `history_id` int(11) NOT NULL default '0',
+  `source_id` int(11) NOT NULL default '0',
+  `transaction_id` varchar(255) NOT NULL default '',
+  `claim_id` varchar(255) NOT NULL default '',
+  `applied_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `applied_by` int(11) NOT NULL default '0',
+  `payment_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`history_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
