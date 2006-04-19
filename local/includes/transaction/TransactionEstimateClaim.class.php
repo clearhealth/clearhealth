@@ -72,6 +72,17 @@ class TransactionEstimateClaim {
 		if ($this->encounterId <= 0) {
 			return;
 		}
+		$encounter =& Celini::newOrdo('Encounter',$this->encounterId);
+		$ip =& Celini::newOrdo('InsuranceProgram',$encounter->get('current_payer'));
+
+		$fs = $ip->get('fee_schedule_id');
+		if ($fs == 0) {
+			Celini::newORDO('FeeSchedule');
+			$feeSchedule =& FeeSchedule::defaultFeeSchedule();
+		}
+		else {
+			$feeSchedule =& Celini::newORDO('FeeSchedule',$fs);
+		}
 		
 		// we don't have an indivdual claimline breakdown so lets spread the payment among all the claims lines
 		$codingData =& Celini::newOrdo('CodingData');
@@ -84,7 +95,7 @@ class TransactionEstimateClaim {
 		$i = 0;
 		foreach($codeList as $key => $code) {
 			$this->fees[$i]['code'] = $code['code'];
-			$this->fees[$i]['fee']  = $code['fee'];
+			$this->fees[$i]['fee']  = $feeSchedule->getFee($code['code']);
 			$i++;
 			$total += $code['fee'];
 		}
