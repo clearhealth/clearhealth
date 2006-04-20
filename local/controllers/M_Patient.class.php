@@ -20,23 +20,25 @@ class M_Patient extends Manager {
 		$continue = 1 ;
 		$duplicate_count = -1 ;
 
-		// hack to test for a patient existing correctly
-		$p =& Celini::newOrdo('Patient',$id);
-		if ($p->isPopulated()) {
-			$noPatient = true;
+		if ($noPatient) {
+			$patient =& Celini::newORDO('Person', $id);
 		}
-
-		if ($noPatient == false) { // if we're adding a patient:
-			if (!$this->similarPatientChecked) { // check for duplicates
-				$duplicate_count = $this->_checkDuplicatePatient() ;
-				$continue = ($duplicate_count <= 0) ;
+		else {
+			// hack to test for a patient existing correctly
+			$p =& Celini::newOrdo('Patient',$id);
+			if (!$p->isPopulated()) {
+				if (!$this->similarPatientChecked) { // check for duplicates
+					$duplicate_count = $this->_checkDuplicatePatient() ;
+					$continue = ($duplicate_count <= 0) ;
+				}
+				// if our dupe count was 0 or if we're overriding the check to submit a new possible dupe, then continue
+				if ($duplicate_count <= 0 || $this->similarPatientChecked) {
+					$patient =& Celini::newORDO('Patient',$id);
+				}
 			}
-			// if our dupe count was 0 or if we're overriding the check to submit a new possible dupe, then continue
-			if ($duplicate_count <= 0 || $this->similarPatientChecked) {
-				$patient =& ORdataObject::factory('Patient',$id);
+			else { // otherwise, edit an existing patient
+				$patient =& $p;
 			}
-		} else { // otherwise, edit an existing patient
-			$patient =& ORdataObject::factory('Patient',$id);
 		}
 		if ($continue) {
 			$patient->populateArray($_POST['person']);
