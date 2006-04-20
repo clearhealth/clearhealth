@@ -110,6 +110,18 @@
 			select.options[i+1] = new Option('Line: '+code,code_id[1]);
 		}
 	}
+
+	function showAdjustmentList() {
+		new Effect.Grow('adjustmentList');
+		new Effect.Fade('adjustmentLink');
+
+		//window.setTimeout(function() {$('adjustmentList').style.overflow = 'auto';},400);
+	}
+
+	function hideAdjustmentList() {
+		new Effect.Shrink('adjustmentList');
+		new Effect.Appear('adjustmentLink');
+	}
 </script>
 {/literal}
 
@@ -156,7 +168,28 @@
 </tbody>
 </table>
 
-<h3>Adjustments</h3>
+<div id="adjustmentList" style="width: 500px;   display: none;">
+	<h3><a title="Hide Adjustment List" href='#hideadjustmentList' onclick="hideAdjustmentList()">Adjustments</a></h3>
+	<div style="height: 400px; overflow:auto;">
+	<table class="grid">
+		<thead>
+			<tr>
+				<th>Code</th><th>Adjustment</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach from=$adjustments item='row' name="adjustments"}
+			<tr{if $smarty.foreach.adjustments.iteration % 2} class="alt"{/if}>
+				<td>{$row->extra1}</td>
+				<td>{$row->value}</td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
+</div>
+</div>
+
+<h3 id="adjustmentLink"><a title="Show All Adjustments" href='#showAdjustmentList' onclick="showAdjustmentList()">Adjustments</a></h3>
 <table id="adjustmentList" class="grid" style="display:none">
 	<thead>
 		<tr>
@@ -170,7 +203,11 @@
 </table>
 <br>
 <select id="adjCode"><option value="0">Payment</option></select>
-<select id="adjType">{enum_options name="eob_adjustment_type"}</select>
+<select id="adjType">
+	{foreach from=$adjustments item='row'}
+	<option value="{$row->key}">{$row->extra1}: {$row->value|truncate:30:" ...":true}</option>
+	{/foreach}
+</select>
 <input id="adjValue" size=10>
 <button onclick="return addAdjustment()">Add Adjustment</button>
 <br>

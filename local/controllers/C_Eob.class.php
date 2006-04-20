@@ -62,7 +62,19 @@ class C_Eob extends Controller {
 
 			$i++;
 		}
+
+		$em =& Celini::enumManagerInstance();
+		$enum =& $em->enumList('eob_adjustment_type');
+
+		$adjustments = array();
+		for($enum->rewind();$enum->valid();$enum->next()) {
+			$adjustments[] = $enum->current();
+		}
+
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('scriptaculous');
 		
+		$this->assign('adjustments',$adjustments);
 		$this->assign_by_ref('claim',$claim);
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('patient',$patient);
