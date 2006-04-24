@@ -105,7 +105,19 @@ class ClearhealthClaim extends ORDataObject {
 	}
 
 	function SummedPaymentsByCode() {
-		$sql = "select codes.code, sum(pc.paid) paid, sum(pc.writeoff) writeoff, sum(pc.carry) carry from payment_claimline pc left join codes using(code_id) inner join payment p on pc.payment_id = p.payment_id where foreign_id = ".(int)$this->get('id') . " group by pc.code_id ";
+		$sql = "
+			select
+				codes.code,
+				sum(pc.paid) paid,
+				sum(pc.writeoff) writeoff,
+				sum(pc.carry) carry 
+			from
+				payment_claimline pc
+				left join codes using(code_id)
+				inner join payment p on pc.payment_id = p.payment_id 
+			where
+				foreign_id = ".(int)$this->get('id') . " 
+			group by pc.code_id ";
 		$res = $this->_execute($sql);
 		$ret = array();
 		while ($res && !$res->EOF) {
