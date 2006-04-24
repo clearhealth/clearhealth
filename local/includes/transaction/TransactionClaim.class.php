@@ -6,10 +6,11 @@ class TransactionClaim {
 	var $claimId = false;
 	var $type = 'debit';
 	var $amount = 0.00;
+	var $writeoff = 0.00;
 	var $payerId = false;
 	var $lines = false;
 	var $paymentType = 'Insurance Payment';
-	var $paymentData;
+	var $paymentDate;
 
 	/**
 	 * Set the claimId using the public claim identifier
@@ -65,20 +66,20 @@ class TransactionClaim {
 			$paymentId = $payment->get('id');
 
 			if (is_array($this->lines) && count($this->lines) > 0) {
-				Celini::raiseError('Payments against individual claimlines is not implemented');
-				/*
-				// similar Code from C_Eob controller
-				if (isset($_POST['bill']) && count($_POST['bill']) > 0) {
-					foreach($_POST['bill'] as $line) {
-						unset($pcl);
-						$pcl =& ORDataObject::factory('PaymentClaimline',0,$payment_id);
-						$pcl->populate_array($line);
-						$pcl->persist();
-						$total_paid += $pcl->get('paid');
-						$total_writeoff += $pcl->get('writeoff');
-					}
+				$total_paid = 0;
+				$total_writeoff = 0;
+				foreach($this->lines as $line) {
+					unset($pcl);
+					$pcl =& ORDataObject::factory('PaymentClaimline',0,$paymentId);
+					$pcl->populate_array($line);
+					$pcl->calculateCarry($claim->get('encounterId'));
+					$pcl->persist();
+					$total_paid += $pcl->get('paid');
+					$total_writeoff += $pcl->get('writeoff');
+
 				}
-				*/
+				$this->amount = $total_paid;
+				$this->writeoff = $total_writeoff;
 			}
 			else {
 				// we don't have an indivdual claimline breakdown so lets spread the payment among all the claims lines
@@ -117,7 +118,7 @@ class TransactionClaim {
 			}
 
 			$payment->set('amount',$this->amount);
-			$payment->set('writeoff',0.00);
+			$payment->set('writeoff',$this->writeoff);
 			$payment->persist();
 	
 			// update claim total
