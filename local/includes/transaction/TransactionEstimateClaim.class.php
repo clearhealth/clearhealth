@@ -94,8 +94,9 @@ class TransactionEstimateClaim {
 		$total = 0;
 		$i = 0;
 		foreach($codeList as $key => $code) {
+			$code['fee'] = $feeSchedule->getFee($code['code']);
 			$this->fees[$i]['code'] = $code['code'];
-			$this->fees[$i]['fee']  = $feeSchedule->getFee($code['code']);
+			$this->fees[$i]['fee']  = $code['fee'];
 			$i++;
 			$total += $code['fee'];
 		}
