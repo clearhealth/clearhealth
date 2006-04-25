@@ -202,9 +202,10 @@ class ClearhealthClaim extends ORDataObject {
 					LEFT JOIN buildings AS b ON(e.building_id = b.id)
 					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)
 					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
+					LEFT JOIN fblatest_revision AS fblr ON(fblr.claim_identifier = fbc.claim_identifier)
 					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
 					',
-				'where' => ' e.patient_id = ' . $patient_id . $where,
+				'where' => ' (fblr.revision = fbc.revision) and e.patient_id = ' . $patient_id . $where,
 				'groupby' => 'chc.claim_id'
 			),
 			array(
