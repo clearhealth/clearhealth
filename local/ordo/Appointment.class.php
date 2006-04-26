@@ -431,5 +431,43 @@ class Appointment extends ORDataObject {
 				return '<b>NO SHOW</b>';
 		}
 	}
+	
+	/**
+	 * Checks for no-show appointments directly before the current one
+	 *
+	 * @param int $number number of previous appointments to check
+	 * @return int
+	 */
+	function checkNoShows($number=3,$returndates = false) {
+		$db =& Celini::dbInstance();
+		$sql = "SELECT appointment.appointment_id, appointment.appointment_code, event.start
+		FROM appointment
+		JOIN event ON event.event_id=appointment.event_id
+		WHERE appointment.patient_id='".$this->get('patient_id')."'
+		AND event.start < ".$db->quote($this->get('date').' '.$this->get('start_time'))."
+		ORDER BY event.start DESC";
+		$noshows = 0;
+		if($returndates == true) {
+			$noshows = array();
+		}
+		$res = $db->execute($sql);
+		if($res && !$res->EOF) {
+			for($i=0;$i<$res->numRows();$i++) {
+				if($res->fields['appointment_code'] == 'NS') {
+					if($returndates == true) {
+						$noshows[] = $res->fields['start'];
+					}
+					$noshows++;
+				} else {
+					// A break in no-show appointments.
+					return $noshows;
+				}
+				$res->MoveNext();
+			}
+		}
+		return $noshows;
+	}
+	
+	
 }
 ?>
