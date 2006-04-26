@@ -70,7 +70,7 @@
 
 		var type = $('adjType').options[$('adjType').selectedIndex];
 
-		var i = $('adjustmentList').tBodies[0].rows.length;
+		var i = $('adjustmentListTable').tBodies[0].rows.length;
 		var select = $('adjType').cloneNode(true);
 		var input = $('adjValue').cloneNode(true);
 		var selCode = $('adjCode').cloneNode(true);
@@ -96,7 +96,7 @@
 		row.appendChild(tdC);
 		row.appendChild(tdT);
 		row.appendChild(tdV);
-		$('adjustmentList').tBodies[0].appendChild(row);
+		$('adjustmentListTable').tBodies[0].appendChild(row);
 		
 		return false;
 	}
@@ -171,7 +171,7 @@
 <div id="adjustmentList" style="width: 500px;   display: none;">
 	<h3><a title="Hide Adjustment List" href='#hideadjustmentList' onclick="hideAdjustmentList()">Adjustments</a></h3>
 	<div style="height: 400px; overflow:auto;">
-	<table class="grid">
+	<table class="grid" id="adjustmentListTable">
 		<thead>
 			<tr>
 				<th>Code</th><th>Adjustment</th>
@@ -225,6 +225,9 @@
 		<td><select name="payment[payer]">
 				{html_options options=$payers}
 			</select>
+{if $nopatientpaymentplans}
+<br />	<a href="#newplan" onclick="document.getElementById('newPaymentPlan').style.display='block';">{l}New Patient Payment Plan{/l}</a>
+{/if}
 		</td>
 	</tr>
 	<tr>
@@ -247,3 +250,10 @@
 {/if}
 </fieldset>
 </form>
+<a name='newplan'></a>
+<div id="newPaymentPlan" style="display:none;">
+{clni_form action=$FORM_ACTION process='generic' id="pppForm"}
+
+{include file="patientpaymentplan/general_paymentplan.html"}
+</form>
+</div>

@@ -31,11 +31,13 @@ class Encounter extends ORDataObject {
 	var $_erCache = false;
 
 	var $storage_metadata = array(
-		'int' => array('current_payer'=>''), 
+		'int' => array('current_payer'=>'','payment_plan'=>''), 
 		'date' => array(),
 		'string' => array()
 	);
 	var $_table = 'encounter';
+	var $_key = 'encounter_id';
+	var $_internalName = 'Encounter';
 
 	/**
 	 * Setup some basic attributes
@@ -96,6 +98,22 @@ class Encounter extends ORDataObject {
 		$this->id = $id;
 	}
 
+	function get_current_payer() {
+		if($this->get('payment_plan') > 0) {
+			return 'plan'.$this->get('payment_plan');
+		}
+		return $this->_int_storage->get('current_payer');
+	}
+	
+	function set_current_payer($id) {
+		if(strpos($id,'plan') !== false) {
+			$this->_int_storage->set('current_payer',$id);
+		} else {
+			(int)$id=str_replace('plan','',$id);
+			$this->_int_storage->set('payment_plan',$id);
+		}
+	}
+	
 	function set_date_of_treatment($date) {
 		$this->_setDate('date_of_treatment', $date);
 	}

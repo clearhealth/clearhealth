@@ -103,7 +103,6 @@ class C_Encounter extends Controller {
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
-		
 		$appointments = $encounter->appointmentList();
 		$appointmentArray = array("" => " ");
 		foreach($appointments as $appointment) {
@@ -265,6 +264,12 @@ class C_Encounter extends Controller {
 		}
 		
 		$encounter->persist();
+		if($this->POST->exists('PatientPaymentPlan')) {
+			$plan =& Celini::newORDO('PatientPaymentPlan');
+			$plan->populate_array($this->POST->getRaw('PatientPaymentPlan'));
+			$plan->persist();
+			$plan->setParent($encounter);
+		}
 		$this->encounter_id = $encounter->get('id');
 		$_GET[0] = $this->encounter_id;
 

@@ -1,7 +1,10 @@
 <fieldset>
 	<legend>{l}Select Payer{/l}</legend>
-	{html_options options=$insuredRelationship->getProgramList($encounter->get('patient_id')) selected=$encounter->get('current_payer') name="encounter[current_payer]"}
+	<select name="encounter[current_payer]">
+	{html_options options=$insuredRelationship->getProgramList($encounter->get('patient_id')) selected=$encounter->get('current_payer') }
+	</select>
 	{if $encounter->get('status') == 'closed'}
 		<input type="submit" name="select_payer" value="Select Payer">
 	{/if}
+	<br />
 </fieldset>

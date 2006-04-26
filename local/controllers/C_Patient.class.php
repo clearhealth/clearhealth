@@ -239,7 +239,8 @@ class C_Patient extends Controller {
 			120=>0,
 		);
 
-
+		$ppplan =& Celini::newORDO('PatientPaymentPlan');
+		$plans = $ppplan->getByPatient($patientId);
 		$db = new clniDb();
 
 		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
@@ -251,11 +252,29 @@ class C_Patient extends Controller {
 		$total_credits = 0;
 		$total_outstanding = 0;
 		while($res && !$res->EOF) {
+			var_dump($res->fields);
 			$total_charges += $res->fields['charge'];
 			$total_credits += $res->fields['credit'];
 			$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
 			$lines[] = $res->fields;
 			$res->MoveNext();
+		}
+		
+		$pinfo = array('balance'=>0,'total'=>0,'payments'=>0);
+		foreach($plans as $plan) {
+			$pdata = $plan->get_balance_before($sh->get('pay_by'));
+			
+			$pinfo['balance'] += $pdata['balance'];
+			$pinfo['total'] +=  + $pdata['amount'];
+			$pinfo['payments'] += $pdata['paid'];
+		}
+		
+		$total_charges += $pinfo['total'];
+		$total_credits += $pinfo['payments'];
+		$total_outstanding += $pinfo['balance'];
+		
+		if($pinfo['balance'] > 0) {
+			$lines[] = array('item_date'=>$sh->get('pay_by'),'code_text'=>'Payment Plan','code'=>'','charge'=>sprintf('%.2f',$pinfo['total']),'credit'=>sprintf('%.2f',$pinfo['payments']),'outstanding'=>sprintf('%.2f',$pinfo['balance']));
 		}
 
 		if ($fromSnapshot && isset($this->data['ordo']['lines'])) {
@@ -348,7 +367,7 @@ class C_Patient extends Controller {
 			group by
 				e.encounter_id
 			) feeData
-			left join
+		left join
 			/* Payment totals */
 			(
 			select
@@ -364,6 +383,11 @@ class C_Patient extends Controller {
 			group by
 				e.encounter_id
 			) paymentData on feeData.encounter_id = paymentData.encounter_id
+		WHERE feeData.encounter_id NOT IN (
+			select e.encounter_id FROM encounter AS e
+			INNER JOIN relationship EPPP ON EPPP.parent_type = 'Encounter' AND EPPP.parent_id=e.encounter_id AND EPPP.child_type='PatientPaymentPlan'
+			INNER JOIN patient_payment_plan ppp ON ppp.patient_payment_plan_id=EPPP.child_id AND ppp.balance > 0
+			)
 		";
 
 		$agingSql = "
