@@ -60,12 +60,32 @@ class C_MasterAccountHistory extends Controller {
 		
 		// setup actual grid
 		$ds =& new MasterAccountHistory_DS($this->filters);
+
+
+		// big hack to add totals
+
+		$sql = $ds->claims->_query;
+
+		$sql['cols'] = "
+			SUM(chc.total_billed) billed,
+			SUM(chc.total_paid) paid,
+			SUM(chc.total_billed) - SUM(chc.total_paid) - SUM(ifnull(pcl.writeoff,0)) AS balance,
+			SUM(ifnull(pcl.writeoff,0)) AS writeoff";
+		unset($sql['groupby']);
+		$totalDs = new Datasource_sql();
+		$totalDs->setup(Celini::dbInstance(),$sql,false);
+
+
+		$totalGrid =& new cGrid($totalDs);
+		$totalGrid->orderLinks = false;
+		$totalGrid->indexCol = false;
 		
 		$renderer =& new Grid_Renderer_AccountHistory();
 		$accountHistoryGrid =& new cGrid($ds, $renderer);
 		$accountHistoryGrid->pageSize = 10;
 		
 		$this->view->assign_by_ref('accountHistoryGrid', $accountHistoryGrid);
+		$this->view->assign_by_ref('totalGrid', $totalGrid);
 		
 		$this->view->assign('FILTER_ACTION', Celini::link('view', 'MasterAccountHistory'));
 		return $this->view->render('view.html');
