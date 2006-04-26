@@ -29,6 +29,8 @@ class NameHistory extends ORDataObject {
 	var $middle_name	= '';
 	var $update_date	= '';
 	/**#@-*/
+	var $_table = 'name_history';
+	var $_internalName='NameHistory';
 
 
 	/**
@@ -37,7 +39,6 @@ class NameHistory extends ORDataObject {
 	 */
 	function NameHistory($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'name_history';
 		$this->_sequence_name = 'sequences';	
 	}
 

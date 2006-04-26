@@ -19,6 +19,8 @@ class EnumerationValuePractice extends ORDataObject {
 	var $id		= '';
 	var $practice_id		= '';
 	/**#@-*/
+	var $_table = 'enumeration_value_practice';
+	var $_internalName='EnumerationValuePractice';
 
 
 	/**
@@ -27,7 +29,6 @@ class EnumerationValuePractice extends ORDataObject {
 	 */
 	function EnumerationValuePractice($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'enumeration_value_practice';
 		$this->_sequence_name = 'sequences';	
 	}
 

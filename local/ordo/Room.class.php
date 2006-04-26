@@ -1,68 +1,50 @@
 <?php
-
 /**
  * 
  */
- 
 class Room extends ORDataObject{
 	
-	/**
-	 *	
-	 *	@var description
-	 */
-	var $description;
+	var $id			= '';
+	var $description	= '';
+	var $number_seats	= '';
+	var $building_id	= '';
+	var $building		= '';
+	var $name		= '';
 	
-	/**
-	 *	
-	 *	@var number_seats
-	 */
-	var $number_seats;
+	var $_table 		= 'rooms';
+	var $_internalName	= 'Room';
+	var $_key		= 'id';
 	
-	/**
-	 *	
-	 *	@var building_id
-	 */
-	var $building_id;
-	
-	/**
-	 *	
-	 *	@var building
-	 */
-	var $building;
-	
-	/**
-	 *	
-	 *	@var name
-	 */
-	var $name;
-	
-	var $_table = "rooms";
-	/**
-	 * Constructor sets all attributes to their default value
-	 *  
-	 */
 	function Room($id = 0)	{
 		//call the parent constructor so we have a _db to work with
 		parent::ORDataObject();
 		
-		//shore up the most basic ORDataObject bits
-		$this->id = $id;
-
-		$description = "";
-		$number_seats = "";
-		$building_id = "";
-		$name = "";
-	
-		
 		if ($id > 0) {
-			$this->populate();
+			$this->setup($id);
 		}
 	}
 
 	function setup($id = 0) {
-		$this->room($id);
+		if ($id > 0) {
+			$this->set('id',$id);
+			$this->populate();
+		}
+	}
+
+	function genericList() {
+		$sql = "select r.id, concat(b.name,' -> ',r.name) name from ".$this->tableName()
+			." r inner join buildings b on r.building_id = b.id order by b.name, r.name";
+		return $this->dbHelper->getAssoc($sql);
 	}
 	
+	function value_fullname() {
+		if (!$this->isPopulated()) {
+			return 'Not Set';
+		}
+		$b =& Celini::newOrdo('Building',$this->get('building_id'));
+		return $b->get('name').' -> '.$this->get('name');
+	}
+
 	/**
 	 * Convenience function to get an array of many objects
 	 * 
@@ -131,56 +113,10 @@ class Room extends ORDataObject{
 		return $rooms;
 	}
 	
-	/**
-	 * Convenience function to generate string debug data about the object
-	 */
-	function toString($html = false) {
-		$string .= "\n"
-		. "ID: " . $this->id."\n"
-		."description:" . $this->description."\n"
-		."number_seats:" . $this->number_seats."\n"
-		."building_id:" . $this->building_id."\n"
-		."name:" . $this->name."\n"
-		. "\n";
-		if ($html) {
-			return nl2br($string);
-		}
-		else {
-			return $string;
-		}
-	}
-
 	/**#@+
 	*	Getter/Setter methods used by reflection to affect object in persist/poulate operations
 	*	@param mixed new value for given attribute
 	*/
-	function set_id($id) {
-		$this->id = $id;
-	}
-	function get_id() {
-		return $this->id;
-	}
-	
-	function set_description($value) {
-		$this->description = $value;
-	}
-	function get_description() {
-		return $this->description;
-	}
-
-	function set_number_seats($value) {
-		$this->number_seats = $value;
-	}
-	function get_number_seats() {
-		return $this->number_seats;
-	}
-
-	function set_building_id($value) {
-		$this->building_id = $value;
-	}
-	function get_building_id() {
-		return $this->building_id;
-	}
 	
 	function get_building() {
 		$b = new Building($this->building_id);
@@ -192,13 +128,6 @@ class Room extends ORDataObject{
 		return $b->get('name');
 	}
 
-	function set_name($value) {
-		$this->name = $value;
-	}
-	function get_name() {
-		return $this->name;
-	}
-	
 	function get_delete_message() {
 		$string = "Room Name: " . $this->get_name() . "\n";
 		$ocs = $this->get_occurences();

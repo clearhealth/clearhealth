@@ -31,6 +31,8 @@ class InsuredRelationship extends ORDataObject {
 	var $effective_end			= '';
 	var $active					= 1;
 	/**#@-*/
+	var $_table = 'insured_relationship';
+	var $_internalName='InsuredRelationship';
 
 
 	/**

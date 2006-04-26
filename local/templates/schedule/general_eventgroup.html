@@ -1,0 +1,12 @@
+<fieldset class="radio" id="eventgroup">
+		<legend>{l}Add Schedule Group{/l}</legend>
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Name{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="hidden" name="EventGroup[id]" value="{$eventGroup->get('id')}" />
+		<input type="text" size="40" name="EventGroup[title]" value="{$eventGroup->get('title')}"/> &nbsp;&nbsp;<input type="submit" value="{l}Save{/l}" />
+	</td>
+</tr>
+</table>
+</fieldset>

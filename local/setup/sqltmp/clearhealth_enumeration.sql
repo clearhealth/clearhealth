@@ -1,7 +1,7 @@
 CREATE TABLE `enumeration_value` (
   `enumeration_value_id` int(11) NOT NULL default '0',
   `enumeration_id` int(11) NOT NULL default '0',
-  `key` int(11) NOT NULL default '0',
+  `key` varchar(255) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   `sort` int(11) NOT NULL default '0',
   `extra1` varchar(255) NOT NULL default '',

@@ -19,6 +19,12 @@ class ClearhealthAJAX {
 		$zipserver=&new zipcode();
 		$this->server->registerClass($zipserver,'zipcode',array('getData'));
 	}
+	
+	function initappointment(){
+		$GLOBALS['loader']->requireOnce('controllers/C_Appointment.class.php');
+		$appointment=&new C_Appointment();
+		$this->server->registerClass($appointment,'appointment');
+	}
 
 }
 ?>

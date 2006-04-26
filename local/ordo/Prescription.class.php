@@ -44,6 +44,7 @@ class Prescription extends ORDataObject {
 	 * Primary Key
 	 */
 	var $_key = 'prescription_id';
+	var $_internalName='Prescription';
 
 	
 	/**#@+

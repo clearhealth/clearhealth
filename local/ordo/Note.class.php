@@ -46,6 +46,7 @@ class Note extends ORDataObject{
 	var $revision;
 
 	var $_table = "note";
+	var $_internalName='Note';
 
 	/**
 	 * Constructor sets all Note attributes to their default value

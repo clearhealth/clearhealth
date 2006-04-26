@@ -78,6 +78,9 @@ class M_User extends M_Patient {
 			$u->persist();
 			$this->controller->user_id = $u->get('id');
 
+			$provider = ORDAtaObject::factory('Provider',$person_id);
+			$provider->persist();
+
 
 			// Determine the user types of this new person
 			$person =& ORDataObject::factory('Person',$person_id);
@@ -136,21 +139,23 @@ class M_User extends M_Patient {
 					// create a ps schedule for the provider
 					$schedule =& ORDataObject::factory('Schedule');
 					$schedule->set('user_id',$u->get('id'));
+					$schedule->set('provider_id',$person->get('id'));
 					$schedule->set('schedule_code','PS');
 					$schedule->set('name',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
-					$schedule->set('practice',$practice_id);
+					$schedule->set('practice_id',$practice_id);
 					$schedule->persist();
 
 					// create an event for each room
 					ORDataObject::factory_include('Room');
 					$rooms = Room::rooms_factory();
+					/*
 					foreach($rooms as $room) {
 						unset($e);
 						$e =& ORDataObject::factory('Event');
 						$e->set('title',$room->get('name'));
 						$e->set('foreign_id',$schedule->get('id'));
 						$e->persist();
-					}
+					}*/
 					$this->messages->addMessage('Default Schedule Created');
 
 				}

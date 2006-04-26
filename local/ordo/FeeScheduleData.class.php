@@ -23,6 +23,8 @@ class FeeScheduleData extends ORDataObject {
 	var $formula		= '';
 	var $mapped_code		= '';
 	/**#@-*/
+	var $_table = 'fee_schedule_data';
+	var $_internalName='FeeScheduleData';
 
 
 	/**
@@ -31,7 +33,6 @@ class FeeScheduleData extends ORDataObject {
 	 */
 	function FeeScheduleData($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'fee_schedule_data';
 		$this->_sequence_name = 'sequences';	
 	}
 

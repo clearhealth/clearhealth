@@ -24,6 +24,8 @@ class StatementHistory extends ORDataObject {
 	var $amount		= '';
 	var $type		= '';
 	/**#@-*/
+	var $_table = 'statement_history';
+	var $_internalName='StatementHistory';
 
 
 	/**
@@ -32,7 +34,6 @@ class StatementHistory extends ORDataObject {
 	 */
 	function StatementHistory($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'statement_history';
 		$this->_sequence_name = 'sequences';	
 	}
 

@@ -16,6 +16,7 @@ class FeeScheduleDiscount extends ORDataObject {
 	var $type	=	'default';
 	var $name		= '';
 	/**#@-*/
+	var $_internalName='FeeScheduleDiscount';
 
 
 	/**

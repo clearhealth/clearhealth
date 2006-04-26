@@ -16,6 +16,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 	var $type					= '';
 	var $disp_order				= '';
 	/**#@-*/
+	var $_internalName='FeeScheduleDiscountLevel';
 
 
 	/**

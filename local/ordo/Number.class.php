@@ -19,6 +19,7 @@ class Number extends ORDataObject {
 	var $_fkey = "person_id";
 	var $_table = 'number';
 	var $_key = 'number_id';
+	var $_internalName='Number';
 	
 	var $storage_metadata = array(
 		'int' => array(),

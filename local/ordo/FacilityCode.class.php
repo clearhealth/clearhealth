@@ -20,6 +20,8 @@ class FacilityCode extends ORDataObject
 	
 	
 	var $_table = 'facility_codes';
+	var $_key = 'facility_code_id';
+	var $_internalName='FacilityCode';
 	
 	
 	/**

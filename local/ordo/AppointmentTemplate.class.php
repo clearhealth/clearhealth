@@ -20,6 +20,8 @@ class AppointmentTemplate extends ORDataObject {
 	var $name	= '';
 	/**#@-*/
 
+	var $_table = 'appointment_template';
+	var $_internalName='AppointmentTemplate';
 
 	/**
 	 * Setup some basic attributes
@@ -27,7 +29,6 @@ class AppointmentTemplate extends ORDataObject {
 	 */
 	function AppointmentTemplate($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'appointment_template';
 		$this->_sequence_name = 'sequences';	
 	}
 

@@ -50,7 +50,7 @@ class EventComparator_General {
 			
 			// Now setup real data
 			$o = Celini::newOrdo('Occurence',$results->fields['id']);
-			$e = Celini::newOrdo('Event');
+			$e = Celini::newOrdo('CalendarEvent');
 			$ea = $e->get_events("o.id = " . $o->get_id());
 			$eak = array_keys($ea);
 

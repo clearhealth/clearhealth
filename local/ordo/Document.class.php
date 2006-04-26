@@ -96,6 +96,7 @@ class Document extends ORDataObject{
 	var $enumTable = "dm_document";
 
 	var $_table = "document";
+	var $_internalName='Document';
 	/**
 	 * Constructor sets all Document attributes to their default value
 	 * @param int $id optional existing id of a specific document, if omitted a "blank" document is created 

@@ -22,6 +22,8 @@ class ReportSnapshot extends ORDataObject {
 	var $snapshot_date	= false;
 	var $data		= '';
 	/**#@-*/
+	var $_table = 'report_snapshot';
+	var $_internalName='ReportSnapshot';
 
 
 	/**
@@ -30,7 +32,6 @@ class ReportSnapshot extends ORDataObject {
 	 */
 	function ReportSnapshot($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'report_snapshot';
 		$this->_sequence_name = 'sequences';	
 	}
 

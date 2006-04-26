@@ -38,6 +38,7 @@ class Payment extends ORDataObject {
 	var $_table = 'payment';
 	var $_sequence_name = 'sequences';	
 	var $_key = 'payment_id';
+	var $_internalName='Payment';
 
 	/**
 	 * Called by factory with passed in parameters, you can specify the primary_key of Payment with this

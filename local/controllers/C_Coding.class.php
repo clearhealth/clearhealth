@@ -129,8 +129,6 @@ class C_Coding extends Controller {
 		
 
 		//Get the REAL parent_id. From the CodingData 
-		
-
 		$parent_code =& ORDataObject::factory('Code', $parent_id);
 	
 		
@@ -177,7 +175,7 @@ class C_Coding extends Controller {
 		$this->assign_by_ref("code_list", $code_list);
 	//	echo "DEBUG C_Coding: code_list <br>\n";
 	//	printf('<pre>%s</pre>', var_export($code_list , true));
-		return $this->view->render("update.html");
+		return $this->view->render("edit.html");
 	}
 	
 	function update_action_process(){
@@ -392,9 +390,6 @@ class C_Coding extends Controller {
 	}
 
 	function process($data,$return = false){
-		if(!isset($data['parent_codes'])) {
-			return false;
-		}
 		$this->foreign_id = $data['foreign_id'];
 		$this->parent_id = $data['parent_id'];
 		if (isset($data['superbill']))  {

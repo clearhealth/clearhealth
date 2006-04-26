@@ -4,27 +4,27 @@
 	</tr>
 	{foreach from=$practices item=practice}
 	<tr>
-		<td><a href="{$EDIT_PRACTICE_ACTION}id={$practice->get_id()}">{$practice->get_name()}</a>
-		&nbsp;<a href="{$DELETE_ACTION}id={$practice->get_id()}&object_class=practice">D</a></td>
+		<td><a href="{$EDIT_PRACTICE_ACTION}id={$practice->get('id')}">{$practice->get('name')}</a>
+		&nbsp;<a href="{$DELETE_ACTION}id={$practice->get('id')}&object_class=practice">D</a></td>
 		
 	</tr>
 		<tr>
 			<td>&nbsp;&nbsp;{l}Buildings{/l}</td>
 		</tr>
 		{foreach from=$buildings item=building}
-		{if $building->get_practice_id() == $practice->get_id()}
+		{if $building->get('practice_id') == $practice->get('id')}
 		<tr>
-			<td>&nbsp;&nbsp;<a href="{$EDIT_BUILDING_ACTION}id={$building->get_id()}">{$building->get_name()}</a>
-			&nbsp;<a href="{$DELETE_ACTION}id={$building->get_id()}&object_class=building">D</a></td>
+			<td>&nbsp;&nbsp;<a href="{$EDIT_BUILDING_ACTION}id={$building->get('id')}">{$building->get('name')}</a>
+			&nbsp;<a href="{$DELETE_ACTION}id={$building->get('id')}&object_class=building">D</a></td>
 		</tr>
 			<tr>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;{l}Rooms{/l}</td>
 			</tr>
 			{foreach from=$rooms item=room}
-			{if $room->get_building_id() == $building->get_id()}
+			{if $room->get('building_id') == $building->get('id')}
 			<tr>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$EDIT_ROOM_ACTION}id={$room->get_id()}">{$room->get_name()}</a>
-					&nbsp;<a href="{$DELETE_ACTION}id={$room->get_id()}&object_class=room">D</a></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$EDIT_ROOM_ACTION}id={$room->get('id')}">{$room->get('name')}</a>
+					&nbsp;<a href="{$DELETE_ACTION}id={$room->get('id')}&object_class=room">D</a></td>
 			</tr>
 			{/if}
 			{foreachelse}

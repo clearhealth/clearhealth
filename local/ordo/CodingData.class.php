@@ -29,6 +29,8 @@ class CodingData extends ORDataObject {
 	/**#@-*/
 
 	var $_parentCode 	= null;
+	var $_table = 'coding_data';
+	var $_internalName='CodingData';
 
 	/**
 	 * Setup some basic attributes
@@ -36,7 +38,6 @@ class CodingData extends ORDataObject {
 	 */
 	function CodingData($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'coding_data';
 		$this->_sequence_name = 'sequences';	
 	}
 

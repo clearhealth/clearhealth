@@ -1,0 +1,43 @@
+{if $eventGroups}
+<fieldset>
+	<legend>{if $event->get('id') > 0}{l}Edit{/l}{else}{l}Add{/l}{/if} {l}Calendar Item{/l}</legend>
+		<table>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="Event[id]" value="{$event->get('id')}" />
+						{if $event->get('id') == 0}
+						<input type="submit" value="{l}Add...{/l}" />
+						{else}
+						<input type="submit" value="{l}Save...{/l}" />
+						{/if}
+					</td>
+				</tr>
+			</tfoot>
+			
+			<tbody>
+				<tr>
+					<td class="aRight">{l}Title{/l}</td>
+					<td><input type="text" name="Event[title]" value="{$event->get('title')}" /></td>
+				</tr>
+				<tr>
+					<td class="aRight">{l}Start{/l}</td>
+					<td>
+						{clni_input_date name="Event[start]" value=$event->get('start') time='true' format_popup="%Y-%m-%d %H:%M" size="17"}
+					</td>
+				<tr>
+					<td class="aRight">{l}End{/l}</td>
+					<td>
+						{clni_input_date name="Event[end]" value=$event->get('end') time='true' format_popup="%Y-%m-%d %H:%M" size="17"}
+					</td>
+				</tr>
+				<tr>
+					<td>
+					{l}Add to Group{/l}</td><td>
+					{html_options name="Event[event_group]" options=$eventGroups->valueList('title') selected=$event->get('event_group')}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</fieldset>
+{/if}

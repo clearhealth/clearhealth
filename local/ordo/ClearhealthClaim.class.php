@@ -23,6 +23,8 @@ class ClearhealthClaim extends ORDataObject {
 	var $total_billed	= '';
 	var $total_paid		= '';
 	/**#@-*/
+	var $_table = 'clearhealth_claim';
+	var $_internalName='ClearhealthClaim';
 
 
 	var $_internalName = 'ClearhealthClaim';
@@ -32,7 +34,6 @@ class ClearhealthClaim extends ORDataObject {
 	 */
 	function ClearhealthClaim($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'clearhealth_claim';
 		$this->_sequence_name = 'sequences';	
 	}
 

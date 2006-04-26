@@ -22,6 +22,8 @@ class EncounterValue extends ORDataObject {
 	var $value_type		= '';
 	var $value		= '';
 	/**#@-*/
+	var $_table = 'encounter_value';
+	var $_internalName='EncounterValue';
 
 
 	/**
@@ -30,7 +32,6 @@ class EncounterValue extends ORDataObject {
 	 */
 	function EncounterValue($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter_value';
 		$this->_sequence_name = 'sequences';	
 	}
 

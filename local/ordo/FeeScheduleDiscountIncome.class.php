@@ -16,6 +16,7 @@ class FeeScheduleDiscountIncome extends ORDataObject {
 	var $family_size			= '';
 	var $income				= '';
 	/**#@-*/
+	var $_internalName='FeeScheduleDiscountIncome';
 
 
 	/**

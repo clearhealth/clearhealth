@@ -10,10 +10,11 @@ class MenuReport extends ORDataObject {
 	var $menu_id;
 	var $report_template_id;
 	var $title;
+	var $_table = 'menu_report';
+	var $_internalName='MenuReport';
 
 	function MenuReport($id=0,$db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = "menu_report";
 		$this->_sequence_name = "sequences";	
     	
 		$this->id = $id;

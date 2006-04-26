@@ -37,6 +37,7 @@ class Patient extends MergeDecorator {
 
 	var $_table = 'patient';
 	var $_key = 'person_id';
+	var $_internalName='Patient';
 
 	var $storage_metadata =  array('int' => array(), 'date' => array('signed_hipaa'=>''), 'string' => array(), 'text' => array());
 	
@@ -277,8 +278,83 @@ class Patient extends MergeDecorator {
 		return $pro;
 	}
 
-	function get_phone() {
-		return($this->person->numberValueByType('Home'));
+	function value_patient() {
+		$name = $this->person->value('name');
+		if (!empty($name)) {
+			$name .= ' #'.$this->get('record_number');
 	}
+		return $name;
+	}
+
+	function value_phone() {
+		$n = $this->person->numberByType('Home');
+		return $n->get('number');
+	}
+
+	function value_balance() {
+		return '$'.number_format($this->getBalance());
+	}
+
+	function getBalance() {
+		$db =& Celini::dbInstance();
+		$sql='
+		select
+			feeData.patient_id,
+            charge,
+            (ifnull(credit,0.00) + ifnull(coPay.amount,0.00)) credit,
+			(charge - (ifnull(credit,0.00)+ifnull(coPay.amount,0.00))) balance
+		from
+			/* Fee total */
+			(
+			select
+				e.patient_id,
+				sum(cd.fee) charge
+			from
+				encounter e
+				inner join clearhealth_claim cc using(encounter_id)
+				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
+			group by
+				e.patient_id
+			) feeData
+		left join
+			/* Payment totals */
+			(
+			select
+				e.patient_id,
+				(sum(pl.paid) + sum(pl.writeoff)) credit
+			from
+				encounter e
+				inner join clearhealth_claim cc using(encounter_id)
+				inner join payment p on cc.claim_id = p.foreign_id
+				inner join payment_claimline pl on p.payment_id = pl.payment_id
+			group by
+				e.patient_id
+			) paymentData on feeData.patient_id = paymentData.patient_id
+		left join
+            /* Co-Pay Totals */
+            (
+            	select
+                	p.foreign_id patient_id,
+                    sum(p.amount) amount
+                from
+                	payment p
+                where encounter_id = 0
+                group by
+					p.foreign_id
+			) coPay on feeData.patient_id = coPay.patient_id
+		WHERE feeData.patient_id = '.$db->quote($this->get('id'));
+		
+		$result = $db->execute($sql);
+		if($result) {
+			return $result->fields['balance'];
+		}
+		return 0;
+	}
+	
+	function &getProvider() {
+		$prov =& Celini::newORDO('Provider',$this->get('default_provider'));
+		return $prov;
+	}
+
 }
 ?>

@@ -28,6 +28,8 @@ class FeeSchedule extends ORDataObject {
 	var $description	= '';
 	var $priority = "";
 	/**#@-*/
+	var $_table = 'fee_schedule';
+	var $_internalName='FeeSchedule';
 
 
 	/**
@@ -35,8 +37,7 @@ class FeeSchedule extends ORDataObject {
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
 	function FeeSchedule($db = null) {
-		parent::ORDataObject($db);	
-		$this->_table = 'fee_schedule';
+		parent::ORDataObject($db);
 		$this->_sequence_name = 'sequences';	
 	}
 

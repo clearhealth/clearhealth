@@ -20,6 +20,8 @@ class RouteSlip extends ORDataObject {
 	var $encounter_id	= '';
 	var $report_date	= false;
 	/**#@-*/
+	var $_table = 'route_slip';
+	var $_internalName='RouteSlip';
 
 
 	/**
@@ -28,7 +30,6 @@ class RouteSlip extends ORDataObject {
 	 */
 	function RouteSlip($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'route_slip';
 		$this->_sequence_name = 'sequences';	
 	}
 

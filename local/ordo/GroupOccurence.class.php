@@ -22,6 +22,7 @@ class GroupOccurence extends ORDataObject {
 	/**#@-*/
 
 	var $_table = 'group_occurence';
+	var $_internalName='GroupOccurence';
 
 	/**
 	 * Setup some basic attributes

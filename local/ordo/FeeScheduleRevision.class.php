@@ -21,7 +21,8 @@ class FeeScheduleRevision extends ORDataObject {
 	var $update_time	= '';
 	var $name		= '';
 	/**#@-*/
-
+	var $_table = 'fee_schedule_revision';
+	var $_internalName='FeeScheduleRevision';
 
 	/**
 	 * Setup some basic attributes
@@ -29,7 +30,6 @@ class FeeScheduleRevision extends ORDataObject {
 	 */
 	function FeeScheduleRevision($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'fee_schedule_revision';
 		$this->_sequence_name = 'sequences';	
 	}
 

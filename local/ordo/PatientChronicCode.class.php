@@ -20,6 +20,7 @@ class PatientChronicCode extends ORDataObject {
 	var $chronic_care_code		= '';
 	/**#@-*/
 	var $_table = 'patient_chronic_code';
+	var $_internalName='PatientChronicCode';
 
 
 	/**

@@ -25,6 +25,9 @@ class Address extends ORDataObject {
 		'string' => array()
 	);
 
+	var $_internalName='Address';
+
+
 	function Address($db = null) {
 		parent::ORDataObject($db);
 		$this->_table = "address";

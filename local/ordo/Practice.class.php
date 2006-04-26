@@ -53,6 +53,7 @@ class Practice extends ORDataObject{
 	var $identifier = '';
 	
 	var $_table = "practices";
+	var $_internalName='Practice';
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -145,6 +146,18 @@ class Practice extends ORDataObject{
 
 		while ($result && !$result->EOF) {
 			$practices[] = new Practice($result->fields['id']);
+			$result->MoveNext();
+		}
+		return $practices;
+	}
+	
+	function valueList_name() {
+		$db =& Celini::dbInstance();
+		$sql = "SELECT id,name FROM  " . $this->_prefix . $this->_table.' ORDER BY name ASC';
+		$result = $db->_Execute($sql);
+
+		while ($result && !$result->EOF) {
+			$practices[$result->fields['id']] = $result->fields['name'];
 			$result->MoveNext();
 		}
 		return $practices;

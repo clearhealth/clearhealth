@@ -31,7 +31,11 @@
 		{if $translate[$navc.prefix]}
 			<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
 		{else}
-			<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+			{if $navc.prefix == 'RAW'}
+				<li> <a href="{$navc.action}">{$navc.title}</a></li>
+			{else}
+				<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+			{/if}
 		{/if}
 		{/if}
 		{/foreach}

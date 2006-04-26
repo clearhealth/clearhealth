@@ -27,6 +27,8 @@ class PhoneNumber extends ORDataObject{
 	var $number;
 	var $type_array = array("","Home", "Work", "Cell" , "Emergency" , "Fax");
 
+	var $_table = 'phone_numbers';
+	var $_internalName='PhoneNumber';
 	/**
 	 * Constructor sets all Prescription attributes to their default value
 	 */
@@ -40,7 +42,6 @@ class PhoneNumber extends ORDataObject{
 		$this->number = "";
 		$this->type = TYPE_HOME;
 		
-		$this->_table = "phone_numbers";
 		if ($id != "") {
 			$this->populate();
 		}

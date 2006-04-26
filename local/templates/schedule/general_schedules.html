@@ -1,0 +1,16 @@
+<table>
+	<tr>
+		<td>{l}Schedules{/l}</td>
+	</tr>
+	{foreach from=$schedules item=schedule}
+	<tr>
+		<td><a href="{link action=Edit}schedule_id={$schedule->get('id')}">{$schedule->get('schedule_code')}</a> - <a href="{link action=Edit}schedule_id={$schedule->get('id')}">{$schedule->get('title')}</a>
+		&nbsp;<a href="{link}delete_schedule_id={$schedule->get('id')}" onclick="return confirm('{l}Confirm Schedule Deletion?{/l}');">D</a></td>
+		
+	</tr>
+	{foreachelse}
+	<tr>
+		<td colspan="6">{l}No Schedules Found{/l}</td>
+	</tr>
+	{/foreach}
+</table>

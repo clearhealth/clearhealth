@@ -27,6 +27,8 @@ class InsuranceProgram extends ORDataObject {
 	var $address_id		= '';
 	var $funds_source	= '';
 	/**#@-*/
+	var $_table = 'insurance_program';
+	var $_internalName='InsuranceProgram';
 
 
 	/**
@@ -35,7 +37,6 @@ class InsuranceProgram extends ORDataObject {
 	 */
 	function InsuranceProgram($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'insurance_program';
 		$this->_sequence_name = 'sequences';	
 	}
 

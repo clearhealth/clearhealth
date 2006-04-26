@@ -21,6 +21,8 @@ class ImportMap extends ORDataObject {
 	var $old_table_name		= '';
 	var $new_object_name		= '';
 	/**#@-*/
+	var $_table = 'import_map';
+	var $_internalName='ImportMap';
 
 
 	/**
@@ -29,7 +31,6 @@ class ImportMap extends ORDataObject {
 	 */
 	function ImportMap($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'import_map';
 		$this->_sequence_name = 'sequences';	
 		//	echo "in constructor \n";
 	}

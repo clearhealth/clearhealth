@@ -22,6 +22,8 @@ class EncounterPerson extends ORDataObject {
 	var $person_id		= '';
 	/**#@-*/
 
+	var $_table = 'encounter_person';
+	var $_internalName='EncounterPerson';
 
 	/**
 	 * Setup some basic attributes
@@ -29,7 +31,6 @@ class EncounterPerson extends ORDataObject {
 	 */
 	function EncounterPerson($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter_person';
 		$this->_sequence_name = 'sequences';	
 	}
 

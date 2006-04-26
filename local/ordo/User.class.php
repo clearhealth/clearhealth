@@ -16,6 +16,8 @@ $loader->requireOnce('ordo/Base_User.class.php');
 class User extends Base_User {
    
    var $default_location_id = "";
+	var $_internalName='User';
+	var $_key = 'user_id';
 
    function User() {
       parent::Base_User();

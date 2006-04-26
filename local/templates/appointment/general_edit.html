@@ -1,0 +1,184 @@
+{head type="css"}
+#appointmentEditor {
+font-size: 8pt;
+border: ridge 2px black;
+background-color: white;
+padding: 2px;
+position: absolute;
+}
+#appointmentEditor input {
+font-size: 8pt;
+}
+#appointmentEditor .title {
+	font-size: 10pt; 
+	font-weight:bold;
+	border-bottom: solid 1px black;
+	text-align: center;
+	cursor: move;
+}
+{/head}
+{if !$ajaxedit}
+<div id="appointmentEditor"{if $mode == 'popup'} style="visibility:hidden"{/if}>
+{/if}
+{capture name=currentpage}{link}date={$apt_date}{/capture}
+{clni_form action=$FORM_ACTION process="generic"}
+{if $queue_id}
+<input type="hidden" name="Appointment[queue_id]" value="{$queue_id}" />
+{/if}
+{if $qreason_id}
+<input type="hidden" name="Appointment[qreason_id]" value="{$qreason_id}" />
+{/if}
+
+	<input name="Appointment[appointment_id]" type="hidden" value="{$appointment->get('id')}">
+
+	<div class="title">
+		{if $appointment->isPopulated()}
+		{l}Editing App #{/l}{$appointment->get('id')}
+		{else}
+		{l}Add Appointment{/l}
+		{/if}
+	</div>
+	<div id="aeMessageTarget" style='width: 150px;'></div>
+
+
+	<div>
+		{l}Reason{/l}<br>
+		{html_options name="Appointment[reason]" options=$appointment->valueList('reason') selected=$appointment->get('reason') 
+		onchange="updateAp(this,'appointmentTemplate')"}
+	</div>
+
+	<div id="aeProvider">
+		
+	{if $appointment_templates}
+
+		<div id="appointmentTemplate{$atid}">
+{assign var='first' value=1}
+{foreach from=$appointment_templates item=template key=key}
+{assign var='inCurrentReason' value=0}
+{if $appointment->get('reason') == $key}
+	{assign var='inCurrentReason' value=1}
+{/if}
+{if !$appointment->isPopulated() && $first}
+	{assign var='inCurrentReason' value=1}
+{/if}
+<div {if !$inCurrentReason}style="display:none;"{/if} class="{$key}">
+	{if !$template}
+		Provider
+		<select name="user_id" class="query_style" {if !$inCurrentReason}disabled='true'{/if}>
+			{if $appointment->isPopulated()}
+			{html_options options=$users_array selected=$appointment->get('provider_id')}
+			{else}
+			{html_options options=$appointment->valueList('provider') selected=$currentUser}
+			{/if}			
+		</select>
+		<br>
+	{else}
+		<input type="hidden" name="templateLength" value="{$template->get('length')}">
+		{foreach from=$template->breakdownArray() item=breakdown}
+		{$breakdown.title}
+
+		<select name="users[{$breakdown.occurence_breakdown_id}]" class="query_style" {if !$inCurrentReason}disabled='true'{/if}>
+			{if $edit_app}
+			{html_options options=$peopleByType[$breakdown.user_id] selected=$editOccurenceBreakdown[$breakdown.index]}
+			{else}
+			{html_options options=$peopleByType[$breakdown.user_id] selected=$currentUser}
+			{/if}
+		</select>
+		<br>
+		{/foreach}
+	{/if}
+	{assign var='first' value=0}
+</div>
+{/foreach}
+</div>
+
+	{else}
+	{l}Provider{/l}<br>
+		<select name="Appointment[provider_id]">
+			{if $appointment->isPopulated()}
+				{html_options options=$appointment->valueList('provider') selected=$appointment->get('provider_id')}
+			{elseif $provider_id}
+				{html_options options=$appointment->valueList('provider') selected=$provider->person->get('id')}
+			{else}
+				{html_options options=$appointment->valueList('provider') selected=$currentUser}
+			{/if}			
+		</select>	
+	{/if}
+	</div>
+
+	<div>
+		{l}Room: {/l}<br>
+		{html_options name="Appointment[room_id]" options=$room->genericList() selected=$room->get('id')}
+	</div>
+			
+	<div>
+		{l}Date{/l}
+		{if !$apt_date}
+		{assign var=apt_date value=$appointment->get('USAdate')}
+		{/if}
+		{clni_input_date name="Appointment[date]" id="aeDate" size="9" value=$apt_date}
+	</div>
+
+	<div>
+		{l}Title{/l}<br>
+		<input type="text" name="Appointment[title]" size="15" value="{if $qreason_id > 0}{$visitqueuereason->get('reason')}{else}{$appointment->get('title')}{/if}">
+	</div>
+
+	<div>
+		{l}Patient{/l}<br>
+		<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="{if $patient_id > 0}{$patient_id}{else}{$appointment->get('patient_id')}{/if}">
+		<div class="SuggestInput">
+		{clni_img name="stock/stock_person-10.png"}
+		<input type="text" name="Appointment[patient_name]" id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}">
+		</div>
+		{literal}
+		<script type="text/javascript">
+			var ps = new patientSuggest('aePatientName','aePatientId');
+		</script>
+		{/literal}
+	</div>
+
+	<div>
+		{l}Time{/l}<br>
+		<input id="aeStart" type="text" name="Appointment[start_time]" size="5" value="{if $start_time}{$start_time}{else}{$appointment->get('start_time')}{/if}"> 
+		{l}to{/l} 
+		<input type="text" name="Appointment[end_time]" size="5" value="{if $end_time}{$end_time}{else}{$appointment->get('end_time')}{/if}" id="aeEnd">
+	</div>
+
+	<div>
+		<input type="hidden" name="Appointment[walkin]" value="0">
+		<input type="checkbox" value="1" name="Appointment[walkin]" id="aeWalkin" {if $appointment->get('walkin') == 1}CHECKED{/if}>
+		<label class="inline" for="aeWalkin">{l}Walk in{/l}?</label>
+	</div>
+
+{if $group_appointments}
+	<div>
+		<input type="hidden" name="Appointment[group_appointment]" value="0">
+		<input onclick="groupAppointment(this)" type="checkbox" value="1" name="Appointment[group_appointment]" 
+			id="aeGroupAppointment" {if $appointment->get('group_appointment') > 0}CHECKED{/if}>
+		<label class="inline" for="aeGroupAppointment">{l}Group Appointment{/l}?</label></td>
+	</div>
+{/if}
+
+	<div>
+		<input type="submit" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}">
+	</div>
+	<div style="text-align:right">
+	<a href="javascript:hideAddAppointment()">hide</a>
+	</div>
+</form>
+{if !$ajaxedit}
+</div>
+{/if}
+{clni_register_message_target formId="appointmentEditor" targetId="aeMessageTarget"}
+{clni_register_validation id="aeDate" rules="required|date"}
+{clni_register_validation_rule id="aeStart"}
+{clni_register_validation_rule id="aeEnd"}
+{clni_register_validation id="aePatientId" 
+	rules="requiredif(testElement:'aePatientName',testRule:'required',message:'No Patient is Selected')} 
+
+{if $doappointmentpopup}
+<script type="text/javascript">
+showAddAppointment();
+</script>
+{/if}

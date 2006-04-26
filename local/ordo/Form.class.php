@@ -28,6 +28,7 @@ class Form extends ORDataObject {
 	/**#@-*/
 
 	var $_table = 'form';
+	var $_internalName='Form';
 
 	/**
 	 * Setup some basic attributes

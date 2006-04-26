@@ -210,23 +210,20 @@ class Encounter extends ORDataObject {
 				b.id AS building_id,
 				r.name AS room_name, 
 				r.id AS room_id,
-				o.id AS occurence_id, 
-				concat_ws(' ',psn.first_name,psn.last_name) AS provider_name,
-				pvds.person_id AS provider_id, 
-				o.start AS appointment_start 
+				a.appointment_id AS occurence_id, 
+				concat_ws(' ',pr.first_name,pr.last_name) AS provider_name,
+				pr.person_id AS provider_id, 
+				e.start AS appointment_start 
 			FROM 
-				occurences AS o 
-				LEFT JOIN rooms AS r ON (r.id = o.location_id)
+				event e
+				INNER JOIN appointment a ON e.event_id = a.event_id
+				LEFT JOIN rooms as r on a.room_id = r.id
 				LEFT JOIN buildings AS b ON (b.id = r.building_id)
-				LEFT JOIN user AS u ON (o.user_id = u.user_id)
-				LEFT JOIN provider AS pvds ON (pvds.person_id = u.person_id)
-				LEFT JOIN person AS psn ON (psn.person_id = pvds.person_id)
-				LEFT JOIN group_occurence AS go ON (o.id = go.occurence_id)
+				LEFT JOIN person pr on pr.person_id = a.patient_id
 			WHERE
-				o.external_id = " . (int)$this->get("patient_id") . " OR 
-				go.patient_id = ". (int)$this->get("patient_id") . "		
+				a.patient_id = " . (int)$this->get("patient_id") . "
 			ORDER BY 
-				o.start DESC
+				e.start DESC
 			LIMIT 10";
 		$result = $this->_execute($sql);
 		$ar = array();

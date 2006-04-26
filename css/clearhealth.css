@@ -207,13 +207,13 @@ h3 {
 	top: 0;
 	left: 0;
 	width: 100%;
-	font-size: 8pt;
 	background-color: white;
+	padding: 2px;
 	display: none;
 }
 .elementLink {
 	position: absolute;
-	top: 2px;
+	top: -18px;
 	right: 2px;
 	cursor: pointer;
 }

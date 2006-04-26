@@ -27,6 +27,7 @@ class PatientNote extends ORDataObject {
 
 
 	var $_table = 'patient_note';
+	var $_internalName='PatientNote';
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject

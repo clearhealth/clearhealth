@@ -1,68 +1,30 @@
 <?php
 
-$loader->requireOnce('ordo/Event.class.php');
+$GLOBALS['loader']->requireOnce("ordo/CalendarSchedule.class.php");
 
 /**
+ * ORDO extender for the calendar's Schedule class
  * 
+ * Relationships:
+ * Optional:
+ * 	Parent: Practice
+ * 	Parent: Provider
+ * 	Parent: Room
+ * 	Children:	Event
  */
  
-class Schedule extends ORDataObject{
+class Schedule extends CalendarSchedule{
 	
-	/**
-	 *	
-	 *	@var $id
-	 */
-	 var $id;
-
 	/**
 	 *	
 	 *	@var schedule_code
 	 */
-	var $schedule_code;
+	var $schedule_code = '';
 	
-	/**
-	 *	
-	 *	@var name
-	 */
-	var $name;
-	
-	/**
-	 *	
-	 *	@var description_long
-	 */
-	var $description_long;
-	
-	/**
-	 *	
-	 *	@var description_short
-	 */
-	var $description_short;
-	
-	/**
-	 *	
-	 *	@var events
-	 */
-	var $events;
-	
-	/**
-	 *	
-	 *	@var practice_id
-	 */
-	var $practice_id;
-	
-	/**
-	 *	
-	 *	@var user_id
-	 */
-	var $user_id;
-	
-	/**
-	 *	
-	 *	@var user_id
-	 */
-	var $room_id;
-	
-	
+	var $_internalName='Schedule';
+	var $_foreignKeyList = array('practice_id' => 'Practice',
+							'provider_id' => 'Provider',
+							'room_id' => 'Room');
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
@@ -70,194 +32,203 @@ class Schedule extends ORDataObject{
 	function Schedule($id = "")	{
 		//call the parent constructor so we have a _db to work with
 		parent::ORDataObject();
-		
-		//shore up the most basic ORDataObject bits
-		$this->id = $id;
-
-		$this->schedule_code = "";
-		$this->name = "";
-		$this->description_long = "";
-		$this->description_short = "";
-		$this->events = array();
-	
-		$this->_table = "schedules";
-		
-		if ($id != "") {
-			$this->populate();
 		}
-	}
 	
-
-	function setup($id = "") {
-		if ($id > 0) {
-			$this->set('id',$id);
-			$this->populate();
+	function get_events() {
+		$events=$this->getChildren('ScheduleEvent');
+		return $events;	
 		}
 		
+	function get_delete_message() {
+		$string = "Schedule Name: " . $this->get('schedule_code') . "-" . $this->get('name') . "\n";
+		$evs = $this->get_events();
+		while($ev=&$evs->current() && $evs->valid()){
+			$string .= $ev->get_delete_message();
+			$evs->next();
 	}
-	function populate() {
-		parent::populate();
-		$this->events = Event::events_factory($this->id);
+		return $string;
+	}
+
+	function drop(){
+		$events = $this->getChildren('ScheduleEvent');
+		while($event=&$events->current() && $events->valid()){
+			$event->drop();
+			$events->next();
+		}
+		parent::drop();
+	}
+
+	function get_name(){
+		return $this->get('title');
+		}
+	
+	function get_practice_id(){
+		$practice =& $this->getParent('Practice');
+		return $practice->get('id');
+	}
+	
+	function set_practice_id($id){
+		if($this->get('id') < 1)
+			$this->persist();
+		$practice =& Celini::newORDO('Practice',$id);
+		$this->setParent($practice);
+	}
+	
+	function get_room_id(){
+		$room =& $this->getParent('Room');
+		return $room->get('id');
+	}
+		
+	function set_room_id($id){
+		if($this->get('id') < 1)
+			$this->persist();
+		$room =& Celini::newORDO('Room',$id);
+		$this->setParent($room);
+		}
+
+	function set_provider_id($id){
+		if($this->get('id') < 1)
+			$this->persist();
+		$provider =& Celini::newORDO('Provider',$id);
+		$this->setParent($provider);
+		}
+		
+	function get_provider_id(){
+		$provider =& $this->getParent('Provider');
+		return $provider->get('id');
+	}
+		
+	function genericList(){
+			
+			$db = new clniDb();
+			$sql = "select $this->_key, title from $this->_table where 1";
+			$result = $db->execute($sql);
+			$list = array();
+		while ($result && !$result->EOF) {
+				$list[$result->fields[$this->_key]] = $result->fields['title'] ;
+			$result->MoveNext();
+		}
+			return $list;
 	}
 
 	function fromUserId($user_id) {
-		settype($user_id,'int');
-
-		$s =& ORDataObject::factory('Schedule');
-
-		$ret = array();
-
-		$res = $s->_execute("select id from $s->_prefix$s->_table where user_id = $user_id");
-		while($res && !$res->EOF) {
-			$ret[] = ORDataObject::factory('Schedule',$res->fields['id']);
-			$res->MoveNext();
-		}
-		return $ret;
-	}
-
-	function persist() {
-		parent::persist();
-		foreach ($this->events as $event) {
-			$event->persist($this->id);
-		}
-	}
-	
-	
-	/**
-	 * Convenience function to get an array of many objects
-	 * 
-	 * @param int $foreign_id optional id use to limit array on to a specific relation, otherwise every document object is returned 
-	 */
-	function schedules_factory($foreign_id = "") {
-		$schedules = array();
-		
-		if (empty($foreign_id)) {
-			 $foreign_id= "like '%'";
-		}
-		else {
-			$foreign_id= " = '" . mysql_real_escape_string(strval($foreign_id)) . "'";
-		}
-		
-		$c = new Schedule();
-		$sql = "SELECT id FROM  " . $c->_prefix . $c->_table;
-		$result = $c->_Execute($sql);
-		
-		while ($result && !$result->EOF) {
-			$schedules[] = new Schedule($result->fields['id']);
-			$result->MoveNext();
-		}
-
-		return $schedules;
+		$user =& Celini::newORDO('User',$user_id);
+		$children = $user->getChildren('Schedule');
+		$children = $children->toArray();
+		return $children;
 	}
 	
 	/**
-	 * Convenience function to generate string debug data about the object
+	 * Returns array of recurrence ordos
+	 *
+	 * @return array
 	 */
-	function toString($html = false) {
-		$string .= "\n"
-		. "ID: " . $this->id."\n"
-		."schedule_code:" . $this->schedule_code."\n"
-		."name:" . $this->name."\n"
-		."description_long:" . $this->description_long."\n"
-		."description_short:" . $this->description_short."\n"
-		. "\n";
-		if ($html) {
-			return nl2br($string);
+	function getRecurrences(){
+		$recurs = $this->getChildren('Recurrence');
+		$recurs = $recurs->toArray();
+		return $recurs;
 		}
-		else {
-			return $string;
-		}
-	}
 
-	/**#@+
-	*	Getter/Setter methods used by reflection to affect object in persist/poulate operations
-	*	@param mixed new value for given attribute
+	/**
+	 * Creates the Recurrence, RecurrencePattern, and Events
+	 *
+	 * @param array $recdata
+	 * @param array $rpdata
+	 * @return ORDataObject|false
 	*/
-	function set_id($id) {
-		$this->id = $id;
+	function &createRecurrence($recdata,$rpdata){
+		$rec=&Celini::newORDO('Recurrence');
+		$rec->populate_array($recdata);
+		$rec->persist();
+		$this->setChild($rec);
+		$rp=&$rec->createPattern($rpdata,'ScheduleEvent');
+		if(!$rp) {
+			$rec->drop();
+			$return = false;
+			return $return;
 	}
-	function get_id() {
-		return $this->id;
+		$eg =& $rec->getParent('EventGroup');
+		$ocs=$rec->createEvents($rp,'ScheduleEvent');
+		foreach($ocs as $ocid){
+			if($eg->get('id') > 0) {
+				$oc =& Celini::newORDO('ScheduleEvent',$ocid);
+				$eg->setChild($oc);
+				$oc->set('title',$eg->get('title'));
+				$oc->persist();
 	}
-	
-	function set_schedule_code($value) {
-		$this->schedule_code = $value;
+			$this->setChild($oc);
 	}
-	function get_schedule_code() {
-		return $this->schedule_code;
-	}
-
-	function set_name($value) {
-		$this->name = $value;
-	}
-	function get_name() {
-		return $this->name;
-	}
-
-	function set_description_long($value) {
-		$this->description_long = $value;
-	}
-	function get_description_long() {
-		return $this->description_long;
+		return $rec;
 	}
 
-	function set_description_short($value) {
-		$this->description_short = $value;
+	/**
+	 * Returns date and begin/end timestamps of the first
+	 * empty timeslot in a provider's schedule
+	 *
+	 * @param int $provider_id
+	 * @param int|null $room_id
+	 * @param ISO DateTime $start
+	 * @param ISO DateTime $end
+	 * @param int $amount amount of time in seconds required
+	 * @param string|null $schedule_code
+	 * @return int|false timestamp of start of block
+	 */
+	function findFirst($provider_id,$room_id = 0,$start,$end,$amount,$schedule_code = null) {
+		$db =& Celini::dbInstance();
+		$provider =& Celini::newORDO('Provider',$provider_id);
+		$sevent =& Celini::newORDO('ScheduleEvent');
+		$finder =& $sevent->relationshipFinder();
+		if($provider_id > 0)
+			$finder->setParent($provider);
+		if($room_id > 0) {
+			$room =& Celini::newORDO('Room',$room_id);
+			$finder->setParent($room);
 	}
-	function get_description_short() {
-		return $this->description_short;
+		if(!is_null($schedule_code) && !empty($schedule_code)) {
+			$finder->_joins .=" LEFT JOIN relationship ES ON ES.parent_type='Schedule' AND ES.child_type='ScheduleEvent' AND ES.child_id = event.event_id ";
+			$finder->_joins .=" JOIN schedule ON schedule.schedule_id = ES.parent_id AND schedule.schedule_code = ".$db->quote($schedule_code);
 	}
-	
-	function set_practice_id($value) {
-		$this->practice_id = $value;
+		$finder->_orderBy = 'event.start';
+		$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.strtotime($end));
+		$schedules =& $finder->find();
+
+		$event =& Celini::newORDO('CalendarEvent');
+		for($schedules->rewind();$schedules->valid();$schedules->next()) {
+			$sched =& $schedules->current();
+			$start = strtotime($sched->get('start'));
+			$end = strtotime($sched->get('end'));
+			$finder =& $event->relationshipFinder();
+			$finder->_orderBy = 'event.start';
+			$finder->_joins .= ' LEFT JOIN appointment ON appointment.event_id = event.event_id';
+			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND appointment.provider_id ='.$db->quote($provider_id));
+			$events =& $finder->find();
+			if($events->count() == 0) {
+				if($end - $start >= $amount) {
+					$db->debug = false;
+					return $start;
+				} else {
+					continue;
 	}
-	function get_practice_id() {
-		return $this->practice_id;
 	}
-	
-	function set_user_id($value) {
-		$this->user_id = $value;
+			for($events->rewind();$events->valid();$events->next()) {
+				$event =& $events->current();
+				if(!isset($evend)) $evend = $start;
+				$evstart = strtotime($event->get('start'));
+				if($evstart - $evend >= $amount) {
+					$db->debug = false;
+					return $evend;
 	}
-	function get_user_id() {
-		return $this->user_id;
+				if($events->key()+1 == $events->count()) {
+					if($end - strtotime($event->get('end')) >= $amount) {
+						$db->debug = false;
+						return strtotime($event->get('end'));
 	}
-	
-	function set_room_id($value) {
-		$this->room_id = $value;
 	}
-	function get_room_id() {
-		return $this->room_id;
+				$evend = $evend > strtotime($event->get('end')) ? $evend : strtotime($event->get('end'));
 	}
-	
-	function get_events() {
-		return $this->events;	
 	}
-	
-	function get_delete_message() {
-		$string = "Schedule Name: " . $this->get_schedule_code() . "-" . $this->get_name() . "\n";
-		$evs = $this->get_events();
-		foreach ($evs as $ev) 	{
-			$string .= $ev->get_delete_message();
-		}	
-		return $string;
-	}
-	
-	function delete() {
-		$sql = "DELETE from " . $this->_prefix . $this->_table . " where id=" . $this->_db->qstr($this->id);
-		$result = $this->_db->Execute($sql);
-		$result = $this->_db->ErrorMsg();
-		$evs = $this->get_events();
-		$retval = true;
-		foreach ($evs as $ev) {
-			$val = $ev->delete();
-			($val && $retval) ? $retval=true: $retval = false;	
-		}
-		if (empty($result) && $retval) {
-			return true;
-		}
 		return false;
 	}
-
 
 } // end of Class
 

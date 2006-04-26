@@ -32,6 +32,8 @@ class ProviderToInsurance extends ORDataObject {
 	/**#@-*/
 
 	var $_typeCache = false;
+	var $_table = 'provider_to_insurance';
+	var $_internalName='ProviderToInsurance';
 
 
 	/**
@@ -40,7 +42,6 @@ class ProviderToInsurance extends ORDataObject {
 	 */
 	function ProviderToInsurance($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'provider_to_insurance';
 		$this->_sequence_name = 'sequences';	
 	}
 

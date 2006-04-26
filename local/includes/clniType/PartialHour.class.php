@@ -15,7 +15,7 @@ class clniTypePartialHour {
 
 	function widget($name,$currentValue) {
 		$times = array();
-		$ints=array(5,10,15,20,30);
+		$ints=array(1,5,10,15,20,30,60);
 		foreach($ints as $i) {
 			$times[$i*60] = $i;
 		}

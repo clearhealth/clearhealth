@@ -29,17 +29,19 @@ class Provider extends MergeDecorator {
 	var $bill_as			= '';
 	var $report_as			= '';
 	/**#@-*/
-
+	var $_table = 'provider';
+	var $_internalName='Provider';
+	var $_key = 'person_id';
 	var $patient;
 
 
+	var $_table = 'provider';
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
 	function Provider($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'provider';
 		$this->_sequence_name = 'sequences';	
 		$this->merge('person',ORDataObject::factory('Person'));
 	}
@@ -120,6 +122,17 @@ class Provider extends MergeDecorator {
 	}
 
 	function valueList_username() {
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+
+		$types = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1) {
+				$types[] = $row->key;
+			}
+		}
+
 		$sql = 'SELECT
 				DISTINCT u.user_id, u.username
 			FROM
@@ -130,7 +143,7 @@ class Provider extends MergeDecorator {
 				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
 			WHERE
 				ed.name = "person_type" AND
-				ev.value = "Provider" AND
+				ev.key in('.implode(',',$types).') AND
 				p.inactive = 0
 			ORDER BY
 				u.username';
@@ -151,6 +164,41 @@ class Provider extends MergeDecorator {
 				provider AS pro
 				INNER JOIN person AS per USING(person_id)';
 		return $this->dbHelper->getAssoc($sql);
+	}
+
+	function valueList_usernamePersonId() {
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+
+		$types = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1) {
+				$types[] = $row->key;
+			}
+		}
+
+		$sql = 'SELECT
+				DISTINCT p.person_id, u.username
+			FROM
+				user AS u
+				INNER JOIN person AS p USING(person_id)
+				INNER JOIN person_type AS pt USING(person_id)
+				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
+				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
+			WHERE
+				ed.name = "person_type" AND
+				ev.key in('.implode(',',$types).') AND
+				p.inactive = 0
+			ORDER BY
+				u.username';
+		$res = $this->_execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['person_id']] = $res->fields['username'];
+			$res->moveNext();
+		}
+		return $ret;
 	}
 }
 ?>

@@ -58,5 +58,27 @@ class C_Test extends Controller {
 	function actionRadio() {
 		return $this->view->render('radio.html');
 	}
+	
+	function actionRelationship(){
+		$practice=&Celini::newORDO('Practice',600001);
+		$room=& Celini::newORDO('Room',600010);
+		$practice->setParent($room);
+		$rooms=&$practice->getParents('Room');
+		
+		var_dump($rooms->count());
+		while($room=&$rooms->current() && $rooms->valid()){
+			var_dump($room->get('id'));
+			$rooms->next();
+		}
+	}
+	
+	function actionTest(){
+		$prov=&Celini::newORDO('Provider',600011);
+		var_dump($prov->get('id'));
+		var_dump($prov->isPopulated());
+//		var_dump($prov);
+		$sched=&Celini::newORDO('Schedule',600392);
+		var_dump($sched->getParent('Provider'));
+	}
 }
 ?>

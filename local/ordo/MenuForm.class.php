@@ -10,10 +10,11 @@ class MenuForm extends ORDataObject {
 	var $menu_id;
 	var $form_id;
 	var $title;
+	var $_table = 'menu_form';
+	var $_internalName='MenuForm';
 
 	function MenuForm($id=0,$db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = "menu_form";
 		$this->_sequence_name = "sequences";	
     	
 		$this->id = $id;

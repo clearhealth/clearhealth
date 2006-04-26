@@ -55,6 +55,9 @@ class Person extends ORDataObject {
 	 * Person type
 	 */
 	var $_types	= false;
+	var $_table = 'person';
+	var $_internalName='Person';
+	var $_key = 'person_id';
 	
 	
 	/**#@+
@@ -574,6 +577,20 @@ class Person extends ORDataObject {
 		}
 	}
 
+	function value_name() {
+		$f = $this->get('first_name');
+		$l = $this->get('last_name');
+		$m = $this->get('middle_name');
+
+		$name = $l;
+		if (!empty($l)) {
+			$name .= ', ';
+		}
+		$name .= "$f $m";
+		return $name;
+		
+	}
+
 	function getMaritalStatusList() {
 		$list = $this->_load_enum('marital_status',false);
 		return array_flip($list);
@@ -584,6 +601,26 @@ class Person extends ORDataObject {
 		if(isset($list[$this->get("marital_status")])) {
 			return $list[$this->get("marital_status")];
 		}
+	}
+	
+	function getVisitQueues() {
+		$pat =& $this;
+		if($this->name() != 'Patient') {
+			$pat =& Celini::newORDO('Patient',$this->get('id'));
+}
+		$queues =& $pat->getParents('VisitQueue');
+		return $queues;
+	}
+	
+	function &getProvider() {
+		$patient =& Celini::newORDO('Patient',$this->get('id'));
+		$prov =& $patient->getProvider();
+		return $prov;
+	}
+	
+	function &getPatient() {
+		$patient =& Celini::newORDO('Patient',$this->get('id'));
+		return $patient;
 	}
 }
 ?>

@@ -25,6 +25,7 @@ class OccurenceBreakdown extends ORDataObject {
 	var $title		= '';
 	/**#@-*/
 	var $_table = 'occurence_breakdown';
+	var $_internalName='OccurenceBreakdown';
 
 	function setupByIndex($occurenceId,$index) {
 		$sql = "select * from ".$this->tableName()." where occurence_id = ".$this->dbHelper->quote($occurenceId) .' and `index` = '.$this->dbHelper->quote($index);

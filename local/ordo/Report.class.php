@@ -27,6 +27,7 @@ class Report extends ORDataObject {
 
 	var $storage_metadata =  array('int' => array('show_sequence'=>0,'snapshot_style'=>0), 'date' => array(), 'string' => array('system_report'=>''), 'text' => array());
 	var $_table = "reports";
+	var $_internalName='Report';
 
 	/**
 	*	Constructor expects a reference to and adodb compliant db object.

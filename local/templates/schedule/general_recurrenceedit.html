@@ -1,0 +1,61 @@
+{if $eventGroups}
+<fieldset class="radio" id="addrecurrence">
+		<legend>{if $recur->get('id') > 0}{l}Edit{/l}{else}{l}New{/l}{/if} {l}Recurrence{/l}</legend>
+		<input type="hidden" name="Recurrence[id]" value="{$recur->get('id')}" />
+	<table cellpadding="0" cellspacing="0" border="0" >
+	<tr>
+		<td>
+		{l}Start Date (YYYY-MM-DD){/l} </td><td><input type="text" name="Recurrence[start_date]" id="f_date_start" value="{$recur->get('start_date')}" /><img id="f_start_button" src="{$base_dir}images/stock/set_time.gif" />
+		</td>
+	</tr>
+	<tr>
+		<td>
+		{l}End Date (YYYY-MM-DD){/l}</td><td><input type="text" name="Recurrence[end_date]" id="f_date_end" value="{$recur->get('end_date')}" /><img id="f_end_button" src="{$base_dir}images/stock/set_time.gif" />
+		</td>
+	</tr>
+	<tr>
+		<td>
+		{l}Event Start Time (24-Hour Time){/l} </td><td><input type="text" name="Recurrence[start_time]" id="f_time_start" value="{$recur->get('start_time')}" />
+		</td>
+	</tr>
+	<tr>
+		<td>
+		{l}Event End Time (24-Hour Time){/l}</td><td><input type="text" name="Recurrence[end_time]" id="f_time_end" value="{$recur->get('end_time')}" />
+		</td>
+	</tr>
+	<tr>
+		<td>
+		{l}Add to Group{/l}</td><td>
+		{html_options name="Recurrence[event_group]" options=$eventGroups->valueList('title') selected=$recur->get('event_group')}
+		</td>
+	</tr>
+	</table>
+{literal}
+<script type="text/javascript">
+	var thisDate=new Date();
+	var dateRange=new Array();
+	dateRange[0]=thisDate.getFullYear();
+	dateRange[1]=thisDate.getFullYear()+2;
+    Calendar.setup({
+        inputField     :    "f_date_start",   // id of the input field
+        ifFormat       :    "%Y-%m-%d",       // format of the input field
+        button         :    "f_start_button",
+        range          :    [thisDate.getFullYear(),thisDate.getFullYear()+2]
+    });
+    Calendar.setup({
+        inputField     :    "f_date_end",
+        ifFormat       :    "%Y-%m-%d",
+        button         :    "f_end_button",
+        range          :    [thisDate.getFullYear(),thisDate.getFullYear()+2]
+    });
+</script>
+{/literal}
+{include file="recurrence/general_recurrencepattern_edit.html"}
+						<input type="hidden" name="Recurrence[id]" value="{$recur->get('id')}" />
+						{if $recur->get('id') == 0}
+						<input type="submit" value="Add..." />
+						{else}
+						<input type="submit" value="Save..." />
+						{/if}
+</fieldset>
+{/if}

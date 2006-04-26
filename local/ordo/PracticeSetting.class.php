@@ -22,6 +22,8 @@ class PracticeSetting extends ORDataObject {
 	var $value		= '';
 	var $serialized		= '';
 	/**#@-*/
+	var $_table = 'practice_setting';
+	var $_internalName='PracticeSetting';
 
 	function setupName($name,$practiceId) {
 		$name = $this->dbHelper->escape($name);
@@ -42,7 +44,6 @@ class PracticeSetting extends ORDataObject {
 	 */
 	function PracticeSetting($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'practice_setting';
 		$this->_sequence_name = 'sequences';	
 	}
 

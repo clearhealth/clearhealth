@@ -1,0 +1,9 @@
+<fieldset id="TemplateList">
+	<legend>{l}Visit Queue Templates{/l}</legend>
+<a href="{link action='Setup' controller='VisitQueue'}">{l}Add Template{/l}</a><br />
+{foreach from=$templates item=t key=tkey}
+	<a href="{link action='Setup' controller='VisitQueue'}template_id={$tkey}">{$t}</a> <a href="{link}delete_id={$tkey}">{l}D{/l}</a><br />
+{foreachelse}
+{l}No Templates Found{/l}
+{/foreach}
+</fieldset>

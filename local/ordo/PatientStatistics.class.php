@@ -38,6 +38,8 @@ class PatientStatistics extends ORDataObject {
 		'language' => 'language',
 		'migrant_status' => 'migrant_status');
 	/**#@-*/
+	var $_table = 'patient_statistics';
+	var $_internalName='PatientStatistics';
 	
 	/**
 	 * Setup some basic attributes
@@ -45,7 +47,6 @@ class PatientStatistics extends ORDataObject {
 	 */
 	function PatientStatistics($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'patient_statistics';
 		$this->_sequence_name = 'sequences';	
 	}
 

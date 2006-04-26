@@ -1,4 +1,8 @@
 <?php
+// default starting location /index.php/calendar/day
+$config['default_controller'] = "CalendarDisplay";
+$config['default_action'] = "day";
+
 ################################################################################
 # Confidential Actions
 ################################################################################
@@ -15,6 +19,14 @@ $config['confidentialActions']['encounter']['*'] = true;
 $config['module_paths']['billing'] = APP_ROOT . '/modules/billing';
 $config['module_paths']['labs']    = APP_ROOT . '/modules/labs';
 $config['module_paths']['x12import'] = APP_ROOT . '/modules/x12_importer';
+$config['module_paths']['calendar'] = APP_ROOT . '/modules/calendar'; 
+ 
+################################################################################ 
+# Calendar Module Options  
+################################################################################ 
+$config['calendar']['event_render'] = 'CalendarEventRender'; 
+$config['calendar']['ajax_handler'] = 'CalendarAJAXHandler'; 
+$config['calendar']['data_handler'] = 'ClearhealthCalendarData'; 
 
 
 ################################################################################
@@ -39,4 +51,13 @@ $config['document_manager']['type_type'] = false;
 // Show extra acl and db debugging info
 $config['debug'] = false;
 
+################################################################################
+## Locale settings
+################################################################################
+// Default date/time formats
+$config['locale']['date_format']      = "%m/%d/%Y";
+$config['locale']['time_format']      = "%H:%i";
+$config['locale']['timestamp_format'] = sprintf("%s %s",
+	$config['locale']['date_format'],
+	$config['locale']['time_format']);
 ?>

@@ -29,6 +29,7 @@ class AccountNote extends ORDataObject {
 	 * Primary Key
 	 */
 	var $_key = 'account_note_id';
+	var $_internalName='AccountNote';
 
 	
 	function set_date_posted($datetime) {

@@ -23,6 +23,8 @@ class PaymentClaimline extends ORDataObject {
 	var $writeoff		= '';
 	var $carry		= '';
 	/**#@-*/
+	var $_table = 'payment_claimline';
+	var $_internalName='PaymentClaimline';
 
 
 	/**
@@ -109,7 +111,7 @@ class PaymentClaimline extends ORDataObject {
 	function calculateCarry($encounterId) {
 		$table = $this->tableName();
 		$sql = "select 
-				(cd.fee - ifnull(sum(paid),0.00)) carry 
+				(cd.fee - sum(ifnull(paid,0.00)) - sum(ifnull(writeoff,0.00)) ) carry 
 			from 
 				encounter e 
 				inner join coding_data cd on cd.foreign_id = e.encounter_id

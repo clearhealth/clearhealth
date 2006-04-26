@@ -1,0 +1,25 @@
+<fieldset id="QueueList">
+	<legend>{l}Visit Queues{/l}</legend>
+<a href="{link action='Edit' controller='VisitQueue'}">{l}Add Queue{/l}</a><br />
+{if $queues->count() > 0}
+{while $queues->valid()}
+{assign var=q value=$queues->current()}
+{assign var=ps value=$q->getChildren('Patient')}
+{assign var=t value=$q->getTemplate()}
+	<a href="{link action='Edit' controller='VisitQueue'}queue_id={$q->get('id')}">{$t->get('title')}</a> <a href="{link}delete_id={$tkey}">{l}D{/l}</a>
+	<br />{l}Patient(s):{/l}<ul>
+	{if $ps->count() == 0}{l}None{/l}
+	{else}
+	{while $ps->valid()}
+	{assign var=p value=$ps->current()}
+	{$p->populate()}
+	<a href="{link action='view' controller='PatientDashboard'}id={$p->get('id')}">{$p->get('last_name')}, {$p->get('first_name')}</a><br />
+	{assign var=p value=$ps->next()}
+	{/while}
+	{/if}
+	{assign var=q value=$queues->next()}
+{/while}
+{else}
+{l}No Queues Found{/l}
+{/if}
+</fieldset>

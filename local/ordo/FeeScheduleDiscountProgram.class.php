@@ -14,6 +14,7 @@ class FeeScheduleDiscountProgram extends ORDataObject {
 	var $fee_schedule_discount_id		= '';
 	var $insurance_program_id		= '';
 	/**#@-*/
+	var $_internalName='FeeScheduleDiscountProgram';
 
 
 	/**

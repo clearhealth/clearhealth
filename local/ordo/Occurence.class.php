@@ -99,9 +99,9 @@ class Occurence extends ORDataObject{
 	/**
 	 * {@inheritdoc}
 	 */
-	var $_key = 'id';
 
 	var $_table = "occurences";
+	var $_internalName='Occurence';
 	
 	/**
 	 * Constructor sets all attributes to their default value

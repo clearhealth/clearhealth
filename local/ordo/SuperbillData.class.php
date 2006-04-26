@@ -21,6 +21,8 @@ class SuperbillData extends ORDataObject {
 	var $code_id		= '';
 	var $status		= '';
 	/**#@-*/
+	var $_table = 'superbill_data';
+	var $_internalName='SuperbillData';
 
 
 	/**
@@ -29,7 +31,6 @@ class SuperbillData extends ORDataObject {
 	 */
 	function SuperbillData($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'superbill_data';
 		$this->_sequence_name = 'sequences';	
 	}
 

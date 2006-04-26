@@ -2,11 +2,11 @@
 if (!defined('CALENDAR_ROOT')) {
 	define('CALENDAR_ROOT', APP_ROOT . '/local/lib/Calendar/');
 }
-$loader->requireOnce('lib/Calendar/Month/Weekdays.php');
-$loader->requireOnce('lib/Calendar/Month/Weeks.php');
-$loader->requireOnce('lib/Calendar/Day.php');
-$loader->requireOnce('lib/Calendar/Week.php');
-$loader->requireOnce('lib/Calendar/Decorator.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Month/Weekdays.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Month/Weeks.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Day.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Week.php');
+$loader->requireOnce(CALENDAR_ROOT . 'Decorator.php');
 
 $loader->requireOnce('controllers/C_Calendar.class.php');
 $loader->requireOnce('includes/CalendarController.class.php');

@@ -31,6 +31,7 @@ class Identifier extends ORDataObject {
 	var $_typeCache = false;
 
 	var $_table = 'identifier';
+	var $_internalName='Identifier';
 
 	/**
 	 * Setup some basic attributes

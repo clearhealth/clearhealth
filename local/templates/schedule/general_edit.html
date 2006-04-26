@@ -1,0 +1,100 @@
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="schedule"}
+<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
+		if it were called last, the settings from the form would be overwritten with the old information-->
+<input type="hidden" name="form_id" value="{$schedule->get('id')}" />
+<input type="hidden" name="Schedule[id]" value="{$schedule->get('id')}" />
+<fieldset class="radio" id="addrecurrence">
+		<legend>{l}Schedule Information{/l}</legend>
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Name{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="Schedule[title]" value="{$schedule->get('title')}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE"><a href="#" class="tooltip" {popup text="There are three system codes. PS is a provider schedule, NS is a no show and ADM is admin. Typically most schedules should be of type PS."}>{l}Schedule Code{/l}</a></td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="10" name="Schedule[schedule_code]" value="{$schedule->get('schedule_code')}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Short Description{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
+		<input type="text" size="40" name="Schedule[description_short]" value="{$schedule->get('description_short')}"/>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Long Description{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<textarea wrap="virtual" cols="44" rows="6" name="Schedule[description_long]">{$schedule->get('description_long')}</textarea>
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Practice{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	{html_options name="Schedule[practice_id]" options=$practice->valueList('name') selected=$schedule->get('practice_id')}
+	</td>
+</tr>
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Provider{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	<select name="Schedule[provider_id]">
+	<option value=""></option>
+	{html_options options=$provider->valueList('usernamePersonId') selected=$schedule->get('provider_id')}
+	</select>
+	</td>
+</tr>
+
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Or Facility/Equipment{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+	<select name="Schedule[room_id]">
+	<option value=""></option>
+	{html_options options=$rooms_practice_array selected=$schedule->get('room_id')}
+	</select>
+	</td>
+</tr>
+<tr>
+	{if empty($schedule->id) }
+	<td><br /><input type="submit" value="Save" /></td>
+	{else} 
+	<td><br /><input type="submit" value="Update" /></td>
+	{/if}
+</tr>
+<tr>
+	<td><br></td>	
+</tr>
+</table>
+</fieldset>
+{include file="schedule/general_eventgroup.html"}
+<input type="hidden" name="schedule_id" value="{$schedule->id}" />
+{include file="schedule/general_recurrenceedit.html"}
+{include file="schedule/general_eventedit.html"}
+{if $eventGroups}
+{while $eventGroups->valid()}
+	{assign var=eventGroup value=$eventGroups->current()}
+	{assign var=recurrences value=$eventGroup->getRecurrences()}
+	{assign var=events value=$eventGroup->getEvents(false,'ScheduleEvent')}
+<fieldset class="radio" id="addrecurrence">
+		<legend>{$eventGroup->get('title')}</legend>
+	{include file="recurrence/general_recurrence.html"}
+	{if $schedule->get('id') < 1 }
+	<input type="submit" value="Save" />
+	{else} 
+	<input type="submit" value="Update" />
+	{/if}
+	{assign var='eventtype' value='ScheduleEvent'}
+	{include file="event/general_event.html"}
+	{if $schedule->get('id') < 1 }
+	<input type="submit" value="Save" />
+	{else} 
+	<input type="submit" value="Update" />
+	{/if}
+	{assign var=eventGroup value=$eventGroups->next()}
+</fieldset>
+{/while}
+{/if}
+</form>
+
+

@@ -22,6 +22,8 @@ class EncounterDate extends ORDataObject {
 	var $date		= '';
 	/**#@-*/
 
+	var $_table = 'encounter_date';
+	var $_internalName='EncounterDate';
 
 	/**
 	 * Setup some basic attributes
@@ -29,7 +31,6 @@ class EncounterDate extends ORDataObject {
 	 */
 	function EncounterDate($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'encounter_date';
 		$this->_sequence_name = 'sequences';	
 	}
 

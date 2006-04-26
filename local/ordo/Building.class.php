@@ -59,6 +59,7 @@ class Building extends ORDataObject{
 		'text' => array());
 	
 	var $_table = "buildings";
+	var $_internalName='Building';
     /**
 	 * Constructor sets all attributes to their default value
 	 *  

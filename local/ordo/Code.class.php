@@ -25,6 +25,8 @@ class Code extends ORDataObject {
 	/**#@-*/
 
 	var $_parentCode 	= null;
+	var $_table = 'codes';
+	var $_internalName='Code';
 
 	/**
 	 * Setup some basic attributes
@@ -32,7 +34,6 @@ class Code extends ORDataObject {
 	 */
 	function Code($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = 'codes';
 		$this->_sequence_name = 'sequences';	
 	}
 

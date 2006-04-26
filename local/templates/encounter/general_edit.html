@@ -30,6 +30,7 @@ function captureEnter (field, event) {
 				{include file="encounter/general_payment.html"}
 				{include file="encounter/general_forms.html"}
 				{include file="encounter/general_reports.html"}
+				{include file="visitqueue/general_visitqueue.html"}
 			</td>
 			<td valign="top">
 				{include file="encounter/general_people.html"}
@@ -40,7 +41,16 @@ function captureEnter (field, event) {
 		</tr>
 	</table>
 	</fieldset>
-</form>
 {clni_register_validation_rule id="date_of_treatment"}
-
+{if $encountertemplatelist}
+<fieldset>
+<legend>{l}Encounter Code Template{/l}</legend>
+{l}Reason:{/l} <select name="coding_template_id">
+<option value=''></option>
+{html_options options=$encountertemplatelist}
+</select>
+<input type="submit" value="{l}Add Codes{/l}" />
+</fieldset>
+{/if}
+</form>
 {$codingHtml}

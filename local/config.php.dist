@@ -8,10 +8,6 @@
 // Session Name
 $config['app_name'] = "clearhealth";
 
-// default starting location /index.php/calendar/day
-$config['default_controller'] = "calendar";
-$config['default_action'] = "day";
-
 // where forms are uploaded too
 $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 

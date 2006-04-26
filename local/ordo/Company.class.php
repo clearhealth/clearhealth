@@ -26,10 +26,11 @@ class Company extends ORDataObject {
 	var $_types 		= false;
 
 	var $_lookup 		= false;
+	var $_table = 'company';
+	var $_internalName='Company';
 
 	function Company($db = null) {
 		parent::ORDataObject($db);	
-		$this->_table = "company";
 		$this->_sequence_name = "sequences";	
 		$this->groups = array();
 
