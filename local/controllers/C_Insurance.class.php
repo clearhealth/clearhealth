@@ -35,6 +35,7 @@ class C_Insurance extends Controller {
 			$this->similarProgram->registerTemplate('program','<a href="'.Celini::managerLink('editProgram','edit').
 				'company_id={$company_id}&program_id={$insurance_program_id}">{$program}</a>');
 			$ipGrid = new cGrid($this->similarProgram);
+			$ipGrid->name = 'similarInsuranceGrid';
 			$this->assign_by_ref('ipGrid',$ipGrid);
 			$insuranceProgram->populateArray($_POST['insuranceProgram']);
 		}
