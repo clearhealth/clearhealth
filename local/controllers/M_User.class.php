@@ -45,6 +45,7 @@ class M_User extends M_Patient {
 			{
 				$escapedUsername = htmlspecialchars($username); 
 				$this->messages->addMessage("Username \"{$escapedUsername}\" already taken.");
+				return false;
 			}
 		}
 		
