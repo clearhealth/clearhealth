@@ -98,22 +98,6 @@ class Encounter extends ORDataObject {
 		$this->id = $id;
 	}
 
-	function get_current_payer() {
-		if($this->get('payment_plan') > 0) {
-			return 'plan'.$this->get('payment_plan');
-		}
-		return $this->_int_storage->get('current_payer');
-	}
-	
-	function set_current_payer($id) {
-		if(strpos($id,'plan') !== false) {
-			$this->_int_storage->set('current_payer',$id);
-		} else {
-			(int)$id=str_replace('plan','',$id);
-			$this->_int_storage->set('payment_plan',$id);
-		}
-	}
-	
 	function set_date_of_treatment($date) {
 		$this->_setDate('date_of_treatment', $date);
 	}
