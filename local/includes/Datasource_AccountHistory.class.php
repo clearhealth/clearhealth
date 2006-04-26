@@ -23,6 +23,8 @@ class Datasource_AccountHistory extends Datasource {
 	var $_numRows = false;
 	var $_valid = false;
 	var $filters = false;
+	var $adjustments = array();
+	var $adjustmentTypes = null;
 
 	function Datasource_AccountHistory($filters = false) {
 		$this->filters = $filters;
@@ -59,6 +61,10 @@ class Datasource_AccountHistory extends Datasource {
 
 			$this->payments[$claim_id] =& $this->_paymentList($person_id,$claim_id);
 			$this->_numRows += $this->payments[$claim_id]->numRows();
+			for($this->payments[$claim_id]->rewind();$this->payments[$claim_id]->valid();$this->payments[$claim_id]->next()) {
+				$row = $this->payments[$claim_id]->get();
+				$this->adjustments[$row['payment_id']] = $this->_getAdjustments($row['payment_id']);
+			}
 		}
 	}
 
@@ -173,6 +179,27 @@ class Datasource_AccountHistory extends Datasource {
 		//echo $ds->preview();
 		$ds->registerFilter('payment_type',array(&$payment,'lookupPaymentType'));
 		return $ds;
+	}
+	
+	function _getAdjustments($payment_id) {
+		$db =& Celini::dbInstance();
+		$sql = "SELECT * FROM eob_adjustment WHERE payment_id = $payment_id";
+		$res = $db->execute($sql);
+		$em =& Celini::enumManagerInstance();
+		$enum =& $em->enumList('eob_adjustment_type');
+		if(is_null($this->adjustmentTypes)) {
+			$this->adjustmentTypes = array();
+			for($enum->rewind();$enum->valid();$enum->next()) {
+				$value = $enum->current();
+				$this->adjustmentTypes[$value->key] = $value->value;
+			}
+		}
+		$adjustments = array();
+		while($res && !$res->EOF) {
+			$adjustments[] = $res->fields;
+			$res->MoveNext();
+		}
+		return $adjustments;
 	}
 }
 ?>

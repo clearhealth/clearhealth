@@ -54,7 +54,23 @@ class C_Account extends Controller {
 				$data[$row['claim_id']][] = $row;
 			}
 		}
-
+		$head =& Celini::HTMLHeadInstance();
+		$js = "function showAdjustments(id) {
+		rows = document.getElementsByName('adjrow'+id);
+		for(var i=0;i<rows.length;i++) {
+		rows[i].style.display = '';
+		}
+		document.getElementById('detailLink'+id).href = 'javascript:hideAdjustments('+id+')';
+		}
+		function hideAdjustments(id) {
+		rows = document.getElementsByName('adjrow'+id);
+		for(var i=0;i<rows.length;i++) {
+		rows[i].style.display = 'none';
+		}
+		document.getElementById('detailLink'+id).href = 'javascript:showAdjustments('+id+')';
+		}
+		";
+		$head->addInlineJs($js);
 		$serializer = new HTML_AJAX_Serializer_Json();
 		$this->view->assign('notes',$serializer->serialize($data));
 

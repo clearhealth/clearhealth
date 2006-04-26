@@ -12,6 +12,11 @@ class Grid_Renderer_AccountHistory extends Grid_Renderer_HTML {
 
 		$row = 0;
 		$ds =& $this->_grid->_datasource;
+		if($this->indexCol) {
+			$indexcol = $this->_renderTagWithAttributes('td',$row,'indexCol')."</td>";
+		} else {
+			$indexcol = '';
+		}
 		for($ds->rewind(); $ds->valid(); $ds->next()) {
 			$data = $ds->get();
 			$type = isset($data['type']) ? strtolower($data['type']) : '';
@@ -44,8 +49,18 @@ class Grid_Renderer_AccountHistory extends Grid_Renderer_HTML {
 					$ret .= '</td>';
 				}
 			}
+			if(isset($data['payment_id']) && !empty($ds->adjustments[$data['payment_id']])) {
+				$ret .= '<td style="background-color: transparent;"><a id="detailLink'.$data['payment_id'].'" href="javascript:showAdjustments('.$data['payment_id'].');">Details</a>';
+			}
 			$ret .= "</tr>\n";
-			
+			if(isset($data['payment_id']) && !empty($ds->adjustments[$data['payment_id']])) {
+				$ret .= "<tr name='adjrow".$data['payment_id']."' style='display:none;'><td colspan=11><strong>Adjustments:</strong></td></tr>\n";
+				foreach($ds->adjustments[$data['payment_id']] as $adj) {
+					$ret .= "<tr name='adjrow".$data['payment_id']."' style='display:none;'><td></td><td><em>".$ds->adjustmentTypes[$adj['adjustment_type']]."</em></td><td colspan=9>".sprintf('%.2f',$adj['value'])."</td></tr>";
+//					var_dump($adj);
+				}
+				$ret .= "</td></tr>\n";
+			}
 		}
 		$ret .= "</tbody>\n";
 		return $ret;
