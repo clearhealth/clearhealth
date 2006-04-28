@@ -533,8 +533,10 @@ class ClearhealthCalendarData {
 		// Let's build this thing!
 		$view =& new clniView();
 
+		$count = 0;
 		foreach($columns as $provider_id => $col) {
 			$columns[$provider_id]['eventmap'] =& $eventmap[$provider_id];
+			$columns[$provider_id]['index'] = $count++;
 			if(isset($this->events[$provider_id])) {
 				foreach($this->events[$provider_id] as $ts => $events) {
 					$columns[$provider_id][$ts] =& $this->events[$provider_id][$ts];
