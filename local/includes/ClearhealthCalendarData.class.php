@@ -444,6 +444,7 @@ class ClearhealthCalendarData {
 
 					}
 					if ($inBlock) {
+						$blocks[$pid][$blockId]['count'][$event['conflict_event_id']] = 1;
 						if ($blocks[$pid][$blockId]['start'] > $event['conflict_ts']) {
 							$blocks[$pid][$blockId]['start'] = $event['conflict_ts'];
 						}
@@ -455,6 +456,11 @@ class ClearhealthCalendarData {
 						$blocks[$pid][] = array('start'=>$event['conflict_ts'],'end'=>$event['end_ts']);
 					}
 				}
+			}
+		}
+		foreach($blocks as $pid => $col) {
+			foreach($col as $blockId => $block) {
+				$blocks[$pid][$blockId]['count'] = array_sum($block['count']);
 			}
 		}
 
