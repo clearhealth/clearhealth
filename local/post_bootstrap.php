@@ -12,6 +12,7 @@ $ajax->jsLibraries[] = 'zipcode';
 $ajaxServer =& Celini::ajaxServerInstance();
 $ajaxServer->registerJSLibrary('chBehaviors', 'behavior.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('zipcode', 'zipcode.js', realpath(dirname(__FILE__) . '/..') . '/js/');
+$ajaxServer->registerJSLibrary('quicksave', 'quicksave.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 
 // todo: where should this setting end up, does it really make sense to have it user configurable
 $conf =& Celini::configInstance();
@@ -20,6 +21,5 @@ $ajaxConf[] = 'ClearhealthAJAX';
 $conf->set('ajaxConfClasses',$ajaxConf);
 
 define('CLEARHEALTH_ROOT',APP_ROOT);
-$ajax =& Celini::ajaxServerInstance();
-$ajax->registerJSLibrary('suggest', 'suggest.js', CELINI_ROOT . '/js/');
+$ajaxServer->registerJSLibrary('suggest', 'suggest.js', CELINI_ROOT . '/js/');
 ?>

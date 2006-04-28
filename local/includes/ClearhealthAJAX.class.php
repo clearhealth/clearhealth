@@ -20,11 +20,16 @@ class ClearhealthAJAX {
 		$this->server->registerClass($zipserver,'zipcode',array('getData'));
 	}
 	
+	function initquicksave() {
+		$GLOBALS['loader']->requireOnce('includes/QuickSave.class.php');
+		$quick =& new QuickSave();
+		$this->server->registerClass($quick,'quicksave',array('saveForm','saveItem','loadForm'));
+	}
+	
 	function initappointment(){
 		$GLOBALS['loader']->requireOnce('controllers/C_Appointment.class.php');
 		$appointment=&new C_Appointment();
 		$this->server->registerClass($appointment,'appointment');
 	}
-
 }
 ?>

@@ -26,12 +26,19 @@ class C_Patient extends Controller {
 	 *
 	 */
 	function actionEdit($patient_id = 0) {
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('quicksave','quicksave');
 		$this->_storeCurrentAction ();
 		
 		if (isset($this->patient_id)) {
 			$patient_id = $this->patient_id;
 		}
-
+		$GLOBALS['loader']->requireOnce('includes/QuickSave.class.php');
+		$qs =& new QuickSave();
+		if($qs->loadForm('patientGeneralEditForm',$patient_id) !== false) {
+			$this->view->assign('formid','patientGeneralEditForm');
+			$this->messages->addMessage($this->view->render('restoreform.html'));
+		}
 		$GLOBALS['C_MAIN']['noOverlib'] = true;
 
 		$ajax =& Celini::ajaxInstance();

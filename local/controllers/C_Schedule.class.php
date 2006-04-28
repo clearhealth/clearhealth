@@ -31,7 +31,7 @@ class C_Schedule extends Controller
 		$finder =& new ORDOFinder('Schedule',"schedule.schedule_code != ''");
 		$schedules = $finder->find();
 		$schedules = $schedules->toArray();
-		$this->view->assign('schedules',$schedules);
+		$this->view->assign_by_ref('schedules',$schedules);
 		$c =& Celini::newORDO('Schedule');
 		return $this->view->render("schedules.html");
 	}
