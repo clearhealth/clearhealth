@@ -1,11 +1,11 @@
-var qsFirstChange = new Array();
-var qsFormIdentifier = new Array();
-var qsLoading = false;
 var QuickSave = {
-
+	
+	FirstChange: Array(),
+	FormIdentifier: Array(),
+	Loading: false,
 	quickLoad: function(formid,formIdentifier) {
-		qsLoading = true;
-		HTML_AJAX.call('quicksave','loadForm',QuickSave.quickLoadcb,formid,qsFormIdentifier[formid]);
+		QuickSave.Loading = true;
+		HTML_AJAX.call('quicksave','loadForm',QuickSave.quickLoadcb,formid,QuickSave.FormIdentifier[formid]);
 	},
 	
 	quickLoadcb: function (resultSet) {
@@ -58,12 +58,9 @@ var QuickSave = {
 					break;
 				case 'checkbox':
 					for(b=0;b<inputs.length;b++) {
-						if(inputs[b].type=='checkbox' && inputs[b].name==i && inputs[b].value==data[i][0]) {
-							input=inputs[b];
+						if(inputs[b].type=='checkbox' && inputs[b].name==i) {
+							inputs[b].checked=data[i][1];
 						}
-					}
-					if(input) {
-						input.selected=data[i][1][input.value];
 					}
 					break;
 				case 'radio':
@@ -75,10 +72,10 @@ var QuickSave = {
 					break
 			}
 		}
-		qsLoading = false;
+		QuickSave.Loading = false;
 	},
 
-	quickTextArea: function(element) {
+	quickTextarea: function(element) {
 		var x = new Array();
 		x[0] = element.name;
 		x[1] = 'textarea';
@@ -94,8 +91,7 @@ var QuickSave = {
 			x[2] = element.value;
 		}
 		if(element.type=='checkbox') {
-			x[2] = new Array();
-			x[2][element.value] = element.selected;
+			x[2] = element.checked;
 		}
 		if(element.type=='radio') {
 			if(element.checked) {
@@ -122,7 +118,7 @@ var QuickSave = {
 	quickSave: function(formid,info) {
 		formarray = new Array();
 		formarray[0] = formid;
-		formarray[1] = qsFormIdentifier[formid];
+		formarray[1] = QuickSave.FormIdentifier[formid];
 		formarray[2] = new Array(info[0],info[1],info[2]);
 		HTML_AJAX.defaultEncoding = 'JSON'; // set encoding to JSON encoding method
 		HTML_AJAX.call('quicksave','saveItem',false,formarray);
@@ -140,7 +136,7 @@ var QuickSave = {
 		textareas = document.getElementById(formid).getElementsByTagName('textarea');
 		formarray = new Array();
 		formarray[0] = formid;
-		formarray[1] = qsFormIdentifier[formid];
+		formarray[1] = QuickSave.FormIdentifier[formid];
 		formarray[2] = new Array();
 		for(var i=0;i<inputs.length;i++) {
 			if(inputs[i].type != 'submit' && inputs[i].type != 'button') {
@@ -164,10 +160,10 @@ var QuickSave = {
 		var textareas = element.getElementsByTagName('textarea');
 		
 		var inputhandler = function(event) {
-			if(!qsLoading) {
-				if(qsFirstChange[element.id] == true) {
+			if(!QuickSave.Loading) {
+				if(QuickSave.FirstChange[element.id] == true) {
 					QuickSave.quickSaveForm(element.id);
-					qsFirstChange[element.id] = false;
+					QuickSave.FirstChange[element.id] = false;
 				} else {
 					var target = HTML_AJAX_Util.eventTarget(event);
 					res = QuickSave.quickInput(target);
@@ -176,10 +172,10 @@ var QuickSave = {
 			}
 		}
 		var selecthandler = function(event) {
-			if(!qsLoading) {
-				if(qsFirstChange[element.id] == true) {
+			if(!QuickSave.Loading) {
+				if(QuickSave.FirstChange[element.id] == true) {
 					QuickSave.quickSaveForm(element.id);
-					qsFirstChange[element.id] = false;
+					QuickSave.FirstChange[element.id] = false;
 				} else {
 					var target = HTML_AJAX_Util.eventTarget(event);
 					res = QuickSave.quickSelect(target);
@@ -188,13 +184,13 @@ var QuickSave = {
 			}
 		}
 		var textareahandler = function(event) {
-			if(!qsLoading) {
-				if(qsFirstChange[element.id] == true) {
+			if(!QuickSave.Loading) {
+				if(QuickSave.FirstChange[element.id] == true) {
 					QuickSave.quickSaveForm(element.id);
-					qsFirstChange[element.id] = false;
+					QuickSave.FirstChange[element.id] = false;
 				} else {
 					var target = HTML_AJAX_Util.eventTarget(event);
-					res = QuickSave.quickTextArea(target);
+					res = QuickSave.quickTextarea(target);
 					QuickSave.quickSave(element.id,res);
 				}
 			}
@@ -203,7 +199,11 @@ var QuickSave = {
 		for(var i=0;i<inputs.length;i++) {
 			if(inputs[i].type == 'submit' || inputs[i].type == 'button') 
 				continue;
-			HTML_AJAX_Util.registerEvent(inputs[i],'blur',inputhandler);
+			if(inputs[i].type == 'checkbox') {
+				HTML_AJAX_Util.registerEvent(inputs[i],'change',inputhandler);
+			} else {
+				HTML_AJAX_Util.registerEvent(inputs[i],'blur',inputhandler);
+			}
 		}
 		for(var i=0;i<selects.length;i++) {
 			HTML_AJAX_Util.registerEvent(selects[i],'change',selecthandler);

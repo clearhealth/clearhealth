@@ -28,8 +28,8 @@ var C_PatientFinder = function find_remoting(searchString) {
 Behavior.register(
 	"#patientGeneralEditForm",
 	function(element) {
-		qsFirstChange[element.id] = true;
-		{/literal}qsFormIdentifier[element.id] = '{if $person->get('id') > 0}{$person->get('id')}{else}0{/if}';{literal}
+		QuickSave.FirstChange[element.id] = true;
+		{/literal}QuickSave.FormIdentifier[element.id] = '{if $person->get('id') > 0}{$person->get('id')}{else}0{/if}';{literal}
 		QuickSave.setup(element);
 	}
 );
