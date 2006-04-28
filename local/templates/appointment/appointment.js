@@ -155,3 +155,28 @@ function deleteAppointmentcb(resultSet) {
 	document.getElementById('eventHolder'+resultSet[0]).style.backgroundColor = 'gray';
 }
 
+var expanding = new Array();
+function expandAppointment(id,el) {
+	
+	expanding[id] = true;
+	if(el.offsetHeight < 100 && document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
+		document.getElementById('event'+id+'oldheightholder').innerHTML = el.offsetHeight;
+	}
+	if(document.getElementById('event'+id+'newheightholder').innerHTML != '') {
+		el.style.height=document.getElementById('event'+id+'newheightholder').innerHTML+'px';
+	} else {
+		el.style.height='auto';
+		document.getElementById('event'+id+'newheightholder').innerHTML = el.offsetHeight;
+	}
+	el.style.zIndex=100;
+	expanding[id] = false;
+}
+
+function shrinkAppointment(id,el) {
+	if(expanding[id] != true) {
+		el.style.zIndex=50;
+		if(document.getElementById('event'+id+'oldheightholder').innerHTML != '') {
+			el.style.height=document.getElementById('event'+id+'oldheightholder').innerHTML+'px';
+		}
+	}
+}
