@@ -369,13 +369,6 @@ class ClearhealthCalendarData {
 	/**
 	 * Return array of conflicting event ids and the event they conflict
 	 * (start after current-event-start but before current-event-end)
-	 * array(provider_id => array(
-	 *  	eid =>array(
-	 * 			'start'=>start,'end'=>end,'conflicts'=>array(
-	 * 				conflict_id
-	 * 			)
-	 * 		)
-	 * )
 	 *
 	 * @param array $filters
 	 */
@@ -389,50 +382,128 @@ class ClearhealthCalendarData {
 				UNIX_TIMESTAMP(event.start) start_ts,
 				UNIX_TIMESTAMP(c.start) conflict_ts,
 				UNIX_TIMESTAMP(c.end) end_ts,
-				c.event_id AS event_id, 
-				p.person_id as provider_id,
-				(UNIX_TIMESTAMP(event.end) - UNIX_TIMESTAMP(event.start)) length
+				c.event_id AS conflict_event_id, 
+				event.event_id AS event_id, 
+				ea.provider_id
 			FROM 
 				event,
 				event as c 
 				INNER JOIN appointment ea on event.event_id = ea.event_id
 				INNER JOIN appointment ec on c.event_id = ec.event_id
-				LEFT JOIN provider p on ea.provider_id = p.person_id
-			WHERE c.start >= event.start AND c.start < event.end
+			WHERE 
+			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
 			and ea.provider_id = ec.provider_id
-			$where
+			$where and c.event_id != event.event_id
 			 ORDER BY 
-			 	event.start, c.start";
+			 	UNIX_TIMESTAMP(event.end)-UNIX_TIMESTAMP(event.start), event.start, c.start, c.event_id";
+
 		$res = $db->execute($sql);
 		$conflicts = array();
-		$used = array();
+		$starts = array();
+
 		while($res && !$res->EOF) {
 			$start = $res->fields['start_ts'];
 			$pid = $res->fields['provider_id'];
 
-			if (!isset($used[$res->fields['event_id']])) {
-				$used[$res->fields['event_id']] = true;
-				if (!isset($conflicts[$pid][$start]['primary']) || $conflicts[$pid][$start]['primary']['length'] < $res->fields['length']) {
-					$conflicts[$pid][$start]['primary'] = $res->fields;
-				}
-				$conflicts[$pid][$start]['all'][$res->fields['event_id']] = $res->fields;
+			if (!isset($conflicts[$pid][$res->fields['conflict_event_id']])) {
+				$conflicts[$pid][$res->fields['conflict_event_id']] = array();
 			}
 
+			$conflicts[$pid][$res->fields['conflict_event_id']][$res->fields['event_id']] = $res->fields;
+			$starts[$pid][$res->fields['conflict_event_id']] = $res->fields['conflict_ts'];
 			$res->MoveNext();
 		}
-		
-		$conflicted = array();
-		foreach($conflicts as $pid => $col) {
-			foreach($col as $ts => $row) {
-				foreach($row['all'] as $eid => $event) {
-					if ($row['primary']['event_id'] != $eid) {
-						$conflicted[$pid][$eid] = $row['primary']['event_id'];
+
+		// calc start/end times for overlap blocks
+		$blocks = array();
+		foreach($conflicts as $pid => $conflict) {
+			foreach($conflict as $events) {
+				foreach($events as $event) {
+					$inBlock = false;
+					foreach($blocks[$pid] as $blockId => $block) {
+						// event start is inside current block
+						if ($event['conflict_ts'] >= $block['start'] && $event['conflict_ts'] <= $block['end']) {
+							$inBlock = true;
+							break;
+						}
+						// event end is inside current block
+						if ($event['end_ts'] >= $block['start'] && $event['end_ts'] <= $block['end']) {
+							$inBlock = true;
+							break;
+						}
+						// block start is inside current event
+						if ($block['start'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+							$inBlock = true;
+							break;
+						}
+						// block end is inside current event
+						if ($block['end'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+							$inBlock = true;
+							break;
+						}
+
+					}
+					if ($inBlock) {
+						if ($blocks[$pid][$blockId]['start'] > $event['conflict_ts']) {
+							$blocks[$pid][$blockId]['start'] = $event['conflict_ts'];
+						}
+						if ($blocks[$pid][$blockId]['end'] < $event['end_ts']) {
+							$blocks[$pid][$blockId]['end'] = $event['end_ts'];
+						}
+					}
+					else {
+						$blocks[$pid][] = array('start'=>$event['conflict_ts'],'end'=>$event['end_ts']);
 					}
 				}
 			}
 		}
 
-		return array($conflicts,$conflicted);
+		$conflictData = $conflicts;
+
+		// just a list of which columns we have
+		$columns = array();
+
+		// build columns using the rest of the items
+		foreach($conflicts as $pid => $conflict) {
+			$columns[$pid] = array();
+
+			foreach($conflict as $parent => $events) {
+				$current = 0;
+				while(isset($conflicts[$pid][$parent])) {
+					if (!isset($columns[$pid][$current])) {
+						$columns[$pid][$current] = array();
+					}
+
+					$add = true;
+					foreach($events as $id => $row) {
+						if(isset($columns[$pid][$current][$id])) {
+							$add = false;
+							$current++;
+							break;
+						}
+					}
+
+					if ($add) {
+						$columns[$pid][$current][$parent] = array( 'column' => $current, 'start_ts' => $starts[$pid][$parent]);
+						unset($conflicts[$pid][$parent]);
+
+						$conflictData[$pid][$parent] = true;
+					}
+				}
+			}
+		}
+
+		$conflicts = $conflictData;
+		//$columns[$pid][$colId] = $colId;
+		foreach($columns as $pid => $column) {
+			foreach($column[0] as $id => $data) {
+				unset($conflicts[$pid][$id]);
+			}
+			unset($columns[$pid][0]);
+		}
+
+		
+		return array($conflicts,$columns,$blocks);
 	}
 	
 	/**
@@ -448,31 +519,30 @@ class ClearhealthCalendarData {
 			$a =& $this->events;
 		}
 		$columns = $dayIterator->parent->getScheduleList();
-		list($conflicts,$conflicted) = $this->getConflictingEvents($filters);
+		list($conflicts,$conflictColumns,$conflictBlocks) = $this->getConflictingEvents($filters);
+
+		
 		$eventmap = $dayIterator->parent->eventScheduleMap;
 
 		// Let's build this thing!
 		$view =& new clniView();
 
 		foreach($columns as $provider_id => $col) {
-			if (isset($conflicts[$provider_id])) {
-				$columns[$provider_id]['conflicts'] = $conflicts[$provider_id];
-			}
-			if (isset($conflicted[$provider_id])) {
-				$columns[$provider_id]['conflicted'] = $conflicted[$provider_id];
-			}
 			$columns[$provider_id]['eventmap'] =& $eventmap[$provider_id];
 			if(isset($this->events[$provider_id])) {
 				foreach($this->events[$provider_id] as $ts => $events) {
 					$columns[$provider_id][$ts] =& $this->events[$provider_id][$ts];
 				}
 			}
-			if(empty($columns[$provider_id]['conflictcounts'])) {
-				$columns[$provider_id]['headercolspan'] = 2;
-				$columns[$provider_id]['colspan'] = 1;
-			} else {
-				$columns[$provider_id]['headercolspan'] = max($columns[$provider_id]['conflictcounts']) + 2;
-				$columns[$provider_id]['colspan'] = max($columns[$provider_id]['conflictcounts']) + 1;
+
+			if (isset($conflicts[$provider_id])) {
+				$columns[$provider_id]['conflicts'] = $conflicts[$provider_id];
+			}
+			if (isset($conflictColumns[$provider_id])) {
+				$columns[$provider_id]['conflictColumns'] = $conflictColumns[$provider_id];
+			}
+			if (isset($conflictBlocks[$provider_id])) {
+				$columns[$provider_id]['conflictBlocks'] = $conflictBlocks[$provider_id];
 			}
 			// now create the pre-columns (the appointment-dragger)
 			$view->assign_by_ref('dayIterator',$dayIterator);
