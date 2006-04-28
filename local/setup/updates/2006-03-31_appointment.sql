@@ -14,7 +14,7 @@ CREATE TABLE `appointment` (
   `provider_id` int(11) NOT NULL default '0',
   `patient_id` int(11) NOT NULL default '0',
   `room_id` int(11) NOT NULL default '0',
-  'appointment_code' varchar(255) NOT NULL default ''
+  `appointment_code` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`appointment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
