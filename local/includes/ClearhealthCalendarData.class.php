@@ -420,28 +420,30 @@ class ClearhealthCalendarData {
 			foreach($conflict as $events) {
 				foreach($events as $event) {
 					$inBlock = false;
-					foreach($blocks[$pid] as $blockId => $block) {
-						// event start is inside current block
-						if ($event['conflict_ts'] >= $block['start'] && $event['conflict_ts'] <= $block['end']) {
-							$inBlock = true;
-							break;
-						}
-						// event end is inside current block
-						if ($event['end_ts'] >= $block['start'] && $event['end_ts'] <= $block['end']) {
-							$inBlock = true;
-							break;
-						}
-						// block start is inside current event
-						if ($block['start'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
-							$inBlock = true;
-							break;
-						}
-						// block end is inside current event
-						if ($block['end'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
-							$inBlock = true;
-							break;
-						}
+					if(isset($blocks[$pid])) {
+						foreach($blocks[$pid] as $blockId => $block) {
+							// event start is inside current block
+							if ($event['conflict_ts'] >= $block['start'] && $event['conflict_ts'] <= $block['end']) {
+								$inBlock = true;
+								break;
+							}
+							// event end is inside current block
+							if ($event['end_ts'] >= $block['start'] && $event['end_ts'] <= $block['end']) {
+								$inBlock = true;
+								break;
+							}
+							// block start is inside current event
+							if ($block['start'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+								$inBlock = true;
+								break;
+							}
+							// block end is inside current event
+							if ($block['end'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+								$inBlock = true;
+								break;
+							}
 
+						}
 					}
 					if ($inBlock) {
 						$blocks[$pid][$blockId]['count'][$event['conflict_event_id']] = 1;
