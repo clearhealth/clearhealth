@@ -124,7 +124,8 @@ class C_Appointment extends Controller {
 		$scheds = $sfinder->find();
 		if($scheds->count() > 0) {
 			$sched =& $scheds->current();
-			$appointment->set('appointment_code',$sched->get('schedule_code'));
+			$sch =& $sched->getParent('Schedule');
+			$appointment->set('appointment_code',$sch->get('schedule_code'));
 		}
 		$appointment->persist();
 		$this->appointment =& $appointment;
