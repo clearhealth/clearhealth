@@ -157,9 +157,9 @@ function deleteAppointmentcb(resultSet) {
 
 var expanding = new Array();
 function expandAppointment(id,el) {
-	
+	if(el.offsetHeight < 100) {
 	expanding[id] = true;
-	if(el.offsetHeight < 100 && document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
+	if(document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
 		document.getElementById('event'+id+'oldheightholder').innerHTML = el.offsetHeight;
 	}
 	if(document.getElementById('event'+id+'newheightholder').innerHTML != '') {
@@ -170,6 +170,7 @@ function expandAppointment(id,el) {
 	}
 	el.style.zIndex=100;
 	expanding[id] = false;
+	}
 }
 
 function shrinkAppointment(id,el) {
@@ -179,4 +180,55 @@ function shrinkAppointment(id,el) {
 			el.style.height=document.getElementById('event'+id+'oldheightholder').innerHTML+'px';
 		}
 	}
+}
+
+function makeAppointment(form) {
+
+		inputs = form.getElementsByTagName('input');
+		selects = form.getElementsByTagName('select');
+		textareas = form.getElementsByTagName('textarea');
+		valuesarray = new Array();
+		keysarray = new Array();
+		for(var i=0;i<inputs.length;i++) {
+			if(inputs[i].type != 'submit' && inputs[i].type != 'button') {
+				keysarray[i] = inputs[i].name;
+				valuesarray[i] = inputs[i].value;
+			}
+		}
+		for(var i=0;i<selects.length;i++) {
+			options = selects[i].getElementsByTagName('option');
+			for(var j=0;j<options.length;j++) {
+				if(options[j].selected) {
+					keysarray[keysarray.length] = selects[i].name;
+					valuesarray[valuesarray.length] = options[j].value;
+				}
+			}
+		}
+		HTML_AJAX.defaultEncoding = 'JSON'; // set encoding to JSON encoding method
+		HTML_AJAX.call('appointment','ajax_process',makeAppointmentcb,keysarray,valuesarray);
+		HTML_AJAX.defaultEncoding = 'Null'; // set encoding back to default
+}
+
+/*
+rs[0] = error message
+rs[1] = column (provider) id
+rs[2] = old appointment id
+rs[3] = new appointment html
+*/
+function makeAppointmentcb(resultSet) {
+	if(resultSet[0] != 0) {
+		document.getElementById('aeMessageTarget').innerHTML = resultSet[0];
+	} else {
+		if(resultSet[2] > 0) {
+			document.getElementById('event'+resultSet[2]).innerHTML = resultSet[3];
+		} else {
+	eventholder = document.getElementById('schedule'+resultSet[1]+'events');
+	newevent = document.createElement('div');
+	newevent.style.display='block';
+	newevent.class='innerColumn';
+	newevent.innerHTML = resultSet[1];
+	eventholder.appendChild(newevent);
+		}
+	}
+//	alert(resultSet);
 }
