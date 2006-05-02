@@ -171,6 +171,8 @@ function expandAppointment(id,el) {
 	el.style.zIndex=100;
 	expanding[id] = false;
 	}
+
+	el.style.border = 'solid 2px black';
 }
 
 function shrinkAppointment(id,el) {
@@ -180,6 +182,7 @@ function shrinkAppointment(id,el) {
 			el.style.height=document.getElementById('event'+id+'oldheightholder').innerHTML+'px';
 		}
 	}
+	el.style.border = 'solid 1px black';
 }
 
 function makeAppointment(form) {
