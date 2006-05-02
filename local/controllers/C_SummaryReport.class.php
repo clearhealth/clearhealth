@@ -5,7 +5,7 @@
 class C_SummaryReport extends Controller {
 
 	function actionPatient_view($options = false) {
-		$patient_id = $this->get('patient_id');
+		$patient_id = $this->get('patient_id','c_patient');
 		if (!$patient_id) {
 			return "A Patient must be selected before running the patient summary report";
 		}
@@ -66,7 +66,6 @@ class C_SummaryReport extends Controller {
 		$patient =& ORDataObject::factory('Patient',$patient_id);
 		$this->assign_by_ref('patient',$patient);
 
-		$this->view->path = 'patient';
 		return $this->view->render('summary_report.html');
 	}
 
