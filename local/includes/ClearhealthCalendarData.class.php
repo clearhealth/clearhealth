@@ -548,8 +548,10 @@ class ClearhealthCalendarData {
 			if (isset($conflicts[$provider_id])) {
 				$columns[$provider_id]['conflicts'] = $conflicts[$provider_id];
 			}
+			$columns[$provider_id]['conflictCount'] = 0;
 			if (isset($conflictColumns[$provider_id])) {
 				$columns[$provider_id]['conflictColumns'] = $conflictColumns[$provider_id];
+				$columns[$provider_id]['conflictCount'] = count($conflictColumns[$provider_id]);
 			}
 			if (isset($conflictBlocks[$provider_id])) {
 				$columns[$provider_id]['conflictBlocks'] = $conflictBlocks[$provider_id];
