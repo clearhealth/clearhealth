@@ -290,9 +290,14 @@ class C_Appointment extends Controller {
 		return $this->view->render('pullList.html');
 		
 	}
+
 	function actionView() {
-		$apid = $this->GET->getTyped('appointment_id','int');
-		$appointment =& Celini::newORDO('Appointment',$apid);
+		if(is_null($this->appointment)) {
+			$apid = $this->GET->getTyped('appointment_id','int');
+			$appointment =& Celini::newORDO('Appointment',$apid);
+		} else {
+			$appointment =& $this->appointment;
+		}
 		$this->view->assign_by_ref('appointment',$appointment);
 		$event =& $appointment->getParent('CalendarEvent');
 		$this->view->assign_by_ref('event',$event);
@@ -312,7 +317,7 @@ class C_Appointment extends Controller {
 	}
 
 	function getAJAXMethods(){
-		return array('actionView', 'ajax_edit', 'ajax_cancel', 'ajax_ns', 'ajax_delete');
+		return array('actionView', 'ajax_edit', 'ajax_cancel', 'ajax_ns', 'ajax_delete', 'ajax_process');
 	}
 
 	function actionSearch() {
@@ -400,5 +405,88 @@ class C_Appointment extends Controller {
 			}
 		}
 	}
+	
+	function ajax_process($keysarray,$valuesarray) {
+		$data = array();
+		foreach($keysarray as $key=>$keyname) {
+			$keyname = str_replace('Appointment[','',$keyname);
+			$keyname = str_replace(']','',$keyname);
+			$data[$keyname] = $valuesarray[$key];
+		}
+//		trigger_error(print_r($data,true));
+		$db =& Celini::dbInstance();
+		$user =& $this->_me->get_user();
+		$appointmentId = 0;
+		if (isset($data['appointment_id'])) {
+			$appointmentId = enforceType::int($data['appointment_id']);
+		}
+		$appointment =& Celini::newOrdo('Appointment',$appointmentId);
+		$appointment->populateArray($data);
+		if($appointment->get('id') > 0) {
+			$appointment->set('last_change_date',date('Y-m-d'));
+			$appointment->set('last_change_id',$user->get('id'));
+		} else {
+			// No need to check for no-shows because the output will show it
+			$appointment->set('created_date',date('Y-m-d'));
+		}
+		$oldappointmentid = $appointment->get('id');
+		// Was this event in a schedule?
+		$schedule =& Celini::newORDO('ScheduleEvent');
+		$sfinder =& $schedule->relationshipFinder();
+		$sfinder->addParent(Celini::newORDO('Provider',$appointment->get('provider_id')));
+		$sfinder->addCriteria('event.start <= '.$db->quote($appointment->get('start_time')).' AND event.start > '.$db->quote($appointment->get('end_time')));
+		$scheds = $sfinder->find();
+		if($scheds->count() > 0) {
+			$sched =& $scheds->current();
+			$sch =& $sched->getParent('Schedule');
+			$appointment->set('appointment_code',$sch->get('schedule_code'));
+		}
+		$appointment->persist();
+		$GLOBALS['loader']->requireOnce('includes/CalendarDescription.class.php');
+		$conflicts = $appointment->conflicts();
+		$datets = strtotime($appointment->get('date'));
+		$d = array(date('Y',$datets),date('m',$datets),date('d',$datets));
+		$dayIterator =& new CalendarDescriptionDay($d);
+		$sql = "SELECT user.color FROM user WHERE user.person_id=".$db->quote($appointment->get('provider_id'));
+		$res = $db->execute($sql);
+		if($res && !$res->EOF) {
+			$color = $res->fields['color'];
+			$GLOBALS['loader']->requireOnce('lib/PEAR/Image/Color.php');
+			$ic = new Image_Color();
+			$ic->setColors($color,$color);
+			$ic->changeLightness(-20);
+			$border = $ic->_returnColor($ic->color1);
+			$ic->changeLightness(40);
+			$background = $ic->_returnColor($ic->color1);
+			$bgcss = "background-color:#$background;";
+		} else {
+			$bgcss = '';
+		}
+		$this->view->assign('eventcss', "top: ".$dayIterator->timestampToPosition(strtotime($appointment->get('date').' '.$appointment->get('start_time')))."px;height:".$dayIterator->timeDifferenceToHeight(strtotime($appointment->get('start_time')),strtotime($appointment->get('end_time')))."px;left:25px;$bgcss");
+		
+		$this->appointment =& $appointment;
+		$this->view->assign_by_ref('appointment',$appointment);
+		$event =& $appointment->getParent('CalendarEvent');
+		$this->view->assign_by_ref('event',$event);
+		$provider =& $event->getParent('Provider');
+		$patients =& $event->getChildren('Patient');
+		$this->view->assign_by_ref('patients',$patients);
+		$this->view->assign_by_ref('provider',$provider);
+		$room =& $event->getParent('Room');
+		$this->view->assign('ev_edit',true);
+		$user =& User::fromPersonId($provider->get('id'));
+		$this->view->assign_by_ref('provideruser',$user);
+		$p =& $patients->current();
+		$prsn =& Celini::newORDO('Person',$p->get('id'));
+		$numbers = array_values($prsn->get_numbers());
+		$this->view->assign('phone',isset($numbers[0]) ? $numbers[0]['number'] : '');
+		if($oldappointmentid > 0) {
+			$out = $this->view->render('innerappointment.html');
+		} else {
+			$out = $this->view->render('singleappointment.html');
+		}
+		return array(0,$appointment->get('provider_id'),$oldappointmentid > 0 ? $appointment->get('event_id') : 0,$out,$appointment->get('id'));
+	}
+
 }
 ?>

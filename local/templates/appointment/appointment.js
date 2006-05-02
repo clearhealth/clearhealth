@@ -212,7 +212,7 @@ function makeAppointment(form) {
 /*
 rs[0] = error message
 rs[1] = column (provider) id
-rs[2] = old appointment id
+rs[2] = old event id (empty for new appointment)
 rs[3] = new appointment html
 */
 function makeAppointmentcb(resultSet) {
@@ -222,13 +222,15 @@ function makeAppointmentcb(resultSet) {
 		if(resultSet[2] > 0) {
 			document.getElementById('event'+resultSet[2]).innerHTML = resultSet[3];
 		} else {
-	eventholder = document.getElementById('schedule'+resultSet[1]+'events');
-	newevent = document.createElement('div');
-	newevent.style.display='block';
-	newevent.class='innerColumn';
-	newevent.innerHTML = resultSet[1];
-	eventholder.appendChild(newevent);
+			eventholder = document.getElementById('schedule'+resultSet[1]+'events');
+			newevent = document.createElement('div');
+			newevent.className='innerColumn';
+			eventholder.appendChild(newevent);
+			newevent.name='newevent'+resultSet[4];
+			newevent.style.display='block';
+			newevent.innerHTML = resultSet[3];
 		}
+		hideAddAppointment();
 	}
-//	alert(resultSet);
+	//	alert(resultSet);
 }

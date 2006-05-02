@@ -402,7 +402,7 @@ class Person extends ORDataObject {
 	}
 
 	function get_numbers() {
-		$p = new PersonNumber();
+		$p =& Celini::newORDO('PersonNumber');
 		return $p->numberList($this->id);
 	}
 

@@ -161,7 +161,7 @@ font-size: 8pt;
 {/if}
 
 	<div>
-		<input type="submit" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}">
+		<input type="button" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}" onclick="makeAppointment(this.form);">
 	</div>
 	<div style="text-align:right">
 	<a href="javascript:hideAddAppointment()">hide</a>

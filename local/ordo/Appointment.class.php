@@ -468,6 +468,41 @@ class Appointment extends ORDataObject {
 		return $noshows;
 	}
 	
+	/**
+	 * Returns array of appointment ids which conflict with the current appointment
+	 * 
+	 * @return array
+	 */
+	function conflicts() {
+		$db =& Celini::dbInstance();
+		$sql ="SELECT a.appointment_id
+		FROM event e
+		JOIN appointment a ON a.event_id=e.event_id
+		WHERE a.provider_id=".$db->quote($this->get('provider_id'))."
+		AND e.start >= ".$db->quote($this->get('date').' '.$this->get('start_time'))."
+		AND e.start < ".$db->quote($this->get('date').' '.$this->get('end_time'))."
+		AND a.appointment_id != ".$db->quote($this->get('id'));
+		$res = $db->execute($sql);
+		$providerconf = array();
+		$roomconf = array();
+		while($res && !$res->EOF) {
+			$providerconf[] = $res->fields['appointment_id'];
+			$res->MoveNext();
+		}
+		$sql ="SELECT a.appointment_id
+		FROM event e
+		JOIN appointment a ON a.event_id=e.event_id
+		WHERE a.provider_id=".$db->quote($this->get('provider_id'))."
+		AND e.start >= ".$db->quote($this->get('date').' '.$this->get('start_time'))."
+		AND e.start < ".$db->quote($this->get('date').' '.$this->get('end_time'))."
+		AND a.appointment_id != ".$db->quote($this->get('id'));
+		$res = $db->execute($sql);
+		while($res && !$res->EOF) {
+			$roomconf[] = $res->fields['appointment_id'];
+			$res->MoveNext();
+		}
+		return array('count'=>count($providerconf) + count($roomconf),'provider'=>$providerconf,'room'=>$roomconf);
+	}
 	
 }
 ?>
