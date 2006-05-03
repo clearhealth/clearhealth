@@ -155,9 +155,9 @@ class Schedule extends CalendarSchedule{
 				$eg->setChild($oc);
 				$oc->set('title',$eg->get('title'));
 				$oc->persist();
-	}
+			}
 			$this->setChild($oc);
-	}
+		}
 		return $rec;
 	}
 
