@@ -96,6 +96,17 @@ class C_Appointment extends Controller {
 	}
 
 	function process($data) {
+		$this->_createAppointmentOrdo($data);
+		$this->appointment->persist();
+	}
+	
+	/**
+	 * Handles creating an {@link Appointment} ordo for saving.
+	 *
+	 * @see    process(), processAjax()
+	 * @access private
+	 */
+	function _createAppointmentOrdo($data) {
 		$db =& Celini::dbInstance();
 //		$db->debug = true;
 		$user =& $this->_me->get_user();
@@ -127,7 +138,7 @@ class C_Appointment extends Controller {
 			$sch =& $sched->getParent('Schedule');
 			$appointment->set('appointment_code',$sch->get('schedule_code'));
 		}
-		$appointment->persist();
+		
 		$this->appointment =& $appointment;
 	}
 
