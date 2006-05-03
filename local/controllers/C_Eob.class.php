@@ -3,13 +3,32 @@ $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce('includes/transaction/TransactionManager.class.php');
 
 class C_Eob extends Controller {
+	var $ppp = null;
+	var $patientPaymentPlans = null;
+
+	function C_Eob() {
+		parent::Controller();
+		$ajax =& Celini::ajaxServerInstance();
+		$GLOBALS['loader']->requireOnce('controllers/C_PatientPaymentPlan.class.php');
+		$ppp = new C_PatientPaymentPlan();
+		$ajax->registerClass($ppp,'PatientPaymentPlan');
+		$this->ppp =& $ppp;
+	}
 
 	function actionPayment_edit($claim_id) {
 
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
 		$patient =& Celini::newOrdo('Patient',$encounter->get('patient_id'));
-
+		$paymentplan =& Celini::newORDO('PatientPaymentPlan');
+		if(is_null($this->patientPaymentPlans)) {
+			$payment_finder =& $encounter->getChildrenFinder($paymentplan);
+			$payment_finder->addCriteria('patient_payment_plan.balance > 0');
+			$plans = $payment_finder->find();
+			$this->patientPaymentPlans = $plans->toArray();
+		}
+		$payment_plans =& $this->patientPaymentPlans;
+		$this->view->assign_by_ref('patientpaymentplans',$payment_plans);
 
 		$codingData =& Celini::newOrdo('CodingData');
 		$codeList = $codingData->getCodeList($claim->get('encounter_id'));
@@ -39,7 +58,23 @@ class C_Eob extends Controller {
 			$payers[$key] = $val;
 		}
 
+		foreach($payment_plans as $plan) {
+			$payers['plan'.$plan->get('id')] = 'Payment Plan '.$plan->get('id').' ('.count($plan->get_unpaid_payments()).' Remaining Payments, Balance: $'.sprintf('%.2f',$plan->get('balance')).')';
+		}
+		
+		if(count($payment_plans) == 0) {
+			$this->view->assign('nopatientpaymentplans',true);
+		}
+
 		$billList = array();
+
+		$this->view->assign_by_ref('ppplan',$paymentplan);
+
+		$tmanager = new TransactionManager();
+		$trans = $tmanager->createTransaction('EstimateDiscountedClaim');
+		$trans->setAllFromEncounterId($claim->get('encounter_id'));
+		$trans->resultsInMap = true;
+		$fees = $tmanager->processTransaction($trans);
 
 		$i = 0;
 		foreach($codeList as $code) {
@@ -88,7 +123,10 @@ class C_Eob extends Controller {
 		$payment->set('foreign_id',$claim_id);
 
 		$payment->set('user_id',$this->_me->get_id());
+		$payarray = $this->POST->getRaw('payment');
+		if(strpos($payarray['payer'],'plan') === false) {
 		$payment->set('payer_id',$_POST['payment']['payer']);
+		}
 		$payment->set('payment_date', $_POST['payment']['payment_date']);
 			
 		$payment->persist();
@@ -139,8 +177,14 @@ class C_Eob extends Controller {
 
 		}
 
+		if(strpos($payarray['payer'],'plan') !== false) {
+			$plan_id = str_replace('plan','',$payarray['payer']);
+			$ppplan =& Celini::newORDO('PatientPaymentPlan',$plan_id);
+			$ppplan->addPayment($total_paid);
+		}
+
 		if ($this->POST->exists('adjustment')) {
-			foreach($this->POST->get('adjustment') as $adjustment) {
+			foreach($this->POST->getRaw('adjustment') as $adjustment) {
 				$adj =& Celini::newOrdo('EobAdjustment');
 				$adj->set('payment_id',$payment_id);
 				$adj->set('payment_claimline_id',$lineLookup[$adjustment['code']]);

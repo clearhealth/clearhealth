@@ -259,6 +259,7 @@ class C_Patient extends Controller {
 		$total_credits = 0;
 		$total_outstanding = 0;
 		while($res && !$res->EOF) {
+			var_dump($res->fields);
 			$total_charges += $res->fields['charge'];
 			$total_credits += $res->fields['credit'];
 			$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
