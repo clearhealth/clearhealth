@@ -1412,6 +1412,14 @@
 		<extra2/>
 		<status>1</status>
 	</enum>
+	<enum>
+		<key>6</key>
+		<value>By Days of Week</value>
+		<sort>6</sort>
+		<extra1>dayweek</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
 </enumeration>
 <enumeration name="relation_of_information_code" title="Relation Of Information Code" type="Default">
 	<enum>
