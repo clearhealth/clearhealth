@@ -373,6 +373,9 @@ class ClearhealthCalendarData {
 	 * @param array $filters
 	 */
 	function getConflictingEvents(&$filters) {
+		if(is_null($filters['start']->getValue())) {
+			$filters['start']->setValue(date('Y-m-d'));
+		}
 		$db = new clniDb();
 		$where = $this->toWhere($filters);
 		if(!empty($where)) {
@@ -396,7 +399,6 @@ class ClearhealthCalendarData {
 			$where and c.event_id != event.event_id
 			 ORDER BY 
 			 	UNIX_TIMESTAMP(event.end)-UNIX_TIMESTAMP(event.start), event.start, c.start, c.event_id";
-
 		$res = $db->execute($sql);
 		$conflicts = array();
 		$starts = array();
