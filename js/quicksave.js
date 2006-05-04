@@ -127,7 +127,7 @@ var QuickSave = {
 	
 	quickSaveForm: function(formid) {
 		if(document.getElementById('qsInfo')) {
-			document.getElementById('qsInfo').parentNode.parentNode.parentNode.style.display='none';
+			document.getElementById('qsInfo').parentNode.style.display='none';
 		}
 		theform = document.getElementById(formid);
 
