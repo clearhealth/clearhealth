@@ -97,7 +97,7 @@ Behavior.register(
 
 		var handler = function(e) {
 			var target = HTML_AJAX_Util.eventTarget(e);
-			var parent = target.parentNode.parentNode;
+			var parent = target.parentNode.parentNode.parentNode;
 			var info = HTML_AJAX_Util.getElementsByClassName('elementInfo',parent)[0];
 			if (info.style.display == 'block') {
 				info.style.display = 'none';
