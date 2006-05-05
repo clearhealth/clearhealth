@@ -129,7 +129,7 @@ font-size: 8pt;
 		<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="{if $patient_id > 0}{$patient_id}{else}{$appointment->get('patient_id')}{/if}">
 		<div class="SuggestInput">
 		{clni_img name="stock/stock_person-10.png"}
-		<input type="text" name="Appointment[patient_name]" id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}">
+		<input type="text" autocomplete="off" name="Appointment[patient_name]" id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}">
 		</div>
 		{literal}
 		<script type="text/javascript">
