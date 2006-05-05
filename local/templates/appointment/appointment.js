@@ -134,12 +134,12 @@ function NSAppointment(id) {
 
 var delConfirm = false;
 function deleteAppointment(id) {
-	delConfirm = new clniPopup('<div style="border: groove 2px black; text-align:center; padding:4px;">Delete Appointment #'+id+'?<br> <button onclick="cancelDeleteAppointment()">No</button> <button onclick="reallyDeleteAppointment('+id+')">Yes</button></div>',false);
+	delConfirm = new clniPopup('<div style="background-color: white; border: groove 2px black; text-align:center; padding:4px;">Delete Appointment #'+id+'?<br> <button onclick="cancelDeleteAppointment()">No</button> <button onclick="reallyDeleteAppointment('+id+')">Yes</button></div>',false);
 	delConfirm.modal = true;
 	delConfirm.display();
 }
 function reallyDeleteAppointment(id) {
-	delConfirm.remove();
+	delConfirm.hide();
 	HTML_AJAX.call('appointment','ajax_delete',deleteAppointmentcb,id);
 }
 function cancelDeleteAppointment() {
@@ -151,8 +151,10 @@ function updateAppointmentcb(resultSet) {
 }
 
 function deleteAppointmentcb(resultSet) {
+	window.location = window.location;
+	return;
 	document.getElementById('appointmentstatus'+resultSet[0]).innerHTML = resultSet[1];
-	document.getElementById('eventHolder'+resultSet[0]).style.backgroundColor = 'gray';
+	document.getElementById('event'+resultSet[0]).style.backgroundColor = 'gray';
 }
 
 var expanding = {};
