@@ -27,7 +27,6 @@
 		{/if}
 		{l}Updated: {/l}{$appointment->value('last_change_nickname')}, {$appointment->value('last_change_date')}
 		<div class="elementInfo">
-			<a href="{link action='View' controller='PatientDashboard'}patient_id={$appointment->get('patient_id')}">{$appointment->patientValue('patient')}</a><br>
 			{l}Phone: {/l}{formatPhoneNumber number=$appointment->patientValue('phone')}<br>
 			{l}DOB: {/l}{$appointment->patientValue('date_of_birth')}<br>
 			{l}Balance: {/l}{$appointment->patientValue('balance')}<br>
