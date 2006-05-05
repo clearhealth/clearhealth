@@ -4,15 +4,16 @@
 		{else}{l}No-Show #{/l}
 		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
 		{if $appointment->hasEncounter()}Has Encounter{/if}</b></small></div>
-		{$appointment->get('start_time')|date_format:"%I:%M%p"} - {$appointment->get('end_time')|date_format:"%I:%M%p"} #{$appointment->get('id')}
-	</div>
-	<div class="eventBody element">
+		{$appointment->get('start_time')|date_format:"%I:%M"} - {$appointment->get('end_time')|date_format:"%I:%M"} 
+		{* #{$appointment->get('id')} *}
 		{if $appointment->get('group_appointment') == 0}
 			<a href="{link action='View' controller='PatientDashboard'}patient_id={$appointment->get('patient_id')}">{$appointment->patientValue('patient')}</a> 
 			<br>
 		{else}
 			{* re implement group appointments, you get the list on a second popup *}
 		{/if}
+	</div>
+	<div class="eventBody element">
 		{$appointment->get('title')}<br>
 		{l}Reason: {/l}{$appointment->value('reason')}<br>
 		{if $ev_edit}
