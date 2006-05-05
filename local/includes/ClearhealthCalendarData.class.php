@@ -398,7 +398,7 @@ class ClearhealthCalendarData {
 			and ea.provider_id = ec.provider_id
 			$where and c.event_id != event.event_id
 			 ORDER BY 
-			 	UNIX_TIMESTAMP(event.end)-UNIX_TIMESTAMP(event.start), event.start, c.start, c.event_id";
+			 	 ea.created_date, event.start, c.start, c.event_id";
 		$res = $db->execute($sql);
 		$conflicts = array();
 		$starts = array();
