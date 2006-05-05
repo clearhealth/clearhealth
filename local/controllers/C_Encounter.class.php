@@ -40,9 +40,7 @@ class C_Encounter extends Controller {
 		
 		$encounter_id = $this->_enforcer->int($encounter_id);
 		
-		// This is being passed in as "occurence_id" from the Calendar, but was
-		// originally coded in this method as "appointment_id"..
-		$appointment_id = $this->GET->getTyped('occurence_id', 'int');
+		$appointment_id = $this->GET->getTyped('appointment_id', 'int');
 		$patient_id = $this->GET->getTyped('patient_id', 'int');
 		
 		$valid_appointment_id = false;
