@@ -155,21 +155,26 @@ function deleteAppointmentcb(resultSet) {
 	document.getElementById('eventHolder'+resultSet[0]).style.backgroundColor = 'gray';
 }
 
-var expanding = new Array();
+var expanding = {};
+var expandingTimers = {};
 function expandAppointment(id,el) {
+	if (expandingTimers[id]) {
+		window.cancelTimeout(expandingTimers[id]);
+		delete expandingTimers[id];
+	}
 	if(el.offsetHeight < 100) {
-	expanding[id] = true;
-	if(document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
-		document.getElementById('event'+id+'oldheightholder').innerHTML = el.offsetHeight;
-	}
-	if(document.getElementById('event'+id+'newheightholder').innerHTML != '') {
-		el.style.height=document.getElementById('event'+id+'newheightholder').innerHTML+'px';
-	} else {
-		el.style.height='auto';
-		document.getElementById('event'+id+'newheightholder').innerHTML = el.offsetHeight;
-	}
-	el.style.zIndex=100;
-	expanding[id] = false;
+		expanding[id] = true;
+		if(document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
+			document.getElementById('event'+id+'oldheightholder').innerHTML = el.offsetHeight;
+		}
+		if(document.getElementById('event'+id+'newheightholder').innerHTML != '') {
+			el.style.height=document.getElementById('event'+id+'newheightholder').innerHTML+'px';
+		} else {
+			el.style.height='auto';
+			document.getElementById('event'+id+'newheightholder').innerHTML = el.offsetHeight;
+		}
+		el.style.zIndex=100;
+		window.setTimeout(function() { expanding[id] = false; },100);
 	}
 
 	el.style.border = 'solid 2px black';
