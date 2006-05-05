@@ -14,7 +14,7 @@ class LockManager {
 		$changedFields = Array();
 		
 		if (empty($ordoName) || empty($ordoID) || empty($timestamp)) {
-			echo "Ordo name, Ordo id, or timestamp is invalid.";
+			Celini::raiseError("Ordo name, Ordo id, or timestamp is invalid.");
 		} else {
 			$limitfields = false ;
 			if (count($fieldlist) > 0) {
@@ -24,21 +24,26 @@ class LockManager {
 			$sql = 	"
 				SELECT 
 					alf.field,
-					alf.new_value
+					alf.old_value,
+					alf.new_value,
+					u.username
 				FROM 
-					audit_log al,
-					audit_log_field alf
+					audit_log al
+					inner join audit_log_field alf on al.audit_log_id = alf.audit_log_id
+					inner join user u on al.user_id = u.user_id
 				WHERE 
+					al.ordo = ".$db->quote($ordoName)." AND
 					al.ordo_id='$ordoID' AND 
-					al.log_date > '$timestamp' AND
-					al.audit_log_id = alf.audit_log_id
+					al.log_date > '".date('Y-m-d H:i:s',$timestamp)."'
 					".($limitfields ? ' AND alf.field IN ("'.join('","',$fieldlist).'")' : '')."
-				ORDER BY al.log_date ASC
+				ORDER BY 
+					al.log_date ASC
 				";
 			// we've sorted it in ASCending order so that as it loops, it'll overwrite older changes with newer changes
 			$results = $db->execute($sql);
 			while ($results && !$results->EOF) {
-				$changedFields[$results->fields['field']] = $results->fields['new_value'] ;
+				$changedFields[$results->fields['field']] = $results->fields;
+				$results->moveNext();
 			}
 		}
 		return $changedFields;

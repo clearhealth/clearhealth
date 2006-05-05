@@ -2,6 +2,7 @@
 /**
  * @package	com.uversainc.clearhealth
  */
+$loader->requireOnce('includes/LockManager.class.php');
 
 /**
  * Patient Manager
@@ -11,10 +12,79 @@ class M_Patient extends Manager {
 	var $messageType = "Patient";
 	var $similarPatientChecked = false; // dupe checking
 
+	function _updateChangesSection(&$section,$name) {
+		foreach($section as $field => $d) {
+			$section[$field]['your_value'] = $_POST[$name][$field];
+			if (strcmp($_POST[$name][$field],$section[$field]['new_value']) == 0) {
+				var_dump("unset $name[$field]");
+				unset($section[$field]);
+			}
+		}
+	}
 	/**
 	 * Handle an update from an edit or an add
+	 * @todo move as much as possible to some place shared
 	 */
 	function process_update($id =0,$noPatient = false) {
+		// lock check
+		$lockTimestamp = $this->controller->POST->get('lockTimestamp');
+
+		$changes = array();
+		if ($noPatient) {
+			$changes['person'] = LockManager::hasOrdoChanged('Person',$id,$lockTimestamp);
+		}
+		else {
+			$changes['person'] = LockManager::hasOrdoChanged('Patient',$id,$lockTimestamp);
+		}
+		$this->_updateChangesSection($changes['person'],'person');
+
+		// custom code needed
+		//'relatedAddresss' => array('PersonAddress','address_id'),
+		//$_POST['PatientChronicCode']
+
+		// rest of this changes processing is generic and should be movable
+		$subOrdos = array(
+			'number' => array('PatientNumber','number_id'),
+			'address' => array('PersonAddress','address_id'),
+			'identifier' => array('Identifier','identifier_id'),
+			'insuredRelationship' => array('InsuredRelationship','insured_relationship_id'),
+			'personPerson' => array('PersonPerson','person_person_id'),
+			'patientStatistics' => array('PatientStatistics','patient_statics_id'),
+			);
+
+		foreach($subOrdos as $key => $info) {
+			$ordoName = $info[0];
+			$fieldName = $info[1];
+			if (isset($_POST[$key][$fieldName]) && !empty($_POST[$key][$fieldName])) {
+				$changes[$key] = LockManager::hasOrdoChanged($ordoName,$_POST[$key][$fieldName],$lockTimestamp);
+				$this->_updateChangesSection($changes[$key],$key);
+			}
+		}
+
+		$overlappingChanges = false;
+		foreach($changes as $name => $change) {
+			if (count($change) > 0) {
+				$overlappingChanges = true;
+			}
+		}
+		if ($overlappingChanges) {
+			$changes['_POST'] = $_POST;
+			$helper =& Celini::ajaxInstance();
+			$head =& Celini::HTMLHeadInstance();
+			$head->addInlineJs('var changeData = '.$helper->jsonEncode($changes).';'.
+				'$u.registerEvent(window,"load",function() {conflicts.displayConflicts(changeData,"conflictPrint");});');
+			$head->addJs('conflicts','conflicts');
+			$head->addInlineCss('.loading { background: white; font-size: 300%; text-align: center; padding: 1em;} ');
+
+			$this->controller->messages->addMessage('<span style="font-size: 125%">Changes were not saved!</span>',
+				'Verify your changes against conflicting changes and resubmit');
+			$this->controller->messages->addMessage('Fields changed while editing',
+				'The following fields have been changed by another user while you were editing this page (since '.
+					date('Y-m-d H:i:s',$lockTimestamp).
+					'):<table class="grid"><thead><tr><th>Field</th><th>Original</th><th>Your</th><th>Editor</th><th>New Value</th></tr><tbody id="conflictPrint"></tbody></table><script type="text/javascript">conflicts.loading();</script>');
+			return;
+		}
+		
 		// check if the "submit duplicate record anyqay button has been clicked
 		$this->similarPatientChecked = isset($_POST['DuplicateChecked']) ;
 		$continue = 1 ;

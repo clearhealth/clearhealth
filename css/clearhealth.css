@@ -220,3 +220,6 @@ h3 {
 tr.selectedRow td {
 	background-color: #9cd2d1;
 }
+.conflictingField {
+	background-color: #FFFF99;
+}

@@ -29,6 +29,8 @@ class C_Patient extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('quicksave','quicksave');
 		$this->_storeCurrentAction ();
+
+		$this->assign('lockTimestamp',time());
 		
 		if (isset($this->patient_id)) {
 			$patient_id = $this->patient_id;
@@ -39,6 +41,7 @@ class C_Patient extends Controller {
 			$this->view->assign('formid','patientGeneralEditForm');
 			$this->messages->addMessage($this->view->render('restoreform.html'));
 		}
+
 		$GLOBALS['C_MAIN']['noOverlib'] = true;
 
 		$ajax =& Celini::ajaxInstance();
