@@ -213,8 +213,8 @@ h3 {
 }
 .elementLink {
 	position: absolute;
-	top: -18px;
-	right: 2px;
+	top: 1px;
+	right: 1px;
 	cursor: pointer;
 }
 tr.selectedRow td {
