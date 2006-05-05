@@ -9,7 +9,7 @@
 		{/if}
 	</div>
 	<div class="eventBody element">
-		<div id="appointmentstatus{$appointment->get('id')}" style="float: right">
+		<div id="appointmentstatus{$appointment->get('id')}" style="float: right; margin-right: 20px;">
 		<small><b>{if $appointment->get('appointment_code') != 'NS'}{$appointment->value('appointment_code')}
 		{else}{l}No-Show #{/l}
 		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
