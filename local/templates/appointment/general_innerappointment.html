@@ -1,9 +1,4 @@
 	<div width="100%" class="eventTitle" {if $short}style="display:none;"{/if} id="innerEvent{$appointment->get('event_id')}">
-		<div id="appointmentstatus{$appointment->get('id')}" style="float: right">
-		<small><b>{if $appointment->get('appointment_code') != 'NS'}{$appointment->value('appointment_code')}
-		{else}{l}No-Show #{/l}
-		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
-		{if $appointment->hasEncounter()}Has Encounter{/if}</b></small></div>
 		{$appointment->get('start_time')|date_format:"%I:%M"} - {$appointment->get('end_time')|date_format:"%I:%M"} 
 		{* #{$appointment->get('id')} *}
 		{if $appointment->get('group_appointment') == 0}
@@ -14,6 +9,11 @@
 		{/if}
 	</div>
 	<div class="eventBody element">
+		<div id="appointmentstatus{$appointment->get('id')}" style="float: right">
+		<small><b>{if $appointment->get('appointment_code') != 'NS'}{$appointment->value('appointment_code')}
+		{else}{l}No-Show #{/l}
+		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
+		{if $appointment->hasEncounter()}Has Encounter{/if}</b></small></div>
 		{$appointment->get('title')}<br>
 		{l}Reason: {/l}{$appointment->value('reason')}<br>
 		{if $ev_edit}
@@ -22,7 +22,7 @@
 			<a href="javascript:void(0);" onclick="NSAppointment({$appointment->get('id')});">ns</a>, 
 			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>
 			{if $appointment->get('group_appointment') == 0},
-				<a href="{link action="Edit" controller="Encounter"}appointment_id={$appointment->get('id')}&patient_id={$appointment->get('patient_id')}">enc</a>
+				<a href="{link action="Edit" controller="Encounter" defaultArg="0"}appointment_id={$appointment->get('id')}&patient_id={$appointment->get('patient_id')}">enc</a>
 			{/if}<br>
 		{/if}
 		{l}Updated: {/l}{$appointment->value('last_change_nickname')}, {$appointment->value('last_change_date')}
