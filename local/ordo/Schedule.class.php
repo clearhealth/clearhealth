@@ -87,11 +87,17 @@ class Schedule extends CalendarSchedule{
 		}
 
 	function set_provider_id($id){
-		if($this->get('id') < 1)
+		if($this->get('id') < 1) {
 			$this->persist();
+		}
+
+		if ($this->get('provider_id') > 0) {
+			$this->removeRelationship('Provider',$this->get('provider_id'));
+		}
+
 		$provider =& Celini::newORDO('Provider',$id);
 		$this->setParent($provider);
-		}
+	}
 		
 	function get_provider_id(){
 		$provider =& $this->getParent('Provider');
