@@ -187,7 +187,7 @@ class C_Schedule extends Controller
 			return;
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		$schedule =& Celini::newORDO('Schedule');
-		$schedule->populate_array($this->POST->getRaw('Schedule'));
+		$schedule->populateArray($this->POST->getRaw('Schedule'));
 		$schedule->persist();
 		$this->schedule =& $schedule;
 		$this->practice =& $schedule->getParent('Practice');
