@@ -25,7 +25,8 @@
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Building{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
-		{html_options name="building_id" options=$buildings selected=$room->get_building_id()}
+		{html_options name="building_id" options=$buildings
+selected=$room->get('building_id')}
 	</td>
 </tr>
 <tr>
