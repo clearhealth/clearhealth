@@ -17,6 +17,17 @@ font-size: 8pt;
 	cursor: move;
 }
 {/head}
+{literal}
+<script language="javascript">
+function newPatient() {
+		var patientEditURL = '/index.php/minimal/Patient/edit?';
+		var URL = patientEditURL+'patient_id=0&view=narrow';
+		var subWin = window.open(URL, 'subWin',
+'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');
+		subWin.opener = self;
+	}
+</script>
+{/literal}
 {if !$ajaxedit}
 <div id="appointmentEditor"{if $mode == 'popup'} style="visibility:hidden"{/if}>
 {/if}
@@ -125,7 +136,8 @@ font-size: 8pt;
 	</div>
 
 	<div>
-		{l}Patient{/l}<br>
+		{l}Patient{/l}&nbsp;&nbsp;<a
+href="javascript:newPatient();">New</a>&nbsp;&nbsp;<br>
 		<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="{if $patient_id > 0}{$patient_id}{else}{$appointment->get('patient_id')}{/if}">
 		<div class="SuggestInput">
 		{clni_img name="stock/stock_person-10.png"}
