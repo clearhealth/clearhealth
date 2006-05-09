@@ -11,6 +11,9 @@ var conflicts = {
 
 				var name = section+'['+field+']';
 				var formEl = document.getElementsByName(name).item(0);
+				if (!formEl) {
+					continue;
+				}
 				var row = data[section][field];
 				row.fieldName = name;
 
@@ -107,6 +110,9 @@ var conflicts = {
 	},
 
 	setElementValue: function(element,value) {
+		if (!element) {
+			return;
+		}
 		switch(element.nodeName) {
 			case 'INPUT':
 				switch(element.type) {
