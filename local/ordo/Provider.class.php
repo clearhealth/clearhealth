@@ -96,7 +96,7 @@ class Provider extends MergeDecorator {
 
 	function get_bill_as() {
 		if (empty($this->bill_as)) {
-			$this->set('bill_as',$this->get('id'));
+			$this->bill_as = $this->get('id');
 		}
 		return $this->bill_as;
 	}
