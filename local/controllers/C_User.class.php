@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('includes/Grid.class.php');
+$loader->requireOnce('includes/colorpickerselect.class.php');
 
 /**
  * Controller for the Clearhealth users
@@ -34,7 +35,8 @@ class C_User extends Controller {
 		if ($person->get('id') == 0) {
 			$person->set_type(2);
 		}
-
+		$picker =& new colorPickerSelect('pastels','user[color]','',$user->get('color'));
+		$this->view->assign_by_ref('colorpicker',$picker);
 		if ($person->get('type') == 2) {
 			$provider =& Celini::newORDO('Provider',$person_id);
 			$this->view->assign_by_ref('provider',$provider);

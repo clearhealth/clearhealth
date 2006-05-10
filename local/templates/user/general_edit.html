@@ -1,7 +1,9 @@
+{*
 <script language="javascript" src="{$base_dir}js/colorpicker2.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 var cp2 = new ColorPicker(); // DIV style
 </SCRIPT>
+*}
 <div id="FormMessageBox"></div>
 {clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="users" id="usersForm"}
 {clni_register_message_target formId="usersForm" targetId="FormMessageBox"}
@@ -79,7 +81,7 @@ var cp2 = new ColorPicker(); // DIV style
 	
 		<td style="text-align:right"><span class="tooltip">{l}Color{/l}:
 				<div class="tooltipMessage">This is the color which will be the background of the user associated information on the calendar and elsewhere.</div></span></td>
-		<td><input id="user_color" type="text" name="user[color]" size="6" value="{$user->get("color")}" 
+{*		<td><input id="user_color" type="text" name="user[color]" size="6" value="{$user->get("color")}" 
 			{literal}
 			onkeyup="if(this.value.length == 3 || this.value.length == 6) { this.style.backgroundColor = '#'+this.value; }"
 			{/literal}
@@ -91,6 +93,8 @@ var cp2 = new ColorPicker(); // DIV style
 		</script>
 			{/literal}
 		</td>
+*}
+		<td>{$colorpicker->render()}</td>
 	</tr>
 
 	<tr>
