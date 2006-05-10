@@ -71,7 +71,7 @@ class ClearhealthCalendarData {
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
 			$string = array();
 			foreach($filters['user']->getValue() as $uid) {
-				$string[] = "provider.person_id = ".$db->quote($uid);
+				$string[] = "u.user_id = ".$db->quote($uid);
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
@@ -103,7 +103,7 @@ class ClearhealthCalendarData {
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
 			$string = array();
 			foreach($filters['user']->getValue() as $uid) {
-				$string[] = "provider.provider_id = ".$db->quote($uid);
+				$string[] = "provider.person_id = ".$db->quote($uid);
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
@@ -237,6 +237,7 @@ class ClearhealthCalendarData {
 			FROM 
 				event,provider 
 				LEFT JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id 
+				LEFT JOIN user AS u ON u.person_id= provider.person_id
 			WHERE 
 				EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' 
 				AND EP.parent_id = provider.person_id AND 
@@ -280,6 +281,7 @@ class ClearhealthCalendarData {
 				INNER JOIN relationship AS ES ON ES.parent_type = 'Schedule' AND ES.child_type = 'ScheduleEvent' AND ES.child_id = event.event_id
 				LEFT JOIN relationship AS ER ON ER.child_type='ScheduleEvent' AND ER.parent_type='Room' AND ER.child_id=event.event_id
 				LEFT JOIN rooms r ON r.id=ER.parent_id
+				LEFT JOIN user u ON provider.person_id = u.person_id
 			WHERE 
 				EP.parent_type = 'Provider' AND 
 				EP.child_type = 'ScheduleEvent' AND 
@@ -336,10 +338,10 @@ class ClearhealthCalendarData {
 				LEFT JOIN relationship AS ES ON ES.child_id=event.event_id AND ES.child_type='ScheduleEvent' AND ES.parent_type='Schedule'
 				LEFT JOIN schedule AS s ON s.schedule_id = ES.parent_id
 				LEFT JOIN relationship AS SU ON SU.parent_type='User' AND SU.child_type='Schedule' AND SU.child_id=s.schedule_id
-				LEFT JOIN user AS u ON u.user_id= SU.parent_id
 				LEFT JOIN rooms AS rm ON rm.id = a.room_id
 				LEFT JOIN buildings AS b ON b.id = rm.building_id 
-				LEFT JOIN person AS provider ON a.provider_id = provider.person_id
+				LEFT JOIN provider ON a.provider_id = provider.person_id
+				LEFT JOIN user AS u ON u.person_id= provider.person_id
 			WHERE 
 				(s.schedule_code != 'NS' OR s.schedule_code IS NULL) 
 				$where
@@ -400,6 +402,11 @@ class ClearhealthCalendarData {
 				event as c 
 				INNER JOIN appointment ea on event.event_id = ea.event_id
 				INNER JOIN appointment ec on c.event_id = ec.event_id
+				LEFT JOIN relationship AS ES ON ES.child_id=event.event_id AND ES.child_type='ScheduleEvent' AND ES.parent_type='Schedule'
+				LEFT JOIN schedule AS s ON s.schedule_id = ES.parent_id
+				LEFT JOIN relationship AS SU ON SU.parent_type='User' AND SU.child_type='Schedule' AND SU.child_id=s.schedule_id
+				LEFT JOIN provider ON ea.provider_id = provider.person_id
+				LEFT JOIN user u ON u.person_id = provider.person_id
 			WHERE 
 			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
 			and ea.provider_id = ec.provider_id
