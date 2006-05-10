@@ -1,3 +1,14 @@
+{head type="js"}
+Behavior.register('#next',
+	function(element) {
+		$u.registerEvent(element,'click',function(e) {
+			var message = new clniPopup('<h1>Creating Schedule Please Wait</h1>',false);
+			message.modal = true;
+			message.display();
+		});
+	}
+);
+{/head}
 {include file="schedule/general_wizard_header.html"}
 
 <h2>Select the date and time for the schedule</h2>
