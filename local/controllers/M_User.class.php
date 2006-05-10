@@ -74,6 +74,10 @@ class M_User extends M_Patient {
 				}
 			}
 			
+			if(isset($data['color']) && strpos($data['color'],'#') !== false) {
+				$data['color'] = str_replace('#','',$data['color']);
+			}
+			
 			$u->set('person_id',$person_id);
 			$u->populate_array($data);
 			$u->persist();
