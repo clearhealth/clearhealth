@@ -13,10 +13,11 @@ class M_Patient extends Manager {
 	var $similarPatientChecked = false; // dupe checking
 
 	function _updateChangesSection(&$section,$name) {
+	//var_dump($section);
 		foreach($section as $field => $d) {
 			$section[$field]['your_value'] = $_POST[$name][$field];
+			//var_dump($_POST[$name][$field],$section[$field]['new_value']);
 			if (strcmp($_POST[$name][$field],$section[$field]['new_value']) == 0) {
-				var_dump("unset $name[$field]");
 				unset($section[$field]);
 			}
 		}
@@ -35,8 +36,12 @@ class M_Patient extends Manager {
 		}
 		else {
 			$changes['person'] = LockManager::hasOrdoChanged('Patient',$id,$lockTimestamp);
+
+			$tmp = LockManager::hasOrdoChanged('Person',$id,$lockTimestamp);
+			$changes['person'] = array_merge($changes['person'],$tmp);
 		}
 		$this->_updateChangesSection($changes['person'],'person');
+			//var_dump($changes['person']);
 
 		// custom code needed
 		//'relatedAddresss' => array('PersonAddress','address_id'),
