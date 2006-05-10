@@ -157,14 +157,16 @@ class ClearhealthCalendarData {
 
 	function providerData() {
 		$db = new clniDb();
-		$sql = 'SELECT
+		$sql = "SELECT
 				user.person_id,
 				color,
-				nickname
+				nickname,
+				CONCAT(p.last_name,', ',p.first_name) AS name
 			from
 				user
 				INNER JOIN provider using(person_id)
-			';
+				INNER JOIN person p ON user.person_id=p.person_id
+			";
 		$res = $db->execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
@@ -208,7 +210,7 @@ class ClearhealthCalendarData {
 				'borderColor' => $border,
 				'backColor' => $background,
 				'fontColor' => $font,
-				'label' => $pdata[$providerId]['nickname'],
+				'label' => $pdata[$providerId]['name'],
 				'schedules' => $schedules
 			);
 			$head =& Celini::HTMLHeadInstance();
