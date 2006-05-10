@@ -14,7 +14,8 @@ class LockManager {
 		$changedFields = Array();
 		
 		if (empty($ordoName) || empty($ordoID) || empty($timestamp)) {
-			Celini::raiseError("Ordo name, Ordo id, or timestamp is invalid.");
+			//Celini::raiseError("Ordo name, Ordo id, or timestamp is invalid.");
+			$changedFields = array();
 		} else {
 			$limitfields = false ;
 			if (count($fieldlist) > 0) {
