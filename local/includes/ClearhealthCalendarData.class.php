@@ -273,10 +273,13 @@ class ClearhealthCalendarData {
 				UNIX_TIMESTAMP(event.start) AS start,
 				UNIX_TIMESTAMP(event.end) AS end, 
 				provider.person_id as provider_id
+				,r.name AS roomname
 			FROM 
 				event,provider
 				INNER JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id
 				INNER JOIN relationship AS ES ON ES.parent_type = 'Schedule' AND ES.child_type = 'ScheduleEvent' AND ES.child_id = event.event_id
+				LEFT JOIN relationship AS ER ON ER.child_type='ScheduleEvent' AND ER.parent_type='Room' AND ER.child_id=event.event_id
+				LEFT JOIN rooms r ON r.id=ER.parent_id
 			WHERE 
 				EP.parent_type = 'Provider' AND 
 				EP.child_type = 'ScheduleEvent' AND 
@@ -294,7 +297,9 @@ class ClearhealthCalendarData {
 			$ret[$res->fields['provider_id']][$res->fields['start']] = array(
 				'label'=>$res->fields['title'],
 				'start'=>$res->fields['start'],
-				'end'=>$res->fields['end']);
+				'end'=>$res->fields['end'],
+				'display'=>$res->fields['roomname']
+			);
 			$res->MoveNext();
 		}
 		return $ret;
@@ -570,16 +575,19 @@ class ClearhealthCalendarData {
 				if(!isset($columns[$provider_id]['precol'])) {
 					$columns[$provider_id]['precol'] = array();
 				}
-				if ($this->_timeInSchedule($ts,$col['schedules'])) {
+				$display = '';
+				$schedid = $this->_timeInSchedule($ts,$col['schedules']);
+				if ($schedid > 0) {
 					$columns[$provider_id]['inSchedule'][$ts] = true;
 					$view->assign('color',$columns[$provider_id]['color']);
+					$display = $col['schedules'][$schedid]['display'];
 				}
 
 				$view->assign('id','st-'.$dayIterator->getTimestamp().'-'.$provider_id);
 				$dayIterator->next();
 				$nextTime = $dayIterator->getTime();
 				$dayIterator->previous();
-				$view->assign('title',$dayIterator->getTime().' - '.$nextTime);
+				$view->assign('title',$dayIterator->getTime().' - '.$nextTime.' '.$display);
 				$columns[$provider_id]['precol'][$ts] = $view->fetch('calendar/general_precolumn.html');
 			}
 		}
@@ -589,9 +597,9 @@ class ClearhealthCalendarData {
 
 	function _timeInSchedule($timestamp,$schedules) {
 		if (count($schedules) > 0) {
-			foreach($schedules as $schedule) {
+			foreach($schedules as $key=>$schedule) {
 				if ($timestamp >= $schedule['start'] && $timestamp <= $schedule['end']) {
-					return true;
+					return $key;
 				}
 			}
 		}
