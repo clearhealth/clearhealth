@@ -103,8 +103,12 @@ var conflicts = {
 				ret = el.parentNode.previousSibling.previousSibling;
 			}
 		}
-		if (ret.getElementsByTagName('label').length > 0) {
+		if (ret && ret.getElementsByTagName('label').length > 0) {
 			return ret.getElementsByTagName('label').item(0).innerHTML;
+		}
+
+		if (!ret) {
+			return 'Unknown';
 		}
 		return ret.innerHTML;
 	},
