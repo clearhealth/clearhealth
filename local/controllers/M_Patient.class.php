@@ -30,6 +30,8 @@ class M_Patient extends Manager {
 		// lock check
 		$lockTimestamp = $this->controller->POST->get('lockTimestamp');
 
+	if (!empty($lockTimestamp)) {
+
 		$changes = array();
 		if ($noPatient) {
 			$changes['person'] = LockManager::hasOrdoChanged('Person',$id,$lockTimestamp);
@@ -89,6 +91,7 @@ class M_Patient extends Manager {
 					'):<table class="grid"><thead><tr><th>Field</th><th>Original</th><th>Your</th><th>Editor</th><th>New Value</th></tr><tbody id="conflictPrint"></tbody></table><script type="text/javascript">conflicts.loading();</script>');
 			return;
 		}
+	}
 		
 		// check if the "submit duplicate record anyqay button has been clicked
 		$this->similarPatientChecked = isset($_POST['DuplicateChecked']) ;
