@@ -4,6 +4,7 @@ $loader->requireOnce('includes/clni/clniData.class.php');
 
 class ScheduleWizardData extends clniData{
 	var $schedule_type = '';
+	var $days = array();
 }
 
 class C_Schedule extends Controller
@@ -48,7 +49,6 @@ class C_Schedule extends Controller
 
 
 		$wizardData = $this->_getWizardData();
-		var_dump($wizardData);
 	
 		$provider =& Celini::newOrdo('Provider');
 		$providers = $provider->valueList('usernamePersonId');
@@ -59,7 +59,6 @@ class C_Schedule extends Controller
 		$pa = $practice->practices_factory();
 		$this->view->assign("rooms",$room->rooms_practice_factory($pa,false));
 		$this->view->assign("providers",$providers);
-
 
 		$this->view->assign_by_ref('wizard',$wizardData);
 		return $this->view->render('wizard-'.$this->wizardPage.'.html');
@@ -75,25 +74,85 @@ class C_Schedule extends Controller
 		$this->wizardPage = $this->POST->getTyped('next_page','int');
 
 		if ($this->wizardPage == 99) {
-			$this->createSchedule($wizardSchedule);
+			$this->createSchedule($wizardData);
 		}
 	}
 
-	function createSchedule($data) {
-		$schedule =& Celini::newORDO('Schedule');
+	function createSchedule($wizard) {
 
-		$wizard = $this->_getWizard();
+		// create a new schedule
+		$schedule =& Celini::newORDO('Schedule');
 
 		$schedule->set('title',$wizard->get('name'));
 		$schedule->set('provider_id',$wizard->get('provider_id'));
 		$schedule->set('room_id',$wizard->get('room_id'));
+		$schedule->set('schedule_code',$wizard->get('schedule_type'));
 
 		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
 		$building =& Celini::newOrdo('Building',$room->get('building_id'));
 		$schedule->set('practice_id',$building->get('practice_id'));
 
 		$schedule->persist();
-		$schedule->createRecurrence();
+
+		// create a new event group 
+		// TODO: Need to have code to keep from making a new group if the title already exists
+		$egTitle = $wizard->get('group');
+		if (empty($egTitle)) {
+			$egTitle = 'General Hours';
+		}
+		$eventgroup =& Celini::newORDO('EventGroup');
+		$eventgroup->set('title',$egTitle);
+		$eventgroup->persist();
+		$schedule->setChild($eventgroup);
+		$eventGroupId = $eventgroup->get('id');
+
+		// load up times to create occurences for
+		$lunchStart = $wizard->get('lunch_start');
+		$lunchEnd = $wizard->get('lunch_end');
+
+		$times = array();
+		if (!empty($lunchStart) && !empty($lunchEnd)) {
+			$times[] = array('start'=>$wizard->get('time_start'),'end'=>$wizard->get('lunch_start'));
+			$times[] = array('start'=>$wizard->get('lunch_end'),'end'=>$wizard->get('time_end'));
+		}
+		else {
+			$times[] = array('start'=>$wizard->get('time_start'),'end'=>$wizard->get('time_end'));
+		}
+
+		$provider =& Celini::newOrdo('Provider',$schedule->get('provider_id'));
+		$practice =& Celini::newOrdo('Practice',$schedule->get('practice_id'));
+		$room =& Celini::newOrdo('Room',$schedule->get('room_id'));
+
+		// create recurrences
+		foreach($times as $time) {
+			$recurrence = array();
+			$recurrence['id'] = '';
+			$recurrence['start_date'] = $wizard->get('date_start');
+			$recurrence['end_date'] = $wizard->get('date_end');
+			$recurrence['start_time'] = $time['start'];
+			$recurrence['end_time'] = $time['end'];
+			$recurrence['event_group'] = $eventGroupId;
+
+			$pattern = array('pattern_type'=> 'dayweek');
+			$pattern['days'] = $wizard->get('days');
+
+			$rec =& $schedule->createRecurrence($recurrence,$pattern);
+			if($rec !== false) {
+				$eg =& $rec->getParent('EventGroup');
+				$events =& $rec->getChildren('ScheduleEvent');
+				while($event =& $events->current() && $events->valid()){
+					$event->set('title',$eg->get('title'));
+					$event->setParent($schedule);
+					$event->setParent($provider);
+					$event->setParent($practice);
+					$event->setParent($room);
+					$event->setParent($eg);
+					$events->next();
+				}
+			}
+		}
+
+		$this->view->assign('schedule_id',$schedule->get('id'));
 
 	}
 
