@@ -181,6 +181,14 @@ class C_Eob extends Controller {
 			$plan_id = str_replace('plan','',$payarray['payer']);
 			$ppplan =& Celini::newORDO('PatientPaymentPlan',$plan_id);
 			$ppplan->addPayment($total_paid);
+			$insuranceProgram =& Celini::newOrdo('InsuranceProgram');
+			foreach($insuranceProgram->programList() as $key => $val) {
+				if($val == 'System->Self Pay') {
+					$payment->set('payer_id',$key);
+				}
+			}
+			$payment->set('title','Payment Plan '.$ppplan->get('id').' Payment');
+			$payment->persist();
 		}
 
 		if ($this->POST->exists('adjustment')) {
