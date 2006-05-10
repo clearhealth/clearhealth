@@ -29,8 +29,8 @@ function captureEnter (field, event) {
 	</tr>
 	<tr>
 		<td><label>{l}Provider{/l}:</label></td>
-		<td><select name="Search[provider]"><option></option>{html_options options=$providers selected=$search.provider}</select>
-		<input type="checkbox" name="Search[find_first]" value="1" onchange="if(this.checked) document.getElementById('searchamount').style.display='inline';" {if $search.find_first eq 1}checked{/if}>&nbsp;{l}find first{/l} <div id="searchamount"  {if $search.time_amount == '' && $search.find_first != 1}style="display:none;"{else}style="display:inline;"{/if}><input type="text" name="Search[time_amount]" value="{$search.time_amount}"> {l}Amount of time (HH:MM OR MM){/l}</div>
+		<td><select id="ffprovider" name="Search[provider]"><option></option>{html_options options=$providers selected=$search.provider}</select>
+		<input id="findfirst" type="checkbox" name="Search[find_first]" value="1" onchange="if(this.checked) document.getElementById('searchamount').style.display='inline';" {if $search.find_first eq 1}checked{/if}>&nbsp;{l}find first{/l} <div id="searchamount"  {if $search.time_amount == '' && $search.find_first != 1}style="display:none;"{else}style="display:inline;"{/if}><input id="ffamount" type="text" name="Search[time_amount]" value="{$search.time_amount}"> {l}Amount of time (HH:MM OR MM){/l}</div>
 		</td>
 	</tr>
 	<tr>
@@ -62,10 +62,31 @@ function captureEnter (field, event) {
 	</table>
 </form>
 {if $ts}{* from findFirst *}
-<a href="{link controller='CalendarDisplay' action='Day'}date={$date}">{$usadate}</a> <a href="{link controller='CalendarDisplay' action='Day'}date={$date}&start_time={$start_time}&end_time={$end_time}">{l}Schedule Appointment{/l}</a>
+<a href="{link controller='CalendarDisplay' action='Day'}date={$date}">{$usadate}</a> <a href="{link controller='CalendarDisplay' action='Day'}date={$date}&start_time={$start_time}&end_time={$end_time}">{l}Schedule Appointment for {/l}{$start_time} - {$end_time}</a>
 {/if}
 {literal}
 <script language="javascript">
+function expandAppointment() {
+}
+function shrinkAppointment() {
+}
+function clni_validate(form) {
+	if(document.getElementById('findfirst').checked) {
+		err = '';
+		if(document.getElementById('ffamount').value == '') {
+			err += "You must enter an amount of time.\n";
+		}
+		if(document.getElementById('ffprovider').value < 1) {
+			err += "You must select a provider.\n";
+		}
+		if(err != '') {
+			alert(err);
+			return false;
+		}
+	}
+	return true;
+}
+
 function setupAutoComplete(){
 	var ac = new AutoComplete(
 	C_PatientFinder,

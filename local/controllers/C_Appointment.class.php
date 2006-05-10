@@ -391,6 +391,8 @@ class C_Appointment extends Controller {
 			$res =& $appointment->search('WHERE '.implode(' AND ',$where));
 			while ($res && !$res->EOF) {
 				$this->view->assign('apt',$res->fields);
+				$appointment =& Celini::newORDO('Appointment',$res->fields['appointment_id']);
+				$this->view->assign_by_ref('appointment',$appointment);
 				$apts.=$this->view->render('singlefromarray.html');
 				$res->MoveNext();
 			}
@@ -409,6 +411,7 @@ class C_Appointment extends Controller {
 				$this->messages->addMessage('No scheduled time in that amount found.');
 			} else {
 				$this->assign('ts',$ts);
+				$this->assign_by_ref('findfirstProvider',$provider);
 				$this->assign('date',date('Y-m-d',$ts));
 				$this->assign('start_time',date('H:i',$ts));
 				$this->assign('end_time',date('H:i',$ts+$amount));

@@ -185,15 +185,15 @@ class Schedule extends CalendarSchedule{
 		$sevent =& Celini::newORDO('ScheduleEvent');
 		$finder =& $sevent->relationshipFinder();
 		if($provider_id > 0)
-			$finder->setParent($provider);
+			$finder->addParent($provider);
 		if($room_id > 0) {
 			$room =& Celini::newORDO('Room',$room_id);
-			$finder->setParent($room);
-	}
+			$finder->addParent($room);
+		}
 		if(!is_null($schedule_code) && !empty($schedule_code)) {
 			$finder->_joins .=" LEFT JOIN relationship ES ON ES.parent_type='Schedule' AND ES.child_type='ScheduleEvent' AND ES.child_id = event.event_id ";
 			$finder->_joins .=" JOIN schedule ON schedule.schedule_id = ES.parent_id AND schedule.schedule_code = ".$db->quote($schedule_code);
-	}
+		}
 		$finder->_orderBy = 'event.start';
 		$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.strtotime($end));
 		$schedules =& $finder->find();
@@ -210,29 +210,26 @@ class Schedule extends CalendarSchedule{
 			$events =& $finder->find();
 			if($events->count() == 0) {
 				if($end - $start >= $amount) {
-					$db->debug = false;
 					return $start;
 				} else {
 					continue;
-	}
-	}
+				}
+			}
 			for($events->rewind();$events->valid();$events->next()) {
 				$event =& $events->current();
 				if(!isset($evend)) $evend = $start;
 				$evstart = strtotime($event->get('start'));
 				if($evstart - $evend >= $amount) {
-					$db->debug = false;
 					return $evend;
-	}
+				}
 				if($events->key()+1 == $events->count()) {
 					if($end - strtotime($event->get('end')) >= $amount) {
-						$db->debug = false;
 						return strtotime($event->get('end'));
-	}
-	}
+					}
+				}
 				$evend = $evend > strtotime($event->get('end')) ? $evend : strtotime($event->get('end'));
-	}
-	}
+			}
+		}
 		return false;
 	}
 
