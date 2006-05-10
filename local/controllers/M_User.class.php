@@ -142,7 +142,7 @@ class M_User extends M_Patient {
 					$schedule->set('user_id',$u->get('id'));
 					$schedule->set('provider_id',$person->get('id'));
 					$schedule->set('schedule_code','PS');
-					$schedule->set('name',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
+					$schedule->set('title',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
 					$schedule->set('practice_id',$practice_id);
 					$schedule->persist();
 
