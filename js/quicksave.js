@@ -5,7 +5,7 @@ var QuickSave = {
 	Loading: false,
 	quickLoad: function(formid,formIdentifier) {
 		QuickSave.Loading = true;
-		HTML_AJAX.call('quicksave','loadForm',QuickSave.quickLoadcb,formid,QuickSave.FormIdentifier[formid]);
+		HTML_AJAX.call('quicksave','loadForm',QuickSave.quickLoadcb,formid,QuickSave.FormIdentifier[formid],true);
 	},
 	
 	quickLoadcb: function (resultSet) {
@@ -121,7 +121,7 @@ var QuickSave = {
 		formarray[1] = QuickSave.FormIdentifier[formid];
 		formarray[2] = new Array(info[0],info[1],info[2]);
 		HTML_AJAX.defaultEncoding = 'JSON'; // set encoding to JSON encoding method
-		HTML_AJAX.call('quicksave','saveItem',false,formarray);
+		HTML_AJAX.call('quicksave','saveItem',QuickSave.cb,formarray);
 		HTML_AJAX.defaultEncoding = 'Null'; // set encoding back to default
 	},
 	
@@ -150,8 +150,12 @@ var QuickSave = {
 			formarray[2][formarray[2].length] = QuickSave.quickTextarea(textareas[i]);
 		}
 		HTML_AJAX.defaultEncoding = 'JSON'; // set encoding to JSON encoding method
-		HTML_AJAX.call('quicksave','saveForm',false,formarray);
+		HTML_AJAX.call('quicksave','saveForm',QuickSave.cb,formarray);
 		HTML_AJAX.defaultEncoding = 'Null'; // set encoding back to default
+	},
+	
+	cb: function() {
+		
 	},
 
 	setup: function(element) {

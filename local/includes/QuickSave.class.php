@@ -17,9 +17,13 @@ class QuickSave {
 		$this->_saveSession();
 	}
 	
-	function loadForm($formid,$formIdentifier) {
+	function loadForm($formid,$formIdentifier,$clear=false) {
 		if(isset($this->formdata[$formid]) && isset($this->formdata[$formid][$formIdentifier])) {
-			return array($formid,$this->formdata[$formid][$formIdentifier]);
+			$out = array($formid,$this->formdata[$formid][$formIdentifier]);
+			if($clear==true) {
+				$this->clearForm($formid,$formIdentifier);
+			}
+			return $out;
 		}
 		return false;
 	}
@@ -45,11 +49,11 @@ class QuickSave {
 	}
 	
 	function clearForm($formid,$formIdentifier=0) {
-		$session =& $this->_getSession();
-		$formdata = $session->get('formData');
+		$session =& $this->session;
+		$formdata =& $this->formdata;
 		if(isset($formdata[$formid]) && isset($formdata[$formid][$formIdentifier])) {
 			unset($formdata[$formid][$formIdentifier]);
-			$session->set('formData',$formdata);
+			$this->_saveSession();
 		}
 	}
 }
