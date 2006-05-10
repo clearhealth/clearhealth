@@ -1,5 +1,11 @@
 <?php
 
+$loader->requireOnce('includes/clni/clniData.class.php');
+
+class ScheduleWizardData extends clniData{
+	var $schedule_type = '';
+}
+
 class C_Schedule extends Controller
 {
 	var $schedule = null;
@@ -17,6 +23,78 @@ class C_Schedule extends Controller
 		$schedule =& Celini::newORDO('Schedule', (int)$rawPost['id']);
 		$schedule->populate_array($rawPost);
 		$schedule->persist();
+	}
+
+	function _getWizardData() {
+		$session =& Celini::sessionInstance();
+
+		$str = $session->get('schedule:wizardData');
+		if (!empty($str)) {
+			return unserialize($str);
+		}
+		return new ScheduleWizardData();
+	}
+	function _setWizardData($data) {
+		$str = serialize($data);
+
+		$session =& Celini::sessionInstance();
+		$session->set('schedule:wizardData',$str);
+	}
+
+	var $wizardPage = 1;
+	function actionWizard() {
+		$em =& Celini::enumManagerInstance();
+		$this->view->assign_by_ref('em',$em);
+
+
+		$wizardData = $this->_getWizardData();
+		var_dump($wizardData);
+	
+		$provider =& Celini::newOrdo('Provider');
+		$providers = $provider->valueList('usernamePersonId');
+
+		$room =& Celini::newORDO('Room');
+		$practice =& Celini::newOrdo('Practice');
+		$room =& Celini::newOrdo('Room');
+		$pa = $practice->practices_factory();
+		$this->view->assign("rooms",$room->rooms_practice_factory($pa,false));
+		$this->view->assign("providers",$providers);
+
+
+		$this->view->assign_by_ref('wizard',$wizardData);
+		return $this->view->render('wizard-'.$this->wizardPage.'.html');
+	}
+
+	function processWizard() {
+		$session =& Celini::sessionInstance();
+
+		$wizardData = $this->_getWizardData();
+		$wizardData->populate($this->POST->get('wizard'));
+		$this->_setWizardData($wizardData);
+
+		$this->wizardPage = $this->POST->getTyped('next_page','int');
+
+		if ($this->wizardPage == 99) {
+			$this->createSchedule($wizardSchedule);
+		}
+	}
+
+	function createSchedule($data) {
+		$schedule =& Celini::newORDO('Schedule');
+
+		$wizard = $this->_getWizard();
+
+		$schedule->set('title',$wizard->get('name'));
+		$schedule->set('provider_id',$wizard->get('provider_id'));
+		$schedule->set('room_id',$wizard->get('room_id'));
+
+		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
+		$building =& Celini::newOrdo('Building',$room->get('building_id'));
+		$schedule->set('practice_id',$building->get('practice_id'));
+
+		$schedule->persist();
+		$schedule->createRecurrence();
+
 	}
 
 	function actionList() {
@@ -96,7 +174,7 @@ class C_Schedule extends Controller
 		}
 		
 		return $this->view->render('edit.html');
-		}
+	}
 		
 	function _processEvent() {
 		$eventarray = $this->POST->getRaw('Event');
@@ -112,7 +190,7 @@ class C_Schedule extends Controller
 				$this->messages->addMessage('Event Updated');
 			} else {
 				$this->messages->addMessage('Event Added');
-	}
+			}
 		}
 	}
 	
@@ -171,7 +249,7 @@ class C_Schedule extends Controller
 		$this->messages->addMessage('Schedule Updated');
 	}
 	
-	function _processDeletes(){
+	function _processDeletes() {
 		if(isset($_POST['DeleteEvent'])){
 			$this->_deleteEvents($this->POST->getRaw('DeleteEvent'));
 		}
@@ -179,8 +257,8 @@ class C_Schedule extends Controller
 			$this->_deleteRecurrences($this->POST->getRaw('DeleteRecurrence'));
 		}
 
-		}
-	
+	}
+
 	function _processRecurrence(){
 		if(isset($_POST['Recurrence']) && !empty($_POST['RecurrencePattern']['pattern_type'])){
 			$rec =& $this->schedule->createRecurrence($this->POST->getRaw('Recurrence'),$this->POST->getRaw('RecurrencePattern'));

@@ -1,0 +1,13 @@
+<p>
+<input type="submit" value="Back" onclick="$('page').value = $('back').value" id="backButton">
+<script type="text/javascript">
+{literal}
+	if (!$('back')) {
+		$('backButton').disabled = true;
+	}
+{/literal}
+</script>
+<input type="submit" value="Next">
+</p>
+</fieldset>
+</form>
