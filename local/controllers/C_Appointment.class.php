@@ -105,32 +105,14 @@ class C_Appointment extends Controller {
 			$this->assign('peopleByType',$plist);
 		}
 		$this->assign('appointment_templates',$templates);
-
 		
 		return $this->view->render('edit.html');
 	}
 
 	function ajax_edit($id) {
-		$apt =& Celini::newOrdo('Appointment',$id);
-		$this->view->assign_by_ref('appointment',$apt);
-		
-		if($apt->get('id') > 0) {
-			$this->view->assign('queue_id',$apt->get('queue_id'));
-			$this->view->assign_by_ref('visitqueue',Celini::newORDO('VisitQueue',$apt->get('queue_id')));
-			$this->view->assign('qreason_id',$apt->get('qreason_id'));
-			$this->view->assign_by_ref('visitqueuereason',Celini::newORDO('VisitQueueReason',$apt->get('qreason_id')));
-			$this->view->assign('provider_id',$apt->get('provider_id'));
-			$this->view->assign_by_ref('provider',Celini::newORDO('Provider',$apt->get('provider_id')));
-			$this->view->assign('patient_id',$apt->get('patient_id'));
-			$this->view->assign_by_ref('patient',Celini::newORDO('Patient',$apt->get('patient_id')));
-		}	
-		$room =& $apt->getParent('Room');
-		
-		$this->view->assign_by_ref('room',$room);
-		$this->view->assign('mode',$this->uiMode);
+		$this->appointment =& Celini::newOrdo('Appointment',$id);
 		$this->view->assign('ajaxedit',true);
-		$this->view->assign('FORM_ACTION',Celini::link('day','CalendarDisplay'));
-		return array($apt->get('id'),$this->view->render('edit.html'));
+		return array($id,$this->actionEdit());
 	}
 
 	function process($data) {

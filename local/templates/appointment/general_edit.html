@@ -55,12 +55,13 @@ function newPatient() {
 	<div>
 		{l}Reason{/l}<br>
 		{html_options name="Appointment[reason]" options=$appointment->valueList('reason') selected=$appointment->get('reason') 
-		onchange="updateAp(this,'appointmentTemplate')"}
+		onchange="updateAp(this,'appointmentTemplate')"
+		id='reasonHolder'}
 	</div>
 
 	<div id="aeProvider">
 		
-	{if $appointment_templates}
+	{if $appointment_templates && $appointment->get('id') < 1}
 
 		<div id="appointmentTemplate{$atid}">
 {assign var='first' value=1}
@@ -75,7 +76,7 @@ function newPatient() {
 <div {if !$inCurrentReason}style="display:none;"{/if} class="{$key}">
 	{if !$template}
 		Provider
-		<select name="user_id" class="query_style" {if !$inCurrentReason}disabled='true'{/if}>
+		<select name="Appointment[provider_id]" class="query_style" {if !$inCurrentReason}disabled='true'{/if}>
 			{if $appointment->isPopulated()}
 			{html_options options=$users_array selected=$appointment->get('provider_id')}
 			{else}
@@ -191,7 +192,11 @@ href="javascript:newPatient();">New</a>&nbsp;&nbsp;<br>
 {clni_register_validation_rule id="aeEnd"}
 {clni_register_validation id="aePatientId" 
 	rules="requiredif(testElement:'aePatientName',testRule:'required',message:'No Patient is Selected')} 
-
+{if $appointment_templates && $appointment->get('id') < 1}
+<script type="text/javascript">
+updateAp(document.getElementById('reasonHolder'),'appointmentTemplate');
+</script>
+{/if}
 {if $doappointmentpopup}
 <script type="text/javascript">
 showAddAppointment();
