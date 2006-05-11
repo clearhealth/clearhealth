@@ -54,19 +54,36 @@ class ClearhealthCalendarData {
 		}
 	}
 
-	var $_toWhere = false;
-	function toWhere(&$filters){
-		if ($this->_toWhere) {
-			return $this->_toWhere;
+	var $_toWhereEvent = false;
+	var $_toWhereSched = false;
+	function toWhere(&$filters,$forevent=true){
+		if ($forevent == true && $this->_toWhereEvent) {
+			return $this->_toWhereEvent;
+		}
+		if ($forevent == false && $this->_toWhereSched) {
+			return $this->_toWhereSched;
 		}
 
 		$criteriaArray = array();
 		$db =& Celini::dbInstance();
 		if(isset($filters['start']) && !is_null($filters['start']->getValue())) {
+			if($forevent == false) {
 		       	$criteriaArray[] = "UNIX_TIMESTAMP(event.start) >= ".$db->quote(strtotime($filters['start']->getValue()));
+			} else {
+				$time= $filters['starttime']->getValue();
+				$time = date('H:i:s',mktime($time['ap']=='AM' ? ($time['hour']=='12' ? '00' : $time['hour']) : $time['hour']+12,$time['minute'],$time['second']));
+		       	$criteriaArray[] = "aevent.start >= ".$db->quote($filters['start']->getValue().' '.$time);
+			}
 		}
+		
 		if(isset($filters['end']) && !is_null($filters['end']->getValue())) {
-			$criteriaArray[] = "UNIX_TIMESTAMP(event.start) <= ".$db->quote(strtotime($filters['end']->getValue()));
+			if($forevent == false) {
+				$criteriaArray[] = "UNIX_TIMESTAMP(event.start) <= ".$db->quote(strtotime($filters['end']->getValue()));
+			} else {
+				$time= $filters['endtime']->getValue();
+				$time = date('H:i:s',mktime($time['ap']=='AM' ? $time['hour'] : $time['hour']+12,$time['minute'],$time['second']));
+		       	$criteriaArray[] = "aevent.start <= ".$db->quote($filters['end']->getValue().' '.$time);
+			}
 		}
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
 			$string = array();
@@ -79,8 +96,11 @@ class ClearhealthCalendarData {
 			$criteriaArray[] = 'patient.person_id = '.$db->quote($filters['patient']->getValue());
 		}
 		$out = implode(' AND ',$criteriaArray);
-		
-		$this->_toWhere = $out;
+		if($forevent) {
+			$this->_toWhereEvent = $out;
+		} else {
+			$this->_toWhereSched = $out;
+		}
 		return $out;
 	}
 	
@@ -235,14 +255,17 @@ class ClearhealthCalendarData {
 				event.event_id, 
 				provider.person_id as provider_id 
 			FROM 
-				event,provider , patient
+				`event` AS event,provider , patient
+				,`event` AS aevent
 				LEFT JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id 
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
 			WHERE 
 				EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' 
 				AND EP.parent_id = provider.person_id AND 
 				EP.child_id = event.event_id 
-				$where";
+				$where
+			GROUP BY event.event_id
+				";
 		return $db->getAssoc($sql);
 	}
 	
@@ -256,7 +279,7 @@ class ClearhealthCalendarData {
 	function &providerSchedules(&$filters,$period = 900) {
 		$db = new clniDb();
 		$ret = array();
-		$where = $this->toWhere($filters);
+		$where = $this->toWhere($filters,false);
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
@@ -276,8 +299,7 @@ class ClearhealthCalendarData {
 				provider.person_id as provider_id,
 				r.name AS roomname
 			FROM 
-				event,
-				provider 
+				`event` AS event,provider
 				INNER JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id
 				INNER JOIN relationship AS ES ON ES.parent_type = 'Schedule' AND ES.child_type = 'ScheduleEvent' AND ES.child_id = event.event_id
 				LEFT JOIN relationship AS ER ON ER.child_type='ScheduleEvent' AND ER.parent_type='Room' AND ER.child_id=event.event_id
@@ -292,7 +314,7 @@ class ClearhealthCalendarData {
 				EP.child_id = event.event_id AND 
 				NOT ISNULL(ES.parent_id) 
 				$where
-			 ORDER BY 
+			ORDER BY 
 			 	event.start";
 		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
@@ -330,15 +352,15 @@ class ClearhealthCalendarData {
 		$sql = "
 			SELECT 
 				a.appointment_id,
-				event.event_id,
+				aevent.event_id,
 				IF(schedule_code = 'PS',1,0) AS schedule_sort,
 				provider.person_id provider_id,
-				UNIX_TIMESTAMP(event.start) AS start_ts,
-				UNIX_TIMESTAMP(event.end) AS end_ts
+				UNIX_TIMESTAMP(aevent.start) AS start_ts,
+				UNIX_TIMESTAMP(aevent.end) AS end_ts
 			FROM 
-				`event` AS event 
-				INNER JOIN appointment AS a ON event.event_id = a.event_id
-				LEFT JOIN relationship AS ES ON ES.child_id=event.event_id AND ES.child_type='ScheduleEvent' AND ES.parent_type='Schedule'
+				`event` AS aevent 
+				INNER JOIN appointment AS a ON aevent.event_id = a.event_id
+				LEFT JOIN relationship AS ES ON ES.child_id=aevent.event_id AND ES.child_type='ScheduleEvent' AND ES.parent_type='Schedule'
 				LEFT JOIN schedule AS s ON s.schedule_id = ES.parent_id
 				LEFT JOIN relationship AS SU ON SU.parent_type='User' AND SU.child_type='Schedule' AND SU.child_id=s.schedule_id
 				LEFT JOIN rooms AS rm ON rm.id = a.room_id
@@ -349,10 +371,10 @@ class ClearhealthCalendarData {
 			WHERE 
 				(s.schedule_code != 'NS' OR s.schedule_code IS NULL) 
 				$where
-			GROUP BY event.event_id 
+			GROUP BY aevent.event_id 
 			ORDER BY
-				event.start,
-				event.end,
+				aevent.start,
+				aevent.end,
 				schedule_sort DESC
 				";
 		$res = $db->execute($sql);
@@ -404,6 +426,7 @@ class ClearhealthCalendarData {
 			FROM 
 				event,
 				event as c 
+				INNER JOIN `event` AS aevent ON event.event_id=aevent.event_id
 				INNER JOIN appointment ea on event.event_id = ea.event_id
 				INNER JOIN appointment ec on c.event_id = ec.event_id
 				LEFT JOIN relationship AS ES ON ES.child_id=event.event_id AND ES.child_type='ScheduleEvent' AND ES.parent_type='Schedule'
