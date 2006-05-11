@@ -43,6 +43,7 @@ class C_Insurance extends Controller {
 		$ds =& $company->loadDatasource('DetailedProgramList');
 		$ds->registerTemplate('name','<a href="'.Celini::managerLink('editProgram',$company_id).'id={$insurance_program_id}&process=true">{$name}</a>');
 		$insuranceProgramGrid =& new cGrid($ds);
+		$insuranceProgramGrid->name = 'insuranceProgramGrid';
 		
 		$feeSchedule =& ORDataObject::factory('FeeSchedule',$insuranceProgram->get("fee_schedule_id"));
 
