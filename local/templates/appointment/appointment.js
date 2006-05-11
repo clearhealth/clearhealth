@@ -182,7 +182,17 @@ function expandAppointment(id,el) {
 	el.style.border = 'solid 2px black';
 }
 
-function shrinkAppointment(id,el) {
+function shrinkAppointmentHandler(event, el){
+	alert(el);
+//	alert(event.clientX + ' x ' + event.clientY);
+}
+
+function shrinkAppointment(event, id, el) {
+	var mousePos = clniUtil.mouseXY(event);
+	var left = clniUtil.posLeft(el);
+	var top = clniUtil.posTop(el);
+	if(mousePos.x >= left && mousePos.x <= (left + el.clientWidth) && mousePos.y >= top && mousePos.y <= (top + el.clientHeight)) return;
+	
 	if(expanding[id] != true) {
 		el.style.zIndex=50;
 		if(document.getElementById('event'+id+'oldheightholder').innerHTML != '') {
