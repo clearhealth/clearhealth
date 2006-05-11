@@ -294,7 +294,6 @@ class ClearhealthCalendarData {
 				$where
 			 ORDER BY 
 			 	event.start";
-		var_dump($sql);
 		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
 			if(!isset($ret[$res->fields['provider_id']])) {
