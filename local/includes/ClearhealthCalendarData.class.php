@@ -254,7 +254,7 @@ class ClearhealthCalendarData {
 	 * @return array
 	 */
 	function &providerSchedules(&$filters,$period = 900) {
-		$db =& Celini::dbInstance();
+		$db = new clniDb();
 		$ret = array();
 		$where = $this->toWhere($filters);
 		if(!empty($where)) {
@@ -273,15 +273,18 @@ class ClearhealthCalendarData {
 				event.title,
 				UNIX_TIMESTAMP(event.start) AS start,
 				UNIX_TIMESTAMP(event.end) AS end, 
-				provider.person_id as provider_id
-				,r.name AS roomname
+				provider.person_id as provider_id,
+				r.name AS roomname
 			FROM 
-				event,provider, patient
+				event,
+				provider 
 				INNER JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id
 				INNER JOIN relationship AS ES ON ES.parent_type = 'Schedule' AND ES.child_type = 'ScheduleEvent' AND ES.child_id = event.event_id
 				LEFT JOIN relationship AS ER ON ER.child_type='ScheduleEvent' AND ER.parent_type='Room' AND ER.child_id=event.event_id
 				LEFT JOIN rooms r ON r.id=ER.parent_id
 				LEFT JOIN user u ON provider.person_id = u.person_id
+				LEFT JOIN appointment appt on event.event_id = appt.event_id
+				LEFT JOIN patient on appt.patient_id = patient.person_id
 			WHERE 
 				EP.parent_type = 'Provider' AND 
 				EP.child_type = 'ScheduleEvent' AND 
@@ -291,6 +294,7 @@ class ClearhealthCalendarData {
 				$where
 			 ORDER BY 
 			 	event.start";
+		var_dump($sql);
 		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
 			if(!isset($ret[$res->fields['provider_id']])) {
