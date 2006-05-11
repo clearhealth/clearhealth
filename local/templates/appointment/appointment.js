@@ -47,10 +47,10 @@ function updateAppointmentTemplate(id) {
 		var start = false;
 		var end = false;
 		for(var i = 0; i < form.elements.length; i++) {
-			if (form.elements[i].name == 'end_time') {
+			if (form.elements[i].name == 'Appointment[end_time]') {
 				end = form.elements[i];
 			}
-			if (form.elements[i].name == 'start_time') {
+			if (form.elements[i].name == 'Appointment[start_time]') {
 				start = form.elements[i];
 			}
 		}
