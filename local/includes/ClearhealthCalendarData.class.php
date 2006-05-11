@@ -92,7 +92,7 @@ class ClearhealthCalendarData {
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
-		if(isset($filters['patient']) && $filters['patient']->getValue() > 0) {
+		if($forevent == true && isset($filters['patient']) && $filters['patient']->getValue() > 0) {
 			$criteriaArray[] = 'patient.person_id = '.$db->quote($filters['patient']->getValue());
 		}
 		$out = implode(' AND ',$criteriaArray);
@@ -247,7 +247,7 @@ class ClearhealthCalendarData {
 	 */
 	function eventProviderMap(&$filters) {
 		$db = new clniDb();
-		$where = $this->toWhere($filters);
+		$where = $this->toWhere($filters,false);
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
@@ -255,8 +255,7 @@ class ClearhealthCalendarData {
 				event.event_id, 
 				provider.person_id as provider_id 
 			FROM 
-				`event` AS event,provider , patient
-				,`event` AS aevent
+				`event` AS event,provider
 				LEFT JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id 
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
 			WHERE 
@@ -306,7 +305,6 @@ class ClearhealthCalendarData {
 				LEFT JOIN rooms r ON r.id=ER.parent_id
 				LEFT JOIN user u ON provider.person_id = u.person_id
 				LEFT JOIN appointment appt on event.event_id = appt.event_id
-				LEFT JOIN patient on appt.patient_id = patient.person_id
 			WHERE 
 				EP.parent_type = 'Provider' AND 
 				EP.child_type = 'ScheduleEvent' AND 
