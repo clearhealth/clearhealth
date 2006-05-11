@@ -90,7 +90,7 @@ class C_Appointment extends Controller {
 				$row = $ptList->current();
 				if ($row->extra1 == 1) {
 					$tmp = $p->peopleByType($row->value,true);
-					$plist[$row->key] = $tmp->toArray('user_id','username');
+					$plist[$row->key] = $tmp->toArray('person_id','username');
 				}
 			}
 			$tmp = $p->peopleByType($row->value,true);
