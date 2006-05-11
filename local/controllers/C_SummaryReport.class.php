@@ -35,7 +35,7 @@ class C_SummaryReport extends Controller {
 		// encounter information
 		$sections['Encounters'] = array();
 		$encounter =& ORDataObject::factory('Encounter');
-		$eds =& $encounter->encounterList($patient_id);
+		$eds = $encounter->encounterList($patient_id);
 		for($eds->rewind(); $eds->valid(); $eds->next()) {
 			$row = $eds->get();
 			$sections['Encounters'][$row['encounter_id']] = 
@@ -248,6 +248,7 @@ class C_SummaryReport extends Controller {
 					$ret['Addresses']['table'] = array('Type','Name','Address','City','State','Zip','Notes');
 					$address =& ORDataObject::Factory('PersonAddress');
 					$list = $address->addressList($patient_id);
+					if (empty($list)) $list = array();
 
 					foreach($list as $val) {
 						$row = array();
@@ -295,8 +296,11 @@ class C_SummaryReport extends Controller {
 				case 'rp':
 					$ret['Related People'] = array();
 					$ret['Related People']['table'] = array('Name','Relation Of','Name');
-					$pp =& ORDataObject::factory('PersonPerson');
-					$list =& $pp->relatedList($patient_id);
+					//$pp =& ORDataObject::factory('PersonPerson');
+					//$list =& $pp->relatedList($patient_id);
+
+					$GLOBALS['loader']->requireOnce("datasources/Person_RelatedList_DS.class.php");
+					$list = new Person_RelatedList_DS($patient_id); 
 
 					for($list->rewind(); $list->valid(); $list->next()) {
 						$row = $list->get();
@@ -331,7 +335,7 @@ class C_SummaryReport extends Controller {
 					$ret['Patient Notes'] = array();
 
 					$pn =& ORDataObject::factory('PatientNote');
-					$list =& $pn->listNotes($patient_id);
+					$list = $pn->listNotes($patient_id);
 					unset($list->filter['note']);
 					unset($list->template['deprecated']);
 					for($list->rewind(); $list->valid(); $list->next()) {
