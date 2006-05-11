@@ -89,7 +89,7 @@ function newPatient() {
 		{foreach from=$template->breakdownArray() item=breakdown}
 		{$breakdown.title}
 
-		<select name="users[{$breakdown.occurence_breakdown_id}]" {if !$inCurrentReason}disabled='true'{/if}>
+		<select name="Appointment[users][{$breakdown.occurence_breakdown_id}]" {if !$inCurrentReason}disabled='true'{/if}>
 			{if $edit_app}
 			{html_options options=$peopleByType[$breakdown.user_id] selected=$editOccurenceBreakdown[$breakdown.index]}
 			{else}

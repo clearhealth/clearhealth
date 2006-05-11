@@ -127,6 +127,9 @@ class C_Appointment extends Controller {
 	 * @access private
 	 */
 	function _createAppointmentOrdo($data) {
+		if (isset($data['users'])) {
+			$data['provider_id'] = current($data['users']);
+		}
 		$db =& Celini::dbInstance();
 //		$db->debug = true;
 		$user =& $this->_me->get_user();
@@ -160,6 +163,10 @@ class C_Appointment extends Controller {
 		}
 		
 		$this->appointment =& $appointment;
+
+		if (isset($data['users']) && count($data['users']) > 1) {
+		}
+
 	}
 
 	function ajax_cancel($id) {
