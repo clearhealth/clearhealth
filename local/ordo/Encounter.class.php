@@ -130,8 +130,13 @@ class Encounter extends ORDataObject {
 		if (!$this->get('occurence_id')) {
 			return '';
 		}
-		$o =& ORDataObject::factory('Occurence',$this->get('occurence_id'));
-		return $o->get('date').' '.$o->get('start_time').' '.$o->get('building_name').' -> '.$o->get('location_name') .' '.$o->get('user_display_name');
+		$a =& ORDataObject::factory('Appointment',$this->get('occurence_id'));
+		$room =& ORDataObject::factory('Room',$a->get('room_id'));
+		$building =& ORDataObject::factory('Building',$room->get('building_id'));
+		$person =& ORDataObject::factory('person',$a->get('patient_id'));
+		return $a->get('date').' '.$a->get('start_time').'
+'.$building->get('name').' -> '.$room->get('name') .'
+'.$person->get('first_name') . ' ' . $person->get("last_name");
 
 	}
 
