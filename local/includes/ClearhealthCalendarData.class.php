@@ -248,20 +248,15 @@ class ClearhealthCalendarData {
 	function eventProviderMap(&$filters) {
 		$db = new clniDb();
 		$where = $this->toWhere($filters,false);
-		if(!empty($where)) {
-			$where = ' AND ('.$where.')';
-		}
 		$sql = "SELECT 
 				event.event_id, 
 				provider.person_id as provider_id 
 			FROM 
-				`event` AS event,provider
-				LEFT JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id 
+				`event` AS event
+				inner join appointment a on a.event_id = event.event_id
+				left join provider on a.provider_id = provider.person_id
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
 			WHERE 
-				EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' 
-				AND EP.parent_id = provider.person_id AND 
-				EP.child_id = event.event_id 
 				$where
 			GROUP BY event.event_id
 				";
