@@ -62,7 +62,7 @@
 	}
 
 	function addAdjustment() {
-		$('adjustmentList').style.display = 'table';
+		$('adjustmentTable').style.display = 'table';
 		var row = document.createElement('tr');
 		var tdC = document.createElement('td');
 		var tdT = document.createElement('td');
@@ -96,7 +96,7 @@
 		row.appendChild(tdC);
 		row.appendChild(tdT);
 		row.appendChild(tdV);
-		$('adjustmentListTable').tBodies[0].appendChild(row);
+		$('adjustmentTable').tBodies[0].appendChild(row);
 		
 		return false;
 	}
@@ -112,14 +112,14 @@
 	}
 
 	function showAdjustmentList() {
-		new Effect.Grow('adjustmentList');
+		new Effect.Appear('adjustmentList');
 		new Effect.Fade('adjustmentLink');
 
 		//window.setTimeout(function() {$('adjustmentList').style.overflow = 'auto';},400);
 	}
 
 	function hideAdjustmentList() {
-		new Effect.Shrink('adjustmentList');
+		new Effect.Fade('adjustmentList');
 		new Effect.Appear('adjustmentLink');
 	}
 </script>
@@ -190,7 +190,7 @@
 </div>
 
 <h3 id="adjustmentLink"><a title="Show All Adjustments" href='#showAdjustmentList' onclick="showAdjustmentList()">Adjustments</a></h3>
-<table id="adjustmentList" class="grid" style="display:none">
+<table id="adjustmentTable" class="grid" style="display:none">
 	<thead>
 		<tr>
 			<th>Applied To</th>
