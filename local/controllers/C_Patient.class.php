@@ -119,6 +119,7 @@ class C_Patient extends Controller {
 		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
 		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
+		$this->assign('DUPLICATE_ACTION',Celini::link('markDuplicate',true,'minimal').'patient_id='.$patient_id);
 		$this->assign('hide_type',true);
 		$this->assign('chronicCodes',$chronicCodes);
 
@@ -161,6 +162,54 @@ class C_Patient extends Controller {
 		else {
 			$this->data['ordo'][$name] = $ordo->helper->persistToArray($ordo);
 		}
+	}
+
+	function actionMarkDuplicate() {
+		$patientId = EnforceType::int($this->getDefault('patient_id'));
+
+		$patient =& Celini::newOrdo('Patient',$patientId);
+		$this->view->assign_by_ref('patient',$patient);
+
+		$this->view->assign('FORM_ACTION',Celini::link(true).'patient_id='.$patientId);
+
+		return $this->view->render('markDuplicate.html');
+	}
+
+	function processMarkDuplicate() {
+		$patientId = EnforceType::int($this->getDefault('patient_id'));
+
+		$search = '';
+		if ($this->POST->exists('search')) {
+			$search = $this->POST->get('search');
+		}
+
+		$GLOBALS['loader']->requireOnce('controllers/C_PatientFinder.class.php');
+
+		$finder = new C_PatientFinder();
+		$results = $finder->SmartSearch($search);
+
+		foreach($results as $key => $row) {
+			if ($row['id'] == $patientId) {
+				unset($results[$key]);
+			}
+		}
+		$this->view->assign('results',$results);
+		$this->view->assign('search',$search);
+		$this->view->assign('MARK_ACTION',Celini::link('FinishMark'));
+	}
+
+	function actionFinishMark() {
+		return $this->view->render('finishMark.html');
+	}
+
+	function processFinishMark() {
+		$queue =& Celini::newOrdo('DuplicateQueue');
+		$queue->populateArray($this->POST->get('DuplicateQueue'));
+		$queue->persist();
+
+		$patient =& Celini::newOrdo('Patient',$queue->get('child_id'));
+		$patient->set('inactive',1);
+		$patient->persist();
 	}
 
 	/**

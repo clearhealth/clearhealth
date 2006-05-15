@@ -1,4 +1,36 @@
 <?php
+if( !function_exists('memory_get_usage') )
+{
+   function memory_get_usage()
+   {
+       //If its Windows
+       //Tested on Win XP Pro SP2. Should work on Win 2003 Server too
+       //Doesn't work for 2000
+       //If you need it to work for 2000 look at http://us2.php.net/manual/en/function.memory-get-usage.php#54642
+       if ( substr(PHP_OS,0,3) == 'WIN')
+       {
+               $output = array();
+               exec( 'tasklist /FI "PID eq ' . getmypid() . '" /FO LIST', $output );
+      
+               return preg_replace( '/[\D]/', '', $output[5] ) * 1024;           
+       }else
+       {
+           //We now assume the OS is UNIX
+           //Tested on Mac OS X 10.4.6 and Linux Red Hat Enterprise 4
+           //This should work on most UNIX systems
+           $pid = getmypid();
+           exec("ps -eo%mem,rss,pid | grep $pid", $output);
+           $output = explode("  ", $output[0]);
+           //rss is given in 1024 byte units
+           return $output[1] * 1024;
+       }
+   }
+}
+function memory() {
+	$m = memory_get_usage();
+	return ($m/1024).'KB';
+}
+
 
 $loader->requireOnce('includes/clni/clniData.class.php');
 
@@ -61,6 +93,9 @@ class C_Schedule extends Controller
 		$this->view->assign("providers",$providers);
 
 		$this->view->assign_by_ref('wizard',$wizardData);
+
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('clnipopup');
 		return $this->view->render('wizard-'.$this->wizardPage.'.html');
 	}
 
@@ -78,6 +113,10 @@ class C_Schedule extends Controller
 		}
 	}
 
+	/** 
+	 * @todo need to detect matching schedules
+	 * @todo need to detect matching groups
+	 */
 	function createSchedule($wizard) {
 
 		// create a new schedule
@@ -136,23 +175,29 @@ class C_Schedule extends Controller
 			$pattern = array('pattern_type'=> 'dayweek');
 			$pattern['days'] = $wizard->get('days');
 
+			//var_dump('Pre createRecurrence: '.memory());
 			$rec =& $schedule->createRecurrence($recurrence,$pattern);
+			//var_dump('Post createRecurrence: '.memory());
 			if($rec !== false) {
+				//var_dump('Pre ScheduleEvent Loop: '.memory());
 				$eg =& $rec->getParent('EventGroup');
 				$events =& $rec->getChildren('ScheduleEvent');
-				while($event =& $events->current() && $events->valid()){
+				for($events->rewind(); $events->valid(); $events->next()) {
+					$event =& $events->current();
 					$event->set('title',$eg->get('title'));
 					$event->setParent($schedule);
 					$event->setParent($provider);
 					$event->setParent($practice);
 					$event->setParent($room);
 					$event->setParent($eg);
-					$events->next();
+					//$event->destroy();
+					//unset($event);
 				}
+				//var_dump('Post ScheduleEvent Loop: '.memory());
 			}
 		}
 
-		$this->view->assign('schedule_id',$schedule->get('id'));
+		$this->view->assign('EDIT_ACTION',Celini::link('edit','Schedule').'schedule_id='.$schedule->get('id'));
 
 	}
 

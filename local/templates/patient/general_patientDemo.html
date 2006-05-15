@@ -16,6 +16,13 @@
 		}
 	</script>
 	{/literal}
+{head type="js"}
+function startDuplicate(URL) {
+	var subWin = window.open(URL, 'dupeWindow','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=400');
+}
+{/head}
+	{* Photo area, need to rework positioning if turned back on *}
+	{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
 	<fieldset class="radio" id="person">
 		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
 			{clni_section_links name="detail"}
@@ -24,12 +31,18 @@
 			<tbody>
 			<tr>
 				<td><label>{l}Last Name{/l}: </label></td>
-				<td colspan="2"><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+				<td><input id="last_name" name="person[last_name]" size="20" value="{$person->get('last_name')}"></td>
+				<td rowspan="2" colspan="2" align="right">
+					{if $person->inDuplicateQueue()}
+					<b>Marked as Duplicate</b> of<br> {$person->value('duplicate_person')}
+					{else}
+					<button onclick="startDuplicate('{$DUPLICATE_ACTION}'); return false;">Mark as Duplicate</button>
+					{/if}
+				</td>
 			</tr>
 			<tr>
 				<td><label>{l}First Name{/l}: </label></td>
-				<td style="white-space: nowrap;" colspan="2"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
-				{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
+				<td style="white-space: nowrap;"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 			</tr>
 			<tr>
 				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>

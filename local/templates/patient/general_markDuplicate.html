@@ -1,0 +1,42 @@
+{head type="js"}
+function selectParent(id) {
+	$('parent').value = id;
+	$('mark').submit();
+}
+{/head}
+
+<h2>{$patient->value('name')} #{$patient->value('record_number')} is a duplicate of:</h2>
+
+{clni_form}
+<input name="search" value="{$search}"><input type="submit" value="search">
+
+<table class="grid">
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<th>Name</th>
+			<th>Rec #</th>
+			<th>DOB</th>
+			<th>SSN</th>
+		</tr>
+	</thead>
+	<tbody>
+{foreach from=$results item=row name="loop"}
+<tr{if $smarty.foreach.loop.iteration % 2 == 1} class="alt"{/if}>
+		<td><button onclick="selectParent({$row.id}); return false;">Select</button></td>
+		<td>{$row.name}</td>
+		<td>{$row.pubpid}</td>
+		<td>{$row.DOB}</td>
+		<td>{$row.ss}</td>
+	</tr>
+{foreachelse}
+	</tbody>
+</table>
+<p>Search for a patient and then select the one that the current patient is a duplicate of</p>
+{/foreach}
+</form>
+
+{clni_form action=$MARK_ACTION id="mark"}
+<input id="parent" name="DuplicateQueue[parent_id]" value="0" type="hidden">
+<input name="DuplicateQueue[child_id]" value="{$patient->get('id')}" type="hidden">
+</form>

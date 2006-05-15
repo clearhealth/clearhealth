@@ -356,5 +356,17 @@ class Patient extends MergeDecorator {
 		return $prov;
 	}
 
+	function inDuplicateQueue() {
+		$sql = "select count(*) from duplicate_queue where child_id = ".$this->get('id');
+		return $this->dbHelper->getOne($sql);
+	}
+
+	function value_duplicate_person() {
+		$sql = "select parent_id from duplicate_queue where child_id = ".$this->get('id');
+		$id = $this->dbHelper->getOne($sql);
+		$patient =& Celini::newOrdo('Patient',$id);
+		return $patient->value('name').' #'.$patient->value('record_number');
+	}
+
 }
 ?>

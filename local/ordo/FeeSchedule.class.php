@@ -185,7 +185,7 @@ class FeeSchedule extends ORDataObject {
 				." from codes, fee_schedule fs "
 				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
 				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
-				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code_id =  $code_id "
+				." where fs.fee_schedule_id = ".$this->get('id')." and codes.code_id =  $code_id "
 				." order by code";
 		
 		$res = $this->_execute($sql);
