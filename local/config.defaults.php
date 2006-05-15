@@ -51,6 +51,10 @@ $config['document_manager']['type_type'] = false;
 // Show extra acl and db debugging info
 $config['debug'] = false;
 
+// enable change auditing
+$config['auditChanges'] = true;
+$config['auditFieldChanges'] = true;
+
 ################################################################################
 ## Locale settings
 ################################################################################
