@@ -93,7 +93,10 @@ class ClearhealthCalendarData {
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
 		if($forevent == true && isset($filters['patient']) && $filters['patient']->getValue() > 0) {
-			$criteriaArray[] = 'patient.person_id = '.$db->quote($filters['patient']->getValue());
+			$patientfilter = $filters['patient']->getValue();
+			if($patientfilter['id'] != '') {
+				$criteriaArray[] = 'patient.person_id = '.$db->quote($patientfilter['id']);
+			}
 		}
 		$out = implode(' AND ',$criteriaArray);
 		if($forevent) {
@@ -128,7 +131,10 @@ class ClearhealthCalendarData {
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
 		if(isset($filters['patient']) && $filters['patient']->getValue() > 0) {
-			$criteriaArray[] = 'patient.person_id = '.$db->quote($filters['patient']->getValue());
+			$patientfilter = $filters['patient']->getValue();
+			if($patientfilter['id'] != '') {
+				$criteriaArray[] = 'patient.person_id = '.$db->quote($patientfilter['id']);
+			}
 		}
 		$out = implode(' AND ',$criteriaArray);
 		
