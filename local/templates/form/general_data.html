@@ -1,3 +1,6 @@
+{if $returnTo}
+<a href="{$returnTo}">Back</a>
+{/if}
 <h2>{$form->get('name')}</h2>
 <p>{$form->get('description')}</p>
 <p>{l}Edited at{/l}: {$data->get('last_edit')}</p>

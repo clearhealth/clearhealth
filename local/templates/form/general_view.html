@@ -1,3 +1,7 @@
+{if $returnTo}
+<a href="{$returnTo}">Back</a>
+{/if}
+
 {if $form}
 <p>{l}Viewing Data for Form{/l}: {$form->get('name')}</p>
 {/if}
