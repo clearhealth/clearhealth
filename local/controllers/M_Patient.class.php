@@ -15,19 +15,21 @@ class M_Patient extends Manager {
 	function _updateChangesSection(&$section,$name) {
 	//var_dump($section);
 		foreach($section as $field => $d) {
-			$section[$field]['your_value'] = $_POST[$name][$field];
+			if (isset($_POST[$name][$field])) {
+				$section[$field]['your_value'] = $_POST[$name][$field];
+			}
+			else {
+				$section[$field]['your_value'] = '';
+			}
 			//var_dump($_POST[$name][$field],$section[$field]['new_value']);
 			if (strcmp($_POST[$name][$field],$section[$field]['new_value']) == 0) {
 				unset($section[$field]);
 			}
 		}
 	}
-	/**
-	 * Handle an update from an edit or an add
-	 * @todo move as much as possible to some place shared
-	 */
-	function process_update($id =0,$noPatient = false) {
-		// lock check
+
+	function lockCheck($id,$noPatient) {
+	// lock check
 		$lockTimestamp = $this->controller->POST->get('lockTimestamp');
 
 	if (!empty($lockTimestamp)) {
@@ -48,11 +50,13 @@ class M_Patient extends Manager {
 		// custom code needed
 		//'relatedAddresss' => array('PersonAddress','address_id'),
 		//$_POST['PatientChronicCode']
+		//
+		//var_dump($_POST);
 
 		// rest of this changes processing is generic and should be movable
 		$subOrdos = array(
-			'number' => array('PatientNumber','number_id'),
-			'address' => array('PersonAddress','address_id'),
+			'number' => array('Number','number_id'),
+			'address' => array('Address','address_id'),
 			'identifier' => array('Identifier','identifier_id'),
 			'insuredRelationship' => array('InsuredRelationship','insured_relationship_id'),
 			'personPerson' => array('PersonPerson','person_person_id'),
@@ -89,9 +93,21 @@ class M_Patient extends Manager {
 				'The following fields have been changed by another user while you were editing this page (since '.
 					date('Y-m-d H:i:s',$lockTimestamp).
 					'):<table class="grid"><thead><tr><th>Field</th><th>Original</th><th>Your</th><th>Editor</th><th>New Value</th></tr><tbody id="conflictPrint"></tbody></table><script type="text/javascript">conflicts.loading();</script>');
+			return true;
+		}
+		return false;
+	}
+	}
+	/**
+	 * Handle an update from an edit or an add
+	 * @todo move as much as possible to some place shared
+	 */
+	function process_update($id =0,$noPatient = false) {
+
+		if ($this->lockCheck($id,$noPatient)) {
 			return;
 		}
-	}
+	
 		
 		// check if the "submit duplicate record anyqay button has been clicked
 		$this->similarPatientChecked = isset($_POST['DuplicateChecked']) ;
