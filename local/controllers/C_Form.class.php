@@ -86,6 +86,10 @@ class C_Form extends Controller {
 			$ds->template['last_edit'] = '<a href="'.Celini::link('data').'id={$form_data_id}">{$last_edit}</a>';
 			$this->assign_by_ref('form',$form);
 		}
+		if ($this->GET->exists('returnTo')) {
+			$this->assign('returnTo',$this->GET->get('returnTo'));
+			$retTo = "&returnTo=".$this->GET->get('returnTo');
+		}
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_view.html"));
@@ -126,9 +130,7 @@ class C_Form extends Controller {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
-
-			$data->set('external_id',$this->get('external_id','c_patient'));
-
+			$data->set('external_id',$this->get('external_id','c_patient'));	
 			$data->set('last_edit',date('Y-m-d H:i:s'));
 			$data->persist();
 			$this->messages->addMessage('Form Updated');
@@ -138,6 +140,11 @@ class C_Form extends Controller {
 	function actionData_view($form_data_id) {
 		$data =& ORDataObject::factory('FormData',$form_data_id);
 		$form =& ORDataObject::Factory('Form',$data->get('form_id'));
+		
+		if ($this->GET->exists('returnTo')) {
+			$this->assign('returnTo',$this->GET->get('returnTo'));
+			$retTo = "&returnTo=".$this->GET->get('returnTo');
+		}
 
 		$this->Assign_by_ref('data',$data);
 		$this->Assign_by_ref('form',$form);
