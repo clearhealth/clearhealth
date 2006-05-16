@@ -151,18 +151,21 @@ class C_PatientDashboard extends Controller {
 		$reportGrid->name = "reportGrid";
 		$reportGrid->registerTemplate("title",'<a href="'.Celini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
 		$reportGrid->setExternalId(89);
-
+		
+		$GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
+		$cwf = new C_WidgetForm();
+		$widget_form_content = $cwf->actionShowForm_view($patientId); 
+		$this->assign("widget_form_content",$widget_form_content);
+		
 		// Setup the form list
 		$menu = Menu::getInstance();
 		$tmp = $menu->getMenuData('patient',90);
-
 		$formList = array();
 		if (isset($tmp['forms'])) {
 			foreach($tmp['forms'] as $form) {
 				$formList[$form['form_id']] = $form['title'];
 			}	
 		}
-
 		// lab result list
 		$lds =& new Lab_DS($p->get('id'));
 		$labGrid =& new cGrid($lds);
