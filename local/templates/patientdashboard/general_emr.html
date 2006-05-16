@@ -9,16 +9,6 @@
 		<img alt="Patient Vitals" width="350" height=350 src="{$GRAPH_ACTION}">
 	</fieldset>
 -->
-	{include file="patientdashboard/general_chunkForms.html}
-	{include file="patientdashboard/general_chunkReports.html}
-</div>
-
-<div style="float:left">
-	{*
-	<fieldset>
-		<legend>Medications</legend>
-	</fieldset>
-	*}
 	<fieldset>
 		<legend>Lab Results</legend>
 		{$labGrid->render()}
@@ -26,11 +16,15 @@
 			<p>Patient has no lab results</p>
 		{/if}
 	</fieldset>
-	{*
-	<fieldset>
-		<legend>Risk Profiles</legend>
-	</fieldset>
-	*}
+	
+	{*include file="patientdashboard/general_chunkForms.html*}
+	{include file="patientdashboard/general_chunkReports.html}
+</div>
+
+<div style="float:left">
+	
+	
+	{$widget_form_content}
 </div>
 </form>
 
