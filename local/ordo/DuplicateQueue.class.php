@@ -37,5 +37,22 @@ class DuplicateQueue extends ORDataObject {
 	function DuplicateQueue() {
 		parent::ORDataObject();
 	}
+
+	function value_childSummary() {
+		return $this->patientSummary($this->get('child_id'));
+	}
+
+	function value_parentSummary() {
+		return $this->patientSummary($this->get('parent_id'));
+	}
+
+	function patientSummary($id) {
+		$patient =& Celini::newOrdo('Patient',$id);
+
+		$ret = '<b>'.$patient->value('patient').'</b><br>';
+		$ret .= 'SSN: '.$patient->value('identifier').'<br>';
+		$ret .= 'Phone: '.$patient->value('phone').'<br>';
+		return $ret;
+	}
 }
 ?>
