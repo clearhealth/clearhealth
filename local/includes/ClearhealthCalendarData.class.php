@@ -213,6 +213,9 @@ class ClearhealthCalendarData {
 			$s =& $this->schedules;
 		}
 		$map = $this->eventProviderMap($filters);
+		if (!is_array($map)) {
+			$map = array();
+		}
 		$pdata = $this->providerData();
 		$ret = array();
 		foreach($s as $providerId => $schedules) {
