@@ -113,6 +113,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign('NOTE_ACTION',Celini::managerLink('note',$p->get('id')));
 		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$p->get('id')));
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$p->get('id')));
+		$this->assign('ELIGIBILITY_ACTION',Celini::Link('SingleCheck','MediCalEligibility',false));
 		
 		return $this->view->render("demo.html");
 	}

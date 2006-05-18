@@ -1,0 +1,19 @@
+{head type="js"}
+function checkMediCalElig(action) {
+	$('eligButton').disabled = true;
+	$('eligButton').innerHTML = 'Checking eligibility with Medi-Cal please wait ...';
+	HTML_AJAX.grab(action,function(result) {
+		$('eligButton').disabled = false;
+		$('eligButton').innerHTML = 'Check Medi-Cal Eligibility';
+		$('eligibilityCanvas').innerHTML = result;
+	} );
+}
+{/head}
+<fieldset>
+	<legend>Insurance Eligibility</legend>
+
+	<button id="eligButton" onclick="return checkMediCalElig('{$ELIGIBILITY_ACTION}patient_id={$person->get('id')}')">Check Medi-Cal Eligibility</button>
+
+	<div id="eligibilityCanvas"></div>
+
+</fieldset>
