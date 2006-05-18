@@ -43,6 +43,9 @@ class MediCalEligibilityChecker {
 
 		preg_match_all('|Set-Cookie: (.*);|U', $results, $matches);
 		$this->cookies = $matches[1];
+		$this->cookies[] = 'UserID='.$this->username;
+		$this->cookies[] = 'UserPW='.$this->password;
+		$this->cookies[] = 'CookieTest=COOKIE';
 
 		if (curl_errno($this->curl)) {
 			var_dump(curl_error($this->curl));
@@ -58,16 +61,13 @@ class MediCalEligibilityChecker {
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS,$post);
 		curl_setopt($this->curl, CURLOPT_HEADER,0);
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION,1);
-		curl_setopt($this->curl, CURLOPT_COOKIEJAR,APP_ROOT.'/tmp/cookiejar');
 
 		$sep = '|';
 		$data = $subscriberId.$sep.$dob.$sep.$issueDate.$sep.$serviceDate.$sep.str_repeat($sep,8);
 
 		$cookie = 
 			'PlugData='.urlencode($data).'; '.
-			'RecipName='.urlencode('ID: ').$subscriberId.
-			'; CookieTest=COOKIE'.
-			'; UserID='.$this->username.'; UserPW='.$this->password;
+			'RecipName='.urlencode('ID: ').$subscriberId;
 		foreach($this->cookies as $c) {
 			$cookie .= '; '.$c;
 		}
@@ -89,12 +89,25 @@ class MediCalEligibilityChecker {
 		$start = strpos($results,$this->start);
 		$end = strpos($results,$this->end);
 		$format = TimestampObject::getFormat();
-		$html = '<h3>Check ran at: '.date(str_replace('%', '', $format)).'</h3>'.substr($results,$start,$end-$start);
+		$html = substr($results,$start,$end-$start);
 
 		if(empty($html)) {
-			$html = 'Error updating eligibility information';
+			$html = '<h1>Error updating eligibility information</h1>'.$results;
 		}
 
+		$c = new Controller;
+		$base_dir = $c->base_dir;
+
+		$html = '<h3>Check ran at: '.date('m/d/Y H:i:s')."</h3>\n".
+			str_replace(
+				array('/images/spacer.gif','/Images/RedLt.gif','/Images/YeloLt.gif','/Images/GreenLt.gif'),
+				array($base_dir.'index.php/Images/stock/blank.gif',
+					$base_dir.'/images/red.png',
+					$base_dir.'/images/yellow.png',
+					$base_dir.'/images/green.png'
+				),
+			$html);
+		//$html = $html;//str_replace('src="/images/','src="',$html);
 		$this->html = $html;
 	}
 

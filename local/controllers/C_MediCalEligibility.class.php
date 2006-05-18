@@ -13,7 +13,7 @@ class C_MediCalEligibility extends Controller {
 		$checker->login();
 		$checker->checkEligibility(
 			$patient->get('identifier'),
-			$patient->get('dob'),
+			$patient->get('date_of_birth'),
 			$today,
 			$today
 			);
