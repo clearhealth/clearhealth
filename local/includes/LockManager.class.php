@@ -49,6 +49,22 @@ class LockManager {
 		}
 		return $changedFields;
 	}
+	
+	function prepareChangesAlert($changes,&$controller,$lockTimestamp) {
+		$helper =& Celini::ajaxInstance();
+		$head =& Celini::HTMLHeadInstance();
+		$head->addInlineJs('var changeData = '.$helper->jsonEncode($changes).';'.
+		'$u.registerEvent(window,"load",function() {conflicts.displayConflicts(changeData,"conflictPrint");});');
+		$head->addJs('conflicts','conflicts');
+		$head->addInlineCss('.loading { background: white; font-size: 300%; text-align: center; padding: 1em;} ');
+
+		$controller->messages->addMessage('<span style="font-size: 125%">Changes were not saved!</span>',
+		'Verify your changes against conflicting changes and resubmit');
+		$controller->messages->addMessage('Fields changed while editing',
+		'The following fields have been changed by another user while you were editing this page (since '.
+		date('Y-m-d H:i:s',$lockTimestamp).
+		'):<table class="grid"><thead><tr><th>Field</th><th>Original</th><th>Your</th><th>Editor</th><th>New Value</th></tr><tbody id="conflictPrint"></tbody></table><script type="text/javascript">conflicts.loading();</script>');
+	}
 
 }
 ?>

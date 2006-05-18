@@ -21,6 +21,7 @@ function captureEnter (field, event) {
 {/literal}
 {assign var='codingsubmit' value=true}
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+<input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 {include file='coding/general_update.html'}
 
 {literal}

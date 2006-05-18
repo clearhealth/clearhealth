@@ -2,6 +2,7 @@
 $loader->requireOnce('controllers/C_Coding.class.php');
 $loader->requireOnce('controllers/C_FreeBGateway.class.php');
 $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
+$loader->requireOnce('includes/LockManager.class.php');
 
 /**
  * A patient Encounter
@@ -57,6 +58,7 @@ class C_Encounter extends Controller {
 		}
 
 		if ($encounter_id > 0) {
+			$this->assign('lockTimestamp',time());
 			$this->set('encounter_id',$encounter_id);
 			$this->set('external_id', $this->get('encounter_id'),'c_patient');
 		}
@@ -246,6 +248,57 @@ class C_Encounter extends Controller {
 		if (isset($_POST['saveCode'])) {
 			$this->coding->update_action_process();
 			return;
+		}
+		// lock check
+		$lockTimestamp = $this->POST->get('lockTimestamp');
+
+		if (!empty($lockTimestamp)) {
+
+			$changes = array();
+			$ordoType = 'Encounter';
+			$changes['encounter'] = LockManager::hasOrdoChanged($ordoType,$encounter_id,$lockTimestamp);
+
+			$tmp = LockManager::hasOrdoChanged($ordoType,$encounter_id,$lockTimestamp);
+			$changes['encounter'] = array_merge($changes['encounter'],$tmp);
+			if(isset($changes['encounter']['date_of_treatment'])) {
+				$changes['encounter']['date_of_treatment']['old_value'] = date('m/d/Y',strtotime($changes['encounter']['date_of_treatment']['old_value']));
+			}
+			if(isset($changes['encounter']['date_of_treatment']) && strtotime($_POST['encounter']['date_of_treatment']) == strtotime($changes['encounter']['date_of_treatment']['new_value'])) {
+				unset($changes['encounter']['date_of_treatment']);
+			}
+			if(isset($changes['encounter']['occurence_id']) && $changes['encounter']['occurence_id']['new_value']== $_POST['encounter']['occurence_id']) {
+				unset($changes['encounter']['occurence_id']);
+			}
+			if(isset($changes['encounter']['current_payer'])) {
+				unset($changes['encounter']['current_payer']);
+			}
+			// rest of this changes processing is generic and should be movable
+			$subOrdos = array(
+			'encounterDate' => array('EncounterDate','encounter_date_id'),
+			'encounterValue' => array('EncounterValue','encounter_value_id'),
+			'encounterPerson' => array('EncounterPerson','encounter_person_id'),
+			'payment' => array('Payment','payment_id'),
+			);
+
+			foreach($subOrdos as $key => $info) {
+				$ordoName = $info[0];
+				$fieldName = $info[1];
+				if (isset($_POST[$key][$fieldName]) && !empty($_POST[$key][$fieldName])) {
+					$changes[$key] = LockManager::hasOrdoChanged($ordoName,$_POST[$key][$fieldName],$lockTimestamp);
+				}
+			}
+
+			$overlappingChanges = false;
+			foreach($changes as $name => $change) {
+				if (count($change) > 0) {
+					$overlappingChanges = true;
+				}
+			}
+			if ($overlappingChanges) {
+				$changes['_POST'] = $_POST;
+				LockManager::prepareChangesAlert($changes,$this,$lockTimestamp);
+				return;
+			}
 		}
 
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));

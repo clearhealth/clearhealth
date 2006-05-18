@@ -3,6 +3,7 @@
  * @package	com.uversainc.clearhealth
  */
 $loader->requireOnce('includes/LockManager.class.php');
+$loader->requireOnce('includes/QuickSave.class.php');
 
 /**
  * Patient Manager
@@ -80,19 +81,7 @@ class M_Patient extends Manager {
 		}
 		if ($overlappingChanges) {
 			$changes['_POST'] = $_POST;
-			$helper =& Celini::ajaxInstance();
-			$head =& Celini::HTMLHeadInstance();
-			$head->addInlineJs('var changeData = '.$helper->jsonEncode($changes).';'.
-				'$u.registerEvent(window,"load",function() {conflicts.displayConflicts(changeData,"conflictPrint");});');
-			$head->addJs('conflicts','conflicts');
-			$head->addInlineCss('.loading { background: white; font-size: 300%; text-align: center; padding: 1em;} ');
-
-			$this->controller->messages->addMessage('<span style="font-size: 125%">Changes were not saved!</span>',
-				'Verify your changes against conflicting changes and resubmit');
-			$this->controller->messages->addMessage('Fields changed while editing',
-				'The following fields have been changed by another user while you were editing this page (since '.
-					date('Y-m-d H:i:s',$lockTimestamp).
-					'):<table class="grid"><thead><tr><th>Field</th><th>Original</th><th>Your</th><th>Editor</th><th>New Value</th></tr><tbody id="conflictPrint"></tbody></table><script type="text/javascript">conflicts.loading();</script>');
+			LockManager::prepareChangesAlert($changes,$this->controller,$lockTimestamp);
 			return true;
 		}
 		return false;
@@ -103,6 +92,9 @@ class M_Patient extends Manager {
 	 * @todo move as much as possible to some place shared
 	 */
 	function process_update($id =0,$noPatient = false) {
+		// Clear quicksaved form
+		$qs =& new QuickSave();
+		$qs->clearForm('patientGeneralEditForm',$id);
 
 		if ($this->lockCheck($id,$noPatient)) {
 			return;

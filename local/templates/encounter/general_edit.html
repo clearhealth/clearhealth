@@ -21,6 +21,7 @@ function captureEnter (field, event) {
 {/literal}
 
 {clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
+<input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 	<fieldset>
 	<legend>{l}Encounter{/l}</legend>
 	<table>

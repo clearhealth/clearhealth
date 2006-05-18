@@ -4,6 +4,7 @@ $loader->requireOnce("includes/CodingDatasource.class.php");
 $loader->requireOnce("includes/Datasource_array.class.php");
 $loader->requireOnce("datasources/Superbill_DS.class.php");
 $loader->requireOnce("includes/transaction/TransactionManager.class.php");
+$loader->requireOnce('includes/LockManager.class.php');
 
 class C_Coding extends Controller {
 	var $foreign_id = 0;
@@ -182,8 +183,31 @@ class C_Coding extends Controller {
 		if($_POST['process'] != "true")
 			return;
 
-//		var_dump($_POST);
-		
+		// lock check
+		$lockTimestamp = $this->POST->get('lockTimestamp');
+		if (!empty($lockTimestamp)) {
+
+			$changes = array();
+			$ordoType = 'Coding';
+			$changes['coding'] = LockManager::hasOrdoChanged($ordoType,$id,$lockTimestamp);
+
+			$tmp = LockManager::hasOrdoChanged($ordoType,$id,$lockTimestamp);
+			$changes['coding'] = array_merge($changes['coding'],$tmp);
+			$this->_updateChangesSection($changes['coding'],'encounter');
+
+			$overlappingChanges = false;
+			foreach($changes as $name => $change) {
+				if (count($change) > 0) {
+					$overlappingChanges = true;
+				}
+			}
+			if ($overlappingChanges) {
+				$changes['_POST'] = $_POST;
+				LockManager::prepareChangedAlert($changes,$this,$lockTimestamp);
+				return;
+			}
+		}
+
 		$this->foreign_id = $_POST['foreign_id'];
 		$this->parent_id = $_POST['parent_id'];
 		if (isset($_POST['superbill']))  {
@@ -227,45 +251,62 @@ class C_Coding extends Controller {
 			}
 		}
 
-		foreach($_POST['parent_codes'] as $parent) {
-			$thecode = $parent['code'];
-			unset($code_data);
-			$code_data =& ORdataObject::factory('CodingData');
-			$code_data->populate_array($parent);
-			$code_data->set('code_id',$thecode);
-			$code_data->set('parent_id',0); // There is no parent for the parent...
-			$code_data->set('foreign_id',$_POST['foreign_id']); 
-	//		$code_data->clearChildCodes($_POST['foreign_id'], $parent['parent_id']);
-	// This should not happen here...
-			$code_data->set('fee',$feeSchedule->getFeeFromCodeId($thecode));
-			$code_data->set("id", 0);
-			$code_data->persist();
-			$parent_id=$code_data->get('id');
-			if(isset($parent['tooth'])){
-				$this->_db->Execute("DELETE FROM coding_data_dental WHERE coding_data_id='$parent_id'");
-				$sql="INSERT INTO coding_data_dental (coding_data_id,tooth,toothside) VALUES ('".$code_data->get('id')."','".mysql_real_escape_string($parent['tooth'])."','".mysql_real_escape_string($parent['toothside'])."')";
-				$this->_db->Execute($sql);
+		$changes = array();
+		$overlappingChanges = false;
+		foreach($_POST['parent_codes'] as $pid=>$parent) {
+			if($pid > 0) {
+				$changes['Parent '.$pid] = LockManager::hasOrdoChanged('CodingData',$pid,$lockTimestamp);
 			}
-			//var_dump($code_data);
+			if(!isset($changes['Parent '.$pid]) || (isset($changes['Parent '.$pid]) && count($changes['Parent '.$pid]) == 0)) {
+				$thecode = $parent['code'];
+				unset($code_data);
+				$code_data =& ORdataObject::factory('CodingData');
+				$code_data->populate_array($parent);
+				$code_data->set('code_id',$thecode);
+				$code_data->set('parent_id',0); // There is no parent for the parent...
+				$code_data->set('foreign_id',$_POST['foreign_id']);
+				//		$code_data->clearChildCodes($_POST['foreign_id'], $parent['parent_id']);
+				// This should not happen here...
+				$code_data->set('fee',$feeSchedule->getFeeFromCodeId($thecode));
+				$code_data->set("id", 0);
+				$code_data->persist();
+				$parent_id=$code_data->get('id');
+				if(isset($parent['tooth'])){
+					$this->_db->Execute("DELETE FROM coding_data_dental WHERE coding_data_id='$parent_id'");
+					$sql="INSERT INTO coding_data_dental (coding_data_id,tooth,toothside) VALUES ('".$code_data->get('id')."','".mysql_real_escape_string($parent['tooth'])."','".mysql_real_escape_string($parent['toothside'])."')";
+					$this->_db->Execute($sql);
+				}
+				//var_dump($code_data);
 
-			unset($child_code_data);		
-			$child_code_data =& ORdataObject::factory('CodingData');
+				unset($child_code_data);
+				$child_code_data =& ORdataObject::factory('CodingData');
 
-			if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
-				foreach($_POST['child_codes'] as $code_id){
-					if(intval($code_id) == 0)
+				if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
+					foreach($_POST['child_codes'] as $code_id){
+						if(intval($code_id) == 0)
 						continue;
-			
-							
-					$child_code_data->set("id", 0);
-					$child_code_data->set('code_id', $code_id);
-					$child_code_data->set('parent_id', $parent_id);
-					$child_code_data->set('foreign_id',$_POST['foreign_id']); 
-					$child_code_data->persist();
-					// TODO: Should I set the primary_code class to 2 or something?
-					//var_dump($child_code_data);
-				}	
+
+						$changes['Coding '.$code_id] = LockManager::hasOrdoChanged('CodingData',$code_id,$lockTimestamp);
+						if(count($changes['Coding '.$code_id]) == 0) {
+							$child_code_data->set("id", 0);
+							$child_code_data->set('code_id', $code_id);
+							$child_code_data->set('parent_id', $parent_id);
+							$child_code_data->set('foreign_id',$_POST['foreign_id']);
+							$child_code_data->persist();
+							// TODO: Should I set the primary_code class to 2 or something?
+							//var_dump($child_code_data);
+						}
+					}
+				}
 			}
+		}
+		foreach($changes as $name => $change) {
+			if (count($change) > 0) {
+				$overlappingChanges = true;
+			}
+		}
+		if ($overlappingChanges) {
+			LockManager::prepareChangedAlert($changes,$this,$lockTimestamp);
 		}
 		
 		//return $this->update_action($_POST['foreign_id']);

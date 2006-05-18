@@ -16,7 +16,9 @@ var conflicts = {
 				}
 				var row = data[section][field];
 				row.fieldName = name;
-
+				if (!row.your_value) {
+					row.your_value = POST[section][field];
+				}
 				var yourValue = row.your_value;
 				var oldValue = row.old_value;
 				var newValue = row.new_value;
@@ -95,22 +97,24 @@ var conflicts = {
 	},
 	getLabel: function(el) {
 		var ret = '';
-		if (el.parentNode.nodeName == 'TD') {
-			if (el.parentNode.previousSibling.nodeType == 1) {
-				ret = el.parentNode.previousSibling;
-			}
-			else {
-				ret = el.parentNode.previousSibling.previousSibling;
+		for (var i=0;i<3;i++) {
+			if (el.nodeName != 'TD') {
+				el = el.parentNode;
 			}
 		}
-		if (ret && ret.getElementsByTagName('label').length > 0) {
-			return ret.getElementsByTagName('label').item(0).innerHTML;
-		}
-
-		if (!ret) {
+		if (el.nodeName != 'TD') {
 			return 'Unknown';
 		}
-		return ret.innerHTML;
+		for(i=0;i<2;i++) {
+			if(el && el.nodeName == 'TD' && el.getElementsByTagName('label').length > 0) {
+				continue;
+			}
+			el=el.previousSibling;
+		}
+		if (el && el.nodeName == 'TD' && el.getElementsByTagName('label').length > 0) {
+			return el.getElementsByTagName('label')[0].innerHTML;
+		}
+		return 'Unknown';
 	},
 
 	setElementValue: function(element,value) {
