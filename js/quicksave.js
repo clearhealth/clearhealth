@@ -116,6 +116,15 @@ var QuickSave = {
 	},
 
 	quickSave: function(formid,info) {
+		var infoarray = info;
+		infotext = 'Array("'+info[0]+'","'+info[1]+'","'+info[2]+'")';
+		command = 'QuickSave.quickSaveNow("'+formid+'",'+infotext+')';
+		setTimeout(command,200);
+	},
+	quickSaveNow: function(formid,info) {
+		if(QuickSave.Loading) {
+			return;
+		}
 		formarray = new Array();
 		formarray[0] = formid;
 		formarray[1] = QuickSave.FormIdentifier[formid];
@@ -126,6 +135,12 @@ var QuickSave = {
 	},
 	
 	quickSaveForm: function(formid) {
+		setTimeout('QuickSave.quickSaveFormNow("'+formid+'")',200);
+	},
+	quickSaveFormNow: function(formid) {
+		if(QuickSave.Loading) {
+			return;
+		}
 		if(document.getElementById('qsInfo')) {
 			document.getElementById('qsInfo').parentNode.style.display='none';
 		}
@@ -163,6 +178,7 @@ var QuickSave = {
 		var selects = element.getElementsByTagName('select');
 		var textareas = element.getElementsByTagName('textarea');
 		
+		element.onsubmit = 'QuickSave.Loading=true;'+element.onsubmit;
 		var inputhandler = function(event) {
 			if(!QuickSave.Loading) {
 				if(QuickSave.FirstChange[element.id] == true) {
@@ -199,10 +215,17 @@ var QuickSave = {
 				}
 			}
 		}
+		var submitbuttonhandler = function(event) {
+			QuickSave.Loading=true;
+		}
 
 		for(var i=0;i<inputs.length;i++) {
-			if(inputs[i].type == 'submit' || inputs[i].type == 'button') 
+			if(inputs[i].type == 'button') 
 				continue;
+			if(inputs[i].type == 'submit') {
+				HTML_AJAX_Util.registerEvent(inputs[i],'click',submitbuttonhandler);
+				continue;
+			}
 			if(inputs[i].type == 'checkbox') {
 				HTML_AJAX_Util.registerEvent(inputs[i],'change',inputhandler);
 			} else {
