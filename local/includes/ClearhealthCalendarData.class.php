@@ -355,7 +355,7 @@ class ClearhealthCalendarData {
 			SELECT 
 				a.appointment_id,
 				aevent.event_id,
-				IF(schedule_code = 'PS',1,0) AS schedule_sort,
+				IF(schedule_code = 'PS',1,IF(s.schedule_id IS NULL AND a.patient_id = 0,2,0)) AS schedule_sort,
 				provider.person_id provider_id,
 				UNIX_TIMESTAMP(aevent.start) AS start_ts,
 				UNIX_TIMESTAMP(aevent.end) AS end_ts
@@ -371,14 +371,18 @@ class ClearhealthCalendarData {
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
 				LEFT JOIN patient ON a.patient_id=patient.person_id
 			WHERE 
-				(s.schedule_code != 'NS' OR s.schedule_code IS NULL) 
+				(s.schedule_code != 'NS' OR s.schedule_code IS NULL OR s.schedule_code = '') 
 				$where
 			GROUP BY aevent.event_id 
 			ORDER BY
+				schedule_sort DESC,
 				aevent.start,
-				aevent.end,
-				schedule_sort DESC
+				aevent.end
 				";
+		/**
+		 * If there's no schedule and no patient, it's an ADMIN event
+		 */
+
 		$res = $db->execute($sql);
 		$ret = array();
 		// Create the html output here so we don't have to haul around this huge array.
@@ -419,6 +423,7 @@ class ClearhealthCalendarData {
 			$where = ' AND ('.$where.')';
 		}
 		$sql = "SELECT 
+				IF(schedule_code = 'PS',1,IF(s.schedule_id IS NULL AND (ec.patient_id = 0),2,0)) AS schedule_sort,
 				UNIX_TIMESTAMP(event.start) start_ts,
 				UNIX_TIMESTAMP(c.start) conflict_ts,
 				UNIX_TIMESTAMP(c.end) end_ts,
@@ -442,7 +447,7 @@ class ClearhealthCalendarData {
 			and ea.provider_id = ec.provider_id
 			$where and c.event_id != event.event_id
 			 ORDER BY 
-			 	 ec.created_date, event.start, c.start, c.event_id";
+			 	ec.created_date, event.start, c.start, c.event_id";
 		$res = $db->execute($sql);
 		$conflicts = array();
 		$starts = array();
@@ -459,7 +464,6 @@ class ClearhealthCalendarData {
 			$starts[$pid][$res->fields['conflict_event_id']] = $res->fields['conflict_ts'];
 			$res->MoveNext();
 		}
-
 		// calc start/end times for overlap blocks
 		$blocks = array();
 		foreach($conflicts as $pid => $conflict) {
@@ -495,9 +499,11 @@ class ClearhealthCalendarData {
 						$blocks[$pid][$blockId]['count'][$event['conflict_event_id']] = 1;
 						if ($blocks[$pid][$blockId]['start'] > $event['conflict_ts']) {
 							$blocks[$pid][$blockId]['start'] = $event['conflict_ts'];
+							$blocks[$pid][$blockId]['sort'] = $event['schedule_sort'];
 						}
 						if ($blocks[$pid][$blockId]['end'] < $event['end_ts']) {
 							$blocks[$pid][$blockId]['end'] = $event['end_ts'];
+							$blocks[$pid][$blockId]['sort'] = $event['schedule_sort'];
 						}
 					}
 					else {
@@ -511,12 +517,10 @@ class ClearhealthCalendarData {
 				$blocks[$pid][$blockId]['count'] = array_sum($block['count']);
 			}
 		}
-
 		$conflictData = $conflicts;
-
 		// just a list of which columns we have
 		$columns = array();
-
+		$unsets = array();
 		// build columns using the rest of the items
 		foreach($conflicts as $pid => $conflict) {
 			$columns[$pid] = array();
@@ -536,17 +540,25 @@ class ClearhealthCalendarData {
 							break;
 						}
 					}
-
 					if ($add) {
-						$columns[$pid][$current][$parent] = array( 'column' => $current, 'start_ts' => $starts[$pid][$parent]);
-						unset($conflicts[$pid][$parent]);
-
+						if($row['schedule_sort'] == 2) {
+							$c = $columns[$pid];
+							$columns[$pid]= array();
+							$columns[$pid][] = array($parent=>array('column'=>0,'start_ts'=>$starts[$pid][$parent]));
+							foreach($c as $key=>$cb) {
+								if(!empty($cb)) {
+									$columns[$pid][] = $cb;
+								}
+							}
+						} else {
+							$columns[$pid][$current][$parent] = array( 'column' => $current, 'start_ts' => $starts[$pid][$parent]);
+						}
 						$conflictData[$pid][$parent] = true;
+						unset($conflicts[$pid][$parent]);
 					}
 				}
 			}
 		}
-
 		$conflicts = $conflictData;
 		//$columns[$pid][$colId] = $colId;
 		foreach($columns as $pid => $column) {
@@ -556,7 +568,6 @@ class ClearhealthCalendarData {
 			unset($columns[$pid][0]);
 		}
 
-		
 		return array($conflicts,$columns,$blocks);
 	}
 	
@@ -590,7 +601,6 @@ class ClearhealthCalendarData {
 					$columns[$provider_id][$ts] =& $this->events[$provider_id][$ts];
 				}
 			}
-
 			if (isset($conflicts[$provider_id])) {
 				$columns[$provider_id]['conflicts'] = $conflicts[$provider_id];
 			}

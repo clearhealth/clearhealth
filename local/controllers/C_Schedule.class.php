@@ -108,11 +108,34 @@ class C_Schedule extends Controller
 
 		$this->wizardPage = $this->POST->getTyped('next_page','int');
 
-		if ($this->wizardPage == 99) {
-			$this->createSchedule($wizardData);
+		switch ($this->wizardPage) {
+			case 99:
+				$this->createSchedule($wizardData);
+				break;
+			case 11:
+				$this->createAdminMeeting($wizardData);
+				break;
 		}
 	}
 
+	function createAdminMeeting($wizard) {
+		$p =& Celini::newORDO('Provider');
+		$providers = $p->getProviderList();
+		foreach($providers as $pid=>$pname) {
+			$apt =& Celini::newORDO('Appointment');
+			$apt->populateEvent();
+			$apt->_event->set('title','Meeting: '.$wizard->get('title'));
+			$apt->set('title','Meeting: '.$wizard->get('title'));
+			$apt->set('appointment_code','ADM');
+			$apt->set('provider_id',$pid);
+			$apt->set('room_id',$wizard->get('room_id'));
+			$apt->set('date',$wizard->get('date_start'));
+			$apt->set('start_time',$wizard->get('time_start'));
+			$apt->set('end_time',$wizard->get('time_end'));
+			$apt->persist();
+		}
+	}
+	
 	/** 
 	 * @todo need to detect matching schedules
 	 * @todo need to detect matching groups
