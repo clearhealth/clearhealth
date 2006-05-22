@@ -27,6 +27,38 @@ class C_MediCalEligibility extends Controller {
 	}
 
 	function actionBatchCheck() {
+		// grab patient_id's for all of tomorrows patients
+		$tomorrow = date('Y-m-d',strtotime('tomorrow'));
+		$sql = "select 
+				a.patient_id, p.identifier, p.date_of_birth 
+			from appointment a
+			inner join event using(event_id) 
+			inner join person p on a.patient_id = p.person_id
+			where date_format(start,'%Y-%m-%d') = '$tomorrow'";
+
+		$db = new clniDb();
+		$res = $db->execute($sql);
+
+
+		$checker = new MediCalEligibilityChecker();
+		$checker->login();
+
+		while($res && !$res->EOF) {
+			$checker->checkEligibility(
+				$res->fields['identifier'],
+				$res->fields['date_of_birth'],
+				$tomorrow,
+				$tomorrow
+				);
+			$el =& Celini::newOrdo('EligibilityLog');
+			$el->set('patient_id',$res->fields['patient_id']);
+			$el->set('log_time',date('Y-m-d H:i:s'));
+			$el->set('message',$checker->getLastCheckOutput());
+			$el->persist();
+
+			$res->MoveNext();
+		}
+
 	}
 }
 ?>
