@@ -14,6 +14,10 @@ function checkMediCalElig(action) {
 
 	<button id="eligButton" onclick="return checkMediCalElig('{$ELIGIBILITY_ACTION}patient_id={$person->get('id')}')">Check Medi-Cal Eligibility</button>
 
-	<div id="eligibilityCanvas"></div>
+	<div id="eligibilityCanvas">
+		{if $eligibility->get('id') > 0}
+		{$eligibility->get('message')}
+		{/if}
+	</div>
 
 </fieldset>

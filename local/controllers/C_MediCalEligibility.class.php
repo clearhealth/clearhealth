@@ -18,7 +18,15 @@ class C_MediCalEligibility extends Controller {
 			$today
 			);
 	
-		return $checker->getLastCheckOutput();
+		$el =& Celini::newOrdo('EligibilityLog');
+		$el->set('patient_id',$patientId);
+		$el->set('log_time',date('Y-m-d H:i:s'));
+		$el->set('message',$checker->getLastCheckOutput());
+		$el->persist();
+		return $el->get('message');
+	}
+
+	function actionBatchCheck() {
 	}
 }
 ?>

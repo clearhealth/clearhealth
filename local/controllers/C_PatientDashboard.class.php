@@ -92,6 +92,9 @@ class C_PatientDashboard extends Controller {
 		$GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
 		$patientStatsController =& new C_PatientStatistics();
 		$this->view->assign('patientStatisticsView', $patientStatsController->actionView($p->get('id')));
+
+		// Grab the last eligibility run
+		$el =& Celini::newOrdo('EligibilityLog',$p->get('id'),'ByPatientLatest');
 		
 		$this->assign_by_ref("person",$p);
 		$this->assign_by_ref('number',$number);
@@ -104,6 +107,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign_by_ref('depnoteGrid',$depnoteGrid);
 		$this->assign_by_ref('note',$note);
 		$this->assign_by_ref('appointmentGrid',$appointmentGrid);
+		$this->assign_by_ref('eligibility',$el);
 
 
 		$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter') . 'patient_id=' . $p->get('id'));

@@ -86,10 +86,13 @@ class MediCalEligibilityChecker {
 
 		//var_dump($results);
 
-		$start = strpos($results,$this->start);
+		$start = strpos($results,$this->start)+strlen($this->start);
 		$end = strpos($results,$this->end);
 		$format = TimestampObject::getFormat();
-		$html = substr($results,$start,$end-$start);
+		$html = substr($results,$start,($end-$start));
+
+		$next = strpos($html,'-->');
+		$html = substr($html,$next+3);
 
 		if(empty($html)) {
 			$html = '<h1>Error updating eligibility information</h1>'.$results;
@@ -107,7 +110,6 @@ class MediCalEligibilityChecker {
 					$base_dir.'/images/green.png'
 				),
 			$html);
-		//$html = $html;//str_replace('src="/images/','src="',$html);
 		$this->html = $html;
 	}
 
