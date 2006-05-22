@@ -1,0 +1,49 @@
+<input type="hidden" name="appointmentruleset[appointment_ruleset_id]" value="{$ar->get('id')}">
+<input type="hidden" name="appointmentruleset[tab]" value='summary'>
+<p><label>Name: </label><input name="appointmentruleset[name]" value="{$ar->get('name')}"></p>
+<p><label>Message to display when a rule fails:</label><br>
+<textarea rows=5 cols=50 name="appointmentruleset[error_message]">{$ar->get('error_message')}</textarea>
+<br><br>
+<b>Rules:</b>
+
+<ul>
+	<li>Date<br>
+	<ul>
+	{foreach from=$ar->rulesList('date') item=rule key=key}
+		<li><a href="#" onclick="selectRule('date',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+
+	<li>Procedure<br>
+	<ul>
+	{foreach from=$ar->rulesList('procedure') item=rule key=key}
+		<li><a href="#" onclick="selectRule('procedure',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+
+	<li>Patient<br>
+	<ul>
+	{foreach from=$ar->rulesList('patient') item=rule key=key}
+		<li><a href="#" onclick="selectRule('patient',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+
+	<li>Provider<br>
+	<ul>
+	{foreach from=$ar->rulesList('provider') item=rule key=key}
+		<li><a href="#" onclick="selectRule('provider',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+
+	<li>Location<br>
+	<ul>
+	{foreach from=$ar->rulesList('location') item=rule key=key}
+		<li><a href="#" onclick="selectRule('location',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+</ul>

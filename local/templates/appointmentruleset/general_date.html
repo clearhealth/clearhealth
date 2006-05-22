@@ -1,0 +1,48 @@
+{if $rule->get('id') == 0}
+<h3>Add a new Date Rule</h3>
+{/if}
+
+<input type="hidden" name="appointmentruleset[appointment_rule_id]" value="{$rule->get('id')}">
+<input type="hidden" name="appointmentruleset[tab]" value='date'>
+<input type="hidden" name="appointmentruleset[type]" value='date'>
+
+<p>Label: <input name="appointmentruleset[label]" id="rulelabel" value="{$rule->get('label')}"></p>
+
+<label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][date_type]" {if $data->date_type == 'dayofweek'}CHECKED{/if}
+		value="dayofweek">Day of Week</label><br>
+
+<label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][date_type]" {if $data->date_type == 'dayofmonth'}CHECKED{/if}
+	value="dayofmonth">Day of Month</label><br>
+
+<label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][date_type]" {if $data->date_type == 'lastofday'}CHECKED{/if}
+	value="lastofday">Last appointment of the day</label><br>
+
+<label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][date_type]" {if $data->date_type == 'lastbeforelunch'}CHECKED{/if}
+	value="lastbeforelunch">Last appointment before lunch</label><br>
+
+<div id="details">
+	<div id="dayofweek">
+		{foreach from=$em->enumArray('days_of_week') item=label key=key}
+		{$enum}
+		<label><input type="checkbox" name="appointmentruleset[data][days][{$key}]" value="{$key}" {if $data->days[$key] == $key}CHECKED{/if}>{$label}</label><br>
+		{/foreach}
+	</div>
+	<div id="dayofmonth">
+		I'm not sure what this is
+	</div>
+	<div id="lastofday">
+		<label>Length of last time block: </label><input name="appointmentruleset[data][time_block_length]" size="4">
+	</div>
+	<div id="lastbeforelunch">
+		<label>Length of last time block before the first break: </label><input name="appointmentruleset[data][time_block_length]" size="4">
+	</div>
+
+</div>
+<script type="text/javascript">
+	var inputs = document.getElementsByName('appointmentruleset[data][date_type]');
+	for(var i = 0; i < inputs.length; i++) {lcb}
+		if (inputs[i].value == '{$data->date_type}') {literal}{
+			showDetails(inputs[i]);
+		}
+	} {/literal}
+</script>
