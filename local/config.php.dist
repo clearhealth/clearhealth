@@ -49,12 +49,13 @@ $config['CalendarHourLength'] = 13;
 ################################################################################
 ## Locale settings
 ################################################################################
-// Default date/time formats
-$config['locale']['date_format']      = "%m/%d/%Y";
-$config['locale']['time_format']      = "%H:%i:%s";
-$config['locale']['timestamp_format'] = sprintf("%s %s",
-	$config['locale']['date_format'],
-	$config['locale']['time_format']);
+/** 
+ * To change the format of your date and/or time, uncomment the following lines.
+ */
+#$config['locale']['date_format']      = "%m/%d/%Y";
+#$config['locale']['time_format']      = "%H:%i:%s";
+#$config['locale']['timestamp_format'] = $config['locale']['date_format'] . ' ' . $config['locale']['time_format']);
+
 
 ################################################################################
 # Other Options
