@@ -79,7 +79,9 @@ INNER JOIN enumeration_value AS enum_val ON
 WHERE payment.encounter_id = '<<[encounter_id:C_Encounter]>>'
 
 ---[forms,noPager,hideFilter]---
-SELECT *
+SELECT
+	form.name,
+	form_data.last_edit
 FROM form_data
 INNER JOIN form ON form.form_id = form_data.form_id
 WHERE form_data.external_id = '<<[encounter_id:C_Encounter]>>'
