@@ -8,6 +8,13 @@
 
 <p>Label: <input name="appointmentruleset[label]" id="rulelabel" value="{$rule->get('label')}"></p>
 
+<fieldset>
+	<legend>Rule Type</legend>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="limit" {if $data->rule_type == 'limit'}CHECKED{/if}>Limit other rules</label>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="enforcepos" {if $data->rule_type == 'enforcepos'}CHECKED{/if}>Appointments limited</label>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="enforceneg" {if $data->rule_type == 'enforceneg'}CHECKED{/if}>Appointments excluded</label>
+</fieldset>
+
 <label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][date_type]" {if $data->date_type == 'dayofweek'}CHECKED{/if}
 		value="dayofweek">Day of Week</label><br>
 

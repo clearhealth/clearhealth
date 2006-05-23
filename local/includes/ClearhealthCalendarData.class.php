@@ -310,10 +310,14 @@ class ClearhealthCalendarData {
 				LEFT JOIN user u ON provider.person_id = u.person_id
 				LEFT JOIN appointment appt on event.event_id = appt.event_id
 			WHERE 
+				/*
 				EP.parent_type = 'Provider' AND 
 				EP.child_type = 'ScheduleEvent' AND 
+				 */
 				EP.parent_id = provider.person_id AND 
+				/*
 				EP.child_id = event.event_id AND 
+				 */
 				NOT ISNULL(ES.parent_id) 
 				$where
 			ORDER BY 

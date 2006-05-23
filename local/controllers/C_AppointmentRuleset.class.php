@@ -1,6 +1,15 @@
 <?php
 class C_AppointmentRuleset extends Controller {
 
+	function actionList() {
+		$GLOBALS['loader']->requireOnce('datasources/AppointmentRuleset_DS.class.php');
+		$ds = new AppointmentRuleset_DS();
+		$grid =& new cGrid($ds);
+		$this->view->assign_by_ref('grid',$grid);
+
+		return $this->view->render('list.html');
+	}
+
 	function actionAdd() {
 	}
 
@@ -42,6 +51,13 @@ class C_AppointmentRuleset extends Controller {
 	}
 
 	function actionEdit() {
+		$id = $this->GET->getTyped('ruleset_id','int');
+		if ($id > 0) {
+			$session =& Celini::sessionInstance();
+			$session->set('AppointmentRuleset:appointment_ruleset_id',$id);
+		}
+
+
 		$this->view->assign('contentUrl',substr(Celini::link(false,'AppointmentRuleset',false),0,-1));
 		return $this->view->render('layout.html');
 	}

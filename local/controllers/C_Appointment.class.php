@@ -538,6 +538,8 @@ class C_Appointment extends Controller {
 		$aptdata = $this->GET->getRaw('Appointment');
 		$apt->populateArray($aptdata);
 		$alerts = array();
+
+		// Alert code
 		// First check related for the day.
 		$p =& Celini::newORDO('Patient',$apt->get('patient_id'));
 		$related = $p->valueList('related_people');
@@ -565,6 +567,14 @@ class C_Appointment extends Controller {
 				$res->MoveNext();
 			}
 		}
+
+		// appointment rules engine checks
+		$GLOBALS['loader']->requireOnce('includes/AppointmentRules/AppointmentRuleManager.class.php');
+		$ruleMan = new AppointmentRuleManager();
+		if (!$ruleMan->isValid($apt)) {
+			$alerts[] = $ruleMan->getMessage();
+		}
+
 		if(count($alerts) > 0) {
 			$alerts[] = $this->view->render('overridecheckbox.html');
 		}
