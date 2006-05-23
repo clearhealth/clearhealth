@@ -240,3 +240,34 @@ function makeAppointmentcb(resultSet) {
 	}
 	//	alert(resultSet);
 }
+
+/*
+This function will call the rules checker
+before actually submitting the appointment.
+*/
+function checkRules(form) {
+	if(document.getElementById('appointmentOverride') && document.getElementById('appointmentOverride').checked) {
+		form.submit();
+	}
+	aptString = HTML_AJAX.formEncode(form);
+	url = HTML_AJAX.defaultServerUrl+'?'+aptString;
+	HTML_AJAX.fullcall(url,'JSON','appointment','check_rules',checkRulescb);
+}
+
+function checkRulescb(resultSet) {
+	if(resultSet.length > 0) {
+		alertbox = document.getElementById('appointmentAlerts');
+		alertbox.innerHTML = '';
+		for(var i=0;i<resultSet.length;i++) {
+			adiv = document.createElement('div');
+			adiv.id='alert'+i;
+			alertbox.appendChild(adiv);
+			document.getElementById('alert'+i).style.width='250px';
+			HTML_AJAX_Util.setInnerHTML(document.getElementById('alert'+i),resultSet[i]);
+		}
+		alertbox.style.display='block';
+	} else {
+		document.getElementById('AppointmentEdit').submit();
+	}
+}
+

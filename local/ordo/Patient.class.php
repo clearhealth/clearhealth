@@ -174,6 +174,22 @@ class Patient extends MergeDecorator {
 		return $this->person->value('age');
 	}
 	
+	function valueList_related_people() {
+		$db =& Celini::dbInstance();
+		$sql = "SELECT p.person_id,related_person_id,CONCAT(p.last_name,', ',p.first_name) pname, CONCAT(rp.last_name,', ',rp.first_name) rpname FROM person_person LEFT JOIN person p ON person_person.person_id=p.person_id LEFT JOIN person rp ON person_person.related_person_id=rp.person_id WHERE person_person.person_id=".$db->quote($this->get('person_id'))." OR person_person.related_person_id=".$db->quote($this->get('person_id'));
+		$res = $db->execute($sql);
+		$related = array();
+		while($res && !$res->EOF) {
+			if($res->fields['person_id']==$this->get('id')) {
+				$related[$res->fields['related_person_id']]=$res->fields['rpname'];
+			} else {
+				$related[$res->fields['person_id']]=$res->fields['pname'];
+			}
+			$res->MoveNext();
+		}
+		return $related;
+	}
+	
 	/**
 	 * An alias to {@link Person::numberValueByType()}.
 	 *

@@ -529,5 +529,42 @@ class C_Appointment extends Controller {
 		return array(0,$appointment->get('provider_id'),$oldappointmentid > 0 ? $appointment->get('event_id') : 0,$out,$appointment->get('id'));
 	}
 
+	/**
+	 * This is where we'll be doing all the checks
+	 *
+	 */
+	function check_rules($aptdata) {
+		$apt =& Celini::newORDO('Appointment');
+		$aptdata = $this->GET->getRaw('Appointment');
+		$apt->populateArray($aptdata);
+		$alerts = array();
+		// First check related for the day.
+		$p =& Celini::newORDO('Patient',$apt->get('patient_id'));
+		$related = $p->valueList('related_people');
+		if(count($related) > 0) {
+			$relatedids = array_keys($related);
+			$db =& Celini::dbInstance();
+			$sql = "SELECT a.appointment_id,a.patient_id,DATE_FORMAT(ae.start,'%H:%i') start,DATE_FORMAT(ae.end,'%H:%i') end FROM appointment a LEFT JOIN event ae ON a.event_id=ae.event_id
+			WHERE a.patient_id IN (".implode(',',$relatedids).") AND a.practice_id=".$db->quote($apt->get('practice_id'))." AND DATE_FORMAT(ae.start,'%Y-%m-%d') = ".$db->quote($apt->get('date'));
+			$res = $db->execute($sql);
+			while($res && !$res->EOF) {
+				$this->view->assign('relapt',$res->fields);
+				$rp =& Celini::newORDO('Patient',$res->fields['patient_id']);
+				$this->view->assign_by_ref('related',$rp);
+				if($rp->get('confidentiality') > 1) {
+					$this->view->assign('relatedConf',1);
+				} else {
+					$this->view->assign('relatedConf',0);
+				}
+				$alerts[] = $this->view->render('alertrelatedapt.html');
+				$res->MoveNext();
+			}
+		}
+		if(count($alerts) > 0) {
+			$alerts[] = $this->view->render('overridecheckbox.html');
+		}
+		return $alerts;
+	}
+
 }
 ?>

@@ -28,11 +28,14 @@ function newPatient() {
 	}
 </script>
 {/literal}
+
 {if !$ajaxedit}
 <div id="appointmentEditor"{if $mode == 'popup'} style="visibility:hidden"{/if}>
 {/if}
 {capture name=currentpage}{link}date={$apt_date}{/capture}
-{clni_form action=$FORM_ACTION process="generic"}
+{clni_form action=$FORM_ACTION process="generic" id="AppointmentEdit"}
+<table border=0>
+<tr><td colspan=2>
 {if $queue_id}
 <input type="hidden" name="Appointment[queue_id]" value="{$queue_id}" />
 {/if}
@@ -49,6 +52,8 @@ function newPatient() {
 		{l}Add Appointment{/l}
 		{/if}
 	</div>
+	</td></tr>
+	<tr><td>
 	<div id="aeMessageTarget" style='width: 150px;'></div>
 
 
@@ -174,14 +179,16 @@ href="javascript:newPatient();">New</a>&nbsp;&nbsp;<br>
 {/if}
 
 	<div>
+		<input type="button" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}" onclick="checkRules(this.form);">
 		{*
-		<input type="button" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}" onclick="makeAppointment(this.form);">
-		*}
 		<input type="submit" value="{if $appointment->isPopulated()}{l}Update Appointment{/l}{else}{l}Make Appointment{/l}{/if}">
+		*}
 	</div>
 	<div style="text-align:right">
 	<a href="javascript:hideAddAppointment()">hide</a>
 	</div>
+</td><td><div style="vertical-align:top;width:250px;height:264px;overflow:auto;{if !$appointment_alerts}display:none;{/if}" id="appointmentAlerts">{$appointment_alerts}</div>
+</td></tr></table>
 </form>
 {if !$ajaxedit}
 </div>
