@@ -544,8 +544,13 @@ class C_Appointment extends Controller {
 		if(count($related) > 0) {
 			$relatedids = array_keys($related);
 			$db =& Celini::dbInstance();
-			$sql = "SELECT a.appointment_id,a.patient_id,DATE_FORMAT(ae.start,'%H:%i') start,DATE_FORMAT(ae.end,'%H:%i') end FROM appointment a LEFT JOIN event ae ON a.event_id=ae.event_id
-			WHERE a.patient_id IN (".implode(',',$relatedids).") AND a.practice_id=".$db->quote($apt->get('practice_id'))." AND DATE_FORMAT(ae.start,'%Y-%m-%d') = ".$db->quote($apt->get('date'));
+			$sql = "SELECT a.appointment_id,a.patient_id,
+					DATE_FORMAT(ae.start,'%H:%i') start,
+					DATE_FORMAT(ae.end,'%H:%i') end 
+				FROM appointment a LEFT JOIN event ae ON a.event_id=ae.event_id
+				WHERE a.patient_id IN (".implode(',',$relatedids).") 
+				AND a.practice_id=".$db->quote($apt->get('practice_id'))." 
+				AND DATE_FORMAT(ae.start,'%Y-%m-%d') = ".$db->quote($apt->get('date'));
 			$res = $db->execute($sql);
 			while($res && !$res->EOF) {
 				$this->view->assign('relapt',$res->fields);
