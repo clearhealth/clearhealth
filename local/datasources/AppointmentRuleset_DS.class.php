@@ -17,11 +17,12 @@ class AppointmentRuleset_DS extends Datasource_sql
 		$this->setup(Celini::dbInstance(),
 			array(
 				'cols'    => "appointment_ruleset_id,
-						name
+						name,
+						error_message
 						",
 				'from'    => "appointment_ruleset",
 			),
-			array('name' => 'Name'));
+			array('name' => 'Name','error_message'=>'Error Message'));
 		$this->registerTemplate('name','<a href="'.Celini::link('edit','AppointmentRuleset').'ruleset_id={$appointment_ruleset_id}">{$name}</a>');
 	}
 }

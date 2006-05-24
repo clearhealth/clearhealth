@@ -35,7 +35,11 @@
 		{/foreach}
 	</div>
 	<div id="dayofmonth">
-		I'm not sure what this is
+		<label><input type="radio" name="appointmentruleset[data][monthday]" value="last" onclick="$('anyday').style.display='none';" {if $data->monthday == 'last'}CHECKED{/if}>Last day of Month</label><br>
+		<label><input type="radio" name="appointmentruleset[data][monthday]" value="any" onclick="$('anyday').style.display='block';" {if $data->monthday == 'any'}CHECKED{/if}>Any day of Month</label><br>
+		<div id="anyday" {if $data->monthday != 'any'}style="display:none"{/if}>
+			<label>Day: <input name="appointmentruleset[data][monthday_day]" value="{$data->monthday_day}" size="4"></label><br>
+		</div>
 	</div>
 	<div id="lastofday">
 		<label>Length of last time block: </label><input name="appointmentruleset[data][time_block_length]" size="4">

@@ -89,6 +89,7 @@ function selectRule(type,id) {
 }
 {/head}
 
+<h2 id="rulesetName">Rule: {$ar->get('name')}</h2>
 <div id="editor">
 
 <div id="tabcontent">
@@ -109,3 +110,7 @@ function selectRule(type,id) {
 </div>
 
 </div>
+
+<script type="text/javascript">
+	selectTab('summary');
+</script>
