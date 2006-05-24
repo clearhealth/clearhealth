@@ -98,10 +98,10 @@ class EnumType_PerPractice extends EnumType_Default {
 
 		$db = new clniDB();
 		if (in_array('listAll',$this->flags)) {
-			$sql = "select * from {$this->table} ev 
-					inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id 
-					inner join practices p on evp.practice_id = p.id 
-				where ev.enumeration_id = $enumerationId order by sort, ev.enumeration_value_id";
+			$sql = "select *, ifnull(p.name,'Default') name from {$this->table} ev 
+					left join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id 
+					left join practices p on evp.practice_id = p.id 
+				where ev.enumeration_id = $enumerationId order by p.name, sort, ev.enumeration_value_id";
 			$res = $db->execute($sql);
 		}
 		else {
