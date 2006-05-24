@@ -33,6 +33,7 @@ class EnumType_PerPractice extends EnumType_Default {
 	var $editingPracticeId = -1;
 	var $editing = false;
 	var $enumerationId = false;
+	var $flags = array();
 
 	function EnumType_PerPractice() {
 		if (isset($_SESSION['defaultpractice'])) {
@@ -95,18 +96,28 @@ class EnumType_PerPractice extends EnumType_Default {
 			$practiceId = EnforceType::int($this->editingPracticeId);
 		}
 
-		$sql = "select * from {$this->table} ev inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id where ev.enumeration_id = $enumerationId and evp.practice_id = $practiceId order by sort, ev.enumeration_value_id";
-
-		if ($practiceId === -1) {
-			$sql = "select *, ev.enumeration_value_id from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
-		}
 		$db = new clniDB();
-		$res = $db->execute($sql);
+		if (in_array('listAll',$this->flags)) {
+			$sql = "select * from {$this->table} ev 
+					inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id 
+					inner join practices p on evp.practice_id = p.id 
+				where ev.enumeration_id = $enumerationId order by sort, ev.enumeration_value_id";
+			$res = $db->execute($sql);
+		}
+		else {
 
-		if (!$this->editing) {
-			if ($res->EOF) {
-				$sql = "select * from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
-				$res = $db->execute($sql);
+			$sql = "select * from {$this->table} ev inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id where ev.enumeration_id = $enumerationId and evp.practice_id = $practiceId order by sort, ev.enumeration_value_id";
+
+			if ($practiceId === -1) {
+				$sql = "select *, ev.enumeration_value_id from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
+			}
+			$res = $db->execute($sql);
+
+			if (!$this->editing) {
+				if ($res->EOF) {
+					$sql = "select * from {$this->table} ev left join enumeration_value_practice evp using(enumeration_value_id) where ev.enumeration_id = $enumerationId and evp.enumeration_value_id is null order by sort, ev.enumeration_value_id";
+					$res = $db->execute($sql);
+				}
 			}
 		}
 
