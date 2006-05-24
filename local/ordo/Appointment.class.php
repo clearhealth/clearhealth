@@ -48,18 +48,13 @@ class Appointment extends ORDataObject {
 	 */
 	var $_key = 'appointment_id';
 
-	/** 
-	 * Cased name
-	 */
-	var $_internalName = 'Appointment';
-
 	var $_event = false;
 	var $_patient = false;
 
 	/**
 	 * Internal Name
 	 */
-	var $_internalName='Appointment';
+	var $_internalName = 'Appointment';
 	
 	var $_foreignKeyList = array('queue_id'=>'VisitQueue','qreason_id'=>'VisitQueueReason');
 

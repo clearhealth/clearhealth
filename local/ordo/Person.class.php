@@ -55,9 +55,7 @@ class Person extends ORDataObject {
 	 * Person type
 	 */
 	var $_types	= false;
-	var $_table = 'person';
 	var $_internalName='Person';
-	var $_key = 'person_id';
 	
 	
 	/**#@+

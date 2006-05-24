@@ -35,7 +35,6 @@ class Provider extends MergeDecorator {
 	var $patient;
 
 
-	var $_table = 'provider';
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
