@@ -58,6 +58,24 @@ $config['CalendarHourLength'] = 13;
 
 
 ################################################################################
+## Printer Options
+################################################################################
+/**
+ * To add a printer, uncomment and fill out the following confirmation values.
+ *
+ * Additional printers can be added by creating multiple "$config['printers'][]" values. 
+ */
+#$config['printers'][] = array(
+#	'readableName' => 'Printer Name',    // Name of the printer to display in the Queue manager
+#	'systemName'   => 'Printer-Name',    // System name of the printer to print to
+#	'lprOptions'   => array(             // Options to pass into lpr via the '-o' parameter
+#		'PageSize=letter',
+#		'portrait'
+#	)
+#);
+
+
+################################################################################
 # Other Options
 ################################################################################
 
