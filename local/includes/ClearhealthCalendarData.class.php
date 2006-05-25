@@ -300,6 +300,7 @@ class ClearhealthCalendarData {
 				UNIX_TIMESTAMP(event.start) AS start,
 				UNIX_TIMESTAMP(event.end) AS end, 
 				provider.person_id as provider_id,
+				u.username,
 				r.name AS roomname
 			FROM 
 				`event` AS event,provider
@@ -331,7 +332,7 @@ class ClearhealthCalendarData {
 				'label'=>$res->fields['title'],
 				'start'=>$res->fields['start'],
 				'end'=>$res->fields['end'],
-				'display'=>$res->fields['roomname']
+				'display'=>!empty($res->fields['roomname']) ? $res->fields['roomname'].'<br />'.$res->fields['username'] : $res->fields['username']
 			);
 			$res->MoveNext();
 		}
