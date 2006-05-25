@@ -29,6 +29,16 @@ class ClearhealthCalendarData {
 		return $config;
 	}
     
+	/**
+	 * This function will output any extra items to render on the calendar
+	 * Most likely popups, buttons, etc
+	 *
+	 */
+	function extraDisplay() {
+		$view =& new clniView();
+		return $view->fetch('calendar/general_extradisplay.html');
+	}
+
 	function getFilterTypes(){
 		return $this->filters;
 	}
@@ -746,5 +756,6 @@ class ClearhealthCalendarData {
 		where
 			feeData.patient_id in('.$patients.')';
 	}
+	
 }
 ?>
