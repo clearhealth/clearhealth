@@ -170,6 +170,17 @@ class Patient extends MergeDecorator {
 		return $pp->get('guarantorPerson');
 	}
 	
+	function get_guarantees() {
+		$db =& Celini::dbInstance();
+		$sql = "SELECT person_id FROM person_person WHERE guarantor = ".$db->quote($this->get('id'));
+		$res = $db->execute();
+		$guarantees = array();
+		for($res->rewind();!$res->EOF;$res->MoveNext()) {
+			$guarantees[] = $res->fields['person_id'];
+		}
+		return $guarantees;
+	}
+	
 	function value_age() {
 		return $this->person->value('age');
 	}

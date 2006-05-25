@@ -298,10 +298,8 @@ class C_Patient extends Controller {
 			120=>0,
 		);
 
-		$ppplan =& Celini::newORDO('PatientPaymentPlan');
-		$plans = $ppplan->getByPatient($patientId);
-		$db = new clniDb();
 
+		$db = new clniDb();
 		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
 
 		$res = $db->execute($sql);
@@ -319,23 +317,56 @@ class C_Patient extends Controller {
 			$res->MoveNext();
 		}
 		
+		$ppplan =& Celini::newORDO('PatientPaymentPlan');
+		if($includeDependants == true) {
+			$persons = array($patientId)+$p->get_guarantees();
+		} else {
+			$persons = array($patientId);
+		}
+		$plines = array();
 		$pinfo = array('balance'=>0,'total'=>0,'payments'=>0);
-		foreach($plans as $plan) {
-			$pdata = $plan->get_balance_before($sh->get('pay_by'));
-			
-			$pinfo['balance'] += $pdata['balance'];
-			$pinfo['total'] +=  + $pdata['amount'];
-			$pinfo['payments'] += $pdata['paid'];
-		}
+		$planaging = array(0=>0,30=>0,60=>0,90=>0,120=>0);
+		$paybyts = strtotime($sh->get('pay_by'));
+		$ts30 = strtotime('-30 days',$paybyts);
+		$ts60 = strtotime('-60 days',$paybyts);
+		$ts90 = strtotime('-90 days',$paybyts);
+		$ts120 = strtotime('-120 days',$paybyts);
 		
-		$total_charges += $pinfo['total'];
-		$total_credits += $pinfo['payments'];
-		$total_outstanding += $pinfo['balance'];
-		
-		if($pinfo['balance'] > 0) {
-			$lines[] = array('item_date'=>$sh->get('pay_by'),'code_text'=>'Payment Plan','code'=>'','charge'=>sprintf('%.2f',$pinfo['total']),'credit'=>sprintf('%.2f',$pinfo['payments']),'outstanding'=>sprintf('%.2f',$pinfo['balance']));
+		foreach($persons as $person) {
+			$plans = $ppplan->getByPatient($person);
+			$person =& Celini::newORDO('Person',$person);
+			foreach($plans as $plan) {
+				$payments = $plan->get_unpaid_payments(date('Y-m-d',$paybyts));
+				foreach($payments as $payment) {
+					$paymentts = strtotime($payment->get('payment_date'));
+					if($paymentts <= $paybyts) {
+						$planaging[0] += $payment->get_pending_amount();
+					}
+					if($paymentts <= $ts30) {
+						$planaging[30] += $payment->get_pending_amount();
+					}
+					if($paymentts <= $ts60) {
+						$planaging[60] += $payment->get_pending_amount();
+					}
+					if($paymentts <= $ts90) {
+						$planaging[90] += $payment->get_pending_amount();
+					}
+					if($paymentts <= $ts120) {
+						$planaging[120] += $payment->get_pending_amount();
+					}
+					$plines[] = array('item_date'=>$payment->get('payment_date'),'person'=>$person->get('last_name').', '.$person->get('first_ame'),'code_text'=>'Payment Plan','charge'=>sprintf('%.2f',$payment->get('amount')),'credit'=>sprintf('%.2f',$payment->get('paid_amount')),'outstanding'=>$payment->get_pending_amount());
+					$pinfo['balance'] += $payment->get_pending_amount();
+					$pinfo['total'] += $payment->get('amount');
+					$pinfo['payments'] += $payment->get('paid_amount');
+				}
+			}
 		}
-
+		if(count($plines) > 0) {
+			$this->view->assign('plans',true);
+		}
+		$this->view->assign('plines',$plines);
+		$this->view->assign('pinfo',$pinfo);
+		
 		if ($fromSnapshot && isset($this->data['ordo']['lines'])) {
 			$lines = $this->data['ordo']['lines'];
 		}
@@ -364,7 +395,11 @@ class C_Patient extends Controller {
 		
 		$this->assign('total_account_balance',number_format($balance,2));
 		$this->assign('insurance_pending',number_format(0,2));
-		$this->assign('current_balance_due',number_format($balance,2));
+		if(count($plines) > 0) {
+			$this->assign('current_balance_due',number_format($pinfo['balance'],2));
+		} else {
+			$this->assign('current_balance_due',number_format($balance,2));
+		}
 
 		$sh->set('amount',$balance);
 		$sh->persist();
@@ -374,7 +409,11 @@ class C_Patient extends Controller {
 			$aging[$res->fields['period']] += $res->fields['balance'];
 			$res->MoveNext();
 		}
-
+		
+		if(count($plines) > 0) {
+			$aging = $planaging;
+		}
+		
 		if ($fromSnapshot && isset($this->data['ordo']['aging'])) {
 			$aging = $this->data['ordo']['aging'];
 		}

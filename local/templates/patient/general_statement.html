@@ -111,8 +111,39 @@ Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
 		<td style="background-color: #ccc">{$total_outstanding|string_format:"%.2f"}</td>
 	</tr>
 </table>
-
+{if $plans}
 <br><br>
+<strong>Payment Plans</strong>
+<table class="grid">
+	<tr>
+		<th>Due Date</th>
+		{if $familyStatement}
+		<th>Patient</th>
+		{/if}
+		<th>Charges</th>
+		<th>Credits</th>
+		<th>Outstanding</th>
+	</tr>
+	{foreach from=$plines item=line key=key}
+	<tr {if $key%2 == 0}class="alt"{/if}>
+			<td>{$line.item_date}</td>
+			{if $familyStatement}
+			<td>{$line.person}</td>
+			{/if}
+			<td>{$line.charge}</td>
+			<td>{$line.credit}</td>
+			<td>{$line.outstanding}</td>
+		</tr>
+	{/foreach}
+	<tr>
+		<th colspan="{if $familyStatement}2{/if}" style="background-color: #ccc">Total</th>
+		<td style="background-color: #ccc">{$pinfo.total|string_format:"%.2f"}</td>
+		<td style="background-color: #ccc">{$pinfo.payments|string_format:"%.2f"}</td>
+		<td style="background-color: #ccc">{$pinfo.balance|string_format:"%.2f"}</td>
+	</tr>
+</table>
+{/if}
+<br /><br />
 
 <table border=1 cellspacing=0 cellpadding=2 style="text-align:center">
 	<tr>
