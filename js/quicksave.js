@@ -177,8 +177,6 @@ var QuickSave = {
 		var inputs = element.getElementsByTagName('input');
 		var selects = element.getElementsByTagName('select');
 		var textareas = element.getElementsByTagName('textarea');
-		
-		element.onsubmit = 'QuickSave.Loading=true;'+element.onsubmit;
 		var inputhandler = function(event) {
 			if(!QuickSave.Loading) {
 				if(QuickSave.FirstChange[element.id] == true) {
