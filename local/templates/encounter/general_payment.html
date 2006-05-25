@@ -6,14 +6,32 @@
 	{/if}
 	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
 	{if $encounter->get('status') != 'closed'}		
+	
 	<table>
+	{literal}
+	<script>
+	function show_ref_num(val) {
+		if (val == "check") {
+			document.getElementById("chk_num_label").style.visibility = 'visible';
+			document.getElementById("chk_num_input").style.visibility = 'visible';
+		}
+		else {
+			document.getElementById("chk_num_label").style.visibility = 'hidden';
+			document.getElementById("chk_num_input").style.visibility = 'hidden';	
+		}
+		
+	}
+	</script>
+{/literal}
 		<tr>
-			<td><label>{l}Type{/l}:</label></td>
-			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type')}</td>
-			<td><label>{l}Amount{/l}:</label></td>
-			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}"></td>
-			<td><label>{l}Title{/l}:</label></td>
+		{assign var=type_list value=$payment->getPaymentTypeList()}
+		{assign var=type_list_count value=$payment->get('payment_type')}
+			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type') onchange="show_ref_num(this.options[this.selectedIndex].text);"}</td>
+			<td><label>{l}Amt{/l}:</label></td>
+			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}">&nbsp;</td>
 			<td><input name="payment[title]" size="8" type="text" value="{$payment->get("title")}"></td>
+			<td><label id="chk_num_label" {if $type_list.$type_list_count ne "check"} style="visibility: hidden;"{/if}>{l}Chk #{/l}</label></td>
+			<td><input name="payment[ref_num]" size="4" type="text" value="{$payment->get("ref_num")}"  id="chk_num_input" {if $type_list.$type_list_count ne "check"}style="visibility: hidden;"{/if}></td>
 			<td><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}">
 				{if $payment->get('id') > 0}
 				<input type="button" value="New Payment" onclick="window.location = '{$NEW_ENCOUNTER_PAYMENT}';">
