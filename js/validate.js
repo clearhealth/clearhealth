@@ -382,7 +382,7 @@ function clni_rule_alphanum(element) {
 		return true;
 	}
 
-	if (element.value.match(/^[0-9a-zA-Z]+$/)) {
+	if (element.value.match(/^[0-9a-zA-Z_]+$/)) {
 		return true;
 	}
 	return false;
