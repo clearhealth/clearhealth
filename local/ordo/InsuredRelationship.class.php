@@ -69,6 +69,12 @@ class InsuredRelationship extends ORDataObject {
 		$this->helper->populateFromResults($this,$res);
 	}
 
+	function setupByInsuranceProgram($program_id) {
+		$id = EnforceType::int($program_id);
+		$sql = "select * from ".$this->tableName()." where insurance_program_id = $id";
+		$this->helper->populateFromQuery($this, $sql);
+	}
+
 	/**
 	 * return an array of InsuredRelationship objects that correspond to a personid
 	 */

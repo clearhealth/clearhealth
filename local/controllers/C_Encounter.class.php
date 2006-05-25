@@ -92,6 +92,9 @@ class C_Encounter extends Controller {
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Celini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 		$this->assign('NEW_ENCOUNTER_PERSON',Celini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
+		$insuredRelationship =& Celini::newORDO('InsuredRelationship', $encounter->get('current_payer'), 'ByInsuranceProgram');
+		$this->assign('copay', $insuredRelationship->get('copay'));
+		
 		$payment =& Celini::newORDO('Payment',$this->payment_id);
 		if ($payment->_populated == false) {
 			$payment->set('title','Co-Pay');
@@ -145,9 +148,6 @@ class C_Encounter extends Controller {
 				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
 			}
 		}
-
-		$insuredRelationship =& Celini::newORDO('InsuredRelationship');
-
 
 		$reports = array();
 		if ($encounter->get('patient_id') > 0) {

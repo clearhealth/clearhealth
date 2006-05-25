@@ -1,5 +1,7 @@
 <fieldset>
 	<legend>{l}Copay{/l}</legend>
+	<p>Patient's Co-pay is: {$copay}</p>
+	
 	{$paymentGrid->render()}
 	{if $paymentGrid->empty}
 	<p>{l}Encounter has no Copays{/l}</p>
