@@ -82,6 +82,12 @@ class C_PatientDashboard extends Controller {
 		// todo: determine what this is doing and label it appropriately
 		$clearhealth_claim = Celini::newORDO("ClearhealthClaim");
 		$accountStatus = $clearhealth_claim->accountStatus($p->get('id'));
+		
+		$payment =& Celini::newORDO('PatientPaymentPlan');
+		$unpaid = $payment->getByPatient($p->get('id'));
+		if(count($unpaid) > 0) {
+			$this->view->assign('unpaid_payments',$unpaid);
+		}
 
 		$appointmentDS =& $p->loadDatasource('Appointment');
 		$appointmentGrid =& new cGrid($appointmentDS);

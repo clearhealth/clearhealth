@@ -15,6 +15,24 @@
 			<tr>
 				<td><label>{l}Balance{/l}: </label></td><td style="border-top: solid 1px black;">{$accountStatus.total_balance}</td>
 			</tr>
+			{if $unpaid_payments}
+			{assign var='total' value=0}
+			<tr>
+				<td colspan="2">Unpaid Payments</td>
+			</tr>
+			<tr><th>Date</th><th>Amount</th></tr>
+			{foreach from=$unpaid_payments item=plan}
+				{foreach from=$plan->get_unpaid_payments() item=payment}
+				{assign var='total' value=$total+$payment->get_pending_amount()}
+			<tr>
+				<td style="color:Red;">{$payment->get('payment_date')}</td><td>{$payment->get_pending_amount()}</td>
+			</tr>
+				{/foreach}
+			{/foreach}
+			<tr>
+				<td></td><td style="border-top:solid 1px black;">{$total|string_format:"%.2f"}</td>
+			</tr>
+			{/if}
 		</table>
 		{else}
 		<p>{l}No Account Information{/l}</p>

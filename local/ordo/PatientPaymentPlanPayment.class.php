@@ -52,6 +52,10 @@ class PatientPaymentPlanPayment extends ORDataObject {
 		$this->_setDate('payment_date',$date);
 	}
 	/**#@-*/
+	
+	function get_pending_amount() {
+		return sprintf("%.2f",$this->get('amount') - $this->get('paid_amount'));
+	}
 
 }
 ?>
