@@ -81,7 +81,7 @@ class C_Coding extends Controller {
 			$ps =& Celini::newOrdo('PatientStatistics',$encounter->get('patient_id'));
 			$familySize = $ps->get('family_size');
 			$income = $ps->get('monthly_income');
-			$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
+			$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize, $encounter->get('current_payer')),'ByPracticeIncomeSize');
 			
 			if($fsdLevel->isPopulated()) {
 				$trans = $manager->createTransaction('EstimateDiscountedClaim');

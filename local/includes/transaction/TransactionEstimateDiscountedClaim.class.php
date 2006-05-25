@@ -59,7 +59,7 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 		$familySize = $ps->get('family_size');
 		$income = $ps->get('monthly_income');
 		$practiceId = $_SESSION['defaultpractice'];
-		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize),'ByPracticeIncomeSize');
+		$fsdLevel =& Celini::newOrdo('FeeScheduleDiscountLevel',array($practiceId,$income,$familySize, $this->payerId),'ByPracticeIncomeSize');
 
 		if ($fsdLevel->isPopulated()) {
 			$this->setDiscount($fsdLevel->get('discount'));

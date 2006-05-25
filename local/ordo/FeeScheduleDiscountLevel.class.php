@@ -74,10 +74,11 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 	}
 	
 	
-	function setupByPracticeIncomeSize($practiceId,$income,$size) {
+	function setupByPracticeIncomeSize($practiceId,$income,$size, $programId) {
 		$practiceId = EnforceType::int($practiceId);
 		$income = EnforceType::int($income);
 		$size = EnforceType::int($size);
+		$programId = EnforceType::int($programId);
 		$table = $this->tableName();
 
 
@@ -85,10 +86,13 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			select l.* 
 			from 
 				$table l
-			inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
-			inner join fee_schedule_discount d using(fee_schedule_discount_id)
+				inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
+				inner join fee_schedule_discount d using(fee_schedule_discount_id)
 			where
-				i.family_size = $size and i.income >= $income and d.practice_id = $practiceId
+				i.family_size = $size and
+				i.income >= $income and
+				d.practice_id = $practiceId AND
+				d.insurance_program_id = $programId
 			order by i.income asc
 			";
 		$res = $this->dbHelper->execute($sql);
