@@ -32,6 +32,15 @@ class FormData extends ORDataObject {
 	var $_internalName='FormData';
 
 	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'form_data_id';
+    
+	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */

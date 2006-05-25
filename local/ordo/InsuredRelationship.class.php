@@ -36,6 +36,15 @@ class InsuredRelationship extends ORDataObject {
 
 
 	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'insured_relationship_id';
+    
+	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */

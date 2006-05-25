@@ -8,6 +8,13 @@ class PersonAddress extends Address {
 	
 	var $person_id = '';
 
+	/**
+	 * Because the person_address table uses a composite primary key
+	 * (person_id + address_id) we do not set a primary $_key value.
+	 */
+    
+    /**
+     */
 	function setup($id = 0,$parent = false, $type = "person") {
 		//var_dump("new PersonAddress",get_class($this));
 		$this->set('person_id', $parent);

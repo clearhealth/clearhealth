@@ -34,6 +34,15 @@ class Identifier extends ORDataObject {
 	var $_internalName='Identifier';
 
 	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'identifier_id';
+    
+	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */

@@ -24,7 +24,16 @@ class EncounterPerson extends ORDataObject {
 
 	var $_table = 'encounter_person';
 	var $_internalName='EncounterPerson';
-
+	
+	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'encounter_person_id';
+    
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject

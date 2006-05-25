@@ -42,6 +42,28 @@ class PatientStatistics extends ORDataObject {
 	var $_internalName='PatientStatistics';
 	
 	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * Per discussion with Josh Eichorn, we use the real primary key
+	 * column at the table, vs the '$id' property as noted above.
+	 * -- pmjones
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'person_id';
+    
+	/**
+	 * 
+	 * Primary key.
+	 * 
+	 * @var string
+	 * 
+	 */
+    var $_key = 'person_id';
+    
+	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */

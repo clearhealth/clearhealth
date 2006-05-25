@@ -22,7 +22,11 @@ class PatientChronicCode extends ORDataObject {
 	var $_table = 'patient_chronic_code';
 	var $_internalName='PatientChronicCode';
 
-
+	/**
+	 * Because the patient_chronic_code table uses a composite primary key
+	 * (person_id + address_id) we do not set a primary $_key value.
+	 */
+    
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
