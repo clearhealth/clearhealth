@@ -26,6 +26,7 @@ class Payment extends ORDataObject {
 	var $foreign_id		= '';
 	var $encounter_id	= '';
 	var $payment_type	= '';
+	var $ref_num		= '';
 	var $amount		= '';
 	var $writeoff		= '';
 	var $user_id		= '';
