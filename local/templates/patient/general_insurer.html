@@ -230,13 +230,15 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 			</tr>
 		</table>
 	</fieldset>
-{* clni_register_validation
-	rule="requiredif(testElement:'insuredRelationship__group_number',testRule:'alphanum')" 
-	id="insuredRelationship__group_name" message="Group Name is Required" *}
+{clni_register_validation
+	id="insuredRelationship__group_name"
+	rules="requiredif(testElement:'insuredRelationship__group_number',testRule:'required',message:'Group name is required')|alphanum"
+	message="Group name must be alphanumeric"}
 	
-{* clni_register_validation
-	rule="requiredif(testElement:'insuredRelationship__group_name',testRule:'alphanum')" 
-	id="insuredRelationship__group_number" message="Group Number is Required" *}
+{clni_register_validation
+	id="insuredRelationship__group_number"
+	rules="requiredif(testElement:'insuredRelationship__group_name',testRule:'required',message:'Group number is required')|alphanum"
+	message="Group number must be alphanumeric"}
 
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
