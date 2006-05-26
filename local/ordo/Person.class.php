@@ -99,17 +99,17 @@ class Person extends ORDataObject {
 		parent::persist();
 
 		if (is_array($this->_types)) {
-			$curr_types = $this->_db->getAssoc("select person_type,person_type t from person_type where person_id = ".(int)$this->id);
+			$curr_types = $this->_db->getAssoc("select person_type,person_type t from person_type where person_id = ".(int)$this->get('id'));
 			foreach($curr_types as $curr) {
 				if (!isset($this->_types[$curr])) {
 					// delete
-					$this->_db->execute("delete from person_type where person_id =".(int)$this->id . " and person_type = $curr");
+					$this->_db->execute("delete from person_type where person_id =".(int)$this->get('id') . " and person_type = $curr");
 				}
 			}
 			foreach($this->_types as $type) {
 				if (!isset($curr_types[$type])) {
 					// add
-					$this->_db->execute("insert into person_type values(".(int)$this->id . ",".(int)$type.")"); 
+					$this->_db->execute("insert into person_type values(".(int)$this->get('id') . ",".(int)$type.")"); 
 				}
 			}
 			$this->_types = false;
@@ -369,7 +369,7 @@ class Person extends ORDataObject {
 	 */
 	function get_types() {
 		if ($this->_types === false) {
-			$sql = "select person_type, person_type t from person_type where person_id = ".(int)$this->id;
+			$sql = "select person_type, person_type t from person_type where person_id = ".(int)$this->get('id');
 			$res = $this->_execute($sql);
 			$this->_types = $res->getAssoc();
 		}
@@ -387,20 +387,20 @@ class Person extends ORDataObject {
 
 	function get_numbers() {
 		$p =& Celini::newORDO('PersonNumber');
-		return $p->numberList($this->id);
+		return $p->numberList($this->get('id'));
 	}
 
 	
 	function get_addresses() {
 		$a = new PersonAddress();
-		return $a->addressList($this->id);
+		return $a->addressList($this->get('id'));
 	}
 
 	/**
 	* Relate a person to a company
 	*/
 	function relate($company_id,$type) {
-		$sql = "replace into person_company values(".(int)$this->id.",".(int)$company_id.",".(int)$type.")";
+		$sql = "replace into person_company values(".(int)$this->get('id').",".(int)$company_id.",".(int)$type.")";
 		$this->_execute($sql);
 	}
 
@@ -408,7 +408,7 @@ class Person extends ORDataObject {
 	* Remove a relation between a person and a company
 	*/
 	function dropRelation($company_id,$type) {
-		$sql = "delete from person_company where person_id =".(int)$this->id." and company_id = ".(int)$company_id." and person_type = ".(int)$type."";
+		$sql = "delete from person_company where person_id =".(int)$this->get('id')." and company_id = ".(int)$company_id." and person_type = ".(int)$type."";
 		$this->_execute($sql);
 	}
 
@@ -419,13 +419,13 @@ class Person extends ORDataObject {
 	 * If you have none a new/empty Address will be returned
 	 */
 	function &address() {
-		settype($this->id,'int');
-		$res = $this->_execute("select address_id from person_address where person_id = $this->id");
+		settype($this->get('id'),'int');
+		$res = $this->_execute("select address_id from person_address where person_id = ".$this->get('id'));
 		$address_id = 0;
 		if (isset($res->fields['address_id'])) {
 			$address_id = $res->fields['address_id'];
 		}
-		$addr =& ORDataObject::factory('PersonAddress',$address_id,$this->id);
+		$addr =& ORDataObject::factory('PersonAddress',$address_id,$this->get('id'));
 		return $addr;
 	}
 
@@ -436,7 +436,7 @@ class Person extends ORDataObject {
 	 * If you have none a new/empty PersonNumber will be returned
 	 */
 	function &numberByType($type) {
-		settype($this->id,'int');
+		settype($this->get('id'),'int');
 
 		$type_id = 0;
 		$lookup = $this->_load_enum('number_type');
@@ -444,12 +444,12 @@ class Person extends ORDataObject {
 			$type_id = $lookup[$type];
 		}
 
-		$res = $this->_execute("select pn.number_id from person_number pn inner join number using(number_id) where person_id = $this->id and number_type = $type_id");
+		$res = $this->_execute("select pn.number_id from person_number pn inner join number using(number_id) where person_id = ".$this->get('id')." and number_type = $type_id");
 		$number_id = 0;
 		if (isset($res->fields['number_id'])) {
 			$number_id = $res->fields['number_id'];
 		}
-		$addr =& ORDataObject::factory('PersonNumber',$number_id,$this->id);
+		$addr =& ORDataObject::factory('PersonNumber',$number_id,$this->get('id'));
 		$addr->set('number_type',$type_id);
 		return $addr;
 	}
