@@ -16,7 +16,7 @@ class PatientStatistics extends ORDataObject {
 	/**#@+
 	 * Fields of table: patient_statistics mapped to class members
 	 */
-	var $id			= '';
+	var $person_id		= '';
 	var $ethnicity		= '';
 	var $race		= '';
 	var $income		= '';
@@ -45,23 +45,10 @@ class PatientStatistics extends ORDataObject {
 	 * 
 	 * Primary key.
 	 * 
-	 * Per discussion with Josh Eichorn, we use the real primary key
-	 * column at the table, vs the '$id' property as noted above.
-	 * -- pmjones
-	 * 
 	 * @var string
 	 * 
 	 */
-    var $_key = 'person_id';
-    
-	/**
-	 * 
-	 * Primary key.
-	 * 
-	 * @var string
-	 * 
-	 */
-    var $_key = 'person_id';
+	var $_key = 'person_id';
     
 	/**
 	 * Setup some basic attributes
@@ -169,21 +156,6 @@ class PatientStatistics extends ORDataObject {
 	 * Getters and Setters for Table: patient_statistics
 	 */
 
-	
-	/**
-	 * Getter for Primary Key: person_id
-	 */
-	function get_person_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: person_id
-	 */
-	function set_person_id($id)  {
-		$this->id = $id;
-	}
-	
 	
 	/**
 	 * Setter for sign_in_date.  Insures date is stored in ISO format

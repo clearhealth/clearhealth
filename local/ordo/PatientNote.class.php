@@ -16,13 +16,13 @@ class PatientNote extends ORDataObject {
 	/**#@+
 	 * Fields of table: patient_note mapped to class members
 	 */
-	var $id			= '';
+	var $patient_note_id	= '';
 	var $patient_id		= '';
 	var $user_id		= '';
 	var $priority		= '';
 	var $note_date		= '';
 	var $note		= '';
-	var $deprecated = '';
+	var $deprecated 	= '';
 	/**#@-*/
 
 
@@ -36,7 +36,7 @@ class PatientNote extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'patient_note_id';
+	var $_key = 'patient_note_id';
     
 	/**
 	 * Setup some basic attributes
@@ -67,21 +67,6 @@ class PatientNote extends ORDataObject {
 	/**#@+
 	 * Getters and Setters for Table: patient_note
 	 */
-
-	
-	/**
-	 * Getter for Primary Key: patient_note_id
-	 */
-	function get_patient_note_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: patient_note_id
-	 */
-	function set_patient_note_id($id)  {
-		$this->id = $id;
-	}
 
 	/**#@-*/
 

@@ -22,7 +22,7 @@ class FormData extends ORDataObject {
 	/**#@+
 	 * Fields of table: form_data mapped to class members
 	 */
-	var $id			= '';
+	var $form_data_id	= '';
 	var $form_id		= '';
 	var $external_id	= '';
 	var $last_edit		= '';
@@ -38,7 +38,7 @@ class FormData extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'form_data_id';
+	var $_key = 'form_data_id';
     
 	/**
 	 * Setup some basic attributes
@@ -134,20 +134,6 @@ class FormData extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: form_data_id
-	 */
-	function get_form_data_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: form_data_id
-	 */
-	function set_form_data_id($id)  {
-		$this->id = $id;
-	}
-
 	function get_form_name() {
 		$f =& ORDataObject::factory('Form',$this->get('form_id'));
 		return $f->get('name');

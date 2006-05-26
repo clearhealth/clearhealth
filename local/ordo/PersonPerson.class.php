@@ -16,7 +16,7 @@ class PersonPerson extends ORDataObject {
 	/**#@+
 	 * Fields of table: person_person mapped to class members
 	 */
-	var $id				= '';
+	var $person_person_id		= '';
 	var $person_id			= '';
 	var $related_person_id		= '';
 	var $relation_type		= '';
@@ -35,7 +35,7 @@ class PersonPerson extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'person_person_id';
+	var $_key = 'person_person_id';
     
 	/**
 	 * Setup some basic attributes
@@ -71,20 +71,6 @@ class PersonPerson extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: person_person_id
-	 */
-	function get_person_person_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: person_person_id
-	 */
-	function set_person_person_id($id)  {
-		$this->id = $id;
-	}
-
 	/**#@-*/
 
 	/**#@+

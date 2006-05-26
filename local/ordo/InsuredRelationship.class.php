@@ -16,7 +16,7 @@ class InsuredRelationship extends ORDataObject {
 	/**#@+
 	 * Fields of table: insured_relationship mapped to class members
 	 */
-	var $id					= '';
+	var $insured_relationship_id		= '';
 	var $insurance_program_id		= '';
 	var $person_id				= '';
 	var $subscriber_id			= '';
@@ -42,7 +42,7 @@ class InsuredRelationship extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'insured_relationship_id';
+	var $_key = 'insured_relationship_id';
     
 	/**
 	 * Setup some basic attributes
@@ -135,20 +135,6 @@ class InsuredRelationship extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: insured_relationshp_id
-	 */
-	function get_insured_relationship_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: insured_relationshp_id
-	 */
-	function set_insured_relationship_id($id)  {
-		$this->id = $id;
-	}
-
 	/**
 	 * automatically sets person_id to the current patient when the relationship is Self
 	 * for this to work person_id has to be set befor the relationship

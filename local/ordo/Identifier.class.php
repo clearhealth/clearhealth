@@ -22,7 +22,7 @@ class Identifier extends ORDataObject {
 	/**#@+
 	 * Fields of table: identifier mapped to class members
 	 */
-	var $id			= '';
+	var $identifier_id	= '';
 	var $person_id		= '';
 	var $identifier		= '';
 	var $identifier_type	= '';
@@ -40,7 +40,7 @@ class Identifier extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'identifier_id';
+	var $_key = 'identifier_id';
     
 	/**
 	 * Setup some basic attributes
@@ -76,20 +76,6 @@ class Identifier extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: identifier_id
-	 */
-	function get_identifier_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: identifier_id
-	 */
-	function set_identifier_id($id)  {
-		$this->id = $id;
-	}
-
 	/**#@-*/
 
 	/**#@+

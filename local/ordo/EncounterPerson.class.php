@@ -16,7 +16,7 @@ class EncounterPerson extends ORDataObject {
 	/**#@+
 	 * Fields of table: encounter_person mapped to class members
 	 */
-	var $id			= '';
+	var $encounter_person_id= '';
 	var $encounter_id	= '';
 	var $person_type	= '';
 	var $person_id		= '';
@@ -32,7 +32,7 @@ class EncounterPerson extends ORDataObject {
 	 * @var string
 	 * 
 	 */
-    var $_key = 'encounter_person_id';
+	var $_key = 'encounter_person_id';
     
 	/**
 	 * Setup some basic attributes
@@ -68,20 +68,6 @@ class EncounterPerson extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: encounter_person_id
-	 */
-	function get_encounter_person_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: encounter_person_id
-	 */
-	function set_encounter_person_id($id)  {
-		$this->id = $id;
-	}
-
 	function get_person() {
 		if (!empty($this->person_id)) {
 			$person =& ORDataObject::factory('Person',$this->person_id);
