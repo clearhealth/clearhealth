@@ -4,6 +4,7 @@ class AppointmentRule {
 	var $ruleData = false;
 	var $appointment = false;
 	var $errorMessage = false;
+	var $applicableMessage = false;
 	var $label = false;
 
 	function AppointmentRule($label,$data) {
@@ -29,6 +30,10 @@ class AppointmentRule {
 
 	function getMessage() {
 		return $this->errorMessage;
+	}
+
+	function getApplicableMessage() {
+		return $this->applicableMessage;
 	}
 }
 ?>

@@ -310,21 +310,31 @@ class ClearhealthCalendarData {
 		}
 		return $ret;
 	}
+
+	function scheduleByProviderDay($providerId,$date) {
+		$p = Enforcetype::int($providerId);
+		$d = "'".date('Y-m-d',strtotime($date))."'";
+		$where = "and provider.person_id = $p and date_format(event.start,'%Y-%m-%d') = $d";
+		return $this->_providerSchedules($where);
+	}
 	
 	/**
 	 * Returns array[provider_id][start] = array('label','start','end')
 	 *
 	 * @param array $filters
-	 * @param int $period Number of seconds in an iteration
 	 * @return array
 	 */
-	function &providerSchedules(&$filters,$period = 900) {
-		$db = new clniDb();
+	function &providerSchedules(&$filters) {
 		$ret = array();
 		$where = $this->toWhere($filters,false);
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
+		return $this->_providerSchedules($where);
+	}
+
+	function &_providerSchedules($where) {
+		$db = new clniDb();
 		$sql = "SELECT person_id FROM provider";
 		$res = $db->execute($sql);
 		$ret = array();
@@ -350,14 +360,7 @@ class ClearhealthCalendarData {
 				LEFT JOIN user u ON provider.person_id = u.person_id
 				LEFT JOIN appointment appt on event.event_id = appt.event_id
 			WHERE 
-				/*
-				EP.parent_type = 'Provider' AND 
-				EP.child_type = 'ScheduleEvent' AND 
-				 */
 				EP.parent_id = provider.person_id AND 
-				/*
-				EP.child_id = event.event_id AND 
-				 */
 				NOT ISNULL(ES.parent_id) 
 				$where
 			ORDER BY 

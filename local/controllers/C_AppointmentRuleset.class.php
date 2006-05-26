@@ -13,6 +13,8 @@ class C_AppointmentRuleset extends Controller {
 	}
 
 	function actionAdd() {
+		$session =& Celini::sessionInstance();
+		$session->set('AppointmentRuleset:appointment_ruleset_id',0);
 		return $this->actionEdit();
 	}
 
@@ -120,7 +122,7 @@ class C_AppointmentRuleset extends Controller {
 		$arId = $session->get('AppointmentRuleset:appointment_ruleset_id');
 
 		if ($payload['tab'] != 'summary' && $arId == 0) {
-			$ar =& Celini::newOrdo('AppointmentRuleset',$id);
+			$ar =& Celini::newOrdo('AppointmentRuleset',$arId);
 			$ar->set('name','Unknown');
 			$ar->persist();
 			$session->set('AppointmentRuleset:appointment_ruleset_id',$ar->get('id'));

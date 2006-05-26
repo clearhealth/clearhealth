@@ -21,7 +21,12 @@ class AppointmentRuleset {
 				$s = $rule->isValid();
 				if (!$s) {
 					$status = false;
+					//var_dump('not valid - '.$rule->label.': '.$rule->getMessage());
 					$this->messages[] = $rule->getMessage();
+				}
+				else {
+					//var_dump($rule->getApplicableMessage());
+					$this->messages[] = $rule->getApplicableMessage();
 				}
 			}
 			else {
@@ -29,7 +34,6 @@ class AppointmentRuleset {
 				return true;
 			}
 		}
-		$status = false;
 		return $status;
 	}
 
