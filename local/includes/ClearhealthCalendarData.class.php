@@ -281,6 +281,35 @@ class ClearhealthCalendarData {
 				";
 		return $db->getAssoc($sql);
 	}
+
+	/**
+	 *  Get the next appointments for a provider and a given time
+	 *
+	 *  @return array
+	 */
+	function nextAppointments($providerId,$start,$end) {
+		$db = new clniDb();
+		$s = $db->quote($start);
+		$e = $db->quote(date('Y-m-d H:i:s',strtotime($end.'+10min')));
+		$p = EnforceType::int($providerId);
+		$sql = "SELECT
+				event.*,
+				a.*
+			FROM
+				event
+				inner join appointment a on a.event_id = event.event_id
+			WHERE
+				event.start >= $s and
+				event.start <= $e and
+				a.provider_id = $p";
+		$res = $db->execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[] = $res->fields;
+			$res->MoveNext();
+		}
+		return $ret;
+	}
 	
 	/**
 	 * Returns array[provider_id][start] = array('label','start','end')
