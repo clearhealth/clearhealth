@@ -99,6 +99,16 @@ class Appointment extends ORDataObject {
 		}
 	}
 
+	function get_start() {
+		$this->populateEvent();
+		return $this->_event->get('start');
+	}
+
+	function get_end() {
+		$this->populateEvent();
+		return $this->_event->get('end');
+	}
+
 	/**
 	 * Map start_time from the event
 	 */
