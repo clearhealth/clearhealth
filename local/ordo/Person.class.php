@@ -22,7 +22,7 @@ class Person extends ORDataObject {
 	/**#@+
 	 * Fields of table: Person mapped to class members
 	 */
-	var $id			= '';
+	var $person_id		= '';
 	var $salutation		= '';
 	var $last_name		= '';
 	var $first_name		= '';
@@ -158,20 +158,6 @@ class Person extends ORDataObject {
 	 */
 
 	
-	/**
-	 * Getter for Primary Key: person_id
-	 */
-	function get_person_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: person_id
-	 */
-	function set_person_id($id)  {
-		$this->id = $id;
-	}
-
 	/**
 	 * Set date of birth, formating it correctly
 	 */
