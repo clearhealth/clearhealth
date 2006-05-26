@@ -536,6 +536,10 @@ class C_Appointment extends Controller {
 	function check_rules($aptdata) {
 		$apt =& Celini::newORDO('Appointment');
 		$aptdata = $this->GET->getRaw('Appointment');
+		if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
+			$tmp = $aptdata['users'];
+			$aptdata['provider_id'] = array_shift($tmp);
+		}
 		$apt->populateArray($aptdata);
 		$alerts = array();
 
