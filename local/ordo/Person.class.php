@@ -436,8 +436,6 @@ class Person extends ORDataObject {
 	 * If you have none a new/empty PersonNumber will be returned
 	 */
 	function &numberByType($type) {
-		settype($this->get('id'),'int');
-
 		$type_id = 0;
 		$lookup = $this->_load_enum('number_type');
 		if (isset($lookup[$type])) {
