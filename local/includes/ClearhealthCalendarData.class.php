@@ -287,10 +287,10 @@ class ClearhealthCalendarData {
 	 *
 	 *  @return array
 	 */
-	function nextAppointments($providerId,$start,$end) {
+	function prevAppointments($providerId,$start,$end) {
 		$db = new clniDb();
-		$s = $db->quote($start);
-		$e = $db->quote(date('Y-m-d H:i:s',strtotime($end.'+10min')));
+		$s = $db->quote(date('Y-m-d H:i:s',strtotime($start.' -15min')));
+		$e = $db->quote($end);
 		$p = EnforceType::int($providerId);
 		$sql = "SELECT
 				event.*,
@@ -299,7 +299,7 @@ class ClearhealthCalendarData {
 				event
 				inner join appointment a on a.event_id = event.event_id
 			WHERE
-				event.start >= $s and
+				event.end >= $s and
 				event.start <= $e and
 				a.provider_id = $p";
 		$res = $db->execute($sql);

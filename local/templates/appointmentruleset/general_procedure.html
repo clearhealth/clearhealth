@@ -25,7 +25,7 @@
 <label>Procedure: </label>
 <select name="appointmentruleset[data][procedure_id]" onclick="updateKey(this)">
 	{foreach from=$reasons item='row'}
-	<option key="{$row.enumeration_value_id}" other="{$row.key}" {if $data->procedure_id == $row.enumeration_value_id}SELECTED{/if}>{$row.name} - {$row.value}</option>
+	<option value="{$row.enumeration_value_id}" other="{$row.key}" {if $data->procedure_id == $row.enumeration_value_id}SELECTED{/if}>{$row.name} - {$row.value}</option>
 	{/foreach}
 </select>
 </p>

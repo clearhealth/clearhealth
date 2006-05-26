@@ -12,17 +12,24 @@ class AppointmentRuleset {
 	}
 
 	function isValid($appointment) {
+		//var_dump($this->errorMessage);
 		$status = true;
 		foreach($this->rules as $rule) {
 			$rule->setAppointment($appointment);
 			if ($rule->isApplicable()) {
+				//var_dump('Applicable: '.$rule->label);
 				$s = $rule->isValid();
 				if (!$s) {
 					$status = false;
 					$this->messages[] = $rule->getMessage();
 				}
 			}
+			else {
+				//var_dump('Not Applicable: '.$rule->label);
+				return true;
+			}
 		}
+		$status = false;
 		return $status;
 	}
 
