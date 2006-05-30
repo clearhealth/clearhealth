@@ -7,6 +7,14 @@
 <input type="hidden" name="appointmentruleset[type]" value='provider'>
 
 <p>Label: <input name="appointmentruleset[label]" id="rulelabel" value="{$rule->get('label')}"></p>
+{if !isset($data->rule_type)}
+{php} $this->_tpl_vars['data']->rule_type = 'include'; {/php}
+{/if}
+<fieldset>
+	<legend>Rule Type</legend>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="include" {if $data->rule_type == 'include'}CHECKED{/if}>Limit other rules</label>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="exclude" {if $data->rule_type == 'exclude'}CHECKED{/if}>Exclude from other rules</label>
+</fieldset>
 
 <label><input onclick="showDetails(this)" type="radio" name="appointmentruleset[data][provider_type]" {if $data->provider_type == 'single'}CHECKED{/if}
 		value="single">Single Provider</label><br>
