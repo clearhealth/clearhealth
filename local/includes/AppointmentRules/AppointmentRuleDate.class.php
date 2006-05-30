@@ -16,57 +16,28 @@ class AppointmentRuleDate extends AppointmentRule {
 					break;
 				case 'dayofmonth':
 					$monthDay = $this->ruleData->monthday;
-					if ($monthDay == 'last') {
-						// this is kinda hackish but works
-						$monthDay = date('d',
-							strtotime(
-								'-1 day',
-								strtotime(
-									date('Y').'-'.
-									(date('m')+1).
-									'-1'
-								)
-							)
-						);
-					}
-
-					if ($monthDay == date('d',$start)) {
-						$this->applicableMessage = "Day is the ".date('jS',$start) .' of the month';
+					if ($this->isMonthDay($monthDay)) {
+						if ($monthDay == 'last') {
+							$this->applicableMessage = 'Day is the end of the month';
+						}
+						else {
+							$this->applicableMessage = "Day is the ".date('jS',$start) .' of the month';
+						}
 						return true;
 					}
 					break;
 				case 'lastofday':
-					$providerId = $this->appointment->get('provider_id');
-					$schedules = $this->getSchedules();
-					if (!$schedules) {
-						return false;
-					}
-					
-					$length = $this->ruleData->last_time_block_length * 60;
-					$start = strtotime($this->appointment->get('start'));
-					$schedule = array_pop($schedules[$providerId]);
-					if ($start >= ($schedule['end'] - $length)) {
+					if ($this->isLastBlock()) {
 						$time = $this->formatSeconds($length);
 						$this->applicableMessage = "Last $time of day";
 						return true;
 					}
 					break;
 				case 'lastbeforelunch':
-					$schedules = $this->getSchedules();
-					if (!$schedules) {
-						return false;
-					}
-					
-					$providerId = $this->appointment->get('provider_id');
-					$length = $this->ruleData->lunch_time_block_length * 60;
-					$start = strtotime($this->appointment->get('start'));
-					if (count($schedules[$providerId]) > 1) {
-						$schedule = array_shift($schedules[$providerId]);
-						if ($start >= ($schedule['end'] - $length)) {
-							$time = $this->formatSeconds($length);
-							$this->applicableMessage = "Last block ($time) before lunch";
-							return true;
-						}
+					if ($this->isLastBeforeLunch()) {
+						$time = $this->formatSeconds($length);
+						$this->applicableMessage = "Last block ($time) before lunch";
+						return true;
 					}
 					break;
 			}
@@ -106,7 +77,7 @@ class AppointmentRuleDate extends AppointmentRule {
 			case 'limit':
 				return true;
 			break;
-			default:
+			case 'enforcepos':
 				switch($this->ruleData->date_type) {
 					case 'dayofweek':
 						if ($this->inDayOfWeek($start)) {
@@ -116,6 +87,71 @@ class AppointmentRuleDate extends AppointmentRule {
 						$this->errorMessage = "Day of week out of allowable range ($days)";
 						return false;
 						break;
+					case 'dayofmonth':
+						$monthDay = $this->ruleData->monthday;
+						if ($this->isMonthDay($monthDay)) {
+							return true;
+						}
+						else {
+							$this->errorMessage = "Day of month not allowed";
+							return false;
+						}
+						break;
+					case 'lastofday':
+						if (!$this->isLastBlock()) {
+							$time = $this->formatSeconds($length);
+							$this->errorMessage = "Appointment not in last $time of day";
+							return false;
+						}
+						return true;
+						break;
+					case 'lastbeforelunch':
+						if (!$this->isLastBeforeLunch()) {
+							$time = $this->formatSeconds($length);
+							$this->errorMessage = "Appointment not in last block ($time) before lunch";
+							return false;
+						}
+						return true;
+						break;
+					default:
+						return true;
+						break;
+				}
+			break;
+			case 'enforceneg':
+				switch($this->ruleData->date_type) {
+					case 'dayofweek':
+						if ($this->inDayOfWeek($start)) {
+							$days = $this->dayRange();
+							$this->errorMessage = "Day of week in excluded range ($days)";
+							return false;
+						}
+						return true;
+						break;
+					case 'dayofmonth':
+						$monthDay = $this->ruleData->monthday;
+						if (!$this->isMonthDay($monthDay)) {
+							return true;
+						}
+						else {
+							$this->errorMessage = "Day of month excluded";
+							return false;
+						}
+						break;
+					case 'lastofday':
+						if ($this->isLastBlock()) {
+							$time = $this->formatSeconds($length);
+							$this->errorMessage = "Appointment in last $time of day";
+							return false;
+						}
+						return true;
+					case 'lastbeforelunch':
+						if ($this->isLastBeforeLunch()) {
+							$time = $this->formatSeconds($length);
+							$this->errorMessage = "Appointment in last block ($time) before lunch";
+							return false;
+						}
+						return true;
 					default:
 						return true;
 						break;
@@ -139,6 +175,64 @@ class AppointmentRuleDate extends AppointmentRule {
 			$days[] = $this->days[$day];
 		}
 		$days = implode(',',$days);
+	}
+
+	function isMonthDay($monthDay) {
+		$start = strtotime($this->appointment->get('start'));
+		if ($monthDay == 'last') {
+			// this is kinda hackish but works
+			$monthDay = date('d',
+				strtotime(
+					'-1 day',
+					strtotime(
+						date('Y').'-'.
+						(date('m')+1).
+						'-1'
+					)
+				)
+			);
+		}
+
+		if ($monthDay == date('d',$start)) {
+			return true;
+		}
+		return false;
+	}
+
+	function isLastBlock() {
+		$start = strtotime($this->appointment->get('start'));
+		$providerId = $this->appointment->get('provider_id');
+		$schedules = $this->getSchedules();
+		if (!$schedules) {
+			return false;
+		}
+		
+		$length = $this->ruleData->last_time_block_length * 60;
+		$start = strtotime($this->appointment->get('start'));
+		$schedule = array_pop($schedules[$providerId]);
+		if ($start >= ($schedule['end'] - $length)) {
+			return true;
+		}
+		return false;
+	}
+
+	function isLastBeforeLunch() {
+		$start = strtotime($this->appointment->get('start'));
+		$schedules = $this->getSchedules();
+		if (!$schedules) {
+			return false;
+		}
+		
+		$providerId = $this->appointment->get('provider_id');
+		$length = $this->ruleData->lunch_time_block_length * 60;
+		$start = strtotime($this->appointment->get('start'));
+		if (count($schedules[$providerId]) > 1) {
+			$schedule = array_shift($schedules[$providerId]);
+			if ($start >= ($schedule['end'] - $length)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 ?>
