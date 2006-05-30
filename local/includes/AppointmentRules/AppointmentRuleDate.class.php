@@ -14,6 +14,22 @@ class AppointmentRuleDate extends AppointmentRule {
 						return true;
 					}
 					break;
+				case 'dayofmonth':
+					$monthDay = $this->ruleData->monthday;
+					if ($monthDay == 'last') {
+						// this is kinda hackish but works
+						$monthDay = date('d',
+							strtotime(
+								'-1 day',
+								strtotime(
+									date('Y').'-'.
+									(date('m')+1).
+									'-1'
+								)
+							)
+						);
+					}
+					break;
 				case 'lastofday':
 					$providerId = $this->appointment->get('provider_id');
 					$schedules = $this->getSchedules();
