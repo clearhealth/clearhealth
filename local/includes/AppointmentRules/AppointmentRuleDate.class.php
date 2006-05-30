@@ -28,6 +28,7 @@ class AppointmentRuleDate extends AppointmentRule {
 					break;
 				case 'lastofday':
 					if ($this->isLastBlock()) {
+						$length = $this->ruleData->lunch_time_block_length * 60;
 						$time = $this->formatSeconds($length);
 						$this->applicableMessage = "Last $time of day";
 						return true;
@@ -35,6 +36,7 @@ class AppointmentRuleDate extends AppointmentRule {
 					break;
 				case 'lastbeforelunch':
 					if ($this->isLastBeforeLunch()) {
+						$length = $this->ruleData->lunch_time_block_length * 60;
 						$time = $this->formatSeconds($length);
 						$this->applicableMessage = "Last block ($time) before lunch";
 						return true;
@@ -140,6 +142,7 @@ class AppointmentRuleDate extends AppointmentRule {
 						break;
 					case 'lastofday':
 						if ($this->isLastBlock()) {
+							$length = $this->ruleData->lunch_time_block_length * 60;
 							$time = $this->formatSeconds($length);
 							$this->errorMessage = "Appointment in last $time of day";
 							return false;
@@ -147,6 +150,7 @@ class AppointmentRuleDate extends AppointmentRule {
 						return true;
 					case 'lastbeforelunch':
 						if ($this->isLastBeforeLunch()) {
+							$length = $this->ruleData->lunch_time_block_length * 60;
 							$time = $this->formatSeconds($length);
 							$this->errorMessage = "Appointment in last block ($time) before lunch";
 							return false;
