@@ -113,6 +113,9 @@ class C_AppointmentRuleset extends Controller {
 		$ar =& Celini::newOrdo('AppointmentRuleset',$id);
 		$this->view->assign_by_ref('ar',$ar);
 
+		$this->view->assign('ADD_ACTION',Celini::link('add'));
+		$this->view->assign('LIST_ACTION',Celini::link('list'));
+
 		$this->view->assign('contentUrl',substr(Celini::link(false,'AppointmentRuleset',false),0,-1));
 		return $this->view->render('layout.html');
 	}
