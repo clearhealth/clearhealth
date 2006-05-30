@@ -1966,6 +1966,14 @@
 		<extra2/>
 		<status>1</status>
 	</enum>
+	<enum>
+		<key>5</key>
+		<value>Guarantor</value>
+		<sort>4</sort>
+		<extra1>/Patient/Guarantor</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
 </enumeration>
 <enumeration name="weeks_of_month" title="Weeks of Month" type="Default">
 	<enum>

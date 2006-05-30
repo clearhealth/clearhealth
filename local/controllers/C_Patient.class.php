@@ -217,13 +217,13 @@ class C_Patient extends Controller {
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
 		$this->_storeCurrentAction ();
-		
+		$db =& Celini::dbInstance();
+
 		if (!$patientId) {
 			$patientId = $this->get('patient_id');
 		}
 		EnforceType::int($patientId);
-
-
+		
 		$reportId = $this->GET->get('report_id');
 		if (!$reportId) {
 			$reportId = $_GET[0];
@@ -289,7 +289,20 @@ class C_Patient extends Controller {
 		$this->assign('statement_number',$sh->get('statement_number'));
 		$this->assign('pay_by',$sh->get('pay_by'));
 
+		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
+		list($lines,$plines) = $this->_statementData($patientId,$includeDependants,$fromSnapshot,$sh,$sql,$agingSql);
 
+		if (isset($rs)) {
+			$rs->set('data',serialize($this->data));
+		}
+
+		if (isset($this->noRender) && $this->noRender === true) {
+			return "statement.html";
+		}
+		return $this->view->render("statement.html");
+	}
+	
+	function _statementData($patientId,$includeDependants,$fromSnapshot,&$sh,$sql,$agingSql) {
 		$aging = array(
 			0=>0,
 			30=>0,
@@ -299,9 +312,7 @@ class C_Patient extends Controller {
 		);
 
 
-		$db = new clniDb();
-		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
-
+		$db =& Celini::dbInstance();
 		$res = $db->execute($sql);
 
 		$lines = array();
@@ -384,7 +395,6 @@ class C_Patient extends Controller {
 			$this->data['ordo']['balance']['total_credits'] = $total_credits;
 			$this->data['ordo']['balance']['total_outstanding'] = $total_outstanding;
 		}
-
 		$this->assign('lines',$lines);
 
 		$balance = $total_charges-$total_credits;
@@ -423,17 +433,61 @@ class C_Patient extends Controller {
 
 		$this->assign('aging',$aging);
 
-		if (isset($rs)) {
-			$rs->set('data',serialize($this->data));
-		}
-
-		if (isset($this->noRender) && $this->noRender === true) {
-			return "statement.html";
-		}
-		return $this->view->render("statement.html");
+		return array($lines,$plines);
 	}
 
-	function _genPatientStatementSql($patientId,$includeDependants) {
+	function actionGuarantor_view() {
+		$includeDependants=true;		
+		$this->_storeCurrentAction ();
+		$db =& Celini::dbInstance();
+		if($this->GET->exists('withbalance')) {
+			$withbalance = true;
+		} else {
+			$withbalance = false;
+		}
+		$this->view->assign('withbalance',$withbalance);
+		
+		// Get list of guarantors
+		$sql = "SELECT DISTINCT related_person_id from person_person WHERE guarantor = 1";
+		$gres = $db->execute($sql);
+		$guarantorarray = array();
+		for($gres->MoveFirst();!$gres->EOF;$gres->MoveNext()) {
+			$patientId = $gres->fields['related_person_id'];
+			$p =& Celini::newOrdo('Patient',$patientId);
+			$this->view->assign_by_ref('patient',$p);
+
+			list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants,$withbalance);
+			$res = $db->execute($sql);
+
+			$lines = array();
+			$total_charges = 0;
+			$total_credits = 0;
+			$total_outstanding = 0;
+			while($res && !$res->EOF) {
+				//var_dump($res->fields);
+				$total_charges += $res->fields['charge'];
+				$total_credits += $res->fields['credit'];
+				$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
+				$lines[] = $res->fields;
+				$res->MoveNext();
+			}
+
+			$this->data['ordo']['balance']['total_charges'] = $total_charges;
+			$this->data['ordo']['balance']['total_credits'] = $total_credits;
+			$this->data['ordo']['balance']['total_outstanding'] = $total_outstanding;
+			$guarantorarray[] = array('last_name'=>'<a href="'.Celini::link('view','PatientDashboard').'id='.$p->get('id').'">'.$p->get('last_name').'</a>','first_name'=>$p->get('first_name'),'balance'=>sprintf('%.2f',$total_charges-$total_credits));
+
+		}
+		$GLOBALS['loader']->requireOnce("includes/Datasource_array.class.php");
+		$ds =& new Datasource_array();
+		$ds->setup(array('last_name'=>'Last Name','first_name'=>'First Name','balance'=>'Balance'),$guarantorarray);
+		$grid =& new cGrid($ds);
+		$grid->indexCol = false;
+		$this->view->assign_by_ref('grid',$grid);
+		return "guarantorreport.html";
+	}
+
+	function _genPatientStatementSql($patientId,$includeDependants,$withbalance=true) {
 		$format = DateObject::getFormat();
 
 		$patientSelectSql = "
@@ -446,6 +500,7 @@ class C_Patient extends Controller {
 			$this->assign('familyStatement',true);
 		}
 
+		$withbalance = $withbalance == true ? 'AND balance > 0' : '';
 		$encounterBalanceSql = "
 		select
 			feeData.encounter_id,
@@ -528,7 +583,6 @@ class C_Patient extends Controller {
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql and balance > 0
 		";
-
 		// payments from co-pays
 		$sql .= "
 		union
@@ -578,7 +632,7 @@ class C_Patient extends Controller {
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql
 			and p.encounter_id = 0
-			and balance > 0
+			$withbalance
 		) data
 		order by encounter_id DESC , item_date
 		";

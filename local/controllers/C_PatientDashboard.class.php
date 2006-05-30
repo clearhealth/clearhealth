@@ -125,6 +125,14 @@ class C_PatientDashboard extends Controller {
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$p->get('id')));
 		$this->assign('ELIGIBILITY_ACTION',Celini::Link('SingleCheck','MediCalEligibility',false));
 		
+		$guarantees = array();
+		foreach($p->get_guarantees() as $g) {
+			$guarantees[] =& Celini::newORDO('Person',$g);
+		}
+		$this->view->assign('guarantees',$guarantees);
+		$r =& Celini::newORDO('Report','/Patient/StatementReport','BySystemName');
+		$this->view->assign_by_ref('statementreport',$r);
+
 		return $this->view->render("demo.html");
 	}
 

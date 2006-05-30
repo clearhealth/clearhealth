@@ -183,7 +183,8 @@ class Appointment extends ORDataObject {
 	}
 
 	function _getNick($id) {
-		$sql = "select username, nickname from user where user_id = $id";
+		$db =& Celini::dbInstance();
+		$sql = "select username, nickname from user where user_id = ".$db->quote($id);
 		$res = $this->dbHelper->execute($sql);
 		if (!empty($res->fields['nickname'])) {
 			return $res->fields['nickname'];
