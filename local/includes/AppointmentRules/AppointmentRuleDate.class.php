@@ -29,6 +29,11 @@ class AppointmentRuleDate extends AppointmentRule {
 							)
 						);
 					}
+
+					if ($monthDay == date('d',$start)) {
+						$this->applicableMessage = "Day is the ".date('jS',$start) .' of the month';
+						return true;
+					}
 					break;
 				case 'lastofday':
 					$providerId = $this->appointment->get('provider_id');
@@ -45,7 +50,6 @@ class AppointmentRuleDate extends AppointmentRule {
 						$this->applicableMessage = "Last $time of day";
 						return true;
 					}
-					return false;
 					break;
 				case 'lastbeforelunch':
 					$schedules = $this->getSchedules();
@@ -64,7 +68,6 @@ class AppointmentRuleDate extends AppointmentRule {
 							return true;
 						}
 					}
-					return false;
 					break;
 			}
 		}
