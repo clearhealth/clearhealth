@@ -129,7 +129,7 @@ class Room extends ORDataObject{
 	}
 
 	function get_delete_message() {
-		$string = "Room Name: " . $this->get_name() . "\n";
+		$string = "Room Name: " . $this->get('name') . "\n";
 		$ocs = $this->get_occurences();
 		foreach ($ocs as $oc) 	{
 			$name = "unspecified event";
