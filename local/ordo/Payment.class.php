@@ -199,6 +199,15 @@ class Payment extends ORDataObject {
 		return $this->_getDate('payment_date');
 	}
 
+	function get_payment_type() {
+		if ($this->payment_type == '') {
+			// default to check
+			$em =& Celini::enumManagerInstance();
+			$this->payment_type = $em->lookupKey('payment_type','check');
+		}
+		return $this->payment_type;
+	}
+
 	/**#@-*/
 
 	function totalPaidForCodeId($code_id) {

@@ -108,7 +108,7 @@ class C_Eob extends Controller {
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('patient',$patient);
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
-		$this->assign_by_ref('payment',$payment);
+		$this->assign_by_ref('payment',Celini::newOrdo('payment'));
 		$this->assign('billList',$billList);
 		$this->assign('payers',$payers);
 		$this->assign('payment_date',$payment->get('payment_date'));
