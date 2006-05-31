@@ -419,8 +419,8 @@ class Person extends ORDataObject {
 	 * If you have none a new/empty Address will be returned
 	 */
 	function &address() {
-		settype($this->get('id'),'int');
-		$res = $this->_execute("select address_id from person_address where person_id = ".$this->get('id'));
+		$id = EnforceType::int($this->get('id'));
+		$res = $this->_execute("select address_id from person_address where person_id = ".$id);
 		$address_id = 0;
 		if (isset($res->fields['address_id'])) {
 			$address_id = $res->fields['address_id'];
@@ -436,6 +436,10 @@ class Person extends ORDataObject {
 	 * If you have none a new/empty PersonNumber will be returned
 	 */
 	function &numberByType($type) {
+		if ($this->get('id') <= 0) {
+			$ordo =& Celini::newORDO('PersonNumber');
+			return $ordo;
+		}
 		$type_id = 0;
 		$lookup = $this->_load_enum('number_type');
 		if (isset($lookup[$type])) {
