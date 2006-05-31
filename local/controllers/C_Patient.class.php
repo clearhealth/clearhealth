@@ -313,6 +313,7 @@ class C_Patient extends Controller {
 			60=>0,
 			90=>0,
 			120=>0,
+			150=>0
 		);
 
 
@@ -462,7 +463,6 @@ class C_Patient extends Controller {
 
 			list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants,$withbalance);
 			$res = $db->execute($sql);
-
 			$lines = array();
 			$total_charges = 0;
 			$total_credits = 0;
@@ -491,7 +491,7 @@ class C_Patient extends Controller {
 		return "guarantorreport.html";
 	}
 
-	function _genPatientStatementSql($patientId,$includeDependants,$withbalance=true) {
+	function _genPatientStatementSql($patientId,$includeDependants,$withbalance=true,$filters=array()) {
 		$format = DateObject::getFormat();
 
 		$patientSelectSql = "
@@ -642,5 +642,42 @@ class C_Patient extends Controller {
 		";
 		return array($sql,$agingSql);
 	}
+	
+	function actionBalanceReport_view() {
+		$GLOBALS['loader']->requireOnce("datasources/PatientBalance_DS.class.php");
+		$ds =& new PatientBalance_DS($_GET);
+		$grid =& new cGrid($ds);
+		$this->view->assign_by_ref('grid',$grid);
+		$prac =& Celini::newORDO('Practice');
+		$prov =& Celini::newORDO('Provider');
+		$this->view->assign_by_ref('provider',$prov);
+		$this->view->assign_by_ref('practice',$prac);
+		$ses =& Celini::sessionInstance();
+		$filters = $ses->get('balancereport:filters');
+		$this->view->assign('filters',$filters);
+		$this->view->assign('balanceoptions',array('credit'=>'Credit Only','balance'=>'With Balance Only'));
+		$this->view->assign('reportid',$this->GET->getTyped('report_id','int'));
+		if (isset($this->noRender) && $this->noRender === true) {
+			return "balancereport.html";
+		}
+		return $this->view->render('balancereport.html');
+	}
+	
+	function actionStatementReport_view($patientId=false,$includedependants=false) {
+		if (!$patientId) {
+			$patientId = $this->get('patient_id');
+		}
+		EnforceType::int($patientId);
+
+		$GLOBALS['loader']->requireOnce('datasources/Patient_Statement_DS.class.php');
+		$ds =& new Patient_Statement_DS($patientId,true,true);
+		$grid =& new cGrid($ds);
+		$this->view->assign_by_ref('grid',$grid);
+		if (isset($this->noRender) && $this->noRender === true) {
+			return "statementreport.html";
+		}
+		return $this->view->render('statementreport.html');
+	}
+	
 }
 ?>

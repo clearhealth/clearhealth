@@ -1974,6 +1974,22 @@
 		<extra2/>
 		<status>1</status>
 	</enum>
+	<enum>
+		<key>6</key>
+		<value>Aged Trail Balance</value>
+		<sort>5</sort>
+		<extra1>/Patient/BalanceReport</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>7</key>
+		<value>Statement (Report)</value>
+		<sort>6</sort>
+		<extra1>/Patient/StatementReport</extra1>
+		<extra2/>
+		<status>1</status>
+	</enum>
 </enumeration>
 <enumeration name="weeks_of_month" title="Weeks of Month" type="Default">
 	<enum>

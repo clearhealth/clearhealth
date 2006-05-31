@@ -1,0 +1,34 @@
+<strong>{l}Patient Balance Report{/l}</strong>
+<fieldset>
+<legend>{l}Filters{/l}</legend>
+{clni_form method='GET'}
+<input type="hidden" name="report_id" value="{$reportid}" />
+{l}Balance Status: {/l}<select name='balance'>
+<option></option>
+{html_options options=$balanceoptions selected=$filters.balance}
+</select>
+&nbsp;&nbsp;
+{l}Provider: {/l}<select name="provider">
+<option></option>
+{html_options options=$provider->genericList() selected=$filters.provider}
+</select>
+&nbsp;&nbsp;
+{l}Practice: {/l}<select name="practice">
+<option></option>
+{html_options options=$practice->valueList('name') selected=$filters.practice}
+</select>
+&nbsp;&nbsp;<br />
+<label for="guarantorsonly">{l}Only Guarantors{/l}</label> 
+{l}True: {/l}<input name="guarantorsonly" id="guarantorsonly" type="radio" value="true" {if $filters.guarantorsonly && $filters.guarantorsonly == 'true'}checked{/if} />
+{l}False: {/l}<input name="guarantorsonly" id="guarantorsonly" type="radio" value="false" {if $filters.guarantorsonly && $filters.guarantorsonly == 'false'}checked{/if} />
+&nbsp;&nbsp;<br />
+{l}Include Guarantees{/l}
+{l}True: {/l}<input name="includeguarantees" id="includeguarantees" type="radio" value="true" {if $filters.includeguarantees && $filters.includeguarantees == 'true'}checked{/if} />
+{l}False: {/l}<input name="includeguarantees" id="includeguarantees" type="radio" value="false" {if $filters.includeguarantees && $filters.includeguarantees == 'false'}checked{/if} />
+&nbsp;&nbsp;<input type="submit" value="{l}Filter{/l}">
+</form>
+</fieldset>
+{$grid->render()}
+{if $grid->empty}
+	<p>{l}No Results{/l}</p>
+{/if}
