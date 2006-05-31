@@ -5,7 +5,7 @@ $loader->requireOnce('includes/Grid.class.php');
  * Controller Clearhealth Patient actions
  */
 class C_Patient extends Controller {
-
+	var $patient_id = 0;
 	var $number_id = 0;
 	var $address_id = 0;
 	var $identifier_id = 0;
@@ -16,7 +16,11 @@ class C_Patient extends Controller {
 	function _storeCurrentAction() {
 		$current = $this->trail->current();
 		if ($current->controller == 'Patient' && !strstr($current->link(),'minimal')) {
-			$this->session->set('patient_action', $current->link());
+			$currentUrl = $current->link();
+			if ($this->patient_id > 0 && preg_match('/(.*)\/patient\/edit\/update\/0\?$/i', $currentUrl, $matches)) {
+				$currentUrl = $matches[1] . '/patient/edit/' . $this->patient_id;
+			}
+			$this->session->set('patient_action', $currentUrl);
 		}
 	}
 
