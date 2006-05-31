@@ -138,11 +138,6 @@ class C_Location extends Controller {
 		// share this object with the rest of the controller so the DB doesn't
 		// have to be requeried.
 		$this->location =& $location;
-		
-		//creat an event for a new room
-		if ($_POST['id'] == 0) {
-			$this->_populateevents($location);
-		}
 	}
 	
 	function delete_action($id = "",$object_class ="") {
