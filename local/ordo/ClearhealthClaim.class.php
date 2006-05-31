@@ -26,8 +26,6 @@ class ClearhealthClaim extends ORDataObject {
 	var $_table = 'clearhealth_claim';
 	var $_internalName='ClearhealthClaim';
 
-
-	var $_internalName = 'ClearhealthClaim';
 	/**
 	 * Setup some basic attributes
 	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
