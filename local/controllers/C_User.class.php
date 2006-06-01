@@ -25,7 +25,11 @@ class C_User extends Controller {
 			$this->provider_to_insurance_id = $this->GET->getTyped('provider_to_insurance_id', 'int');
 		}
 
-		$person =& ORdataObject::factory('Person',$person_id);
+		$person =& Celini::newORDO('Person',$person_id);
+		if($person_id == 0){
+			$person->populateArray($_POST['person']);
+			$person->persist();
+		}
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$person_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
