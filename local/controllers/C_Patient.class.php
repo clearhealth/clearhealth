@@ -35,8 +35,7 @@ class C_Patient extends Controller {
 		$this->_storeCurrentAction ();
 
 		$this->assign('lockTimestamp',time());
-		
-		if (isset($this->patient_id)) {
+		if (isset($this->patient_id) && $this->patient_id >0) {
 			$patient_id = $this->patient_id;
 		}
 		$GLOBALS['loader']->requireOnce('includes/QuickSave.class.php');
