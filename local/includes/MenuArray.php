@@ -22,7 +22,7 @@ if (isset($_SESSION['defaultpractice'])) {
 		$default = $_GET[0];
 	}
 	$menuarrays[]=array(
-		'menus'=>array(112,113,114,115),
+		'menus'=>array(54),
 		'sql'=>"
 					SELECT 
 						p.name as title,
