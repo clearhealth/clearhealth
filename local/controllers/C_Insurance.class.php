@@ -15,6 +15,15 @@ class C_Insurance extends Controller {
 	var $similarProgram = false;
 
 	/**
+	 * Provides a specific means of handling add
+	 *
+	 * @see actionEdit()
+	 */
+	function actionAdd() {
+		return $this->actionEdit(0);
+	}
+	
+	/**
 	 * Edit/Add an Insurance Company
 	 *
 	 */
@@ -62,7 +71,7 @@ class C_Insurance extends Controller {
 		$this->assign_by_ref('bpiGrid',$buildingProgramGrid);
 		$this->assign_by_ref('feeSchedule',$feeSchedule);
 
-		$this->assign('FORM_ACTION',Celini::managerLink('update',$company_id));
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$company_id, 'edit'));
 		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$company_id));
 		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$company_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$company_id));
