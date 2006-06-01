@@ -112,6 +112,7 @@ class C_Appointment extends Controller {
 	function ajax_edit($id) {
 		$this->appointment =& Celini::newOrdo('Appointment',$id);
 		$this->view->assign('ajaxedit',true);
+		$this->assign('FORM_ACTION',Celini::link('Day','CalendarDisplay'));
 		return array($id,$this->actionEdit());
 	}
 
