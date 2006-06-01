@@ -18,7 +18,6 @@ class C_FeeSchedule extends Controller {
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
 
-		$this->view->path = 'fee_schedule';
 		return $this->view->render("list.html");
 	}
 
@@ -41,7 +40,6 @@ class C_FeeSchedule extends Controller {
 		$this->assign('DEFAULT_ACTION',Celini::link('setdefault',true,true,$fee_schedule_id));
 		$this->assign('UPDATE_ACTION',Celini::link('update',true,true,$fee_schedule_id));
 
-		$this->view->path = 'fee_schedule';
 		return $this->view->render("edit.html");
 	}
 
@@ -112,7 +110,6 @@ class C_FeeSchedule extends Controller {
 		echo "fee4 S2052: " . $feeSchedule->getFee("S2052") . "<br>";
 		echo "fee4 S2085: " . $feeSchedule->getFee("S2085") . "<br>";*/
 
-		$this->view->path = 'fee_schedule';
 		return $this->view->render("update.html");
 	}
 }
