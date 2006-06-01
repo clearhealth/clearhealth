@@ -63,7 +63,7 @@ class C_Appointment extends Controller {
 		$head->addJs('scriptaculous');
 		$head->addJs('clniPopup');
 		$head->addExternalCss('suggest');
-		$room =& $apt->getParent('Room');
+		$room =& Celini::newORDO('Room',$apt->get('room_id'));
 		
 		$this->view->assign_by_ref('room',$room);
 		$this->view->assign('mode',$this->uiMode);
