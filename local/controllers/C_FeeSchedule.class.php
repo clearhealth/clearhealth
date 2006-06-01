@@ -3,12 +3,13 @@ $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('includes/FeeScheduleDatasource.class.php');
 
 class C_FeeSchedule extends Controller {
-
+	var $_ordo = null;
+	
 	function default_action() {
 		return $this->list_action();
 	}
 
-	function list_action() {
+	function actionList() {
 
 		$fs =& ORDataobject::factory('FeeSchedule');
 		$ds =& $fs->listFeeSchedules();
@@ -21,9 +22,20 @@ class C_FeeSchedule extends Controller {
 		return $this->view->render("list.html");
 	}
 
-	function edit_action($fee_schedule_id = 0) {
-
-		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+	
+	function actionAdd() {
+		return $this->actionEdit(0);
+	}
+	
+	function actionEdit($fee_schedule_id = 0) {
+		if (!is_null($this->_ordo)) {
+			$feeSchedule =& $this->_ordo;
+			$fee_schedule_id = $feeSchedule->get('id');
+		}
+		else {
+			$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+		}
+		
 		$this->assign_By_ref('feeSchedule',$feeSchedule);
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$fee_schedule_id));
 		$this->assign('DEFAULT_ACTION',Celini::link('setdefault',true,true,$fee_schedule_id));
@@ -44,8 +56,8 @@ class C_FeeSchedule extends Controller {
 
 	}
 
-	function edit_action_process($fee_schedule_id = 0) {
-		$feeSchedule =& ORDataObject::Factory('FeeSchedule',$fee_schedule_id);
+	function processEdit($fee_schedule_id = 0) {
+		$feeSchedule =& Celini::NewORDO('FeeSchedule',$fee_schedule_id);
 		$feeSchedule->populate_array($_POST['feeSchedule']);
 
 		if ($feeSchedule->persist()) {
@@ -59,6 +71,8 @@ class C_FeeSchedule extends Controller {
 		else {
 			$this->messages->addMessage('Error adding Fee Schedule');
 		}
+		
+		$this->_ordo =& $feeSchedule;
 	}
 
 	function update_action($fee_schedule_id = 0) {
