@@ -223,3 +223,23 @@ tr.selectedRow td {
 .conflictingField {
 	background-color: #FFFF99;
 }
+
+ul.controllerMenu { 
+	display:inline;
+	clear:both;
+	margin:0;
+}
+
+ul.controllerMenu li {
+	float:left;
+	list-style-type:none;
+	margin:0 0 0 -1px;
+}
+
+ul.controllerMenu li a {
+	display:block;
+	padding:3px 15px;
+	text-align:center;
+	border:1px solid #000;
+}
+
