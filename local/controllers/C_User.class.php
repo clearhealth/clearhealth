@@ -13,6 +13,16 @@ class C_User extends Controller {
 	var $provider_to_insurance_id = 0;
 
 	/**
+	 * Display the add action
+	 *
+	 * @see actionEdit()
+	 */
+	function actionAdd() {
+		return $this->actionEdit(0);
+	}
+	
+	
+	/**
 	 * Edit/Add a User
 	 *
 	 */
@@ -26,7 +36,7 @@ class C_User extends Controller {
 		}
 
 		$person =& Celini::newORDO('Person',$person_id);
-		if($person_id == 0){
+		if($person_id == 0 && isset($_POST['person'])){
 			$person->populateArray($_POST['person']);
 			$person->persist();
 		}
