@@ -5,14 +5,6 @@ class C_Building extends Controller
 {
 	var $_ordo = null;
 	
-	function C_Building() {
-		parent::Controller();
-		if (Celini::getCurrentController() == 'Building') {
-			$menu =& Menu::getInstance();
-			$menu->currentSection = 'admin';
-		}
-	}
-	
 	function actionAdd() {
 		return $this->actionEdit(0);
 	}

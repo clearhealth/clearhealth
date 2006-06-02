@@ -5,14 +5,6 @@ class C_Room extends Controller
 {
 	var $_ordo = null;
 	
-	function C_Room() {
-		parent::Controller();
-		if (Celini::getCurrentController() == 'Room') {
-			$menu =& Menu::getInstance();
-			$menu->currentSection = 'admin';
-		}
-	}
-	
 	function actionAdd() {
 		return $this->actionEdit(0);
 	}
