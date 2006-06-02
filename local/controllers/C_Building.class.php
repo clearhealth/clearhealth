@@ -7,7 +7,10 @@ class C_Building extends Controller
 	
 	function C_Building() {
 		parent::Controller();
-		$this->view->path = 'location';
+		if (Celini::getCurrentController() == 'Building') {
+			$menu =& Menu::getInstance();
+			$menu->currentSection = 'admin';
+		}
 	}
 	
 	function actionAdd() {
@@ -28,7 +31,7 @@ class C_Building extends Controller
 
 		$this->assign("process",true);
 		$this->view->assign('FORM_ACTION', Celini::link('edit', 'Building', true, $this->_ordo->get('id')));
-		return $this->view->render("edit_building.html");
+		return $this->view->render("edit.html");
 	}
 	
 	

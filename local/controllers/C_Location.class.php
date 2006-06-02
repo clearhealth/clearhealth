@@ -24,8 +24,8 @@ class C_Location extends Controller {
 		$this->assign('EDIT_SCHEDULE_ACTION', Celini::link('edit_schedule'));
 		$this->assign('DELETE_ACTION', Celini::link('delete'));
 		$this->assign('EDIT_PRACTICE_ACTION', Celini::link('edit','practice'));
-		$this->assign('EDIT_BUILDING_ACTION', Celini::link('edit_building'));
-		$this->assign('EDIT_ROOM_ACTION', Celini::link('edit_room'));
+		$this->assign('EDIT_BUILDING_ACTION', Celini::link('edit', 'Building'));
+		$this->assign('EDIT_ROOM_ACTION', Celini::link('edit', 'Room'));
 		$this->assign('EDIT_EVENT_ACTION', Celini::link('edit_event'));
 		$this->assign('EDIT_WIZARD_ACTION', Celini::link('edit_schedule','personSchedule'));
 		$this->assign('SCHEDULE_LIST_ACTION', Celini::link('schedule_list'));

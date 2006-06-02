@@ -7,6 +7,13 @@ $loader->requireOnce('includes/PracticeConfig.class.php');
 class C_Practice extends Controller {
 	var $location = false;
 
+	function C_Practice() {
+		parent::Controller();
+		if (Celini::getCurrentController() == 'Practice') {
+			$menu =& Menu::getInstance();
+			$menu->currentSection = 'admin';
+		}
+	}
 	function actionAdd() {
 		return $this->actionEdit(0);
 	}

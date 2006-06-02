@@ -7,7 +7,10 @@ class C_Room extends Controller
 	
 	function C_Room() {
 		parent::Controller();
-		$this->view->path = 'location';
+		if (Celini::getCurrentController() == 'Room') {
+			$menu =& Menu::getInstance();
+			$menu->currentSection = 'admin';
+		}
 	}
 	
 	function actionAdd() {
@@ -25,7 +28,7 @@ class C_Room extends Controller
 
 		$this->assign("process",true);
 		$this->view->assign('FORM_ACTION', Celini::link('edit', 'Room', true, $this->_ordo->get('id')));
-		return $this->view->render("edit_room.html");
+		return $this->view->render("edit.html");
 	}
 	
 		
