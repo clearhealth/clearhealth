@@ -29,7 +29,7 @@ class C_PersonSchedule extends CalendarController {
 		$this->assign("TOP_ACTION", "don't use me");
 		$this->assign("DAY_ACTION", Celini::link('day_action'));
 
-		$this->view->path = 'locations';
+		$this->view->path = 'location';
 	}
 
 	function actionDefault() {
