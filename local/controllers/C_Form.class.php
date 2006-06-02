@@ -23,6 +23,17 @@ class C_Form extends Controller {
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_list.html"));
 	}
 
+	
+	/**
+	 * Add a new form
+	 *
+	 * @see actionEdit()
+	 */
+	function actionAdd() {
+		return $this->actionEdit(0);
+	}
+	
+	
 	/**
 	 * Edit/Add a new form
 	 */
