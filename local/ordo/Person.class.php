@@ -343,16 +343,23 @@ class Person extends ORDataObject {
 	
 	/**
 	 * Get an array of people (person_id => name) for a specific type
+	 * Type 0 will pull all users (not patients)
 	 * 
 	 * @param	string	$type The string value of the wanted type from the person type enumeration
 	 */
 	function getPersonList($type,$blank=true) {
 		//$this->nameHistory->set('person_id',$this->get('person_id'));
-
 		$types = $this->getTypeList();
-		$id = (int)array_search($type,$types);
+		if(is_int($type)) {
+			$id = ' = '.$type;
+		} else {
+			$id = ' = '.(int)array_search($type,$types);
+		}
+		if($type==0) {
+			$id = ' > 1';
+		}
 		$res = $this->_execute("select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
-					inner join person_type ct using(person_id) where person_type = $id order by last_name, first_name");
+					inner join person_type ct using(person_id) where person_type $id order by last_name, first_name");
 
 		$ret = ($blank) ? array(" " => " ") : array(); 
 		

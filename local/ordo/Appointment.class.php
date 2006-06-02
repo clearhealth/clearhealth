@@ -33,6 +33,7 @@ class Appointment extends ORDataObject {
 	var $patient_id		= '';
 	var $event_id		= '';
 	var $appointment_code	= ''; // NS/CAN/???
+	var $breakdowns = false;
 	/**#@-*/
 
 	var $_date		= '';
@@ -280,6 +281,15 @@ class Appointment extends ORDataObject {
 			$me =& Me::getInstance();
 			$this->set('last_changed_id', $me->get_id());
 		}
+		$db =& Celini::dbInstance();
+		$sql = "DELETE FROM appointment_breakdown WHERE appointment_id=".$db->quote($this->get('id'));
+		$res = $db->execute($sql);
+		if(is_array($this->breakdowns)) {
+			foreach($this->breakdowns as $breakdown) {
+				$breakdown->set('appointment_id',$this->get('id'));
+				$breakdown->persist();
+			}
+		}
 	}
 	
 	function drop() {
@@ -323,6 +333,21 @@ class Appointment extends ORDataObject {
 		}
 	}
 	
+	function get_breakdownPersonId($breakdown_id) {
+		if($this->breakdowns === false) {
+			$db =& Celini::dbInstance();
+			$sql ="SELECT person_id FROM appointment_breakdown WHERE
+			appointment_id=".$db->quote($this->get('id'))." AND 
+			occurence_breakdown_id=".$db->quote($breakdown_id);
+			$res = $db->execute($sql);
+			if($res && !$res->EOF) {
+				return $res->fields['person_id'];
+			}
+			return 0;
+		}
+		return $this->breakdowns[$breakdown_id]->get('person_id');
+	}
+	
 	/**
 	 * Returns results
 	 *
@@ -333,8 +358,14 @@ class Appointment extends ORDataObject {
 		$db =& Celini::dbInstance();
 //		$db->debug = true;
 		$sql = "
-			SELECT DISTINCT appointment.appointment_id,appointment.last_change_id,group_appointment,
-			event.event_id, event.title AS event_title, event.start AS event_start, event.end AS event_end,
+			SELECT 
+			DISTINCT appointment.appointment_id,
+			appointment.last_change_id,
+			group_appointment,
+			event.event_id, 
+			event.title AS event_title, 
+			event.start AS event_start, 
+			event.end AS event_end,
 			DATE_FORMAT(event.start,'%m/%d/%Y') AS apt_date,
 			prov.person_id as provider_id, 
 			provuser.username, 
@@ -357,8 +388,8 @@ class Appointment extends ORDataObject {
 			LEFT JOIN person AS pat ON appointment.patient_id = pat.person_id
 			LEFT JOIN patient ON pat.person_id = patient.person_id
 			LEFT JOIN user AS provuser ON prov.person_id = provuser.person_id
-			JOIN enumeration_definition ON enumeration_definition.name = 'appointment_reasons'
-			JOIN enumeration_value ON enumeration_value.enumeration_id = enumeration_definition.enumeration_id AND enumeration_value.key = appointment.reason AND extra1 = ''
+			LEFT JOIN enumeration_definition ON enumeration_definition.name = 'appointment_reasons'
+			LEFT JOIN enumeration_value ON enumeration_value.enumeration_id = enumeration_definition.enumeration_id AND enumeration_value.key = appointment.reason
 			LEFT JOIN person_number ON pat.person_id = person_number.person_id
 			LEFT JOIN number AS patnumber ON person_number.number_id = patnumber.number_id
 			LEFT JOIN user AS creator ON appointment.creator_id = creator.user_id
@@ -406,7 +437,8 @@ class Appointment extends ORDataObject {
 					group by
 						p.foreign_id
 				) coPay on feeData.patient_id = coPay.patient_id
-			) baldata ON baldata.patient_id = pat.person_id
+			) baldata ON baldata.patient_id = pat.person_id,
+			appointment_breakdown ab
 			$where
 			ORDER BY event.start
 		";

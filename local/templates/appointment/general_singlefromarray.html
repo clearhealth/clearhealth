@@ -1,7 +1,12 @@
 <div id="event{$appointment->get('event_id')}heightholder" style="display:none;"></div>
-<div class="event calendarEvent{$appointment->get('provider_id')}" id="event{$appointment->get('event_id')}" style="{if $short}width:15px;height:{$height}px;{/if}overflow:hidden;"
+<div 
+{if !$search}
+class="event calendarEvent{$appointment->get('provider_id')}" id="event{$appointment->get('event_id')}" style="{if $short}width:15px;height:{$height}px;{/if}overflow:hidden;"
 	onmouseover="expandAppointment({$appointment->get('event_id')},this);"
 	onmouseout="shrinkAppointment({$appointment->get('event_id')},this);"
+{else}
+	style="width:250px;border:1px solid black;"
+{/if}
 	>
 <div width="100%" class="eventTitle" style="{if $short}display:none;{/if}" id="innerEvent{$apt.event_id}">
 <a href="{link action='Day' controller='CalendarDisplay'}date={$apt.apt_date}">{$apt.event_start} - {$apt.event_end}</a> {l}Appointment #{/l}{$apt.appointment_id}

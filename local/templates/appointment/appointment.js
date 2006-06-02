@@ -10,6 +10,9 @@ function secondsToTime(seconds) {
 	return h+':'+m;
 }
 function updateAp(select,id) {
+	if(!document.getElementById(id)) {
+		return;
+	}
 	var divs = document.getElementById(id).getElementsByTagName('div');
 	for(var i = 0; i < divs.length; i++) {
 		if (divs[i].className == select.value) {

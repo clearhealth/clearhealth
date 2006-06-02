@@ -20,7 +20,7 @@ font-size: 8pt;
 {literal}
 <script language="javascript">
 function newPatient() {
-		var patientEditURL = '/index.php/minimal/Patient/edit?';
+		var patientEditURL = {/literal}'{link action=edit controller=patient pageType=minimal}'{literal};
 		var URL = patientEditURL+'patient_id=0&view=narrow';
 		var subWin = window.open(URL, 'subWin',
 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');
@@ -66,9 +66,9 @@ function newPatient() {
 
 	<div id="aeProvider">
 		
-	{if $appointment_templates && $appointment->get('id') < 1}
+	{if $appointment_templates}
 
-		<div id="appointmentTemplate{$atid}">
+		<div id="appointmentTemplate">
 {assign var='first' value=1}
 {foreach from=$appointment_templates item=template key=key}
 {assign var='inCurrentReason' value=0}
@@ -80,26 +80,22 @@ function newPatient() {
 {/if}
 <div {if !$inCurrentReason}style="display:none;"{/if} class="{$key}">
 	{if !$template}
-		Provider
+		{l}Provider{/l}
 		<select name="Appointment[provider_id]" {if !$inCurrentReason}disabled='true'{/if}>
 			{if $appointment->isPopulated()}
-			{html_options options=$users_array selected=$appointment->get('provider_id')}
+			{html_options options=$users_array.2 selected=$appointment->get('provider_id')}
 			{else}
 			{html_options options=$appointment->valueList('provider') selected=$currentUser}
-			{/if}			
+			{/if}
 		</select>
 		<br>
 	{else}
 		<input type="hidden" name="templateLength" value="{$template->get('length')}">
 		{foreach from=$template->breakdownArray() item=breakdown}
 		{$breakdown.title}
-
+		{if $appointment->get_breakdownPersonId($breakdown.occurence_breakdown_id) > 0}{assign var=currentUser value=$appointment->get_breakdownPersonId($breakdown.occurence_breakdown_id)}{/if}
 		<select name="Appointment[users][{$breakdown.occurence_breakdown_id}]" {if !$inCurrentReason}disabled='true'{/if}>
-			{if $edit_app}
-			{html_options options=$peopleByType[$breakdown.user_id] selected=$editOccurenceBreakdown[$breakdown.index]}
-			{else}
-			{html_options options=$peopleByType[$breakdown.user_id] selected=$currentUser}
-			{/if}
+			{html_options options=$users_array[$breakdown.user_id] selected=$currentUser}
 		</select>
 		<br>
 		{/foreach}

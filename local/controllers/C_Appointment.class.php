@@ -41,7 +41,7 @@ class C_Appointment extends Controller {
 		}
 		if($this->GET->get('provider_id') > 0) {
 			$this->view->assign('provider_id',$this->GET->get('provider_id'));
-			$this->view->assign('provider',Celini::newORDO('Provider',$this->GET->get('provider_id')));
+			$this->view->assign_by_ref('provider',Celini::newORDO('Provider',$this->GET->get('provider_id')));
 			$this->view->assign('doappointmentpopup',true);
 		}
 		if($this->GET->get('patient_id') > 0) {
@@ -64,7 +64,15 @@ class C_Appointment extends Controller {
 		$head->addJs('clniPopup');
 		$head->addExternalCss('suggest');
 		$room =& Celini::newORDO('Room',$apt->get('room_id'));
-		
+		$provider =& Celini::newORDO('Provider',$apt->get('provider_id'));
+		$person =& Celini::newORDO('Person');
+		$users_array = array();
+		$users_array[0]=$person->getPersonList(0);
+		$users_array[2]=$person->getPersonList(2);
+		$users_array[3]=$person->getPersonList(3);
+		$users_array[4]=$person->getPersonList(4);
+		$users_array[5]=$person->getPersonList(5);
+		$this->view->assign('users_array',$users_array);
 		$this->view->assign_by_ref('room',$room);
 		$this->view->assign('mode',$this->uiMode);
 
@@ -81,28 +89,6 @@ class C_Appointment extends Controller {
 			else {
 				$templates[$row->key] = false;
 			}
-		}
-		if (count($templates) > 0) {
-			$p = Celini::newOrdo('Person');
-			$ptList = $manager->enumList('person_type');
-			$plist = array();
-			for($ptList->rewind();$ptList->valid();$ptList->next()) {
-				$row = $ptList->current();
-				if ($row->extra1 == 1) {
-					$tmp = $p->peopleByType($row->value,true);
-					$plist[$row->key] = $tmp->toArray('person_id','username');
-				}
-			}
-			$tmp = $p->peopleByType($row->value,true);
-			$plist[] = $tmp->toArray('user_id','username');
-			$plist[0] = array();
-			foreach($plist as $pl) {
-				foreach($pl as $key => $val) {
-					$plist[0][$key] = $val;
-				}
-			}
-			asort($plist[0]);
-			$this->assign('peopleByType',$plist);
 		}
 		$this->assign('appointment_templates',$templates);
 		
@@ -164,8 +150,15 @@ class C_Appointment extends Controller {
 		}
 		
 		$this->appointment =& $appointment;
-
 		if (isset($data['users']) && count($data['users']) > 1) {
+			$appointment->breakdowns = array();
+			foreach($data['users'] as $breakdown_id=>$person_id) {
+				$appointment->breakdowns[$breakdown_id] =& Celini::newORDO('AppointmentBreakdown');
+				$appointment->breakdowns[$breakdown_id]->set('id',0);
+				$appointment->breakdowns[$breakdown_id]->set('appointment_id',$appointment->get('id'));
+				$appointment->breakdowns[$breakdown_id]->set('occurence_breakdown_id',$breakdown_id);
+				$appointment->breakdowns[$breakdown_id]->set('person_id',$person_id);
+			}
 		}
 
 	}
@@ -396,10 +389,11 @@ class C_Appointment extends Controller {
 			// Regular search
 
 			$db =& Celini::dbInstance();
-
+			$breakdownsql = "CASE WHEN ab.person_id=".(int)$search['provider']." AND ab.appointment_id=appointment.appointment_id THEN 1 ELSE 0 END";
 			$where = array();
 			if($search['provider'] != '') {
-				$where[] = " prov.person_id =" .(int)$search['provider'];
+//				$where[] = " prov.person_id =" .(int)$search['provider'];
+				$where[] = " (prov.person_id =" .(int)$search['provider']." OR $breakdownsql )";
 			}
 			if(!empty($search['facility'])) {
 				$where[] = " rooms.id =" .(int)$search['facility'];
@@ -415,13 +409,15 @@ class C_Appointment extends Controller {
 			}
 			
 			$where[] = " event.start BETWEEN ".$db->quote($search['from'])." AND ".$db->quote($search['to']) ;
+			$where[] = " event.event_id NOT IN(SELECT DISTINCT child_id FROM relationship WHERE child_type='ScheduleEvent')";
 			$apts = '';
 			$res =& $appointment->search('WHERE '.implode(' AND ',$where));
+			$this->view->assign('search',true);
 			while ($res && !$res->EOF) {
 				$this->view->assign('apt',$res->fields);
 				$appointment =& Celini::newORDO('Appointment',$res->fields['appointment_id']);
 				$this->view->assign_by_ref('appointment',$appointment);
-				$apts.=$this->view->render('singlefromarray.html');
+				$apts.='<br />'.$this->view->render('singlefromarray.html');
 				$res->MoveNext();
 			}
 			$this->view->assign('searchresults',$apts);
