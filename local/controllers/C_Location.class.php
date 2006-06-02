@@ -31,15 +31,13 @@ class C_Location extends Controller {
 		$this->assign('SCHEDULE_LIST_ACTION', Celini::link('schedule_list'));
 		$this->assign('UPDATE_SCHEDULE_ACTION', Celini::link('update_schedule'));
 		$this->assign('EDIT_TIMEPLACE_ACTION', Celini::link('edit_timeplace'));
-
-		$this->view->path = 'locations';
 	}
 
 	function default_action() {
 		return $this->edit_action();
 	}
 
-	function list_action() {
+	function actionList() {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		
@@ -51,93 +49,6 @@ class C_Location extends Controller {
 		$this->assign("rooms",$r->rooms_factory());
 		
 		return $this->view->render("list.html");
-	}
-
-	
-		
-	function edit_building_action($id = "") {
-		
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);
-		if (!is_object($this->location)) {
-			$this->location = new Building($id);
-		}
-		
-		$this->assign("building",$this->location);
-		$s = new Practice();
-		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
-		
-		$fc = &new FacilityCode();
-		$this->assign('facilityCodeList', $fc->valueListForDropDown()); 
-
-		$this->assign("process",true);
-		return $this->view->render("edit_building.html");
-	}
-	
-		
-	function edit_building_action_process() {
-		if ($_POST['process'] != "true") {
-			return;
-		}
-		
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"","building",$this,false);	
-		$this->location = new Building($_POST['id']);
-		$this->location->populate_array($_POST);
-		$this->location->set('identifier',$_POST['identifier']);
-		
-		$this->location->persist();
-		
-		$this->location->populate($this->location->get_id());
-		$_POST['process'] = "";
-	}
-	
-	function edit_room_action($id = "") {
-		
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);
-		
-		if (!is_object($this->location)) {
-			$this->location = new Room($id);
-		}
-		
-		$this->assign("room",$this->location);
-		$b = new Building();
-		$this->assign("buildings",$this->utility_array($b->buildings_factory(),"id","name"));
-
-		$this->assign("process",true);
-		return $this->view->render("edit_room.html");
-	}
-	
-		
-	function edit_room_action_process() {
-		if ($_POST['process'] != "true") {
-			return;
-		}
-		
-		// Capture so we know whether or not this was the first room
-		$room =& new Room();
-		$setDefaultRoom = !$room->roomsExist();
-		
-		// Check and if allowed handle the saving
-		$this->sec_obj->acl_qcheck("edit",$this->_me,"","room",$this,false);	
-		$location =& $room;
-		$location->set('id', $_POST['id']);
-		$location->populate_array($_POST);
-		$location->persist();
-		
-		$_POST['process'] = "";
-		
-		// If no rooms were set prior to creating this one, utilize the pseudo
-		// visitor ChangeDefaultRoomForUsers() to update the default rooms.
-		if ($setDefaultRoom) {
-			$GLOBALS['loader']->requireOnce('includes/ChangeDefaultRoomForUsers.class.php');
-			$updater =& new ChangeDefaultRoomForUsers($location);
-			
-			$user =& ORDataObject::factory('User');
-			$updater->visit($user->users_factory());
-		}
-		
-		// share this object with the rest of the controller so the DB doesn't
-		// have to be requeried.
-		$this->location =& $location;
 	}
 	
 	function delete_action($id = "",$object_class ="") {
