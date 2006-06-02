@@ -5,6 +5,71 @@ $loader->requireOnce('includes/FeeScheduleDatasource.class.php');
 class C_FeeSchedule extends Controller {
 	var $_ordo = null;
 	
+	function actionUpdateFees() {
+		$fsId = $this->getDefault('fee_schedule_id');
+
+		$fs =& Celini::newOrdo('FeeSchedule',$fsId);
+
+		$this->view->assign('EDIT_ACTION',Celini::link('UpdateFee','FeeSchedule',false).'fee_schedule_id='.$fsId.'&');
+
+		$this->view->assign_by_ref('fs',$fs);
+
+		$head =& Celini::HTMLHeadInstance();
+		$head->addExternalCss('suggest');
+		return $this->view->render('updateFees.html');
+	}
+
+	function actionUpdateFee() {
+		$codeId = $this->GET->getTyped('code_id','int');
+		$fsId = $this->GET->getTyped('fee_schedule_id','int');
+
+		$code =& Celini::newOrdo('Code',$codeId);
+		$fsd  =& Celini::newOrdo('FeeScheduleData',array($codeId,$fsId),'ByCodeFeeSchedule');
+
+		$em =& Celini::enumManagerInstance();
+		$modifiers = $em->enumArray('code_modifier');
+
+		$modData = array();
+		foreach($modifiers as $key => $mod) {
+			$modData[$key] =& Celini::newOrdo('FeeScheduleDataModifier',array($fsId,$codeId,$key),'ByFeeScheduleCodeModifier');
+		}
+
+		$this->view->assign_by_ref('code',$code);
+		$this->view->assign_by_ref('fsd',$fsd);
+		$this->view->assign_by_ref('modData',$modData);
+		$this->view->assign('modifiers',$modifiers);
+		$this->view->assign('UPDATE_ACTION',Celini::link('UpdateFee','FeeSchedule',false).'fee_schedule_id='.$fsId.'&code_id='.$codeId);
+
+		return $this->view->render('updateFee.html');
+	}
+
+	function processUpdateFee() {
+		$codeId = $this->GET->getTyped('code_id','int');
+		$fsId = $this->GET->getTyped('fee_schedule_id','int');
+
+		$fsd  =& Celini::newOrdo('FeeScheduleData',array($codeId,$fsId),'ByCodeFeeSchedule');
+		$fsd->populateArray($this->POST->get('FeeScheduleData'));
+		$fsd->persist();
+
+		$modData = $this->POST->get('FeeScheduleDataModifier');
+
+		foreach($modData as $key => $mod) {
+			if (!empty($mod['id']) && trim($mod['fee']) == '') {
+				$m =& Celini::newOrdo('FeeScheduleDataModifier',$mod['id']);
+				$m->drop();
+			}
+			else if (!trim($mod['fee']) == '') {
+				$m =& Celini::newOrdo('FeeScheduleDataModifier',$mod['id']);
+				$m->set('fee',$mod['fee']);
+				$m->set('fee_schedule_id',$fsId);
+				$m->set('code_id',$codeId);
+				$m->set('modifier',$key);
+				$m->persist();
+			}
+		}
+		return '<br><div class="statusMessage"><div><h1>Fees Updated</h1></div></div>';
+	}
+
 	function default_action() {
 		return $this->list_action();
 	}
@@ -38,7 +103,7 @@ class C_FeeSchedule extends Controller {
 		$this->assign_By_ref('feeSchedule',$feeSchedule);
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$fee_schedule_id));
 		$this->assign('DEFAULT_ACTION',Celini::link('setdefault',true,true,$fee_schedule_id));
-		$this->assign('UPDATE_ACTION',Celini::link('update',true,true,$fee_schedule_id));
+		$this->assign('UPDATE_ACTION',Celini::link('updateFees',true,true,$fee_schedule_id));
 
 		return $this->view->render("edit.html");
 	}

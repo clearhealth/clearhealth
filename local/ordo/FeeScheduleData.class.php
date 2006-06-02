@@ -16,15 +16,16 @@ class FeeScheduleData extends ORDataObject {
 	/**#@+
 	 * Fields of table: fee_schedule_data mapped to class members
 	 */
-	var $id			= '';
+	var $code_id		= '';
 	var $revision_id	= '';
 	var $fee_schedule_id	= '';
 	var $data		= '';
 	var $formula		= '';
-	var $mapped_code		= '';
+	var $mapped_code	= '';
 	/**#@-*/
 	var $_table = 'fee_schedule_data';
 	var $_internalName='FeeScheduleData';
+	var $_key = 'code_id';
 
 
 	/**
@@ -46,6 +47,16 @@ class FeeScheduleData extends ORDataObject {
 		}
 	}
 
+	function setupByCodeFeeSchedule($code_id,$fee_schedule_id) {
+		$c = EnforceType::int($code_id);
+		$f = EnforceType::int($fee_schedule_id);
+
+		$sql = "select * from ".$this->tableName()." where code_id = $c and fee_schedule_id = $f";
+		$this->helper->populateFromQuery($this,$sql);
+		$this->set('code_id',$c);
+		$this->set('fee_schedule_id',$f);
+	}
+
 	/**
 	 * Populate the class from the db
 	 */
@@ -57,20 +68,6 @@ class FeeScheduleData extends ORDataObject {
 	 * Getters and Setters for Table: fee_schedule_data
 	 */
 
-	
-	/**
-	 * Getter for Primary Key: field_id
-	 */
-	function get_code_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: field_id
-	 */
-	function set_code_id($id)  {
-		$this->id = $id;
-	}
 	
 	function get_revision_id() {
 		return 0;

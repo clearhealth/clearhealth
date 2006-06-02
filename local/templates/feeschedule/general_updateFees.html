@@ -1,0 +1,36 @@
+{head type="js"}
+function submitEdit(form) {
+	HTML_AJAX.formSubmit(form,'editor');
+}
+{/head}
+<h2>Fee Schedule: {$fs->get('label')}</h2>
+<div>
+	<table><tbody><tr>
+		<td>
+			<label class="inline">Select a CPT code: </label>
+		</td>
+		<td>
+			<div class="SuggestInput">
+				<input id="code" size="50">
+				<input id="codeId" type="hidden">
+			</div>
+		</td>
+		<td>
+			<button id="go" onclick="HTML_AJAX.replace('editor',editAction+$('codeId').value);" disabled="true">Edit Fees for Code</button>
+		</td>
+	</tr></tbody></table>
+</div>
+<script type="text/javascript">
+	var editAction = '{$EDIT_ACTION}code_id=';
+	{literal}
+	var suggest = new codeSuggest('code','codeId',function() { 	
+				$('go').disabled = false;
+				HTML_AJAX.replace('editor',editAction+$('codeId').value);
+			});
+	{/literal}
+</script>
+
+<div id="editor" style="margin: 5px; border-top: solid 1px black">
+	Select a code to update its fees
+</div>
+

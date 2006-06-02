@@ -400,7 +400,7 @@ class C_Coding extends Controller {
 		$_POST['process'] = "";
 	}
 
-	function &icd_search($search_string,$superbill = 0) {
+	function icd_search($search_string,$superbill = 0) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
 		$_POST['searchtype'] = 'icd';
@@ -415,7 +415,7 @@ class C_Coding extends Controller {
 		return null;
 	}
 	
-	function &cpt_search($search_string,$superbill = 0) {
+	function cpt_search($search_string,$superbill = 0) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
 		$_POST['searchtype'] = 'cpt';

@@ -1,0 +1,42 @@
+{clni_form onsubmit="submitEdit(this); return false;" method="POST" action=$UPDATE_ACTION}
+<h3>{$code->value('name')}</h3>
+
+<input type="hidden" name="FeeScheduleData[code_id]" value="{$fsd->get('code_id')}">
+<input type="hidden" name="FeeScheduleData[revision_id]" value="{$fsd->get('revision_id')}">
+<input type="hidden" name="FeeScheduleData[fee_schedule_id]" value="{$fsd->get('fee_schedule_id')}">
+<table>
+	<tbody>
+	<tr>
+		<td><label>Fee:</label></td>
+		<td><input name="FeeScheduleData[data]" size="6" value="{$fsd->get('data')}"></td>
+	</tr>
+	<tr>
+		<td><label>Mapped Code:</label></td>
+		<td><input name="FeeScheduleData[mapped_code]" size="15" value="{$fsd->get('mapped_code')}"></td>
+	<tr>
+	</tbody>
+</table>
+
+<h3>Fee's per modifier</h3>
+<p><small>If a modifier has no specific fee set, the base fee for this code will be used.</small></p>
+<table class="grid">
+	<thead>
+		<tr>
+			<th>Modifier</th>
+			<th>Fee</th>
+		</tr>
+	</thead>
+	<tbody>
+		{foreach from=$modifiers item=mod key=key}
+		<tr>
+			<td>{$mod}</td>
+			<td>
+				<input name="FeeScheduleDataModifier[{$key}][id]" type="hidden" value="{$modData.$key->get('id')}">
+				<input name="FeeScheduleDataModifier[{$key}][fee]" size="6" value="{$modData.$key->get('fee')}">
+			</td>
+		</tr>
+		{/foreach}
+	</tbody>
+</table>
+<button accessKey="u"><u>U</u>pdate Code Fee</button>
+</form>

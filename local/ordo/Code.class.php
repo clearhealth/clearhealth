@@ -17,16 +17,17 @@ class Code extends ORDataObject {
 	/**#@+
 	 * Fields of table: coding_data mapped to class members
 	 */
-	var $id					= '';
-	var $code_text			= '';
+	var $code_id		= '';
+	var $code_text		= '';
 	var $code_text_short	= '';
-	var $code				= '';
-	var $code_type			= '';
+	var $code		= '';
+	var $code_type		= '';
 	/**#@-*/
 
 	var $_parentCode 	= null;
-	var $_table = 'codes';
-	var $_internalName='Code';
+	var $_table 		= 'codes';
+	var $_internalName	='Code';
+	var $_key		= 'code_id';
 
 	/**
 	 * Setup some basic attributes
@@ -69,22 +70,13 @@ class Code extends ORDataObject {
 	/**#@+
 	 * Getters and Setters for Table: coding_data
 	 */
+	function value_name() {
+		if($this->code != '') {
+			return $this->code . " : " . $this->code_text;	
+		}
+	}
 
 	
-	/**
-	 * Getter for Primary Key: coding_data_id
-	 */
-	function get_code_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: coding_data_id
-	 */
-	function set_code_id($id)  {
-		$this->id = $id;
-	}
-
 	/**#@-*/	
 	function getCodeDesc(){
 		if($this->code != '')
