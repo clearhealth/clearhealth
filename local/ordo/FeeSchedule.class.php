@@ -137,17 +137,36 @@ class FeeSchedule extends ORDataObject {
 	/**
 	 * Get the fee for a code
 	 */
-	function getFee($code) {
+	function getFee($code,$modifier=-1) {
+
+		$fsdId = Enforcetype::int($this->get('id'));
+		$code = $this->dbHelper->quote($code);
+		$mod = Enforcetype::int($modifier);
 					
-		$sql = "select "
-				." case when (fsd.data > 0) then fsd.data else fsdd.data end as data "
-				." from codes, fee_schedule fs "
-				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
-				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ")" 
-				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code =  " . $this->_quote($code)
-				." order by code";
+		$sql = "select 
+				case when (fsdm.fee > 0) then
+					fsdm.fee
+				else
+					case when (fsd.data > 0) then 
+						fsd.data 
+					else 
+						fsdd.data 
+					end
+				end as data 
+			from 
+				codes, 
+				fee_schedule fs 
+				left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) 
+				left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = $fsdId) 
+				left join fee_schedule_data_modifier fsdm on 
+					(codes.code_id = fsdm.code_id and fsdm.fee_schedule_id = $fsdId and fsdm.modifier = $mod) 
+			where 
+				fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code =  $code
+			order by 
+				code
+			";
 				
-		$res = $this->_execute($sql);
+		$res = $this->dbHelper->execute($sql);
 		if ($res && isset($res->fields['data'])) {
 			return $res->fields['data'];
 		}
