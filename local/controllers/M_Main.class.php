@@ -11,6 +11,7 @@ class M_Main extends Manager {
 			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}
 		//var_dump($_SESSION);
+		$this->controller->view->assign('celini', new Celini());
 	}
 
 	function postProcess() {
