@@ -114,6 +114,17 @@ var cp2 = new ColorPicker(); // DIV style
 			<input name="person[inactive]" type="radio" value="1" {if $person->get('inactive') == 1}checked="checked"{/if} />{l}No{/l}
 		</td>
 	</tr>
+	
+	<tr>
+		<td><label for="person__primary_practice_id">{l}Primary Practice{/l}</label></td>
+		<td>
+			<select name="person[primary_practice_id]" id="person__primary_practice_id" class="required">
+				<option></option>
+				{html_options options=$person->valueList('primary_practice_id') selected=$person->get('primary_practice_id')}
+			</select>
+		</td>
+	</tr>
+	
 	</tbody>
 	</table>
 </fieldset>

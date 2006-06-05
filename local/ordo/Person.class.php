@@ -40,6 +40,7 @@ class Person extends ORDataObject {
 	var $identifier_type	= '';
 	var $marital_status	= '';
 	var $inactive = '';
+	var $primary_practice_id = '';
 	/**#@-*/
 
 	var $nameHistory = false;
@@ -63,6 +64,9 @@ class Person extends ORDataObject {
 	 */
 	var $_table = 'person';
 	var $_key = 'person_id';
+	var $_foreignKeyList = array(
+		'primary_practice_id' => 'Practice'
+	);
 	/**#@-*/
 
 
