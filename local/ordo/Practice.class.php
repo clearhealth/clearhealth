@@ -399,19 +399,9 @@ class Practice extends ORDataObject{
 		return $config;
 	}
 	
-	function genericList(){
-			
-			$db = new clniDb();
-			$sql = "select id, name from practices where 1";
-			$result = $db->execute($sql);
-			$practiceList = array();
-			while($result && !$result->EOF) {
-				$practiceList [$result->fields['id']] = $result->fields['name'] ;
-				$result->MoveNext();
-			}
-			
-			
-			return $practiceList;
+	function genericList() {
+		$sql = 'SELECT id, name FROM practices';
+		return $this->dbHelper->getAssoc($sql);
 	}
 
 } // end of Class
