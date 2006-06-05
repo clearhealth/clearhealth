@@ -116,7 +116,7 @@ class C_PatientMerge extends controller {
 			$this->dbHelper = new clniDb();
 		}
 		$sql = "update $table set $field = $newId where $field = $oldId";
-		$this->dbHelper->execute($sql);
+		$this->dbHelper->_db->execute($sql);
 		return $this->dbHelper->affectedRows();
 	}
 }
