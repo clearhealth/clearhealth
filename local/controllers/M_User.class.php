@@ -58,116 +58,116 @@ class M_User extends M_Patient {
 	 * @todo: we are going to want to do this bridging of type on person to group on user a lot, move this to some place more reusable, this should be moved into the persist method of a user. Note: the inject_user.php script uses a cut and paste of this code.
 	 */
 	function process_user_update($person_id,$data) {
-			/* 
-			 * If this username is 'admin', attempt to load it and tie this 
-			 * new person to it
-			 */
-			if ($data['username'] == 'admin') {
-				$u =& User::fromUsername('admin');
+		/* 
+		 * If this username is 'admin', attempt to load it and tie this 
+		 * new person to it
+		 */
+		if ($data['username'] == 'admin') {
+			$u =& User::fromUsername('admin');
+		}
+		else {
+			$u =& User::fromPersonId($person_id);
+			
+			// What does this do?
+			if ($u->get('id') == 0) {
+				$u->set('disabled','no');
 			}
-			else {
-				$u =& User::fromPersonId($person_id);
-				
-				// What does this do?
-				if ($u->get('id') == 0) {
-					$u->set('disabled','no');
-				}
+		}
+		
+		if(isset($data['color']) && strpos($data['color'],'#') !== false) {
+			$data['color'] = str_replace('#','',$data['color']);
+		}
+		
+		$u->set('person_id',$person_id);
+		$u->populate_array($data);
+		$u->persist();
+		$this->controller->user_id = $u->get('id');
+
+		$provider = ORDAtaObject::factory('Provider',$person_id);
+		$provider->persist();
+
+
+		// Determine the user types of this new person
+		$person =& ORDataObject::factory('Person',$person_id);
+		$t_list = $person->getTypeList();
+		$types = $person->get('types');
+		
+		// update gacl groups from type
+		if ($data['username'] != 'admin') {
+			// Setup user groups
+			$groups = array();
+			if (isset($data['groups'])) {
+				$groups = $data['groups'];
+				unset($data['groups']);
 			}
 			
-			if(isset($data['color']) && strpos($data['color'],'#') !== false) {
-				$data['color'] = str_replace('#','',$data['color']);
-			}
-			
-			$u->set('person_id',$person_id);
-			$u->populate_array($data);
-			$u->persist();
-			$this->controller->user_id = $u->get('id');
-
-			$provider = ORDAtaObject::factory('Provider',$person_id);
-			$provider->persist();
-
-
-			// Determine the user types of this new person
-			$person =& ORDataObject::factory('Person',$person_id);
-			$t_list = $person->getTypeList();
-			$types = $person->get('types');
-			
-			// update gacl groups from type
-			if ($data['username'] != 'admin') {
-				// Setup user groups
-				$groups = array();
-				if (isset($data['groups'])) {
-					$groups = $data['groups'];
-					unset($data['groups']);
-				}
-				
-				// Run through all the types setting the appropriate GACL.
-				if (count($types) > 0) {
-					$type = array_shift($types);
-					if ($type > 0) {
-						$group = strtolower(str_replace(' ','_',$t_list[$type]));
-						$gacl_groups = $this->controller->security->sort_groups();
-						$flat_groups = array();
-						foreach($gacl_groups as $grp) {
-							foreach($grp as $k => $v) {
-								$flat_groups[$k] = $v;
-							}
+			// Run through all the types setting the appropriate GACL.
+			if (count($types) > 0) {
+				$type = array_shift($types);
+				if ($type > 0) {
+					$group = strtolower(str_replace(' ','_',$t_list[$type]));
+					$gacl_groups = $this->controller->security->sort_groups();
+					$flat_groups = array();
+					foreach($gacl_groups as $grp) {
+						foreach($grp as $k => $v) {
+							$flat_groups[$k] = $v;
 						}
-						$u->groups = array();
-						foreach($groups as $id) {
-							$u->groups[$id] = array('id'=>$id);
-						}
-						foreach($flat_groups as $id => $name) {
-							$data = $this->controller->security->get_group_data($id);
-							if ($data[2] == $group) {
-								$gid = $data[0];
-								$u->groups[$gid] = array('id'=>$data[0]);
-								// move persist outside this loop for efficiency
-								break;
-							}
+					}
+					$u->groups = array();
+					foreach($groups as $id) {
+						$u->groups[$id] = array('id'=>$id);
+					}
+					foreach($flat_groups as $id => $name) {
+						$data = $this->controller->security->get_group_data($id);
+						if ($data[2] == $group) {
+							$gid = $data[0];
+							$u->groups[$gid] = array('id'=>$data[0]);
+							// move persist outside this loop for efficiency
+							break;
 						}
 					}
 				}
-				$u->persist();
 			}
+			$u->persist();
+		}
 
-			if($t_list[$person->get('type')] === "Provider") {
-				// create default ps schedule if no ps schedule exists
+		if($t_list[$person->get('type')] === "Provider") {
+			// create default ps schedule if no ps schedule exists
 
-				ORDataObject::factory_include('Schedule');
-				$schedules = Schedule::fromUserId($u->get('id'));
+			ORDataObject::factory_include('Schedule');
+			$schedules = Schedule::fromUserId($u->get('id'));
 
-				if (count($schedules) == 0) {
-					// get the default practice
-					$practice_id = $u->get('DefaultPracticeId');
+			if (count($schedules) == 0) {
+				// get the default practice
+				$practice_id = $u->get('DefaultPracticeId');
 
-					// create a ps schedule for the provider
-					$schedule =& ORDataObject::factory('Schedule');
-					$schedule->set('user_id',$u->get('id'));
-					$schedule->set('provider_id',$person->get('id'));
-					$schedule->set('schedule_code','PS');
-					$schedule->set('title',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
-					$schedule->set('practice_id',$practice_id);
-					$schedule->persist();
+				// create a ps schedule for the provider
+				$schedule =& ORDataObject::factory('Schedule');
+				$schedule->set('user_id',$u->get('id'));
+				$schedule->set('provider_id',$person->get('id'));
+				$schedule->set('schedule_code','PS');
+				$schedule->set('title',$person->get('salutation').' '.$person->get('last_name')."'s Schedule");
+				$schedule->set('practice_id',$practice_id);
+				$schedule->persist();
 
-					// create an event for each room
-					ORDataObject::factory_include('Room');
-					$rooms = Room::rooms_factory();
-					/*
-					foreach($rooms as $room) {
-						unset($e);
-						$e =& ORDataObject::factory('Event');
-						$e->set('title',$room->get('name'));
-						$e->set('foreign_id',$schedule->get('id'));
-						$e->persist();
-					}*/
-					$this->messages->addMessage('Default Schedule Created');
+				// create an event for each room
+				ORDataObject::factory_include('Room');
+				$rooms = Room::rooms_factory();
+				/*
+				foreach($rooms as $room) {
+					unset($e);
+					$e =& ORDataObject::factory('Event');
+					$e->set('title',$room->get('name'));
+					$e->set('foreign_id',$schedule->get('id'));
+					$e->persist();
+				}*/
+				$this->messages->addMessage('Default Schedule Created');
 
-				}
 			}
-			
+		}
+		
 
-			$this->messages->addMessage('Login Information Updated');
+		$this->messages->addMessage('Login Information Updated');
 	}
 
 	function process_provider_update($person_id,$data) {
