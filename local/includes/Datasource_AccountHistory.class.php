@@ -50,6 +50,7 @@ class Datasource_AccountHistory extends Datasource {
 			'balance' 	=> 'Balance',
 			'facility'	=> "Facility",
 			'provider'	=> "Provider",
+			'user'		=> "Entered By",
 		);
 
 		$line =& ORDataObject::factory('PaymentClaimline');
@@ -154,13 +155,16 @@ class Datasource_AccountHistory extends Datasource {
 					writeoff,
 					payer_id,
 					payment_date,
-					pa.timestamp',
+					pa.timestamp,
+					u.username user',
 				'from' 	=> '
 					payment AS pa
 					LEFT JOIN encounter AS e USING(encounter_id)
 					LEFT JOIN person AS p ON (e.patient_id = p.person_id)
 					LEFT JOIN clearhealth_claim AS chc ON (chc.claim_id = pa.foreign_id)
-					LEFT JOIN encounter AS e2 ON(chc.encounter_id = e2.encounter_id)',
+					LEFT JOIN encounter AS e2 ON(chc.encounter_id = e2.encounter_id)
+					LEFT JOIN ordo_registry AS oreg ON(pa.payment_id = oreg.ordo_id)
+					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)',
 				'where' => '
 					(
 						e.patient_id = ' . $patient_id . ' OR
