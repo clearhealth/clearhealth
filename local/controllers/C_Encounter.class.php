@@ -92,7 +92,7 @@ class C_Encounter extends Controller {
 		$encounterPersonGrid->registerTemplate('person','<a href="'.Celini::Managerlink('editEncounterPerson',$encounter_id).'id={$encounter_person_id}&process=true">{$person}</a>');
 		$this->assign('NEW_ENCOUNTER_PERSON',Celini::managerLink('editEncounterPerson',$encounter_id)."id=0&process=true");
 		
-		$insuredRelationship =& Celini::newORDO('InsuredRelationship', $encounter->get('current_payer'), 'ByInsuranceProgram');
+		$insuredRelationship =& Celini::newORDO('InsuredRelationship', (int)$encounter->get('current_payer'), 'ByInsuranceProgram');
 		$this->assign('copay', $insuredRelationship->get('copay'));
 		
 		$payment =& Celini::newORDO('Payment',$this->payment_id);
