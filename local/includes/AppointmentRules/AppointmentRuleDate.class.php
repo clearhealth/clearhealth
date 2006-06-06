@@ -10,7 +10,7 @@ class AppointmentRuleDate extends AppointmentRule {
 			switch($this->ruleData->date_type) {
 				case 'dayofweek':
 					if ($this->inDayOfWeek($start)) {
-						$this->applicableMessage = "Day is ".date('l');
+						$this->applicableMessage = "Day is ".date('l',$start);
 						return true;
 					}
 					break;
