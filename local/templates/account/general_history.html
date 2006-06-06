@@ -27,13 +27,15 @@
 		var id = 1;
 		for(var i = 0; i < grid.rows.length; i++) {
 			if (grid.rows[i].cells[0].innerHTML != '') {
-				claimList.push(grid.rows[i].cells[1].innerHTML);
-				rowMap[id] = i;
+				if (grid.rows[i].cells[1]) {
+					claimList.push(grid.rows[i].cells[1].innerHTML);
+					rowMap[id] = i;
 
-				var td = document.createElement('td');
-				td.style.backgroundColor = 'transparent';
-				td.innerHTML = "<a href='#notes' onclick='select("+id+"); return false;'>select</a>";
-				grid.rows[i].appendChild(td);
+					var td = document.createElement('td');
+					td.style.backgroundColor = 'transparent';
+					td.innerHTML = "<a href='#notes' onclick='select("+id+"); return false;'>select</a>";
+					grid.rows[i].appendChild(td);
+				}
 				id++;
 			}
 		}
@@ -141,6 +143,15 @@
 	<label>{l}Provider{/l}: </label>
 	<select name="filter[provider]"><option></option>{query_options query="select p.person_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id) inner join provider using(person_id)" selected=$filters.provider}</select>
 </div>
+	<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				{l}Entered By{/l}:
+				<select name="filter[user]">
+					<option></option>
+					{html_options options=$userList selected=$filters.user}
+				</select>
+			</label>
+		</div>
 <div style="float:left;margin-left:10px;margin-bottom:10px;">
 	{clni_input type="submit" name="filter_submit" value="Filter"}
 </div>
