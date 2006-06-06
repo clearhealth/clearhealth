@@ -106,6 +106,7 @@ class MasterClaimList_DS extends Datasource_sql
 					LEFT JOIN buildings AS b ON(e.building_id = b.id)
 					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)
 					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
+					INNER JOIN fblatest_revision flr ON(flr.claim_identifier = fbc.claim_identifier and fbc.revision = flr.revision)
 					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
 					LEFT JOIN ordo_registry AS oreg ON(e.encounter_id = oreg.ordo_id)
 					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
