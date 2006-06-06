@@ -53,7 +53,8 @@ class Person_SecondaryPractice_DS extends Datasource_sql {
 	
 	function _addDeleteLink($value, $rowValues) {
 		// todo implement
-		return 'Delete';
+		$url = Celini::link('remove', 'SecondaryPractice', false, $rowValues['secondary_practice_id']) . 'process=true&redirect=true';
+		return '<a href="' . $url . '">Delete</a>';
 	}
 }
 ?>

@@ -44,6 +44,16 @@ class C_SecondaryPractice extends C_CRUD
 		
 		$this->person =& Celini::newORDO('Person', $this->_ordo->get('person_id'));
 	}
+	
+	
+	function processRemove($secondaryPracticeId) {
+		$ordo =& Celini::newORDO('SecondaryPractice', (int)$secondaryPracticeId);
+		$ordo->drop();
+		
+		if ($this->GET->exists('redirect')) {
+			Celini::redirectURL($_SERVER['HTTP_REFERER']);
+		}
+	}
 }
 
 ?>
