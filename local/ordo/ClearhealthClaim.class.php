@@ -165,6 +165,10 @@ class ClearhealthClaim extends ORDataObject {
 					case 'claim_identifier':
 							$where .= " c.claim_identifier like " . $this->_quote($fval."%") . " and ";
 						break;
+					case 'user':
+							$qUser = enforceType::int($fval);
+							$where .= " u.user_id = $qUser and ";
+						break;
 					default:
 						break;
 				}	
@@ -191,7 +195,8 @@ class ClearhealthClaim extends ORDataObject {
 					b.name facility,
 					concat_ws(",",pro.last_name,pro.first_name) AS provider,
 					(chc.total_billed - chc.total_paid - SUM(IFNULL(pcl.writeoff,0))) AS balance, 
-					SUM(IFNULL(pcl.writeoff,0)) AS writeoff',
+					SUM(IFNULL(pcl.writeoff,0)) AS writeoff,
+					u.username user',
 				'from' 	=> 
 					$this->_table . ' AS chc 
 					INNER JOIN encounter AS e USING(encounter_id)
@@ -203,6 +208,8 @@ class ClearhealthClaim extends ORDataObject {
 					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
 					LEFT JOIN fblatest_revision AS fblr ON(fblr.claim_identifier = fbc.claim_identifier)
 					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
+					LEFT JOIN ordo_registry AS oreg ON(e.encounter_id = oreg.ordo_id)
+					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
 					',
 				'where' => ' (fblr.revision = fbc.revision) and e.patient_id = ' . $patient_id . $where,
 				'groupby' => 'chc.claim_id'
