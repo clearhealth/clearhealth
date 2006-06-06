@@ -1,6 +1,7 @@
 <?php
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('includes/colorpickerselect.class.php');
+$loader->requireOnce('controllers/C_SecondaryPractice.class.php');
 
 /**
  * Controller for the Clearhealth users
@@ -40,6 +41,14 @@ class C_User extends Controller {
 			$person->populateArray($_POST['person']);
 			$person->persist();
 		}
+		
+		$formAction = Celini::managerLink('update', $person_id);
+		$this->assign('FORM_ACTION', $formAction);
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$person_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$person_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$person_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$person_id));
+
 		$number =& ORDataObject::factory('PersonNumber',$this->number_id,$person_id);
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
@@ -72,6 +81,13 @@ class C_User extends Controller {
 			$building =& Celini::newORDO('Building');
 			$this->view->assign_by_ref('building', $building);
 		}
+		
+		// Generate view for SecondaryPractice
+		$cSecondaryPractice =& new C_SecondaryPractice();
+		$cSecondaryPractice->view->assign('FORM_ACTION', $formAction);
+		$cSecondaryPractice->person =& $person;
+		$this->view->assign('secondaryPracticeView', $cSecondaryPractice->actionDefault());
+		
 
 		$nameHistoryGrid =& new cGrid($person->nameHistoryList());
 		$identifierGrid =& new cGrid($person->identifierList());
@@ -88,12 +104,6 @@ class C_User extends Controller {
 		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
 		$this->assign("rooms_practice_array",$room->rooms_practice_factory());
-		$this->assign('FORM_ACTION',Celini::managerLink('update',$person_id));
-		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$person_id));
-		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$person_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$person_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$person_id));
-
 		$this->assign('now',date('Y-m-d'));
 
 		return $this->view->render('edit.html');

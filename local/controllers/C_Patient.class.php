@@ -24,6 +24,14 @@ class C_Patient extends Controller {
 		}
 	}
 
+	/**
+	 * Handle displaying the add diaglog
+	 *
+	 * @see actionEdit()
+	 */
+	function actionAdd() {
+		return $this->actionEdit(0);
+	}
 	
 	/**
 	 * Edit/Add an Patient
@@ -116,7 +124,7 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->assign_by_ref('patientStatistics',$patientStatistics);
 		$this->assign_by_ref('subscriber',$subscriber);
-		$this->assign('FORM_ACTION',Celini::managerLink('update',$patient_id));
+		$this->assign('FORM_ACTION',Celini::managerLink('update',$patient_id, 'edit'));
 		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$patient_id));
 		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
