@@ -31,6 +31,8 @@ class C_SecondaryPractice extends C_CRUD
 		$this->_initPerson();
 		$ds =& $this->person->loadDatasource('SecondaryPractice');
 		$grid =& new cGrid($ds);
+		$grid->orderLinks = false;
+		$grid->indexCol = false;
 		
 		$this->view->assign_by_ref('secondaryPractice', $this->_ordo);
 		$this->view->assign_by_ref('secondaryPracticeGrid', $grid);
