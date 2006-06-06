@@ -139,6 +139,14 @@ function startDuplicate(URL) {
 		    </tr>
 		    {/if}
 			<tr>
+				<td><label for="person__primary_practice_id">{l}Primary Practice{/l}</label></td>
+				<td>
+					<select name="person[primary_practice_id]" id="person__primary_practice_id" class="required">
+						<option></option>
+						{html_options options=$person->valueList('primary_practice_id') selected=$person->get('primary_practice_id')}
+					</select>
+				</td>
+			</tr>			<tr>
 				<td></td>
 				<td> <input name="label" value="{if $person->get('person_id') > 0}Update{else}Add{/if}" type="submit" onClick="updateParent();"></td>
 			</tr>
