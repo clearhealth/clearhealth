@@ -55,6 +55,10 @@ $config['debug'] = false;
 $config['auditChanges'] = true;
 $config['auditFieldChanges'] = true;
 
+// use the new style ownership table
+$config['ownership'] = false;
+$config['ordo_registry'] = true;
+
 ################################################################################
 ## Locale settings
 ################################################################################
