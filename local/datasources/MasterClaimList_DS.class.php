@@ -88,7 +88,9 @@ class MasterClaimList_DS extends Datasource_sql
 					b.name facility,
 					CONCAT_WS(",",pro.last_name,pro.first_name) AS provider,
 					(chc.total_billed - chc.total_paid - SUM(ifnull(pcl.writeoff,0))) AS balance, 
-					SUM(ifnull(pcl.writeoff,0)) AS writeoff',
+					SUM(ifnull(pcl.writeoff,0)) AS writeoff,
+					u.username user
+					',
 				'from' 	=> 
 					$claimTableName . ' AS chc 
 					INNER JOIN encounter AS e USING(encounter_id) 
@@ -100,6 +102,8 @@ class MasterClaimList_DS extends Datasource_sql
 					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)
 					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
 					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
+					LEFT JOIN ordo_registry AS oreg ON(e.encounter_id = oreg.ordo_id)
+					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
 					',
 				'where' => implode(' AND ', $whereSql),
 				'groupby' => 'chc.claim_id'
@@ -112,7 +116,8 @@ class MasterClaimList_DS extends Datasource_sql
 				'total_billed' => 'Billed',
 				'total_paid' => 'Paid',
 				'balance' => 'Balance',
-				'current_payer' => 'Payer Name'
+				'current_payer' => 'Payer Name',
+				'user' => 'Entered By'
 			)
 		);
 		
