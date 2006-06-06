@@ -72,9 +72,30 @@ class C_MasterAccountHistory extends Controller {
 		$sql['cols'] = "
 			SUM(chc.total_billed) billed,
 			SUM(chc.total_paid) paid,
-			SUM(chc.total_billed) - SUM(chc.total_paid) - SUM(ifnull(pcl.writeoff,0)) AS balance,
-			SUM(ifnull(pcl.writeoff,0)) AS writeoff";
+			SUM(chc.total_billed) - SUM(chc.total_paid) - SUM(w.total_writeoff) AS balance,
+			SUM(w.total_writeoff) AS writeoff";
+
+		// no more groupby we want a single total row
 		unset($sql['groupby']);
+
+		// you can't join on payment and payment_claimline and sum up chc.* anymore
+		$sql['from'] = str_replace(
+			array('LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)',
+				'LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)'),
+				'',$sql['from']);
+
+		// use a subquery to get writeoff totals
+		$sql['from'] .= 'LEFT JOIN (
+				select
+					chc.claim_id,
+					SUM(ifnull(pcl.writeoff,0)) total_writeoff
+				FROM
+					clearhealth_claim chc
+					LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)
+					LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)
+				GROUP BY chc.claim_id
+			) w ON(w.claim_id = chc.claim_id)';
+
 		$totalDs = new Datasource_sql();
 		$totalDs->setup(Celini::dbInstance(),$sql,false);
 
