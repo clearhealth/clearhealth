@@ -60,6 +60,11 @@ class MasterClaimList_DS extends Datasource_sql
 							$qAmount = $db->quote($fval);
 							$whereSql[] = "chc.total_billed = {$qAmount}";
 							break;
+
+						case 'user':
+							$qUser = enforceType::int($fval);
+							$whereSql[] = "u.user_id = $qUser";
+							break;
 					}	
 				}
 			}
