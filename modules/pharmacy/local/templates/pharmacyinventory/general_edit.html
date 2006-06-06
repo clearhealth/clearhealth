@@ -1,0 +1,106 @@
+<div id="FormMessageBox"></div>
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS name="inventory" id="inventoryForm"}
+{clni_register_message_target formId="inventoryForm" targetId="FormMessageBox"}
+<fieldset id="PharmacyInventory">
+	<legend>{l}Item Details{/l}</legend>
+	
+	<table>
+		<tr>
+			<td><label>{l}Item Name{/l}: </label></td>
+			<td><input name="PharmacyInventory[item_name]" size="35" value="{*$PharmacyInventory->get('item_name')*}"></td>
+
+			<td><label>{l}Type{/l}: </label></td>
+			<td><select name="PharmacyInventory[type]">
+					<option></option>
+					<option>Unit of Use</option>
+					<option>Bulk Qty.</option>
+					<option>Case</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label>{l}Master SKU{/l}: </label></td>
+			<td><input name="PharmacyInventory[sku]" size="20" value="{*$PharmacyInventory->get('sku')*}"></td>
+
+			<td><label>{l}Units{/l}: </label></td>
+			<td><select name="PharmacyInventory[units]">
+					<option></option>
+					<option>tablets</option>
+					<option>capsules</option>
+					<option>bottles</option>
+					<option>tubes</option>
+					<option>vials</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label>{l}Short Description{/l}: </label></td>
+			<td><input name="PharmacyInventory[short_description]" size="35" value="{*$PharmacyInventory->get('short_description')*}"></td>
+
+			<td><label>{l}Dosage{/l}: </label></td>
+			<td><input name="PharmacyInventory[dosage]" size="10" value="{*$PharmacyInventory->get('dosage')*}"></td>
+		</tr>
+		<tr>
+			<td rowspan="2"><label>{l}Long Description{/l}: </label></td>
+			<td rowspan="2"><textarea name="PharmacyInventory[long_description]" rows="3" cols="34" wrap="virtual">{*$PharmacyInventory->get('long_description')*}</textarea></td>
+
+			<td><label>{l}Expiration Date{/l}: </label></td>
+			<td>{clni_input_date name="PharmacyInventory[expiration_date]" id="expDate" size=9"}</td>
+		</tr>
+		<tr>
+			<td><label>{l}Lot #{/l}: </label></td>
+			<td><input name="PharmacyInventory[lot_number]" size="10" value="{*$PharmacyInventory->get('lot_number')*}"></td>
+		</tr>
+		<tr>
+			<td><label>{l}Brand Name{/l}: </label></td>
+			<td><input name="PharmacyInventory[generic_name]" size="35" value="{*$PharmacyInventory->get('generic_name')*}"></td>
+
+			<td><label>{l}Shipping Weight{/l}: </label></td>
+			<td><input name="PharmacyInventory[shipping_weight]" size="7" value="{*$PharmacyInventory->get('shipping_weight')*}"></td>
+		</tr>
+		<tr>
+			<td><label>{l}Drug{/l}: </label></td>
+			<td><input name="PharmacyInventory[drug]" size="35" value="{*$PharmacyInventory->get('drug')*}"></td>
+
+			<td><label>{l}FDA Drug # (NDC?){/l}: </label></td>
+			<td colspan="3"><input name="PharmacyInventory[fda_number]" size="20" value="{*$PharmacyInventory->get('fda_number')*}"></td>
+		</tr>
+		<tr>
+			<td rowspan="2"><label>{l}Instructions{/l}: </label></td>
+			<td rowspan="2"><textarea name="PharmacyInventory[instructions]" rows="3" cols="34" wrap="virtual">{*$PharmacyInventory->get('instructions')*}</textarea></td>
+
+			<td><label>{l}Min. Order Qty.{/l}: </label></td>
+			<td><input name="PharmacyInventory[minimum_order_quantity]" size="3" value="{*$PharmacyInventory->get('minimum_order_quantity')*}"></td>
+
+			<td><label>{l}Price{/l}: </label></td>
+			<td><input name="PharmacyInventory[price]" size="6" value="{*$PharmacyInventory->get('price')*}"></td>
+		</tr>
+		<tr>
+			<td><label>{l}Ordering Physician{/l}: </label></td>
+			<td colspan="3"><select name="PharmacyInventory[ordering_physician]">
+					<option></option>
+					<option>Doctor #1</option>
+					<option>Doctor #2</option>
+					<option>Doctor #3</option>
+					<option>Doctor #4</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label>{l}Warnings{/l}: </lable></td>
+			<td><textarea name="PharmacyInventory[warnings]" rows="3" cols="34" wrap="virtual">{*$PharmacyInventory->get('warnings')*}</textarea></td>
+		</tr>
+		<tr>
+			<td><label>{l}Vendors{/l}: </lable></td>
+			<td><p>None.</p></td>
+		</tr>
+		<tr>
+			<td><label>{l}Related{/l}: </lable></td>
+			<td><p>None.</p></td>
+		</tr>
+	</table>
+</fieldset>
+<p>
+<input name="label" value="Add" type="submit" />
+</p>
+</form>
