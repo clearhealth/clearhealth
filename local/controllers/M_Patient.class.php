@@ -167,6 +167,13 @@ class M_Patient extends Manager {
 			if (isset($_POST['PatientChronicCode'])) {
 				$this->process_patientChronicCode_update($this->controller->patient_id,$_POST['PatientChronicCode']);
 			}
+			
+			if (isset($_POST['SecondaryPractice']) && $_POST['SecondaryPractice']['practice_id'] != '') {
+				$cSecondaryPractice =& new C_SecondaryPractice();
+				$cSecondaryPractice->process($_POST['SecondaryPractice']);
+				$action = empty($_POST['SecondaryPractice']['id']) ? 'Added' : 'Updated';
+				$this->messages->addMessage("Secondary Practice {$action}");
+			}
 		}
 	}
 

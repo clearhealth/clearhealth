@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('includes/Grid.class.php');
+$loader->requireOnce('controllers/C_SecondaryPractice.class.php');
 
 /**
  * Controller Clearhealth Patient actions
@@ -55,6 +56,16 @@ class C_Patient extends Controller {
 
 		$GLOBALS['C_MAIN']['noOverlib'] = true;
 
+		// Setup action values
+		$formAction = Celini::managerLink('update',$patient_id, 'edit');
+		$this->assign('FORM_ACTION', $formAction);
+		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$patient_id));
+		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
+		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
+		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
+		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
+		$this->assign('DUPLICATE_ACTION',Celini::link('markDuplicate',true,'minimal').'patient_id='.$patient_id);
+		
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = array('clnipopup');
 
@@ -109,6 +120,14 @@ class C_Patient extends Controller {
 		$relatedAddressGrid->indexCol = false;
 		$this->assign_by_ref('relatedAddressGrid', $relatedAddressGrid);
 		
+		
+		// Generate view for SecondaryPractice
+		$cSecondaryPractice =& new C_SecondaryPractice();
+		$cSecondaryPractice->view->assign('FORM_ACTION', $formAction);
+		$cSecondaryPractice->person =& $person;
+		$this->view->assign('secondaryPracticeView', $cSecondaryPractice->actionDefault());
+
+		
 		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
@@ -124,13 +143,6 @@ class C_Patient extends Controller {
 		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->assign_by_ref('patientStatistics',$patientStatistics);
 		$this->assign_by_ref('subscriber',$subscriber);
-		$this->assign('FORM_ACTION',Celini::managerLink('update',$patient_id, 'edit'));
-		$this->assign('EDIT_NUMBER_ACTION',Celini::managerLink('editNumber',$patient_id));
-		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
-		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
-		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
-		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
-		$this->assign('DUPLICATE_ACTION',Celini::link('markDuplicate',true,'minimal').'patient_id='.$patient_id);
 		$this->assign('hide_type',true);
 		$this->assign('chronicCodes',$chronicCodes);
 
