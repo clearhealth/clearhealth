@@ -57,6 +57,7 @@ class Patient_NoteList_DS extends Datasource_sql
 		$this->addOrderRule('priority',  'DESC', 0);
 		$this->addOrderRule('note_date', 'DESC', 1);
 
+		$this->registerFilter('note_date',array($this, '_addEditLink'));
 		$this->registerFilter('note',     array($this, 'multiLineFilter'));
 		$this->registerFilter('priority', array($this, 'colorLineFilter'), false, 'html');
 		$this->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
@@ -88,5 +89,11 @@ class Patient_NoteList_DS extends Datasource_sql
 
 		return "<div style='background-color: $color; font-weight: bold; margin-left: -5px; text-align:  center;'>$content</div>";
 	}
+	
+	function _addEditLink($value, $rowValues) {
+		$url = Celini::link(true, true, true, $_GET[0]) . 'note_id=' . $rowValues['patient_note_id'];
+		return '<a href="' . $url . '">' . $value . '</a>';
+	}
 }
 
+?>
