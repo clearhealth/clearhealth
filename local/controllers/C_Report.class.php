@@ -166,7 +166,7 @@ class C_Report extends Controller {
 	* Create a new report
 	*/
 	function actionAdd() {
-		return $this->edit_action_edit(0);
+		return $this->actionEdit(0);
 	}
 
 	/**
