@@ -73,7 +73,7 @@ class C_PatientDashboard extends Controller {
 		
 		
 		// Setup note data block
-		$note =& Celini::newORDO('PatientNote');
+		$note =& Celini::newORDO('PatientNote', $this->GET->getTyped('note_id', 'int'));
 		$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
 		$noteGrid->pageSize = 10;
 		$noteGrid->indexCol = false;
