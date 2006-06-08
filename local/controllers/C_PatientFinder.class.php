@@ -258,14 +258,38 @@ class C_PatientFinder extends Controller {
 			$join_type = "LEFT";
 		}
 		//get the db connection and pass it to the helper functions
-		$sql = "SELECT CONCAT(last_name, ', ', first_name, ' ', middle_name) as name, date_of_birth as DOB, psn.person_id as id, record_number as pubpid, psn.identifier as ss, person_type, concat(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string` FROM person psn"
-		." $join_type JOIN patient as pt on psn.person_id=pt.person_id left join person_type ptype using(person_id)\nWHERE\n";
+		$sql = "
+			SELECT 
+				CONCAT(last_name, ', ', first_name, ' ', middle_name) as name,
+				date_of_birth as DOB,
+				psn.person_id as id,
+				record_number as pubpid, 
+				psn.identifier as ss,
+				person_type, 
+				CONCAT(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string`
+			FROM
+				person psn
+				$join_type JOIN patient AS pt ON(psn.person_id=pt.person_id)
+				LEFT JOIN person_type AS ptype USING(person_id)
+			WHERE ";
 
 		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
-		$cleanedValue = mysql_real_escape_string($search_string);
-		$sqland=$sql.implode(' AND ',$sqls)." ORDER BY (last_name = '$cleanedValue') DESC, (first_name = '$cleanedValue') DESC, last_name,first_name LIMIT $this->limit";
-		$sqlor=$sql.implode(' OR ',$sqls)." ORDER BY (last_name = '$cleanedValue') DESC, (first_name = '$cleanedValue') DESC, last_name,first_name LIMIT $this->limit";
+		$sqland = $sql . implode(' AND ',$sqls). "
+			ORDER BY 
+				(last_name = '$cleanedValue') DESC,
+				(first_name = '$cleanedValue') DESC,
+				last_name,
+				first_name 
+			LIMIT
+				{$this->limit}";
+		$sqlor = $sql . implode(' OR ', $sqls) . "
+			ORDER BY
+				(last_name = '{$cleanedValue}') DESC,
+				(first_name = '{$cleanedValue}') DESC,
+				last_name,
+				first_name 
+			LIMIT {$this->limit}";
 
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
