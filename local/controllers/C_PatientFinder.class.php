@@ -101,6 +101,7 @@ class C_PatientFinder extends Controller {
 				LEFT JOIN person_type AS ptype USING(person_id)
 			WHERE ";
 
+		$cleanedValue = mysql_real_escape_string($search_string);
 		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
 		$sqland = $sql . implode(' AND ',$sqls). "
