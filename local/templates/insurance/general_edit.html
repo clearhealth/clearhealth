@@ -31,12 +31,12 @@
 {/if}
 	{include file="contacts/general_company.html"}
 	
-		    {if $company->get('id') > 0}
-		    {assign var="parent" value=$company}
-		    {include file="insurance/general_program.html"}
-		    {include file="contacts/general_phone.html"}
-		    {include file="contacts/general_address.html"}
-		    {*{include file="contacts/general_related_companies.html"}*}
-		    {/if}
+{if $company->get('id') > 0}
+	{assign var="parent" value=$company}
+	{include file="insurance/general_program.html"}
+	{include file="contacts/general_phone.html"}
+	{include file="contacts/general_address.html"}
+	{*{include file="contacts/general_related_companies.html"}*}
+{/if}
 </form>
 
