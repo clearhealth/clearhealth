@@ -16,6 +16,8 @@ class C_Eob extends Controller {
 	}
 
 	function actionPayment_edit($claim_id) {
+		$head =& Celini::HTMLHeadInstance();
+		$head->addNewJs('payment','templates/eob/payment.js');
 
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
