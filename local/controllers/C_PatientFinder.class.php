@@ -33,14 +33,30 @@ class C_PatientFinder extends Controller {
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
 		
-		return $this->smartsearch_action($form_name);
+		return $this->actionList($form_name);
 	}
+	
+	
+	/**##@+
+	 * Alias to old menu entry 
+	 *
+	 * @todo  remove once menu is updated
+	 */
+	function actionFind($form_name = '') {
+		return $this->actionList($form_name);
+	}
+	
+	function processFind() {
+		return $this->processList();
+	}
+	/**##@-*/
+	
 	
 	/**
 	* Function that will display a patient finder widged, allowing
 	*	the user to input search parameters to find a patient id.
 	*/
-	function smartsearch_action($form_name='') {
+	function actionList($form_name='') {
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
 		
@@ -50,12 +66,12 @@ class C_PatientFinder extends Controller {
 		//prevent javascript injection, whitespace and semi-colons are the worry
 		$form_name = preg_replace("/[^A-Za-z0-9\[\]\_\']/iS","",urldecode($form_name));
 		$this->assign('form_name', $form_name);
-		$this->assign("FORM_ACTION", Celini::link('smartsearch',true,true,$form_name));
+		$this->assign("FORM_ACTION", Celini::link('list',true,true,$form_name));
 		$this->assign('PATIENT_ACTION',Celini::link('view','PatientDashboard',true));
 		return $this->view->render("find.html");
 	}
 	
-	function smartsearch_action_process() {
+	function processList() {
 		$search_string = $_POST['searchstring'];
 		$result_array = $this->SmartSearch($search_string,$this->showNonPatients);
 
