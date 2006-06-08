@@ -78,6 +78,9 @@ class C_Account extends Controller {
 		$an =& Celini::newOrdo('AccountNote');
 		$this->assign_by_ref('accountNote',$an);
 
+		$provider =& Celini::newORDO('Provider');
+		$this->view->assign('userList', $provider->valueList('username'));
+
 		$this->assign('FORM_ACTION',celini::link(true,true,true,$patient_id));
 		
 		return $this->view->render("history.html");
