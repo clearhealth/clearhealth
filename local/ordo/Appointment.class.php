@@ -101,6 +101,7 @@ class Appointment extends ORDataObject {
 	}
 
 	function set_start($s) {
+		$this->populateEvent();
 		$this->_event->set('start',$s);
 	}
 
@@ -110,6 +111,7 @@ class Appointment extends ORDataObject {
 	}
 
 	function set_end($e) {
+		$this->populateEvent();
 		$this->_event->set('end',$e);
 	}
 	function get_end() {
