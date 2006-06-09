@@ -30,7 +30,8 @@ class Superbill_DS extends Datasource_sql {
 			array(
 				'cols' => 'c.code_id, c.code, code, code_text',
 				'from' => 'codes c inner join superbill_data s using(code_id)',
-				'where' => "s.status = 1 and s.superbill_id = $id $twhere"
+				'where' => "s.status = 1 and s.superbill_id = $id $twhere",
+				'orderby' => 'code_type,code'
 			),
 			$labels);
 	}

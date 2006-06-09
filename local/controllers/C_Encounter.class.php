@@ -25,7 +25,7 @@ class C_Encounter extends Controller {
 			$this->messages->addMessage(
 				'No Patient Selected', 
 				'Please select a patient before attempting to add an encounter.');
-			Celini::redirect('PatientFinder', 'default');
+			Celini::redirect('PatientFinder', 'List');
 		}
 		
 		return $this->actionEdit();
@@ -240,6 +240,8 @@ class C_Encounter extends Controller {
 			$this->set('patient_id', $encounter->get('patient_id'), 'c_patient');
 		}
 		
+		$head =& Celini::HTMLheadInstance();
+		$head->addExternalCss('suggest');
 		return $this->view->render("edit.html");
 	}
 

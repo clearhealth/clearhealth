@@ -198,9 +198,9 @@ class C_Schedule extends Controller
 			$pattern = array('pattern_type'=> 'dayweek');
 			$pattern['days'] = $wizard->get('days');
 
-			//var_dump('Pre createRecurrence: '.memory());
+			var_dump('Pre createRecurrence: '.memory());
 			$rec =& $schedule->createRecurrence($recurrence,$pattern);
-			//var_dump('Post createRecurrence: '.memory());
+			var_dump('Post createRecurrence: '.memory());
 			if($rec !== false) {
 				//var_dump('Pre ScheduleEvent Loop: '.memory());
 				$eg =& $rec->getParent('EventGroup');
@@ -216,7 +216,7 @@ class C_Schedule extends Controller
 					//$event->destroy();
 					//unset($event);
 				}
-				//var_dump('Post ScheduleEvent Loop: '.memory());
+				var_dump('Post ScheduleEvent Loop: '.memory());
 			}
 		}
 
