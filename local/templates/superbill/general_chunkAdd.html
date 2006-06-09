@@ -1,0 +1,19 @@
+<fieldset>
+	<legend>Add Code</legend>
+
+	<div>
+		<label class="inline">Select a code: </label><br>
+			<input onclick="switchSearch(this)" id="rprocedure" type="radio" name="code_type" checked>
+			<label for="rprocedure" class="inline">Procedure</label><br>
+
+			<input onclick="switchSearch(this)" id="rdiagnosis" type="radio" name="code_type">
+			<label for="rdiagnosis" class="inline">Diagnosis</label><br>
+
+			<div class="SuggestInput">
+				<input id="code" size="50" autocomplete="off">
+				<input id="codeId" type="hidden">
+			</div>
+			<button id="go" onclick="addCode(); return false;" disabled="true">Add Code</button>
+</div>
+
+</fieldset>

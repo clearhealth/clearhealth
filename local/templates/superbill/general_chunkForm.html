@@ -1,0 +1,34 @@
+<fieldset>
+	<legend>Superbill Details</legend>
+
+<input type="hidden" name="Superbill[id]" value="{$superbill->get('id')}"> 
+<input type="hidden" name="process" value="generic"> 
+<input type="hidden" name="ajax" value="1"> 
+<table>
+	<tbody>
+		<tr>
+			<td><label>{l}Name{/l}: </label></td>
+			<td><input name="Superbill[name]" value="{$superbill->get('name')}"></td>
+		</tr>
+		<tr>
+			<td><label>{l}Practice{/l}: </label></td>
+			<td><select name="Superbill[practice_id]">
+					<option value="0">All</option>
+					{html_options options=$practices selected=$superbill->get('practice_id')}
+			</select></td>
+		</tr>
+		<tr>
+			<td><label>{l}Status{/l}: </label></td>
+			<td><select name="Superbill[status]">
+					<option value="1" {if $superbill->get('status') == 1}SELECTED{/if}>Enabled</option>
+					<option value="0" {if $superbill->get('status') == 0}SELECTED{/if}>Disabled</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="Update" name="submit"></td>
+		</tr>
+	</tbody>
+</table>
+
+</fieldset>

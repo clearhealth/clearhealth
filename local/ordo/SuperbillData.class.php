@@ -16,39 +16,30 @@ class SuperbillData extends ORDataObject {
 	/**#@+
 	 * Fields of table: superbill_data mapped to class members
 	 */
-	var $id			= '';
+	var $superbill_data_id	= '';
 	var $superbill_id	= '';
 	var $code_id		= '';
 	var $status		= '';
 	/**#@-*/
 	var $_table = 'superbill_data';
 	var $_internalName='SuperbillData';
+	var $_key = 'superbill_data_id';
 
 
 	/**
-	 * Setup some basic attributes
-	 * Shouldn't be called directly by the user, user the factory method on ORDataObject
 	 */
-	function SuperbillData($db = null) {
-		parent::ORDataObject($db);	
-		$this->_sequence_name = 'sequences';	
+	function SuperbillData() {
+		parent::ORDataObject();
 	}
 
-	/**
-	 * Called by factory with passed in parameters, you can specify the primary_key of Superbill_data with this
-	 */
-	function setup($id = 0) {
-		if ($id > 0) {
-			$this->set('id',$id);
-			$this->populate();
-		}
-	}
+	function setupBySuperbillCode($superbillId,$codeId) {
+		$s = Enforcetype::int($superbillId);
+		$c = EnforceType::int($codeId);
 
-	/**
-	 * Populate the class from the db
-	 */
-	function populate() {
-		parent::populate('superbill_data_id');
+		$sql = "select * from ".$this->tableName()." where superbill_id = $s and code_id = $c";
+		$this->helper->populateFromQuery($this,$sql);
+		$this->set('superbill_id',$s);
+		$this->set('code_id',$c);
 	}
 
 	/**#@+
@@ -59,33 +50,6 @@ class SuperbillData extends ORDataObject {
 	/**
 	 * Getter for Primary Key: superbill_data_id
 	 */
-	function get_superbill_data_id() {
-		return $this->id;
-	}
-
-	/**
-	 * Setter for Primary Key: superbill_data_id
-	 */
-	function set_superbill_data_id($id)  {
-		$this->id = $id;
-	}
-
 	/**#@-*/
-	
-	function &superbillList() {
-		settype($company_id,'int');
-		$ds =& new Datasource_sql();
-		$sql = array(
-			'cols' 	=> "superbill_id, status",
-			'from' 	=> "$this->_table",
-			'groupby' => 'superbill_id',
-			'orderby' => 'superbill_id'
-			);
-		$cols = array('superbill_id' => 'Superbill ID','status' => 'Status');
-
-		$ds->setup($this->_db,$sql,$cols);
-		return $ds;
-	}
-	
 }
 ?>
