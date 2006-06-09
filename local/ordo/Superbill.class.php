@@ -43,18 +43,18 @@ class Superbill extends ORDataObject {
 		$p = EnforceType::int($practiceId);
 
 		// get the superbills for this practice
-		$sql = "select superbill_id from ".$this->tableName()." where practice_id = $p";
+		$sql = "select superbill_id from ".$this->tableName()." where practice_id = $p and status = 1";
 		$superbills = $this->dbHelper->getCol($sql);
 
 		// get the default superbills
 		if (count($superbills) == 0) {
-			$sql = "select superbill_id from ".$this->tableName()." where practice_id = 0";
+			$sql = "select superbill_id from ".$this->tableName()." where practice_id = 0 and status = 1";
 			$superbills = $this->dbHelper->getCol($sql);
 		}
 
 		// just try to get 1 superbill
 		if (count($superbills) == 0) {
-			$sql = "select superbill_id from ".$this->tableName()." limit 1";
+			$sql = "select superbill_id from ".$this->tableName()."order by status desc limit 1";
 			$superbills = $this->dbHelper->getCol($sql);
 		}
 		return $superbills;
