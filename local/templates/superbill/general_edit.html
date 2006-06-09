@@ -1,6 +1,8 @@
 {head type="js"}
 function removeCode(id,cell) {
 	var row = clniUtil.findParentOfTagName(cell,'tr');
+	var controller = new Controller({dispatchAction: function(result){}});
+	controller.dispatchAction('Superbill','removeCode',{codeId:id,process:'true'});
 	new Effect.Fade(row);
 }
 function addCode() {

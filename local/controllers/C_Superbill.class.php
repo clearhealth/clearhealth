@@ -127,5 +127,22 @@ class C_Superbill extends Controller {
 				break;
 		}
 	}
+
+	function actionRemoveCode() {
+	}
+	function processRemoveCode() {
+		$session =& Celini::SessionInstance();
+		$id = $session->get('Superbill:id');
+		$this->_ordo =& Celini::newOrdo('Superbill',$id);
+		if ($id == 0) {
+			$this->_ordo->persist();
+			$id = $this->_ordo->get('id');
+			$session->set('Superbill:id',$id);
+		}
+
+		$sd =& Celini::newOrdo('SuperbillData',array($id,$_POST['codeId']),'BySuperbillCode');
+		$sd->set('status',0);
+		$sd->persist();
+	}
 }
 ?>
