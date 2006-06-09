@@ -86,6 +86,14 @@ class C_PatientFinder extends Controller {
 			$join_type = "LEFT";
 		}
 		//get the db connection and pass it to the helper functions
+		$userProfile =& Celini::getCurrentUserProfile();
+		if (count($userProfile->getPracticeIdList()) > 0) {
+			$practiceFiltering = '(psn.primary_practice_id = "' . implode("' OR psn.primary_practice_id = '", $userProfile->getPracticeIdList()) . '") AND ';
+		}
+		else {
+			$practiceFiltering = '';
+		}
+
 		$sql = "
 			SELECT 
 				CONCAT(last_name, ', ', first_name, ' ', middle_name) as name,
@@ -99,7 +107,8 @@ class C_PatientFinder extends Controller {
 				person psn
 				$join_type JOIN patient AS pt ON(psn.person_id=pt.person_id)
 				LEFT JOIN person_type AS ptype USING(person_id)
-			WHERE ";
+			WHERE 
+				{$practiceFiltering}";
 
 		$cleanedValue = mysql_real_escape_string($search_string);
 		$sqls = $this->_smart_search($search_string);
@@ -139,6 +148,7 @@ class C_PatientFinder extends Controller {
 				$result_array[$key]['string'] = $result_array[$key]['name'] .'('.$result_array[$key]['person_type'].')';
 			}
 		}
+		
 		return($result_array);
 	}
 
