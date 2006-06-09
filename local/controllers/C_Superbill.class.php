@@ -67,18 +67,6 @@ class C_Superbill extends Controller {
 		}
 	}
 	
-	function actionUpdate($superbill_id) {
-		$ds =& new SuperbillDatasource();
-		$ds->reset();
-		$renderer = new Grid_Renderer_JS();
-		$grid =& new cGrid($ds,$renderer);
-		//$grid->pageSize = 30;
-
-		$this->assign_by_ref('grid',$grid);
-
-		return $this->view->render("update.html");
-	}
-
 	function process($data) {
 		if (!$this->_ordo) {
 			$id = EnforceType::int($data['id']);
