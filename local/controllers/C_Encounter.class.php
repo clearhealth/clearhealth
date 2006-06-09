@@ -65,6 +65,7 @@ class C_Encounter extends Controller {
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id,'c_patient');
 		}
+
 		
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 		//	$encounter_id = $this->get('encounter_id');
@@ -78,6 +79,10 @@ class C_Encounter extends Controller {
 		$encounterDateGrid = new cGrid($encounterDate->encounterDateList($encounter_id));
 		$encounterDateGrid->name = "encounterDateGrid";
 		$encounterDateGrid->registerTemplate('date','<a href="'.Celini::Managerlink('editEncounterDate',$encounter_id).'id={$encounter_date_id}&process=true">{$date}</a>');
+		$session =& Celini::sessionInstance();
+		$session->set('Encounter:practice_id',$practice->get('id'));
+
+
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
 		$encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$encounter_id));

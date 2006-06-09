@@ -39,6 +39,26 @@ class Superbill extends ORDataObject {
 		parent::ORDataObject();
 	}
 
+	function SuperbillsForPractice($practiceId) {
+		$p = EnforceType::int($practiceId);
+
+		// get the superbills for this practice
+		$sql = "select superbill_id from ".$this->tableName()." where practice_id = $p";
+		$superbills = $this->dbHelper->getCol($sql);
+
+		// get the default superbills
+		if (count($superbills) == 0) {
+			$sql = "select superbill_id from ".$this->tableName()." where practice_id = 0";
+			$superbills = $this->dbHelper->getCol($sql);
+		}
+
+		// just try to get 1 superbill
+		if (count($superbills) == 0) {
+			$sql = "select superbill_id from ".$this->tableName()." limit 1";
+			$superbills = $this->dbHelper->getCol($sql);
+		}
+		return $superbills;
+	}
 	
 }
 ?>

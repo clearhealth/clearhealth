@@ -350,6 +350,16 @@ class C_Coding extends Controller {
 		$search_string = mysql_real_escape_string($search_string);
 		$search_type = $_POST['searchtype'];
 		$superbill = intval($_POST['superbill']);
+		$superbills = array();
+
+		if ($superbill) {
+			// get the superbill for the current encounter practice
+			$session =& Celini::sessionInstance();
+			$practiceId = $session->get('Encounter:practice_id',0);
+			
+			$sb =& Celini::newOrdo('Superbill');
+			$superbills = $sb->SuperbillsForPractice($practiceId);
+		}
 		
 		$columnList = array('c.code_id', 'c.code', 'c.code_text');
 		$tableList  = array('codes AS c');
@@ -369,7 +379,7 @@ class C_Coding extends Controller {
 		}
 		
 		if ($superbill > 0) {
-			$filterList[] = 'sbd.superbill_id = ' . $superbill;
+			$filterList[] = 'sbd.superbill_id in ( ' . implode(',',$superbills). ')';
 			$columnList[] = 'sbd.superbill_id';
 			$tableList[]  = 'LEFT JOIN superbill_data AS sbd ON (sbd.code_id = c.code_id)';
 		}
@@ -385,7 +395,6 @@ class C_Coding extends Controller {
 				'ORDER BY ' . implode(', ', $orderList) :
 				null
 			);
-		//print($sql);
 		$result_array = $this->_db->GetAll($sql);
 		
 		for($i=0; $i<count($result_array); $i++){
