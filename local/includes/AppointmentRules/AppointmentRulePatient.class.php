@@ -7,6 +7,7 @@ class AppointmentRulePatient extends AppointmentRule {
 		switch($this->ruleData->patient_type) {
 			case 'gender':
 				if ($patient->get('gender') == $this->ruleData->gender) {
+					$this->applicableMessage = 'Patient gender is '.$patient->value('print_gender');
 					return true;
 				}
 			break;
@@ -17,6 +18,7 @@ class AppointmentRulePatient extends AppointmentRule {
 					$agemax = 999999;
 				}
 				if ($age >= $this->ruleData->age_min && $age <= $agemax) {
+					$this->applicableMessage = "Patient age is >= {$this->ruleData->age_min} and <= $agemax";
 					return true;
 				}
 			break;
