@@ -37,5 +37,16 @@ class ClearhealthAJAX {
 		$coding=&new C_Coding();
 		$this->server->registerClass($coding,'coding',array('cpt_search','icd_search'));
 	}
+
+	function initReport() {
+		$report= Celini::newOrdo('Report');
+		$this->server->registerClass($report,'Report');
+	}
+
+	function initMenuReport(){
+		$GLOBALS['loader']->requireOnce("ordo/MenuReport.class.php");
+		$report=&new MenuReport();
+		$this->server->registerClass($report,'MenuReport');
+	}
 }
 ?>
