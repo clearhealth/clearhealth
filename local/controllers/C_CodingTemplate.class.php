@@ -28,7 +28,7 @@ class C_CodingTemplate extends Controller
 	}
 	
 	function actionAdd() {
-		header('Location: '.Celini::link('Edit','CodingTemplate'));
+		return $this->actionEdit(0);
 	}
 	
 	function actionUpdate($template_id = 0) {
