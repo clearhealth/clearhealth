@@ -43,8 +43,10 @@ class AppointmentRuleDate extends AppointmentRule {
 					}
 					break;
 			}
+			return false;
 		}
-		return false;
+		$this->applicableMessage = false;
+		return true;
 	}
 
 	function getSchedules() {
@@ -179,6 +181,7 @@ class AppointmentRuleDate extends AppointmentRule {
 			$days[] = $this->days[$day];
 		}
 		$days = implode(',',$days);
+		return $days;
 	}
 
 	function isMonthDay($monthDay) {
