@@ -113,6 +113,7 @@ class C_Coding extends Controller {
 
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('scriptaculous');
+		$head->addExternalCss('suggest');
 
 
 
