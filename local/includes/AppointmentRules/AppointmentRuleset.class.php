@@ -40,7 +40,9 @@ class AppointmentRuleset {
 	function getMessage() {
 		$message = '<b>'.$this->errorMessage.'</b><ul>';
 		foreach($this->messages as $m) {
-			$message .= "<li>$m</li>";
+			if ($m != false) {
+				$message .= "<li>$m</li>";
+			}
 		}
 		return $message.'</ul>';
 	}
