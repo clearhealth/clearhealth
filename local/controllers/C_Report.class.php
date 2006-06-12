@@ -55,8 +55,12 @@ class C_Report extends Controller {
 	* Connect a report to the menu all reports
 	*/
 	function actionConnect_edit() {
+	
+		$ajax =& Celini::AJAXInstance();
+		$ajax->stubs[] = 'Report';
+		$ajax->stubs[] = 'MenuReport';
+
 		$this->assign("FORM_ACTION", Celini::link('connect'));
-		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
 		$r = Celini::newOrdo('Report');
 		$r->set_id(663);
@@ -83,9 +87,6 @@ class C_Report extends Controller {
 		return $this->view->render("connect.html");
 	}
 
-	/**
-	* remotly access a report object
-	*/
 	function actionRemote_edit() {
 		$S = & new JPSpan_Server_PostOffice();
 		$S->addHandler(Celini::newOrdo('Report'));
