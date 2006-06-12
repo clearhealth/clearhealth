@@ -95,10 +95,7 @@ class C_AuditLog extends controller {
 		$patient_id = $db->quote($this->get('patient_id', 'c_patient'));
 		
 		// the query array for the datasource
-		$query = array(
-			'union'   => array(),
-			'orderby' => 'log_date DESC',
-		);
+		$query = array();
 		
 		// build a UNION query for all related tables
 		foreach ($this->_table_patient as $table => $patient_col) {
@@ -140,7 +137,8 @@ class C_AuditLog extends controller {
 		// build the datasource from the query
 		$ds =& new Datasource_sql();
 		$ds->setup($db, $query, $labels);
-		$ds->template['log_date'] = "<a href='".Celini::link('view','AuditLog')."id={\$audit_log_id}'>{\$log_date}</a>";
+		$ds->registerTemplate('log_date', "<a href='".Celini::link('view','AuditLog')."id={\$audit_log_id}'>{\$log_date}</a>");
+		$ds->addDefaultOrderRule('log_date', 'DESC');
 		
 		// build the grid from the datasource
 		$grid =& new cGrid($ds);
