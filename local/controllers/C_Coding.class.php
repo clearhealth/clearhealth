@@ -123,11 +123,6 @@ class C_Coding extends Controller {
 		// tie in for calculating how much this encounter will be billed for when closed
 		$this->_calculateEncounterFees($encounter_id);
 
-	//	echo "encounter id = $encounter_id <br>\n";
-	//	echo "codelookup id = $parent_id <br>\n";
-		//if($parent_id == 0)
-		//	$parent_id = $this->parent_id;
-
 		// The foreign id is irrelevant, it is the parent id that should drive out this process.
 		// I need to know where this is called to send it the right data.	
 		$code_data =& ORDataObject::factory('CodingData');
@@ -137,12 +132,7 @@ class C_Coding extends Controller {
 		$parent_code =& ORDataObject::factory('Code', $parent_id);
 	
 		
-	//OldWay
 		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($foreign_id, $parent_id);
-	//NewWay	$parent_codes = $code_data->getParentCodes($encounter_id);
-	///NewWay	foreach $parent_codes as $parent_code
-	//NewWay	$child_codes[$parent_code['code_data_id']] = $code_data->getChildCodes($parent_code);
-//		var_dump($child_codes);
 		$code_list = $code_data->getCodeList($encounter_id);
 		$GLOBALS['currentCodeList'] = $code_list;
 		if(is_array($child_codes) && count($child_codes) > 0){
@@ -155,7 +145,6 @@ class C_Coding extends Controller {
 				}
 			}
 		}
-//		var_dump($code_data);
 		
 		if ($this->superbill == 1) {
 			$this->assign("superbill", 1);
@@ -172,14 +161,8 @@ class C_Coding extends Controller {
 		$this->assign("foreign_id", $foreign_id);
 		
 		$this->assign_by_ref("code_data", $code_data);
-	//	echo "DEBUG C_Coding: code_data <br>\n";
-	//	echo $code_data->printme()."<br>\n";
 		$this->assign_by_ref("child_codes", $child_codes);
-	//	echo "DEBUG C_Coding: child_codes <br>\n";
-	//	var_dump($child_codes); echo "<br>\n";
 		$this->assign_by_ref("code_list", $code_list);
-	//	echo "DEBUG C_Coding: code_list <br>\n";
-	//	printf('<pre>%s</pre>', var_export($code_list , true));
 		return $this->view->render("edit.html");
 	}
 	
