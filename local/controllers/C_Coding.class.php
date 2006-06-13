@@ -388,7 +388,7 @@ class C_Coding extends Controller {
 			$tableList[]  = 'LEFT JOIN superbill_data AS sbd ON (sbd.code_id = c.code_id)';
 		}
 
-		$sql = sprintf('SELECT %s FROM %s WHERE %s %s %s LIMIT 30',
+		$sql = sprintf('SELECT %s FROM %s WHERE sbd.status = 1 and %s %s %s LIMIT 30',
 			implode(', ',    $columnList),
 			implode(' ',     $tableList),
 			implode(' AND ', $filterList),
