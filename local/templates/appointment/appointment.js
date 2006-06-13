@@ -13,12 +13,26 @@ function updateAp(select,id) {
 	if(!document.getElementById(id)) {
 		return;
 	}
+
+	var selects = document.getElementById(id).getElementsByTagName('select');
+
+	var selected = {};
+	var a = 0;
+	for(var i = 0; i < selects.length; i++) {
+		if (!selects[i].disabled) {
+			selected[a++] = selects[i].options[selects[i].selectedIndex].value;
+		}
+	}
+
 	var divs = document.getElementById(id).getElementsByTagName('div');
 	for(var i = 0; i < divs.length; i++) {
 		if (divs[i].className == select.value) {
 			divs[i].style.display = 'block';
 			var selects = divs[i].getElementsByTagName('select');
 			for(var b = 0; b < selects.length; b++) {
+				if (selected[b]) {
+					selects[b].value = selected[b];
+				}
 				selects[b].disabled = false;
 			}
 		}
