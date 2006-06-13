@@ -8,6 +8,8 @@ function removeCode(id,cell) {
 function addCode() {
 	var controller = new Controller({dispatchAction: function(result) { updateTable(result); }});
 	controller.dispatchAction('Superbill','addCode',{codeId:$('codeId').value,process:'true'});
+	$('code').focus();
+	$('code').select();
 }
 
 function switchSearch(input) {
