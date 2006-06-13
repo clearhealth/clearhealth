@@ -353,25 +353,35 @@ class Person extends ORDataObject {
 	 */
 	function getPersonList($type,$blank=true) {
 		//$this->nameHistory->set('person_id',$this->get('person_id'));
+		$sqlPersonTypes = array();
+		$sqlPersonTypeCol = 'person_type';
 		$types = $this->getTypeList();
-		if(is_int($type)) {
-			$id = ' = '.$type;
-		} else {
-			$id = ' = '.(int)array_search($type,$types);
-		}
-		if($type==0) {
-			$id = ' > 1';
-		}
-		$res = $this->_execute("select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
-					inner join person_type ct using(person_id) where person_type $id order by last_name, first_name");
-
-		$ret = ($blank) ? array(" " => " ") : array(); 
 		
-		while(!$res->EOF) {
-			$ret[$res->fields['person_id']] = $res->fields['name'];
-			$res->MoveNext();
+		if(is_int($type)) {
+			$sqlPersonTypes[] = "{$sqlPersonTypeCol} = {$type}";
+		} else {
+			$sqlPersonTypes[] = $sqlPersonTypeCol . ' = '.(int)array_search($type,$types);
 		}
-		return $ret;
+		if ($type == 'Provider') {
+			$em =& Celini::enumManagerInstance();
+			$typeList =& $em->enumList('person_type');
+			for ($typeList->rewind(); $typeList->valid(); $typeList->next()) {
+				$typeValue = $typeList->current();
+				if ($typeValue->extra1 == 1) {
+					$sqlPersonTypes[] = 'person_type = ' . $this->dbHelper->quote($typeValue->key);
+				}
+			}
+		}
+		elseif($type==0) {
+			$sqlPersonTypes[] = $sqlPersonTypeCol . ' > 1';
+		}
+		
+		$sql = "select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
+					inner join person_type ct using(person_id) where " . implode(' OR ', $sqlPersonTypes) . " order by last_name, first_name";
+					
+		$returnArray = ($blank) ? array(" " => " ") : array();
+		$returnArray = array_merge($returnArray, $this->dbHelper->getAssoc($sql));
+		return $returnArray;
 	}
 
 
