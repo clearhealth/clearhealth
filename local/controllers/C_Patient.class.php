@@ -41,6 +41,7 @@ class C_Patient extends Controller {
 	function actionEdit($patient_id = 0) {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('quicksave','quicksave');
+		$head->addExternalCss('suggest');
 		$this->_storeCurrentAction ();
 
 		$this->assign('lockTimestamp',time());
