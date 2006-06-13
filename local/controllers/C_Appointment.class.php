@@ -540,6 +540,14 @@ class C_Appointment extends Controller {
 		$apt->populateArray($aptdata);
 		$alerts = array();
 
+		if($apt->get('id') > 0) {
+			$origapt =& Celini::newORDO('Appointment',$apt->get('id'));
+			if($origapt->get('patient_id') > 0 && $apt->get('patient_id') < 1) {
+				$alerts[] = 'You must provide a patient for an appointment.';
+			}
+		} elseif($apt->get('patient_id') < 1) {
+			$alerts[] = 'You must provide a patient for an appointment.';
+		}
 		// Alert code
 		// First check related for the day.
 		$p =& Celini::newORDO('Patient',$apt->get('patient_id'));
