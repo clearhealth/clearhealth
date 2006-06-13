@@ -9,12 +9,16 @@
 	<table>
 		<tr>
 			<td>
-				<input type="hidden" name="encounterPerson[person_id]" value="{$encounterPerson->get('person_id')}" id="person_id_1">
-				<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="person_name_1" size="20" 
-				autocomplete="off" value="{$encounterPerson->get('person')}">
-				<div id="acDiv_1" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;">
-					<div class="AutoCompleteBackground"></div>
-				</div>
+<input type="hidden" name="encounterPerson[person_id]" value="{$encounterPerson->get('person_id')}" id="person_id_1">
+ <div class="SuggestInput">
+                {clni_img name="stock/stock_person-10.png"}
+                <input type="text" autocomplete="off" size="20" id="person_name_1" value="{$encounterPerson->get('person')}">
+                </div>
+                {literal}
+                <script type="text/javascript">
+                        var ps = new patientSuggest('person_name_1','person_id_1');
+                </script>
+                {/literal}
 			</td>
 			<td><select name="encounterPerson[person_type]">
 					<option>{l}Select Person Type{/l}</option>
@@ -32,23 +36,3 @@
 	</table>
 	{/if}
 </fieldset>
-{literal}
-<script language="javascript" type="text/javascript">
-var C_FindPeople = function find_remoting(searchString) {
-        var h = new c_patientfinder(this.dataHandler,true);
-        h.Sync();
-                                                                                
-        var results = h.find_remoting(searchString,true);
-        return results;
-}
-
-var ac = new AutoComplete(
-	C_FindPeople,
-	'person_name_1',
-	'person_id_1',
-	'acDiv_1',
-	true,
-	325
-);
-</script>
-{/literal}
