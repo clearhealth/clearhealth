@@ -587,6 +587,7 @@ class C_Appointment extends Controller {
 		if(count($alerts) > 0) {
 			$alerts[] = $this->view->render('overridecheckbox.html');
 		}
+		//$alerts[] = 'Debug Debug Debug';
 		return $alerts;
 	}
 
