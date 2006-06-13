@@ -380,13 +380,8 @@ class Document extends ORDataObject{
 	 * Get an associtive array of possible groups
 	 */
 	function getGroupList() {
-		$enumTable = $this->enumTable;
-		$this->enumTable = false;
-
-		$list = array_flip($this->_load_enum('dm_group_list',false));
-
-		$this->enumTable = $enumTable;
-		return $list;
+		$em =& Celini::enumManagerInstance();
+		return $em->enumArray('dm_group_list');
 	}
 
 } // end of Document

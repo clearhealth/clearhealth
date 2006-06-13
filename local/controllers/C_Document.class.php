@@ -1,8 +1,8 @@
 <?php
 
-$loader->requireOnce('/local/ordo/Document.class.php');
-$loader->requireOnce('/local/includes/CategoryTree.class.php');
-$loader->requireOnce('/lib/TreeMenu.php');
+$loader->requireOnce('ordo/Document.class.php');
+$loader->requireOnce('includes/CategoryTree.class.php');
+$loader->requireOnce('lib/TreeMenu.php');
 $loader->requireOnce('local/ordo/Note.class.php');
 
 class C_Document extends Controller {
