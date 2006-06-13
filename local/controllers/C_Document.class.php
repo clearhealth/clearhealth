@@ -195,7 +195,7 @@ class C_Document extends Controller {
 		if ($_POST['process'] != "true")
 			return;
 			
-		$n = new Note();
+		$n =& Celini::newOrdo('Note');
 		$n->populate_array($_POST);
 		$n->persist();
 		
