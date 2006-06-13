@@ -31,7 +31,8 @@ class AppointmentRuleset {
 			}
 			else {
 				//var_dump('Not Applicable: '.$rule->label);
-				return true;
+				//$this->messages[] = 'Not Applicable: '.$rule->label; // enable for debug
+				return true; // disable for debug
 			}
 		}
 		return $status;

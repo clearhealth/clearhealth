@@ -16,6 +16,7 @@ class AppointmentRuleManager {
 				$status = false;
 				$this->messages[] = $ruleset->getMessage();
 			}
+			//$this->messages[] = $ruleset->getMessage(); // enable for debug
 		}
 
 		return $status;
