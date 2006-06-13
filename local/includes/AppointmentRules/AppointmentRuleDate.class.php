@@ -229,13 +229,16 @@ class AppointmentRuleDate extends AppointmentRule {
 		if (!$schedules) {
 			return false;
 		}
+
 		
 		$providerId = $this->appointment->get('provider_id');
 		$length = $this->ruleData->lunch_time_block_length * 60;
 		$start = strtotime($this->appointment->get('start'));
+		$end = strtotime($this->appointment->get('end'));
 		if (count($schedules[$providerId]) > 1) {
 			$schedule = array_shift($schedules[$providerId]);
-			if ($start >= ($schedule['end'] - $length)) {
+			$schedule2 = array_shift($schedules[$providerId]);
+			if ($start >= ($schedule['end'] - $length) && $end <= $schedule2['start']) {
 				return true;
 			}
 		}
