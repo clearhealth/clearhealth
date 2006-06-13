@@ -14,6 +14,9 @@ class C_Coding extends Controller {
 	function C_Coding($template_mod = "general") {
 		parent::Controller();
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
+
+		$session =& Celini::SessionInstance();
+		$this->superbill = $session->get('Superbill:id');
 	}
 
 	function _CalculateEncounterFees($encounterId) {
