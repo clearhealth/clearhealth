@@ -34,6 +34,22 @@ class Schedule extends CalendarSchedule{
 		parent::ORDataObject();
 		}
 	
+	function setupByProvider($providerId) {
+		$tableName = $this->tableName();
+		$qProviderId = $this->dbHelper->quote($providerId);
+		$sql = "
+			SELECT 
+				*
+			FROM
+				{$tableName} AS s
+				INNER JOIN relationship AS provider ON(
+					provider.parent_type = 'Provider' AND
+					provider.parent_id = {$qProviderId} AND
+					provider.child_id = s.schedule_id
+				)";
+		$this->helper->populateFromQuery($this, $sql);
+	}
+		
 	function get_events() {
 		$events=$this->getChildren('ScheduleEvent');
 		return $events;	

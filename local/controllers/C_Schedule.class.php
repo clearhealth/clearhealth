@@ -143,7 +143,7 @@ class C_Schedule extends Controller
 	function createSchedule($wizard) {
 
 		// create a new schedule
-		$schedule =& Celini::newORDO('Schedule');
+		$schedule =& Celini::newORDO('Schedule', $wizard->get('provider_id'), 'ByProvider');
 
 		$schedule->set('title',$wizard->get('name'));
 		$schedule->set('provider_id',$wizard->get('provider_id'));
