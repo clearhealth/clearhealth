@@ -248,7 +248,7 @@ class C_Document extends Controller {
 	function view_action($project_id="",$doc_id) {
 		
 		$d = new Document($doc_id);	
-		$n = new Note();
+		$n = Celini::newOrdo('Note');
 		
 		$notes = $n->notes_factory($doc_id);
 		
