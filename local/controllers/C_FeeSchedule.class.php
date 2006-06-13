@@ -109,7 +109,7 @@ class C_FeeSchedule extends Controller {
 	}
 
 	function setdefault_action($fee_schedule_id = 0) {
-		return $this->edit_action($fee_schedule_id);
+		return $this->actionEdit($fee_schedule_id);
 	}
 
 	function setdefault_action_process($fee_schedule_id) {
