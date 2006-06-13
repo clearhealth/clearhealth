@@ -55,7 +55,7 @@ class AppointmentRuleDate extends AppointmentRule {
 		$cd = new ClearhealthCalendarData();
 		$schedules = $cd->scheduleByProviderDay($providerId,$this->appointment->get('start'));
 
-		if (count($schedules[$providerId]) == 0) {
+		if (!isset($schedules[$providerId]) || count($schedules[$providerId]) == 0) {
 			// if no schedule were not applicable
 			return false;
 		}
