@@ -22,9 +22,9 @@ class AppointmentRuleManager {
 	}
 
 	function populateRules($appointment) {
-		$pid = $appointment->get('provider_id');
-		$cid = $appointment->get('reason');
-		$rid = $appointment->get('room_id');
+		$pid = EnforceType::int($appointment->get('provider_id'));
+		$cid = EnforceType::int($appointment->get('reason'));
+		$rid = EnforceType::int($appointment->get('room_id'));
 
 		$sql = "select * from appointment_ruleset where 
 				(provider_id = 0 or provider_id = $pid) and (procedure_id = 0 or procedure_id = $cid) and (room_id = 0 or room_id = $rid)";
