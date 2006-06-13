@@ -158,11 +158,16 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 							<tr>
 								<td><label>{l}Search{/l}:</label></td>
 								<td>
-									<input type="text" onkeypress="return captureEnter(this, event)" class="input_text" id="subscriber_name" size="20" autocomplete="off" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}>
+<div class="SuggestInput">
+                {clni_img name="stock/stock_person-10.png"}
+                <input type="text" autocomplete="off" size="20" id="subscriber_name" {if $subscriberIsAPatient}value="{$subscriber->get('search_name')}"{/if}>
+                </div>
+                {literal}
+                <script type="text/javascript">
+                        var ps = new patientSuggest('subscriber_name','subscriber_id');
+                </script>
+                {/literal}
 						<a id="editSubscriberLink" href="#" onclick="editSubscriber()" {if $subscriberIsAPatient}style="visibility:hidden"{/if}>Edit Subscriber</a>
-									<br>
-<div id="acDiv" style="border: 1px solid black; background-color: white; z-index: 20; visibility: hidden;"><div 
-					class="AutoCompleteBackground"></div></div>
 								</td>
 							</tr>
 						</table>
@@ -242,12 +247,4 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
-var ac = new AutoComplete(
-	C_PatientFinder,
-	'subscriber_name',
-	'subscriber_id',
-	'acDiv',
-	true,
-	325
-);
 </script>
