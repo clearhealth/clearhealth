@@ -379,8 +379,14 @@ class Person extends ORDataObject {
 		$sql = "select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
 					inner join person_type ct using(person_id) where " . implode(' OR ', $sqlPersonTypes) . " order by last_name, first_name";
 					
-		$returnArray = ($blank) ? array(" " => " ") : array();
-		$returnArray = array_merge($returnArray, $this->dbHelper->getAssoc($sql));
+		$returnArray = $this->dbHelper->getAssoc($sql);
+		if ($blank) {
+			$tmp= array(''=>'');
+			foreach($returnArray as $key => $val) {
+				$tmp[$key] = $val;
+			}
+			$returnArray = $tmp;
+		}
 		return $returnArray;
 	}
 
