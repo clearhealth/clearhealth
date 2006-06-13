@@ -104,7 +104,7 @@ class C_Superbill extends Controller {
 		$sd->set('status',1);
 		$sd->persist();
 
-		$code =& Celini::newOrdo('code',$_POST['codeId']);
+		$code =& Celini::newOrdo('Code',$_POST['codeId']);
 		switch($code->get('code_type')) {
 			case 2: 
 				$this->type = 'diagnosis';
