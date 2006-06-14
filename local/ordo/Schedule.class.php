@@ -175,9 +175,24 @@ class Schedule extends CalendarSchedule{
 		$ocs=$rec->createEvents($rp,'ScheduleEvent');
 		foreach($ocs as $ocid){
 			if($eg->get('id') > 0) {
-				$sql = "INSERT INTO relationship (`parent_type`,`parent_id`,`child_type`,`child_id`) VALUES ('EventGroup','".$eg->get('id')."','ScheduleEvent',".$this->dbHelper->quote($ocid).")";
+				$qEventGroupId = $this->dbHelper->quote($eg->get('id'));
+				$qEventGroupTitle = $this->dbHelper->quote($eg->get('title'));
+				$qOccuranceId = $this->dbHelper->quote($ocid);
+				
+				$sql = "
+					INSERT INTO relationship 
+						(`parent_type`,`parent_id`,`child_type`,`child_id`)
+					VALUES 
+						('EventGroup', {$qEventGroupId}, 'ScheduleEvent', {$qOccuranceId})";
 				$this->dbHelper->execute($sql);
-				$sql = "UPDATE event SET `title`=".$this->dbHelper->quote($eg->get('title'))." WHERE event_id=".$this->dbHelper->quote($ocid);
+				
+				$sql = "
+					UPDATE 
+						event
+					SET
+						`title`= {$qEventGroupTitle}
+					WHERE 
+						event_id = {$qOccurenceId} LIMIT 1";
 				$this->dbHelper->execute($sql);
 			/*
 				$oc =& Celini::newORDO('ScheduleEvent',$ocid);
