@@ -343,7 +343,8 @@ class ClearhealthCalendarData {
 			$res->MoveNext();
 		}
 		
-		$sql = "SELECT 
+		$sql = "
+			SELECT 
 				event.event_id,
 				event.title,
 				UNIX_TIMESTAMP(event.start) AS start,
@@ -353,9 +354,21 @@ class ClearhealthCalendarData {
 				r.name AS roomname
 			FROM 
 				`event` AS event,provider
-				INNER JOIN relationship AS EP ON EP.parent_type = 'Provider' AND EP.child_type = 'ScheduleEvent' AND EP.child_id = event.event_id
-				INNER JOIN relationship AS ES ON ES.parent_type = 'Schedule' AND ES.child_type = 'ScheduleEvent' AND ES.child_id = event.event_id
-				LEFT JOIN relationship AS ER ON ER.child_type='ScheduleEvent' AND ER.parent_type='Room' AND ER.child_id=event.event_id
+				INNER JOIN relationship AS EP ON(
+					EP.parent_type = 'Provider' AND
+					EP.child_type = 'ScheduleEvent' 
+					AND EP.child_id = event.event_id
+				)
+				INNER JOIN relationship AS ES ON(
+					ES.parent_type = 'Schedule' AND
+					ES.child_type = 'ScheduleEvent' AND 
+					ES.child_id = event.event_id
+				)
+				LEFT JOIN relationship AS ER ON(
+					ER.child_type='ScheduleEvent' AND 
+					ER.parent_type='Room' AND
+					ER.child_id=event.event_id
+				)
 				LEFT JOIN rooms r ON r.id=ER.parent_id
 				LEFT JOIN user u ON provider.person_id = u.person_id
 				LEFT JOIN appointment appt on event.event_id = appt.event_id
