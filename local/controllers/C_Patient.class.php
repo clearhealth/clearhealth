@@ -352,6 +352,7 @@ class C_Patient extends Controller {
 			$lines[] = $res->fields;
 			$res->MoveNext();
 		}
+		$p =& Celini::newOrdo('Patient',$patientId);
 		
 		$ppplan =& Celini::newORDO('PatientPaymentPlan');
 		if($includeDependants == true) {
