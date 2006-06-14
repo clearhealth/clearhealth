@@ -177,13 +177,13 @@ class Schedule extends CalendarSchedule{
 			if($eg->get('id') > 0) {
 				$qEventGroupId = $this->dbHelper->quote($eg->get('id'));
 				$qEventGroupTitle = $this->dbHelper->quote($eg->get('title'));
-				$qOccuranceId = $this->dbHelper->quote($ocid);
+				$qOccurenceId = $this->dbHelper->quote($ocid);
 				
 				$sql = "
 					INSERT INTO relationship 
 						(`parent_type`,`parent_id`,`child_type`,`child_id`)
 					VALUES 
-						('EventGroup', {$qEventGroupId}, 'ScheduleEvent', {$qOccuranceId})";
+						('EventGroup', {$qEventGroupId}, 'ScheduleEvent', {$qOccurenceId})";
 				$this->dbHelper->execute($sql);
 				
 				$sql = "
