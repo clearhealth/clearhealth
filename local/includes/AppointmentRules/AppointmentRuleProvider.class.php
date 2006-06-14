@@ -31,7 +31,7 @@ class AppointmentRuleProvider extends AppointmentRule {
 	}
 
 	function excludeCheck() {
-		if ($this->ruleData->rule_type == 'include') {
+		if (!isset($this->ruleData->rule_type) || $this->ruleData->rule_type == 'include') {
 			return false;
 		}
 		switch($this->ruleData->provider_type) {
