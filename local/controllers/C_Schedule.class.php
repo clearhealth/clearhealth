@@ -205,15 +205,31 @@ class C_Schedule extends Controller
 //				var_dump('Pre ScheduleEvent Loop: '.memory());
 				$eg =& $rec->getParent('EventGroup');
 				$eventids = $rec->getChildrenIds('ScheduleEvent');
+				$db =& $eg->dbHelper;
 				foreach($eventids as $id) {
 					$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
 					$eg->dbHelper->execute($sql);
-					$sql = "INSERT INTO relationship (`child_type`,`child_id`,`parent_type`,`parent_id`) 
-						VALUES ('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$schedule->name()."','".$schedule->get('id')."'),
-							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$provider->name()."','".$provider->get('id')."'),
-							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$practice->name()."','".$practice->get('id')."'),
-							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$room->name()."','".$room->get('id')."'),
-							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$eg->name()."','".$eg->get('id')."')";
+					$qScheduleEventId = $db->quote($id);
+					$qScheduleName = $db->quote($schedule->name());
+					$qScheduleId = $db->quote($schedule->get('id'));
+					$qProviderName = $db->quote($provider->name());
+					$qProviderId = $db->quote($provider->get('id'));
+					$qPracticeName = $db->quote($practice->name());
+					$qPracticeId = $db->quote($practice->get('id'));
+					$qRoomName = $db->quote($room->name());
+					$qRoomId = $db->quote($room->get('id'));
+					$qEventGroupName = $db->quote($eg->name());
+					$qEventGroupId = $db->quote($eg->get('id'));
+					
+					$sql = "
+						INSERT INTO relationship 
+							(`child_type`,`child_id`,`parent_type`,`parent_id`) 
+						VALUES
+							('ScheduleEvent', {$qScheduleEventId}, {$qScheduleName}, {$qScheduleId}),
+							('ScheduleEvent', {$qScheduleEventId}, {$qProviderName}, {$qProviderId}),
+							('ScheduleEvent', {$qScheduleEventId}, {$qPracticeName}, {$qPracticeId}),
+							('ScheduleEvent', {$qScheduleEventId}, {$qRoomName}, {$qRoomId}),
+							('ScheduleEvent', {$qScheduleEventId}, {$qEventGroupName}, {$qEventGroupId})";
 					$eg->dbHelper->execute($sql);
 				}
 				/*
