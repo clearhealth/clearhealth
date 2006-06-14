@@ -317,8 +317,7 @@ class C_Schedule extends Controller
 		$this->GET->getTyped('recurrence_id', 'int'));
 		$this->view->assign_by_ref('recur',$recurrence);
 		
-		$event =& Celini::newORDO('ScheduleEvent',
-		$this->GET->getTyped('event_id', 'int'));
+		$event =& Celini::newORDO('ScheduleEvent', $this->GET->getTyped('event_id', 'int'));
 		$this->view->assign_by_ref('event',$event);
 		
 		$eventGroup =& Celini::newORDO('EventGroup', $this->getDefault('event_group_id', 0));
