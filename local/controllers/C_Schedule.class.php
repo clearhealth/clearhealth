@@ -202,9 +202,21 @@ class C_Schedule extends Controller
 			$rec =& $schedule->createRecurrence($recurrence,$pattern);
 //			var_dump('Post createRecurrence: '.memory());
 			if($rec !== false) {
-				//var_dump('Pre ScheduleEvent Loop: '.memory());
+//				var_dump('Pre ScheduleEvent Loop: '.memory());
 				$eg =& $rec->getParent('EventGroup');
-				$events =& $rec->getChildren('ScheduleEvent');
+				$eventids = $rec->getChildrenIds('ScheduleEvent');
+				foreach($eventids as $id) {
+					$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
+					$eg->dbHelper->execute($sql);
+					$sql = "INSERT INTO relationship (`child_type`,`child_id`,`parent_type`,`parent_id`) 
+						VALUES ('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$schedule->name()."','".$schedule->get('id')."'),
+							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$provider->name()."','".$provider->get('id')."'),
+							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$practice->name()."','".$practice->get('id')."'),
+							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$room->name()."','".$room->get('id')."'),
+							('ScheduleEvent',".$eg->dbHelper->quote($id).",'".$eg->name()."','".$eg->get('id')."')";
+					$eg->dbHelper->execute($sql);
+				}
+				/*
 				for($events->rewind(); $events->valid(); $events->next()) {
 					$event =& $events->current();
 					$event->set('title',$eg->get('title'));
@@ -216,6 +228,7 @@ class C_Schedule extends Controller
 					//$event->destroy();
 					//unset($event);
 				}
+				*/
 //				var_dump('Post ScheduleEvent Loop: '.memory());
 			}
 		}

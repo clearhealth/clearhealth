@@ -159,6 +159,8 @@ class Schedule extends CalendarSchedule{
 	 * @return ORDataObject|false
 	*/
 	function &createRecurrence($recdata,$rpdata){
+		$recdata['start_date']=date('Y-m-d',strtotime($recdata['start_date']));
+		$recdata['end_date']=date('Y-m-d',strtotime($recdata['end_date']));
 		$rec=&Celini::newORDO('Recurrence');
 		$rec->populate_array($recdata);
 		$rec->persist();
@@ -168,16 +170,22 @@ class Schedule extends CalendarSchedule{
 			$rec->drop();
 			$return = false;
 			return $return;
-	}
+		}
 		$eg =& $rec->getParent('EventGroup');
 		$ocs=$rec->createEvents($rp,'ScheduleEvent');
 		foreach($ocs as $ocid){
 			if($eg->get('id') > 0) {
+				$sql = "INSERT INTO relationship (`parent_type`,`parent_id`,`child_type`,`child_id`) VALUES ('EventGroup','".$eg->get('id')."','ScheduleEvent',".$this->dbHelper->quote($ocid).")";
+				$this->dbHelper->execute($sql);
+				$sql = "UPDATE event SET `title`=".$this->dbHelper->quote($eg->get('title'))." WHERE event_id=".$this->dbHelper->quote($ocid);
+				$this->dbHelper->execute($sql);
+			/*
 				$oc =& Celini::newORDO('ScheduleEvent',$ocid);
 				$eg->setChild($oc);
 				$oc->set('title',$eg->get('title'));
 				$oc->persist();
 				$this->setChild($oc);
+			*/
 			}
 		}
 		return $rec;
