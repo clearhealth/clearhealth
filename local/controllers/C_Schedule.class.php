@@ -151,7 +151,8 @@ class C_Schedule extends Controller
 		$schedule->set('schedule_code',$wizard->get('schedule_type'));
 
 		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
-		$building =& Celini::newOrdo('Building',$room->get('building_id'));
+		$building =& Celini::newORDO('Building',$room->get('building_id'));
+		$provider =& Celini::newORDO('Provider',$wizard->get('provider_id'));
 		$schedule->set('practice_id',$building->get('practice_id'));
 
 		$schedule->persist();
@@ -162,9 +163,21 @@ class C_Schedule extends Controller
 		if (empty($egTitle)) {
 			$egTitle = 'General Hours';
 		}
+		
 		$eventgroup =& Celini::newORDO('EventGroup');
-		$eventgroup->set('title',$egTitle);
-		$eventgroup->persist();
+		$finder =& $eventgroup->relationshipFinder();
+		$finder->addParent($provider);
+		$finder->addParent($room);
+		$ids=$finder->findIds();
+		if(count($ids) > 0) {
+			$eventgroup->set('id',$ids[0]);
+			$eventgroup->populate();
+		} else {
+			$eventgroup->set('title',$egTitle);
+			$eventgroup->persist();
+			$eventgroup->setParent($provider);
+			$eventgroup->setParent($room);
+		}
 		$schedule->setChild($eventgroup);
 		$eventGroupId = $eventgroup->get('id');
 
@@ -181,9 +194,7 @@ class C_Schedule extends Controller
 			$times[] = array('start'=>$wizard->get('time_start'),'end'=>$wizard->get('time_end'));
 		}
 
-		$provider =& Celini::newOrdo('Provider',$schedule->get('provider_id'));
 		$practice =& Celini::newOrdo('Practice',$schedule->get('practice_id'));
-		$room =& Celini::newOrdo('Room',$schedule->get('room_id'));
 
 		// create recurrences
 		foreach($times as $time) {
@@ -232,19 +243,6 @@ class C_Schedule extends Controller
 							('ScheduleEvent', {$qScheduleEventId}, {$qEventGroupName}, {$qEventGroupId})";
 					$eg->dbHelper->execute($sql);
 				}
-				/*
-				for($events->rewind(); $events->valid(); $events->next()) {
-					$event =& $events->current();
-					$event->set('title',$eg->get('title'));
-					$event->setParent($schedule);
-					$event->setParent($provider);
-					$event->setParent($practice);
-					$event->setParent($room);
-					$event->setParent($eg);
-					//$event->destroy();
-					//unset($event);
-				}
-				*/
 //				var_dump('Post ScheduleEvent Loop: '.memory());
 			}
 		}
