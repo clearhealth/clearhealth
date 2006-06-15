@@ -330,7 +330,8 @@ class ClearhealthCalendarData {
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
-		return $this->_providerSchedules($where);
+		$return = $this->_providerSchedules($where);
+		return $return;
 	}
 
 	function &_providerSchedules($where) {
