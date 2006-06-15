@@ -7,9 +7,6 @@ $GLOBALS['loader']->requireOnce("ordo/CalendarSchedule.class.php");
  * 
  * Relationships:
  * Optional:
- * 	Parent: Practice
- * 	Parent: Provider
- * 	Parent: Room
  * 	Children:	Event
  */
  
@@ -20,6 +17,7 @@ class Schedule extends CalendarSchedule{
 	 *	@var schedule_code
 	 */
 	var $schedule_code = '';
+	var $provider_id = '';
 	
 	var $_internalName='Schedule';
 	var $_foreignKeyList = array('practice_id' => 'Practice',
@@ -32,7 +30,7 @@ class Schedule extends CalendarSchedule{
 	function Schedule($id = "")	{
 		//call the parent constructor so we have a _db to work with
 		parent::ORDataObject();
-		}
+	}
 	
 	function setupByProvider($providerId) {
 		$tableName = $this->tableName();
@@ -42,19 +40,17 @@ class Schedule extends CalendarSchedule{
 				*
 			FROM
 				{$tableName} AS s
-				INNER JOIN relationship AS provider ON(
-					provider.parent_type = 'Provider' AND
-					provider.parent_id = {$qProviderId} AND
-					provider.child_id = s.schedule_id
-				)";
+			WHERE
+				s.provider_id = {$qProviderId}
+			";
 		$this->helper->populateFromQuery($this, $sql);
 	}
-		
+
 	function get_events() {
 		$events=$this->getChildren('ScheduleEvent');
 		return $events;	
-		}
-		
+	}
+
 	function get_delete_message() {
 		$string = "Schedule Name: " . $this->get('schedule_code') . "-" . $this->get('name') . "\n";
 		$evs = $this->get_events();
@@ -76,7 +72,7 @@ class Schedule extends CalendarSchedule{
 
 	function get_name(){
 		return $this->get('title');
-		}
+	}
 	
 	function get_practice_id(){
 		$practice =& $this->getParent('Practice');
@@ -100,7 +96,7 @@ class Schedule extends CalendarSchedule{
 			$this->persist();
 		$room =& Celini::newORDO('Room',$id);
 		$this->setParent($room);
-		}
+	}
 
 	function set_provider_id($id){
 		if($this->get('id') < 1) {
@@ -135,8 +131,11 @@ class Schedule extends CalendarSchedule{
 
 	function fromUserId($user_id) {
 		$user =& Celini::newORDO('User',$user_id);
-		$children = $user->getChildren('Schedule');
-		$children = $children->toArray();
+		$person_id = $user->get('person_id');
+		$finder =& new ORDOFinder('Schedule','provider_id='.$this->dbHelper->quote($person_id));
+		$children = $finder->find();
+//		$children = $user->getChildren('Schedule');
+//		$children = $children->toArray();
 		return $children;
 	}
 	
@@ -149,7 +148,7 @@ class Schedule extends CalendarSchedule{
 		$recurs = $this->getChildren('Recurrence');
 		$recurs = $recurs->toArray();
 		return $recurs;
-		}
+	}
 
 	/**
 	 * Creates the Recurrence, RecurrencePattern, and Events
@@ -194,13 +193,6 @@ class Schedule extends CalendarSchedule{
 					WHERE 
 						event_id = {$qOccurenceId} LIMIT 1";
 				$this->dbHelper->execute($sql);
-			/*
-				$oc =& Celini::newORDO('ScheduleEvent',$ocid);
-				$eg->setChild($oc);
-				$oc->set('title',$eg->get('title'));
-				$oc->persist();
-				$this->setChild($oc);
-			*/
 			}
 		}
 		return $rec;
@@ -271,6 +263,35 @@ class Schedule extends CalendarSchedule{
 		}
 		return false;
 	}
+
+	function get_future_events($eventType) {
+		$this->getEvents(false,$eventType,"DATE_FORMAT(event.start,'%Y-%m-%d' >= '".date('Y-m-d')."'");
+		return $finder->find();
+	}
+
+	function getEvents($returnArray = false,$eventType='CalendarEvent',$criteria=false){
+		if($criteria !== false) {
+			$criteria .= ' AND ';
+		} else {
+			$criteria = '';
+		}
+		$criteria .= "eg.schedule_id=".$this->dbHelper->quote($this->get('id'));
+		$joins = 'INNER JOIN schedule_event se ON se.event_id = event.event_id INNER JOIN event_group eg ON se.event_group_id = eg.event_group_id';
+		$finder =& new ORDOFinder($eventType,$criteria,'',null,$joins);
+		$events =& $finder->find();
+		if($returnArray == true) {
+			$events = $events->toArray();
+		}
+		return $events;
+	}
+	
+	function &getChildren_EventGroup() {
+		$db =& $this->dbHelper;
+		$finder =& new ORDOFinder('EventGroup','event_group.schedule_id='.$db->quote($this->get('id')));
+		$events = $finder->find();
+		return $events;
+	}
+
 
 } // end of Class
 

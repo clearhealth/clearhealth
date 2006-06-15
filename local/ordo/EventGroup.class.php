@@ -4,17 +4,19 @@
  * 
  * Relationships:
  * 	Parent:		Provider
- * 	Parent:		Schedule
  * 	Children: 	Event
  */
 
 class EventGroup extends ORDataObject {
 	var $event_group_id = '';
 	var $title = '';
+	var $room_id = '';
+	var $schedule_id = '';
 	
 	var $_key = 'event_group_id';
 	var $_table = 'event_group';
 	var $_internalName='EventGroup';
+	var $_schedule = null;
 	
 	/**
 	 * Constructor sets all attributes to their default value
@@ -25,20 +27,27 @@ class EventGroup extends ORDataObject {
 		parent::ORDataObject();
 	}
 	
+	function populateSchedule() {
+		if(is_null($this->_schedule)) {
+			$this->_schedule =& Celini::newORDO('Schedule',$this->get('schedule_id'));
+		}
+	}
+
 	/**
 	 * Returns array or collection of events
 	 *
 	 * @return ORDOCollection|array
 	 */
-	function &getEvents($returnArray = false,$ordoName = 'CalendarEvent'){
-		$event =& Celini::newORDO($ordoName);
-		$finder =& $this->getChildrenFinder($event);
-		$finder->setOrderBy('event.start ASC');
-		$events =& $finder->find();
-		if($returnArray == true) {
-			$events = $events->toArray();
-		}
-		return $events;
+	function getEvents($returnArray = false,$ordoName = 'CalendarEvent',$criteria = '1'){
+		$this->populateSchedule();
+		$criteria .= ' AND eg.event_group_id='.$this->dbHelper->quote($this->get('id'));
+		$joins = 'INNER JOIN schedule_event se ON se.event_id=event.event_id INNER JOIN event_group eg ON eg.event_group_id=se.event_group_id';
+		return $this->_schedule->getEvents($returnArray,$ordoName,$criteria);
+	}
+	
+	function getFutureEvents($returnArray=false,$ordoName = 'CalendarEvent') {
+		$out =& $this->getEvents($returnArray,$ordoName,"DATE_FORMAT(event.start,'%Y-%m-%d') >= DATE_FORMAT(NOW(),'%Y-%m-%d')");
+		return $out;
 	}
 
 	/**

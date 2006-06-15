@@ -147,38 +147,38 @@ class C_Schedule extends Controller
 
 		$schedule->set('title',$wizard->get('name'));
 		$schedule->set('provider_id',$wizard->get('provider_id'));
-		$schedule->set('room_id',$wizard->get('room_id'));
 		$schedule->set('schedule_code',$wizard->get('schedule_type'));
 
 		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
-		$building =& Celini::newORDO('Building',$room->get('building_id'));
 		$provider =& Celini::newORDO('Provider',$wizard->get('provider_id'));
-		$schedule->set('practice_id',$building->get('practice_id'));
 
 		$schedule->persist();
 
-		// create a new event group 
-		// TODO: Need to have code to keep from making a new group if the title already exists
 		$egTitle = $wizard->get('group');
 		if (empty($egTitle)) {
 			$egTitle = 'General Hours';
 		}
 		
-		$eventgroup =& Celini::newORDO('EventGroup');
-		$finder =& $eventgroup->relationshipFinder();
-		$finder->addParent($provider);
-		$finder->addParent($room);
-		$ids=$finder->findIds();
-		if(count($ids) > 0) {
-			$eventgroup->set('id',$ids[0]);
-			$eventgroup->populate();
+		$db =& $schedule->dbHelper;
+		$sql = "
+			SELECT
+				event_group_id
+			FROM
+				event_group eg
+			WHERE
+				eg.schedule_id=".$db->quote($schedule->get('id'))."
+				AND eg.room_id=".$db->quote($room->get('id'));
+		$res = $db->execute($sql);
+		if($res && !$res->EOF) {
+			$eventgroup =& Celini::newORDO('EventGroup',$res->fields['event_group_id']);
 		} else {
+			$eventgroup =& Celini::newORDO('EventGroup');
 			$eventgroup->set('title',$egTitle);
+			$eventgroup->set('room_id',$room->get('id'));
+			$eventgroup->set('schedule_id',$schedule->get('id'));
 			$eventgroup->persist();
-			$eventgroup->setParent($provider);
-			$eventgroup->setParent($room);
 		}
-		$schedule->setChild($eventgroup);
+		
 		$eventGroupId = $eventgroup->get('id');
 
 		// load up times to create occurences for
@@ -219,29 +219,14 @@ class C_Schedule extends Controller
 				$db =& $eg->dbHelper;
 				foreach($eventids as $id) {
 					$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
-					$eg->dbHelper->execute($sql);
+					$db->execute($sql);
 					$qScheduleEventId = $db->quote($id);
-					$qScheduleName = $db->quote($schedule->name());
-					$qScheduleId = $db->quote($schedule->get('id'));
-					$qProviderName = $db->quote($provider->name());
-					$qProviderId = $db->quote($provider->get('id'));
-					$qPracticeName = $db->quote($practice->name());
-					$qPracticeId = $db->quote($practice->get('id'));
-					$qRoomName = $db->quote($room->name());
-					$qRoomId = $db->quote($room->get('id'));
-					$qEventGroupName = $db->quote($eg->name());
 					$qEventGroupId = $db->quote($eg->get('id'));
-					
 					$sql = "
-						INSERT INTO relationship 
-							(`child_type`,`child_id`,`parent_type`,`parent_id`) 
-						VALUES
-							('ScheduleEvent', {$qScheduleEventId}, {$qScheduleName}, {$qScheduleId}),
-							('ScheduleEvent', {$qScheduleEventId}, {$qProviderName}, {$qProviderId}),
-							('ScheduleEvent', {$qScheduleEventId}, {$qPracticeName}, {$qPracticeId}),
-							('ScheduleEvent', {$qScheduleEventId}, {$qRoomName}, {$qRoomId}),
-							('ScheduleEvent', {$qScheduleEventId}, {$qEventGroupName}, {$qEventGroupId})";
-					$eg->dbHelper->execute($sql);
+						INSERT INTO schedule_event
+							(`event_id`,`event_group_id`)
+						VALUES ({$qScheduleEventId},{$qEventGroupId})";
+					$db->execute($sql);
 				}
 //				var_dump('Post ScheduleEvent Loop: '.memory());
 			}
@@ -280,9 +265,11 @@ class C_Schedule extends Controller
 	/**
 	 * Handle editing an {@link Schedule}
 	 */
-	function actionEdit() {
+	function actionEdit($schedule_id=false) {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
-		if(is_null($this->schedule)){
+		if($schedule_id !== false) {
+			$schedule =& Celini::newORDO('Schedule', $schedule_id);
+		} elseif(is_null($this->schedule)){
 			$schedule =& Celini::newORDO('Schedule', $this->GET->getTyped('schedule_id', 'int'));
 		} else {
 			$schedule =& $this->schedule;
@@ -299,22 +286,7 @@ class C_Schedule extends Controller
 		$this->view->assign_by_ref('room',$room);
 
 		$events = array();
-		if($schedule->get('id') > 0) {
-			$events = $schedule->getChildren('ScheduleEvent');
-			$events = $events->toArray();
-		}
-		$this->view->assign_by_ref('events',$events);
-		
-		$room =& Celini::newORDO('Room');
-		$pa = $practice->practices_factory();
-		$this->view->assign("rooms_practice_array",$room->rooms_practice_factory($pa,false));
-		$em =& Celini::enumManagerInstance();
-		$this->view->assign_by_ref('em',$em);
-		
-		$recurrence =& Celini::newORDO('Recurrence',
-		$this->GET->getTyped('recurrence_id', 'int'));
-		$this->view->assign_by_ref('recur',$recurrence);
-		
+
 		$event =& Celini::newORDO('ScheduleEvent', $this->GET->getTyped('event_id', 'int'));
 		$this->view->assign_by_ref('event',$event);
 		
@@ -326,27 +298,32 @@ class C_Schedule extends Controller
 			$this->view->assign_by_ref('eventGroups',$eventGroups);
 		}
 		
+		if($this->GET->getTyped('event_group_id','int') > 0) {
+			$this->view->assign('egid',$this->GET->getTyped('event_group_id','int'));
+		}
+		
 		return $this->view->render('edit.html');
 	}
-		
+	
 	function _processEvent() {
 		$eventarray = $this->POST->getRaw('Event');
 		if(!empty($eventarray['title'])){
 			$event =& Celini::newORDO('ScheduleEvent',$eventarray['id']);
 			$event->populate_array($eventarray);
 			$event->persist();
-			$this->schedule->setChild($event);
-			$this->provider->setChild($event);
-			$this->practice->setChild($event);
-			$this->room->setChild($event);
 			if($eventarray['id'] > 0){
 				$this->messages->addMessage('Event Updated');
 			} else {
+				// This should never happen now with the wizard.
 				$this->messages->addMessage('Event Added');
 			}
 		}
 	}
 	
+	/**
+	 * No longer needed(?)
+	 *
+	 */
 	function _processEventGroup() {
 		$egroup = $this->POST->getRaw('EventGroup');
 		if (!empty($egroup['title'])) {
@@ -389,14 +366,14 @@ class C_Schedule extends Controller
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		$schedule =& Celini::newORDO('Schedule');
 		$schedule->populateArray($this->POST->getRaw('Schedule'));
-		$schedule->persist();
+//		$schedule->persist();
 		$this->schedule =& $schedule;
 		$this->practice =& $schedule->getParent('Practice');
 		$this->provider =& $schedule->getParent('Provider');
 		
 		$this->room =& $schedule->getParent('Room');
-		$this->_processEventGroup();
-		$this->_processRecurrence();
+//		$this->_processEventGroup();
+//		$this->_processRecurrence();
 		$this->_processDeletes();
 		$this->_processEvent();
 		$this->messages->addMessage('Schedule Updated');
@@ -412,6 +389,10 @@ class C_Schedule extends Controller
 
 	}
 
+	/**
+	 * No longer needed(?)
+	 *
+	 */
 	function _processRecurrence(){
 		if(isset($_POST['Recurrence']) && !empty($_POST['RecurrencePattern']['pattern_type'])){
 			$rec =& $this->schedule->createRecurrence($this->POST->getRaw('Recurrence'),$this->POST->getRaw('RecurrencePattern'));

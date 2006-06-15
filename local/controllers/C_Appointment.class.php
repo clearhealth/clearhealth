@@ -138,15 +138,22 @@ class C_Appointment extends Controller {
 			$appointment->set('created_date',date('Y-m-d'));
 		}
 		// Was this event in a schedule?
-		$schedule =& Celini::newORDO('ScheduleEvent');
-		$sfinder =& $schedule->relationshipFinder();
-		$sfinder->addParent(Celini::newORDO('Provider',$appointment->get('provider_id')));
-		$sfinder->addCriteria('event.start <= '.$db->quote($appointment->get('start_time')).' AND event.start > '.$db->quote($appointment->get('end_time')));
-		$scheds = $sfinder->find();
-		if($scheds->count() > 0) {
-			$sched =& $scheds->current();
-			$sch =& $sched->getParent('Schedule');
-			$appointment->set('appointment_code',$sch->get('schedule_code'));
+		$sql = "
+			SELECT eg.event_group_id,s.schedule_code 
+			FROM 
+				schedule s
+				INNER JOIN event_group eg ON eg.schedule_id=s.schedule_id
+				INNER JOIN schedule_event se ON se.event_group_id=eg.event_group_id
+				INNER JOIN event e ON e.event_id=se.event_id
+			WHERE
+				s.provider_id=".$db->quote($appointment->get('provider_id'))."
+				AND eg.room_id=".$db->quote($appointment->get('room_id'))."
+				AND e.start <= ".$db->quote($appointment->get('start_time'))."
+				AND e.start > ".$db->quote($appointment->get('end_time'));
+		$res = $db->execute($sql);
+		if($res && !$res->EOF) {
+			$appointment->set('event_group_id',$res->fields['event_group_id']);
+			$appointment->set('appointment_code',$res->fields['schedule_code']);
 		}
 		
 		$this->appointment =& $appointment;

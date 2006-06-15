@@ -1,13 +1,6 @@
 <?php
 /**
  * Object Relational Persistence Mapping Class for table: appointment
- * 
- * Relationships:
- * Parent:	Event
- * Child (through event):	Patient
- * Parent (through event):	Room
- * Parent (through event):	Provider
- * Parent:	User (creator)
  *
  * @package	com.uversainc.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
@@ -33,6 +26,7 @@ class Appointment extends ORDataObject {
 	var $patient_id		= '';
 	var $event_id		= '';
 	var $appointment_code	= ''; // NS/CAN/???
+	var $event_group_id	= '';
 	var $breakdowns = false;
 	/**#@-*/
 
