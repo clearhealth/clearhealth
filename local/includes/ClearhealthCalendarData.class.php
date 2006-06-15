@@ -33,6 +33,8 @@ class ClearhealthCalendarData {
 	 * This function will output any extra items to render on the calendar
 	 * Most likely popups, buttons, etc
 	 *
+	 * @todo: move somewhere else
+	 *
 	 */
 	function extraDisplay() {
 		$view =& new clniView();
@@ -121,6 +123,7 @@ class ClearhealthCalendarData {
 	 * This creates a where statement to find events that are not in the 
 	 * current scope (starting before day-start or after day-end)
 	 *
+	 * @todo: document where used or remove
 	 * @param array $filters
 	 * @return string
 	 */
@@ -191,6 +194,11 @@ class ClearhealthCalendarData {
 		return $this->schedules;
 	}
 
+	/**
+	 *  Basic information about providers
+	 *
+	 *  @see getScheduleList
+	 */
 	function providerData() {
 		$db = new clniDb();
 		$sql = "SELECT
@@ -267,6 +275,10 @@ class ClearhealthCalendarData {
 	function eventProviderMap(&$filters) {
 		$db = new clniDb();
 		$where = $this->toWhere($filters,false);
+
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
+
 		$sql = "SELECT 
 				event.event_id, 
 				provider.person_id as provider_id 
@@ -275,7 +287,10 @@ class ClearhealthCalendarData {
 				inner join appointment a on a.event_id = event.event_id
 				left join provider on a.provider_id = provider.person_id
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
+				LEFT JOIN rooms r ON r.id=eg.room_id
+				LEFT JOIN buildings b ON r.building_id=b.id
 			WHERE 
+				(ifnull(b.practice_id,provider.primary_practice_id) = $practice_id)
 				$where
 			GROUP BY event.event_id
 				";
@@ -343,6 +358,9 @@ class ClearhealthCalendarData {
 			$ret[$res->fields['person_id']] = array();
 			$res->MoveNext();
 		}
+
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
 		
 		$sql = "
 			SELECT 
@@ -360,9 +378,11 @@ class ClearhealthCalendarData {
 				INNER JOIN schedule s ON eg.schedule_id=s.schedule_id
 				
 				LEFT JOIN rooms r ON r.id=eg.room_id
+				LEFT JOIN buildings b ON r.building_id=b.id
 				LEFT JOIN user u ON s.provider_id = u.person_id
+				LEFT JOIN person provider on s.provider_id = provider.person_id
 			WHERE 
-				1 $where
+				(ifnull(b.practice_id,provider.primary_practice_id) = $practice_id) $where
 			ORDER BY 
 			 	event.start";
 		$res = $db->execute($sql);
@@ -389,7 +409,6 @@ class ClearhealthCalendarData {
 	 * @param string $renderType Specifies how the appointment will be rendered.  'day' will have edit links
 	 * @param int $period Number of seconds in an iteration
 	 * @return array
-	 * @todo Should we add the html for these events here?
 	 */
 	function &providerEvents(&$filters,$renderType = 0,$period = 900) {
 		$db = new clniDb();
@@ -398,6 +417,10 @@ class ClearhealthCalendarData {
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
+
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
+ 
 		$sql = "
 			SELECT 
 				a.appointment_id,
@@ -414,10 +437,12 @@ class ClearhealthCalendarData {
 				LEFT JOIN rooms AS rm ON rm.id = a.room_id
 				LEFT JOIN buildings AS b ON b.id = rm.building_id 
 				LEFT JOIN provider ON a.provider_id = provider.person_id
+				LEFT JOIN person p ON a.provider_id = p.person_id
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
 				LEFT JOIN patient ON a.patient_id=patient.person_id
 			WHERE 
 				(s.schedule_code != 'NS' OR s.schedule_code IS NULL OR s.schedule_code = '') 
+				AND (ifnull(b.practice_id,p.primary_practice_id) = $practice_id)
 				$where
 			GROUP BY aevent.event_id 
 			ORDER BY
@@ -425,9 +450,8 @@ class ClearhealthCalendarData {
 				aevent.start,
 				aevent.end
 				";
-		/**
-		 * If there's no schedule and no patient, it's an ADMIN event
-		 */
+
+		// If there's no schedule and no patient, it's an ADMIN event
 
 		$res = $db->execute($sql);
 		$ret = array();
@@ -698,32 +722,9 @@ class ClearhealthCalendarData {
 		return false;
 	}
 	
-	
-	/**
-	 * Returns arrays of schedule-events which overlap
-	 *
-	 * @param unknown_type $filters
-	 */
-	function providerMultiSchedule(&$filters) {
-		
-	}
-	
-	function providerMultiEvent(&$filters) {
-		
-	}
-	
-	/**
-	 * How many columns should the header span?
-	 *
-	 * @return int
-	 */
-	function getHeaderColspan() {
-		return count($this->scheduleList)*2+1;
-	}
-	
 	/**
 	 * Returns sidebar html
-	 * @todo This should probably be 
+	 * @todo This should probably be moved to a renderer class
 	 *
 	 */
 	function &getSidebar() {
@@ -733,59 +734,5 @@ class ClearhealthCalendarData {
 		$sidebar = $appt->actionEdit();
 		return $sidebar;
 	}
-
-
-	function _accountBalanceSql($patients) {
-		$patients = implode(',',$patients);
-		return
-		'
-		select
-			feeData.patient_id,
-                        charge,
-                        (ifnull(credit,0.00) + ifnull(coPay.amount,0.00)) credit,
-			(charge - (ifnull(credit,0.00)+ifnull(coPay.amount,0.00))) balance
-		from
-			/* Fee total */
-			(
-			select
-				e.patient_id,
-				sum(cd.fee) charge
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
-			group by
-				e.patient_id
-			) feeData
-			left join
-			/* Payment totals */
-			(
-			select
-				e.patient_id,
-				(sum(pl.paid) + sum(pl.writeoff)) credit
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join payment p on cc.claim_id = p.foreign_id
-				inner join payment_claimline pl on p.payment_id = pl.payment_id
-			group by
-				e.patient_id
-			) paymentData on feeData.patient_id = paymentData.patient_id
-                        left join
-                        /* Co-Pay Totals */
-                        (
-                        select
-                            p.foreign_id patient_id,
-                            sum(p.amount) amount
-                        from
-                            payment p
-                        where encounter_id = 0
-                        group by
-                            p.foreign_id
-                        ) coPay on feeData.patient_id = coPay.patient_id
-		where
-			feeData.patient_id in('.$patients.')';
-	}
-	
 }
 ?>
