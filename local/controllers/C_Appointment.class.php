@@ -416,7 +416,7 @@ class C_Appointment extends Controller {
 			}
 			
 			$where[] = " event.start BETWEEN ".$db->quote($search['from'])." AND ".$db->quote($search['to']) ;
-			$where[] = " event.event_id NOT IN(SELECT DISTINCT child_id FROM relationship WHERE child_type='ScheduleEvent')";
+			$where[] = " event.event_id NOT IN(SELECT event_id FROM schedule_event)";
 			$apts = '';
 			$res =& $appointment->search('WHERE '.implode(' AND ',$where));
 			$this->view->assign('search',true);

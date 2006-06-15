@@ -213,20 +213,22 @@ class Schedule extends CalendarSchedule{
 	function findFirst($provider_id,$room_id = 0,$start,$end,$amount,$schedule_code = null) {
 		$db =& Celini::dbInstance();
 		$provider =& Celini::newORDO('Provider',$provider_id);
-		$sevent =& Celini::newORDO('ScheduleEvent');
-		$finder =& $sevent->relationshipFinder();
-		if($provider_id > 0)
-			$finder->addParent($provider);
+		$finder =& new ORDOFinder('ScheduleEvent','');
+		$finder->_joins = ' INNER JOIN schedule_event ON event.event_id=schedule_event.event_id INNER JOIN event_group ON event_group.event_group_id=schedule_event.event_group_id INNER JOIN schedule ON schedule.schedule_id=event_group.schedule_id';
+		if(empty($finder->_criteria)) {
+			$finder->_criteria = '1';
+		}
+		if($provider_id > 0) {
+			$finder->_criteria .= " AND schedule.provider_id=".$db->quote($provider_id);
+		}
 		if($room_id > 0) {
-			$room =& Celini::newORDO('Room',$room_id);
-			$finder->addParent($room);
+			$finder->_criteria .= " AND event_group.room_id=".$db->quote($room_id);
 		}
 		if(!is_null($schedule_code) && !empty($schedule_code)) {
-			$finder->_joins .=" LEFT JOIN relationship ES ON ES.parent_type='Schedule' AND ES.child_type='ScheduleEvent' AND ES.child_id = event.event_id ";
-			$finder->_joins .=" JOIN schedule ON schedule.schedule_id = ES.parent_id AND schedule.schedule_code = ".$db->quote($schedule_code);
+			$finder->_criteria .= " AND schedule.schedule_code=".$db->quote($schedule_code);
 		}
-		$finder->_orderBy = 'event.start';
-		$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.strtotime($end));
+		$finder->_orderBy = 'ORDER BY event.start ASC, event.end ASC';
+		$finder->_criteria .= ' AND UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.$db->quote(strtotime($end));
 		$schedules =& $finder->find();
 
 		$event =& Celini::newORDO('CalendarEvent');
