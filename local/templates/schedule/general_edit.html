@@ -5,6 +5,7 @@
 We're now just going to show a list of event groups.
 Providers should only have ONE schedule with the new wizard.
 *}
+<h1>{$schedule->get('name')}</h1>
 {if $event && $event->get('id') > 0}
 {include file="schedule/general_eventedit.html"}
 {/if}
