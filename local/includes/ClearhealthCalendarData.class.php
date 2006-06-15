@@ -16,6 +16,7 @@ class ClearhealthCalendarData {
 		$this->filters['endtime'] = array('type' => 'Time', 'label' => 'End Time', 'params' => array('increment'=>$increment/60));
 		$this->filters['user'] = array('type' => 'Multiselect', 'label' => 'Provider', 'params' => array('type' => 'form','insertBlank'=>true));
 		$this->filters['patient'] = array('type' => 'Suggest', 'label' => 'Patient', 'params' => array('jsfunc'=>'patientSuggest','person'=>true) );
+		$this->filters['building'] = array('type' => 'Multiselect','label'=>'Building','params'=>array('type'=>'form','insertBlank'=>true));
 	}
 	
 	function getConfig() {
@@ -55,6 +56,15 @@ class ClearhealthCalendarData {
 			case 'patient':
 				$db = Celini::dbInstance();
 				$sql = "SELECT person.person_id, CONCAT(last_name,' ',first_name) AS pname FROM patient INNER JOIN person ON patient.person_id = person.person_id WHERE 1 ORDER BY last_name ASC, first_name ASC";
+				$result = $db->Execute($sql);
+				if(!$result){
+					Celini::raiseError($db->ErrorMsg());
+				}
+				$options = $result->GetAssoc();
+				return $options;
+			case 'building':
+				$db =& Celini::dbInstance();
+				$sql = "SELECT id,name FROM buildings ORDER BY name ASC";
 				$result = $db->Execute($sql);
 				if(!$result){
 					Celini::raiseError($db->ErrorMsg());
@@ -101,6 +111,13 @@ class ClearhealthCalendarData {
 			$string = array();
 			foreach($filters['user']->getValue() as $uid) {
 				$string[] = "u.user_id = ".$db->quote($uid);
+			}
+			$criteriaArray[] = '('.implode(' OR ',$string).')';
+		}
+		if(isset($filters['building']) && count($filters['building']->getValue()) > 0) {
+			$string = array();
+			foreach($filters['building']->getValue() as $uid) {
+				$string[] = "b.id = ".$db->quote($uid);
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
@@ -511,6 +528,8 @@ class ClearhealthCalendarData {
 				LEFT JOIN provider ON ea.provider_id = provider.person_id
 				LEFT JOIN user u ON u.person_id = provider.person_id
 				LEFT JOIN patient ON ea.patient_id=patient.person_id OR ec.patient_id=patient.person_id
+				LEFT JOIN rooms r ON ea.room_id=r.id
+				LEFT JOIN buildings b ON b.id=r.building_id
 			WHERE 
 			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
 			and ea.provider_id = ec.provider_id
