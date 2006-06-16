@@ -11,8 +11,8 @@ class ClearhealthCalendarData {
 		$pconfig =& Celini::configInstance('practice');
 		$increment = $pconfig->get('CalendarIncrement',900);
 		$this->filters['start'] = array('type' => 'DateTime', 'label' => 'Start Date', 'params' => array('hidden'=>true));
-		$this->filters['end'] = array('type' => 'DateTime', 'label' => 'End Date', 'params' => array('hidden'=>true));
 		$this->filters['starttime'] = array('type' => 'Time', 'label' => 'Start Time', 'params' => array('increment'=>$increment/60));
+		$this->filters['end'] = array('type' => 'DateTime', 'label' => 'End Date', 'params' => array('hidden'=>true));
 		$this->filters['endtime'] = array('type' => 'Time', 'label' => 'End Time', 'params' => array('increment'=>$increment/60));
 		$this->filters['user'] = array('type' => 'Multiselect', 'label' => 'Provider', 'params' => array('type' => 'form','insertBlank'=>true));
 		$this->filters['patient'] = array('type' => 'Suggest', 'label' => 'Patient', 'params' => array('jsfunc'=>'patientSuggest','person'=>true) );
@@ -37,8 +37,44 @@ class ClearhealthCalendarData {
 	 * @todo: move somewhere else
 	 *
 	 */
-	function extraDisplay() {
+	function extraDisplay(&$filters) {
 		$view =& new clniView();
+		$db =& new clniDb();
+
+		$values = array();
+		foreach($this->filters as $key => $filter) {
+			$value = $filters[$key]->getValue();
+			if (is_null($value)) {
+				continue;
+			}
+			switch($key) {
+				case 'starttime':
+				case 'endtime':
+					$values[$filter['label']] = "$value[hour]:$value[minute]:$value[second] $value[ap]";
+					break;
+				case 'user':
+					if (count($value) > 0) {
+						$sql = "select username from user where user_id in (".implode(',',$value).")";
+						$values[$filter['label']] = implode(', ',(array)$db->getCol($sql));
+					}
+					break;
+				case 'patient':
+					if ($value['value'] != '') {
+						$values[$filter['label']] = $value['value'];
+					}
+					break;
+				case 'building':
+					if (count($value) > 0) {
+						$sql = "select name from buildings where id in (".implode(',',$value).")";
+						$values[$filter['label']] = implode(', ',(array)$db->getCol($sql));
+					}
+					break;
+				default:
+					$values[$filter['label']] = $value;
+			}
+		}
+		$view->assign('filters',$values);
+
 		return $view->fetch('calendar/general_extradisplay.html');
 	}
 
