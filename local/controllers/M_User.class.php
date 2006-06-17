@@ -90,13 +90,16 @@ class M_User extends M_Patient {
 		$u->populate_array($data);
 		$u->persist();
 		$this->controller->user_id = $u->get('id');
+		
+		$person =& ORDataObject::factory('Person',$person_id);
 
-		$provider = ORDAtaObject::factory('Provider',$person_id);
-		$provider->persist();
+		if ($person->get('type') == 2) {
+			$provider = ORDAtaObject::factory('Provider',$person_id);
+			$provider->persist();
+		}
 
 
 		// Determine the user types of this new person
-		$person =& ORDataObject::factory('Person',$person_id);
 		$t_list = $person->getTypeList();
 		$types = $person->get('types');
 		
