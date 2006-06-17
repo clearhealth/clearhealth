@@ -85,7 +85,7 @@ function newPatient() {
 			{if $appointment->isPopulated()}
 			{html_options options=$users_array.2 selected=$appointment->get('provider_id')}
 			{else}
-			{html_options options=$appointment->valueList('provider') selected=$currentUser}
+			{html_options options=$users_array.2 selected=$currentUser}
 			{/if}
 		</select>
 		<br>
