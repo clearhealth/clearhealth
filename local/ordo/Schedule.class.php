@@ -132,10 +132,8 @@ class Schedule extends CalendarSchedule{
 	function fromUserId($user_id) {
 		$user =& Celini::newORDO('User',$user_id);
 		$person_id = $user->get('person_id');
-		$finder =& new ORDOFinder('Schedule','provider_id='.$this->dbHelper->quote($person_id));
+		$finder =& new ORDOFinder('Schedule','provider_id='.$user->dbHelper->quote($person_id));
 		$children = $finder->find();
-//		$children = $user->getChildren('Schedule');
-//		$children = $children->toArray();
 		return $children;
 	}
 	
