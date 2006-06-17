@@ -93,7 +93,7 @@ class M_User extends M_Patient {
 		
 		$person =& Celini::newORDO('Person',$person_id);
 
-		if ($person->get('type') == 2) {
+		if ($person->value('type') == 'Provider') {
 			$provider =& Celini::newORDO('Provider',$person_id);
 			$provider->persist();
 		}

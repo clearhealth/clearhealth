@@ -67,6 +67,9 @@ class Person extends ORDataObject {
 	var $_foreignKeyList = array(
 		'primary_practice_id' => 'Practice'
 	);
+	var $_enumList = array(
+		'type' => 'person_type'
+	);
 	/**#@-*/
 
 
