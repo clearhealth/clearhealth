@@ -91,10 +91,10 @@ class M_User extends M_Patient {
 		$u->persist();
 		$this->controller->user_id = $u->get('id');
 		
-		$person =& ORDataObject::factory('Person',$person_id);
+		$person =& Celini::newORDO('Person',$person_id);
 
 		if ($person->get('type') == 2) {
-			$provider = ORDAtaObject::factory('Provider',$person_id);
+			$provider =& Celini::newORDO('Provider',$person_id);
 			$provider->persist();
 		}
 
