@@ -30,6 +30,8 @@ class Patient_EncounterList_DS extends Datasource_sql
 	function Patient_EncounterList_DS($patient_id) {
 		settype($patient_id,'int');
 
+		$userProfile =& Celini::getCurrentUserProfile();
+		$userPracticeList = $userProfile->getPracticeIdList();
 		$this->setup(Celini::dbInstance(), 
 			array(
 				'cols' 	=> '
@@ -43,14 +45,16 @@ class Patient_EncounterList_DS extends Datasource_sql
 					encounter AS e
 					LEFT JOIN buildings AS b ON(b.id = e.building_id)
 					LEFT JOIN person AS p ON(e.treating_person_id = p.person_id)',
-				'where' => " patient_id = $patient_id",
+				'where' => " 
+					patient_id = $patient_id AND
+					b.practice_id IN(" . implode(', ', $userPracticeList) . ")
+					",
 				'orderby' => 'date_of_treatment DESC'
 			),
 			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'/*,'encounter_id' => "Encounter Id"*/));
 
 		$this->orderHints['building'] = 'b.name';
 		$this->registerFilter('encounter_reason',array(&$this,'encounterReason'));
-		//echo $ds->preview();
 	}
 	
 	
