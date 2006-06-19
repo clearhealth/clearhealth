@@ -91,7 +91,17 @@ class ClearhealthCalendarData {
 				return $options;
 			case 'patient':
 				$db = Celini::dbInstance();
-				$sql = "SELECT person.person_id, CONCAT(last_name,' ',first_name) AS pname FROM patient INNER JOIN person ON patient.person_id = person.person_id WHERE 1 ORDER BY last_name ASC, first_name ASC";
+				$sql = "
+					SELECT 
+						person.person_id,
+						CONCAT(last_name,' ',first_name) AS pname 
+					FROM 
+						patient 
+						INNER JOIN person ON patient.person_id = person.person_id 
+					WHERE 1
+					ORDER BY 
+						last_name ASC,
+						first_name ASC";
 				$result = $db->Execute($sql);
 				if(!$result){
 					Celini::raiseError($db->ErrorMsg());
@@ -100,7 +110,14 @@ class ClearhealthCalendarData {
 				return $options;
 			case 'building':
 				$db =& Celini::dbInstance();
-				$sql = "SELECT id,name FROM buildings ORDER BY name ASC";
+				$sql = "
+					SELECT 
+						id,
+						name
+					FROM
+						buildings 
+					ORDER BY
+						name ASC";
 				$result = $db->Execute($sql);
 				if(!$result){
 					Celini::raiseError($db->ErrorMsg());
