@@ -15,8 +15,8 @@ class C_Room extends Controller
 		}
 		
 		$this->assign("room",$this->_ordo);
-		$b = new Building();
-		$this->assign("buildings",$this->utility_array($b->buildings_factory(),"id","name"));
+		$b =& Celini::newORDO('Building');
+		$this->assign("buildings",$b->valueList());
 
 		$this->assign("process",true);
 		$this->view->assign('FORM_ACTION', Celini::link('edit', 'Room', true, $this->_ordo->get('id')));
