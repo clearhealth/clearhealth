@@ -21,6 +21,9 @@ if (isset($_SESSION['defaultpractice'])) {
 	if (isset($_GET[0])) {
 		$default = $_GET[0];
 	}
+	
+	$userProfile =& Celini::getCurrentUserProfile();
+	$userPracticeList = $userProfile->getPracticeIdList();
 	$menuarrays[]=array(
 		'menus'=>array(54),
 		'sql'=>"
@@ -30,9 +33,21 @@ if (isset($_SESSION['defaultpractice'])) {
 						p.id as item_id
 					FROM
 						practices AS p
+					WHERE
+						p.id IN (" . implode(', ', $userPracticeList) . ")
 					ORDER BY p.name",
 		'defaultitemid'=>$_SESSION['defaultpractice'],
 		'menutitle'=>'Practice: '.$defPractice->get('name')
 	);
+	var_dump("
+SELECT 
+	p.name as title,
+	CONCAT('".Celini::link(true,true,true,$default).$get."','changepractice=',p.id) as action,
+	p.id as item_id
+FROM
+	practices AS p
+WHERE
+	p.id IN (" . implode(', ', $userPracticeList) . ")
+ORDER BY p.name");
 }
 ?>
