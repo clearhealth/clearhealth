@@ -54,6 +54,7 @@ class Practice extends ORDataObject{
 	
 	var $_table = "practices";
 	var $_internalName='Practice';
+	var $_key = 'id';
 	/**
 	 * Constructor sets all attributes to their default value
 	 *  
