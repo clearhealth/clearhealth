@@ -89,25 +89,7 @@ class ClearhealthCalendarData {
 				$user =& Celini::newORDO('Provider');
 				$options = $user->valueList('username');
 				return $options;
-			case 'patient':
-				$db = Celini::dbInstance();
-				$sql = "
-					SELECT 
-						person.person_id,
-						CONCAT(last_name,' ',first_name) AS pname 
-					FROM 
-						patient 
-						INNER JOIN person ON patient.person_id = person.person_id 
-					WHERE 1
-					ORDER BY 
-						last_name ASC,
-						first_name ASC";
-				$result = $db->Execute($sql);
-				if(!$result){
-					Celini::raiseError($db->ErrorMsg());
-				}
-				$options = $result->GetAssoc();
-				return $options;
+
 			case 'building':
 				$building =& Celini::newORDO('Building');
 				$options = $building->valueList();
