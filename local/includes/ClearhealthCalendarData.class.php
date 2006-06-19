@@ -109,20 +109,8 @@ class ClearhealthCalendarData {
 				$options = $result->GetAssoc();
 				return $options;
 			case 'building':
-				$db =& Celini::dbInstance();
-				$sql = "
-					SELECT 
-						id,
-						name
-					FROM
-						buildings 
-					ORDER BY
-						name ASC";
-				$result = $db->Execute($sql);
-				if(!$result){
-					Celini::raiseError($db->ErrorMsg());
-				}
-				$options = $result->GetAssoc();
+				$building =& Celini::newORDO('Building');
+				$options = $building->valueList();
 				return $options;
 			default:
 				return FALSE;
