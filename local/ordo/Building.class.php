@@ -295,7 +295,7 @@ class Building extends ORDataObject{
 					b.practice_id IN(" . implode(', ', $allowedPracticeList) . ')';
 		}
 		
-		return $this->dbHelper->getAssoc($sql);
+		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 	
 	function valueList_rooms() {
