@@ -1,6 +1,6 @@
 ---[by_payer]---
 SELECT
-	CONCAT(c.name, ' > ', ip.name) AS payer,
+	CONCAT(c.name, ip.name) AS payer,
 	(
 		SUM(CASE WHEN e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN total_billed ELSE 0 END) - 
 		(
@@ -79,7 +79,7 @@ FROM
 		GROUP BY
 			foreign_id
 	) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
-	INNER JOIN storage_int AS current_payer ON (current_payer.foreign_key = e.encounter_id AND current_payer.value_key = "current_payer")
+	INNER JOIN storage_int AS current_payer ON (current_payer.foreign_key = e.encounter_id)
 	INNER JOIN insurance_program AS ip ON(current_payer.value = ip.insurance_program_id)
 	INNER JOIN company AS c USING(company_id)
 GROUP BY
