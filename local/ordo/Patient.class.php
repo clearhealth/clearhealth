@@ -79,11 +79,14 @@ class Patient extends MergeDecorator {
 		if (strlen($this->get("record_number")) == 0) {
 			$this->record_number = $this->generate_record_number();	
 		}
-		$this->mergePersist('person_id');
+		$ret = $this->mergePersist('person_id');
 		if ($this->get('id') == 0) {
 			$this->set('id',$this->person->get('id'));
 		}
-		parent::persist();
+		if (parent::persist()) {
+			return true;
+		}
+		return $ret;
 	}
 
 	/**
