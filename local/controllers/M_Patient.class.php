@@ -128,7 +128,8 @@ class M_Patient extends Manager {
 		}
 		if ($continue) {
 			$patient->populateArray($_POST['person']);
-			if($patient->persist()) {
+			$isChanged = $patient->persist();
+			if($isChanged) {
 				if ($id == 0) {
 					$this->messages->addMessage($this->messageType.' Created');
 				}
