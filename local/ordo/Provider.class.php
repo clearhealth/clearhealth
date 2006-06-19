@@ -146,13 +146,7 @@ class Provider extends MergeDecorator {
 				p.inactive = 0
 			ORDER BY
 				u.username';
-		$res = $this->_execute($sql);
-		$ret = array();
-		while($res && !$res->EOF) {
-			$ret[$res->fields['user_id']] = $res->fields['username'];
-			$res->moveNext();
-		}
-		return $ret;
+		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 	
 	function genericList() {
@@ -191,13 +185,7 @@ class Provider extends MergeDecorator {
 				p.inactive = 0
 			ORDER BY
 				u.username';
-		$res = $this->_execute($sql);
-		$ret = array();
-		while($res && !$res->EOF) {
-			$ret[$res->fields['person_id']] = $res->fields['username'];
-			$res->moveNext();
-		}
-		return $ret;
+		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 
 	function valueList_fullPersonId() {
@@ -226,13 +214,7 @@ class Provider extends MergeDecorator {
 				p.inactive = 0
 			ORDER BY
 				u.username';
-		$res = $this->_execute($sql);
-		$ret = array();
-		while($res && !$res->EOF) {
-			$ret[$res->fields['person_id']] = $res->fields['name'];
-			$res->moveNext();
-		}
-		return $ret;
+		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 }
 ?>
