@@ -128,16 +128,17 @@ class M_Patient extends Manager {
 		}
 		if ($continue) {
 			$patient->populateArray($_POST['person']);
-			$patient->persist();
+			if($patient->persist()) {
+				if ($id == 0) {
+					$this->messages->addMessage($this->messageType.' Created');
+				}
+				else {
+					$this->messages->addmessage($this->messageType.' Updated');
+				}
+			}
 
 			$this->controller->patient_id = $patient->get('id');
 
-			if ($id == 0) {
-				$this->messages->addMessage($this->messageType.' Created');
-			}
-			else {
-				$this->messages->addmessage($this->messageType.' Updated');
-			}
 
 			$t_list = $patient->getTypeList();
 			$types = $patient->get('types');
@@ -215,10 +216,10 @@ class M_Patient extends Manager {
 			}
 			$number =& ORDataObject::factory('PersonNumber',$id,$patient_id);
 			$number->populate_array($data);
-			$number->persist();
+			if ($number->persist()) {
+				$this->messages->addMessage('Number Updated');
+			}
 			$this->controller->number_id = $number->get('id');
-
-			$this->messages->addMessage('Number Updated');
 		}
 	}
 
@@ -230,10 +231,10 @@ class M_Patient extends Manager {
 			$id = (int)$data['identifier_id'];
 			$identifier =& ORDataObject::factory('Identifier',$id,$patient_id);
 			$identifier->populate_array($data);
-			$identifier->persist();
+			if ($identifier->persist()) {
+				$this->messages->addMessage('Secondary Identifier Updated');
+			}
 			$this->controller->identifier_id = $identifier->get('id');
-
-			$this->messages->addMessage('Secondary Identifier Updated');
 		}
 	}
 	/**
@@ -244,10 +245,10 @@ class M_Patient extends Manager {
 			$id = (int)$data['person_person_id'];
 			$identifier =& ORDataObject::factory('PersonPerson',$id,$patient_id);
 			$identifier->populate_array($data);
-			$identifier->persist();
+			if ($identifier->persist()) {
+				$this->messages->addMessage('Relationship Updated');
+			}
 			//$this->controller->person_person_id = $identifier->get('id');
-
-			$this->messages->addMessage('Relationship Updated');
 		}
 	}
 	
@@ -258,10 +259,11 @@ class M_Patient extends Manager {
 		if (count($data) > 0) {
 			$patientStatistics =& ORDataObject::factory('PatientStatistics',$patient_id);
 			$patientStatistics->populate_array($data);
-			$patientStatistics->persist();
+			
+			if ($patientStatistics->persist()) {
+				$this->messages->addMessage('Statistics Updated');
+			}
 			$this->controller->patient_statistics_id = $patientStatistics->get('id');
-
-			$this->messages->addMessage('Statistics Updated');
 		}
 	}
 
@@ -291,10 +293,11 @@ class M_Patient extends Manager {
 
 				$ir->set('subscriber_id',$person->get('id'));
 			}
-			$ir->persist();
+			
+			if ($ir->persist()) {
+				$this->messages->addMessage('Payer Updated');
+			}
 			$this->controller->insured_relationship_id = $ir->get('id');
-
-			$this->messages->addMessage('Payer Updated');
 		}
 	}
 
@@ -322,10 +325,10 @@ class M_Patient extends Manager {
 			}
 			$address =& ORDataObject::factory('PersonAddress',$id,$patient_id);
 			$address->helper->populateFromArray($address,$data);
-			$address->persist();
+			if ($address->persist()) {
+				$this->messages->addMessage('Address Updated');
+			}
 			$this->controller->address_id = $address->get('id');
-
-			$this->messages->addMessage('Address Updated');
 		}
 	}
 	
