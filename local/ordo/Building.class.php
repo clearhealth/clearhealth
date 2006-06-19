@@ -274,8 +274,28 @@ class Building extends ORDataObject{
 	
 	function genericList() {
 		$tableName = $this->tableName();
-		$sql = "SELECT b.id, b.name FROM {$tableName} AS b ORDER BY b.name";
-		return $this->_buildValueList($this->dbHelper->execute($sql));
+		$userProfile =& Celini::getCurrentUserProfile();
+		$allowedPracticeList = $userProfile->getPracticeIdList();
+		
+		if (count($allowedPracticeList) == 1) {
+			$sql = "SELECT b.id, b.name FROM {$tableName} AS b ORDER BY b.name";
+		}
+		else {
+			$practice =& Celini::newORDO('Practice');
+			$practiceTableName = $practice->tableName();
+			$practiceKey = $practice->primaryKey();
+			$sql = "
+				SELECT 
+					b.id, 
+					CONCAT(p.name, '->', b.name) AS formatted_name
+				FROM
+					{$tableName} AS b
+					INNER JOIN {$practiceTableName} AS p ON(b.practice_id = p.{$practiceKey})
+				WHERE
+					b.practice_id IN(" . implode(', ', $allowedPracticeList) . ')';
+		}
+		
+		return $this->dbHelper->getAssoc($sql);
 	}
 	
 	function valueList_rooms() {
