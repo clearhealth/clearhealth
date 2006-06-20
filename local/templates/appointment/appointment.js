@@ -174,29 +174,17 @@ function deleteAppointmentcb(resultSet) {
 	document.getElementById('event'+resultSet[0]).style.backgroundColor = 'gray';
 }
 
+var cancelCount = 0;
 function expandAppointment(id,el) {
-	if(el.offsetHeight < 100) {
-		if(document.getElementById('event'+id+'oldheightholder').innerHTML == '') {
-			document.getElementById('event'+id+'oldheightholder').innerHTML = el.offsetHeight;
-		}
-		if(document.getElementById('event'+id+'newheightholder').innerHTML != '') {
-			el.style.height=document.getElementById('event'+id+'newheightholder').innerHTML+'px';
-		} else {
-			el.style.height='auto';
-			document.getElementById('event'+id+'newheightholder').innerHTML = el.offsetHeight;
-		}
-		el.style.zIndex=100;
-	}
-
-	el.style.border = 'solid 2px black';
+	if (shrinkAppointmentTimer[id]) {
+		window.clearTimeout(shrinkAppointmentTimer[id]);
+		shrinkAppointmentTimer[id] = false;
+		shrinkAppointmentTimer[id] = window.setTimeout(function() { shrinkAppointmentBox(id,el); }, 50);
+	}	
 }
-
-function shrinkAppointment(event, id, el) {
-	var mousePos = clniUtil.mouseXY(event);
-	var left = clniUtil.posLeft(el);
-	var top = clniUtil.posTop(el);
-	if(mousePos.x >= left && mousePos.x <= (left + el.clientWidth) && mousePos.y >= top && mousePos.y <= (top + el.clientHeight)) return;
 	
+function shrinkAppointmentBox(id,el) {
+	shrinkAppointmentTimer[id] = false;
 	el.style.zIndex=50;
 	if(document.getElementById('event'+id+'oldheightholder').innerHTML != '') {
 		el.style.height=document.getElementById('event'+id+'oldheightholder').innerHTML+'px';
