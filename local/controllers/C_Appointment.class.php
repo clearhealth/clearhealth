@@ -269,22 +269,22 @@ class C_Appointment extends Controller {
 		$end = date('Y-m-d H:i:s',strtotime('today 23:59:59'));
 		$sql = array();
 		$sql['cols'] = "
-			e.id event_id,
+			a.appointment_id,
 			pt.record_number,
 			p.last_name,
 			p.first_name,
 			b.name building_name,
 			concat(pro.last_name,', ',pro.first_name) provider,
-			date_format(o.start,'%m/%d/%Y %H:%i') appointment_time
+			date_format(e.start,'%m/%d/%Y %H:%i') appointment_time
 			";
 		$sql['from'] = "
-			occurences o
-			inner join events e on o.event_id = e.id
-			left join user u on o.user_id = u.user_id
-			inner join patient pt on o.external_id = pt.person_id
+			event e
+			inner join appointment a on e.event_id = a.event_id
+			inner join patient pt on a.patient_id = pt.person_id
 			left join person p on pt.person_id = p.person_id
-			left join person pro on u.person_id = pro.person_id
-			left join rooms r on o.location_id = r.id
+			left join person pro on a.provider_id = pro.person_id
+			left join user u on pro.person_id = u.person_id
+			left join rooms r on a.room_id = r.id
 			left join buildings b on r.building_id = b.id
 		";
 
@@ -292,9 +292,9 @@ class C_Appointment extends Controller {
 		$notin = "";
 		$today = date('Y-m-d');
 		if (isset($lastPull[$today]) && count($lastPull[$today]) > 0) {
-			$notin = " and e.id not in (".implode($lastPull[$today],',').') ';
+			$notin = " and a.appointment_id not in (".implode($lastPull[$today],',').') ';
 		}
-		$sql['where']  = "o.start between '$start' and '$end'$notin";
+		$sql['where']  = "e.start between '$start' and '$end'$notin";
 
 		$ds = new Datasource_sql();
 		$ds->setup(Celini::dbInstance(),$sql,
@@ -309,7 +309,7 @@ class C_Appointment extends Controller {
 		$grid =& new cGrid($ds);
 		$this->view->assign_by_ref('grid',$grid);
 
-		$store = $ds->toArray('event_id','event_id');
+		$store = $ds->toArray('appointment_id','appointment_id');
 
 		if (!isset($lastPull[$today])) {
 			$lastPull = array();
