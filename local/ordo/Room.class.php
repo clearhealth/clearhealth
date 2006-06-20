@@ -37,6 +37,14 @@ class Room extends ORDataObject{
 			." r inner join buildings b on r.building_id = b.id order by b.name, r.name";
 		return $this->dbHelper->getAssoc($sql);
 	}
+
+	function valueList_current() {
+		$profile =& Celini::getCurrentUserProfile();
+		$practiceId = EnforceType::int($profile->getCurrentPracticeId());
+		$sql = "select r.id, concat(b.name,' -> ',r.name) name from ".$this->tableName()
+			." r inner join buildings b on r.building_id = b.id where practice_id = $practiceId order by b.name, r.name";
+		return $this->dbHelper->getAssoc($sql);
+	}
 	
 	function value_fullname() {
 		if (!$this->isPopulated()) {

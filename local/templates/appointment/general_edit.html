@@ -121,7 +121,7 @@ function newPatient() {
 
 	<div>
 		{l}Room: {/l}<br>
-		{html_options name="Appointment[room_id]" options=$room->genericList() selected=$room->get('id')}
+		{html_options name="Appointment[room_id]" options=$room->valueList('current') selected=$room->get('id')}
 	</div>
 			
 	<div>
