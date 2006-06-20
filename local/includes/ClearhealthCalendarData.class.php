@@ -342,14 +342,14 @@ class ClearhealthCalendarData {
 	}
 
 	/**
-	 *  Get the next appointments for a provider and a given time
+	 *  Get the previous appointments for a provider and a given time
 	 *
 	 *  @return array
 	 */
 	function prevAppointments($providerId,$start,$end) {
 		$db = new clniDb();
 		$s = $db->quote(date('Y-m-d H:i:s',strtotime($start.' -15min')));
-		$e = $db->quote($end);
+		$e = $db->quote(date('Y-m-d H:i:s',strtotime($end)));
 		$p = EnforceType::int($providerId);
 		$sql = "SELECT
 				event.*,
@@ -361,6 +361,45 @@ class ClearhealthCalendarData {
 				event.end >= $s and
 				event.start <= $e and
 				a.provider_id = $p";
+		$res = $db->execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[] = $res->fields;
+			$res->MoveNext();
+		}
+		return $ret;
+	}
+
+	/**
+	 *  Get the appoinments in a given timeblock
+	 */
+	function appointmentsOverlapping($start,$end) {
+
+		$format = TimeObject::getFormat();
+		$db = new clniDb();
+		$s = $db->quote(date('Y-m-d H:i:s',strtotime($start)));
+		$e = $db->quote(date('Y-m-d H:i:s',strtotime($end)));
+		$sql = "SELECT
+				event.*,
+				a.*,
+				date_format(start,'$format') startTime,
+				date_format(end,'$format') endTime,
+				r.name room,
+				r.number_seats roomMax,
+				concat(p.last_name,', ',p.first_name,' #',pat.record_number) patientName,
+				concat(pr.last_name,', ',pr.first_name,' (',pu.username,')') providerName
+			FROM
+				event
+				inner join appointment a on a.event_id = event.event_id
+				left join rooms r on a.room_id = r.id
+				left join person p on a.patient_id = p.person_id
+				left join patient pat on a.patient_id = pat.person_id
+				left join person pr on a.provider_id = pr.person_id
+				left join user pu on pu.person_id = pr.person_id
+			WHERE
+				(event.end > $s and event.end <= $e) or
+				(event.start >= $s and event.start <= $e)
+			";
 		$res = $db->execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
