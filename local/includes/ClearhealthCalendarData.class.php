@@ -315,6 +315,9 @@ class ClearhealthCalendarData {
 	function eventProviderMap(&$filters) {
 		$db = new clniDb();
 		$where = $this->toWhere($filters,false);
+		if (!empty($where)) {
+			$where = ' and '.$where;
+		}
 
 		$profile =& Celini::getCurrentUserProfile();
 		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
@@ -326,11 +329,12 @@ class ClearhealthCalendarData {
 				`event` AS event
 				inner join appointment a on a.event_id = event.event_id
 				left join provider on a.provider_id = provider.person_id
+				left join person on a.provider_id = person.person_id
 				LEFT JOIN user AS u ON u.person_id= provider.person_id
-				LEFT JOIN rooms r ON r.id=eg.room_id
+				LEFT JOIN rooms r ON r.id=a.room_id
 				LEFT JOIN buildings b ON r.building_id=b.id
 			WHERE 
-				(ifnull(b.practice_id,provider.primary_practice_id) = $practice_id)
+				(ifnull(b.practice_id,person.primary_practice_id) = $practice_id)
 				$where
 			GROUP BY event.event_id
 				";
