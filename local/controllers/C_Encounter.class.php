@@ -46,6 +46,9 @@ class C_Encounter extends Controller {
 		
 		$valid_appointment_id = false;
 
+		$ajax =& Celini::AJAXInstance();
+		$ajax->stubs[] = 'Encounter';
+
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
 			$valid_appointment_id = true;

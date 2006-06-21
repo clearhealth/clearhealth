@@ -48,5 +48,10 @@ class ClearhealthAJAX {
 		$report=&new MenuReport();
 		$this->server->registerClass($report,'MenuReport');
 	}
+
+	function initEncounter() {
+		$encounter =& Celini::newOrdo('Encounter');
+		$this->server->registerClass($encounter,'Encounter',array('appointmentlist_remoting'));
+	}
 }
 ?>

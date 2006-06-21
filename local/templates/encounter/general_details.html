@@ -59,8 +59,7 @@
 function populateEncounter(selected) {
 	var oc_id = document.forms.encounter['encounter[occurence_id]'][selected].value;
 	var pat_id = document.forms.encounter['encounter[patient_id]'].value;
-	e = new encounter();
-	e.Sync();
+	e = new Encounter();
 	var results = e.appointmentlist_remoting(oc_id,pat_id);
 	var treating_person = document.forms.encounter['encounter[treating_person_id]'];
 	var building = document.forms.encounter['encounter[building_id]'];
