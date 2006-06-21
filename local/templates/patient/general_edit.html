@@ -1,5 +1,5 @@
 {include file="patient/general_setupJS.html"}
-
+{dynhead type="js"}var redirect_url = '{$FORM_ACTION}'; {/dynhead}
 {if $DuplicateList}
 <div style="border: 2px solid rgb(153, 153, 153); width: 450px; background-color: rgb(255, 255, 153);">
 <div style="padding: 3px;">
@@ -36,7 +36,7 @@ just entered. Please check the following list of existing patient records to see
 <table>
 {/if}
 	<tr><td>
-{clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+	{clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="submit" name="DuplicateChecked" value="Submit New Record Anyway" />
 {foreach from=$OriginalPost item=value key=key}
 <input type="hidden" name="{$key}" value="{$value}" />
