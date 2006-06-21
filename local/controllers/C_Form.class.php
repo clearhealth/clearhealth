@@ -37,6 +37,7 @@ class C_Form extends Controller {
 	/**
 	 * Edit/Add a new form
 	 */
+
 	function actionEdit($form_id = 0) {
 		if (isset($this->form_id)) {
 			$form_id = $this->form_id;
@@ -49,8 +50,8 @@ class C_Form extends Controller {
 		$this->assign('VIEW_ACTION',Celini::link('view',true,true,$form_id));
 
 		$this->secure_dir[] = APP_ROOT."/user/form/";
-
 		return $this->fetch(Celini::getTemplatePath("/form/" . $this->template_mod . "_edit.html"));
+		
 	}
 
 	function processEdit($form_id) {

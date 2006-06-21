@@ -1,6 +1,37 @@
-{new_auto_form id='form' object=$form action=$FORM_ACTION process=$PROCESS}
-{add_field type="file" id="form" label="upload_form"}
-{show_auto_form id='form'}
+{literal}
+<script type="text/javascript" language="JavaScript">
+<!--
+function updateName(title) {
+	var val = title.value;
+	document.getElementById('form__system_name').value = val.replace(/ /g,"_").toLowerCase();
+}
+-->
+</script>
+{/literal}
+
+{clni_form object=$form action=$FORM_ACTION process=$PROCESS}
+<table><input type='hidden' name="form[form_id]" value=""><tr>
+	<td><label>Name:</label> </td>
+	<td><input type='text' id='form__name' name='form[name]' value="{$form->name}" onkeyup="updateName(this)"></td></tr>
+<tr>
+	<td><label>System name:</label> </td>
+	<td><input type='text' id='form__system_name' name='form[system_name]' value="{$form->system_name}"></td></tr>
+<tr>
+	<td><label>Description:</label> </td>
+	<td><textarea id='form__description' name='form[description]' >{$form->description}</textarea></td></tr>
+<tr>
+	<td><label>Upload form:</label> </td>
+	<td><input type='file' id='form__upload_form' name='form[upload_form]' value="Unknown member: upload_form"></td></tr>
+<tr><td></td><td>
+{if $form->id > 0}
+<input type='submit' value='Update'>
+{else}
+<input type='submit' value='Add'>
+
+{/if}
+
+</td></tr>
+</table></form>
 
 <p><a href="{$VIEW_ACTION}">{l}View form Data{/l}</a><p>
 

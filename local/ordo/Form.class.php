@@ -25,6 +25,8 @@ class Form extends ORDataObject {
 	var $id			= '';
 	var $name		= '';
 	var $description	= '';
+	var $system_name	= '';
+	
 	/**#@-*/
 
 	var $_table = 'form';
@@ -62,11 +64,11 @@ class Form extends ORDataObject {
 	function &formList() {
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "f.form_id, f.name, f.description",
+				'cols' 	=> "f.form_id, f.name, f.description, f.system_name",
 				'from' 	=> "$this->_table f",
 				'orderby' => 'name',
 			),
-			array('name'=>'Name','description'=>'Description'));
+			array('name'=>'Name','description'=>'Description','system_name'=>'System Name'));
 		return $ds;
 	}
 
