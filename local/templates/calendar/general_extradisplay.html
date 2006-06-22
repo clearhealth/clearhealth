@@ -15,8 +15,8 @@
 
 		<br>
 		<br>
-		<input type="checkbox" id="doubleBooking" onclick="toggleAllConflicts(this)">
-		<label class="inline" for="doubleBooking" id="doubleBookingLabel">Expand double bookings</label>
+		<input type="checkbox" id="doubleBooking" onclick="toggleAllConflicts(this)" {if $practice->get('type')}CHECKED {/if}>
+		<label class="inline" for="doubleBooking">Expand double bookings</label>
 
 	</div>
 </div>

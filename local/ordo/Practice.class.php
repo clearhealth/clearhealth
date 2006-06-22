@@ -405,6 +405,12 @@ class Practice extends ORDataObject{
 		return $this->dbHelper->getAssoc($sql);
 	}
 
+	function get_type() {
+		$config =& Celini::configInstance('practice');
+		$config->loadPractice($this->get('id'));
+		return $config->get('FacilityType');
+	}
+
 } // end of Class
 
 ?>
