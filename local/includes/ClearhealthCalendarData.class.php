@@ -75,6 +75,10 @@ class ClearhealthCalendarData {
 		}
 		$view->assign('filters',$values);
 
+		$profile =& Celini::getCurrentUserProfile();
+		$practice =& Celini::newOrdo('Practice',$profile->getCurrentPracticeId());
+		$view->assign_by_ref('practice',$practice);
+
 		return $view->fetch('calendar/general_extradisplay.html');
 	}
 
