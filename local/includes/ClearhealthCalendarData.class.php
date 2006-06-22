@@ -265,6 +265,28 @@ class ClearhealthCalendarData {
 	}
 
 	/**
+	 *  Basic information about rooms
+	 */
+	function roomData() {
+		$db = new clniDb();
+		$sql = "SELECT
+				r.id,
+				'333333' color,
+				'' nickname,
+				r.name AS name
+			from
+				rooms r
+			";
+		$res = $db->execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['id']] = $res->fields;
+			$res->MoveNext();
+		}
+		return $ret;
+	}
+
+	/**
 	 * Provide an array of schedules and the html to use as their headings
 	 */
 	function &getScheduleList(&$filters) {
@@ -279,6 +301,8 @@ class ClearhealthCalendarData {
 			$map = array();
 		}
 		$pdata = $this->providerData();
+		$rdata = $this->roomData();
+
 		$ret = array();
 		foreach($s as $providerId => $schedules) {
 			if (count($schedules) == 0) {
@@ -286,7 +310,13 @@ class ClearhealthCalendarData {
 					continue;
 				}
 			}
-			$color = $pdata[$providerId]['color'];
+			if (isset($pdata[$providerId])) {
+				$data = $pdata[$providerId];
+			}
+			else {
+				$data = $rdata[$providerId];
+			}
+			$color = $data['color'];
 
 			$ic = new Image_Color();
 			$ic->setColors($color,$color);
@@ -301,7 +331,7 @@ class ClearhealthCalendarData {
 				'borderColor' => $border,
 				'backColor' => $background,
 				'fontColor' => $font,
-				'label' => $pdata[$providerId]['name'],
+				'label' => $data['name'],
 				'schedules' => $schedules
 			);
 			$head =& Celini::HTMLHeadInstance();
@@ -417,11 +447,13 @@ class ClearhealthCalendarData {
 		$p = Enforcetype::int($providerId);
 		$d = "'".date('Y-m-d',strtotime($date))."'";
 		$where = "and provider.person_id = $p and date_format(event.start,'%Y-%m-%d') = $d";
-		return $this->_providerSchedules($where);
+		return $this->_schedules($where);
 	}
 	
 	/**
 	 * Returns array[provider_id][start] = array('label','start','end')
+	 *
+	 * @todo rename this has been hacked so it works with room and provider scehdules
 	 *
 	 * @param array $filters
 	 * @return array
@@ -432,11 +464,11 @@ class ClearhealthCalendarData {
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
-		$return = $this->_providerSchedules($where);
+		$return = $this->_schedules($where);
 		return $return;
 	}
 
-	function &_providerSchedules($where) {
+	function &_schedules($where) {
 		$db = new clniDb();
 		$sql = "SELECT person_id FROM provider";
 		$res = $db->execute($sql);
@@ -452,10 +484,10 @@ class ClearhealthCalendarData {
 		$sql = "
 			SELECT 
 				event.event_id,
-				event.title,
+				eg.title,
 				UNIX_TIMESTAMP(event.start) AS start,
 				UNIX_TIMESTAMP(event.end) AS end, 
-				s.provider_id,
+				if(s.provider_id=0,r.id,s.provider_id) provider_id, /* this is a hack for room schedules */
 				u.username,
 				r.name AS roomname
 			FROM 
