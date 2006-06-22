@@ -11,6 +11,7 @@ class Room extends ORDataObject{
 	var $building_id	= '';
 	var $building		= '';
 	var $name		= '';
+	var $color		= '';
 	
 	var $_table 		= 'rooms';
 	var $_internalName	= 'Room';
@@ -200,6 +201,10 @@ class Room extends ORDataObject{
 		$result = $this->_db->Execute($sql);
 		
 		return ($result->fields['total'] > 0);
+	}
+
+	function set_color($c) {
+		$this->color = str_replace('#','',$c);
 	}
 
 } // end of Class

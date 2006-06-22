@@ -1,39 +1,46 @@
 <form name="room" method="post" action="{$FORM_ACTION}">
-<!-- it is important that the hidden form_id field be listed first, when it is called is populates any old information attached with the id, this allows for partial edits
-		if it were called last, the settings from the form would be overwritten with the old information-->
 <input type="hidden" name="form_id" value="{$room->id}" />
 <table CELLSPACING="0" CELLPADDING="3">
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Name{/l}</td>
+	<td COLSPAN="1" VALIGN="MIDDLE"><label>{l}Name:{/l}</label></td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" name="name" value="{$room->name}"/>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Number of Beds{/l}</td>
+	<td COLSPAN="1" VALIGN="MIDDLE"><label>{l}Number of Beds:{/l}</label></td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="2" maxlength="4" name="number_seats" value="{$room->number_seats}"/>
 	</td>
 </tr>
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Additional Information{/l}</td>
+	<td COLSPAN="1" VALIGN="MIDDLE"><label>{l}Additional Information:{/l}</label></td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		<input type="text" size="40" maxlength="250" name="description" value="{$room->description}"/>
 	</td>
 </tr>
 
 <tr>
-	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE">{l}Building{/l}</td>
+	<td COLSPAN="1" VALIGN="MIDDLE"><label>{l}Building:{/l}</label></td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE">
 		{html_options name="building_id" options=$buildings
 selected=$room->get('building_id')}
 	</td>
 </tr>
 <tr>
+	<td style="text-align:right">
+		<span class="tooltip">{l}Color{/l}:
+			<div class="tooltipMessage">{l}This is the color which will be the background of the room associated information on the calendar and elsewhere.{/l}</div>
+		</span>
+	</td>
+	<td>{$colorpicker->render()}</td>
+</tr>
+<tr>
+	<td></td>
 	{if empty($room->id) }
-	<td><br /><input type="submit" value="Save" /></td>
+	<td><input type="submit" value="Save" /></td>
 	{else} 
-	<td><br /><input type="submit" value="Update" /></td>
+	<td><input type="submit" value="Update" /></td>
 	{/if}
 </tr>
 </table>

@@ -1,5 +1,5 @@
 <?php
-$loader->requireOnce('ordo/Building.class.php');
+$loader->requireOnce('includes/colorpickerselect.class.php');
 
 class C_Room extends Controller
 {
@@ -18,6 +18,9 @@ class C_Room extends Controller
 		$b =& Celini::newORDO('Building');
 		$this->assign("buildings",$b->valueList());
 
+		$picker =& new colorPickerSelect('pastels','color','','#'.$this->_ordo->get('color'));
+		$this->view->assign_by_ref('colorpicker',$picker);
+
 		$this->assign("process",true);
 		$this->view->assign('FORM_ACTION', Celini::link('edit', 'Room', true, $this->_ordo->get('id')));
 		return $this->view->render("edit.html");
@@ -30,8 +33,8 @@ class C_Room extends Controller
 		$setDefaultRoom = !$room->roomsExist();
 		
 		// Check and if allowed handle the saving	
-		$room->set('id', $_POST['id']);
-		$room->populate_array($_POST);
+		$room->setup($_POST['id']);
+		$room->populateArray($_POST);
 		$room->persist();
 		
 		// If no rooms were set prior to creating this one, utilize the pseudo
