@@ -1,0 +1,32 @@
+{head type="js"}
+function roomChanged(select) {
+	if (!$('group').changed) { 
+		$('group').value = select.options[select.selectedIndex].text + " hours";
+	}
+	if (!$('name').changed) {
+		$('name').value = 'Room Schedule: '+select.options[select.selectedIndex].text;
+	}
+}
+{/head}
+{include file="schedule/general_wizard_header.html"}
+<h2>Select a Room</h2>
+
+<p>
+Room:
+<select name="wizard[room_id]" onclick="roomChanged(this)">
+	<option></option>
+	{html_options options=$rooms selected=$wizard->get('room_id')}
+</select>
+</p>
+
+<p>
+Schedule Name: <input name="wizard[name]" id="name" onkeyup="this.changed = true" value="{$wizard->get('name')}">
+</p>
+
+<p>
+Schedule Group Name: <input name="wizard[group]" id="group" onkeyup="this.changed = true" value="{$wizard->get('group')}">
+</p>
+
+<input type="hidden" id="back" value=1>
+<input type="hidden" id="page" name="next_page" value=21>
+{include file="schedule/general_wizard_footer.html"}

@@ -1,0 +1,37 @@
+{head type="js"}
+Behavior.register('#next',
+	function(element) {
+		$u.registerEvent(element,'click',function(e) {
+			var message = new clniPopup('<h1>Creating Schedule Please Wait</h1>',false);
+			message.modal = true;
+			message.display();
+		});
+	}
+);
+{/head}
+{include file="schedule/general_wizard_header.html"}
+
+<h2>Select the date and time for the schedule</h2>
+
+<p>Schedule runs from {clni_input_date name="wizard[date_start]" value=$wizard->get('date_start')} 
+	to {clni_input_date name="wizard[date_end]" value=$wizard->get('date_end')}</p>
+
+<p>Schedule is applied to which days of the week:<br>
+<div style="margin-left: 1em">
+	{assign var="days" value=$wizard->get('days')}
+{foreach from=$em->enumArray('days_of_week') item="label" key="key"}
+<input type="checkbox" name="wizard[days][]" value="{$key}" id="day{$key}"{if in_array($key,$days)} checked{/if}>
+<label for="day{$key}">{$label}</label><br>
+{/foreach}
+</div>
+</p>
+
+<p>Schedule runs from <input name="wizard[time_start]" size=5 value="{$wizard->get('time_start')}"> 
+	to <input name="wizard[time_end]" size=5 value="{$wizard->get('time_end')}"> (24-Hour Time)</p>
+
+<p>Lunch break from <input name="wizard[lunch_start]" size=5 value="{$wizard->get('lunch_start')}"> 
+	to <input name="wizard[lunch_end]" size=5 value="{$wizard->get('lunch_end')}"> (24-Hour Time)</p>
+
+	<input type="hidden" id="back" value=20>
+	<input type="hidden" id="page" name="next_page" value=99>
+{include file="schedule/general_wizard_footer.html"}
