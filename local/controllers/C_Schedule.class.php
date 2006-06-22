@@ -182,8 +182,8 @@ class C_Schedule extends Controller
 				$eventids = $rec->getChildrenIds('ScheduleEvent');
 				$db =& $eg->dbHelper;
 				foreach($eventids as $id) {
-					$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
-					$db->execute($sql);
+					//$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
+					//$db->execute($sql);
 					$qScheduleEventId = $db->quote($id);
 					$qEventGroupId = $db->quote($eg->get('id'));
 					$sql = "
@@ -335,8 +335,6 @@ class C_Schedule extends Controller
 		$this->provider =& $schedule->getParent('Provider');
 		
 		$this->room =& $schedule->getParent('Room');
-//		$this->_processEventGroup();
-//		$this->_processRecurrence();
 		$this->_processDeletes();
 		$this->_processEvent();
 		$this->messages->addMessage('Schedule Updated');
@@ -350,32 +348,6 @@ class C_Schedule extends Controller
 			$this->_deleteRecurrences($this->POST->getRaw('DeleteRecurrence'));
 		}
 
-	}
-
-	/**
-	 * No longer needed(?)
-	 *
-	 */
-	function _processRecurrence(){
-		if(isset($_POST['Recurrence']) && !empty($_POST['RecurrencePattern']['pattern_type'])){
-			$rec =& $this->schedule->createRecurrence($this->POST->getRaw('Recurrence'),$this->POST->getRaw('RecurrencePattern'));
-			if($rec !== false) {
-				$eg =& $rec->getParent('EventGroup');
-				$events =& $rec->getChildren('ScheduleEvent');
-				while($event =& $events->current() && $events->valid()){
-					$event->set('title',$eg->get('title'));
-					$event->setParent($this->schedule);
-					$event->setParent($this->provider);
-					$event->setParent($this->practice);
-					$event->setParent($this->room);
-					$event->setParent($eg);
-					$events->next();
-				}
-				$this->messages->addMessage('Recurrence Set and Populated.');
-			} else {
-				$this->messages->addMessage('There was a problem with the data you entered for recurrence.  Please try again.');
-			}
-		}
 	}
 }
 ?>
