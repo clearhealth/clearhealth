@@ -271,11 +271,13 @@ class ClearhealthCalendarData {
 		$db = new clniDb();
 		$sql = "SELECT
 				r.id,
-				'333333' color,
-				'' nickname,
-				r.name AS name
+				color,
+				r.name nickname,
+				concat(b.name,'->',r.name) AS name
 			from
 				rooms r
+				inner join buildings b on r.building_id = b.id
+
 			";
 		$res = $db->execute($sql);
 		$ret = array();
