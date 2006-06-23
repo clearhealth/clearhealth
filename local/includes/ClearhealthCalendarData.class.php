@@ -865,6 +865,7 @@ class ClearhealthCalendarData {
 			// now create the pre-columns (the appointment-dragger)
 			$view->assign_by_ref('dayIterator',$dayIterator);
 			
+			$room_id = 0;
 			for($dayIterator->rewind(); $dayIterator->valid(); $dayIterator->next()) {
 				$ts =$dayIterator->getTimestamp();
 				$view->assign('timestamp',$ts);
@@ -880,7 +881,11 @@ class ClearhealthCalendarData {
 					$display = $col['schedules'][$schedid]['display'];
 				}
 
-				$view->assign('id','st-'.$dayIterator->getTimestamp().'-'.$provider_id);
+				if (isset($columns[$provider_id]['schedules'][$ts]['room_id'])) {
+					$room_id = $columns[$provider_id]['schedules'][$ts]['room_id'];
+				}
+
+				$view->assign('id','st-'.$dayIterator->getTimestamp().'-'.$provider_id.'-'.$room_id);
 				$dayIterator->next();
 				$nextTime = $dayIterator->getTime();
 				$dayIterator->previous();
