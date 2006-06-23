@@ -299,6 +299,7 @@ class ClearhealthCalendarData {
 			$s =& $this->schedules;
 		}
 		$map = $this->eventProviderMap($filters);
+
 		if (!is_array($map)) {
 			$map = array();
 		}
@@ -371,6 +372,38 @@ class ClearhealthCalendarData {
 				LEFT JOIN buildings b ON r.building_id=b.id
 			WHERE 
 				(ifnull(b.practice_id,person.primary_practice_id) = $practice_id)
+				$where
+			GROUP BY event.event_id
+				";
+		return $db->getAssoc($sql);
+	}
+
+	/**
+	 *  Returns an array of $event_id=>$room_id
+	 *
+	 * @param array $filters
+	 * @return array
+	 */
+	function eventRoomMap(&$filters) {
+		$db = new clniDb();
+		$where = $this->toWhere($filters,false);
+		if (!empty($where)) {
+			$where = ' and '.$where;
+		}
+
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
+
+		$sql = "SELECT 
+				event.event_id, 
+				provider.person_id as provider_id 
+			FROM 
+				`event` AS event
+				inner join appointment a on a.event_id = event.event_id
+				inner join rooms r on a.room_id = r.id
+				inner JOIN buildings b ON r.building_id=b.id
+			WHERE 
+				b.practice_id = $practice_id
 				$where
 			GROUP BY event.event_id
 				";
@@ -522,6 +555,32 @@ class ClearhealthCalendarData {
 		return $ret;
 	}
 
+	function roomsWithSchedules($where) {
+		$db = new clniDb();
+
+		$ret = array();
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
+		
+		$sql = "
+			SELECT 
+				r.id room_id,
+				r.id id
+			FROM 
+				`event` AS aevent
+				INNER JOIN schedule_event se ON se.event_id=aevent.event_id
+				INNER JOIN event_group eg ON eg.event_group_id=se.event_group_id
+				INNER JOIN schedule s ON eg.schedule_id=s.schedule_id
+				
+				INNER JOIN rooms r ON r.id=eg.room_id
+				INNER JOIN buildings b ON r.building_id=b.id
+			WHERE 
+				s.provider_id = 0 and
+				b.practice_id = $practice_id $where
+			 ";
+		return $db->getAssoc($sql);
+	}
+
 	/**
 	 * Returns array of provider Appointments
 	 * array[provider_id][] = array('label','start','end')
@@ -549,7 +608,8 @@ class ClearhealthCalendarData {
 				IF(schedule_code = 'PS',1,IF(s.schedule_id IS NULL AND a.patient_id = 0,2,0)) AS schedule_sort,
 				provider.person_id provider_id,
 				UNIX_TIMESTAMP(aevent.start) AS start_ts,
-				UNIX_TIMESTAMP(aevent.end) AS end_ts
+				UNIX_TIMESTAMP(aevent.end) AS end_ts,
+				rm.id room_id
 			FROM 
 				`event` AS aevent 
 				INNER JOIN appointment AS a ON aevent.event_id = a.event_id
@@ -573,6 +633,10 @@ class ClearhealthCalendarData {
 				";
 
 		// If there's no schedule and no patient, it's an ADMIN event
+		
+
+		// get a list of rooms with schedules
+		$rooms = $this->roomsWithSchedules($where);
 
 		$res = $db->execute($sql);
 		$ret = array();
@@ -580,18 +644,39 @@ class ClearhealthCalendarData {
 		$eventrender =& new CalendarEventRender();
 
 		while($res && !$res->EOF) {
-			if(!isset($ret[$res->fields['provider_id']])) {
-				$ret[$res->fields['provider_id']] = array();
-				$ret[$res->fields['provider_id']]['events'] = array();
-			}
-			if(!isset($ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']])) {
-				$ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']] = array();
-			}
-			$ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']][$res->fields['event_id']] = array();
+			$providerId = $res->fields['provider_id'];
+			$startTs = $res->fields['start_ts'];
+			$roomId = $res->fields['room_id'];
+			$eventId = $res->fields['event_id'];
 
-			$ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']][$res->fields['event_id']]['html'] = $eventrender->render($res->fields,$renderType);
-			$ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']][$res->fields['event_id']]['start'] = $res->fields['start_ts'];
-			$ret[$res->fields['provider_id']]['events'][$res->fields['start_ts']][$res->fields['event_id']]['end'] = $res->fields['end_ts'];
+			if(!isset($ret[$providerId])) {
+				$ret[$providerId] = array();
+				$ret[$providerId]['events'] = array();
+			}
+			if(!isset($ret[$providerId]['events'][$startTs])) {
+				$ret[$providerId]['events'][$startTs] = array();
+			}
+
+			$ret[$providerId]['events'][$startTs][$eventId] = array();
+
+			$html = $eventrender->render($res->fields,$renderType);
+			$ret[$providerId]['events'][$startTs][$eventId]['html'] = $html;
+			$ret[$providerId]['events'][$startTs][$eventId]['start'] = $res->fields['start_ts'];
+			$ret[$providerId]['events'][$startTs][$eventId]['end'] = $res->fields['end_ts'];
+
+			// add room based columns if there is a room schedule
+			if (isset($rooms[$roomId])) {
+				if(!isset($ret[$roomId])) {
+					$ret[$roomId] = array();
+					$ret[$roomId]['events'] = array();
+				}
+				if (!isset($ret[$roomId]['events'][$startTs])) {
+					$ret[$roomId]['events'][$startTs] = array();
+				}
+				$ret[$roomId]['events'][$startTs][$eventId]['html'] = $html;
+				$ret[$roomId]['events'][$startTs][$eventId]['start'] = $res->fields['start_ts'];
+				$ret[$roomId]['events'][$startTs][$eventId]['end'] = $res->fields['end_ts'];
+			}
 			
 			$res->MoveNext();
 		}
