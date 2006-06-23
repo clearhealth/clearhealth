@@ -6,7 +6,7 @@ function providerChanged(select) {
 }
 function roomChanged(select) {
 	if (!$('group').changed) { 
-		$('group').value = select.options[select.selectedIndex].text + " hours";
+		$('group').value = select.options[select.selectedIndex].text;
 	}
 }
 {/head}
@@ -29,11 +29,11 @@ Room:
 </p>
 
 <p>
-Schedule Name: <input name="wizard[name]" id="name" onkeyup="this.changed = true" value="{$wizard->get('name')}">
+Schedule Name: <input name="wizard[name]" id="name" onkeyup="this.changed = true" value="{$wizard->get('name')}" size=50>
 </p>
 
 <p>
-Schedule Group Name: <input name="wizard[group]" id="group" onkeyup="this.changed = true" value="{$wizard->get('group')}">
+Schedule Group Name: <input name="wizard[group]" id="group" onkeyup="this.changed = true" value="{$wizard->get('group')}" size=50>
 </p>
 
 <input type="hidden" id="back" value=1>
