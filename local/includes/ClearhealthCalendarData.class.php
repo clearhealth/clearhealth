@@ -487,12 +487,14 @@ class ClearhealthCalendarData {
 		$sql = "
 			SELECT 
 				event.event_id,
-				eg.title,
+				s.title,
+				eg.title group_title,
 				UNIX_TIMESTAMP(event.start) AS start,
 				UNIX_TIMESTAMP(event.end) AS end, 
 				if(s.provider_id=0,r.id,s.provider_id) provider_id, /* this is a hack for room schedules */
 				u.username,
-				r.name AS roomname
+				r.name AS roomname,
+				r.id room_id
 			FROM 
 				`event` AS event
 				INNER JOIN schedule_event se ON se.event_id=event.event_id
@@ -512,11 +514,14 @@ class ClearhealthCalendarData {
 			if(!isset($ret[$res->fields['provider_id']])) {
 				$ret[$res->fields['provider_id']] = array();
 			}
+
+			$display = !empty($res->fields['group_title']) ? $res->fields['group_title'].'<br />'.$res->fields['username'] : $res->fields['username'];
 			$ret[$res->fields['provider_id']][$res->fields['start']] = array(
 				'label'=>$res->fields['title'],
 				'start'=>$res->fields['start'],
 				'end'=>$res->fields['end'],
-				'display'=>!empty($res->fields['roomname']) ? $res->fields['roomname'].'<br />'.$res->fields['username'] : $res->fields['username']
+				'display'=>$display,
+				'room_id'=>$res->fields['room_id']
 			);
 			$res->MoveNext();
 		}
