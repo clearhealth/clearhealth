@@ -379,38 +379,6 @@ class ClearhealthCalendarData {
 	}
 
 	/**
-	 *  Returns an array of $event_id=>$room_id
-	 *
-	 * @param array $filters
-	 * @return array
-	 */
-	function eventRoomMap(&$filters) {
-		$db = new clniDb();
-		$where = $this->toWhere($filters,false);
-		if (!empty($where)) {
-			$where = ' and '.$where;
-		}
-
-		$profile =& Celini::getCurrentUserProfile();
-		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
-
-		$sql = "SELECT 
-				event.event_id, 
-				provider.person_id as provider_id 
-			FROM 
-				`event` AS event
-				inner join appointment a on a.event_id = event.event_id
-				inner join rooms r on a.room_id = r.id
-				inner JOIN buildings b ON r.building_id=b.id
-			WHERE 
-				b.practice_id = $practice_id
-				$where
-			GROUP BY event.event_id
-				";
-		return $db->getAssoc($sql);
-	}
-
-	/**
 	 *  Get the previous appointments for a provider and a given time
 	 *
 	 *  @return array
