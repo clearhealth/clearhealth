@@ -97,7 +97,7 @@ function hideAddAppointment() {
 	appointmentPopup.hide();
 }
 
-st.selectItems = function() {
+st.selectItems = function(items) {
 	showAddAppointment();
 	var start = st.getEarliestSelected();
 	var end = st.getLatestSelected();
@@ -119,17 +119,27 @@ st.selectItems = function() {
 
 	$('aeDate').value = start.print('%m/%d/%Y');
 
-	var p = id.lastIndexOf('-');
-	var provider = id.substr(p+1);
+	var match = /st-[0-9]+-([0-9]+)-([0-9]+)/.exec(id);
+	var provider = match[1];
+	var room = match[2];
 
 	var select = $('aeProvider').getElementsByTagName('select')[0];
-
 	for(var i = 0; i < select.options.length; i++) {
 		if (select.options[i].value == provider) {
 			select.selectedIndex = i;
 			break;
 		}
 	}
+
+	var select = $('aeRoom');
+	for(var i = 0; i < select.options.length; i++) {
+		if (select.options[i].value == room) {
+			select.selectedIndex = i;
+			break;
+		}
+	}
+
+	
 }
 
 function editAppointment(id){
