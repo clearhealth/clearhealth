@@ -9,7 +9,7 @@ class C_OccurenceBreakdown extends Controller {
 	function actionEdit($id = -1) {
 
 		$times = array();
-		for($i = 5; $i < 65; $i+=5) {
+		for($i = 5; $i < 125; $i+=5) {
 			$times[$i*60] = $i;
 		}
 		$this->assign('times',$times);
