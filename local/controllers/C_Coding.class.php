@@ -354,15 +354,24 @@ class C_Coding extends Controller {
 		$groupList  = array('c.code_id');
 		$orderList  = array();
 		
-		if ($search_type == "icd") {
-			$filterList[] = 'c.code_type = 2';
-		}
-		elseif ($search_type == 'cpt') {
-			array_push($filterList, 'c.code_type = 3', 'fsd.data > 0');
-			array_push($tableList,
-				'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
-				'JOIN fee_schedule AS fs USING (fee_schedule_id)');
-			$orderList[] = 'fs.priority DESC';
+		switch($search_type) {
+			case 'icd':
+				$filterList[] = 'c.code_type = 2';
+				break;
+			case 'cpt':
+				array_push($filterList, 'c.code_type = 3', 'fsd.data > 0');
+				array_push($tableList,
+					'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
+					'JOIN fee_schedule AS fs USING (fee_schedule_id)');
+				$orderList[] = 'fs.priority DESC';
+				break;
+			case 'cdt':
+				array_push($filterList, 'c.code_type = 5', 'fsd.data > 0');
+				array_push($tableList,
+					'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
+					'JOIN fee_schedule AS fs USING (fee_schedule_id)');
+				$orderList[] = 'fs.priority DESC';
+				break;
 		}
 		
 		if ($superbill > 0) {
@@ -424,6 +433,39 @@ class C_Coding extends Controller {
 		}
 			
 		return null;
+	}
+
+	function cdt_search($search_string,$superbill=0) {
+		$_POST['process'] = true;
+		$_POST['searchstring'] = $search_string;
+		$_POST['searchtype'] = 'cpt';
+		$_POST['superbill'] = $superbill;
+		
+		$this->find_action_process();
+		
+		if (is_array($this->get_template_vars('result_set'))) { 
+			return $this->get_template_vars('result_set');
+		}
+			
+		return null;
+	}
+
+	function procedure_search($search_string,$superbill=0) {
+		$profile =& Celini::getCurrentUserProfile();
+		$practice =& Celini::newOrdo('Practice',$profile->getCurrentPracticeId());
+
+		if ($practice->get('type') == 1) {
+			// if dental return cdt_search
+			return $this->cdt_search($search_string,$superbill);
+		}
+		else {
+			// if medical return cpt_search
+			return $this->cpt_search($search_string,$superbill);
+		}
+	}
+
+	function diagnosis_search($search_string,$superbill=0) {
+		return $this->icd_search($search_string,$superbill);
 	}
 
 	function process($data,$return = false){
