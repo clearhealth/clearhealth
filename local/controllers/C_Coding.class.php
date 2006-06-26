@@ -339,6 +339,7 @@ class C_Coding extends Controller {
 		$superbill = intval($_POST['superbill']);
 		$superbills = array();
 
+		$limit = true;
 		if ($superbill) {
 			// get the superbill for the current encounter practice
 			$session =& Celini::sessionInstance();
@@ -347,30 +348,40 @@ class C_Coding extends Controller {
 			$sb =& Celini::newOrdo('Superbill');
 			$superbills = $sb->SuperbillsForPractice($practiceId);
 		}
+		if ($superbill == -1) {
+			$limit = false;
+		}
 		
 		$columnList = array('c.code_id', 'c.code', 'c.code_text');
 		$tableList  = array('codes AS c');
 		$filterList = array("(c.code LIKE '{$search_string}%' OR c.code_text LIKE '%{$search_string}%') ");
 		$groupList  = array('c.code_id');
 		$orderList  = array("(c.code LIKE '{$search_string}%') DESC");
+
 		
 		switch($search_type) {
 			case 'icd':
 				$filterList[] = 'c.code_type = 2';
 				break;
 			case 'cpt':
-				array_push($filterList, 'c.code_type = 3', 'fsd.data > 0');
-				array_push($tableList,
-					'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
-					'JOIN fee_schedule AS fs USING (fee_schedule_id)');
-				$orderList[] = 'fs.priority DESC';
+				array_push($filterList, 'c.code_type = 3');
+				if ($limit) {
+					array_push($filterList, 'fsd.data > 0');
+					array_push($tableList,
+						'LEFT JOIN fee_schedule_data AS fsd USING (code_id)',
+						'LEFT JOIN fee_schedule AS fs USING (fee_schedule_id)');
+					$orderList[] = 'fs.priority DESC';
+				}
 				break;
 			case 'cdt':
-				array_push($filterList, 'c.code_type = 5', 'fsd.data > 0');
-				array_push($tableList,
-					'INNER JOIN fee_schedule_data AS fsd USING (code_id)',
-					'JOIN fee_schedule AS fs USING (fee_schedule_id)');
-				$orderList[] = 'fs.priority DESC';
+				array_push($filterList, 'c.code_type = 5');
+				if ($limit) {
+					array_push($filterList,'fsd.data > 0');
+					array_push($tableList,
+						'LEFT JOIN fee_schedule_data AS fsd USING (code_id)',
+						'LEFT JOIN fee_schedule AS fs USING (fee_schedule_id)');
+					$orderList[] = 'fs.priority DESC';
+				}
 				break;
 		}
 		
@@ -438,7 +449,7 @@ class C_Coding extends Controller {
 	function cdt_search($search_string,$superbill=0) {
 		$_POST['process'] = true;
 		$_POST['searchstring'] = $search_string;
-		$_POST['searchtype'] = 'cpt';
+		$_POST['searchtype'] = 'cdt';
 		$_POST['superbill'] = $superbill;
 		
 		$this->find_action_process();
@@ -450,7 +461,7 @@ class C_Coding extends Controller {
 		return null;
 	}
 
-	function procedure_search($search_string,$superbill=0) {
+	function procedure_search($search_string,$superbill=-1) {
 		$profile =& Celini::getCurrentUserProfile();
 		$practice =& Celini::newOrdo('Practice',$profile->getCurrentPracticeId());
 
@@ -464,7 +475,7 @@ class C_Coding extends Controller {
 		}
 	}
 
-	function diagnosis_search($search_string,$superbill=0) {
+	function diagnosis_search($search_string,$superbill=-1) {
 		return $this->icd_search($search_string,$superbill);
 	}
 
