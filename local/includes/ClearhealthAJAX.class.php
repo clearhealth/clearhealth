@@ -35,7 +35,7 @@ class ClearhealthAJAX {
 	function initcoding(){
 		$GLOBALS['loader']->requireOnce('controllers/C_Coding.class.php');
 		$coding=&new C_Coding();
-		$this->server->registerClass($coding,'coding',array('cpt_search','icd_search'));
+		$this->server->registerClass($coding,'coding',array('cpt_search','icd_search','cdt_search','procedure_search','diagnosis_search'));
 	}
 
 	function initReport() {
