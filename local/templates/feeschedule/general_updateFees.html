@@ -7,7 +7,7 @@ function submitEdit(form) {
 <div>
 	<table><tbody><tr>
 		<td>
-			<label class="inline">Select a CPT code: </label>
+			<label class="inline">Select a Procedure code: </label>
 		</td>
 		<td>
 			<div class="SuggestInput">
@@ -23,7 +23,7 @@ function submitEdit(form) {
 <script type="text/javascript">
 	var editAction = '{$EDIT_ACTION}code_id=';
 	{literal}
-	var suggest = new codeSuggest('code','codeId',function() { 	
+	var suggest = new procedureSuggest('code','codeId',function() { 	
 				$('go').disabled = false;
 				HTML_AJAX.replace('editor',editAction+$('codeId').value);
 			});
