@@ -315,9 +315,11 @@ class ClearhealthCalendarData {
 			}
 			if (isset($pdata[$providerId])) {
 				$data = $pdata[$providerId];
+				$isRoom = 0;
 			}
 			else {
 				$data = $rdata[$providerId];
+				$isRoom = 1;
 			}
 			$color = $data['color'];
 
@@ -335,6 +337,7 @@ class ClearhealthCalendarData {
 				'backColor' => $background,
 				'fontColor' => $font,
 				'label' => $data['name'],
+				'isRoom'    => $isRoom,
 				'schedules' => $schedules
 			);
 			$head =& Celini::HTMLHeadInstance();
@@ -624,6 +627,7 @@ class ClearhealthCalendarData {
 
 			if(!isset($ret[$providerId])) {
 				$ret[$providerId] = array();
+				$ret[$providerId]['isRoom'] = 0;
 				$ret[$providerId]['events'] = array();
 			}
 			if(!isset($ret[$providerId]['events'][$startTs])) {
@@ -641,6 +645,7 @@ class ClearhealthCalendarData {
 			if (isset($rooms[$roomId])) {
 				if(!isset($ret[$roomId])) {
 					$ret[$roomId] = array();
+					$ret[$roomId]['isRoom'] = 1;
 					$ret[$roomId]['events'] = array();
 				}
 				if (!isset($ret[$roomId]['events'][$startTs])) {
