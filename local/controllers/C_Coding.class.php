@@ -352,7 +352,7 @@ class C_Coding extends Controller {
 		$tableList  = array('codes AS c');
 		$filterList = array("(c.code LIKE '{$search_string}%' OR c.code_text LIKE '%{$search_string}%') ");
 		$groupList  = array('c.code_id');
-		$orderList  = array();
+		$orderList  = array("(c.code LIKE '{$search_string}%') DESC");
 		
 		switch($search_type) {
 			case 'icd':
