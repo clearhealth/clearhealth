@@ -15,7 +15,10 @@ $head =& Celini::HTMLHeadInstance();
 $head->addExternalCss('suggest');
 
 // hack up the tooth list so we can output it latter
-$data = $this->_tpl_vars['data']->allData();
+$data = array();
+if (isset($this->_tpl_vars['data'])) {
+	$data = $this->_tpl_vars['data']->allData();
+}
 $list = array();
 foreach($data as $field => $info) {
 	if (preg_match('/tooth_([a-zA-Z0-9]+)_(.+)/',$field,$match)) {
