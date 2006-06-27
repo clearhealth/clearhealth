@@ -1,0 +1,178 @@
+{php}
+$this->_tpl_vars['teetharray'] = array(
+	'N/A'=>'N/A',
+	'All'=>'All',
+	1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9,10=>10,11=>11,12=>12,13=>13,14=>14,15=>15,
+	16=>16,17=>17,18=>18,19=>19,20=>20,21=>21,22=>22,23=>23,24=>24,25=>25,26=>26,27=>27,
+	28=>28,29=>29,30=>30,31=>31,32=>32,
+	'All (Primary)'=>'All (Primary)',
+	'A'=>'A','B'=>'B','C'=>'C','D'=>'D','E'=>'E','F'=>'F','G'=>'G','H'=>'H','I'=>'I','J'=>'J',
+	'K'=>'K','L'=>'L','M'=>'M','N'=>'N','O'=>'O','P'=>'P','Q'=>'Q','R'=>'R','S'=>'S','T'=>'T'
+	);
+$this->_tpl_vars['toothsidearray'] = array('N/A'=>'N/A','Front'=>'Front','Back'=>'Back','Top'=>'Top','Left'=>'Left','Right'=>'Right');
+
+$head =& Celini::HTMLHeadInstance();
+$head->addExternalCss('suggest');
+
+// hack up the tooth list so we can output it latter
+$data = $this->_tpl_vars['data']->allData();
+$list = array();
+foreach($data as $field => $info) {
+	if (preg_match('/tooth_([a-zA-Z0-9]+)_(.+)/',$field,$match)) {
+		if ($match[2] == 'note') {
+			$info['value'] = str_replace(array("\r\n","\n"),'<br>',$info['value']);
+		}
+		$list[$match[1]][$match[2]] = $info['value'];
+
+	}
+}
+$this->_tpl_vars['datalist'] = $list;
+{/php}
+
+{head type="css"}
+#toothChooser {
+	border: solid 1px black;
+	width: 700px;
+	height: 327px;
+	margin-bottom: 2px;
+}
+#plan td {
+	vertical-align: top;
+}
+{/head}
+
+{head type="js"}
+var selectedTeeth = {};
+function addTooth() {
+	currentTooth.temp = false;
+	currentTooth.selected = true;
+	$('plan').style.display = 'table';
+
+	var id = $('tooth').value;
+	selectedTeeth[$('tooth').value] = currentTooth;
+
+	addRow($('tooth').value,$('toothside').value, $('toothcode').value, $('toothcode_id').value, $('toothnote').value);
+
+	$('tooth').selectedIndex = 0;
+	$('toothside').selectedIndex = 0;
+	$('toothnote').value = '';
+	$('toothcode').value = '';
+}
+
+function addRow(tooth,toothside,toothcode,toothcode_id,toothnote) {
+
+	var tr = document.createElement('tr');
+
+	var td = document.createElement('td');
+	td.innerHTML = '<a href="#" onclick="removeRow(this)">X</a>';
+
+	// hidden fields
+	var input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'string[tooth_'+tooth+'_tooth]';
+	input.value = tooth;
+	td.appendChild(input);
+
+	var input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'string[tooth_'+tooth+'_side]';
+	input.value = toothside;
+	td.appendChild(input);
+
+	var input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'string[tooth_'+tooth+'_code]';
+	input.value = toothcode;
+	td.appendChild(input);
+
+	var input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'int[tooth_'+tooth+'_code_id]';
+	input.value = toothcode_id;
+	td.appendChild(input);
+
+	var input = document.createElement('input');
+	input.type = 'hidden';
+	input.name = 'text[tooth_'+tooth+'_note]';
+	input.value = toothnote;
+	td.appendChild(input);
+
+	tr.appendChild(td);
+
+	var td = document.createElement('td');
+	td.innerHTML = tooth;
+	tr.appendChild(td);
+
+	var td = document.createElement('td');
+	td.innerHTML = toothside;
+	tr.appendChild(td);
+
+	var td = document.createElement('td');
+	td.innerHTML = toothcode;
+	tr.appendChild(td);
+
+	var td = document.createElement('td');
+	td.innerHTML = toothnote.replace('\n','<br>');
+	tr.appendChild(td);
+
+	$('plan').tBodies[0].appendChild(tr);
+
+}
+function removeRow(firstField) {
+	var tr = firstField.parentNode.parentNode;
+	var tooth = selectedTeeth[tr.cells[1].innerHTML];
+
+	tooth.src = tooth.src.replace('-over','');
+	tooth.selected = false;
+	tr.parentNode.removeChild(tr);
+}
+{/head}
+
+<h1>Treatment Plan</h1>
+{include file="coding/tooth_picker.html" basedir=$base_dir}
+
+	<div id="adder">
+		<select name="tooth" id="tooth">
+			{html_options options=$teetharray}
+		</select>
+		<select name="toothside" id="toothside">
+			{html_options options=$toothsidearray}
+		</select>
+		<br>
+		<textarea id="toothnote"></textarea>
+
+		<div class="SuggestContainer">
+			Code: 
+			<input TYPE="hidden" name="parent_id"  id="toothcode_id" value="{$parent_id}">
+			<input TYPE="text" name="parent_code" id="toothcode" autocomplete="off">
+		</div>
+
+		<button onclick="addTooth()">Add Tooth</button>
+	</div>
+	<br>
+
+{clni_form}
+<fieldset>
+	<legend>Plan Details</legend>
+<table id="plan" class="grid" style="display:none">
+	<thead>
+		<tr>
+			<th></th><th>Tooth</th><th>Side</th><th>Code</th><th>Note</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+</fieldset>
+<input type="submit" value="Save Plan">
+</form>
+<script type="text/javascript">
+	{literal}
+	var ac = new procedureSuggest('toothcode','toothcode_id',false);
+	{/literal}
+	{if count($datalist) > 0}$('plan').style.display = 'table';{/if}
+{foreach from=$datalist item=row}
+	addRow('{$row.tooth}','{$row.side}','{$row.code}','{$row.code_id}','{$row.note}');
+{/foreach}
+
+</script>
