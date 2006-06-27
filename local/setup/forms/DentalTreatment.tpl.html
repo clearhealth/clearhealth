@@ -59,6 +59,19 @@ function addTooth() {
 	$('toothcode').value = '';
 }
 
+function markTooth(tooth) {
+
+	var teeth = $('toothChooser').getElementsByTagName('img');
+	var test = /tooth(.+)\.gif/;
+	for(var i = 0; i < teeth.length; i++) {
+		var m = test.exec(teeth[i].src);
+		if (m && m[1] == tooth) {
+			teeth[i].src = basedir+"images/dental/tooth"+tooth+"-over.gif";
+			return true;
+		}
+	}
+}
+
 function addRow(tooth,toothside,toothcode,toothcode_id,toothnote) {
 
 	var tr = document.createElement('tr');
@@ -172,6 +185,7 @@ function removeRow(firstField) {
 	{/literal}
 	{if count($datalist) > 0}$('plan').style.display = 'table';{/if}
 {foreach from=$datalist item=row}
+ 	markTooth('{$row.tooth}');
 	addRow('{$row.tooth}','{$row.side}','{$row.code}','{$row.code_id}','{$row.note}');
 {/foreach}
 
