@@ -79,6 +79,9 @@ class ClearhealthCalendarData {
 		$practice =& Celini::newOrdo('Practice',$profile->getCurrentPracticeId());
 		$view->assign_by_ref('practice',$practice);
 
+		$config =& Celini::configInstance('practice');
+		$view->assign_by_ref('config',$config);
+
 		return $view->fetch('calendar/general_extradisplay.html');
 	}
 

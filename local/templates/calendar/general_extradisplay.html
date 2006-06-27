@@ -15,10 +15,10 @@
 
 		<br>
 		<p>
-		<input type="checkbox" id="doubleBooking" onclick="toggleAllConflicts(this)" {if $practice->get('type')}CHECKED {/if}>
+		<input type="checkbox" id="doubleBooking" onclick="toggleAllConflicts(this)" {if $practice->get('type')}CHECKED{/if}>
 		<label class="inline" for="doubleBooking">Expand double bookings</label>
 		<br>
-		<input type="checkbox" id="hideProvider" onclick="toggleProviders(this)">
+		<input type="checkbox" id="hideProvider" onclick="toggleProviders(this)" {if $config->get('MinimizeProviderSchedules')}CHECKED{/if}>
 		<label class="inline" for="hideProvider">Minimize provider schedules</label>
 		</p>
 
