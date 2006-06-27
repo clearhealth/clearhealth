@@ -1,0 +1,742 @@
+
+<script type="text/javascript">
+var basedir = "{$basedir}";
+{literal}
+var currentTooth = false;
+function selectTooth(link,id){
+	var teeth = $('toothChooser').getElementsByTagName('img');
+	for(var i = 0; i < teeth.length; i++) {
+		if (teeth[i].temp) {
+			teeth[i].src = teeth[i].src.replace('-over','');
+		}
+	}
+
+	var image = link.getElementsByTagName('img')[0];
+	currentTooth = image;
+	document.getElementById('tooth').value=id;
+	image.src = basedir+"images/dental/tooth"+id+"-over.gif";
+	image.temp = true;
+}
+function newImage(arg) {
+	if (document.images) {
+		rslt = new Image();
+		rslt.src = arg;
+		return rslt;
+	}
+}
+
+var preloadFlag = false;
+function preloadImages() {
+	if (document.images) {
+{/literal}
+		tooth8_over = newImage("{$basedir}images/dental/tooth8-over.gif");
+		tooth9_over = newImage("{$basedir}images/dental/tooth9-over.gif");
+		tooth10_over = newImage("{$basedir}images/dental/tooth10-over.gif");
+		tooth32_over = newImage("{$basedir}images/dental/tooth32-over.gif");
+		toothT_over = newImage("{$basedir}images/dental/toothT-over.gif");
+		toothK_over = newImage("{$basedir}images/dental/toothK-over.gif");
+		tooth17_over = newImage("{$basedir}images/dental/tooth17-over.gif");
+		tooth7_over = newImage("{$basedir}images/dental/tooth7-over.gif");
+		tooth6_over = newImage("{$basedir}images/dental/tooth6-over.gif");
+		toothL_over = newImage("{$basedir}images/dental/toothL-over.gif");
+		tooth11_over = newImage("{$basedir}images/dental/tooth11-over.gif");
+		tooth31_over = newImage("{$basedir}images/dental/tooth31-over.gif");
+		tooth18_over = newImage("{$basedir}images/dental/tooth18-over.gif");
+		toothS_over = newImage("{$basedir}images/dental/toothS-over.gif");
+		toothM_over = newImage("{$basedir}images/dental/toothM-over.gif");
+		tooth5_over = newImage("{$basedir}images/dental/tooth5-over.gif");
+		tooth12_over = newImage("{$basedir}images/dental/tooth12-over.gif");
+		toothR_over = newImage("{$basedir}images/dental/toothR-over.gif");
+		tooth30_over = newImage("{$basedir}images/dental/tooth30-over.gif");
+		toothQ_over = newImage("{$basedir}images/dental/toothQ-over.gif");
+		toothN_over = newImage("{$basedir}images/dental/toothN-over.gif");
+		tooth13_over = newImage("{$basedir}images/dental/tooth13-over.gif");
+		tooth4_over = newImage("{$basedir}images/dental/tooth4-over.gif");
+		toothF_over = newImage("{$basedir}images/dental/toothF-over.gif");
+		toothE_over = newImage("{$basedir}images/dental/toothE-over.gif");
+		tooth29_over = newImage("{$basedir}images/dental/tooth29-over.gif");
+		toothP_over = newImage("{$basedir}images/dental/toothP-over.gif");
+		toothO_over = newImage("{$basedir}images/dental/toothO-over.gif");
+		tooth20_over = newImage("{$basedir}images/dental/tooth20-over.gif");
+		toothG_over = newImage("{$basedir}images/dental/toothG-over.gif");
+		toothD_over = newImage("{$basedir}images/dental/toothD-over.gif");
+		tooth3_over = newImage("{$basedir}images/dental/tooth3-over.gif");
+		tooth14_over = newImage("{$basedir}images/dental/tooth14-over.gif");
+		toothH_over = newImage("{$basedir}images/dental/toothH-over.gif");
+		tooth28_over = newImage("{$basedir}images/dental/tooth28-over.gif");
+		tooth21_over = newImage("{$basedir}images/dental/tooth21-over.gif");
+		toothC_over = newImage("{$basedir}images/dental/toothC-over.gif");
+		tooth15_over = newImage("{$basedir}images/dental/tooth15-over.gif");
+		tooth2_over = newImage("{$basedir}images/dental/tooth2-over.gif");
+		toothI_over = newImage("{$basedir}images/dental/toothI-over.gif");
+		tooth27_over = newImage("{$basedir}images/dental/tooth27-over.gif");
+		tooth26_over = newImage("{$basedir}images/dental/tooth26-over.gif");
+		tooth22_over = newImage("{$basedir}images/dental/tooth22-over.gif");
+		toothB_over = newImage("{$basedir}images/dental/toothB-over.gif");
+		tooth25_over = newImage("{$basedir}images/dental/tooth25-over.gif");
+		tooth24_over = newImage("{$basedir}images/dental/tooth24-over.gif");
+		tooth23_over = newImage("{$basedir}images/dental/tooth23-over.gif");
+		toothJ_over = newImage("{$basedir}images/dental/toothJ-over.gif");
+		tooth16_over = newImage("{$basedir}images/dental/tooth16-over.gif");
+		tooth1_over = newImage("{$basedir}images/dental/tooth1-over.gif");
+		toothA_over = newImage("{$basedir}images/dental/toothA-over.gif");
+		tooth19_over = newImage("{$basedir}images/dental/tooth19-over.gif");
+		preloadFlag = true;
+{literal}
+	}
+}
+preloadImages();
+</script>
+{/literal}
+						<div id="toothChooser">
+<table width="700" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="5" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="5" height="1"></td>
+		<td width="19" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="19" height="1"></td>
+		<td width="20" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="20" height="1"></td>
+		<td width="21" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="21" height="1"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+		<td width="16" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="16" height="1"></td>
+		<td width="3" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="3" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="8" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="8" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="4" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="4" height="1"></td>
+		<td width="15" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="15" height="1"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="27" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="27" height="1"></td>
+		<td width="33" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="33" height="1"></td>
+		<td width="20" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="20" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="5" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="5" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="15" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="15" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="7" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="7" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="15" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="15" height="1"></td>
+		<td width="16" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="16" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="13" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="13" height="1"></td>
+		<td width="7" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="7" height="1"></td>
+		<td width="8" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="8" height="1"></td>
+		<td width="19" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="19" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="3" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="3" height="1"></td>
+		<td width="22" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="22" height="1"></td>
+		<td width="4" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="4" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="21" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="21" height="1"></td>
+		<td width="8" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="8" height="1"></td>
+		<td width="12" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="12" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="26" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="26" height="1"></td>
+		<td width="4" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="4" height="1"></td>
+		<td width="29" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="29" height="1"></td>
+		<td width="5" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="5" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="3" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="3" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="9" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="9" height="1"></td>
+		<td width="2" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="2" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="4" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="4" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="11" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="11" height="1"></td>
+		<td width="6" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="6" height="1"></td>
+		<td width="15" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="15" height="1"></td>
+		<td width="20" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="20" height="1"></td>
+		<td width="10" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="10" height="1"></td>
+		<td width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="700" height="58" colspan="61">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_01.gif" width="700" height="58"></td>
+		<td width="1" height="58">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="58"></td>
+	</tr>
+	<tr>
+		<td width="132" height="13" colspan="13">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_02.gif" width="132" height="13"></td>
+		<td width="36" height="46" colspan="2" rowspan="6">
+			<a href="javascript:void(0);" onClick="selectTooth(this,8);">
+				<img name="tooth8" src="{$basedir}images/dental/tooth8.gif" width="36" height="46" border="0"></a></td>
+		<td width="33" height="46" rowspan="6">
+			<a href="javascript:void(0);" onClick="selectTooth(this,9);">
+				<img name="tooth9" src="{$basedir}images/dental/tooth9.gif" width="33" height="46" border="0"></a></td>
+		<td width="36" height="33" colspan="3" rowspan="3">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,10);">
+				<img name="tooth10" src="{$basedir}images/dental/tooth10.gif" width="36" height="33" border="0"></a></td>
+		<td width="115" height="33" colspan="10" rowspan="3">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_06.gif" width="115" height="33"></td>
+		<td width="48" height="33" colspan="5" rowspan="3">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,32);">
+				<img name="tooth32" src="{$basedir}images/dental/tooth32.gif" width="48" height="33" border="0"></a></td>
+		<td width="26" height="91" colspan="2" rowspan="17">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_08.gif" width="26" height="91"></td>
+		<td width="40" height="36" colspan="3" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'T');">
+				<img name="toothT" src="{$basedir}images/dental/toothT.gif" width="40" height="36" border="0"></a></td>
+		<td width="113" height="55" colspan="9" rowspan="7">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_10.gif" width="113" height="55"></td>
+		<td width="44" height="32" colspan="6" rowspan="2">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'K');">
+				<img name="toothK" src="{$basedir}images/dental/toothK.gif" width="44" height="32" border="0"></a></td>
+		<td width="32" height="65" colspan="4" rowspan="10">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_12.gif" width="32" height="65"></td>
+		<td width="35" height="35" colspan="2" rowspan="4">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,17);">
+				<img name="tooth17" src="{$basedir}images/dental/tooth17.gif" width="35" height="35" border="0"></a></td>
+		<td width="10" height="204" rowspan="43">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_14.gif" width="10" height="204"></td>
+		<td width="1" height="13">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="13"></td>
+	</tr>
+	<tr>
+		<td width="85" height="19" colspan="7">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_15.gif" width="85" height="19"></td>
+		<td width="47" height="19" colspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,7);">
+				<img name="tooth7" src="{$basedir}images/dental/tooth7.gif" width="47" height="19" border="0"></a></td>
+		<td width="1" height="19">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="19"></td>
+	</tr>
+	<tr>
+		<td width="66" height="24" colspan="5" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_17.gif" width="66" height="24"></td>
+		<td width="36" height="24" colspan="4" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,6);">
+				<img name="tooth6" src="{$basedir}images/dental/tooth6.gif" width="36" height="24" border="0"></a></td>
+		<td width="30" height="72" colspan="4" rowspan="18">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_19.gif" width="30" height="72"></td>
+		<td width="34" height="23" colspan="5" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'L');">
+				<img name="toothL" src="{$basedir}images/dental/toothL.gif" width="34" height="23" border="0"></a></td>
+		<td width="10" height="92" rowspan="27">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_21.gif" width="10" height="92"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="36" height="68" colspan="3" rowspan="16">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_22.gif" width="36" height="68"></td>
+		<td width="33" height="24" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,11);">
+				<img name="tooth11" src="{$basedir}images/dental/tooth11.gif" width="33" height="24" border="0"></a></td>
+		<td width="89" height="24" colspan="8" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_24.gif" width="89" height="24"></td>
+		<td width="41" height="24" colspan="4" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,31);">
+				<img name="tooth31" src="{$basedir}images/dental/tooth31.gif" width="41" height="24" border="0"></a></td>
+		<td width="1" height="2">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="2"></td>
+	</tr>
+	<tr>
+		<td width="35" height="30" colspan="2" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,18);">
+				<img name="tooth18" src="{$basedir}images/dental/tooth18.gif" width="35" height="30" border="0"></a></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="11" height="83" rowspan="22">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_27.gif" width="11" height="83"></td>
+		<td width="29" height="29" colspan="2" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'S');">
+				<img name="toothS" src="{$basedir}images/dental/toothS.gif" width="29" height="29" border="0"></a></td>
+		<td width="1" height="10">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="10"></td>
+	</tr>
+	<tr>
+		<td width="69" height="42" colspan="3" rowspan="9">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_29.gif" width="69" height="42"></td>
+		<td width="1" height="9">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="9"></td>
+	</tr>
+	<tr>
+		<td width="104" height="10" colspan="8" rowspan="3">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_30.gif" width="104" height="10"></td>
+		<td width="32" height="22" colspan="4" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'M');">
+				<img name="toothM" src="{$basedir}images/dental/toothM.gif" width="32" height="22" border="0"></a></td>
+		<td width="11" height="69" colspan="2" rowspan="22">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_32.gif" width="11" height="69"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="44" height="31" colspan="3" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_33.gif" width="44" height="31"></td>
+		<td width="38" height="31" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,5);">
+				<img name="tooth5" src="{$basedir}images/dental/tooth5.gif" width="38" height="31" border="0"></a></td>
+		<td width="20" height="71" colspan="3" rowspan="22">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_35.gif" width="20" height="71"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="24" height="60" colspan="2" rowspan="17">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_36.gif" width="24" height="60"></td>
+		<td width="37" height="27" colspan="4" rowspan="4">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,12);">
+				<img name="tooth12" src="{$basedir}images/dental/tooth12.gif" width="37" height="27" border="0"></a></td>
+		<td width="102" height="9" colspan="9" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_38.gif" width="102" height="9"></td>
+		<td width="1" height="8">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="8"></td>
+	</tr>
+	<tr>
+		<td width="41" height="19" colspan="3" rowspan="3">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'R');">
+				<img name="toothR" src="{$basedir}images/dental/toothR.gif" width="41" height="19" border="0"></a></td>
+		<td width="92" height="12" colspan="7" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_40.gif" width="92" height="12"></td>
+		<td width="15" height="29" colspan="2" rowspan="8">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_41.gif" width="15" height="29"></td>
+		<td width="52" height="29" colspan="4" rowspan="8">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,19);">
+			<img name="tooth19" src="{$basedir}images/dental/tooth19.gif" width="52" height="29"></a></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="69" height="18" colspan="6" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_43.gif" width="69" height="18"></td>
+		<td width="33" height="25" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,30);">
+				<img name="tooth30" src="{$basedir}images/dental/tooth30.gif" width="33" height="25" border="0"></a></td>
+		<td width="1" height="11">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="11"></td>
+	</tr>
+	<tr>
+		<td width="19" height="29" colspan="2" rowspan="9">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'Q');">
+				<img name="toothQ" src="{$basedir}images/dental/toothQ.gif" width="19" height="29" border="0"></a></td>
+		<td width="59" height="17" colspan="3" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_46.gif" width="59" height="17"></td>
+		<td width="26" height="17" colspan="4" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'N');">
+				<img name="toothN" src="{$basedir}images/dental/toothN.gif" width="26" height="17" border="0"></a></td>
+		<td width="20" height="70" colspan="2" rowspan="21">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_48.gif" width="20" height="70"></td>
+		<td width="1" height="7">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="7"></td>
+	</tr>
+	<tr>
+		<td width="16" height="120" colspan="2" rowspan="30">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_49.gif" width="16" height="120"></td>
+		<td width="36" height="29" colspan="3" rowspan="11">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,13);">
+				<img name="tooth13" src="{$basedir}images/dental/tooth13.gif" width="36" height="29" border="0"></a></td>
+		<td width="54" height="29" colspan="5" rowspan="11">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_51.gif" width="54" height="29"></td>
+		<td width="41" height="63" colspan="3" rowspan="20">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_52.gif" width="41" height="63"></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="24" height="24" colspan="2" rowspan="8">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_53.gif" width="24" height="24"></td>
+		<td width="41" height="24" colspan="2" rowspan="8">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,4);">
+				<img name="tooth4" src="{$basedir}images/dental/tooth4.gif" width="41" height="24" border="0"></a></td>
+		<td width="17" height="117" colspan="2" rowspan="29">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_55.gif" width="17" height="117"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="36" height="1" colspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_56.gif" width="36" height="1"></td>
+		<td width="33" height="24" rowspan="8">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'F');">
+				<img name="toothF" src="{$basedir}images/dental/toothF.gif" width="33" height="24" border="0"></a></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="9" height="15" rowspan="4">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_58.gif" width="9" height="15"></td>
+		<td width="27" height="25" rowspan="9">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'E');">
+				<img name="toothE" src="{$basedir}images/dental/toothE.gif" width="27" height="25" border="0"></a></td>
+		<td width="1" height="2">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="2"></td>
+	</tr>
+	<tr>
+		<td width="19" height="113" rowspan="26">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_60.gif" width="19" height="113"></td>
+		<td width="40" height="28" colspan="4" rowspan="10">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,29);">
+				<img name="tooth29" src="{$basedir}images/dental/tooth29.gif" width="40" height="28" border="0"></a></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="30" height="30" colspan="2" rowspan="11">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'P');">
+				<img name="toothP" src="{$basedir}images/dental/toothP.gif" width="30" height="30" border="0"></a></td>
+		<td width="29" height="30" rowspan="11">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'O');">
+				<img name="toothO" src="{$basedir}images/dental/toothO.gif" width="29" height="30" border="0"></a></td>
+		<td width="26" height="66" colspan="4" rowspan="17">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_64.gif" width="26" height="66"></td>
+		<td width="47" height="30" colspan="5" rowspan="11">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,20);">
+				<img name="tooth20" src="{$basedir}images/dental/tooth20.gif" width="47" height="30" border="0"></a></td>
+		<td width="20" height="110" rowspan="25">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_66.gif" width="20" height="110"></td>
+		<td width="1" height="7">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="7"></td>
+	</tr>
+	<tr>
+		<td width="20" height="22" rowspan="9">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'G');">
+				<img name="toothG" src="{$basedir}images/dental/toothG.gif" width="20" height="22" border="0"></a></td>
+		<td width="16" height="16" colspan="2" rowspan="7">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_68.gif" width="16" height="16"></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="10" height="23" rowspan="10">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_69.gif" width="10" height="23"></td>
+		<td width="29" height="23" colspan="4" rowspan="10">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'D');">
+				<img name="toothD" src="{$basedir}images/dental/toothD.gif" width="29" height="23" border="0"></a></td>
+		<td width="1" height="2">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="2"></td>
+	</tr>
+	<tr>
+		<td width="19" height="41" colspan="2" rowspan="12">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_71.gif" width="19" height="41"></td>
+		<td width="1" height="5">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="5"></td>
+	</tr>
+	<tr>
+		<td width="5" height="93" rowspan="21">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_72.gif" width="5" height="93"></td>
+		<td width="39" height="30" colspan="2" rowspan="10">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,3);">
+				<img name="tooth3" src="{$basedir}images/dental/tooth3.gif" width="39" height="30" border="0"></a></td>
+		<td width="21" height="93" rowspan="21">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_74.gif" width="21" height="93"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="33" height="92" rowspan="20">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_75.gif" width="33" height="92"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="11" height="91" rowspan="19">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_76.gif" width="11" height="91"></td>
+		<td width="41" height="27" colspan="3" rowspan="7">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,14);">
+				<img name="tooth14" src="{$basedir}images/dental/tooth14.gif" width="41" height="27" border="0"></a></td>
+		<td width="38" height="27" colspan="4" rowspan="7">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_78.gif" width="38" height="27"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="27" height="90" rowspan="18">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_79.gif" width="27" height="90"></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="25" height="24" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'H');">
+				<img name="toothH" src="{$basedir}images/dental/toothH.gif" width="25" height="24" border="0"></a></td>
+		<td width="15" height="24" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_81.gif" width="15" height="24"></td>
+		<td width="1" height="2">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="2"></td>
+	</tr>
+	<tr>
+		<td width="11" height="85" rowspan="16">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_82.gif" width="11" height="85"></td>
+		<td width="40" height="28" colspan="4" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,28);">
+				<img name="tooth28" src="{$basedir}images/dental/tooth28.gif" width="40" height="28" border="0"></a></td>
+		<td width="1" height="4">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="4"></td>
+	</tr>
+	<tr>
+		<td width="20" height="81" rowspan="15">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_84.gif" width="20" height="81"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="59" height="36" colspan="3" rowspan="6">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_85.gif" width="59" height="36"></td>
+		<td width="9" height="23" rowspan="4">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_86.gif" width="9" height="23"></td>
+		<td width="38" height="23" colspan="5" rowspan="4">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,21);">
+				<img name="tooth21" src="{$basedir}images/dental/tooth21.gif" width="38" height="23" border="0"></a></td>
+		<td width="21" height="80" colspan="2" rowspan="14">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_88.gif" width="21" height="80"></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="12" height="24" colspan="2" rowspan="4">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_89.gif" width="12" height="24"></td>
+		<td width="37" height="24" colspan="4" rowspan="4">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'C');">
+				<img name="toothC" src="{$basedir}images/dental/toothC.gif" width="37" height="24" border="0"></a></td>
+		<td width="10" height="77" colspan="2" rowspan="13">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_91.gif" width="10" height="77"></td>
+		<td width="1" height="13">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="13"></td>
+	</tr>
+	<tr>
+		<td width="10" height="64" rowspan="12">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_92.gif" width="10" height="64"></td>
+		<td width="41" height="30" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,15);">
+				<img name="tooth15" src="{$basedir}images/dental/tooth15.gif" width="41" height="30" border="0"></a></td>
+		<td width="28" height="64" colspan="3" rowspan="12">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_94.gif" width="28" height="64"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="39" height="31" colspan="2" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,2);">
+				<img name="tooth2" src="{$basedir}images/dental/tooth2.gif" width="39" height="31" border="0"></a></td>
+		<td width="11" height="63" rowspan="11">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_96.gif" width="11" height="63"></td>
+		<td width="29" height="26" colspan="3" rowspan="4">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'I');">
+				<img name="toothI" src="{$basedir}images/dental/toothI.gif" width="29" height="26" border="0"></a></td>
+		<td width="1" height="6">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="6"></td>
+	</tr>
+	<tr>
+		<td width="25" height="57" colspan="2" rowspan="10">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_98.gif" width="25" height="57"></td>
+		<td width="36" height="25" colspan="3" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,27);">
+				<img name="tooth27" src="{$basedir}images/dental/tooth27.gif" width="36" height="25" border="0"></a></td>
+		<td width="29" height="52" colspan="3" rowspan="9">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,26);">
+				<img name="tooth26" src="{$basedir}images/dental/tooth26.gif" width="29" height="52" border="0"></a></td>
+		<td width="10" height="13" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_101.gif" width="10" height="13"></td>
+		<td width="10" height="13" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_102.gif" width="10" height="13"></td>
+		<td width="35" height="26" colspan="5" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,22);">
+				<img name="tooth22" src="{$basedir}images/dental/tooth22.gif" width="35" height="26" border="0"></a></td>
+		<td width="22" height="57" colspan="2" rowspan="10">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_104.gif" width="22" height="57"></td>
+		<td width="1" height="4">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="4"></td>
+	</tr>
+	<tr>
+		<td width="34" height="23" colspan="5" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'B');">
+				<img name="toothB" src="{$basedir}images/dental/toothB.gif" width="34" height="23" border="0"></a></td>
+		<td width="15" height="53" rowspan="9">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_106.gif" width="15" height="53"></td>
+		<td width="1" height="9">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="9"></td>
+	</tr>
+	<tr>
+		<td width="36" height="44" colspan="2" rowspan="8">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,25);">
+				<img name="tooth25" src="{$basedir}images/dental/tooth25.gif" width="36" height="44" border="0"></a></td>
+		<td width="38" height="44" colspan="3" rowspan="8">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,24);">
+				<img name="tooth24" src="{$basedir}images/dental/tooth24.gif" width="38" height="44" border="0"></a></td>
+		<td width="31" height="35" colspan="4" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,23);">
+				<img name="tooth23" src="{$basedir}images/dental/tooth23.gif" width="31" height="35" border="0"></a></td>
+		<td width="1" height="7">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="7"></td>
+	</tr>
+	<tr>
+		<td width="29" height="37" colspan="3" rowspan="7">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'J');">
+				<img name="toothJ" src="{$basedir}images/dental/toothJ.gif" width="29" height="37" border="0"></a></td>
+		<td width="1" height="3">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="3"></td>
+	</tr>
+	<tr>
+		<td width="41" height="34" colspan="3" rowspan="6">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,16);">
+				<img name="tooth16" src="{$basedir}images/dental/tooth16.gif" width="41" height="34" border="0"></a></td>
+		<td width="1" height="2">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="2"></td>
+	</tr>
+	<tr>
+		<td width="39" height="32" colspan="2" rowspan="5">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,1);">
+				<img name="tooth1" src="{$basedir}images/dental/tooth1.gif" width="39" height="32" border="0"></a></td>
+		<td width="36" height="32" colspan="3" rowspan="5">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_113.gif" width="36" height="32"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="35" height="31" colspan="5" rowspan="4">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_114.gif" width="35" height="31"></td>
+		<td width="1" height="1">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td width="20" height="30" colspan="3" rowspan="3">
+			<a href="javascript:void(0);"
+				onClick="selectTooth(this,'A');">
+				<img name="toothA" src="{$basedir}images/dental/toothA.gif" width="20" height="30" border="0"></a></td>
+		<td width="14" height="30" colspan="2" rowspan="3">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_116.gif" width="14" height="30"></td>
+		<td width="1" height="21">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="21"></td>
+	</tr>
+	<tr>
+		<td width="31" height="9" colspan="4" rowspan="2">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_117.gif" width="31" height="9"></td>
+		<td width="1" height="4">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="4"></td>
+	</tr>
+	<tr>
+		<td width="29" height="5" colspan="3">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_118.gif" width="29" height="5"></td>
+		<td width="1" height="5">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="5"></td>
+	</tr>
+	<tr>
+		<td width="700" height="63" colspan="61">
+			<img src="{$basedir}images/dental/dental-diagram-rgb_119.gif" width="700" height="63"></td>
+		<td width="1" height="63">
+			<img src="{$basedir}images/dental/spacer.gif" width="1" height="63"></td>
+	</tr>
+</table>
+
+						</div>
+
+				
