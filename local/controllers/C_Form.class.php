@@ -170,10 +170,13 @@ class C_Form extends Controller {
 	*/
 	function actionConnect_edit() {
 		$this->assign("FORM_ACTION", Celini::link('connect'));
-		$this->assign("REMOTE_ACTION", $this->base_dir."jpspan_server.php?");
 
 		$menu = Menu::getInstance();
 		$this->assign_by_ref('menu',$menu);
+
+		$ajax =& Celini::AJAXInstance();
+		$ajax->stubs[] = 'Form';
+		$ajax->stubs[] = 'MenuForm';
 
 		$form =& ORDataObject::factory('Form');
 		$this->assign_by_ref('form',$form);
