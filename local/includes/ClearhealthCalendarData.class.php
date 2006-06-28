@@ -5,6 +5,7 @@ class ClearhealthCalendarData {
 	var $schedules = null;
 	var $events = null;
 	var $interval = 900;
+	var $showEventsOn = array('day'=>true,'week'=>false,'month'=>false);
 
 	function ClearhealthCalendarData() {
 		$GLOBALS['loader']->requireOnce('includes/PracticeConfig.class.php');
@@ -688,18 +689,18 @@ class ClearhealthCalendarData {
 				event.event_id AS event_id, 
 				ea.provider_id
 			FROM 
-				event,
-				event as c 
-				INNER JOIN `event` AS aevent ON event.event_id=aevent.event_id
-				INNER JOIN appointment ea on event.event_id = ea.event_id
-				INNER JOIN appointment ec on c.event_id = ec.event_id
+				`event`
+				INNER JOIN `event` AS aevent ON `event`.event_id=aevent.event_id
+				INNER JOIN appointment ea on `event`.event_id = ea.event_id
 				LEFT JOIN event_group eg ON ea.event_group_id=eg.event_group_id
 				LEFT JOIN schedule s ON eg.schedule_id=s.schedule_id
 				LEFT JOIN provider ON ea.provider_id = provider.person_id
 				LEFT JOIN user u ON u.person_id = provider.person_id
-				LEFT JOIN patient ON ea.patient_id=patient.person_id OR ec.patient_id=patient.person_id
 				LEFT JOIN rooms r ON ea.room_id=r.id
 				LEFT JOIN buildings b ON b.id=r.building_id
+				LEFT JOIN patient ON ea.patient_id=patient.person_id,
+				`event` as c
+				INNER JOIN appointment ec on c.event_id = ec.event_id
 			WHERE 
 			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
 			and ea.provider_id = ec.provider_id
