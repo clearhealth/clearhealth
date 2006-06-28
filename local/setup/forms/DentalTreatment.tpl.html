@@ -30,6 +30,9 @@ foreach($data as $field => $info) {
 	}
 }
 $this->_tpl_vars['datalist'] = $list;
+
+$ajax =& Celini::AJAXInstance();
+$ajax->stubs[] = 'FeeEstimator';
 {/php}
 
 {head type="css"}
@@ -75,9 +78,16 @@ function markTooth(tooth) {
 	}
 }
 
+var rowCount = 0;
+
 function addRow(tooth,toothside,toothcode,toothcode_id,toothnote) {
 
 	var tr = document.createElement('tr');
+	var id = 'planRow'+rowCount++;
+	tr.id = id;
+
+	var fe = new FeeEstimator({standardFeeForCodeId:function(fee) { $(id).cells[4].innerHTML = fee; totalFees();}});
+	fe.standardFeeForCodeId(toothcode_id);
 
 	var td = document.createElement('td');
 	td.innerHTML = '<a href="#" onclick="removeRow(this)">X</a>';
@@ -127,6 +137,10 @@ function addRow(tooth,toothside,toothcode,toothcode_id,toothnote) {
 	td.innerHTML = toothcode;
 	tr.appendChild(td);
 
+	// fee
+	var td = document.createElement('td');
+	tr.appendChild(td);
+
 	var td = document.createElement('td');
 	td.innerHTML = toothnote.replace('\n','<br>');
 	tr.appendChild(td);
@@ -141,6 +155,15 @@ function removeRow(firstField) {
 	tooth.src = tooth.src.replace('-over','');
 	tooth.selected = false;
 	tr.parentNode.removeChild(tr);
+}
+function totalFees() {
+	var rows = $('plan').tBodies[0].rows;
+	var total = 0;
+	for(var r = 0; r < rows.length; r++) {
+		total += parseInt(rows[r].cells[4].innerHTML);
+	}
+	$('feeTotal').innerHTML = total;
+
 }
 {/head}
 
@@ -170,15 +193,16 @@ function removeRow(firstField) {
 {clni_form}
 <fieldset>
 	<legend>Plan Details</legend>
-<table id="plan" class="grid" style="display:none">
+<table id="plan" class="grid">
 	<thead>
 		<tr>
-			<th></th><th>Tooth</th><th>Side</th><th>Code</th><th>Note</th>
+			<th></th><th>Tooth</th><th>Side</th><th>Code</th><th>Fee</th><th>Note</th>
 		</tr>
 	</thead>
 	<tbody>
 	</tbody>
 </table>
+Total Fee's = <span id="feeTotal"></span>
 </fieldset>
 <input type="submit" value="Save Plan">
 </form>
