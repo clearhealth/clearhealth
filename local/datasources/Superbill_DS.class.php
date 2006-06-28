@@ -18,7 +18,7 @@ class Superbill_DS extends Datasource_sql {
 		$twhere = '';
 		if ($type) {
 			if ($type == 'procedure') {
-				$tmp = array(3,4);
+				$tmp = array(3,4,5);
 			}
 			else {
 				$tmp = array(2);
