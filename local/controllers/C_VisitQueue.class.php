@@ -18,9 +18,15 @@ class C_VisitQueue extends Controller
 	}
 	
 	function actionListTemplates() {
+		// big hack
+		if ($this->GET->exists('delete_id')) {
+			$t =& Celini::newORDO('VisitQueueTemplate',$this->GET->getTyped('delete_id','int'));
+			$t->drop();
+		}
 		$template =& Celini::newORDO('VisitQueueTemplate');
 		$templates = $template->valueList('title');
 		$this->view->assign('templates',$templates);
+
 		return $this->view->render('templatelist.html');
 	}
 	/**

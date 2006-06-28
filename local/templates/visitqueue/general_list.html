@@ -6,7 +6,7 @@
 {assign var=q value=$queues->current()}
 {assign var=ps value=$q->getChildren('Patient')}
 {assign var=t value=$q->getTemplate()}
-	<a href="{link action='Edit' controller='VisitQueue'}queue_id={$q->get('id')}">{$t->get('title')}</a> <a href="{link}delete_id={$tkey}">{l}D{/l}</a>
+	<a href="{link action='Edit' controller='VisitQueue'}queue_id={$q->get('id')}">{$t->get('title')}</a> <a href="{link}delete_id={$tkey}&process=true">{l}X{/l}</a>
 	<br />{l}Patient(s):{/l}<ul>
 	{if $ps->count() == 0}{l}None{/l}
 	{else}
