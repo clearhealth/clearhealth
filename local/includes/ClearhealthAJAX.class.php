@@ -65,5 +65,11 @@ class ClearhealthAJAX {
 		$encounter =& Celini::newOrdo('Encounter');
 		$this->server->registerClass($encounter,'Encounter',array('appointmentlist_remoting'));
 	}
+
+	function initFeeEstimator() {
+		$GLOBALS['loader']->requireOnce("includes/FeeEstimator.class.php");
+		$fe = new FeeEstimator();
+		$this->server->registerClass($fe,'FeeEstimator',array('standardFeeForCode','standardFeeForCodeId'));
+	}
 }
 ?>
