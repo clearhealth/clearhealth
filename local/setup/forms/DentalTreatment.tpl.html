@@ -33,6 +33,32 @@ $this->_tpl_vars['datalist'] = $list;
 
 $ajax =& Celini::AJAXInstance();
 $ajax->stubs[] = 'FeeEstimator';
+
+if (isset($data['createVisitQueue']) && $data['createVisitQueue']['value'] == 1) {
+
+	$input = array();
+	$input['Template']['id'] = 0;
+	$input['Template']['title'] = 'Generated From Treatment Plan';
+	$input['Template']['number_of_appointments'] = count($list);
+	$i = 1;
+	foreach($list as $row) {
+		$input['Reason'][$i]['reason'] = $row['note'];
+		$input['Reason'][$i]['appt_length'] = '1:00';
+		$input['Reason'][$i]['ordernum'] = $i;
+		$i++;
+	}
+
+	$GLOBALS['loader']->requireOnce('controllers/C_VisitQueue.class.php');
+	$vq = new C_VisitQueue();
+	$vq->POST->set('Template',$input['Template']);
+	$vq->POST->set('Reason',$input['Reason']);
+	$vq->processSetup();
+
+	$this->_tpl_vars['data']->_int_storage->set('createVisitQueue',0);
+	$this->_tpl_vars['data']->_int_storage->set('visitQueueId',$vq->template->get('id'));
+	$this->_tpl_vars['data']->persist();
+}
+$this->_tpl_vars['data']->storage_metadata['int'] = array('visitQueueId'=>0);
 {/php}
 
 {head type="css"}
@@ -205,6 +231,13 @@ function totalFees() {
 Total Fee's = <span id="feeTotal"></span>
 </fieldset>
 <input type="submit" value="Save Plan">
+<input type="hidden" id="visitQueue" name="int[createVisitQueue]" value="0">
+{if $data->get('visitQueueId') > 0}
+<button onclick="window.location = '{link controller="VisitQueue" action="Setup"}template_id={$data->get('visitQueueId')}'; return false;">Edit Plan's Visit Template</button>
+{else}
+<button onclick="$('visitQueue').value = 1;">Create Visit Queue Template From Plan</button>
+{/if}
+
 </form>
 <script type="text/javascript">
 	{literal}
