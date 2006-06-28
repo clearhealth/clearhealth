@@ -406,7 +406,7 @@ class Practice extends ORDataObject{
 	}
 
 	function get_type() {
-		$config =& Celini::configInstance('practice');
+		$config =& Celini::configInstance('Practice');
 		$config->loadPractice($this->get('id'));
 		return $config->get('FacilityType');
 	}
