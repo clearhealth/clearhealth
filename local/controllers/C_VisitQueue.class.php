@@ -29,6 +29,7 @@ class C_VisitQueue extends Controller
 
 		return $this->view->render('templatelist.html');
 	}
+
 	/**
 	 * Function for editing the queue template
 	 *
