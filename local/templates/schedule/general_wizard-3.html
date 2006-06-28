@@ -8,6 +8,10 @@ Behavior.register('#next',
 		});
 	}
 );
+function switchForm(showid,hideid) {
+	document.getElementById(showid).style.display='block';
+	document.getElementById(hideid).style.display='none';
+}
 {/head}
 {include file="schedule/general_wizard_header.html"}
 
@@ -26,12 +30,42 @@ Behavior.register('#next',
 </div>
 </p>
 
+
+
+<input type="radio" {if $wizard->get('multi_group') == false}checked="checked"{/if} name="wizard[multi_group]" value="false" onclick="if(this.checked) switchForm('simpleform','complexform');"> {l}Simple Schedule{/l}<br />
+<input type="radio" {if $wizard->get('multi_group') == true}checked="checked"{/if} name="wizard[multi_group]" value="false" onclick="if(this.checked) switchForm('complexform','simpleform');"> {l}Complex Schedule (Multiple Blocks){/l}
+<div id='simpleform' {if $wizard->get('multi_group') == true}style="display:none;"{/if}>
 <p>Schedule runs from <input name="wizard[time_start]" size=5 value="{$wizard->get('time_start')}"> 
 	to <input name="wizard[time_end]" size=5 value="{$wizard->get('time_end')}"> (24-Hour Time)</p>
 
 <p>Lunch break from <input name="wizard[lunch_start]" size=5 value="{$wizard->get('lunch_start')}"> 
 	to <input name="wizard[lunch_end]" size=5 value="{$wizard->get('lunch_end')}"> (24-Hour Time)</p>
+</div>
+
+<div id='complexform' {if $wizard->get('multi_group') == false}style="display:none;"{/if}>
+{assign var=groups value=$wizard->get('groups')}{assign var=starts value=$wizard->get('starts')}{assign var=ends value=$wizard->get('ends')}
+<table border=0>
+<tr>
+	<th></th>
+	<th>Group Name</th>
+	<th>Start Time (24-Hour Time: 00:00)</th>
+	<th>End Time (24-Hour Time: 00:00)</th>
+</tr>
+{assign var=xcount value=0}
+{while $xcount < 25}
+<tr>
+<td>{$xcount+1}</td>
+<td><input type="text" name="wizard[groups][{$xcount}]" id="group{$xcount}" onkeyup="this.changed = true;" value="{$groups.$xcount}" size="40"></td>
+<td><input type="text" name="wizard[starts][{$xcount}]" id="start{$xcount}" onkeyup="this.changed = true;" value="{$starts.$xcount}" size="40"></td>
+<td><input type="text"   name="wizard[ends][{$xcount}]"   id="end{$xcount}" onkeyup="this.changed = true;"   value="{$ends.$xcount}" size="40" {if $xcount < 24}onblur="document.getElementById('start{$xcount+1}').value=this.value;"{/if}><!-- {$xcount++} --></td>
+</tr>
+
+{/while}
+
+</table>
+</div>
 
 	<input type="hidden" id="back" value=2>
 	<input type="hidden" id="page" name="next_page" value=99>
+	{assign var=nextcreate value=true}
 {include file="schedule/general_wizard_footer.html"}

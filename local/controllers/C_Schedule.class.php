@@ -4,6 +4,10 @@ $loader->requireOnce('includes/clni/clniData.class.php');
 class ScheduleWizardData extends clniData{
 	var $schedule_type = '';
 	var $days = array();
+	var $groups = array();
+	var $starts = array();
+	var $ends = array();
+	var $multi_group = false;
 }
 
 class C_Schedule extends Controller
@@ -121,6 +125,7 @@ class C_Schedule extends Controller
 
 		$schedule->persist();
 
+	if($wizard->get('multi_group') == false) {
 		$egTitle = $wizard->get('group');
 		if (empty($egTitle)) {
 			$egTitle = 'General Hours';
@@ -195,6 +200,57 @@ class C_Schedule extends Controller
 			}
 		}
 
+	} else {
+			// Multiple groups
+			$egs = array();
+			foreach($wizard->get('groups') as $id=>$group) {
+				if($group != '') {
+					if(isset($egs[$group])) {
+						$eg =& $egs[$group];
+					} else {
+						$eg =& $schedule->getEventGroupByNameAndRoom($group,$room->get('id'));
+						if($eg->get('id') < 1) {
+							$eg->persist();
+						}
+						$egs[$group] = $eg;
+					}
+				}
+			}
+			$pattern = array('pattern_type'=> 'dayweek');
+			$pattern['days'] = $wizard->get('days');
+
+			$starts = $wizard->get('starts');
+			$ends = $wizard->get('ends');
+			$groups = $wizard->get('groups');
+			foreach($groups as $id=>$group) {
+				if($group != '' && $starts[$id] != '' && $ends[$id] != '') {
+					$recurrence = array();
+					$recurrence['id'] = '';
+					$recurrence['start_date'] = $wizard->get('date_start');
+					$recurrence['end_date'] = $wizard->get('date_end');
+					$recurrence['start_time'] = $starts[$id];
+					$recurrence['end_time'] = $ends[$id];
+					$recurrence['event_group'] = $egs[$group]->get('id');
+					$rec =& $schedule->createRecurrence($recurrence,$pattern);
+					if($rec !== false) {
+						$eg =& $egs[$group];
+						$eventids = $rec->getChildrenIds('ScheduleEvent');
+						$db =& $eg->dbHelper;
+						foreach($eventids as $id) {
+							//$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
+							//$db->execute($sql);
+							$qScheduleEventId = $db->quote($id);
+							$qEventGroupId = $db->quote($eg->get('id'));
+							$sql = "
+						INSERT INTO schedule_event
+							(`event_id`,`event_group_id`)
+						VALUES ({$qScheduleEventId},{$qEventGroupId})";
+							$db->execute($sql);
+						}
+					}
+				}
+			}
+		}
 		$this->view->assign('EDIT_ACTION',Celini::link('edit','Schedule').'schedule_id='.$schedule->get('id'));
 
 	}

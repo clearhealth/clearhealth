@@ -292,6 +292,28 @@ class Schedule extends CalendarSchedule{
 		return $events;
 	}
 
+	/**
+	 * Creates an EventGroup based on name, schedule, and room,
+	 * but does not return a persisted ORDO (in case you just need one for reference)
+	 *
+	 * @param string $name
+	 * @param int $roomid
+	 * @return ORDataObject
+	 */
+	function &getEventGroupByNameAndRoom($name,$roomid) {
+		$db =& $this->dbHelper;
+		$sql = "SELECT event_group_id FROM event_group WHERE schedule_id = ".$db->quote($this->get('id'))." AND title = ".$db->quote($name)." AND room_id = ".$db->quote($roomid);
+		$res = $db->execute($sql);
+		if($res && !$res->EOF) {
+			$eg =& Celini::newORDO('EventGroup',$res->fields['event_group_id']);
+		} else {
+			$eg =& Celini::newORDO('EventGroup');
+			$eg->set('schedule_id',$this->get('id'));
+			$eg->set('title',$name);
+			$eg->set('room_id',$roomid);
+		}
+		return $eg;
+	}
 
 } // end of Class
 
