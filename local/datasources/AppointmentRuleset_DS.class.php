@@ -22,8 +22,9 @@ class AppointmentRuleset_DS extends Datasource_sql
 						",
 				'from'    => "appointment_ruleset",
 			),
-			array('name' => 'Name','error_message'=>'Error Message'));
+			array('x'=>false,'name' => 'Name','error_message'=>'Error Message'));
 		$this->registerTemplate('name','<a href="'.Celini::link('edit','AppointmentRuleset').'ruleset_id={$appointment_ruleset_id}">{$name}</a>');
+		$this->registerTemplate('x','<a href="#delete" onclick="deleteRuleset(this,{$appointment_ruleset_id}">X</a>');
 	}
 }
 
