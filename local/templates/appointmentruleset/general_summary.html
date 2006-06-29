@@ -10,7 +10,7 @@
 	<li>Date<br>
 	<ul>
 	{foreach from=$ar->rulesList('date') item=rule key=key}
-		<li><a href="#" onclick="selectRule('date',{$key})">{$rule}</a></li>
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('date',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>
@@ -18,7 +18,7 @@
 	<li>Procedure<br>
 	<ul>
 	{foreach from=$ar->rulesList('procedure') item=rule key=key}
-		<li><a href="#" onclick="selectRule('procedure',{$key})">{$rule}</a></li>
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('procedure',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>
@@ -26,7 +26,7 @@
 	<li>Patient<br>
 	<ul>
 	{foreach from=$ar->rulesList('patient') item=rule key=key}
-		<li><a href="#" onclick="selectRule('patient',{$key})">{$rule}</a></li>
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('patient',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>
@@ -34,7 +34,7 @@
 	<li>Provider<br>
 	<ul>
 	{foreach from=$ar->rulesList('provider') item=rule key=key}
-		<li><a href="#" onclick="selectRule('provider',{$key})">{$rule}</a></li>
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('provider',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>
@@ -42,7 +42,7 @@
 	<li>Location<br>
 	<ul>
 	{foreach from=$ar->rulesList('location') item=rule key=key}
-		<li><a href="#" onclick="selectRule('location',{$key})">{$rule}</a></li>
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('location',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>

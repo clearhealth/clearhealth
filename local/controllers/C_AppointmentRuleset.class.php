@@ -158,5 +158,15 @@ class C_AppointmentRuleset extends Controller {
 				break;
 		}
 	}
+
+	function actionDeleteRule_delete() {
+	}
+
+	function processDeleteRule_delete() {
+		$id = $this->POST->getTyped('rule_id','int');
+		$rule =& Celini::newOrdo('AppointmentRule',$id);
+		$rule->drop();
+	}
+
 }
 ?>

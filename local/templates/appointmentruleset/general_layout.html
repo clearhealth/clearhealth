@@ -45,6 +45,7 @@
 {/head}
 {dynhead type="js"}
 var CONTENT_URL = '{$contentUrl}';
+var deleteAction = '{link controller="AppointmentRuleset" action="deleteRule"}';
 {/dynhead}
 
 {head type="js"}
@@ -86,6 +87,13 @@ function processForm(form) {
 function selectRule(type,id) {
 	HTML_AJAX.replace('tabreplaceable',CONTENT_URL+type+'?rule_id='+id);
 	showTab(type);
+}
+function deleteRule(link,id) {
+	var label = link.parentNode.getElementsByTagName('a')[1].innerHTML;
+	if (confirm('Delete rule: '+label)) {
+		HTML_AJAX.post(deleteAction,{rule_id:id,process:'true'});
+		link.parentNode.parentNode.removeChild(link.parentNode);
+	}
 }
 {/head}
 
