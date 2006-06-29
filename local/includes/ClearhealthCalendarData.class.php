@@ -521,8 +521,8 @@ class ClearhealthCalendarData {
 			if(!isset($ret[$res->fields['provider_id']])) {
 				$ret[$res->fields['provider_id']] = array();
 			}
-
-			$display = !empty($res->fields['group_title']) ? $res->fields['group_title'].'<br />'.$res->fields['username'] : $res->fields['username'];
+			$break = ($res->fields['end'] - $res->fields['start']) <= 900 ? '&nbsp;' : '<br />';
+			$display = !empty($res->fields['group_title']) ? $res->fields['group_title'].$break.$res->fields['username'] : $res->fields['username'];
 			$ret[$res->fields['provider_id']][$res->fields['start']] = array(
 				'label'=>$res->fields['title'],
 				'start'=>$res->fields['start'],

@@ -8,6 +8,7 @@ class ScheduleWizardData extends clniData{
 	var $starts = array();
 	var $ends = array();
 	var $multi_group = false;
+	var $provider_id = '';
 }
 
 class C_Schedule extends Controller
