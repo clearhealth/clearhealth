@@ -1,6 +1,10 @@
+<div id="eobInner">
 <h2>{l}Record Payment for Claim{/l}: {$claim->get('identifier')}</h2>
 <p>{l}Claim was created for encounter on{/l}: {$encounter->get('date_of_treatment')}</p>
 <p>{l}Patient{/l}: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
+
+<input type="hidden" id="claimId" value="{$claim->get('id')}">
+<input type="hidden" id="rebillAction" value="{$REBILL_ACTION}">
 
 <h3 style="margin: 0px; padding:0px;">Payment History</h3>
 {$paymentGrid->render()}
@@ -122,7 +126,7 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" value="Record Payment"></td>
+		<td><input type="submit" id="submit" value="Record Payment"><button onclick="return rebillSelfPay()" id="rebill">Rebill as Self Pay</button></td>
 	</tr>
 </tbody>
 </table>
@@ -138,4 +142,5 @@
 
 {include file="patientpaymentplan/general_paymentplan.html"}
 </form>
+</div>
 </div>

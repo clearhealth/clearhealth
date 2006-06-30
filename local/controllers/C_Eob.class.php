@@ -19,6 +19,8 @@ class C_Eob extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addNewJs('payment','templates/eob/payment.js');
 
+		$this->view->assign('REBILL_ACTION',Celini::link('rebillSelfPay','EOB',false));
+
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
 		$patient =& Celini::newOrdo('Patient',$encounter->get('patient_id'));
@@ -205,6 +207,41 @@ class C_Eob extends Controller {
 			}
 		}
 		$this->payment_id = $payment_id;
+	}
+
+	// meant to be called with an AJAX post
+	function actionRebillSelfPay_edit() {
+	}
+
+	function processRebillSelfPay_edit() {
+		$claimId = $this->POST->getTyped('claim_id','int');
+		$claim =& Celini::newOrdo('ClearhealthClaim',$claimId);
+		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
+
+		$ir =& Celini::newOrdo('InsuredRelationship');
+		$list = $ir->getProgramList($encounter->get('patient_id'));
+		$id = array_search('System->Self Pay',$list);
+		if ($id == false) {
+			$ir->set('person_id',$encounter->get('patient_id'));
+			$ir->set('program_order',count($list));
+			$ir->set('subscriber_id',$encounter->get('patient_id'));
+			$ir->set('subscriber_to_patient_relationship',1);
+
+			$sql = "select insurance_program_id from insurance_program ip inner join company c using(company_id) 
+					where c.name = 'System' and ip.name = 'Self Pay'";
+			$db = new clniDb();
+			$id = $db->getOne($sql);
+			$ir->set('insurance_program_id',$id);
+			$ir->persist();
+		}
+		$encounter->set('current_payer',$id);
+		$encounter->persist();
+
+		$GLOBALS['loader']->requireOnce('includes/freebGateway/ClearhealthToFreebGateway.class.php');
+		$gateway =& new ClearhealthToFreebGateway($this,$encounter);
+		$gateway->send('rebill');
+
+		return $this->actionPayment_edit($claimId);
 	}
 }
 ?>

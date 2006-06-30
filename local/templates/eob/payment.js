@@ -136,3 +136,21 @@
 	Behavior.register('#adjustmentTable',function(element) {
 		populateAdjCodes();
 	});
+
+	function rebillSelfPay() {
+		var cb = function(result) {
+			var eob = $('eob');
+			if (!eob) {
+				var eob = $('eobInner');
+			}
+			eob.innerHTML = result;
+			new Effect.Highlight(eob);
+		}
+		
+		$('submit').disabled = true;
+		$('rebill').disabled = true;
+		$('rebill').innerHTML = 'Processing Please Wait ...';
+		HTML_AJAX.post($('rebillAction').value,{process:'true',claim_id:$('claimId').value},cb);
+		
+		return false;
+	}
