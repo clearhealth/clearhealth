@@ -42,7 +42,8 @@ class M_User extends M_Patient {
 	function _continueProcessing($id) {
 		$username = $_POST['user']['username'];
 		$u =& User::fromUsername($username);
-		if ($username == 'admin' && $u->get('person_id') != $id) {
+		$person_id = (int)$u->get('person_id');
+		if ($username == 'admin' && $person_id != $id) {
 			$this->messages->addMessage('Admin user already tied to an existing person');
 			return false;
 		}
