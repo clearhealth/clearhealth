@@ -5,6 +5,7 @@
 {/if}
 <h2>{l}Record Payment for Claim{/l}: {$claim->get('identifier')}</h2>
 <p>{l}Claim was created for encounter on{/l}: {$encounter->get('date_of_treatment')}</p>
+<p>{l}Encounter's current payer is set to{/l}: {$current_payer}</p>
 <p>{l}Patient{/l}: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
 
 <input type="hidden" id="claimId" value="{$claim->get('id')}">

@@ -115,6 +115,11 @@ class C_Eob extends Controller {
 		$this->assign_by_ref('payment',Celini::newOrdo('payment'));
 		$this->assign('billList',$billList);
 		$this->assign('payers',$payers);
+
+		$cp = $encounter->get('current_payer');
+		if (isset($payers[$cp])) {
+			$this->assign('current_payer',$payers[$cp]);
+		}
 		$this->assign('payment_date',$payment->get('payment_date'));
 		
 		$this->assign('FORM_ACTION',Celini::link('payment',true,true,$claim_id));
