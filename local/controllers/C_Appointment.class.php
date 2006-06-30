@@ -266,7 +266,7 @@ class C_Appointment extends Controller {
 		// get upcoming appointments
 
 		$start = date('Y-m-d H:i:s',strtotime('today 01:01:01'));
-		$end = date('Y-m-d H:i:s',strtotime('today 23:59:59'));
+		$end = date('Y-m-d H:i:s',strtotime('tomorrow 23:59:59'));
 		$sql = array();
 		$sql['cols'] = "
 			a.appointment_id,
