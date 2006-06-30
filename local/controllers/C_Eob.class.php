@@ -211,6 +211,8 @@ class C_Eob extends Controller {
 
 	// meant to be called with an AJAX post
 	function actionRebillSelfPay_edit() {
+		$this->view->assign('ajax',true);
+		return $this->actionPayment_edit($this->claimId);
 	}
 
 	function processRebillSelfPay_edit() {
@@ -241,7 +243,8 @@ class C_Eob extends Controller {
 		$gateway =& new ClearhealthToFreebGateway($this,$encounter);
 		$gateway->send('rebill');
 
-		return $this->actionPayment_edit($claimId);
+		$this->messages->addMessage('Claim Rebilled to Self Pay');
+		$this->claimId = $claimId;
 	}
 }
 ?>
