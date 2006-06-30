@@ -13,10 +13,14 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 
 		$valid = true;
 
+		$appId = $this->appointment->get('id');
 
 		// build some counts
 		$roomCount = array();
-		foreach($appointments as $appointment) {
+		foreach($appointments as $key => $appointment) {
+			if ($appointment['appointment_id'] == $appId) {
+				unset($appointments[$key]);
+			}
 			if (!isset($roomCount[$appointment['room_id']])) {
 				$roomCount[$appointment['room_id']] = 0;
 			}
