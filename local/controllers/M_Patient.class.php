@@ -446,6 +446,14 @@ class M_Patient extends Manager {
 		$complaint->persist();
 	}
 
+	/**
+	 * Remove a duplicate mark
+	 */
+	function process_unmarkDuplicate($patient_id) {
+		$dq =& Celini::newOrdo('DuplicateQueue',$patient_id,'ByPatientId');
+		$dq->drop();
+	}
+
 	
 	/**
 	 * Delete an identifier
