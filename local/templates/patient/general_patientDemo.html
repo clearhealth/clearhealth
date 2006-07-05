@@ -35,7 +35,8 @@ function startDuplicate(URL) {
 				<td rowspan="2" colspan="2" align="right">
 					{if $person->inDuplicateQueue()}
 					<b>Marked as Duplicate</b> of<br> {$person->value('duplicate_person')}
-					{elseif $id>0}
+					<button onclick="window.location = '{$UNDUPLICATE_ACTION}process=true'; return false;">Remove Duplicate Mark</button>
+					{elseif $person->get('id')>0}
 					<button onclick="startDuplicate('{$DUPLICATE_ACTION}'); return false;">Mark as Duplicate</button>
 					{/if}
 				</td>
