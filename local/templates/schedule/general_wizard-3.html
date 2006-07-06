@@ -32,8 +32,8 @@ function switchForm(showid,hideid) {
 
 
 
-<input type="radio" {if $wizard->get('multi_group') == false}checked="checked"{/if} name="wizard[multi_group]" value="false" onclick="if(this.checked) switchForm('simpleform','complexform');"> {l}Simple Schedule{/l}<br />
-<input type="radio" {if $wizard->get('multi_group') == true}checked="checked"{/if} name="wizard[multi_group]" value="false" onclick="if(this.checked) switchForm('complexform','simpleform');"> {l}Complex Schedule (Multiple Blocks){/l}
+<input type="radio" {if $wizard->get('multi_group') == false}checked="checked"{/if} name="wizard[multi_group]" value="0" onclick="if(this.checked) switchForm('simpleform','complexform');"> {l}Simple Schedule{/l}<br />
+<input type="radio" {if $wizard->get('multi_group') == true}checked="checked"{/if} name="wizard[multi_group]" value="1" onclick="if(this.checked) switchForm('complexform','simpleform');"> {l}Complex Schedule (Multiple Blocks){/l}
 <div id='simpleform' {if $wizard->get('multi_group') == true}style="display:none;"{/if}>
 <p>Schedule runs from <input name="wizard[time_start]" size=5 value="{$wizard->get('time_start')}"> 
 	to <input name="wizard[time_end]" size=5 value="{$wizard->get('time_end')}"> (24-Hour Time)</p>
