@@ -10,6 +10,14 @@ class MasterClaimList_DS extends Datasource_sql
 			foreach ($filters as $fname => $fval) {
 				if (!empty($fval)) {
 					switch ($fname) {
+						case 'dos_start':
+							$timestamp =& TimestampObject::create($fval);
+							$whereSql[] = 'e.date_of_treatment >= ' . $db->quote($timestamp->toISO());
+							break;
+						case 'dos_end':
+							$timestamp =& TimestampObject::create($fval);
+							$whereSql[] = 'e.date_of_treatment <= ' . $db->quote($timestamp->toISO());
+							break;
 						case 'revision_start':
 							$timestamp =& TimestampObject::create($fval);
 							$whereSql[] = 'fbc.timestamp >= ' . $db->quote($timestamp->toISO());
@@ -126,6 +134,7 @@ class MasterClaimList_DS extends Datasource_sql
 				'user' => 'Entered By'
 			)
 		);
+
 		
 		$this->registerFilter('patient_name', array(&$this, '_patientHistoryLink'));
 		$this->registerFilter('identifier', array(&$this, '_claimHistoryLink'));
