@@ -216,5 +216,10 @@ class Provider extends MergeDecorator {
 				u.username';
 		return $this->dbHelper->cachedGetAssoc($sql);
 	}
+
+	function get_phone() {
+		$number =& $this->person->numberByType('Work');
+		return $number->get('number');
+	}
 }
 ?>
