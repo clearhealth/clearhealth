@@ -562,8 +562,11 @@ class ClearhealthCalendarData {
 	}
 
 	/**
-	 * Returns array of provider Appointments
-	 * array[provider_id][] = array('label','start','end')
+	 * Returns array of provider and room Appointments
+	 * array[provider_id]['events'][start_ts][event_id] = array('html','start','end')
+	 * array[room_id]['isroom']=0
+	 * array[room_id]['events'][start_ts][event_id] = array('html','start','end')
+	 * array[room_id]['isroom']=1
 	 *
 	 * @param array $filters
 	 * @param string $renderType Specifies how the appointment will be rendered.  'day' will have edit links
@@ -669,17 +672,27 @@ class ClearhealthCalendarData {
 	 * Return array of conflicting event ids and the event they conflict
 	 * (start after current-event-start but before current-event-end)
 	 *
-	 * @param array $filters
+	 * @param array $events
+	 * array[provider_id]['events'][start_ts][event_id] = array('html','start','end')
+	 * array[room_id]['isroom']=0
+	 * array[room_id]['events'][start_ts][event_id] = array('html','start','end')
+	 * array[room_id]['isroom']=1
+	 * @param array $eventids
 	 */
-	function getConflictingEvents(&$filters) {
-		if(is_null($filters['start']->getValue())) {
-			$filters['start']->setValue(date('Y-m-d'));
+	function getConflictingEvents(&$events) {
+		$profile =& Celini::getCurrentUserProfile();
+		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
+		
+		$eventids = array(0);
+		foreach($events as $array) {
+			foreach($array['events'] as $start) {
+				foreach($start as $eid=>$eventsb) {
+					$eventids[] = $eid;
+				}
+			}
 		}
+		$eventids = implode(',',$eventids);
 		$db = new clniDb();
-		$where = $this->toWhere($filters);
-		if(!empty($where)) {
-			$where = ' AND ('.$where.')';
-		}
 		$sql = "SELECT 
 				IF(schedule_code = 'PS',1,IF(s.schedule_id IS NULL AND (ec.patient_id = 0),2,0)) AS schedule_sort,
 				UNIX_TIMESTAMP(event.start) start_ts,
@@ -690,23 +703,20 @@ class ClearhealthCalendarData {
 				ea.provider_id
 			FROM 
 				`event`
-				INNER JOIN `event` AS aevent ON `event`.event_id=aevent.event_id
 				INNER JOIN appointment ea on `event`.event_id = ea.event_id
-				LEFT JOIN event_group eg ON ea.event_group_id=eg.event_group_id
-				LEFT JOIN schedule s ON eg.schedule_id=s.schedule_id
-				LEFT JOIN provider ON ea.provider_id = provider.person_id
-				LEFT JOIN user u ON u.person_id = provider.person_id
-				LEFT JOIN rooms r ON ea.room_id=r.id
-				LEFT JOIN buildings b ON b.id=r.building_id
-				LEFT JOIN patient ON ea.patient_id=patient.person_id,
+				LEFT JOIN event_group eg ON eg.event_group_id=ea.event_group_id
+				LEFT JOIN schedule s ON eg.schedule_id=s.schedule_id,
 				`event` as c
 				INNER JOIN appointment ec on c.event_id = ec.event_id
 			WHERE 
 			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
 			and ea.provider_id = ec.provider_id
-			$where and c.event_id != event.event_id
+			and c.event_id != event.event_id
+			AND event.event_id IN($eventids)
+			AND c.event_id IN($eventids)
 			 ORDER BY 
 			 	ec.created_date, event.start, c.start, c.event_id";
+//echo $sql;
 		$res = $db->execute($sql);
 		$conflicts = array();
 		$starts = array();
@@ -843,7 +853,7 @@ class ClearhealthCalendarData {
 			$a =& $this->events;
 		}
 		$columns = $dayIterator->parent->getScheduleList();
-		list($conflicts,$conflictColumns,$conflictBlocks) = $this->getConflictingEvents($filters);
+		list($conflicts,$conflictColumns,$conflictBlocks) = $this->getConflictingEvents($a);
 
 		
 		$eventmap = $dayIterator->parent->eventScheduleMap;
