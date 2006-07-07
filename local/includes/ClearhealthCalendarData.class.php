@@ -442,7 +442,7 @@ class ClearhealthCalendarData {
 				left join user pu on pu.person_id = pr.person_id
 			WHERE
 				(event.end > $s and event.end <= $e) or
-				(event.start >= $s and event.start <= $e)
+				(event.start >= $s and event.start < $e)
 			";
 		$res = $db->execute($sql);
 		$ret = array();
