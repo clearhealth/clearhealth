@@ -71,6 +71,7 @@ class C_Schedule extends Controller
 
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('clnipopup');
+		$this->view->assign('WIZARD_ACTION',Celini::link('wizard'));
 		return $this->view->render('wizard-'.$this->wizardPage.'.html');
 	}
 
