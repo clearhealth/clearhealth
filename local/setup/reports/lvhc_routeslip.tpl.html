@@ -1,0 +1,735 @@
+{head type="css"}
+.superbill td {
+	border-left: solid 1px black;
+	border-bottom: solid 1px black;
+	text-align: center;
+	font-size: 8pt;
+	line-height: 8pt;
+}
+.superbill .header td {
+	background: black;
+	color: white;
+}
+.superbill td.header {
+	background: black;
+	color: white;
+}
+.superbill {
+	width: 100%;
+	border-right: solid 1px black;
+}
+.superbill td.left {
+	text-align: left;
+}
+.superbill td.right {
+	text-align: right;
+}
+.superbill tr.last td {
+	border: 0;
+	height: 1px;
+	background: black;
+}
+.superbill td.upperLeft,
+.superbill tr.upperLeft td {
+	text-align: left;
+	vertical-align: top;
+}
+td.holder {
+	vertical-align: top;
+	height: 2in;
+}
+.dx {
+	height: .5in;
+}
+{/head}
+
+{capture assign="extra"}
+<table class="superbill" cellspacing=0 cellpadding=2 border=0 style="width: 7.75in;">
+	<tbody>
+		<tr class="header">
+			<td></td>
+			<td class="left">OFFICE VISITS</td>
+			<td>NEW</td>
+			<td>EST</td>
+			<td>FEE</td>
+			<td></td>
+			<td class="left" colspan=2>SUPPORT SERVICE</td>
+			<td>EST</td>
+			<td>FEE</td>
+			<td></td>
+			<td class="left">LAB-INSIDE</td>
+			<td>CODE</td>
+			<td>FEE</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">Brief</td>
+			<td>99201</td>
+			<td>99211</td>
+			<td></td>
+
+			<td>800</td>
+			<td class="left" colspan=2>Acup Ltd New</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Blood Draw</td>
+			<td>36415</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">Focused</td>
+			<td>99202</td>
+			<td>99212</td>
+			<td></td>
+
+			<td>801</td>
+			<td class="left" colspan=2>Acup Comp New</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Specimen Collection</td>
+			<td>99000</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">Expanded</td>
+			<td>99203</td>
+			<td>99213</td>
+			<td></td>
+
+			<td>803</td>
+			<td class="left" colspan=2>Acup Ltd Est</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Wet Mount / KOH</td>
+			<td>87210</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">Detailed</td>
+			<td>99204</td>
+			<td>99214</td>
+			<td></td>
+
+			<td>804</td>
+			<td class="left" colspan=2>Acup Comp Est</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Fecal Hemocult Sid</td>
+			<td>82270</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">Compr.</td>
+			<td>99205</td>
+			<td>99215</td>
+			<td></td>
+
+			<td>807</td>
+			<td class="left" colspan=2>Acup Cupping</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Glucoscan</td>
+			<td>82946</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td class="header"></td>
+			<td class="header"></td>
+			<td class="header"></td>
+			<td class="header">CODE</td>
+			<td class="header">FEE</td>
+
+			<td>808</td>
+			<td class="left" colspan=2>Acup Moxa</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Hemoglobin</td>
+			<td>85018</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Debr. Burn / Sm - Lg</td>
+			<td>16020</td>
+			<td></td>
+
+			<td>810</td>
+			<td class="left" colspan=2>Acup Aucular</td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Strep Latex Screen</td>
+			<td>86403</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Dest. Lesion / Lig. Nitro</td>
+			<td>17110</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>Cnsling 1/2 Hr</td>
+			<td>90804</td>
+			<td></td>
+
+			<td>81025</td>
+			<td class="left">Urine HCG</td>
+			<td>86006</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Dest. Lesion / Surgical</td>
+			<td>17000</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>Cnsling 1 Hr</td>
+			<td>90806</td>
+			<td></td>
+
+			<td>81000</td>
+			<td class="left">U/A Dipstick</td>
+			<td>81005</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Ear Irrigation</td>
+			<td>69210</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>Cnsling Couples</td>
+			<td></td>
+			<td></td>
+
+			<td></tD>
+			<td class="left">Blood Lead</td>
+			<td>39450</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>I & D Abscess</td>
+			<td>10060</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>&nbsp;&nbsp;1/2 Hr</td>
+			<td>2001</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Protime</td>
+			<td>50051</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Health Education</td>
+			<td>94760</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>&nbsp;&nbsp;1 Hr</td>
+			<td>2002</td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td class="header"></td>
+			<td class="header"></td>
+			<td class="header"></td>
+			<td class="header">EST.</td>
+			<td class="header">FEE</td>
+
+			<td></td>
+			<td class="left" colspan=2>Cnsling Dv Grp</td>
+			<td>90853</td>
+			<td></td>
+
+			<td rowspan=2>
+				<div style="width: 15px; height: 10px; border: solid 1px black; margin-left: 5px;"></div>
+			</td>
+			<td rowspan=2 colspan=3 class="left" style="border-left: 0px">Outside Lab Sheet</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>DMV Physical</td>
+			<td>99450</td>
+			<td></td>
+
+			<td></td>
+			<td class="left" colspan=2>Cnsling Patient w/Family</td>
+			<td>90847</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>670</td>
+			<td class="left" colspan=2>Harwood PE</td>
+			<td></td>
+			<td></td>
+
+			<td class="left" colspan=5>&nbsp; OTHER:</td>
+
+			<td class="header"></td>
+			<td class="header left">IMMUNES&nbsp;/&nbsp;INJECTIONS</td>
+			<td class="header">CODE</td>
+			<td class="header">FEE</td>
+		</tr>
+
+		<tr>
+			<td>680</td>
+			<td class="left" colspan=2>Nurse Visit</td>
+			<td></td>
+			<td></td>
+
+			<td class="header left" colspan=2>WOUND REPAIR</td>
+			<td class="header">LOCATION</td>
+			<td class="header"></td>
+			<td class="header">FEE</td>
+			
+			<td>682</td>
+			<td class="left">DTaP</td>
+			<td>90701</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>113</td>
+			<td class="left" colspan=2>BP Check</td>
+			<td></td>
+			<td></td>
+
+			<td class="left" colspan=2>2.5 Cm or Less</td>
+			<td></td>
+			<td>12001</td>
+			<td></td>
+
+			<td>720</td>
+			<td class="left">Hep B (0 - 18 Yrs.)</td>
+			<td>90744</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>111</td>
+			<td class="left" colspan=2>PPD Recheck</td>
+			<td></td>
+			<td></td>
+
+			<td class="left" colspan=2>2.6 Cm - 7.5 Cm</td>
+			<td></td>
+			<td>12002</td>
+			<td></td>
+
+			<td>219</td>
+			<td class="left">HIB</td>
+			<td>90737</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td class="header"></td>
+			<td class="header left">WELL CHILD</td>
+			<td class="header">NEW</td>
+			<td class="header">EST.</td>
+			<td class="header">FEE</td>
+
+			<td class="left" colspan=2>FACE 2.5 Cm or Less</td>
+			<td></td>
+			<td>12011</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">MMR (PHD)</td>
+			<td>90707</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">(0 - 11 M)</td>
+			<td>99381</td>
+			<td>99391</td>
+			<td></td>
+
+			<td class="left" colspan=2>FACE 2.5 Cm - 5.0 Cm</td>
+			<td></td>
+			<td>12013</td>
+			<td></td>
+
+			<td>433</td>
+			<td class="left">IPV (PHD)</td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">(1 - 4 Yrs.)</td>
+			<td>99382</td>
+			<td>99392</td>
+			<td></td>
+
+			<td class="header left" colspan=3>SOFP / SOFP PRIMARY DX</td>
+			<td class="header">CODE</td>
+			<td class="header">FEE</td>
+
+			<td>X6051</td>
+			<td class="left">DmPA</td>
+			<td>560</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">(5 - 11 Yrs.)</td>
+			<td>99383</td>
+			<td>99393</td>
+			<td></td>
+
+			<td class="left" colspan=3>Cnsling Initial Method</td>
+			<td>Z9751</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">PPD</td>
+			<td>86580</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left">(12 - 17 Yrs.)</td>
+			<td>99384</td>
+			<td>99394</td>
+			<td></td>
+
+			<td class="left" colspan=3>Cnsling</td>
+			<td>Z9752</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">TET (Td) (PVT / PHD)</td>
+			<td>90702</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td class="header"></td>
+			<td class="header left" colspan=2>OFFICE PROCEDURE</td>
+			<td class="header">CODE</td>
+			<td class="header">FEE</td>
+
+			<td class="left" colspan=3>Oral Prior to Meth.</td>
+			<td>S10.1</td>
+			<td></td>
+
+			<td>206</td>
+			<td class="left">Demerol</td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Nebulizer</td>
+			<td>94640</td>
+			<td></td>
+
+			<td class="left" colspan=3>Oral Maintenance</td>
+			<td>S10.2</td>
+			<td></td>
+
+			<td>110</td>
+			<td class="left">Phen / Vist</td>
+			<td>205</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Audiogram</td>
+			<td>92551</td>
+			<td></td>
+
+			<td class="left" colspan=3>Inj. Prior to Meth.</td>
+			<td>S20.1</td>
+			<td></td>
+
+			<td>216</td>
+			<td class="left">Vitamin B - 12</td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>EKG &amp; Read</td>
+			<td>93000</td>
+			<td></td>
+
+			<td class="left" colspan=3>Inj. Maintenance</td>
+			<td>S20.2</td>
+			<td></td>
+
+			<td>399</td>
+			<td class="left">Rocephin 1 GM</td>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Oximetry / 02 Sat</td>
+			<td>94760</td>
+			<td></td>
+
+			<td class="left" colspan=3>Implant Prior to Meth.</td>
+			<td>S30.1</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Hep B Adult</td>
+			<td>90746</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Peak Flow</td>
+			<td>94150</td>
+			<td></td>
+
+			<td class="left" colspan=3>Implant Maintenance</td>
+			<td>S30.2</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Hep A</td>
+			<td>90632</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>Spirometry</td>
+			<td></td>
+			<td></td>
+
+			<td class="left" colspan=3>IU Prior to Meth.</td>
+			<td>S40.1</td>
+			<td></td>
+
+			<td></td>
+			<td class="left">Hep B/Hib</td>
+			<td>90737</td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>&nbsp;&nbsp; Simple</td>
+			<td>94010</td>
+			<td></td>
+
+			<td class="left" colspan=3>IUD Maintenance</td>
+			<td>S40.2</td>
+			<td></td>
+
+			<td class="left" colspan=4>OTHER:</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td class="left" colspan=2>&nbsp;&nbsp; Complex</td>
+			<td>94060</td>
+			<td></td>
+
+			<td class="left" colspan=3>Barriers Prior</td>
+			<td>S50.1</td>
+			<td></td>
+
+			<td class="header" colspan=4>SUPPLIES / TRAYS</td>
+		</tr>
+
+		<tr>
+			<td class="left" colspan=5>OTHER:</td>
+
+			<td class="left" colspan=3>Barriers Maintenance</td>
+			<td>S50.2</td>
+			<td></td>
+
+			<td colspan=4></td>
+		</tr>
+
+		<tr>
+			<td colspan=5></td>
+
+			<td class="left" colspan=3>Fertillity Awareness</td>
+			<td></td>
+			<td></td>
+
+			<td colspan=4></td>
+		</tr>
+
+		<tr>
+			<td colspan=5></td>
+
+			<td class="left" colspan=3>Female</td>
+			<td>S90.11</td>
+			<td></td>
+
+			<td colspan=4></td>
+		</tr>
+
+		<tr>
+			<td colspan=5></td>
+
+			<td class="left" colspan=3>Male</td>
+			<td>S90.12</td>
+			<td></td>
+
+			<td colspan=4></td>
+		</tr>
+
+
+		<tr class="last">
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td width=100></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+
+	</tbody>
+</table>
+
+<table cellspacing=0 cellpadding=0 border=0 style="width: 7.75in;">
+	<tbody>
+		<tr>
+			<td width="33%" class="holder">
+				<table class="superbill" cellspacing=0 cellpadding=2 border=0 style="border-right: 0">
+					<tbody>
+						<tr class="header">
+							<td>DIAGNOSIS</td>
+						</tr>
+
+						<tr class="upperLeft">
+							<td class="dx">DX - 1</td>
+						</tr>
+						<tr class="upperLeft">
+							<td class="dx">DX - 2</td>
+						</tr>
+						<tr class="upperLeft">
+							<td class="dx">DX - 3</td>
+						</tr>
+						<tr class="upperLeft">
+							<td class="dx" style="height: .61in">DX - 4</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+			<td width="33%" class="holder">
+				<table class="superbill" cellspacing=0 cellpadding=2 border=0 style="border-right: 0">
+					<tbody>
+						<tr class="header">
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td class="upperLeft" style="height: .9in">Provider Signature</td>
+						</tr>
+						<tr>
+							<td class="upperLeft" style="height: 1.2in">Return:</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+
+			<td width="34%" class="holder">
+				<table class="superbill" cellspacing=0 cellpadding=2 border=0>
+					<tbody>
+						<tr class="header">
+							<td></td>
+							<td style="width: 1in"></td>
+						</tr>
+
+						<tr>
+							<td class="upperLeft" colspan=2 style="height: 1.56in">Notes:</td>
+						</tr>
+
+						<tr>
+							<td class="header right" style="border-bottom: solid 1px white">TODAY'S FEES</td>
+							<td></td>
+						</tr>
+
+						<tr>
+							<td class="header right" style="border-bottom: solid 1px white">ADJ &amp; Type</td>
+							<td></td>
+						</tr>
+
+						<tr>
+							<td class="header right" style="border-bottom: solid 1px white">AMT RECD TODAY</td>
+							<td></td>
+						</tr>
+
+						<tr>
+							<td class="header right">BALANCE DUE</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+{/capture}
+{include file="encounter/general_routeSlip.html" extra=$extra}
