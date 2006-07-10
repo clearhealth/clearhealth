@@ -38,7 +38,7 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 			}
 		}
 		if (count($messages) > 0) {
-			$this->errorMessage = "<b>Conflicting appointments in <i>$room</i>:</b><br>".implode('<br>',$messages);
+			$this->errorMessage = "<b>Conflicting appointments in Room <i>$room</i>:</b><br>".implode('<br>',$messages);
 			$valid = false;
 		}
 
@@ -53,7 +53,7 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 			}
 		}
 		if (count($messages) > 0) {
-			$this->errorMessage = "<b>Conflicting appointments for <i>$provider</i>:</b><br>".implode('<br>',$messages);
+			$this->errorMessage = "<b>Conflicting appointments for Provider <i>$provider</i>:</b><br>".implode('<br>',$messages);
 			$valid = false;
 		}
 

@@ -51,9 +51,12 @@ class C_Schedule extends Controller
 		$em =& Celini::enumManagerInstance();
 		$this->view->assign_by_ref('em',$em);
 
-
-		$wizardData = $this->_getWizardData();
-	
+		if(isset($_GET['clearData'])) {
+			$wizardData =& new ScheduleWizardData();
+			$this->_setWizardData($wizardData);
+		} else {
+			$wizardData = $this->_getWizardData();
+		}	
 		$provider =& Celini::newOrdo('Provider');
 		$providers = $provider->valueList('usernamePersonId');
 
@@ -112,9 +115,9 @@ class C_Schedule extends Controller
 	 * @todo need to detect matching schedules
 	 * @todo need to detect matching groups
 	 */
-	function createSchedule($wizard) {
+	function createSchedule(&$wizard) {
 
-		// create a new schedule
+		// create a new schedule (if one does not already exist)
 		$schedule =& Celini::newORDO('Schedule', $wizard->get('provider_id'), 'ByProvider');
 
 		$schedule->set('title',$wizard->get('name'));
@@ -123,7 +126,6 @@ class C_Schedule extends Controller
 
 		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
 		$provider =& Celini::newORDO('Provider',$wizard->get('provider_id'));
-
 		$schedule->persist();
 
 	if($wizard->get('multi_group') == false) {
@@ -252,6 +254,7 @@ class C_Schedule extends Controller
 				}
 			}
 		}
+		
 		$this->view->assign('EDIT_ACTION',Celini::link('edit','Schedule').'schedule_id='.$schedule->get('id'));
 
 	}
