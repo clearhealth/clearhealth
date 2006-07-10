@@ -244,29 +244,28 @@ class C_Appointment extends Controller {
 		}
 	}
 
+	var $pullDate = false;
+	var $pullType = 'new';
 	function actionPullList() {
-
-		$r =& Celini::newOrdo('Report','/Appointment/pullList','BySystemName');
-		$lastPull = false;
-
-		// were storing the last pull date using storage on the report, so if there isn't a pullList System report setup we can't store it
-		// were storing a timestamp as an int, there is no storage for timestamps
-		if ($r->isPopulated()) {
-			$r->storage_metadata['text']['lastPull'] = true;
-
-			$lastPull = $r->get('lastPull');
-			if (!empty($lastPull)) {
-				$lastPull = unserialize($lastPull);
-			}
+		if ($this->POST->exists('date')) {
+			$this->pullDate = date('Y-m-d',strtotime($this->POST->get('date')));
 		}
-		if (!$lastPull) {
-			$lastPull = array();
+		if ($this->POST->exists('type')) {
+			$this->pullType = $this->POST->get('type');
 		}
+
+		$pullDate = $this->pullDate;
+		if ($this->pullDate == false) {
+			$pullDate = date('Y-m-d');
+		}
+
+		$type = $this->pullType;
 
 		// get upcoming appointments
+		$start = date('Y-m-d H:i:s',strtotime($pullDate.' 01:01:01'));
+		$end = date('Y-m-d H:i:s',strtotime(date('Y-m-d',strtotime($pullDate,'+1 day')).' 23:59:59'));
 
-		$start = date('Y-m-d H:i:s',strtotime('today 01:01:01'));
-		$end = date('Y-m-d H:i:s',strtotime('tomorrow 23:59:59'));
+		$format = TimestampObject::getFormat();
 		$sql = array();
 		$sql['cols'] = "
 			a.appointment_id,
@@ -275,7 +274,8 @@ class C_Appointment extends Controller {
 			p.first_name,
 			b.name building_name,
 			concat(pro.last_name,', ',pro.first_name) provider,
-			date_format(e.start,'%m/%d/%Y %H:%i') appointment_time
+			date_format(e.start,'$format') appointment_time,
+			date_format(pl.pull_date,'$format') pull_date
 			";
 		$sql['from'] = "
 			event e
@@ -286,15 +286,21 @@ class C_Appointment extends Controller {
 			left join user u on pro.person_id = u.person_id
 			left join rooms r on a.room_id = r.id
 			left join buildings b on r.building_id = b.id
+			left join pull_list pl on a.appointment_id = pl.appointment_id
 		";
 
-		// build not in
-		$notin = "";
-		$today = date('Y-m-d');
-		if (isset($lastPull[$today]) && count($lastPull[$today]) > 0) {
-			$notin = " and a.appointment_id not in (".implode($lastPull[$today],',').') ';
+		$sql['where']  = "e.start between '$start' and '$end'";
+
+
+		$db = new clniDb();
+		$now = $db->quote(date('Y-m-d H:i:s'));
+
+		$insert = 'insert into pull_list select a.appointment_id, '.$now.' from '.$sql['from'].' where '.$sql['where'].' and pl.pull_date is null';
+		$db->execute($insert);
+
+		if ($type == 'new') {
+			$sql['where'] .= " and pl.pull_date = $now";
 		}
-		$sql['where']  = "e.start between '$start' and '$end'$notin";
 
 		$ds = new Datasource_sql();
 		$ds->setup(Celini::dbInstance(),$sql,
@@ -304,24 +310,14 @@ class C_Appointment extends Controller {
 				'first_name'=>'First Name',
 				'building_name'=>'Treating Facility',
 				'provider'=>'Treating Provider',
-				'appointment_time'=>'Appointment Time'
+				'appointment_time'=>'Appointment Time',
+				'pull_date'=>'Pulled At'
 			));
 		$grid =& new cGrid($ds);
 		$this->view->assign_by_ref('grid',$grid);
 
-		$store = $ds->toArray('appointment_id','appointment_id');
-
-		if (!isset($lastPull[$today])) {
-			$lastPull = array();
-			$lastPull[$today] = $store;
-		}
-		else {
-			$tmp = $lastPull[date('Y-m-d')];
-			$lastPull = array();
-			$lastPull[$today] = array_merge($tmp,$store);
-		}
-		$r->set('lastPull',serialize($lastPull));
-		$r->persist();
+		$this->view->assign('date',$pullDate);
+		$this->view->assign('type',$type);
 
 		if (isset($this->noRender) && $this->noRender === true) {
 			return "pullList.html";
