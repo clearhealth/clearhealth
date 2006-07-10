@@ -573,7 +573,7 @@ class ClearhealthCalendarData {
 	 * @param int $period Number of seconds in an iteration
 	 * @return array
 	 */
-	function &providerEvents(&$filters,$renderType = 0,$period = 900) {
+	function providerEvents(&$filters,$renderType = 0,$period = 900) {
 		$db = new clniDb();
 		$e =& Celini::newORDO('CalendarEvent');
 		$where = $this->toWhere($filters);
@@ -679,7 +679,7 @@ class ClearhealthCalendarData {
 	 * array[room_id]['isroom']=1
 	 * @param array $eventids
 	 */
-	function getConflictingEvents(&$events) {
+	function getConflictingEvents($events) {
 		$profile =& Celini::getCurrentUserProfile();
 		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
 		
