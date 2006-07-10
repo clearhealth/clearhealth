@@ -145,10 +145,14 @@ class Report extends ORDataObject {
 	*/
 	function persist() {
 		if ($this->newTemplates !== false) {
-			foreach($this->newTemplates as $new) {
+			foreach($this->newTemplates as $key => $new) {
 				$new['is_default'] = "no";
 				$new['report_id'] = $this->id;
-				$this->templates[$this->_db->GenID("sequences")] = $new;
+				
+				$newId = $this->_db->GenID('sequences');
+				$this->templates[$newId] = $new;
+				
+				$this->newTemplates[$key]['id'] = $newId;
 			}
 		}
 
@@ -263,14 +267,26 @@ class Report extends ORDataObject {
 	*/
 
 	/**
+	 * Deprecated method: use valueList('templates') instead
+	 *
+	 * @see valueList_templates()
+	 * @return array
+	 * @deprecated
+	 */
+	function get_templates() {
+		return $this->valueList('templates');
+	}
+	
+	/**
 	* Lazy load templates
 	*/
-	function get_templates() {
-		if ($this->id === 0) {
+	function valueList_templates() {
+		if ($this->get('id') === 0) {
 			return array();
 		}
 		if ($this->templates === false) {
-			$res = $this->dbHelper->execute("select * from report_templates where report_id = $this->id order by report_template_id");
+			$qId = $this->dbHelper->quote($this->get('id'));
+			$res = $this->dbHelper->execute("select * from report_templates where report_id = {$qId} order by report_template_id");
 			$this->templates = array();
 			while($res && !$res->EOF) {
 				$this->templates[$res->fields['report_template_id']] = $res->fields;
@@ -278,8 +294,9 @@ class Report extends ORDataObject {
 			}
 			if (count($this->templates) == 0) {
 				// create a default template
+				$qId = $this->dbHelper->quote($this->get('id'));
 				$new_id = $this->dbHelper->nextId("sequences");
-				$this->dbHelper->execute("insert into report_templates values ($new_id,$this->id,'Default Template','Yes',10000,'')");
+				$this->dbHelper->execute("insert into report_templates values ($new_id,{$qId},'Default Template','Yes',10000,'')");
 				$this->templates = false;
 				$this->get_templates();
 			}

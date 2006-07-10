@@ -189,6 +189,22 @@ class C_Report extends Controller {
 			$report->deletedTemplates = $_POST['deleted_templates'];
 		}
 
+		$report->persist();
+		
+		// handle new file
+		if (isset($_FILES['new_template_file'])) {
+			foreach ($report->newTemplates as $key => $val) {
+				$newId = (int)$val['id'];
+				if (isset($_FILES['new_template_file']['tmp_name'][$key])) {
+					move_uploaded_file(
+						$_FILES['new_template_file']['tmp_name'][$key],
+						realpath(APP_ROOT . '/user/report_templates/') . '/' . $newId . '.tpl.html'
+					);
+				}
+			}
+		}
+		
+		// handle existing files
 		if (isset($_FILES['template']))
 		{
 			if (is_array($report->templates))
@@ -203,8 +219,6 @@ class C_Report extends Controller {
 				}
 			}
 		}
-
-		$report->persist();
 
 		if ($id == 0) {
 			$this->messages->addMessage("Report Added");
