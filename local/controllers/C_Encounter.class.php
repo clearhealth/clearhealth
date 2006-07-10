@@ -556,7 +556,30 @@ class C_Encounter extends Controller {
 
 		$this->view->assign('route_slip_id',$rs->get('id'));
 
-			if (isset($this->noRender) && $this->noRender === true) {
+		$e =& Celini::newOrdo('Encounter',$encounterId);
+		$patient =& Celini::newOrdo('Patient',$e->get('patient_id'));
+		$payer =& Celini::newOrdo('InsuranceProgram',$e->get('current_payer'));
+		$practice =& Celini::newOrdo('Practice',$e->get('practice_id'));
+		$address =& $patient->address();
+		$provider =& Celini::newOrdo('Provider',$e->get('treating_person_id'));
+
+		$ip =& Celini::newOrdo('InsuredRelationship',array($e->get('current_payer'),$e->get('patient_id')),'ByInsuranceProgramAndPerson');
+		$this->view->assign('copay',$ip->get('copay'));
+
+		$profile =& Celini::getCurrentUserProfile();
+		$this->view->assign('user_id',$profile->getUserId());
+
+		$ts = TimestampObject::create(date('Y-m-d H:i:s'));
+		$this->view->assign('timestamp',$ts->toString());
+
+		$this->view->assign_by_ref('encounter',$e);
+		$this->view->assign_by_ref('patient',$patient);
+		$this->view->assign_by_ref('address',$address);
+		$this->view->assign_by_ref('payer',$payer);
+		$this->view->assign_by_ref('practice',$practice);
+		$this->view->assign_by_ref('provider',$provider);
+
+		if (isset($this->noRender) && $this->noRender === true) {
 			return "routeSlip.html";
 		}
 		return $this->view->render("routeSlip.html");
