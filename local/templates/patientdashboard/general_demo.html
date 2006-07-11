@@ -50,13 +50,7 @@
 		<p><a href="{$ENCOUNTER_ACTION}">Add Encounter</a></p>
 	</fieldset>
 
-	<fieldset class="radio" id="Appointments">
-		<legend>{l}Appointments{/l} {clni_section_links name="appointments"}</legend>
-		{$appointmentGrid->render()}
-		{if $appointmentGrid->empty}
-		<p>{l}Patient has no Future appoinments{/l}</p>
-		{/if}
-	</fieldset>
+	{include file="patientdashboard/general_chunkAppointment.html"}
 	{include file="visitqueue/general_visitqueue.html"}
 	</td>
 	<td>
