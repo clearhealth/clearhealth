@@ -1,0 +1,11 @@
+{clni_form action=$REPORT_ACTION}
+<fieldset>
+	Show Appointments on: {clni_input_date name="date" value=$date}<br>
+	<input type="radio" name="type" value="all" id="type_all"{if $type == 'all'} CHECKED{/if}><label for="type_all">Show All</label><br>
+	<input type="radio" name="type" value="new" id="type_new"{if $type == 'new'} CHECKED{/if}><label for="type_new">Show Only New</label>
+
+	<p>
+	<input type="submit" value="Show Appointments to Pull">
+	</p>
+</fieldset>
+</form>
