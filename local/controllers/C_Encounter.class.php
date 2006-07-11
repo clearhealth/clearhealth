@@ -550,6 +550,11 @@ class C_Encounter extends Controller {
 		if ($encounterId == false) {
 			$encounterId = $this->get('encounter_id');
 		}
+
+		if (!$encounterId) {
+			die( "<p>An encounter must be selected to run the Route Slip report.</p>" );
+		}
+
 		$rs =& Celini::newOrdo('RouteSlip');
 		$rs->set('encounter_id',$encounterId);
 		$rs->persist();
