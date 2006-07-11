@@ -333,6 +333,30 @@ class Company extends ORDataObject {
 		return array_flip($list);
 	}
 
+	function &numberByType($type) {
+		$company_number =& Celini::newORDO('CompanyNumber', $this->get('id'));
+		
+		if($this->get('id') <= 0) {
+			return(Celini::newORDO('PersonNumber'));
+		}
+		
+		$lookup = $this->_load_enum('company_number_type');
+		$type_id = (isset($lookup[$type])) ? $lookup[$type]:0;
+
+		$res = $this->_execute("SELECT cn.number_id FROM company_number AS cn INNER JOIN number USING(number_id) WHERE cn.company_id = ".$this->get('id')." AND number_type = $type_id");
+		//var_dump($res);exit();
+
+		$number_id = (isset($res->fields['number_id'])) ? $res->fields['number_id']:0;
+		$number =& Celini::newORDO('PersonNumber', $number_id);
+		$number->set('number_type', $type_id);
+		return($number);
+	}
+	
+	function numberValueByType($type) {
+		$number =& $this->numberByType($type);
+		return $number->get('number');
+	}
+
 	
 	/**
 	 * Type is the string value of the company type enumeration
