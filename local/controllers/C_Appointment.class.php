@@ -57,6 +57,9 @@ class C_Appointment extends Controller {
 		if($this->GET->get('date') != '') {
 			$this->view->assign('apt_date',date('m/d/Y',strtotime($this->GET->get('date'))));
 		}
+		else {
+			$this->view->assign('apt_date', date('m/d/Y'));
+		}
 
 		$head =& Celini::HTMLHeadInstance();
 		$head->addNewJs('C_Appointment','templates/appointment/appointment.js');
