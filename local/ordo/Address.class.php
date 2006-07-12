@@ -143,6 +143,18 @@ class Address extends ORDataObject {
 	    return array_flip($list);
     }
 
+	/**##@+
+	 * Alias to postal_code
+	 */
+	function get_zip() {
+		return $this->get('postal_code');
+	}
+	
+	function set_zip($value) {
+		$this->set('postal_code', $value);
+	}
+	/**#@-*/
+	
 	/**
 	 * Accessor for raw state
 	 *
