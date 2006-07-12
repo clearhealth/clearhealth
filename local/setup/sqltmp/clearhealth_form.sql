@@ -2,6 +2,7 @@ CREATE TABLE `form` (
   `form_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
+  `system_name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`form_id`)
 ) TYPE=MyISAM COMMENT='Contains the EMR extending forms STARTWITHDATA';
 INSERT INTO `form` VALUES (800,'Test Data','Some random data'),(1710,'Patient Vitals','Patient Vital Statistics');
