@@ -2,7 +2,7 @@
 $loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
 class AppointmentRuleDate extends AppointmentRule {
 
-	var $days = array(0=>'Sn',1=>'M',2=>'T',3=>'W',4=>'Th',5=>'F',6=>'St');
+	var $days = array(7=>'Sn',1=>'M',2=>'T',3=>'W',4=>'Th',5=>'F',6=>'St');
 
 	function isApplicable() {
 		$start = strtotime($this->appointment->get('start'));
