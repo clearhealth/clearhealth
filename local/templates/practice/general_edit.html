@@ -3,13 +3,13 @@
 		if it were called last, the settings from the form would be overwritten with the old information-->
 <div style="margin: 1em">
 	<h2>Practice Information</h2>
-<input type="hidden" name="form_id" value="{$practice->get('id')}" />
+<input type="hidden" name="form_id" value="{$practice->value('id')}" />
 <div id="practiceFormMessageBox"></div>
 <table CELLSPACING="0" CELLPADDING="3">
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Name{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="40" name="name" value="{$practice->get('name')}"/>
+		<input type="text" size="40" name="name" value="{$practice->value('name')}"/>
 	</td>
 </tr>
 <tr>
@@ -19,23 +19,23 @@
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Address{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
 		{$practice->main_adress}
-		<input type="text" size="40" name="main_address_line1" value="{$practice->main_address->get('line1')}"/>
+		<input type="text" size="40" name="main_address_line1" value="{$practice->main_address->value('line1')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Address{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="40" name="main_address_line2" value="{$practice->main_address->get('line2')}"/>
+		<input type="text" size="40" name="main_address_line2" value="{$practice->main_address->value('line2')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}City, State Zip{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="25" name="main_city" value="{$practice->main_address->city}"/> ,
+		<input type="text" size="25" name="main_city" value="{$practice->main_address->value('city')}"/> ,
 		<select name="main_state">
-		{html_options options=$practice->main_address->getStateList() selected=$practice->main_address->get_state()}
+		{html_options options=$practice->main_address->getStateList() selected=$practice->main_address->get('state')}
 		</select>
-		<input type="text" size="5" name="main_zip" value="{$practice->main_address->get('zip')}"/>
+		<input type="text" size="5" name="main_zip" value="{$practice->main_address->value('zip')}"/>
 	</td>
 </tr>
 <tr>
@@ -44,53 +44,53 @@
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Address{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="40" name="secondary_address_line1" value="{$practice->secondary_address->line1}"/>
+		<input type="text" size="40" name="secondary_address_line1" value="{$practice->secondary_address->value('line1')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Address{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="40" name="secondary_address_line2" value="{$practice->secondary_address->line2}"/>
+		<input type="text" size="40" name="secondary_address_line2" value="{$practice->secondary_address->value('line2')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}City, State Zip{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input type="text" size="25" name="secondary_city" value="{$practice->secondary_address->city}"/> , 
+		<input type="text" size="25" name="secondary_city" value="{$practice->secondary_address->value('city')}"/> , 
 		<select name="secondary_state">
-		{html_options options=$practice->secondary_address->getStateList() selected=$practice->secondary_address->get_state()}
+		{html_options options=$practice->secondary_address->getStateList() selected=$practice->secondary_address->get('state')}
 		</select>
-		<input type="text" size="5" name="secondary_zip" value="{$practice->secondary_address->get('zip')}"/>
+		<input type="text" size="5" name="secondary_zip" value="{$practice->secondary_address->value('zip')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Website{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input TYPE="TEXT" NAME="website" SIZE="35" VALUE="{$practice->get_website()}"/>
+		<input TYPE="TEXT" NAME="website" SIZE="35" VALUE="{$practice->value('website')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Main Phone{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input TYPE="TEXT" NAME="phone1" SIZE="12" VALUE="{$practice->get_phone1()}"/>
+		<input TYPE="TEXT" NAME="phone1" SIZE="12" VALUE="{$practice->value('phone1')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Secondary Phone{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input TYPE="TEXT" NAME="phone2" SIZE="12" VALUE="{$practice->get_phone2()}"/>
+		<input TYPE="TEXT" NAME="phone2" SIZE="12" VALUE="{$practice->value('phone2')}"/>
 	</td>
 </tr>
 <tr>
 	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Fax{/l}</td>
 	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
-		<input TYPE="TEXT" NAME="fax" SIZE="12" VALUE="{$practice->get_fax()}"/>
+		<input TYPE="TEXT" NAME="fax" SIZE="12" VALUE="{$practice->value('fax')}"/>
 	</td>
 </tr>
 <tr>
 	<td>{l}Identifier{/l}</td>
 	<td colspan="2">
-		<input type="text" id="identifier" name="identifier" value="{$practice->get('identifier')}" />
+		<input type="text" id="identifier" name="identifier" value="{$practice->value('identifier')}" />
 	</td>
 </tr>
 
