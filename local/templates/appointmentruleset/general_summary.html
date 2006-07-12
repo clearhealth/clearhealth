@@ -1,6 +1,11 @@
 <input type="hidden" name="appointmentruleset[appointment_ruleset_id]" value="{$ar->get('id')}">
 <input type="hidden" name="appointmentruleset[tab]" value='summary'>
 <p><label>Name: </label><input name="appointmentruleset[name]" value="{$ar->get('name')}" onkeyup="$('rulesetName').innerHTML = 'Rule: '+this.value"></p>
+<p>
+	<input type="radio" value="1" name="appointmentruleset[enabled]" id="aren" {if $ar->get('enabled')}CHECKED{/if}><label for="aren">Enabled</label>
+	<input type="radio" value="0" name="appointmentruleset[enabled]" id="ardis" {if $ar->get('enabled') == 0}CHECKED{/if}><label for="ardis">Disabled</label>
+</p>
+
 <p><label>Message to display when a rule fails:</label><br>
 <textarea rows=5 cols=50 name="appointmentruleset[error_message]">{$ar->get('error_message')}</textarea>
 <br><br>

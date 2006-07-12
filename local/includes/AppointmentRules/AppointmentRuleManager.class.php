@@ -27,7 +27,7 @@ class AppointmentRuleManager {
 		$cid = EnforceType::int($appointment->get('reason'));
 		$rid = EnforceType::int($appointment->get('room_id'));
 
-		$sql = "select * from appointment_ruleset where 
+		$sql = "select * from appointment_ruleset where enabled = 1 and
 				(provider_id = 0 or provider_id = $pid) and (procedure_id = 0 or procedure_id = $cid) and (room_id = 0 or room_id = $rid)";
 	
 		$db = new clniDb();

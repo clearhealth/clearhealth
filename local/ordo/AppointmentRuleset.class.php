@@ -13,6 +13,7 @@ class AppointmentRuleset extends ORDataObject {
 	var $appointment_ruleset_id	= '';
 	var $name			= '';
 	var $error_message		= '';
+	var $enabled			= 1;
 	var $provider_id		= '';
 	var $procedure_id		= '';
 	var $room_id			= '';
