@@ -151,8 +151,10 @@ Tooth: {$code.tooth} Side {$code.toothside}
 	{/if}
 </td></tr></table>
 </form>
-{literal}
+
 <script language="javascript">
+{if $encounter->value('status') != 'closed'}
+{literal}
 function setupAutoComplete(){
 	var ac = new procedureSuggest('parent_code','parent_id',false,
 			function(suggest) { suggest.params = [$('superbillBox').checked]; } );
@@ -160,6 +162,9 @@ function setupAutoComplete(){
 	var ac2 = new diagnosisSuggest('child_code','child_id',false,
 			function(suggest) { suggest.params = [$('superbillBox').checked]; });
 }
+{/literal}
+{/if}
+{literal}
 
 var CPTSearch = function cpt_search(searchString) {
         var h = new c_coding(this.dataHandler);
@@ -283,6 +288,8 @@ function addCPTCode() {
 	cptText.focus();
 }
 
-setupAutoComplete();
-</script>
 {/literal}
+{if $encounter->value('status') != 'closed'}
+setupAutoComplete();
+{/if}
+</script>
