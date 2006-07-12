@@ -111,13 +111,11 @@ class Address extends ORDataObject {
 				{$this->_fkey} = ".(int)$parent_id;
 		$res = $this->_execute($sql);
 
-		$countyl = $this->getCountyList();
 		$statel = $this->getStateList();
 		$typel = $this->getTypeList();
 
 		$list = NULL;
 		while($res && !$res->EOF) {
-			$res->fields['county'] = $countyl[$res->fields['county']];
 			$res->fields['state'] = $statel[$res->fields['state']];
 
 			$res->fields['type'] = $typel[$res->fields['address_type']];
