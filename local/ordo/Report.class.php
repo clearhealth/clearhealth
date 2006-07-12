@@ -50,6 +50,17 @@ class Report extends ORDataObject {
 		}
 	}
 
+	/**
+	 * Returns an array of all of the methods that are accessible via the AJAX object
+	 *
+	 * @return array
+	 */
+	function ajaxMethods() {
+		return array(
+			'getTemplateList'
+		);
+	}
+	
 	function setup($report_id  = 0) {
 		if ($report_id > 0) {
 			$this->set('id',$report_id);

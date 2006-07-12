@@ -40,13 +40,13 @@ class ClearhealthAJAX {
 
 	function initReport() {
 		$report= Celini::newOrdo('Report');
-		$this->server->registerClass($report,'Report');
+		$this->server->registerClass($report,'Report', $report->ajaxMethods());
 	}
 
 	function initMenuReport(){
 		$GLOBALS['loader']->requireOnce("ordo/MenuReport.class.php");
 		$report=&new MenuReport();
-		$this->server->registerClass($report,'MenuReport');
+		$this->server->registerClass($report,'MenuReport', $report->ajaxMethods());
 	}
 
 	function initMenuForm(){

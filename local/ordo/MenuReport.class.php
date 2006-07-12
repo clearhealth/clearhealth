@@ -23,6 +23,20 @@ class MenuReport extends ORDataObject {
 			$this->populate();
 		}
 	}
+	
+	/**
+	 * Returns an array of all of the methods that are accessible via the AJAX object
+	 *
+	 * @return array
+	 */
+	function ajaxMethods() {
+		return array(
+			'getMenuList',
+			'addMenuEntry',
+			'updateMenuEntry',
+			'deleteMenuEntry',
+		);
+	}
     
 	/**
 	* Pull data for this record from the database

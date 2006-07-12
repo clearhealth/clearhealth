@@ -13,7 +13,7 @@
 
 		var template_select = document.getElementById('template');
 
-		var templates = r.gettemplatelist(report_id,true);
+		var templates = r.getTemplateList(report_id,true);
 
 		template_select.options[0].value=0;
 		template_select.options[0].text=" ";
@@ -46,7 +46,7 @@
 	}
 
 	function updateMenuItems() {
-		var items = mr.getmenulist(menu_id,true);
+		var items = mr.getMenuList(menu_id,true);
 
 		if (items.length == 0) {
 			document.getElementById("updateContent").innerHTML = "No reports for this section";
@@ -67,17 +67,17 @@
 	}
 
 	function addMenuEntry() {
-		mr.addmenuentry(menu_id,report_template_id,document.getElementById('title').value);
+		mr.addMenuEntry(menu_id,report_template_id,document.getElementById('title').value);
 		updateMenuItems();
 	}
 
 	function updateMenuEntry(id,el) {
-		mr.updatemenuentry(id,el.value);
+		mr.updateMenuEntry(id,el.value);
 	}
 
 	function deleteMenuEntry(id,name) {
 		if (confirm('Delete Menu Entry: '+name)) {
-			mr.deletemenuentry(id);
+			mr.deleteMenuEntry(id);
 			updateMenuItems();
 		}
 	}
