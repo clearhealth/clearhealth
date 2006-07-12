@@ -319,7 +319,8 @@ class C_Appointment extends Controller {
 		$grid =& new cGrid($ds);
 		$this->view->assign_by_ref('grid',$grid);
 
-		$this->view->assign('date',$pullDate);
+		$pd = DateObject::create($pullDate);
+		$this->view->assign('date',$pd->toString());
 		$this->view->assign('type',$type);
 
 		if (isset($this->noRender) && $this->noRender === true) {
