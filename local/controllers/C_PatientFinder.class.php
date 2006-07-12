@@ -88,7 +88,7 @@ class C_PatientFinder extends Controller {
 		//get the db connection and pass it to the helper functions
 		$userProfile =& Celini::getCurrentUserProfile();
 		if (count($userProfile->getPracticeIdList()) > 0) {
-			$practiceFiltering = '(psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ')) AND ';
+			$practiceFiltering = '(psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ')) ';
 		}
 		else {
 			$practiceFiltering = '';
@@ -106,14 +106,15 @@ class C_PatientFinder extends Controller {
 			FROM
 				person psn
 				$join_type JOIN patient AS pt ON(psn.person_id=pt.person_id)
-				LEFT JOIN person_type AS ptype USING(person_id)
+				LEFT JOIN person_type AS ptype ON(ptype.person_id=psn.person_id)
 			WHERE 
-				{$practiceFiltering}";
+				{$practiceFiltering} AND ";
 
 		$cleanedValue = mysql_real_escape_string($search_string);
 		$sqls = $this->_smart_search($search_string);
 		// var_dump($sqls);
-		$sqland = $sql . implode(' AND ',$sqls). "
+		$sqland = $sql .'('. implode(' AND ',$sqls). ")
+			GROUP BY record_number
 			ORDER BY 
 				(last_name = '$cleanedValue') DESC,
 				(first_name = '$cleanedValue') DESC,
@@ -121,7 +122,8 @@ class C_PatientFinder extends Controller {
 				first_name 
 			LIMIT
 				{$this->limit}";
-		$sqlor = $sql . implode(' OR ', $sqls) . "
+		$sqlor = $sql .'('. implode(' OR ', $sqls) . ")
+			GROUP BY record_number
 			ORDER BY
 				(last_name = '{$cleanedValue}') DESC,
 				(first_name = '{$cleanedValue}') DESC,
