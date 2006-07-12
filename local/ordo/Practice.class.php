@@ -274,35 +274,35 @@ class Practice extends ORDataObject{
 	}
 	
 	function set_main_address_line1($line) {
-		$this->main_address->set_line1($line);
+		$this->main_address->set('line1', $line);
 	}
 	function set_main_address_line2($line) {
-		$this->main_address->set_line2($line);
+		$this->main_address->set('line2', $line);
 	}
 	function set_main_city($city) {
-		$this->main_address->set_city($city);
+		$this->main_address->set('city', $city);
 	}
 	function set_main_state($state) {
-		$this->main_address->set_state($state);
+		$this->main_address->set('state', $state);
 	}
 	function set_main_zip($zip) {
-		$this->main_address->set_postal_code($zip);
+		$this->main_address->set('postal_code', $zip);
 	}
 	
 	function set_secondary_address_line1($line) {
-		$this->secondary_address->set_line1($line);
+		$this->secondary_address->set('line1', $line);
 	}
 	function set_secondary_address_line2($line) {
-		$this->secondary_address->set_line2($line);
+		$this->secondary_address->set('line2', $line);
 	}
 	function set_secondary_city($city) {
-		$this->secondary_address->set_city($city);
+		$this->secondary_address->set('city', $city);
 	}
 	function set_secondary_state($state) {
-		$this->secondary_address->set_state($state);
+		$this->secondary_address->set('state', $state);
 	}
 	function set_secondary_zip($zip) {
-		$this->secondary_address->set_postal_code($zip);
+		$this->secondary_address->set('postal_code', $zip);
 	}
 	
 	function get_delete_message() {
@@ -388,7 +388,7 @@ class Practice extends ORDataObject{
 		$ret = array();
 		$ret['name'] = $this->get('name');
 		$ret['address'] = $this->main_address->toArray();
-		$ret['phone_number'] = $this->get_phone1();
+		$ret['phone_number'] = $this->get('phone1');
 		$ret['identifier'] = $this->get('identifier');
 		return $ret;
 	}

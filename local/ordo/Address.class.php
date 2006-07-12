@@ -79,7 +79,7 @@ class Address extends ORDataObject {
 			foreach($this->_parent as $id => $val) {
 				if (!isset($addresses[$id])) {
 					// add
-					$sql = "replace into $this->_relation values(".(int)$id.",".(int)$this->id.",".(int)$this->get_type().")";
+					$sql = "replace into $this->_relation values(".(int)$id.",".(int)$this->id.",".(int)$this->get('type').")";
 					$this->_execute($sql);
 				}
 			}
@@ -169,7 +169,7 @@ class Address extends ORDataObject {
 		}
 	}
     function get_stateInitials() {
-    	return $this->get_state(true);
+    	return $this->value('state');
     }
     function get_printDisplay() {
 	    $line1 = $this->get('line1');
