@@ -38,6 +38,12 @@ class DuplicateQueue extends ORDataObject {
 		parent::ORDataObject();
 	}
 
+	function setupByPatientId($patientId) {
+		$p = EnforceType::int($patientId);
+		$sql = "select * from ".$this->tableName()." where child_id = $p";
+		$this->helper->populateFromQuery($this,$sql);
+	}
+
 	function value_childSummary() {
 		return $this->patientSummary($this->get('child_id'));
 	}
