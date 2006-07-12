@@ -87,7 +87,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 			from 
 				$table l
 				inner join fee_schedule_discount_income i on l.fee_schedule_discount_level_id = i.fee_schedule_discount_level_id
-				inner join fee_schedule_discount d using(fee_schedule_discount_id)
+				inner join fee_schedule_discount d ON d.fee_schedule_discount_id=l.fee_schedule_discount_id
 			where
 				i.family_size = $size and
 				i.income >= $income and
