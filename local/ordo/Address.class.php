@@ -57,7 +57,7 @@ class Address extends ORDataObject {
 
 		if (isset($this->_relation)) {
 			$sql = "select address_type from $this->_relation where address_id = ".(int)$this->id;
-			$this->set_type($this->_db->getOne($sql));
+			$this->set('type', $this->_db->getOne($sql));
 		}
 	}
 
@@ -138,47 +138,6 @@ class Address extends ORDataObject {
 	    $this->set('id',$id);
     }
 
-    function get_name() {
-    	return $this->name;	
-    }
-    function set_name($n) {
-    	$this->name = $n;
-    }
-
-    function get_line1() {
-    	return $this->line1;	
-    }
-    function set_line1($l) {
-    	$this->line1 = $l;
-	}
-
-    function get_line2() {
-    	return $this->line2;	
-    }
-    function set_line2($l) {
-    	$this->line2 = $l;
-    }
-
-    function get_city() {
-    	return $this->city;	
-    }
-    function set_city($c) {
-    	$this->city = $c;
-    }
-
-    function get_region() {
-    	return $this->region;	
-    }
-    function set_region($r) {
-	    $this->region = $r;
-    }
-
-    function get_county() {
-    	return $this->county;	
-    }
-    function set_county($c) {
-    	$this->county = $c;
-    }
     function getCountyList() {
 	    $list = $this->_load_enum('county',true);
 	    return array_flip($list);
@@ -209,40 +168,12 @@ class Address extends ORDataObject {
 	    $ret = "<div class='address'>$line1\n$line2\n<br>$city, $state $postal_code</div>";
 	    return $ret;
     }
-    function set_state($s) {
-    	$this->state = $s;
-    }
+
     function getStateList() {
 	    $list = $this->_load_enum('state',false);
 	    return array_flip($list);
     }
 
-	function get_postal_code() {
-		return $this->postal_code;
-	}
-	function set_postal_code($c) {
-		$this->postal_code = $c;
-	}
-	function get_zip() {
-		return $this->postal_code;
-	}
-	function set_zip($c) {
-		$this->postal_code = $c;
-	}
-
-	function get_notes() {
-		return $this->notes;
-	}
-	function set_notes($n) {
-		$this->notes = $n;
-	}
-
-	function get_type() {
-		return $this->type;
-	}
-	function set_type($t) {
-	    $this->type = $t;
-    }
     function getTypeList() {
 	    $list = $this->_load_enum('address_type',true);
 	    return array_flip($list);

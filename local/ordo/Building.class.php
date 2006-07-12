@@ -75,7 +75,7 @@ class Building extends ORDataObject{
 		$this->name = "";
 		$this->practice_id = "";
 		$this->address = new BuildingAddress();
-		$this->address->set_type("main");
+		$this->address->set('type', "main");
 
 		if ($id != "") {
 			$this->populate();
