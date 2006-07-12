@@ -111,7 +111,6 @@ class Address extends ORDataObject {
 				{$this->_fkey} = ".(int)$parent_id;
 		$res = $this->_execute($sql);
 
-		$regionl = $this->getRegionList();
 		$countyl = $this->getCountyList();
 		$statel = $this->getStateList();
 		$typel = $this->getTypeList();
@@ -120,7 +119,6 @@ class Address extends ORDataObject {
 		while($res && !$res->EOF) {
 			$res->fields['county'] = $countyl[$res->fields['county']];
 			$res->fields['state'] = $statel[$res->fields['state']];
-			$res->fields['region'] = $regionl[$res->fields['region']];
 
 			$res->fields['type'] = $typel[$res->fields['address_type']];
 
@@ -173,10 +171,6 @@ class Address extends ORDataObject {
     }
     function set_region($r) {
 	    $this->region = $r;
-    }
-    function getRegionList() {
-	    $list = $this->_load_enum('region',true);
-	    return array_flip($list);
     }
 
     function get_county() {
