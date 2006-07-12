@@ -7,6 +7,7 @@
  * include the abstract datasource
  */
 $loader->requireOnce('includes/Datasource.class.php');
+$loader->requireOnce('includes/Datasource_sql.class.php');
 $loader->requireOnce('datasources/MasterClaimList_DS.class.php');
 
 /**
@@ -25,6 +26,8 @@ class MasterAccountHistory_DS extends Datasource {
 	var $_valid = false;
 	var $filters = false;
 	var $_type = 'html';
+	var $_internalName = 'MasterAccountHistory_DS';
+	var $csvRenderer = 'Grid_Renderer_AccountHistory_CSV';
 
 	function MasterAccountHistory_DS($filters = false) {
 		$this->filters = $filters;

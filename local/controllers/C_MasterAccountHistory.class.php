@@ -107,6 +107,8 @@ class C_MasterAccountHistory extends Controller {
 		$renderer =& new Grid_Renderer_AccountHistory();
 		$accountHistoryGrid =& new cGrid($ds, $renderer);
 		$accountHistoryGrid->pageSize = 10;
+		$accountHistoryGrid->hideExportLink = false;
+		$accountHistoryGrid->setExternalId('MasterAccountHistory');
 		
 		$this->view->assign_by_ref('accountHistoryGrid', $accountHistoryGrid);
 		$this->view->assign_by_ref('totalGrid', $totalGrid);
