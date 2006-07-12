@@ -25,7 +25,7 @@ class Grid_Renderer_AccountHistory extends Grid_Renderer_HTML {
 				$this->_grid->attributes[$row]['tr']['class'] = "alt";				
 			}
 			else {
-				if (isset($this->_grid->attrbiutes[$row]['tr']['class'])) {
+				if (isset($this->_grid->attributes[$row]['tr']['class'])) {
 					unset($this->_grid->attributes[$row]['tr']['class']);
 				}
 			}
