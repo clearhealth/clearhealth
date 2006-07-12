@@ -143,15 +143,31 @@ class Address extends ORDataObject {
 	    return array_flip($list);
     }
 
+	/**
+	 * Accessor for raw state
+	 *
+	 * Use of $map is deprecated - call value('state') directly
+	 *
+	 * @return string
+	 * @access protected
+	 * @deprecated
+	 */
     function get_state($map = false) {
 	    if ($map) {
-		    $list = $this->getStateList();
-		    if (isset($list[$this->state])) {
-			    return $list[$this->state];
-		    }
+		    return $this->value('state');
 	    }
     	return $this->state;	
     }
+	
+	function value_state() {
+		$list = $this->getStateList();
+		if (isset($list[$this->state])) {
+			return $list[$this->state];
+		}
+		else {
+			return $this->get('state');
+		}
+	}
     function get_stateInitials() {
     	return $this->get_state(true);
     }
