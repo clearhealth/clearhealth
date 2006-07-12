@@ -10,10 +10,18 @@ class CompanyNumber extends Number {
 		parent::setup($id,$parent,$parent_type);
 		$this->_parent[$parent]['phone_relation_type'] = 1;
 	}
+	
+	function getTypeList() {
+		$list = $this->_load_enum('company_number_type',true);
+		return array_flip($list);
+	}
 
-        function getTypeList() {
-                $list = $this->_load_enum('company_number_type',true);
-                return array_flip($list);
-        }
+	function get_company_number_type() {
+		return $this->number_type;
+	}
+	
+	function set_company_number_type($type) {
+		$this->number_type = $type;
+	}
 }
 ?>

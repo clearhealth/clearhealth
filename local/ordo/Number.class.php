@@ -98,34 +98,35 @@ class Number extends ORDataObject {
 		return $numbers;
 	}
 
-    /**#@+
-    *	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
-    */
-    
-    function get_number_type() {
-    	return $this->number_type;	
-    }
-    function set_number_type($type) {
-    	$this->number_type = $type;	
-    }
-
-    function get_notes() {
-    	return $this->notes;	
-    }
-    function set_notes($notes) {
-    	$this->notes = $notes;	
-    }
-
-    function get_number() {
-    	return $this->number;	
-    }
-    function set_number($n) {
-    	$this->number = $n;	
-    }
-        function getTypeList() {
-                $list = $this->_load_enum('number_type',true);
-                return array_flip($list);
-        }
+	/**#@+
+	*	Getter/Setter method used as part of object model for populate, persist, and form_poulate operations
+	*/
+	
+	function get_number_type() {
+		return $this->number_type;
+	}
+	function set_number_type($type) {
+		$this->number_type = $type;
+	}
+	
+	function get_notes() {
+		return $this->notes;
+	}
+	function set_notes($notes) {
+		$this->notes = $notes;
+	}
+	
+	function get_number() {
+		return $this->number;
+	}
+	function set_number($n) {
+		$this->number = $n;
+	}
+	
+	function getTypeList() {
+		$list = $this->_load_enum('number_type',true);
+		return array_flip($list);
+	}
 
 	function get_dnc() {
 		return $this->active;
@@ -133,5 +134,5 @@ class Number extends ORDataObject {
 	function set_dnc($flag) {
 		$this->active = $flag;
 	}
-} 
+}
 ?>

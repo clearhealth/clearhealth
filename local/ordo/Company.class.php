@@ -333,23 +333,24 @@ class Company extends ORDataObject {
 		return array_flip($list);
 	}
 
+	/**
+	 *  Get a phone number for a company by type
+	 *
+	 *  If no number for that type exists you'll get an ordo back that is ready to be populated and persisted
+	 */
 	function &numberByType($type) {
-		$company_number =& Celini::newORDO('CompanyNumber', $this->get('id'));
-		
-		if($this->get('id') <= 0) {
-			return(Celini::newORDO('PersonNumber'));
-		}
-		
-		$lookup = $this->_load_enum('company_number_type');
-		$type_id = (isset($lookup[$type])) ? $lookup[$type]:0;
+		$em =& Celini::enumManagerInstance();
 
-		$res = $this->_execute("SELECT cn.number_id FROM company_number AS cn INNER JOIN number USING(number_id) WHERE cn.company_id = ".$this->get('id')." AND number_type = $type_id");
-		//var_dump($res);exit();
+		$typeKey = $em->lookupKey('company_number_type',$type);
 
-		$number_id = (isset($res->fields['number_id'])) ? $res->fields['number_id']:0;
-		$number =& Celini::newORDO('PersonNumber', $number_id);
-		$number->set('number_type', $type_id);
-		return($number);
+		$id = EnforceType::int($this->get('id'));
+
+		$sql = "SELECT cn.number_id FROM company_number AS cn INNER JOIN number USING(number_id) WHERE cn.company_id = $id AND number_type = $typeKey";
+		$numberId = $this->dbHelper->getOne($sql);
+
+		$num =& Celini::newOrdo('CompanyNumber',array($numberId,$id));
+		$num->set('number_type', $typeKey);
+		return($num);
 	}
 	
 	function numberValueByType($type) {
