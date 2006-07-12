@@ -26,6 +26,9 @@ class C_FeeSchedule extends Controller {
 		$code =& Celini::newOrdo('Code',$codeId);
 		$fsd  =& Celini::newOrdo('FeeScheduleData',array($codeId,$fsId),'ByCodeFeeSchedule');
 
+		$fs =& Celini::newOrdo('FeeSchedule',$fsId);
+		$this->view->assign_by_ref('fs',$fs);
+
 		$em =& Celini::enumManagerInstance();
 		$modifiers = $em->enumArray('code_modifier');
 

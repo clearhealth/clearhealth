@@ -221,5 +221,32 @@ class FeeSchedule extends ORDataObject {
 	function setDefaultValue($value) {
 		$this->_execute("replace into fee_schedule_data (code_id,revision_id,fee_schedule_id,data) select code_id, 1, ".$this->get('fee_schedule_id').", $value from codes where code_type in (3,5)");
 	}
+
+	function numCodesWithFees() {
+		$id = EnforceType::int($this->get('id'));
+		$sql = "select count(*) c from fee_schedule_data fsd where data > 0 and fsd.fee_schedule_id = $id";
+		return $this->dbHelper->getOne($sql);
+	}
+
+	// figure out the default fee is slightly hackish, but should be correct in any standard system
+	function numCodesNotDefaultFee() {
+		$id = EnforceType::int($this->get('id'));
+		$sql = "select data, count(*) c from fee_schedule_data fsd where data > 0 and fsd.fee_schedule_id = $id group by data order by c DESC limit 1";
+		$res = $this->dbHelper->execute($sql);
+
+		$defaultFee = false;
+		if ($res->fields['c'] > 200) {
+			$defaultFee = $res->fields['data'];
+		}
+
+		if ($defaultFee) {
+			$sql = "select count(*) c from fee_schedule_data fsd where data > 0 and fsd.fee_schedule_id = $id and data != $defaultFee";
+			return $this->dbHelper->getOne($sql);
+		}
+		else {
+			$sql = "select count(*) c from fee_schedule_data fsd where data > 0 and fsd.fee_schedule_id = $id";
+			return $this->dbHelper->getOne($sql);
+		}
+	}
 }
 ?>

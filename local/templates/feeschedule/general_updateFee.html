@@ -40,3 +40,6 @@
 </table>
 <button accessKey="u"><u>U</u>pdate Code Fee</button>
 </form>
+<script type="text/javascript">
+	$('totals').innerHTML = "{$fs->numCodesWithFees()} codes have fees, {$fs->numCodesNotDefaultFee()} codes have a non default fee";
+</script>

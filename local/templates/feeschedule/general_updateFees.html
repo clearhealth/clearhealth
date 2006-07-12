@@ -4,6 +4,7 @@ function submitEdit(form) {
 }
 {/head}
 <h2>Fee Schedule: {$fs->get('label')}</h2>
+<p id="totals">{$fs->numCodesWithFees()} codes have fees, {$fs->numCodesNotDefaultFee()} codes have a non default fee</p>
 <div>
 	<table><tbody><tr>
 		<td>
