@@ -249,5 +249,11 @@ class Encounter extends ORDataObject {
 		}
 		return 0;
 	}
+
+	function get_practice_id() {
+		$id = EnforceType::int($this->get('building_id'));
+		$sql = "select practice_id from buildings b where b.id = $id";
+		return $this->dbHelper->GetOne($sql);
+	}
 }
 ?>
