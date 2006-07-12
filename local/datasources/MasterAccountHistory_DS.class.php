@@ -24,6 +24,7 @@ class MasterAccountHistory_DS extends Datasource {
 	var $_numRows = false;
 	var $_valid = false;
 	var $filters = false;
+	var $_type = 'html';
 
 	function MasterAccountHistory_DS($filters = false) {
 		$this->filters = $filters;
