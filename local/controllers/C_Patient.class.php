@@ -241,6 +241,7 @@ class C_Patient extends Controller {
 	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
+		var_dump(__METHOD__);
 		$this->_storeCurrentAction ();
 		$db =& Celini::dbInstance();
 
@@ -254,18 +255,18 @@ class C_Patient extends Controller {
 			$reportId = $_GET[0];
 		}
 		$r =& Celini::newOrdo('Report',$reportId);
-		$fromSnapshot = false;
-		if ($this->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) {
+		$snapshotId = false;
+		if (($this->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) && !$this->GET->exists('snapshotId')) {
 			$rs =& Celini::newOrdo('ReportSnapshot');
 			$rs->persist();
 			$this->view->rs =& $rs;
 			$this->data = array();
 			$this->data['ordo'] = array();
 		}
-		else if ($this->GET->exists('fromSnapshot')) {
-			$rs =& Celini::newOrdo('ReportSnapshot',$this->GET->get('fromSnapshot'));
+		else if ($this->GET->exists('snapshotId')) {
+			$rs =& Celini::newOrdo('ReportSnapshot',$this->GET->get('snapshotId'));
 			$this->data = unserialize($rs->get('data'));
-			$fromSnapshot = true;
+			$snapshotId = true;
 		}
 
 		$p =& Celini::newOrdo('Patient',$patientId);
@@ -306,7 +307,7 @@ class C_Patient extends Controller {
 			$sh->set('report_snapshot_id',$rs->get('id'));
 		}
 
-		if (!$fromSnapshot) {
+		if (!$snapshotId) {
 			$sh->persist();
 		}
 
@@ -315,7 +316,7 @@ class C_Patient extends Controller {
 		$this->assign('pay_by',$sh->get('pay_by'));
 
 		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
-		list($lines,$plines) = $this->_statementData($patientId,$includeDependants,$fromSnapshot,$sh,$sql,$agingSql);
+		list($lines,$plines) = $this->_statementData($patientId,$includeDependants,$snapshotId,$sh,$sql,$agingSql);
 
 		if (isset($rs)) {
 			$rs->set('data',serialize($this->data));
@@ -327,7 +328,7 @@ class C_Patient extends Controller {
 		return $this->view->render("statement.html");
 	}
 	
-	function _statementData($patientId,$includeDependants,$fromSnapshot,&$sh,$sql,$agingSql) {
+	function _statementData($patientId,$includeDependants,$snapshotId,&$sh,$sql,$agingSql) {
 		$aging = array(
 			0=>0,
 			30=>0,
@@ -405,14 +406,14 @@ class C_Patient extends Controller {
 		$this->view->assign('plines',$plines);
 		$this->view->assign('pinfo',$pinfo);
 		
-		if ($fromSnapshot && isset($this->data['ordo']['lines'])) {
+		if ($snapshotId && isset($this->data['ordo']['lines'])) {
 			$lines = $this->data['ordo']['lines'];
 		}
 		else {
 			$this->data['ordo']['lines'] = $lines;
 		}
 
-		if ($fromSnapshot && isset($this->data['ordo']['balance'])) {
+		if ($snapshotId && isset($this->data['ordo']['balance'])) {
 			$total_charges = $this->data['ordo']['balance']['total_charges'];
 			$total_credits = $this->data['ordo']['balance']['total_credits'];
 			$total_outstanding = $this->data['ordo']['balance']['total_outstanding'];
@@ -451,7 +452,7 @@ class C_Patient extends Controller {
 			$aging = $planaging;
 		}
 		
-		if ($fromSnapshot && isset($this->data['ordo']['aging'])) {
+		if ($snapshotId && isset($this->data['ordo']['aging'])) {
 			$aging = $this->data['ordo']['aging'];
 		}
 		else {
