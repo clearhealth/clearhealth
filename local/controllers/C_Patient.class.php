@@ -241,7 +241,6 @@ class C_Patient extends Controller {
 	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
-		var_dump(__METHOD__);
 		$this->_storeCurrentAction ();
 		$db =& Celini::dbInstance();
 
