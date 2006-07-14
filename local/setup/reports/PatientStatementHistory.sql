@@ -18,5 +18,4 @@ statement_history sh
 where
  type = 1 and
  patient_id = '<<[patient_id:C_patient]>>'
-order by Date
-
+order by generated_date
