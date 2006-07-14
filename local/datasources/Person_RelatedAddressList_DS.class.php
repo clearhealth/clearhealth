@@ -42,7 +42,7 @@ class Person_RelatedAddressList_DS extends Datasource_sql {
 							person_person AS t
 							INNER JOIN person AS me ON (me.person_id = t.person_id)
 							INNER JOIN person AS r ON (r.person_id = t.related_person_id)
-							INNER JOIN person_address AS pa USING(person_id)
+							INNER JOIN person_address AS pa ON (pa.person_id=r.person_id)
 							INNER JOIN address AS a USING(address_id)", 
 						'where'	=> "t.person_id = {$qPersonId}"
 					),
@@ -60,7 +60,7 @@ class Person_RelatedAddressList_DS extends Datasource_sql {
 							person_person AS t
 							INNER JOIN person AS me ON (me.person_id = t.related_person_id) 
 							INNER JOIN person AS r ON (r.person_id = t.person_id)
-							INNER JOIN person_address AS pa USING(person_id)
+							INNER JOIN person_address AS pa ON (pa.person_id=r.person_id)
 							INNER JOIN address AS a USING(address_id)", 
 						'where'	=> "t.related_person_id = {$qPersonId}"
 					)

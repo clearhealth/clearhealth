@@ -56,8 +56,8 @@ class Person_RelatedList_DS extends Datasource_sql
 						if(guarantor=1,concat('Yes (P of R) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
-						INNER JOIN person AS r ON (p.person_id = t.person_id) 
-						INNER JOIN person AS p ON (r.person_id = t.related_person_id)",
+						INNER JOIN person AS r ON (r.person_id = t.person_id) 
+						INNER JOIN person AS p ON (p.person_id = t.related_person_id)",
 					'where'	=> "t.related_person_id = $person_id",
 					)
 				)
