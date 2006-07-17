@@ -112,7 +112,8 @@ class Room extends ORDataObject{
 			$d = new Room();
 			$sql = "SELECT r.id, r.name as room_name, b.name as building_name FROM  " . $d->_prefix . $d->_table . " as r "
 			."LEFT JOIN buildings as b on b.id=r.building_id "
-			."LEFT JOIN practices as s on  s.id=b.practice_id WHERE s.id " .$foreign_id ;
+			."LEFT JOIN practices as s on  s.id=b.practice_id WHERE s.id " . $foreign_id
+			."ORDER BY building_name, room_name";
 			$result = $d->_Execute($sql);
 		
 			while ($result && !$result->EOF) {
