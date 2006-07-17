@@ -1,6 +1,6 @@
 ---[by_payer]---
 SELECT
-	CONCAT(c.name, ip.name) AS payer,
+	CONCAT("<a href=\"", "{url:controller=Report&action=viewByCID}", "cid=payerprogramdrilldown&rf%5binsurance_program_id%5d=", ip.insurance_program_id, "\">", c.name, " &gt; ", ip.name, "</a>") AS payer,
 	(
 		SUM(CASE WHEN e.date_of_treatment >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN total_billed ELSE 0 END) - 
 		(
