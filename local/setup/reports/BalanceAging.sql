@@ -1,14 +1,32 @@
 SELECT 
-	current.encounter_id,current.Patient,current.`Patient ID`,current.Payer,
+	patient.encounter_id,
+	patient.Patient,
+	patient.`Patient ID`,
+	patient.Payer,
 	IFNULL(current.total_balance,0) as `Current`,
 	IFNULL(30day.total_balance,0) as `30 Day`,
 	IFNULL(60day.total_balance,0) as `60 Day`,
 	IFNULL(90day.total_balance,0) as `90 Day`,
 	IFNULL(120day.total_balance,0) as `120 Day`
 from 
-(	
-	SELECT patient_id,e.encounter_id, ip.name as `Payer`,pers.person_id as `Patient ID`,CONCAT(pers.first_name," ",pers.last_name)as `Patient`,
-	
+(
+	SELECT 
+		patient_id,
+		pers.person_id,
+		e.encounter_id, 
+		ip.name as `Payer`,
+		pers.person_id as `Patient ID`,
+		ip.company_id payer_id,
+		CONCAT(pers.first_name," ",pers.last_name)as `Patient`
+	FROM encounter as e
+	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
+	INNER JOIN storage_int as si on cc.encounter_id = si.foreign_key
+	INNER JOIN insurance_program ip on ip.insurance_program_id = si.value
+	INNER JOIN person as pers on e.patient_id = pers.person_id
+)
+patient
+LEFT JOIN (	
+	SELECT patient_id,e.encounter_id,ip.company_id payer_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -33,9 +51,9 @@ from
 
 	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
 
-)as `current` LEFT JOIN
-(	
-	SELECT patient_id,e.encounter_id,
+)as `current` on current.patient_id = patient.person_id and current.payer_id = patient.payer_id
+LEFT JOIN (	
+	SELECT patient_id,e.encounter_id,ip.company_id payer_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -62,11 +80,11 @@ from
 
 	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
 	
-)as `30day`  ON current.patient_id = 30day.patient_id 
+)as `30day`  ON patient.person_id = 30day.patient_id and patient.payer_id = 30day.payer_id
 
 LEFT JOIN 
 (
-SELECT patient_id,
+SELECT patient_id,ip.company_id payer_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -93,10 +111,10 @@ SELECT patient_id,
 
 	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
 
-) as `60day` ON current.patient_id = 60day.patient_id
+) as `60day` ON patient.person_id = 60day.patient_id and patient.payer_id = 60day.payer_id
 LEFT JOIN 
 (
-SELECT patient_id,
+SELECT patient_id, ip.company_id payer_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -123,10 +141,10 @@ SELECT patient_id,
 
 	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
 
-) as `90day` ON current.patient_id = 90day.patient_id
+) as `90day` ON patient.person_id = 90day.patient_id and patient.payer_id = 90day.payer_id
 LEFT JOIN 
 (
-SELECT patient_id,
+SELECT patient_id,ip.company_id payer_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -151,7 +169,8 @@ SELECT patient_id,
 	
 	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
 
-) as `120day` ON current.patient_id = 120day.patient_id
+) as `120day` ON patient.person_id = 120day.patient_id and patient.payer_id = 120day.payer_id
+/* end from */
 WHERE 
 	current.total_balance <> 0
 OR
@@ -162,5 +181,5 @@ OR
 	90day.total_balance <> 0
 OR
 	120day.total_balance <> 0
-	
-#this encounter ID is my test for older debt 607500
+GROUP BY
+	patient.person_id, patient.payer_id
