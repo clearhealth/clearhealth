@@ -39,6 +39,7 @@ class Person_RelatedList_DS extends Datasource_sql
 						relation_type,
 						CONCAT_WS(' ',r.first_name, r.last_name) right_name,
 						r.person_id right_id,
+						p.person_id left_id,
 						if(guarantor=1,concat('Yes (R of P) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
@@ -53,6 +54,7 @@ class Person_RelatedList_DS extends Datasource_sql
 						relation_type,
 						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
 						p.person_id right_id,
+						r.person_id left_id,
 						if(guarantor=1,concat('Yes (P of R) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
@@ -67,6 +69,8 @@ class Person_RelatedList_DS extends Datasource_sql
 		$this->registerFilter('relation_type',array(&$this,'_humanReadableRelationshipType'));
 		$this->registerTemplate('right_name','<a class="dashedLink" title="View dashboard for {$right_name}" href="'.
 			Celini::link('view','PatientDashboard').'id={$right_id}">{$right_name}</a>');
+		$this->registerTemplate('left_name','<a class="dashedLink" title="View dashboard for {$left_name}" href="'.
+			Celini::link('view','PatientDashboard').'id={$left_id}">{$left_name}</a>');
 
 	}
 	
