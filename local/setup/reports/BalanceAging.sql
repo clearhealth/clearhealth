@@ -3,11 +3,11 @@ SELECT
 	patient.Patient,
 	patient.`Patient ID`,
 	patient.Payer,
-	IFNULL(current.total_balance,0) as `Current`,
-	IFNULL(30day.total_balance,0) as `30 Day`,
-	IFNULL(60day.total_balance,0) as `60 Day`,
-	IFNULL(90day.total_balance,0) as `90 Day`,
-	IFNULL(120day.total_balance,0) as `120 Day`
+	IFNULL(sum(current.total_balance),0) as `Current`,
+	IFNULL(sum(30day.total_balance),0) as `30 Day`,
+	IFNULL(sum(60day.total_balance),0) as `60 Day`,
+	IFNULL(sum(90day.total_balance),0) as `90 Day`,
+	IFNULL(sum(120day.total_balance),0) as `120 Day`
 from 
 (
 	SELECT 
