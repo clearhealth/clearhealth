@@ -26,7 +26,6 @@
 	}
 
 	function clni_rule_addressRequiredIf(element) {
-	alert('Hiya folks!');
 		var required = false;
 		// if any of the elements are filled out all are required
 		for(var i =0; i < addressElements.length; i++) {
