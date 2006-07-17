@@ -7,7 +7,6 @@
 
 /**
 */
-$loader->requireOnce("ordo/MenuReport.class.php");
 $loader->requireOnce("includes/Pager.class.php");
 $loader->requireOnce("includes/ReportFilter.class.php");
 $loader->requireOnce("includes/Grid.class.php");
@@ -16,7 +15,6 @@ $loader->requireOnce("includes/Datasource_sql.class.php");
 
 /**
 *
-* @todo switch jpspan usage to html_ajax
 */
 class C_Report extends Controller {
 
@@ -85,45 +83,6 @@ class C_Report extends Controller {
 		//var_dump($mr->getMenuList(7,true));
 
 		return $this->view->render("connect.html");
-	}
-
-	function actionRemote_edit() {
-		$S = & new JPSpan_Server_PostOffice();
-		$S->addHandler(Celini::newOrdo('Report'));
-		$S->addHandler(new MenuReport());
-		$l = Celini::link('remote',false,'util');
-		$S->setServerUrl(substr($l,0,strlen($l)-1));
-
-
-
-		// This allows the JavaScript to be seen by
-		// just adding ?client to the end of the
-		// server's URL
-
-		if (isset($_SERVER['QUERY_STRING']) &&
-			strcasecmp($_SERVER['QUERY_STRING'], 'client')==0) {
-
-		    // Compress the output Javascript (e.g. strip whitespace)
-		    define('JPSPAN_INCLUDE_COMPRESS',true);
-
-		    // Display the Javascript client
-		    $S->displayClient();
-
-		} else {
-		    // hack up url
-		    $_SERVER['REQUEST_URI'] = str_replace('/util/Report/remote','',$_SERVER['REQUEST_URI']);
-
-
-		    // This is where the real serving happens...
-		    // Include error handler
-		    // PHP errors, warnings and notices serialized to JS
-		    require_once JPSPAN . 'ErrorHandler.php';
-
-		    // Start serving requests...
-		    $S->serve();
-
-		}
-				
 	}
 
 	/**
