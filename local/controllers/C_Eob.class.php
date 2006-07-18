@@ -19,7 +19,7 @@ class C_Eob extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addNewJs('payment','templates/eob/payment.js');
 
-		$this->view->assign('REBILL_ACTION',Celini::link('rebillSelfPay','EOB',false));
+		$this->view->assign('REBILL_ACTION',Celini::link('rebillSelfPay','Eob',false));
 
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
