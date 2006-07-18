@@ -13,10 +13,10 @@ from
 	SELECT 
 		patient_id,
 		pers.person_id,
-		e.encounter_id, 
+		ip.company_id payer_id, 
 		ip.name as `Payer`,
 		pat.record_number as record_num,
-		ip.insurance_program_id payer_id,
+		e.encounter_id,
 		CONCAT(pers.first_name," ",pers.last_name)as `Patient`
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -27,7 +27,7 @@ from
 )
 patient
 LEFT JOIN (	
-	SELECT patient_id,e.encounter_id,ip.insurance_program_id payer_id,
+	SELECT patient_id,e.encounter_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -50,11 +50,11 @@ LEFT JOIN (
 	AND
 		DATE_SUB(CURDATE(),INTERVAL 30 DAY) <= e.date_of_treatment
 
-	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
+	GROUP BY e.patient_id,cc.identifier, e.encounter_id
 
-)as `current` on current.patient_id = patient.person_id and current.payer_id = patient.payer_id
+)as `current` on current.patient_id = patient.person_id and current.encounter_id = patient.encounter_id
 LEFT JOIN (	
-	SELECT patient_id,e.encounter_id,ip.insurance_program_id payer_id,
+	SELECT patient_id,e.encounter_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -79,13 +79,13 @@ LEFT JOIN (
 	AND
 		DATE_SUB(CURDATE(),INTERVAL 60 DAY) <= e.date_of_treatment
 
-	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
+	GROUP BY e.patient_id,cc.identifier, e.encounter_id
 	
-)as `30day`  ON patient.person_id = 30day.patient_id and patient.payer_id = 30day.payer_id
+)as `30day`  ON patient.person_id = 30day.patient_id and patient.encounter_id = 30day.encounter_id
 
 LEFT JOIN 
 (
-SELECT patient_id,ip.insurance_program_id payer_id,
+SELECT patient_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -110,12 +110,12 @@ SELECT patient_id,ip.insurance_program_id payer_id,
 	AND
 		DATE_SUB(CURDATE(),INTERVAL 90 DAY) <= e.date_of_treatment
 
-	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
+	GROUP BY e.patient_id,cc.identifier, e.encounter_id
 
-) as `60day` ON patient.person_id = 60day.patient_id and patient.payer_id = 60day.payer_id
+) as `60day` ON patient.person_id = 60day.patient_id and patient.encounter_id = 60day.encounter_id
 LEFT JOIN 
 (
-SELECT patient_id, ip.insurance_program_id payer_id,
+SELECT patient_id, e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -140,12 +140,12 @@ SELECT patient_id, ip.insurance_program_id payer_id,
 	AND
 		DATE_SUB(CURDATE(),INTERVAL 120 DAY) <= e.date_of_treatment
 
-	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
+	GROUP BY e.patient_id,cc.identifier, e.encounter_id
 
-) as `90day` ON patient.person_id = 90day.patient_id and patient.payer_id = 90day.payer_id
+) as `90day` ON patient.person_id = 90day.patient_id and patient.encounter_id = 90day.encounter_id
 LEFT JOIN 
 (
-SELECT patient_id,ip.insurance_program_id payer_id,
+SELECT patient_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -168,9 +168,9 @@ SELECT patient_id,ip.insurance_program_id payer_id,
 	AND
 		DATE_SUB(CURDATE(),INTERVAL 120 DAY) >e.date_of_treatment
 	
-	GROUP BY e.patient_id,cc.identifier, ip.insurance_program_id
+	GROUP BY e.patient_id,cc.identifier, e.encounter_id
 
-) as `120day` ON patient.person_id = 120day.patient_id and patient.payer_id = 120day.payer_id
+) as `120day` ON patient.person_id = 120day.patient_id and patient.encounter_id = 120day.encounter_id
 /* end from */
 WHERE 
 (
