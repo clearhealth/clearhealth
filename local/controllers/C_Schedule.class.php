@@ -138,21 +138,23 @@ class C_Schedule extends Controller
 		$schedule->persist();
 
 	if($wizard->get('multi_group') == false) {
+		$db =& $schedule->dbHelper;
 		$egTitle = $wizard->get('group');
+		$whereTmp = " AND eg.title=".$db->quote($egTitle);
 		if (empty($egTitle)) {
 			$egTitle = 'General Hours';
+			$whereTmp = " AND eg.room_id=".$db->quote($room->get('id'));
 		}
 		
-		$db =& $schedule->dbHelper;
 		$sql = "
 			SELECT
 				event_group_id
 			FROM
 				event_group eg
 			WHERE
-				eg.schedule_id=".$db->quote($schedule->get('id'))."
-				AND eg.room_id=".$db->quote($room->get('id'));
+				eg.schedule_id=".$db->quote($schedule->get('id')).$whereTmp;
 		$res = $db->execute($sql);
+
 		if($res && !$res->EOF) {
 			$eventgroup =& Celini::newORDO('EventGroup',$res->fields['event_group_id']);
 		} else {
@@ -280,6 +282,7 @@ class C_Schedule extends Controller
 		$finder =& new ORDOFinder('Schedule',"schedule.schedule_code != ''");
 		$schedules = $finder->find();
 		$schedules = $schedules->toArray();
+
 		$this->view->assign_by_ref('schedules',$schedules);
 		$c =& Celini::newORDO('Schedule');
 		return $this->view->render("schedules.html");
