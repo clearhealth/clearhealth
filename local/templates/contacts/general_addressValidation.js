@@ -15,6 +15,7 @@
 				clni_register_validation_rule_hash({obj:selects[i],rule:'addressRequiredIf'});
 				addressElements.push(selects[i]);
 			}
+
 		}
 	);
 
@@ -43,11 +44,13 @@
 		var required = false;
 		// if any of the elements are filled out all are required
 		for(var i =0; i < addressElements.length; i++) {
-			if (addressElements[i].name[0] != '_' && !(addressElements[i].value == 0 || addressElements[i].value == '' || addressElements[i].checked == false)) {
+			if (addressElements[i].name[0] != '_' && 
+				!(addressElements[i].value == 0 || addressElements[i].value == '' || addressElements[i].checked == false)) {
 				required = true;
 			}
 		}
-		if (addressElements[0].value == 'No Address') {
+
+		if (addressElements[2].value == 'No Address') {
 			required = false;
 		}
 		if (element.name.match(/line2\]$/)) {
