@@ -1,13 +1,13 @@
-<fieldset>
+<fieldset id="address">
 	<legend>Patient Addresses</legend>
 	
 	{include file="contacts/general_addressList.html"}
 
 {if $address->get('id') <= 0}	
-	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEditTemplate')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
-	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressTemplate')" type="radio" name="_addressType" />Add Address From Related Person</label>
+	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEdit')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
+	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressBlock')" type="radio" name="_addressType" id="relatedAddress" />Add Address From Related Person</label>
 {/if}
-	<div id="addressEditTemplate" style="display:none;">
+	<div id="addressEdit">
 		{if $address->value('isMultiple')}
 		<p>
 			This address belongs to the following people as well:
@@ -21,26 +21,27 @@
 		{include file="contacts/general_addressEdit.html"}
 	</div>
 	
-	<div id="relatedAddressTemplate" style="display:none;">
+	<div id="relatedAddressBlock" style="display:none;">
 		{include file="patient/general_relatedAddresses.html"}
 	</div>
 	
 	<div id="addressEditBox"></div>
 </fieldset>
 
+<div id="debugDiv"></div>
 {literal}
 <script type="text/javascript">
 function switchAddressEditMode(newTemplate) {
-	if(newTemplate=='addressEditTemplate') {
-		document.getElementById('addressEditTemplate').style.display='block';
-		document.getElementById('addressEditBox').innerHTML = '';
+	if(newTemplate=='addressEdit') {
+		document.getElementById('relatedAddressBlock').style.display='none';
+		document.getElementById('addressEdit').style.display='block';
 	} else {
-		document.getElementById('addressEditTemplate').style.display='none';
-		document.getElementById('addressEditBox').innerHTML = document.getElementById(newTemplate).innerHTML;
+		document.getElementById('addressEdit').style.display='none';
+		document.getElementById('relatedAddressBlock').style.display='block';
 	}
 }
-switchAddressEditMode('addressEditTemplate');
-//switchAddressEditMode('relatedAddressTemplate');
+switchAddressEditMode('addressEdit');
+//switchAddressEditMode('relatedAddress');
 </script>
 {/literal}
 {include file="contacts/general_addressValidation.js"}

@@ -20,7 +20,21 @@
 
 	function clni_rule_address(element) {
 		if (document.getElementById('noAddresses')) {
-			return clni_rule_required(element);
+			if ($('relatedAddressGrid')) {
+				if (document.getElementById('relatedAddress').checked == true) {
+					var addressInputs = $('relatedAddressGrid').getElementsByTagName('INPUT');
+					var relatedAddressRegExp = new RegExp('^relatedAddress');
+					for (var i = 0; i < addressInputs.length; i++) {
+						if (addressInputs[i] && relatedAddressRegExp.test(addressInputs[i].name) && addressInputs[i].checked) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+			else {
+				return clni_rule_required(element);
+			}
 		}
 		return true;
 	}
@@ -29,7 +43,7 @@
 		var required = false;
 		// if any of the elements are filled out all are required
 		for(var i =0; i < addressElements.length; i++) {
-			if (!(addressElements[i].value == 0 || addressElements[i].value == '' || addressElements[i].checked == false)) {
+			if (addressElements[i].name[0] != '_' && !(addressElements[i].value == 0 || addressElements[i].value == '' || addressElements[i].checked == false)) {
 				required = true;
 			}
 		}
