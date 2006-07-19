@@ -160,6 +160,10 @@ class C_Encounter extends Controller {
 			}
 			if (isset($appointments[$appointment_id])) {
 				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
+
+				$em =& Celini::enumManagerInstance();
+				$reason = $em->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
+				$encounter->set("encounter_reason",$reason);
 			}
 		}
 
