@@ -1,10 +1,31 @@
+{head type="css"}
+#editor {
+	width: 500px;
+	padding: 5px;
+}
+#superbill {
+	position: absolute;
+	padding: 5px;
+	left: 510px;
+	top: 0;
+	border-left: dotted 1px black;
+}
+{/head}
 {head type="js"}
 function submitEdit(form) {
 	HTML_AJAX.formSubmit(form,'editor');
 }
+function selectCode(code) {
+	HTML_AJAX.replace('editor',editAction+code);
+}
+function selectSuperbill(url) {
+	HTML_AJAX.replace('sbContent',url+'superbill_id='+$('sbSelector').value);
+}
 {/head}
 <h2>Fee Schedule: {$fs->get('label')}</h2>
 <p id="totals">{$fs->numCodesWithFees()} codes have fees, {$fs->numCodesNotDefaultFee()} codes have a non default fee</p>
+
+<div>
 <div>
 	<table><tbody><tr>
 		<td>
@@ -21,6 +42,22 @@ function submitEdit(form) {
 		</td>
 	</tr></tbody></table>
 </div>
+
+<div style="position: relative;  border-top: solid 1px black;">
+	<div id="editor">
+		Select a code to update its fees
+	</div>
+	<div id="superbill">
+		<p>Select codes from a superbill</p>
+		<select id="sbSelector" onclick="selectSuperbill('{$SUPERBILL_ACTION}')">
+			{html_options options=$superbills}
+		</select>
+		<button onclick="selectSuperbill('{$SUPERBILL_ACTION}')">Update</button>
+		<div id="sbContent">
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 	var editAction = '{$EDIT_ACTION}code_id=';
 	{literal}
@@ -30,8 +67,4 @@ function submitEdit(form) {
 			});
 	{/literal}
 </script>
-
-<div id="editor" style="margin: 5px; border-top: solid 1px black">
-	Select a code to update its fees
-</div>
 
