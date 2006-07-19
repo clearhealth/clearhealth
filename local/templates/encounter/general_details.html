@@ -17,6 +17,7 @@
 		<tr>
 			<td><label>{l}Date of Treatment{/l}:</label></td>
 			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment') id="date_of_treatment"}</td>
+
 			<td><label>{l}Encounter Reason{/l}:</label></td>
 			<td><select name="encounter[encounter_reason]">
 					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
@@ -63,24 +64,30 @@ function populateEncounter(selected) {
 	var results = e.appointmentlist_remoting(oc_id,pat_id);
 	var treating_person = document.forms.encounter['encounter[treating_person_id]'];
 	var building = document.forms.encounter['encounter[building_id]'];
+	var reason = document.forms.encounter['encounter[encounter_reason]'];
+
 	var dot = document.forms.encounter['encounter[date_of_treatment]'];
 
 	dot.value = results['appointment_start'].substr(0,10);
 
-	
-	for (i=0;i<treating_person.length;i++) {
+	for (var i=0;i<treating_person.length;i++) {
 		 if (treating_person[i].value == results['provider_id']) {
 		 	treating_person[i].selected = true;
 		 }
 	}
 	
-	for (i=0;i<building.length;i++) {
+	for (var i=0;i<building.length;i++) {
 		 if (building[i].value == results['building_id']) {
 		 	building[i].selected = true;
 		 }
 	}
-}
 
+	for (var i=0;i<reason.length;i++) {
+		 if (reason[i].text == results['reason']) {
+		 	reason[i].selected = true;
+		 }
+	}
+}
 </script>
 {/literal}
 
