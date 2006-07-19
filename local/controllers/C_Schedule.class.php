@@ -87,9 +87,17 @@ class C_Schedule extends Controller
 		switch ($this->wizardPage) {
 			case 99:
 				$this->createSchedule($wizardData);
+
+				// clear wizard data
+				$wizardData =& new ScheduleWizardData();
+				$this->_setWizardData($wizardData);
 				break;
 			case 11:
 				$this->createAdminMeeting($wizardData);
+				
+				// clear wizard data
+				$wizardData =& new ScheduleWizardData();
+				$this->_setWizardData($wizardData);
 				break;
 		}
 	}
