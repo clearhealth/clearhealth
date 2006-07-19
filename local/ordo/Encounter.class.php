@@ -201,7 +201,7 @@ class Encounter extends ORDataObject {
 				r.id AS room_id,
 				a.appointment_id AS occurence_id, 
 				concat_ws(' ',pr.first_name,pr.last_name) AS provider_name,
-				pr.person_id AS provider_id, 
+				a.provider_id AS provider_id, 
 				e.start AS appointment_start 
 			FROM 
 				event e
