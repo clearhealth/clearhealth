@@ -202,13 +202,16 @@ class Encounter extends ORDataObject {
 				a.appointment_id AS occurence_id, 
 				concat_ws(' ',pr.first_name,pr.last_name) AS provider_name,
 				a.provider_id AS provider_id, 
-				e.start AS appointment_start 
+				e.start AS appointment_start,
+				ev.value reason 
 			FROM 
 				event e
 				INNER JOIN appointment a ON e.event_id = a.event_id
 				LEFT JOIN rooms as r on a.room_id = r.id
 				LEFT JOIN buildings AS b ON (b.id = r.building_id)
 				LEFT JOIN person pr on pr.person_id = a.patient_id
+				INNER JOIN enumeration_value ev on a.reason = ev.key
+				INNER JOIN enumeration_definition ed on ev.enumeration_id = ed.enumeration_id and ed.name = 'appointment_reasons'
 			WHERE
 				a.patient_id = " . (int)$this->get("patient_id") . "
 			ORDER BY 
