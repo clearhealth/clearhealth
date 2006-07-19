@@ -26,7 +26,8 @@ class Person_RelatedList_DS extends Datasource_sql
 			'left_name'     => 'Person',
 			'relation_type' => 'Relation Of',
 			'right_name'    => 'Relation',
-			'guarantor'	=> 'Guarantor?'
+			'guarantor'	=> 'Guarantor?',
+			'action_delete' => ''
 		);
 		$this->setup(Celini::dbInstance(),
 			array(
@@ -67,6 +68,7 @@ class Person_RelatedList_DS extends Datasource_sql
 			$labels);
 
 		$this->registerFilter('relation_type',array(&$this,'_humanReadableRelationshipType'));
+		$this->registerFilter('action_delete', array(&$this, '_addDeleteAction'));
 		$this->registerTemplate('right_name','<a class="dashedLink" title="View dashboard for {$right_name}" href="'.
 			Celini::link('view','PatientDashboard').'id={$right_id}">{$right_name}</a>');
 		$this->registerTemplate('left_name','<a class="dashedLink" title="View dashboard for {$left_name}" href="'.
@@ -101,5 +103,14 @@ class Person_RelatedList_DS extends Datasource_sql
 		$enum = ORDataObject::factory('Enumeration');
 		$this->_relationshipTypes = $enum->get_enum_list('person_to_person_relation_type');
 	}
+	
+	/**
+	 * Adds a link to delete a relationship
+	 */
+	 function _addDeleteAction($value, $rowValues) {
+		 $url = Celini::link('delete', 'PersonPerson') . 'id=' . $rowValues['person_person_id'] . '&embedded=true&process=true';
+		 $confirmJs = "if(!confirm('Are you sure you want to remove the relationship from {$rowValues['left_name']} to {$rowValues['right_name']}?')) { return false; }";  
+		 return '<a href="' . $url . '" onclick="' . $confirmJs . '">Delete</a>';
+	 }
 }
 
