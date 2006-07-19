@@ -190,19 +190,19 @@ class Building extends ORDataObject{
 	}
 	
 	function set_address_line1($line) {
-		$this->address->set_line1($line);
+		$this->address->set('line1', $line);
 	}
 	function set_address_line2($line) {
-		$this->address->set_line2($line);
+		$this->address->set('line2', $line);
 	}
 	function set_city($city) {
-		$this->address->set_city($city);
+		$this->address->set('city', $city);
 	}
 	function set_state($state) {
-		$this->address->set_state($state);
+		$this->address->set('state', $state);
 	}
 	function set_zip($zip) {
-		$this->address->set_zip($zip);
+		$this->address->set('zip', $zip);
 	}
 	
 	function get_delete_message() {
