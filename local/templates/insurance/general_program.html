@@ -20,6 +20,13 @@
 			</td>
 		</tr>
 		<tr>
+			<td><label>{l}Program Type{/l}:</label></td>
+			<td><select name="insuranceProgram[program_type]">
+					{html_options options=$insuranceProgram->getProgramTypeList() selected=$insuranceProgram->get('program_type')}
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td><label>{l}Funds Source{/l}:</label></td>
 			<td><select name="insuranceProgram[funds_source]">
 					{html_options options=$funds_source selected=$insuranceProgram->get('funds_source')}

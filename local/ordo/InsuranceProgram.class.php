@@ -26,6 +26,7 @@ class InsuranceProgram extends ORDataObject {
 	var $x12_version	= '';
 	var $address_id		= '';
 	var $funds_source	= '';
+	var $program_type = '';
 	/**#@-*/
 	var $_table = 'insurance_program';
 	var $_internalName='InsuranceProgram';
@@ -104,6 +105,11 @@ class InsuranceProgram extends ORDataObject {
 
 	function getPayerTypeList() {
 		$list = $this->_load_enum('payer_type',false);
+		return array_flip($list);
+	}
+
+	function getProgramTypeList() {
+		$list = $this->_load_enum('insurance_program_type',false);
 		return array_flip($list);
 	}
 
@@ -229,6 +235,35 @@ class InsuranceProgram extends ORDataObject {
 			$res->MoveNext();
 		}
 		return $ret;
+	}
+
+	/**
+	 * Create a list of programs by program type
+	 */
+	function getProgramListByType($type) {
+		$em =& Celini::enumManagerInstance();
+		$typeKey = $em->lookupKey('insurance_program_type', $type);
+	
+		$tableName = $this->tableName();
+		$sql = "
+			SELECT
+				insurance_program_id,
+				CONCAT_WS('->',c.name,ip.name) AS name
+			FROM 
+				$tableName AS ip
+				INNER JOIN company AS c USING(company_id)
+			WHERE
+				ip.program_type = $typeKey
+			ORDER BY
+				c.name,
+				ip.name";
+		$res = $this->dbHelper->execute($sql);
+		$ret = array();
+		while($res && !$res->EOF) {
+			$ret[$res->fields['insurance_program_id']] = $res->fields['name'];
+			$res->MoveNext();
+		}
+		return($ret);
 	}
 }
 ?>
