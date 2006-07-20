@@ -21,14 +21,12 @@
 
 	function clni_rule_address(element) {
 		if (document.getElementById('noAddresses')) {
-			if ($('relatedAddressGrid')) {
-				if (document.getElementById('relatedAddress').checked == true) {
-					var addressInputs = $('relatedAddressGrid').getElementsByTagName('INPUT');
-					var relatedAddressRegExp = new RegExp('^relatedAddress');
-					for (var i = 0; i < addressInputs.length; i++) {
-						if (addressInputs[i] && relatedAddressRegExp.test(addressInputs[i].name) && addressInputs[i].checked) {
-							return true;
-						}
+			if ($('relatedAddressGrid') && (document.getElementById('relatedAddress').checked == true)) {
+				var addressInputs = $('relatedAddressGrid').getElementsByTagName('INPUT');
+				var relatedAddressRegExp = new RegExp('^relatedAddress');
+				for (var i = 0; i < addressInputs.length; i++) {
+					if (addressInputs[i] && relatedAddressRegExp.test(addressInputs[i].name) && addressInputs[i].checked) {
+						return true;
 					}
 				}
 				return false;
@@ -41,6 +39,11 @@
 	}
 
 	function clni_rule_addressRequiredIf(element) {
+		// look for related address to override these
+		if ($('relatedAddressGrid') && (document.getElementById('relatedAddress').checked == true)) {
+			return true;
+		}
+		
 		var required = false;
 		// if any of the elements are filled out all are required
 		for(var i =0; i < addressElements.length; i++) {
