@@ -26,7 +26,7 @@ class Superbill_DS extends Datasource_sql {
 			$twhere .= " and c.code_type in(".implode(',',$tmp).") ";
 		}
 
-		$cols = 'c.code_id, c.code, code, code_text';
+		$cols = 'c.code_id, c.code, code, code_text, code_type';
 		$from = 'codes c inner join superbill_data s using(code_id)';
 
 		if ($feeScheduleId) {
@@ -45,6 +45,29 @@ class Superbill_DS extends Datasource_sql {
 			$labels);
 
 		$this->addDefaultOrderRule('code','ASC',0);
+		$this->registerFilter('code', array(&$this, '_actionAddCodeLink'));
+	}
+	
+	function _actionAddCodeLink($value, $rowValues) {
+		$codeText = trim($rowValues['code_text']);
+		$realCode = "{$rowValues['code']}: {$codeText}";
+		$codeId = trim($rowValues['code_id']);
+		// diagnosis
+		if ($rowValues['code_type'] == '2') {
+			$hiddenInput = 'child_id';
+			$visibleInput = 'child_code';
+			$finalCall = 'addICDCode';
+		}
+		
+		// procedure
+		else {
+			$hiddenInput = 'parent_id';
+			$visibleInput = 'parent_code';
+			$finalCall = 'addCPTCode';
+		}
+		
+		$onclickJs = "\$('{$hiddenInput}').value='{$codeId}';\$('{$visibleInput}').value='{$realCode}'";
+		return "<a href=\"javascript:void(0)\" onclick=\"{$onclickJs};{$finalCall}();toggleSuperBill()\">{$value}</a>";
 	}
 }
 ?>
