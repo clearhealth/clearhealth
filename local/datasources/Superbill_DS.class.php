@@ -44,7 +44,6 @@ class Superbill_DS extends Datasource_sql {
 			),
 			$labels);
 
-		$this->addDefaultOrderRule('code_type','ASC');
 		$this->addDefaultOrderRule('code','ASC',0);
 	}
 }
