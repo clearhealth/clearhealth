@@ -16,7 +16,12 @@
 				</select></td>
 			</tr>
 			<tr>
-				<td><input type="submit" value="{if $identifier->get('id') > 0}Update{else}Add{/if} Identifier"></td>
+				<td>
+					<input type="submit" value="{if $identifier->get('id') > 0}Update{else}Add{/if} Identifier">
+					{if $identifier->get('id') > 0}
+					<input type="button" value="Cancel" onclick="location.href='{link controller=User action=edit defaultArg=$person->get('id')}';" />
+					{/if}
+					</td>
 			</tr>
 		</table>
 		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
