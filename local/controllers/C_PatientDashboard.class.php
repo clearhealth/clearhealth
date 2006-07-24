@@ -167,10 +167,10 @@ class C_PatientDashboard extends Controller {
 
 		// Setup report data block
 		$report =& Celini::newORDO("Report");
-		$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 89));
+		$reportGrid = new cGrid($report->loadDatasource('ConnectedList', 59));
 		$reportGrid->name = "reportGrid";
 		$reportGrid->registerTemplate("title",'<a href="'.Celini::link('report').'report_id={$report_id}&template_id={$report_template_id}">{$title}</a>');
-		$reportGrid->setExternalId(89);
+		$reportGrid->setExternalId(59);
 		
 		$GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
 		$cwf = new C_WidgetForm();
@@ -179,7 +179,7 @@ class C_PatientDashboard extends Controller {
 		
 		// Setup the form list
 		$menu = Menu::getInstance();
-		$tmp = $menu->getMenuData('patient',90);
+		$tmp = $menu->getMenuData('patient',58);
 		$formList = array();
 		if (isset($tmp['forms'])) {
 			foreach($tmp['forms'] as $form) {
