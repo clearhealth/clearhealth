@@ -4,11 +4,12 @@
 {clni_form action=$FORM_ACTION}
 
 <div style="float:left">
-<!--	<fieldset>
-		<legend>Visualization</legend>
+{if $config->get('enableVisulizationDemo')}
+	<fieldset>
+		<legend>Visualizations</legend>
 		<img alt="Patient Vitals" width="350" height=350 src="{$GRAPH_ACTION}">
 	</fieldset>
--->
+{/if}
 	<fieldset>
 		<legend>Lab Results</legend>
 		{$labGrid->render()}
