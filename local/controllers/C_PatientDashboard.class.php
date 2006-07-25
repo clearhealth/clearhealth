@@ -145,6 +145,9 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionEMR_view($patientId) {
+		$config =& Celini::configInstance('Practice');
+		$this->assign_by_ref('config',$config);
+		
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
 		
