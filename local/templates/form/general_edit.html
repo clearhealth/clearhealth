@@ -10,7 +10,7 @@ function updateName(title) {
 {/literal}
 
 {clni_form object=$form action=$FORM_ACTION process=$PROCESS}
-<table><input type='hidden' name="form[form_id]" value=""><tr>
+<table><input type='hidden' name="form[form_id]" value="{$form->get('id')}"><tr>
 	<td><label>Name:</label> </td>
 	<td><input type='text' id='form__name' name='form[name]' value="{$form->name}" onkeyup="updateName(this)"></td></tr>
 <tr>
