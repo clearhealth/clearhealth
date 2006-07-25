@@ -1,1 +1,1 @@
-ALTER TABLE `code_category` ADD `category_key` INT NOT NULL ;
+ALTER TABLE `code_category` ADD `category_id` INT NOT NULL ;
