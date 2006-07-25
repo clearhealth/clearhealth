@@ -97,7 +97,7 @@ class C_FeeSchedule extends Controller {
 	}
 
 	function default_action() {
-		return $this->list_action();
+		return $this->actionList();
 	}
 
 	function actionList() {
