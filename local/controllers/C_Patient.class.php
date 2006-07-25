@@ -501,8 +501,9 @@ class C_Patient extends Controller {
 			$this->data['ordo']['balance']['total_charges'] = $total_charges;
 			$this->data['ordo']['balance']['total_credits'] = $total_credits;
 			$this->data['ordo']['balance']['total_outstanding'] = $total_outstanding;
-			$guarantorarray[] = array('last_name'=>'<a href="'.Celini::link('view','PatientDashboard').'id='.$p->get('id').'">'.$p->get('last_name').'</a>','first_name'=>$p->get('first_name'),'balance'=>sprintf('%.2f',$total_charges-$total_credits));
-
+			if(($withbalance==true && $total_credits - $total_charges != 0) || !$withbalance) {
+				$guarantorarray[] = array('last_name'=>'<a href="'.Celini::link('view','PatientDashboard').'id='.$p->get('id').'">'.$p->get('last_name').'</a>','first_name'=>$p->get('first_name'),'balance'=>sprintf('%.2f',$total_charges-$total_credits));
+			}
 		}
 		$GLOBALS['loader']->requireOnce("includes/Datasource_array.class.php");
 		$ds =& new Datasource_array();
