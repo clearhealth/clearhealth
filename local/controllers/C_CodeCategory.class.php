@@ -7,6 +7,7 @@ class C_CodeCategory extends controller {
 
 		$ds =& new CodeCategory_DS();
 		$grid =& new cGrid($ds);
+		$grid->indexCol = false;
 
 		$this->view->assign_by_ref('grid',$grid);
 
@@ -75,38 +76,92 @@ class C_CodeCategory extends controller {
 		$sql = "select code,code_id from codes";
 		$codes = $db->getAssoc($sql);
 		$count = 0;
+		if (trim($lines[0]) == 'CODEMAP') {
+			$this->importCodeMap($lines,$codes);
+			return;
+		}
 		foreach($lines as $line) {
+			$add = false;
+			$codeStart = false;
+			$catId = false;
 			if (preg_match('/(.+)\s{2,}([0-9]+)-*([0-9]*)/',$line,$match)) {
+				$add = true;
+				$catName = $match[1];
+				$codeStart = $match[2];
+				$codeEnd = $match[3];
+				if (empty($match[3])) {
+					$codeEnd = $match[2];
+				}
+			} 
+			else if (preg_match('/^(.+)$/',$line,$match)) {
+				$add = true;
+				$catName = $match[1];
+			}
+
+			if ($add) {
+				if (preg_match('/(.+)-(.+)/',$catName,$match)) {
+					$catId = $match[1];
+					$catName = $match[2];
+				}
+				$catName = trim($catName);
+
 				$cat =& Celini::newOrdo('CodeCategory');
-				$cat->set('category_name',$match[1]);
+				$cat->set('category_name',$catName);
+				$cat->set('category_id',$catId);
 				$cat->persist();
 				$catId = $cat->get('id');
 
-				if (empty($match[3])) {
-					$match[3] = $match[2];
-				}
 				$sql = "insert into code_to_category values ";
 				$added = false;
-				for($i = $match[2]; $i <= $match[3]; $i++) {
-					$added = true;
-					if (isset($codes[$i])) {
-						$id = $codes[$i];
-						$sql .= " ($catId,'$id'), ";
+				if ($codeStart !== false) {
+					for($i = $codeStart; $i <= $codeEnd; $i++) {
+						$added = true;
+						if (isset($codes[$i])) {
+							$id = $codes[$i];
+							$sql .= " ($catId,'$id'), ";
+						}
 					}
+					$sql = substr($sql,0,strlen($sql)-2);
 				}
-				$sql = substr($sql,0,strlen($sql)-2);
 
-				if ($added) {
+				if ($added && $codeStart) {
 					$db->execute($sql);
 				}
-				else {
-					$this->messages->addMessage("No codes added to category: $match[1]","Codes are: $match[2] $match[3]");
+				else if ($codeStart) {
+					$this->messages->addMessage("No codes added to category: $catName","Codes are: $codeStart $codeEnd");
 				}
 				$count++;
 			}
 		}
 
 		$this->messages->addMessage("$count Categories Imported");
+	}
+
+	function importCodeMap($lines,$codes) {
+		$db = new clniDb();
+		$cats = $db->getAssoc('select category_id,code_category_id from code_category');
+		unset($lines[0]);
+		$sql = "insert into code_to_category values ";
+		$added = 0;
+		foreach($lines as $line) {
+			if (preg_match('/(.+)\s+(.+)/',$line,$match)) {
+				$code = trim($match[1]);
+				$cat = trim($match[2]);
+
+				if (isset($cats[$cat]) && isset($codes[$code])) {
+					$codeId = $codes[$code];
+					$catId = $cats[$cat];
+
+					$sql .= " ($catId,$codeId), ";
+					$added++;
+				}
+			}
+		}
+		if ($added) {
+			$sql = substr($sql,0,strlen($sql)-2);
+			$db->execute($sql);
+			$this->messages->addMessage("$added code mappings imported");
+		}
 	}
 }
 ?>
