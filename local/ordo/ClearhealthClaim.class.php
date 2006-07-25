@@ -103,7 +103,7 @@ class ClearhealthClaim extends ORDataObject {
 		return $status;
 	}
 
-	function SummedPaymentsByCode() {
+	function summedPaymentsByCode() {
 		$sql = "
 			select
 				codes.code,
