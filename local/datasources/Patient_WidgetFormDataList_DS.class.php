@@ -36,6 +36,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 							 "INNER JOIN form_data AS fd using (form_id) ".
 							 "LEFT JOIN storage_int ON storage_int.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_string ON storage_string.foreign_key = fd.form_data_id ".
+							 "LEFT JOIN storage_text ON storage_text.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_date ON storage_date.foreign_key = fd.form_data_id ",
 				'orderby' => 'name, last_edit DESC',
 				'where'   => "fd.external_id = " . $this->patient_id,
@@ -54,7 +55,10 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 				UNION
 				select DISTINCT value_key, 'storage_date' as source from storage_date sd LEFT JOIN form_data fd ON sd.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'
 				UNION
-				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'";
+				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'
+				UNION
+				select DISTINCT value_key, 'storage_text' as source from storage_text st LEFT JOIN form_data fd ON st.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'";
+//echo $sql ."<br>";
 
 		$res = $db->query($sql);
 		$fields = array();
@@ -80,7 +84,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 		$this->_query['cols'] .= $this->case_sql;
 		$this->_labels = $labels;
 		
-		//echo $this->preview();
+		//echo $this->preview()."<br>";
 	}
 	
 	function _build_case_sql() {
