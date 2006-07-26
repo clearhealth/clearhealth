@@ -4107,6 +4107,15 @@ LOCK TABLES `zipcodes` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `zipcodes` ENABLE KEYS */;
 
+
+INSERT INTO `menu` ( `menu_id` , `site_section` , `parent` , `dynamic_key` , `section` , `display_order` , `title` , `action` , `prefix` )
+VALUES (
+'', 'admin', '37', '', 'children', '900', 'Code Categories', 'CodeCategory/list', 'main'
+), (
+'', 'billing', '24', '', 'children', '900', 'Code Categories', 'CodeCategory/list', 'main'
+);
+
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
@@ -4114,4 +4123,5 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 

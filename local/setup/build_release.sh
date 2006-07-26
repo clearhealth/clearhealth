@@ -4,12 +4,13 @@ SCRIPT_HOME=`dirname $0`
 
 NAME="clearhealth"
 RELEASE="1.0RC3"
-REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/RB_$RELEASE"
+#REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/RB_$RELEASE"
+REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/trunk"
 SVN_REV="HEAD"
 TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"
 BUILD_BASE="/tmp"
 CELINI_APP="true"
-CELINI_URL="https://svn2.uversainc.com/svn/celini/branches/1.x"
+CELINI_URL="https://svn2.uversainc.com/svn/celini/trunk"
 CELINI_REV="HEAD"
 INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
@@ -125,7 +126,7 @@ echo "creating blank config files..."
 touch $BUILD_DIR/local/config.php
 
 echo "Building db cache files for installer..."
-$BUILD_DIR/installer/create_db_file_cache.php $BUILD_DIR/local/setup/clearhealth-$RELEASE.sql $BUILD_DIR/local/setup/clearhealth-$RELEASE-data.sql
+$BUILD_DIR/installer/create_db_file_cache.php $BUILD_DIR/local/setup/clearhealth-$RELEASE.sql 
 if [ $? -ne 0 ]; then
 	echo "Error creating db cache files"
 	exit 4

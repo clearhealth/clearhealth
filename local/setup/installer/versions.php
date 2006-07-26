@@ -45,7 +45,7 @@ $version_1rc3->addAction('SQLFile', array(
 	'db_field' => 'db_database',
 	'cache_files' => array(
 		$base_app_path.'/local/setup/clearhealth-1.0RC3.sql.cache',	
-		$base_app_path.'/local/setup/clearhealth-1.0RC3-data.sql.cache'		
+		$base_app_path.'/local/setup/zipcodes.sql.cache'
 	)));
 
 $version_1rc3->addAction('ReplaceString', array(
@@ -69,8 +69,8 @@ $version_1rc3->addAction('SQLOptions', array(
 	'port_field' => 'db_port',
 	'db_field' => 'db_database',
 	'files' => array(
-		$base_app_path.'/local/setup/code_packs', 
-		$base_app_path.'/local/setup/clearhealth_demodata.sql')));
+		$base_app_path.'/local/setup/code_packs' 
+	)));
 
 $versions->add($version_1rc3);
 ?>
