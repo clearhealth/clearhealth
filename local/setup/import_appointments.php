@@ -17,6 +17,9 @@ define('CELINI_ROOT', APP_ROOT . '/celini');
 define('CELLINI_ROOT', CELINI_ROOT);
 require_once CELINI_ROOT . '/bootstrap.php';
 
+$oldCHDB = 'clearhealth_old';
+$newCHDB = 'clearhealth';
+
 
 $db = new clniDB();
 $oldAppointmentQuery = "
@@ -24,7 +27,7 @@ $oldAppointmentQuery = "
 		event_id, start, end, notes, location_id, user_id, last_change_id, 
 		external_id, reason_code, timestamp, walkin, group_appointment
 	FROM
-		occurences
+		{$oldCHDB}.occurences
 	WHERE
 		external_id > 0";
 
