@@ -16,7 +16,7 @@ INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
-MODULES="billing labs x12_importer"
+MODULES="calendar billing labs x12_importer"
 TAG="true"
 USAGE="You can use the following optional command line parameters
 -r = Overrides the release
@@ -97,7 +97,8 @@ clean_release "$SCRIPT_HOME/no_package"
 # Setup modules
 for MODULE in $MODULES; do
 	echo "Exporting module $MODULE to $BUILD_DIR/modules/$MODULE"
-	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/RB_$RELEASE $BUILD_DIR/modules/$MODULE
+	#svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/RB_$RELEASE $BUILD_DIR/modules/$MODULE
+	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/trunk $BUILD_DIR/modules/$MODULE
 	if [ $? -ne 0 ]; then
 		echo "Could not export module $MODULE!"
 		exit 3
