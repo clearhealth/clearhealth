@@ -20,6 +20,7 @@ $versions->collectData('db_user', 'Database Username', 'text', 'root');
 $versions->collectData('db_password', 'Database Password', 'text', '');
 $versions->collectData('db_server', 'Database Server', 'text', 'localhost');
 $versions->collectData('db_database', 'Database Name', 'text', '');
+$versions->collectData('db_port', 'Database Server Port', 'text', '3306');
 
 $version_1rc3 = new Version('1.0RC3');
 $version_1rc3->addTest('PHPVersionOver', array('4.3.0'));
