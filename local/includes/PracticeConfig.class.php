@@ -18,7 +18,7 @@ class PracticeConfig extends clniConfig {
 		'CalendarHourStart' => array('label' => 'Start of Day','type' => 'Hour'),
 		'CalendarHourLength' => array('label' => 'Day Length','type' => 'Hour'),
 		*/
-		'FacilityType' => array('label'=>'Facility Type (For ICD Codes)','type'=>'facilitytype')
+		'FacilityType' => array('label'=>'Facility Type (For diagnostic Codes)','type'=>'facilitytype')
 	);
 
 	function getSchema() {
