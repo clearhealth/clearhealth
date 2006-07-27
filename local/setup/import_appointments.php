@@ -18,7 +18,7 @@ session_start();
  * Configuration variables
  */
 $GLOBALS['oldCHDB'] = 'clearhealth_old';
-$GLOBALS['newCHDB'] = 'clearhealth';
+$GLOBALS['newCHDB'] = 'clearhealth_old';
 $GLOBALS['debug'] = true;
 $GLOBALS['eol-style'] = "\n"; // change to <br /> for HTML output
 
@@ -104,7 +104,7 @@ debug("done.");
 $appointmentInsertValues = implode(', ', $newAppointmentEntries);
 $appointmentInsertSql = "
 	INSERT INTO
-		{$oldCHDB}.appointment 
+		{$newCHDB}.appointment 
 	(
 		appointment_id, title, reason, walkin, group_appointment, created_date, last_change_id,
 		creator_id, event_id, provider_id, patient_id, room_id, practice_id
@@ -120,7 +120,7 @@ debug("done");
 $eventInsertValues = implode(",\n\t\t", $newEventEntries);
 $eventInsertSql = "
 	INSERT INTO
-		{$oldCHDB}.event
+		{$newCHDB}.event
 	(
 		event_id, title, start, end
 	)
