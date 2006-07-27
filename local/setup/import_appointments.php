@@ -7,10 +7,14 @@
  */
 
 // comment out if you want to run via the web
-if (isset($_SERVER['HTTP_HOST'])) {
+/* if (isset($_SERVER['HTTP_HOST'])) {
 	die('Unauthorized access prohibited');
-}
+} */
 
+// hide error message about starting sessions after output is generated
+session_start();
+
+echo "\nInitializing Celini...";
 // initial Celini environment
 define('APP_ROOT', realpath(dirname(__FILE__) . '/../../'));
 define('CELINI_ROOT', APP_ROOT . '/celini');
@@ -19,9 +23,10 @@ require_once CELINI_ROOT . '/bootstrap.php';
 
 $GLOBALS['oldCHDB'] = 'clearhealth_old';
 $GLOBALS['newCHDB'] = 'clearhealth';
-
-
 $db = new clniDB();
+echo "done\n";
+
+echo "Querying for old appointments...";
 $oldAppointmentQuery = "
 	SELECT 
 		id, event_id, start, end, notes, location_id, user_id, last_change_id, 
@@ -32,12 +37,24 @@ $oldAppointmentQuery = "
 		external_id > 0";
 
 $oldAppointments = $db->execute($oldAppointmentQuery);
-$newAppointmentEntries = array();
+echo "done\n";
 
+echo "Found " . $oldAppointments->recordCount() . " old appointments\n";
+echo "Converting into new format.";
+
+$newAppointmentEntries = array();
+$newEventEntries = array();
+
+$counter = 0;
 while ($oldAppointments && !$oldAppointments->EOF) {
-	echo "Found one\n";
+	if (($counter % 100) == 0) {
+		echo "$counter<br />";flush();
+	}
+	$counter++;
+	
 	$oldAppointment = $oldAppointments->fields;
 	
+	// setup Appointment insert data
 	$qAppointmentId = $db->quote($oldAppointment['id']);
 	$qTitle = $db->quote($oldAppointment['notes']);
 	$qReason = $db->quote($oldAppointment['reason_code']);
@@ -52,12 +69,57 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	$qRoomId = $db->quote($oldAppointment['location_id']);
 	$qPracticeId = $db->quote(getPracticeIdByRoomId($oldAppointment['location_id']));
 	
-	// todo: build insert from quoted values
+	$newAppointmentEntries[] = "
+		(
+			{$qAppointmentId}, {$qTitle}, {$qReason}, {$qWalkin}, {$qGroupAppointment}, 
+			{$qCreatedDate}, {$qLastChangeId}, {$qCreatorId}, {$qEventId}, {$qProviderId}, 
+			{$qPatientId}, {$qRoomId}, {$qPracticeId}
+		)";
+	
+		
+	// setup Event insert data
+	if (!isset($newEventEntries[$oldAppointment['event_id']])) {
+		// title and event_id already setup
+		$qStart = $db->quote($oldAppointment['start']);
+		$qEnd = $db->quote($oldAppointment['end']);
+		
+		$newEventEntries[$oldAppointment['event_id']] = "({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})";
+	}
 	
 	$oldAppointments->moveNext();
 }
+echo "done.\n";
 
-// todo: genreate insert SQL
+// insert appointments
+$appointmentInsertValues = implode(', ', $newAppointmentEntries);
+$appointmentInsertSql = "
+	INSERT INTO
+		{$oldCHDB}.appointment 
+	(
+		appointment_id, title, reason, walkin, group_appointment, created_date, last_change_id,
+		creator_id, event_id, provider_id, patient_id, room_id, practice_id
+	)
+	VALUES
+		{$appointmentInsertValues}";
+echo "Inserting " . count($newAppointmentEntries) . " upgraded appointments...";
+$db->execute($appointmentInsertSql);
+echo "done\n";
+
+
+// insert events
+$eventInsertValues = implode(', ', $newEventEntries);
+$eventInsertSql = "
+	INSERT INTO
+		{$oldCHDB}.event
+	(
+		event_id, title, start, end
+	)
+	VALUES
+		{$eventInsertValues}";
+
+echo "Inserting " . count($newEventEntries) . " upgraded events...";
+$db->execute($eventInsertSql);
+echo "done\n";
 
 
 /**
