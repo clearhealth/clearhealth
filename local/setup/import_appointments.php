@@ -14,19 +14,26 @@
 // hide error message about starting sessions after output is generated
 session_start();
 
-echo "\nInitializing Celini...";
+/**
+ * Configuration variables
+ */
+$GLOBALS['oldCHDB'] = 'clearhealth_old';
+$GLOBALS['newCHDB'] = 'clearhealth';
+$GLOBALS['debug'] = true;
+$GLOBALS['eol-style'] = "\n"; // change to <br /> for HTML output
+
+
+debug("\nInitializing Celini...", false);
 // initial Celini environment
 define('APP_ROOT', realpath(dirname(__FILE__) . '/../../'));
 define('CELINI_ROOT', APP_ROOT . '/celini');
 define('CELLINI_ROOT', CELINI_ROOT);
 require_once CELINI_ROOT . '/bootstrap.php';
 
-$GLOBALS['oldCHDB'] = 'clearhealth_old';
-$GLOBALS['newCHDB'] = 'clearhealth';
 $db = new clniDB();
-echo "done\n";
+debug("done!");
 
-echo "Querying for old appointments...";
+debug("Querying for old appointments...", false);
 $oldAppointmentQuery = "
 	SELECT 
 		id, event_id, start, end, notes, location_id, user_id, last_change_id, 
@@ -37,18 +44,20 @@ $oldAppointmentQuery = "
 		external_id > 0";
 
 $oldAppointments = $db->execute($oldAppointmentQuery);
-echo "done\n";
+debug("done!");
 
-echo "Found " . $oldAppointments->recordCount() . " old appointments\n";
-echo "Converting into new format.";
+debug("Found " . $oldAppointments->recordCount() . " old appointments\n");
+debug("Converting into new format.", false);
 
 $newAppointmentEntries = array();
 $newEventEntries = array();
 
+
 $counter = 0;
+$showCounterAt = $oldAppointments->recordCount() / 10;
 while ($oldAppointments && !$oldAppointments->EOF) {
-	if (($counter % 100) == 0) {
-		echo "$counter<br />";flush();
+	if ($counter % $showCounterAt == 0) {
+		debug(".", false);
 	}
 	$counter++;
 	
@@ -63,7 +72,7 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	$qCreatedDate = $db->quote($oldAppointment['timestamp']);
 	$qLastChangeId = $db->quote($oldAppointment['last_change_id']);
 	$qCreatorId = $qLastChangeId;
-	$qEventId = $db->quote($oldAppointment['event_id']);
+	$qEventId = (int)$oldAppointment['event_id'];
 	$qProviderId = $db->quote($oldAppointment['user_id']);
 	$qPatientId = $db->quote($oldAppointment['external_id']);
 	$qRoomId = $db->quote($oldAppointment['location_id']);
@@ -88,7 +97,8 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	
 	$oldAppointments->moveNext();
 }
-echo "done.\n";
+debug("done.");
+
 
 // insert appointments
 $appointmentInsertValues = implode(', ', $newAppointmentEntries);
@@ -101,13 +111,13 @@ $appointmentInsertSql = "
 	)
 	VALUES
 		{$appointmentInsertValues}";
-echo "Inserting " . count($newAppointmentEntries) . " upgraded appointments...";
-$db->execute($appointmentInsertSql);
-echo "done\n";
+debug("Inserting " . count($newAppointmentEntries) . " upgraded appointments...", false);
+//$db->execute($appointmentInsertSql);
+debug("done");
 
 
 // insert events
-$eventInsertValues = implode(', ', $newEventEntries);
+$eventInsertValues = implode(",\n\t\t", $newEventEntries);
 $eventInsertSql = "
 	INSERT INTO
 		{$oldCHDB}.event
@@ -117,9 +127,11 @@ $eventInsertSql = "
 	VALUES
 		{$eventInsertValues}";
 
-echo "Inserting " . count($newEventEntries) . " upgraded events...";
+debug("Inserting " . count($newEventEntries) . " upgraded events...", false);
 $db->execute($eventInsertSql);
-echo "done\n";
+debug("done");
+
+echo "Successfully upgraded " . count($newAppointmentEntries) . " appointments\n";
 
 
 /**
@@ -148,6 +160,22 @@ function getPracticeIdByRoomId($roomId) {
 	}
 	
 	return $roomCache[$roomId];
+}
+
+
+/**
+ * Outputs debugging code if debugging is turned on.
+ *
+ * @param string
+ * @access private
+ */
+function debug($string, $lineEnd = true) {
+	if ($GLOBALS['debug']) {
+		echo $string;
+		if ($lineEnd) {
+			echo $GLOBALS['eol-style'];
+		}
+	}
 }
 
 ?>
