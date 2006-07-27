@@ -122,6 +122,7 @@ fi
 
 cp $INSTALLER_CONFIG $BUILD_DIR/installer
 cp $INSTALLER_VERSIONS $BUILD_DIR/installer
+cp "`dirname $0`/installer/finished.tpl" $BUILD_DIR/installer/templates
 
 echo "creating blank config files..."
 touch $BUILD_DIR/local/config.php

@@ -1,6 +1,6 @@
 -- MySQL dump 10.9
 --
--- Host: localhost    Database: ch-install
+-- Host: localhost    Database: chinstall
 -- ------------------------------------------------------
 -- Server version	4.1.15-Debian_1ubuntu5-log
 
@@ -371,6 +371,7 @@ CREATE TABLE `category` (
 
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
 LOCK TABLES `category` WRITE;
+INSERT INTO `category` VALUES (1,'Clearhealth','Clearhealth',0,1,1);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 
@@ -545,6 +546,7 @@ CREATE TABLE `company` (
 
 /*!40000 ALTER TABLE `company` DISABLE KEYS */;
 LOCK TABLES `company` WRITE;
+INSERT INTO `company` VALUES (100000,'System','','','','','no');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `company` ENABLE KEYS */;
 
@@ -2332,6 +2334,7 @@ CREATE TABLE `insurance_program` (
   `x12_version` varchar(255) NOT NULL default '',
   `address_id` int(11) NOT NULL default '0',
   `funds_source` int(11) NOT NULL default '0',
+  `program_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -2343,6 +2346,7 @@ CREATE TABLE `insurance_program` (
 
 /*!40000 ALTER TABLE `insurance_program` DISABLE KEYS */;
 LOCK TABLES `insurance_program` WRITE;
+INSERT INTO `insurance_program` VALUES (100001,4,100000,'Self Pay',0,'','','004010X098A1',0,1,0),(100002,4,100000,'Correction',0,'','','004010X098A1',0,1,0);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `insurance_program` ENABLE KEYS */;
 
@@ -4106,8 +4110,6 @@ CREATE TABLE `zipcodes` (
 LOCK TABLES `zipcodes` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `zipcodes` ENABLE KEYS */;
-
-INSERT INTO `category` VALUES (1, 'Clearhealth', 'Clearhealth', 0, 1, 1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
