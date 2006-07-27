@@ -59,6 +59,7 @@ class C_User extends Controller {
 			$person->set_type(2);
 		}
 		$picker =& new colorPickerSelect('pastels','user[color]','','#'.$user->get('color'));
+		$picker->id = 'colorPicker';
 		$this->view->assign_by_ref('colorpicker',$picker);
 		if ($person->get('type') == 2) {
 			$provider =& Celini::newORDO('Provider',$person_id);
