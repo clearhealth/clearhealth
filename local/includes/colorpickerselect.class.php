@@ -11,6 +11,7 @@
 
 class colorPickerSelect{
 	var $name;
+	var $id;
 	var $first_option;
 	var $colors = array();
 	var $selected = null;
@@ -278,7 +279,7 @@ class colorPickerSelect{
 
 	function render(){
 		$out='';
-		$out.= "<select name=\"".$this->name."\" onchange='this.style.backgroundColor=this.value;' >\n";
+		$out.= "<select id=\"{$this->id}\" name=\"".$this->name."\" onchange='this.style.backgroundColor=this.value;' >\n";
 		$out.= "<option value=\"\">".$this->first_option."</option>\n";
 		for($i=0;$i<count($this->colors);$i++){
 			$wiersz = explode(",",$this->colors[$i]);
