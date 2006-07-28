@@ -155,12 +155,25 @@ class EnumType_PerPractice extends EnumType_Default {
 	}
 
 	function widget() {
-		ORDataObject::factory_include('Practice');
-		$practices = Practice::practices_factory();
-		$enumerationId = $this->enumerationId;
+		$practice =& Celini::newORDO('Practice');
+		$practiceList = $practice->valueList();
+		
+		$ajax =& Celini::ajaxInstance();
+		$ajax->jsLibraries[] = array('clniConfirmLink', 'clniPopup');
+		$json = new HTML_AJAX_Serializer_JSON();
 
+		$practiceId = EnforceType::int($this->editingPracticeId);
+		$enumerationId = EnforceType::int($this->enumerationId);
+		
 		$db = new clniDB();
-		$sql = "select practice_id from enumeration_value_practice evp inner join enumeration_value ev on evp.enumeration_value_id = ev.enumeration_value_id where enumeration_id = $enumerationId";
+		$sql = "
+			SELECT
+				practice_id 
+			FROM
+				enumeration_value_practice AS evp
+				INNER JOIN enumeration_value AS ev ON(evp.enumeration_value_id = ev.enumeration_value_id)
+			WHERE
+				enumeration_id = $enumerationId";
 		$res = $db->execute($sql);
 
 		$list = array(-1=>-1);
@@ -169,34 +182,43 @@ class EnumType_PerPractice extends EnumType_Default {
 			$res->MoveNext();
 		}
 
-		$json = new HTML_AJAX_Serializer_JSON();
-
-		$practiceId = $this->editingPracticeId;
-
 		$selected = "";
 		if ($practiceId === false) {
-			$selected = ' selected';
+			$selected = ' selected="false"';
 		}
 		$ret = '
+		<div style="display:none;" id="addNewPracticeEnum">
+			<p><strong>This Practice doesn\'t have a a practice-specific enum</strong></p>
+			
+			<p>Would you like to copy the default enum values into a practice-specific enum?</p>
+		
+			<ul class="menu centered">
+				<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._linkObj + \'true\'"><p>Yes</p>Populate the enum with the default values.</a></li>
+				<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._linkObj + \'0\'"><p>No</p>Create a blank enum.</a></li>
+				<li><a href="javascript:confirmLinkManager.cancel()"><p>Cancel</p>Do not create a practice-specific enum.</a></li>
+			</ul>
+		</div>
 		<script type="text/javascript">
+		var confirmLinkManager = new clniConfirmLink();
 		function selectPractice(select) {
 			var inited = '.$json->serialize($list).';
 
 			var copy = 0;
 			if (!inited[select.value]) {
-				copy = confirm("The practice \""+select.options[select.selectedIndex].text+"\" has no custom enumeration values, would you like to copy the default values to it?\n(OK will select the practice copying the values, Cancel will select the practice WITHOUT copying the values.)");
+				link = "' . Celini::link('edit',true,true,$this->enumerationId) . 'practiceId="+select.value+"&copyData=";
+				confirmLinkManager.confirmLink(link, "addNewPracticeEnum");
+				//copy = confirm("The practice \""+select.options[select.selectedIndex].text+"\" has no custom enumeration values, would you like to copy the default values to it?\n(OK will select the practice copying the values, Cancel will select the practice WITHOUT copying the values.)");
 			}
-			window.location = "'.Celini::link('edit',true,true,$this->enumerationId).'practiceId="+select.value+"&copyData="+copy;
+			else {
+				window.location = "'.Celini::link('edit',true,true,$this->enumerationId).'practiceId="+select.value;
+			}
 		}
 		</script>';
 		$ret .= "<div>Select a Practice to edit Enums for: <select name='practiceId' onchange='return selectPractice(this);'>"
 				."<option value='-1' $selected>Default</option>";
-		foreach($practices as $practice) {
-			$selected = "";
-			if ($practice->get('id') == $practiceId) {
-				$selected = ' selected';
-			}
-			$ret .= '<option value="'.$practice->get('id').'"'.$selected.'>'.$practice->get('name').'</option>';
+		foreach ($practiceList as $id => $name) {
+			$selected = ($id == $practiceId) ? ' selected="selected"' : '';
+			$ret .= '<option value="' . $id . '"' . $selected . '>' . $name . "</option>\n";
 		}
 		$ret .= "</select></div>";
 		return $ret;
