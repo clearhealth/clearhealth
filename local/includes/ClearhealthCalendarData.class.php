@@ -99,8 +99,8 @@ class ClearhealthCalendarData {
 				return $options;
 
 			case 'building':
-				$building =& Celini::newORDO('Building');
-				$options = $building->valueList();
+				$userProfile =& Celini::getCurrentUserProfile();
+				$options = $userProfile->getBuildingNameList();
 				return $options;
 			default:
 				return FALSE;
@@ -145,13 +145,17 @@ class ClearhealthCalendarData {
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
-		if(isset($filters['building']) && count($filters['building']->getValue()) > 0) {
-			$string = array();
-			foreach($filters['building']->getValue() as $uid) {
-				$string[] = "b.id = ".$db->quote($uid);
-			}
-			$criteriaArray[] = '('.implode(' OR ',$string).')';
+		$string = array();
+		if(count($filters['building']->getValue()) == 0) {
+			// We've just entered the calendar, so set the default building
+			$profile =& Celini::getCurrentUserProfile();
+			$profile->_initUser();
+			$filters['building']->setValue(array($profile->_user->get('default_location_id')));
 		}
+		foreach($filters['building']->getValue() as $uid) {
+			$string[] = "b.id = ".$db->quote($uid);
+		}
+		$criteriaArray[] = '('.implode(' OR ',$string).')';
 		if($forevent == true && isset($filters['patient']) && $filters['patient']->getValue() > 0) {
 			$patientfilter = $filters['patient']->getValue();
 			if($patientfilter['id'] != '') {
