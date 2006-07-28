@@ -7,10 +7,9 @@ class M_Main extends Manager {
 		if(isset($_GET['changepractice'])){
 			$_SESSION['defaultpractice']=$_GET['changepractice'];
 		}
-		if(!isset($_SESSION['defaultpractice'])){
+		if(!isset($_SESSION['defaultpractice']) && $user->get('id') > 0){
 			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}
-		//var_dump($_SESSION);
 		$this->controller->view->assign('celini', new Celini());
 	}
 
