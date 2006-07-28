@@ -16,10 +16,6 @@
 		var carry = carryNode.value;
 		var writeoff = writeoffNode.value;
 
-		if (paid > amount) {
-			paid = amount;
-			paidNode.value = Math.round(paid*100)/100;
-		}
 		if (carry > amount) {
 			carry = amount;
 			carryNode.value = Math.round(carry*100)/100;
@@ -34,10 +30,6 @@
 			carry = amount - paid - writeoff;
 
 			if (carry < 0) {
-				if (type == "paid") {
-					paid = amount-writeoff;
-					paidNode.value = Math.round(paid*100)/100;
-				}
 				if (type == "writeoff") {
 					writeoff = amount-paid;
 					writeoffNode.value = Math.round(writeoff*100)/100;
