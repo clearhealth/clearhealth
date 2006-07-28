@@ -142,10 +142,10 @@ class EnumType_PerPractice extends EnumType_Default {
 		}
 		$practiceId = EnforceType::int($this->editingPracticeId);
 
-		$ev =& ORDataObject::Factory($this->ordo,$id);
+		$ev =& Celini::newORDO($this->ordo,$id);
 		$ev->populate_array($data);
-
 		$ev->persist();
+		
 		if ($practiceId > 0) {
 			$evp =& Celini::newOrdo('EnumerationValuePractice');
 			$evp->set('practice_id',$this->editingPracticeId);
