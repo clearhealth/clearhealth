@@ -246,7 +246,7 @@ ul.controllerMenu li a {
 
 .confirmBox {
  position:absolute;
- background:#cc9;
+ background:#fff;
  margin: 0 auto;
  border: 1px solid #000;
  padding:5px 8px;
@@ -266,17 +266,24 @@ ul.controllerMenu li a {
  float:left;
  list-style-type:none;
  white-space:nowrap;
- background-color:#fff;
+ background-color:#eee;
  border: 1px solid #000;
  margin: 5px 20px;
- padding:3px 5px;
+}
+
+.confirmBox ul.menu li a {
+	display:block;
+	background-color:#eee;
+	padding:3px 5px;
+	text-decoration:none;
+}
+
+.confirmBox ul.menu li a:hover {
+	background-color:#ddd;;
 }
 
 .confirmBox ul.menu li p { 
  font-weight:bold;
  font-style:italic;
 }
-
-.confirmBox ul.menu li a { display:block; text-decoration:none; color:#000; }
-.confirmBox ul.menu li a:hover { color: #05A; }
 

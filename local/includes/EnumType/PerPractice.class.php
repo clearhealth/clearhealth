@@ -200,6 +200,7 @@ class EnumType_PerPractice extends EnumType_Default {
 		</div>
 		<script type="text/javascript">
 		var confirmLinkManager = new clniConfirmLink();
+		confirmLinkManager.modal = true;
 		function selectPractice(select) {
 			var inited = '.$json->serialize($list).';
 
