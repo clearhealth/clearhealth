@@ -787,7 +787,12 @@ class ClearhealthCalendarData {
 		}
 		foreach($blocks as $pid => $col) {
 			foreach($col as $blockId => $block) {
-				$blocks[$pid][$blockId]['count'] = array_sum($block['count']);
+				if (isset($block['count'])) {
+					$blocks[$pid][$blockId]['count'] = array_sum($block['count']);
+				}
+				else {
+					$blocks[$pid][$blockId]['count'] = 0;
+				}
 			}
 		}
 		$conflictData = $conflicts;
