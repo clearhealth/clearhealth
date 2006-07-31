@@ -145,17 +145,21 @@ class ClearhealthCalendarData {
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
+		
+		// Add building criteria
 		$string = array();
-		if(count($filters['building']->getValue()) == 0) {
+		$profile =& Celini::getCurrentUserProfile();
+		if(count($filters['building']->getValue()) == 0 && !is_null($profile->getDefaultLocationId())) {
 			// We've just entered the calendar, so set the default building
-			$profile =& Celini::getCurrentUserProfile();
-			$profile->_initUser();
-			$filters['building']->setValue(array($profile->_user->get('default_location_id')));
+			$filters['building']->setValue(array($profile->getDefaultLocationId()));
 		}
-		foreach($filters['building']->getValue() as $uid) {
-			$string[] = "b.id = ".$db->quote($uid);
+		if (count($filters['building']->getValue()) > 0) {
+			foreach($filters['building']->getValue() as $uid) {
+				$string[] = "b.id = ".$db->quote($uid);
+			}
+			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
-		$criteriaArray[] = '('.implode(' OR ',$string).')';
+		
 		if($forevent == true && isset($filters['patient']) && $filters['patient']->getValue() > 0) {
 			$patientfilter = $filters['patient']->getValue();
 			if($patientfilter['id'] != '') {
