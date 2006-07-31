@@ -2,6 +2,7 @@
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('includes/colorpickerselect.class.php');
 $loader->requireOnce('controllers/C_SecondaryPractice.class.php');
+$loader->requireOnce('datasources/User_DS.class.php');
 
 /**
  * Controller for the Clearhealth users
@@ -114,26 +115,9 @@ class C_User extends Controller {
 	 * List Users
 	 */
 	function list_action_view() {
-		$person =& Celini::newORDO('Person');
-
-		$em =& Celini::enumManagerInstance();
-		$list =& $em->enumList('person_type');
-
-		$types = array();
-		for($list->rewind(); $list->valid(); $list->next()) {
-			$row = $list->current();
-			if ($row->extra1 == 1) {
-				$types[] = $row->value;
-			}
-		}
-		
-
-		$ds =& $person->peopleByType($types,true);
-		$ds->template['last_name'] = "<a href='".Celini::link('edit')."id={\$person_id}'>{\$last_name}</a>";
+		$ds =& new User_DS();
 		$grid =& new cGrid($ds);
-
-		$this->assign_by_ref('grid',$grid);
-
+		$this->view->assign_by_ref('grid',$grid);
 		return $this->view->render("list.html");
 	}
 
