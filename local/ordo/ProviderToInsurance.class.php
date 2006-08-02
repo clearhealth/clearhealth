@@ -144,7 +144,7 @@ class ProviderToInsurance extends ORDataObject {
 		$ds->setup($this->_db,array(
 				'cols' 	=> "
 					pToI.provider_to_insurance_id, 
-					ip.name,
+					CONCAT(c.name, ' -> ', ip.name) AS name,
 					provider_number, 
 					provider_number_type,
 					group_number,
@@ -153,6 +153,7 @@ class ProviderToInsurance extends ORDataObject {
 				'from' 	=> "
 					$this->_table AS pToI
 					INNER JOIN insurance_program AS ip USING(insurance_program_id)
+					INNER JOIN company AS c USING(company_id)
 					LEFT JOIN buildings AS b ON(pToI.building_id = b.id)",
 				'where' => " person_id = $person_id"
 			),
