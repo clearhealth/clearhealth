@@ -142,7 +142,14 @@ class ProviderToInsurance extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "pToI.provider_to_insurance_id, ip.name, provider_number, provider_number_type, group_number, b.name AS building_name, '{$person_id}' AS person_id",
+				'cols' 	=> "
+					pToI.provider_to_insurance_id, 
+					ip.name,
+					provider_number, 
+					provider_number_type,
+					group_number,
+					b.name AS building_name, 
+					'{$person_id}' AS person_id",
 				'from' 	=> "
 					$this->_table AS pToI
 					INNER JOIN insurance_program AS ip USING(insurance_program_id)
