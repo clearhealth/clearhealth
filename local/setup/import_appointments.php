@@ -7,9 +7,13 @@
  */
 
 // comment out if you want to run via the web
-/* if (isset($_SERVER['HTTP_HOST'])) {
+if (isset($_SERVER['HTTP_HOST'])) {
 	die('Unauthorized access prohibited');
-} */
+}
+
+// setup php environment to use a lot of ram and run forever
+set_time_limit(0);
+ini_set('memory_limit','1024M');
 
 // hide error message about starting sessions after output is generated
 session_start();
@@ -17,8 +21,8 @@ session_start();
 /**
  * Configuration variables
  */
-$GLOBALS['oldCHDB'] = 'clearhealth_old';
-$GLOBALS['newCHDB'] = 'clearhealth_old';
+$GLOBALS['oldCHDB'] = 'chpriv';
+$GLOBALS['newCHDB'] = 'chpriv';
 $GLOBALS['debug'] = true;
 $GLOBALS['eol-style'] = "\n"; // change to <br /> for HTML output
 
