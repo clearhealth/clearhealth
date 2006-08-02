@@ -91,7 +91,7 @@ class C_PatientFinder extends Controller {
 			$practiceFiltering = '(psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ')) ';
 		}
 		else {
-			$practiceFiltering = '';
+			$practiceFiltering = '1=1';
 		}
 
 		$sql = "
