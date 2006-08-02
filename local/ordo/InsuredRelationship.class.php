@@ -94,7 +94,7 @@ class InsuredRelationship extends ORDataObject {
 		$ret = array();
 
 		$ir =& ORDataObject::Factory('InsuredRelationship');
-		$sql = "select * from $ir->_table where person_id = $person_id order by program_order";
+		$sql = "select * from $ir->_table where person_id = $person_id AND active = 1 order by program_order";
 		//echo "<br> $sql <br>";
 		$res = $ir->_execute($sql);
 			
