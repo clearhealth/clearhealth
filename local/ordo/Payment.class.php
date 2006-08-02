@@ -23,6 +23,10 @@ class Payment extends ORDataObject {
 	 * Fields of table: payment mapped to class members
 	 */
 	var $payment_id		= '';
+	
+	/**
+	 * An integer referencing the id of a {@link ClearhealthClaim}
+	 */
 	var $foreign_id		= '';
 	var $encounter_id	= '';
 	var $payment_type	= '';
@@ -68,6 +72,11 @@ class Payment extends ORDataObject {
 	}
 
 	/**
+	 * Returns an array of {@link Payment}s based on the ID of a parent claim.
+	 *
+	 * @param  int  A {@link ClearhealthClaim} ID
+	 * @return array
+	 *
 	 * @todo: move to an ordo collection
 	 */
 	function &fromForeignId($id) {
