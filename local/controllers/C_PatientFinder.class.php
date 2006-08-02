@@ -102,11 +102,17 @@ class C_PatientFinder extends Controller {
 				record_number as pubpid, 
 				psn.identifier as ss,
 				person_type, 
-				CONCAT(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string`
+				CONCAT(last_name, ', ', first_name, ' ', middle_name, '#', record_number)  as `string`,
+				address.line1,
+				address.city,
+				practices.name AS practice_name
 			FROM
 				person psn
 				$join_type JOIN patient AS pt ON(psn.person_id=pt.person_id)
 				LEFT JOIN person_type AS ptype ON(ptype.person_id=psn.person_id)
+				LEFT JOIN person_address pa ON(pa.person_id=pt.person_id)
+				LEFT JOIN address ON(pa.address_id=address.address_id)
+				LEFT JOIN practices ON(practices.id=psn.primary_practice_id)
 			WHERE 
 				{$practiceFiltering} AND ";
 
@@ -130,7 +136,6 @@ class C_PatientFinder extends Controller {
 				last_name,
 				first_name 
 			LIMIT {$this->limit}";
-
 		if(count($sqls)==0){
 			return(array('','Invalid Search'));
 		}
