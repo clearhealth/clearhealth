@@ -1,0 +1,28 @@
+
+
+{clni_form object=$formRule action=$FORM_ACTION process=$PROCESS}
+<table><input type='hidden' name="formRule[form_rule_id]" value="{$formRule->get('id')}"><tr>
+	<td><label>Rule Name:</label> </td>
+	<td><input type='text' id='rule__name' name='formRule[rule_name]' value="{$formRule->rule_name}" onkeyup="updateName(this)"></td></tr>
+<tr>
+	<td><label>Field name:</label> </td>
+	<td><input type='text' id='field__name' name='formRule[field_name]' value="{$formRule->field_name}"></td></tr>
+<tr>
+	<td><label>Operator:</label> </td>
+	<td><input type='text' id='operator' name='formRule[operator]' value="{$formRule->operator}"></td></tr>
+<tr>
+	<td><label>Rule Value:</label> </td>
+	<td><input type='text' id='value' name='formRule[value]' value="{$formRule->value}"></td></tr>	
+<tr>
+	<td><label>Operator:</label> </td>
+	<td><textarea id='message' name='formRule[message]' >{$formRule->message}</textarea></td></tr>
+<tr><td></td><td>
+{if $formRule->form_rule_id > 0}
+<input type='submit' value='Update'>
+{else}
+<input type='submit' value='Add'>
+
+{/if}
+
+</td></tr>
+</table></form>
