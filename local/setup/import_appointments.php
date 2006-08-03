@@ -40,10 +40,11 @@ debug("done!");
 debug("Querying for old appointments...", false);
 $oldAppointmentQuery = "
 	SELECT 
-		id, event_id, start, end, notes, location_id, user_id, last_change_id, 
+		id, event_id, start, end, notes, location_id, user.person_id provider_id, last_change_id, 
 		external_id, reason_code, timestamp, walkin, group_appointment
 	FROM
 		{$oldCHDB}.occurences
+		inner join user on occurences.user_id = user.user_id
 	WHERE
 		external_id > 0";
 
@@ -59,6 +60,7 @@ $newEventEntries = array();
 
 $counter = 0;
 $showCounterAt = $oldAppointments->recordCount() / 10;
+$tmp = array();
 while ($oldAppointments && !$oldAppointments->EOF) {
 	if ($counter % $showCounterAt == 0) {
 		debug(".", false);
@@ -77,7 +79,7 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	$qLastChangeId = $db->quote($oldAppointment['last_change_id']);
 	$qCreatorId = $qLastChangeId;
 	$qEventId = (int)$oldAppointment['event_id'];
-	$qProviderId = $db->quote($oldAppointment['user_id']);
+	$qProviderId = $db->quote($oldAppointment['provider_id']);
 	$qPatientId = $db->quote($oldAppointment['external_id']);
 	$qRoomId = $db->quote($oldAppointment['location_id']);
 	$qPracticeId = $db->quote(getPracticeIdByRoomId($oldAppointment['location_id']));
@@ -97,11 +99,17 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 		$qEnd = $db->quote($oldAppointment['end']);
 		
 		$newEventEntries[$oldAppointment['event_id']] = "({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})";
+		if (isset($tmp[$qEventId])) {
+			var_dump("({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})");
+		}
+		$tmp[$qEventId] = $qEventId;
 	}
 	
 	$oldAppointments->moveNext();
 }
 debug("done.");
+var_dump(count($tmp));
+var_dump(count($newEventEntries));
 
 
 // insert appointments
@@ -116,7 +124,8 @@ $appointmentInsertSql = "
 	VALUES
 		{$appointmentInsertValues}";
 debug("Inserting " . count($newAppointmentEntries) . " upgraded appointments...", false);
-//$db->execute($appointmentInsertSql);
+var_dump(strlen($appointmentInsertSql));
+$db->execute($appointmentInsertSql);
 debug("done");
 
 
@@ -132,7 +141,8 @@ $eventInsertSql = "
 		{$eventInsertValues}";
 
 debug("Inserting " . count($newEventEntries) . " upgraded events...", false);
-$db->execute($eventInsertSql);
+//$db->execute($eventInsertSql);
+echo $eventInsertSql;
 debug("done");
 
 echo "Successfully upgraded " . count($newAppointmentEntries) . " appointments\n";
