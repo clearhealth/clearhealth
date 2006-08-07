@@ -12,6 +12,9 @@ class C_OccurenceBreakdown extends Controller {
 		for($i = 5; $i < 125; $i+=5) {
 			$times[$i*60] = $i;
 		}
+		for($i = 135; $i < 1630; $i+=15) {
+			$times[$i*60] = $i;
+		}
 		$this->assign('times',$times);
 
 		$manager =& EnumManager::getInstance();
