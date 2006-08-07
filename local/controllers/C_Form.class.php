@@ -76,9 +76,9 @@ class C_Form extends Controller {
 			else {
 						$form_structure_id = 0;
 						
-						$structure=& ORDataObject::factory('FormStructure',$form_structure_id);
-						$structure->form_id = $this->form_id;
-						$structure->form_structure_id = 0;
+						$structure=& Celini::newOrdo('FormStructure',$form_structure_id);
+						$structure->set('form_id', $this->form_id);
+						$structure->set ('form_structure_id', 0);
 						$structure->getFieldsList ($filename);
 			
 				$this->messages->addMessage('Form Uploaded Successfully');
@@ -140,12 +140,7 @@ class C_Form extends Controller {
 			}
 			$this->assign('FORM_ACTION',Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id$retTo");
 			$data =& ORDataObject::factory('FormData',$form_data_id);
-
-// 			$form_structure_id = 0;
-// 			$structure=& ORDataObject::factory('FormStructure',$form_structure_id);
-// 			$structure->form_id = $form_id;
-// 			$form_structure = $structure->build_form_structure_array ($form_data_id);
-
+			
 			$this->assign_by_ref('form',$form);
 			$this->assign_by_ref('data',$data);
 			$this->secure_dir[] = APP_ROOT."/user/form/";
@@ -164,8 +159,8 @@ class C_Form extends Controller {
 			$data->set('last_edit',date('Y-m-d H:i:s'));
 			$data->persist();
 			
-			$structure=& ORDataObject::factory('FormStructure');
-			$structure->form_id = $form_id;
+			$structure=& Celini::newOrdo('FormStructure');
+			$structure->set('form_id', $form_id);
 			$form_structure = $structure->build_form_structure_array ($form_data_id);
 			//print_r ($form_structure);
 			
