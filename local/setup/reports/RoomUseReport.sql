@@ -1,16 +1,18 @@
 SELECT
- concat_ws(', ', per.last_name, per.first_name) AS Name,
- patstat.language AS Lang,
- per.person_id AS Record,
- num.number AS Phone,
- concat_ws(', ', relper.last_name, relper.first_name) AS Gaurantor,
- appt.reason AS Reason,
+ date_format(e.start,'%m/%d/%y %H:%i') time,
  concat(floor((unix_timestamp(e.end) - unix_timestamp(e.start)) / 60 / 60),
    ' hrs ', floor((unix_timestamp(e.end) - unix_timestamp(e.start)) / 60 % 60), ' mins') AS Duration,
+ room.name `Room`,
+ concat_ws(', ', per.last_name, per.first_name) AS Patient,
+ pat.record_number '#',
+ lang_enum.value AS Lang,
+ num.number AS Phone,
+ ifnull(concat(relper.last_name,', ', relper.first_name),'Self') AS Guarantor,
+ ifnull(reason_enum_pp.value,reason_enum_default.value) AS Reason,
  appt.title AS Note,
  concat_ws(', ', pro.last_name, pro.first_name) AS Provider,
- bal.total_balance AS Balance,
- lastpay.payment_date AS LastPayment,
+ ifnull(bal.total_balance,'NA') AS Balance,
+ ifnull(lastpay.payment_date,'NA') AS LastPayment,
  enc_patients.status new
 
 FROM person AS per
@@ -22,6 +24,8 @@ FROM person AS per
  INNER JOIN appointment AS appt ON per.person_id = appt.patient_id
  LEFT JOIN event AS e ON appt.event_id = e.event_id
  LEFT JOIN person AS pro ON appt.provider_id = pro.person_id
+ LEFT JOIN patient as pat on per.person_id = pat.person_id
+ LEFT JOIN rooms as room on appt.room_id = room.id
 
 LEFT JOIN (
    SELECT
@@ -77,3 +81,27 @@ from
 group by
  p.person_id
 ) enc_patients ON enc_patients.patient_id = appt.patient_id
+
+left join (
+	select evp.practice_id, `key`, value from enumeration_value ev 
+	inner join enumeration_definition ed using(enumeration_id) 
+	inner join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id
+	where ed.name = 'appointment_reasons'
+) reason_enum_pp ON (reason_enum_pp.practice_id = appt.practice_id) and appt.reason = reason_enum_pp.`key`
+left join (
+	select `key`, value from enumeration_value ev 
+	inner join enumeration_definition ed using(enumeration_id) 
+	left join enumeration_value_practice evp on ev.enumeration_value_id = evp.enumeration_value_id
+	where ed.name = 'appointment_reasons' and evp.practice_id is null
+) reason_enum_default ON appt.reason = reason_enum_default.`key`
+left join (
+	select `key`, value from enumeration_value ev 
+	inner join enumeration_definition ed using(enumeration_id) 
+	where ed.name = 'language'
+) lang_enum ON patstat.language = lang_enum.`key`
+
+
+
+/* end from */
+where
+e.start >= '[start:date] 01:01:01' and e.end <= '[end:date] 23:59:59'
