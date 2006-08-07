@@ -2,15 +2,9 @@
 /**
  * Object Relational Persistence Mapping Class for table: form_rule
  *
- * @package	com.uversainc.celini
+ * @package	com.uversainc.clearhealth
  * @author	Marek Handze <marek@rise.pl>
  */
-
-/**#@+
- * Required Libs
- */
-require_once CELINI_ROOT.'/ordo/ORDataObject.class.php';
-/**#@-*/
 
 /**
  * Object Relational Persistence Mapping Class for table: form_rule
@@ -53,42 +47,8 @@ class FormRule extends ORDataObject {
 	function FormRule($db = null) {
 		parent::ORDataObject($db);	
 		$this->_table = 'form_rule';
-		$this->_sequence_name = 'seq_enum';	
 	}
 
-	/**
-	 * Called by factory with passed in parameters, you can specify the primary_key of FormRule with this
-	 */
-	function setup($id = 0) {
-		if ($id > 0) {
-			$this->set('id',$id);
-			$this->populate();
-		}
-	}
-	
-	function setupByName($name) {
-		$this->set('form_name', $name);
-		parent::populate('form_name');
-	}
-
-	/**
-	 * Create and Populate an instance by name
-	 */
-	function &fromName($name) {
-		$rule =& ORDataObject::factory('FormRule');
-		$res = $enum->_execute("select form_rule_id from {$rule->_prefix}{$rule->_table} where form_name = ".$rule->_quote($name));
-		if ($res && !$res->EOF) {
-			$rule->setup($res->fields['fomm_rule_id']);
-		}
-		return $rule;
-	}
-
-	/**
-	 * Populate the class from the db
-	 */
-	function populate() {
-		parent::populate('form_rule_id');
-	}
 	
 	function &ruleList() {
 		$ds =& new Datasource_sql();
@@ -107,7 +67,7 @@ class FormRule extends ORDataObject {
 	function checkFieldRule ($field_name, $field_value) {
 	
 		$sql = "SELECT operator, value, message FROM " . $this->_table . " WHERE field_name = '" . $field_name."'";
-		$result = $this->_Execute($sql) or die ("Database Error: " . $this->_db->ErrorMsg());
+		$result = $this->dbHelper->execute($sql);
 		$ar = array();
 		
 		$first = 1;	
@@ -127,7 +87,7 @@ class FormRule extends ORDataObject {
 			
 			$return = array();
 			$command = 'if ('.$rules.') { $return = $messages; } else {$return = FALSE;}';
-// 			eval($command);
+ 			eval($command);
 // 			echo $command;
 			return $return;
 		}
