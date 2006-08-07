@@ -29,7 +29,7 @@ class C_FormRule extends Controller {
 	* If no action is specified use the list action
 	*/
 	function actionDefault_view() {
-		return $this->actionList();
+		return $this->actionList_view();
 	}
 
 	/**
