@@ -74,7 +74,7 @@ GROUP BY
 left join (
 select
  p.person_id patient_id,
- if (max(ifnull(encounter_id,0)),'Y','N') status
+ if (max(ifnull(encounter_id,0)),'N','Y') status
 from
  patient p
  LEFT JOIN encounter e ON e.patient_id = p.person_id
