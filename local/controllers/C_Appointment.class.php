@@ -369,13 +369,11 @@ class C_Appointment extends Controller {
 		$providers =& Celini::newORDO('Provider');
 		$providers = $providers->valueList('usernamePersonId');
 		$this->assign('providers',$providers);
-		$practices =& Celini::newORDO('Practice');
-		$practices = $practices->practices_factory();
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
 		$r =& Celini::newORDO('Room');
 		
-        if(count($practices) > 0) {
-			$this->assign("facility",$r->rooms_practice_factory($practices[0]->get_id(),false));
-        }
+		$this->assign("facility",$r->rooms_practice_factory($pid,false));
 
 		return $this->view->render("search.html");
 	}
