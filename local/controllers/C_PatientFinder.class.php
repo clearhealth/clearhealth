@@ -88,7 +88,12 @@ class C_PatientFinder extends Controller {
 		//get the db connection and pass it to the helper functions
 		$userProfile =& Celini::getCurrentUserProfile();
 		if (count($userProfile->getPracticeIdList()) > 0) {
-			$practiceFiltering = '(psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ')) ';
+			$practiceFiltering = '
+				(
+					psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ') OR
+					secondary.practice_id IN(' . implode(', ', $userProfile->getPracticeIdList()) . ')
+				) ';
+		
 		}
 		else {
 			$practiceFiltering = '1=1';
@@ -110,6 +115,7 @@ class C_PatientFinder extends Controller {
 				person psn
 				$join_type JOIN patient AS pt ON(psn.person_id=pt.person_id)
 				LEFT JOIN person_type AS ptype ON(ptype.person_id=psn.person_id)
+				LEFT JOIN secondary_practice AS secondary ON(psn.person_id = secondary.person_id)
 				LEFT JOIN person_address pa ON(pa.person_id=pt.person_id)
 				LEFT JOIN address ON(pa.address_id=address.address_id)
 				LEFT JOIN practices ON(practices.id=psn.primary_practice_id)
