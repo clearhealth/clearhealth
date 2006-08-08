@@ -111,7 +111,9 @@ CREATE TABLE `appointment` (
   `appointment_code` varchar(255) NOT NULL default '',
   `event_group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`appointment_id`),
-  KEY `event_group_id` (`event_group_id`)
+  KEY `event_group_id` (`event_group_id`),
+  KEY `event_id` (`event_id`),
+  KEY `patient_id` (`patient_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -419,6 +421,23 @@ CREATE TABLE `clearhealth_claim` (
 LOCK TABLES `clearhealth_claim` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `clearhealth_claim` ENABLE KEYS */;
+
+
+CREATE TABLE `code_category` (
+  `code_category_id` int(11) NOT NULL default '0',
+  `category_name` varchar(255) NOT NULL default '',
+  `category_id` int(11) NOT NULL,
+  PRIMARY KEY  (`code_category_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE `code_to_category` (
+  `code_category_id` int(11) NOT NULL default '0',
+  `code_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`code_category_id`,`code_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
 
 --
 -- Table structure for table `codes`
@@ -971,7 +990,9 @@ CREATE TABLE `event` (
   `start` datetime NOT NULL default '0000-00-00 00:00:00',
   `end` datetime NOT NULL default '0000-00-00 00:00:00',
   `title` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`event_id`)
+  PRIMARY KEY  (`event_id`),
+  KEY `start` (`start`),
+  KEY `end` (`end`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -1544,6 +1565,25 @@ CREATE TABLE `form_data` (
 LOCK TABLES `form_data` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `form_data` ENABLE KEYS */;
+
+
+CREATE TABLE `form_rule` (
+  `form_rule_id` int(11) NOT NULL auto_increment,
+  `field_name` varchar(100) NOT NULL default '',
+  `rule_name` varchar(30) NOT NULL default '',
+  `operator` char(3) NOT NULL default '',
+  `value` varchar(30) NOT NULL default '',
+  `message` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`form_rule_id`)
+) ENGINE=MyISAM;
+
+CREATE TABLE `form_structure` (
+  `form_structure_id` int(11) NOT NULL auto_increment,
+  `form_id` int(11) NOT NULL default '0',
+  `field_name` varchar(100) NOT NULL default '',
+  `field_type` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`form_structure_id`)
+) ENGINE=MyISAM;
 
 --
 -- Table structure for table `gacl_acl`
@@ -2515,6 +2555,12 @@ CREATE TABLE `menu` (
 /*!40000 ALTER TABLE `menu` DISABLE KEYS */;
 LOCK TABLES `menu` WRITE;
 INSERT INTO `menu` VALUES (1,'a',1,'','children',0,'','','main'),(2,'default',1,'','children',10,'Actions','','main'),(3,'default',2,'','children',100,'Add Appointment','javascript:showAddAppointment()','RAW'),(4,'default',2,'','children',200,'Search','Appointment/Search','main'),(5,'default',2,'','children',300,'Filters','javascript:showCalendarFilters()','RAW'),(6,'default',2,'','children',400,'Day','CalendarDisplay/Day','main'),(7,'default',1,'','children',20,'Reports','','main/CalendarDisplay'),(8,'default',1,'','children',30,'Admin','','main'),(9,'default',8,'','children',100,'Schedules','Schedule/list','main'),(10,'default',8,'','children',200,'Templates','AppointmentTemplate/list','main'),(11,'patient',1,'','children',10,'Actions','','main'),(12,'patient',11,'','children',100,'Add Patient','Patient/Add','main'),(13,'patient',11,'','children',200,'Search','PatientFinder/Find','main'),(14,'patient',11,'','children',300,'Dashboard','PatientDashboard/View','main'),(15,'patient',11,'','children',400,'Add Encounter','Encounter/Add','main'),(16,'patient',11,'','children',500,'Documents','Document/List','main'),(17,'patient',1,'','children',20,'Reports','','main/Patient'),(18,'patient',1,'','children',30,'Admin','','main'),(19,'patient',18,'','children',100,'Merge Queue','PatientMerge/List','main'),(20,'billing',1,'','children',10,'Actions','',''),(21,'billing',20,'','children',100,'Claims','Claim/List','main'),(22,'billing',20,'','children',200,'Master Account History','MasterAccountHistory/View','main'),(23,'billing',1,'','children',20,'Reports','','main/Billing'),(24,'billing',1,'','children',30,'Admin','','main'),(25,'billing',24,'','children',100,'Payers','Insurance/List','main'),(26,'billing',24,'','children',200,'Fee Schedules','FeeSchedule/List','main'),(27,'billing',24,'','children',300,'Discount Tables','FeeScheduleDiscount/List','main'),(28,'billing',24,'','children',400,'Superbills','Superbill/List','main'),(29,'billing',24,'','children',500,'Import 835','X12Import/upload','main'),(30,'admin',1,'','children',10,'Calendar','','main'),(31,'admin',30,'','children',100,'Schedules','Schedule/list','main'),(32,'admin',30,'','children',200,'Templates','AppointmentTemplate/list','main'),(33,'admin',1,'','children',20,'Patient','','main'),(34,'admin',33,'','children',100,'Labs','Labs/List','main'),(35,'admin',33,'','children',200,'EMR Plugins','Form/List','main'),(36,'admin',33,'','children',300,'Document Categories','DocumentCategory/List','main'),(37,'admin',1,'','children',30,'Billing','','main'),(38,'admin',37,'','children',100,'Payers','Insurance/List','main'),(39,'admin',37,'','children',200,'Fee Schedules','FeeSchedule/List','main'),(40,'admin',37,'','children',300,'Discount Tables','FeeScheduleDiscount/List','main'),(41,'admin',37,'','children',400,'Superbills','Superbill/List','main'),(42,'admin',37,'','children',500,'Input 835','X12Import/upload','main'),(43,'admin',1,'','children',40,'Setup','','main'),(44,'admin',43,'','children',100,'Facilities','Location/List','main'),(45,'admin',43,'','children',200,'Users','User/List','main'),(46,'admin',43,'','children',300,'Enumerations','Enumeration/List','main'),(47,'admin',43,'','children',400,'ACL Editor','Admin/Acl','main'),(48,'admin',43,'','children',500,'Timed Events','Cronable/List','main'),(49,'admin',1,'','children',50,'Reports/Forms','','main'),(50,'admin',49,'','children',100,'Reports','Report/List','main'),(51,'admin',49,'','children',200,'Forms','Form/List','main'),(52,'admin',49,'','children',300,'Connect Reports','Report/Connect','main'),(53,'admin',49,'','children',400,'Connect Forms','Form/Connect','main'),(54,'all',1,'','children',5000,'Practice','','main'),(55,'all',1,'','children',400,'My Account','','main'),(56,'all',55,'','children',100,'Change Password','MyAccount/Password','main'),(57,'patient',1,'','children',-1,'Encounter Forms','','main/Encounter'),(58,'patient',1,'','children',-1,'Dashboard Forms','','main/Patient'),(59,'patient',1,'','children',-1,'Dashboard Reports','','main/Patient'),(60,'admin',49,'','children',500,'EMR Plugins','WidgetForm/List','main'),(61,'admin',43,'','children',0,'Building','Building/add','main'),(62,'admin',43,'','children',0,'Room','Room/add','main'),(63,'all',55,'','children',1000,'Logout','Access/logout','main'),(64,'admin',37,'','children',500,'Claim Template','CodingTemplate/list','main'),(65,'admin',30,'','children',100,'Appointment Rules','AppointmentRuleset/list','main'),(66,'default',8,'','children',300,'Appointment Rules','AppointmentRuleset/list','main'),(67,'patient',11,'','children',1000,'View Audit Log','AuditLog/list','main'),(68,'default',8,'','children',1000,'Visit Queue Templates','VisitQueue/ListTemplates','main'),(69,'admin',30,'','children',200,'Visit Queue Templates','VisitQueue/ListTemplates','main'),(70,'billing',24,'','children',600,'Claim Template','CodingTemplate/List','main'),(71,'billing',20,'','children',0,'Process Queues','Queue/process','main'),(72,'billing',20,'','children',0,'Process Queues','Queue/process','main'),(73,'admin',37,'','children',900,'Code Categories','CodeCategory/list','main'),(74,'billing',24,'','children',900,'Code Categories','CodeCategory/list','main');
+INSERT INTO `menu` ( `menu_id` , `site_section` , `parent` , `dynamic_key` , `section` , `display_order` , `title` , `action` , `prefix` )
+VALUES (
+'', 'admin', '37', '', 'children', '900', 'Code Categories', 'CodeCategory/list', 'main'
+), (
+'', 'billing', '24', '', 'children', '900', 'Code Categories', 'CodeCategory/list', 'main'
+);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
 
