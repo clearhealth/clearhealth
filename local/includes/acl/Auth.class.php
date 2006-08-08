@@ -55,7 +55,7 @@ class Auth extends AbstractAuth
 	 *       query the DB each time a request comes through.
 	 */
 	function _patientPermission($who, $what, $where) {
-		if (empty($who)) {
+		if (empty($who) || parent::can($who, 'override', $where)) {
 			return;
 		}
 		static $controllers = array('encounter', 'patient', 'patientdashboard');
