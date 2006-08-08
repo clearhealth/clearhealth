@@ -29,7 +29,7 @@ class C_PatientFinder extends Controller {
 		//$_SESSION['trail'] = $trail;
 	}
 
-	function actionDefault($form_name='') {
+	function actionDefault_list($form_name='') {
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
 		
