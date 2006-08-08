@@ -29,7 +29,7 @@ class C_PatientFinder extends Controller {
 		//$_SESSION['trail'] = $trail;
 	}
 
-	function actionDefault_list($form_name='') {
+	function actionDefault($form_name='') {
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
 		
@@ -85,10 +85,29 @@ class C_PatientFinder extends Controller {
 		if ($this->showNonPatients === true) {
 			$join_type = "LEFT";
 		}
-		//get the db connection and pass it to the helper functions
+
+		/**
+		 * We'll re-add this later when we get a client which actually needs to have
+		 * separation of patients in practices as a security issue.
+		 * 
+		 * Until then, we want to be able to search all patients.
+		 * 
+		 * We will also probably want to put in a checkbox to limit results to the currently
+		 * selected practice.
+		 * 
 		$userProfile =& Celini::getCurrentUserProfile();
-		$pid = $userProfile->getCurrentPracticeId();
-		$practiceFiltering = "psn.primary_practice_id = '$pid'";
+		if (count($userProfile->getPracticeIdList()) > 0) {
+			$practiceFiltering = '
+				(
+					psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ') OR
+					secondary.practice_id IN(' . implode(', ', $userProfile->getPracticeIdList()) . ')
+				) ';
+		
+		}
+		else {
+			$practiceFiltering = '1=1';
+		}
+		*/
 
 		$sql = "
 			SELECT 
@@ -111,7 +130,7 @@ class C_PatientFinder extends Controller {
 				LEFT JOIN address ON(pa.address_id=address.address_id)
 				LEFT JOIN practices ON(practices.id=psn.primary_practice_id)
 			WHERE 
-				{$practiceFiltering} AND ";
+				";
 
 		$cleanedValue = mysql_real_escape_string($search_string);
 		$sqls = $this->_smart_search($search_string);
