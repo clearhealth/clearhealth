@@ -378,9 +378,12 @@ class Person extends ORDataObject {
 		elseif($type==0) {
 			$sqlPersonTypes[] = $sqlPersonTypeCol . ' > 1';
 		}
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$where = "p.primary_practice_id = '$pid'";
 		
 		$sql = "select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
-					inner join person_type ct using(person_id) where " . implode(' OR ', $sqlPersonTypes) . " order by last_name, first_name";
+					inner join person_type ct using(person_id) where {$where} AND " . implode(' OR ', $sqlPersonTypes) . " order by last_name, first_name";
 					
 		$returnArray = $this->dbHelper->getAssoc($sql);
 		if ($blank) {
