@@ -87,17 +87,8 @@ class C_PatientFinder extends Controller {
 		}
 		//get the db connection and pass it to the helper functions
 		$userProfile =& Celini::getCurrentUserProfile();
-		if (count($userProfile->getPracticeIdList()) > 0) {
-			$practiceFiltering = '
-				(
-					psn.primary_practice_id IN(' . implode(", ", $userProfile->getPracticeIdList()) . ') OR
-					secondary.practice_id IN(' . implode(', ', $userProfile->getPracticeIdList()) . ')
-				) ';
-		
-		}
-		else {
-			$practiceFiltering = '1=1';
-		}
+		$pid = $userProfile->getCurrentPracticeId();
+		$practiceFiltering = "psn.primary_practice_id = '$pid'";
 
 		$sql = "
 			SELECT 
