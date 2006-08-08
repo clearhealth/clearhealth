@@ -19,7 +19,7 @@ class Auth extends AbstractAuth
 	 * {@inheritdoc}
 	 */
 	function canI($what, $where = null) {
-		return parent::canI($what
+		return parent::canI($what, $where);
 	}
 	
 	
