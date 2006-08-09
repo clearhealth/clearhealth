@@ -1,12 +1,33 @@
 {head type="js"}
+var selectVisible=true;
+function toggleSelects() {
+	if(document.all) {
+		var selects = document.getElementsByTagName('select');
+		for(var i=0;i<selects.length;i++) {
+			if(selectVisible == true) {
+				selects[i].style.visibility='hidden';
+			} else {
+				selects[i].style.visibility='visible';
+			}
+		}
+		if(selectVisible == true) {
+			selectVisible = false;
+		} else {
+			selectVisible = true;
+		}
+	}
+}
 function toggleSuperBill() {
+	toggleSelects();
 	Effect.toggle('superBillList','appear');
 }
 function showSuperBill() {
+	toggleSelects();
 	new Effect.Appear('superBillList');
 }
 function hideSuperBill() {
 	new Effect.Fade('superBillList');
+	toggleSelects();
 }
 {/head}
 
