@@ -58,7 +58,7 @@ class C_Schedule extends Controller
 			$wizardData = $this->_getWizardData();
 		}	
 		$provider =& Celini::newOrdo('Provider');
-		$providers = $provider->valueList('usernamePersonId');
+		$providers = $provider->valueList('usernamePersonIdUnfiltered');
 
 		$room =& Celini::newORDO('Room');
 		$practice =& Celini::newOrdo('Practice');
