@@ -242,7 +242,7 @@ class C_Patient extends Controller {
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
 		$this->_storeCurrentAction ();
-		$db =& Celini::dbInstance();
+		$db = new clniDb();
 
 		if (!$patientId) {
 			$patientId = $this->get('patient_id');
@@ -250,8 +250,16 @@ class C_Patient extends Controller {
 		EnforceType::int($patientId);
 		
 		$reportId = $this->GET->get('report_id');
+		if ($this->GET->exists('cid')) {
+			$cid = $this->GET->get('cid');
+			$c = $db->quote($cid);
+			$sql = "select id from reports where custom_id = $c";
+			$reportId = $db->getOne($sql);
+		}
 		if (!$reportId) {
-			$reportId = $_GET[0];
+			if (isset($_GET[0])) {
+				$reportId = $_GET[0];
+			}
 		}
 		$r =& Celini::newOrdo('Report',$reportId);
 		$snapshotId = false;
