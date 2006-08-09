@@ -81,18 +81,24 @@ class C_MasterAccountHistory extends Controller {
 		// you can't join on payment and payment_claimline and sum up chc.* anymore
 		$sql['from'] = str_replace(
 			array('LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)',
-				'LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)'),
+			'LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)',
+			'LEFT JOIN codes AS c ON pcl.code_id = c.code_id'),
 				'',$sql['from']);
+
+
+		$sql['where'] = str_replace('c.code','w.codes',$sql['where']);
 
 		// use a subquery to get writeoff totals
 		$sql['from'] .= 'LEFT JOIN (
 				select
 					chc.claim_id,
-					SUM(ifnull(pcl.writeoff,0)) total_writeoff
+					SUM(ifnull(pcl.writeoff,0)) total_writeoff,
+					group_concat(c.code) codes
 				FROM
 					clearhealth_claim chc
 					LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)
 					LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)
+					LEFT JOIN codes AS c ON pcl.code_id = c.code_id
 				GROUP BY chc.claim_id
 			) w ON(w.claim_id = chc.claim_id)';
 

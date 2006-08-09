@@ -73,6 +73,11 @@ class MasterClaimList_DS extends Datasource_sql
 							$qUser = enforceType::int($fval);
 							$whereSql[] = "u.user_id = $qUser";
 							break;
+
+						case 'procedure':
+							$qProcedure = $db->quote('%'.$fval.'%');
+							$whereSql[] = "c.procedure like $qProcedure";
+							break;
 					}	
 				}
 			}
@@ -84,7 +89,7 @@ class MasterClaimList_DS extends Datasource_sql
 		$personTableName = $person->tableName();
 		
 		$dateFormat = DateObject::getFormat();
-		
+
 		$this->setup(
 			Celini::dbInstance(),
 			array(
@@ -118,6 +123,8 @@ class MasterClaimList_DS extends Datasource_sql
 					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
 					LEFT JOIN ordo_registry AS oreg ON(e.encounter_id = oreg.ordo_id)
 					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
+
+					LEFT JOIN fbclaimline c ON fbc.claim_id = c.claim_id
 					',
 				'where' => implode(' AND ', $whereSql),
 				'groupby' => 'chc.claim_id'
@@ -135,7 +142,8 @@ class MasterClaimList_DS extends Datasource_sql
 			)
 		);
 
-		
+		//var_dump($this->preview());
+
 		$this->registerFilter('patient_name', array(&$this, '_patientHistoryLink'));
 		$this->registerFilter('identifier', array(&$this, '_claimHistoryLink'));
 	}
