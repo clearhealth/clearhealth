@@ -22,13 +22,6 @@ class M_User extends M_Patient {
 		if (isset($_POST['providerToInsurance'])) {
 			$this->process_providerToInsurance_update($this->controller->person_id,$_POST['providerToInsurance']);
 		}
-		
-		if (isset($_POST['SecondaryPractice']) && $_POST['SecondaryPractice']['practice_id'] != '') {
-			$cSecondaryPractice =& new C_SecondaryPractice();
-			$cSecondaryPractice->process($_POST['SecondaryPractice']);
-			$action = empty($_POST['SecondaryPractice']['id']) ? 'Added' : 'Updated';
-			$this->messages->addMessage("Secondary Practice {$action}");
-		}
 	}
 	
 	
