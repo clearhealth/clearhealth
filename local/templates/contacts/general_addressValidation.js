@@ -5,7 +5,7 @@
 		{
 			var inputs = element.getElementsByTagName('input');
 			for(var i = 0; i < inputs.length; i++) {
-				if (inputs[i].type != 'submit' && inputs[i].type != 'hidden') {
+				if (inputs[i].type != 'submit' && inputs[i].type != 'hidden' && inputs[i].type != 'radio') {
 					clni_register_validation_rule_hash({obj:inputs[i],rule:'addressRequiredIf'});
 					addressElements.push(inputs[i]);
 				}
