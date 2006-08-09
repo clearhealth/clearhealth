@@ -1585,7 +1585,7 @@ CREATE TABLE `form_structure` (
   PRIMARY KEY  (`form_structure_id`)
 ) ENGINE=MyISAM;
 
---
+-- 
 -- Table structure for table `gacl_acl`
 -- 
 
@@ -1616,7 +1616,8 @@ INSERT INTO `gacl_acl` (`id`, `section_value`, `allow`, `enabled`, `return_value
 (33, 'user', 1, 1, '', 'Give all users of the system access to basic app sections', 1155068413),
 (39, 'user', 1, 1, '', '', 1129066506),
 (45, 'user', 1, 1, '', 'Permissions for all Provider users', 1155069979),
-(46, 'user', 1, 1, '', 'Read-only permissions for Provider users', 1155069768);
+(46, 'user', 1, 1, '', 'Read-only permissions for Provider users', 1155069768),
+(47, 'user', 1, 1, '', 'Insure the Super Admin users have access to all of the generic permissions.', 1155145145);
 
 -- --------------------------------------------------------
 
@@ -1656,8 +1657,8 @@ CREATE TABLE `gacl_acl_seq` (
 -- Dumping data for table `gacl_acl_seq`
 -- 
 
-INSERT INTO `gacl_acl_seq` (`id`) VALUES (46),
-(46);
+INSERT INTO `gacl_acl_seq` (`id`) VALUES (47),
+(47);
 
 -- --------------------------------------------------------
 
@@ -1759,7 +1760,18 @@ INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (24, 'act
 (45, 'actions', 'usage'),
 (45, 'actions', 'view'),
 (46, 'actions', 'usage'),
-(46, 'actions', 'view');
+(46, 'actions', 'view'),
+(47, 'actions', 'add'),
+(47, 'actions', 'delete'),
+(47, 'actions', 'delete_owner'),
+(47, 'actions', 'double_book'),
+(47, 'actions', 'edit'),
+(47, 'actions', 'edit_owner'),
+(47, 'actions', 'list'),
+(47, 'actions', 'override'),
+(47, 'actions', 'uploadFile'),
+(47, 'actions', 'usage'),
+(47, 'actions', 'view');
 
 -- --------------------------------------------------------
 
@@ -1922,7 +1934,8 @@ INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (24, 12),
 (39, 24),
 (40, 28),
 (45, 20),
-(46, 20);
+(46, 20),
+(47, 12);
 
 -- --------------------------------------------------------
 
