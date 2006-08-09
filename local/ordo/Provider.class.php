@@ -162,7 +162,11 @@ class Provider extends MergeDecorator {
 		return $this->dbHelper->getAssoc($sql);
 	}
 
-	function valueList_usernamePersonId() {
+	function valueList_usernamePersonIdUnfiltered() {
+		return $this->valueList_usernamePersonId(false);
+	}
+	
+	function valueList_usernamePersonId($onlySelectedPractice=true) {
 		$em =& Celini::enumManagerInstance();
 		$list =& $em->enumList('person_type');
 
@@ -174,8 +178,12 @@ class Provider extends MergeDecorator {
 			}
 		}
 		$userProfile =& Celini::getCurrentUserProfile();
-		$pid = $userProfile->getCurrentPracticeId();
-		$where = " AND p.primary_practice_id = '$pid'";
+		if($onlySelectedPractice) {
+			$pid = array($userProfile->getCurrentPracticeId());
+		} else {
+			$pid = $userProfile->getPracticeIdList();
+		}
+		$where = " AND p.primary_practice_id IN (".implode(',',$pid).")";
 
 		$sql = 'SELECT
 				DISTINCT p.person_id, u.username
