@@ -131,7 +131,9 @@ class Provider extends MergeDecorator {
 				$types[] = $row->key;
 			}
 		}
-
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$where = " AND p.primary_practice_id = '$pid'";
 		$sql = 'SELECT
 				DISTINCT u.user_id, u.username
 			FROM
@@ -144,6 +146,7 @@ class Provider extends MergeDecorator {
 				ed.name = "person_type" AND
 				ev.key in('.implode(',',$types).') AND
 				p.inactive = 0
+				'.$where.'
 			ORDER BY
 				u.username';
 		return $this->dbHelper->cachedGetAssoc($sql);
@@ -170,6 +173,9 @@ class Provider extends MergeDecorator {
 				$types[] = $row->key;
 			}
 		}
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$where = " AND p.primary_practice_id = '$pid'";
 
 		$sql = 'SELECT
 				DISTINCT p.person_id, u.username
@@ -183,6 +189,7 @@ class Provider extends MergeDecorator {
 				ed.name = "person_type" AND
 				ev.key in('.implode(',',$types).') AND
 				p.inactive = 0
+				'.$where.'
 			ORDER BY
 				u.username';
 		return $this->dbHelper->cachedGetAssoc($sql);
