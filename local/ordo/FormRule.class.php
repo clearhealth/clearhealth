@@ -20,6 +20,8 @@ class FormRule extends ORDataObject {
 	var $field_name	= '';
 	var $rule_name	= '';
 	var $operator	= '';
+	//if TRUE value contains another field definition, if FALSE value contains simple value
+	var $value_type = '';
 	var $value		= '';
 	var $message	= '';
 	/**#@-*/
@@ -95,6 +97,17 @@ class FormRule extends ORDataObject {
 			return FALSE;
 		}
 	}
+	
+	
+	
+	 /**#@+
+	 * ValueType getters
+	 */
+	function getValueTypeList() {
+		$list = $this->_load_enum('value_type',false);
+		return array_flip($list);
+	}
+	/**#@-*/
 	
 }
 ?>
