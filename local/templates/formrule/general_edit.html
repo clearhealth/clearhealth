@@ -11,7 +11,13 @@
 	<td><label>Operator:</label> </td>
 	<td><input type='text' id='operator' name='formRule[operator]' value="{$formRule->operator}"></td></tr>
 <tr>
-	<td><label>Rule Value:</label> </td>
+<td><label>{l}Value Type{/l}:</label></td>
+			<td><select name="formRule[value_type]">
+					{html_options options=$formRule->getValueTypeList() selected=$formRule->value_type}
+				</select>
+</td>
+</tr>
+	<td><label>Value:</label> </td>
 	<td><input type='text' id='value' name='formRule[value]' value="{$formRule->value}"></td></tr>	
 <tr>
 	<td><label>Operator:</label> </td>
