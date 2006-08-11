@@ -205,14 +205,17 @@ class Person extends ORDataObject {
 	 * Create a name history record when the name is changed
 	 */
 	function set_last_name($name) {
+		$name = trim($name);
 		$this->_nameHistory('last_name',$name);
 		$this->last_name = $name;
 	}
 	function set_first_name($name) {
+		$name = trim($name);
 		$this->_nameHistory('first_name',$name);
 		$this->first_name = $name;
 	}
 	function set_middle_name($name) {
+		$name = trim($name);
 		$this->_nameHistory('middle_name',$name);
 		$this->middle_name = $name;
 	}
