@@ -1,0 +1,1 @@
+ALTER TABLE `form_rule` ADD `value_type` INT( 1 ) NOT NULL DEFAULT '1' AFTER `operator`
