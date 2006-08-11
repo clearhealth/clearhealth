@@ -4317,4 +4317,24 @@
 		<status>1</status>
 	</enum>
 </enumeration>
+
+<enumeration name="value_type" title="Value Type" type="Default">
+	<enum>
+		<key>1</key>
+		<value>Simple Value</value>
+		<sort>0</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+	<enum>
+		<key>2</key>
+		<value>Form Field Name</value>
+		<sort>1</sort>
+		<extra1/>
+		<extra2/>
+		<status>1</status>
+	</enum>
+
+</enumeration>
 </enumerations>
