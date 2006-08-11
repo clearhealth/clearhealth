@@ -71,7 +71,7 @@ class C_FormRule extends Controller {
 		}
 		$form =& ORDataObject::factory('FormRule',$form_rule_id);
 		
-		//print_r ($_POST['form']);
+		//print_r ($_POST['formRule']);
 		$form->populate_array($_POST['formRule']);
 		$form->persist();
 		$this->form_rule_id = $form->get('id');
