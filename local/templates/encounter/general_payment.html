@@ -36,7 +36,7 @@
 			<td><input name="payment[ref_num]" size="4" type="text" value="{$payment->get("ref_num")}"  id="chk_num_input" {if $type_list.$type_list_count ne "check"}style="visibility: hidden;"{/if}></td>
 			<td><input type="submit" value="{if $payment->get('id') > 0}Update{else}Add{/if}">
 				{if $payment->get('id') > 0}
-				<input type="button" value="New Payment" onclick="window.location = '{$NEW_ENCOUNTER_PAYMENT}';">
+				<input type="submit" name="newPayment" value="New Payment" />
 				{/if}
 			</td>
 		</tr>

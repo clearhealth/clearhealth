@@ -405,9 +405,16 @@ class C_Encounter extends Controller {
 		}
 		if (isset($_POST['payment']) && !empty($_POST['payment']['amount'])) {
 			$this->payment_id = $_POST['payment']['payment_id'];
-			$payment =& Celini::newORDO('Payment',$this->payment_id);
-			$payment->set("encounter_id", $this->encounter_id);
+			if(isset($_POST['newPayment'])) {
+				$payment =& Celini::newORDO('Payment');
+			} else {
+				$payment =& Celini::newORDO('Payment',$this->payment_id);
+			}
+			$payment->set('encounter_id',$this->encounter_id);
 			$payment->populate_array($_POST['payment']);
+			if(isset($_POST['newPayment'])) {
+				$payment->set('id',0);
+			}
 			$payment->persist();
 			$this->payment_id = $payment->get('id');
 		}
