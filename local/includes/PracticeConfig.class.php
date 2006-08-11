@@ -26,13 +26,14 @@ class PracticeConfig extends clniConfig {
 	}
 
 	function PracticeConfig() {
-		$userProfile =& Celini::getCurrentUserProfile();
+		$me =& Me::getInstance();
+		$user =& $me->get_user();
 
 		if (isset($_SESSION['defaultpractice'])) {
 			$this->defaultPracticeId = $_SESSION['defaultpractice'];
 		}
 		else {
-			$this->defaultPracticeId = $userProfile->getCurrentPracticeId();
+			$this->defaultPracticeId = $user->get('DefaultPracticeId');
 		}
 		$this->loadPractice($this->defaultPracticeId);
 	}

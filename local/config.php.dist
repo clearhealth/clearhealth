@@ -14,9 +14,6 @@ $config['user_forms_dir'] = APP_ROOT."/user/forms/";
 // where documents are uploaded too
 $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
 
-// location of htmldoc utility for creating pdfs
-$config['htmldoc'] = "/usr/bin/htmldoc";
-
 // Base URL directory
 //$config['base_dir'] = '/INSTALL_BASE_DIR/';
 
@@ -73,6 +70,14 @@ $config['CalendarHourLength'] = 13;
 #		'portrait'
 #	)
 #);
+
+################################################################################
+## PDF Generation Options
+################################################################################
+$config['htmldoc'] = '/usr/bin/htmldoc';
+$config['pageprint'] = '/usr/local/pageprint/PagePrint';
+$GLOBALS['config']['pdfGenerator'] = 'htmldoc';
+
 
 
 ################################################################################
