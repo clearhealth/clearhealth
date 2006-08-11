@@ -117,7 +117,7 @@ function hideSuperBill() {
 	</tr>
 	<tr>
 		<td colspan="2" align="right">
-			<input type="submit" name="saveCode" value="Add Claim Line">
+			<input type="submit" name="saveCode" value="{if is_null($parent_id) }Add Claim Line{else}Edit Claim Line{/if}">
   		</td>
 	</tr>
 </table>
