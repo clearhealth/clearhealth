@@ -401,7 +401,24 @@ class Practice extends ORDataObject{
 	}
 	
 	function genericList() {
-		$sql = 'SELECT id, name FROM practices';
+		$tableName = $this->tableName();
+		$userProfile =& Celini::getCurrentUserProfile();
+		$allowedPracticeList = $userProfile->getPracticeIdList();
+		
+		if (count($allowedPracticeList) == 1) {
+			$sql = "SELECT p.id, p.name FROM {$tableName} AS p ORDER BY p.name";
+		}
+		else {
+			$sql = "
+				SELECT 
+					p.id, 
+					p.name
+				FROM
+					{$tableName} AS p
+				WHERE
+					p.practice_id IN(" . implode(', ', $allowedPracticeList) . ')';
+		}
+		
 		return $this->dbHelper->getAssoc($sql);
 	}
 
