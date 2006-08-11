@@ -45,6 +45,12 @@ function startDuplicate(URL) {
 				<td><label>{l}First Name{/l}: </label></td>
 				<td style="white-space: nowrap;"><input id="first_name" name="person[first_name]" size="20" value="{$person->get('first_name')}"></td>
 			</tr>
+			{if $person->isPopulated()}
+			<tr>
+				<td><label>{l}Middle Name{/l}: </label></td>
+				<td>{clni_input type="string" size="2" name="person[middle_name]" value=$person->value('middle_name')}</td>
+			</tr>
+			{/if}
 			<tr>
 				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>
 				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}">
