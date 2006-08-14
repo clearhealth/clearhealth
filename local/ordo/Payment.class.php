@@ -226,8 +226,22 @@ class Payment extends ORDataObject {
 		}
 		return 0;
 	}
+	function totalPaidForCodingDataId($coding_data_id) {
+		$res = $this->_execute("select sum(pc.paid) p from payment_claimline pc inner join $this->_table using(payment_id) where foreign_id = ".(int)$this->get('foreign_id')." and coding_data_id = $coding_data_id");
+		if ($res && isset($res->fields['p'])) {
+			return $res->fields['p'];
+		}
+		return 0;
+	}
 	function totalWriteoffForCodeId($code_id) {
 		$res = $this->_execute("select sum(pc.writeoff) w from payment_claimline pc inner join $this->_table using(payment_id) where foreign_id = ".(int)$this->get('foreign_id')." and code_id = $code_id");
+		if ($res && isset($res->fields['w'])) {
+			return $res->fields['w'];
+		}
+		return 0;
+	}
+	function totalWriteoffForCodingDataId($coding_data_id) {
+		$res = $this->_execute("select sum(pc.writeoff) w from payment_claimline pc inner join $this->_table using(payment_id) where foreign_id = ".(int)$this->get('foreign_id')." and coding_data_id = $coding_data_id");
 		if ($res && isset($res->fields['w'])) {
 			return $res->fields['w'];
 		}

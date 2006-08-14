@@ -19,6 +19,7 @@ class PaymentClaimline extends ORDataObject {
 	var $id			= '';
 	var $payment_id		= '';
 	var $code_id		= '';
+	var $coding_data_id = '';
 	var $paid		= '';
 	var $writeoff		= '';
 	var $carry		= '';

@@ -36,7 +36,6 @@ class C_Eob extends Controller {
 
 		$codingData =& Celini::newOrdo('CodingData');
 		$codeList = $codingData->getCodeList($claim->get('encounter_id'));
-
 		$company =& Celini::newOrdo('Company');
 
 		$payer_ds = $company->companyListForType('Insurance');
@@ -88,8 +87,8 @@ class C_Eob extends Controller {
 			$billList[$i]['amount'] = $code['fee'];
 			$billList[$i]['paid'] = 0;
 			$billList[$i]['writeoff'] = 0;
-			$billList[$i]['current_paid'] = $payment->totalPaidForCodeId($code['code_id']);
-			$billList[$i]['current_writeoff'] = $payment->totalWriteoffForCodeId($code['code_id']);
+			$billList[$i]['current_paid'] = $payment->totalPaidForCodingDataId($code['coding_data_id']);
+			$billList[$i]['current_writeoff'] = $payment->totalWriteoffForCodingDataId($code['coding_data_id']);
 			$billList[$i]['payment_date'] = $payment->get('payment_date');
 			$billList[$i]['carry'] = $billList[$i]['amount'] - $billList[$i]['current_paid'] - $billList[$i]['current_writeoff'];
 
