@@ -75,6 +75,11 @@ class C_Encounter extends Controller {
 		//}	
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
+		if($encounter_id == 0) {
+			$encounter->persist();
+			$encounter_id = $encounter->get('id');
+			$this->set('encounter_id',$encounter_id);
+		}
 		$person =& Celini::newORDO('Person');
 		$building =& Celini::newORDO('Building',$encounter->get('building_id'));
 		$practice =& Celini::newORDO('Practice',$building->get('practice_id'));
