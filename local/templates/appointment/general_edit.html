@@ -82,6 +82,7 @@ function newPatient() {
 	{if !$template}
 		{l}Provider{/l}
 		<select name="Appointment[provider_id]" {if !$inCurrentReason}disabled='true'{/if}>
+			<option value="">No Provider</option>
 			{if $appointment->isPopulated()}
 			{html_options options=$users_array.2 selected=$appointment->get('provider_id')}
 			{else}
