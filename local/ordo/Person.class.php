@@ -383,7 +383,7 @@ class Person extends ORDataObject {
 		}
 		$userProfile =& Celini::getCurrentUserProfile();
 		$pid = $userProfile->getCurrentPracticeId();
-		$where = "(p.primary_practice_id = '$pid' OR sp.practice_id='$pid')";
+		$where = "(p.primary_practice_id = '$pid' OR sp.practice_id='$pid') AND p.inactive = 0 ";
 		
 		$sql = "select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
 					inner join person_type ct using(person_id) 
