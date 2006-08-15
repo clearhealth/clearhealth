@@ -10,6 +10,7 @@
 			</td>
 			<td><label>{l}Treating Provider{/l}:</label></td>
 			<td><select name="encounter[treating_person_id]">
+					<option value='0'>No Provider</option>
 					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('treating_person_id')}
 				</select>
 			</td>
