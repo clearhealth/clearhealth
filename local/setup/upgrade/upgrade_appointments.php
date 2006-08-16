@@ -18,18 +18,11 @@ ini_set('memory_limit','1024M');
 // hide error message about starting sessions after output is generated
 session_start();
 
-/**
- * Configuration variables
- */
-$GLOBALS['oldCHDB'] = 'chpriv';
-$GLOBALS['newCHDB'] = 'chpriv';
-$GLOBALS['debug'] = true;
-$GLOBALS['eol-style'] = "\n"; // change to <br /> for HTML output
-
+include('config.php');
 
 debug("\nInitializing Celini...", false);
 // initial Celini environment
-define('APP_ROOT', realpath(dirname(__FILE__) . '/../../'));
+define('APP_ROOT', realpath(dirname(__FILE__) . '/../../../'));
 define('CELINI_ROOT', APP_ROOT . '/celini');
 define('CELLINI_ROOT', CELINI_ROOT);
 require_once CELINI_ROOT . '/bootstrap.php';
@@ -108,8 +101,8 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	$oldAppointments->moveNext();
 }
 debug("done.");
-var_dump(count($tmp));
-var_dump(count($newEventEntries));
+//var_dump(count($tmp));
+//var_dump(count($newEventEntries));
 
 
 // insert appointments
@@ -124,7 +117,7 @@ $appointmentInsertSql = "
 	VALUES
 		{$appointmentInsertValues}";
 debug("Inserting " . count($newAppointmentEntries) . " upgraded appointments...", false);
-var_dump(strlen($appointmentInsertSql));
+//var_dump(strlen($appointmentInsertSql));
 $db->execute($appointmentInsertSql);
 debug("done");
 
