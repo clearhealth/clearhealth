@@ -58,7 +58,8 @@ class C_Appointment extends Controller {
 			$this->view->assign('apt_date',date('m/d/Y',strtotime($this->GET->get('date'))));
 		}
 		else {
-			$this->view->assign('apt_date', date('m/d/Y'));
+			$session =& Celini::sessionInstance();
+			$this->view->assign('apt_date', date('m/d/Y',strtotime($session->get('calendar:selectedDay',date('Y-m-d'));
 		}
 
 		$head =& Celini::HTMLHeadInstance();
