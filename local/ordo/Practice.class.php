@@ -416,9 +416,8 @@ class Practice extends ORDataObject{
 				FROM
 					{$tableName} AS p
 				WHERE
-					p.practice_id IN(" . implode(', ', $allowedPracticeList) . ')';
+					p.id IN(" . implode(', ', $allowedPracticeList) . ')';
 		}
-		
 		return $this->dbHelper->getAssoc($sql);
 	}
 

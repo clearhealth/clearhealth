@@ -120,7 +120,7 @@ class C_Patient extends Controller {
 		$relatedAddressList =& $person->loadDatasource('RelatedAddressList');
 		$relatedAddressGrid =& new cGrid($relatedAddressList);
 		$relatedAddressGrid->indexCol = false;
-		$this->assign_by_ref('relatedAddressGrid', $relatedAddressGrid);
+		$this->view->assign_by_ref('relatedAddressGrid', $relatedAddressGrid);
 		
 		
 		// Generate view for SecondaryPractice
@@ -129,24 +129,25 @@ class C_Patient extends Controller {
 		$cSecondaryPractice->person =& $person;
 		$this->view->assign('secondaryPracticeView', $cSecondaryPractice->actionDefault());
 
-		
-		$this->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
-		$this->assign_by_ref('person',$person);
-		$this->assign_by_ref('building',$building);
-		$this->assign_by_ref('encounter',$encounter);
-		$this->assign_by_ref('number',$number);
-		$this->assign_by_ref('address',$address);
-		$this->assign_by_ref('identifier',$identifier);
-		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
-		$this->assign_by_ref('identifierGrid',$identifierGrid);
-		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
-		$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
-		$this->assign_by_ref('personPerson',$personPerson);
-		$this->assign_by_ref('personPersonGrid',$personPersonGrid);
-		$this->assign_by_ref('patientStatistics',$patientStatistics);
-		$this->assign_by_ref('subscriber',$subscriber);
-		$this->assign('hide_type',true);
-		$this->assign('chronicCodes',$chronicCodes);
+		$practice =& Celini::newORDO('Practice');
+		$this->view->assign_by_ref('practice',$practice);
+		$this->view->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
+		$this->view->assign_by_ref('person',$person);
+		$this->view->assign_by_ref('building',$building);
+		$this->view->assign_by_ref('encounter',$encounter);
+		$this->view->assign_by_ref('number',$number);
+		$this->view->assign_by_ref('address',$address);
+		$this->view->assign_by_ref('identifier',$identifier);
+		$this->view->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
+		$this->view->assign_by_ref('identifierGrid',$identifierGrid);
+		$this->view->assign_by_ref('insuredRelationship',$insuredRelationship);
+		$this->view->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
+		$this->view->assign_by_ref('personPerson',$personPerson);
+		$this->view->assign_by_ref('personPersonGrid',$personPersonGrid);
+		$this->view->assign_by_ref('patientStatistics',$patientStatistics);
+		$this->view->assign_by_ref('subscriber',$subscriber);
+		$this->view->assign('hide_type',true);
+		$this->view->assign('chronicCodes',$chronicCodes);
 
 		$this->assign('now',date('Y-m-d'));
 
