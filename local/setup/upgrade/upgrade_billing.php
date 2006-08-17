@@ -42,7 +42,7 @@ $sql = "
 	WHERE pc.payment_claimline_id IS NOT NULL
 	GROUP BY
 		pc.payment_claimline_id";
-debug($sql);
+//debug($sql);
 $oldres = $db->execute($sql);
 
 debug("done!");
