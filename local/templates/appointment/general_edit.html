@@ -127,7 +127,7 @@ function newPatient() {
 			
 	<div>
 		{l}Date{/l}
-		{if !$apt_date}
+		{if $appointment->isPopulated()}
 		{assign var=apt_date value=$appointment->get('USAdate')}
 		{/if}
 		{clni_input_date name="Appointment[date]" id="aeDate" size="9" value=$apt_date}
