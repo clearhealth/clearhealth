@@ -44,7 +44,7 @@ class C_Eob extends Controller {
 		ORDataObject::factory_include('Payment');
 		$payments =& Payment::fromForeignId($claim_id);
 		
-		$payment = Celini::newOrdo("Payment");
+		$payment =& Celini::newOrdo("Payment");
 		$payment->set("foreign_id",$claim_id);		
 		// get the newest payment
 		if (count($payments) >0) {
@@ -127,14 +127,16 @@ class C_Eob extends Controller {
 	}
 
 	function processPayment_edit($claim_id) {
-
 		$payment =& Celini::newOrdo('Payment');
 		$payment->set('foreign_id',$claim_id);
 
 		$payment->set('user_id',$this->_me->get_id());
 		$payarray = $this->POST->getRaw('payment');
+
+		$payment->populateArray($payarray);
+
 		if(strpos($payarray['payer'],'plan') === false) {
-		$payment->set('payer_id',$_POST['payment']['payer']);
+			$payment->set('payer_id',$_POST['payment']['payer']);
 		}
 		$payment->set('payment_date', $_POST['payment']['payment_date']);
 			
@@ -177,7 +179,6 @@ class C_Eob extends Controller {
 
 			$payment->set('amount',$total_paid);
 			$payment->set('writeoff',$total_writeoff);
-			$payment->set('payment_type',"remittance");
 			$payment->persist();
 	
 			// update claim total
