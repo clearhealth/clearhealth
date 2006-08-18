@@ -125,14 +125,14 @@ class C_Coding extends Controller {
 
 		// The foreign id is irrelevant, it is the parent id that should drive out this process.
 		// I need to know where this is called to send it the right data.	
-		$code_data =& ORDataObject::factory('CodingData');
+		$code_data =& Celini::newORDO('CodingData');
 		
 
 		//Get the REAL parent_id. From the CodingData 
-		$parent_code =& ORDataObject::factory('Code', $parent_id);
+		$parent_code =& Celini::newORDO('Code', $parent_id);
 	
 		
-		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($foreign_id, $parent_id);
+		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($parent_id,$foreign_id);
 		$code_list = $code_data->getCodeList($encounter_id);
 		$GLOBALS['currentCodeList'] = $code_list;
 		if(is_array($child_codes) && count($child_codes) > 0){
@@ -156,7 +156,7 @@ class C_Coding extends Controller {
 			$this->assign("parent_id", $parent_id);
 		}
 		else {
-			$this->assign_by_ref("parent_code", ORDataObject::factory('Code'));
+			$this->assign_by_ref("parent_code", Celini::newORDO('Code'));
 		}
 		$this->assign("foreign_id", $foreign_id);
 		
@@ -205,7 +205,7 @@ class C_Coding extends Controller {
 		}	
 		
 
-		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
+		$encounter =& Celini::newORDO('Encounter',$this->foreign_id);
 
 		// get the patients primary insured relationship
 		ORDataobject::factory_include('InsuredRelationship');
@@ -214,8 +214,8 @@ class C_Coding extends Controller {
 			$ir =& $irs[0];
 			// get the fee schedule from that insurance_program_id
 
-			$ip =& ORDataObject::factory('InsuranceProgram',$ir->get('insurance_program_id'));
-			$feeSchedule =& ORDataObject::factory('FeeSchedule',$ip->get('fee_schedule_id')); 
+			$ip =& Celini::newORDO('InsuranceProgram',$ir->get('insurance_program_id'));
+			$feeSchedule =& Celini::newORDO('FeeSchedule',$ip->get('fee_schedule_id')); 
 		}
 		else {
 			// patient has no payers just grab the default fee schedule
@@ -247,7 +247,7 @@ class C_Coding extends Controller {
 			if(!isset($changes['Parent '.$pid]) || (isset($changes['Parent '.$pid]) && count($changes['Parent '.$pid]) == 0)) {
 				$thecode = $parent['code'];
 				unset($code_data);
-				$code_data =& ORdataObject::factory('CodingData');
+				$code_data =& Celini::newORDO('CodingData');
 				$code_data->populate_array($parent);
 				$code_data->set('code_id',$thecode);
 				$code_data->set('parent_id',0); // There is no parent for the parent...
@@ -266,7 +266,7 @@ class C_Coding extends Controller {
 				//var_dump($code_data);
 
 				unset($child_code_data);
-				$child_code_data =& ORdataObject::factory('CodingData');
+				$child_code_data =& Celini::newORDO('CodingData');
 
 				if(isset($_POST['child_codes']) && is_array($_POST['child_codes'])){
 					foreach($_POST['child_codes'] as $code_id){
@@ -302,7 +302,7 @@ class C_Coding extends Controller {
 	function delete_claimline($parent_id) {
 
 			
-		$code_data =& ORdataObject::factory('CodingData');
+		$code_data =& Celini::newORDO('CodingData');
 		$code_data->delete_claimline($parent_id);
 
 
@@ -490,7 +490,7 @@ class C_Coding extends Controller {
 		}	
 		
 
-		$encounter =& ORDataObject::factory('Encounter',$this->foreign_id);
+		$encounter =& Celini::newORDO('Encounter',$this->foreign_id);
 
 		// get the patients primary insured relationship
 		ORDataobject::factory_include('InsuredRelationship');
@@ -499,8 +499,8 @@ class C_Coding extends Controller {
 			$ir =& $irs[0];
 			// get the fee schedule from that insurance_program_id
 
-			$ip =& ORDataObject::factory('InsuranceProgram',$ir->get('insurance_program_id'));
-			$feeSchedule =& ORDataObject::factory('FeeSchedule',$ip->get('fee_schedule_id')); 
+			$ip =& Celini::newORDO('InsuranceProgram',$ir->get('insurance_program_id'));
+			$feeSchedule =& Celini::newORDO('FeeSchedule',$ip->get('fee_schedule_id')); 
 		}
 		else {
 			// patient has no payers just grab the default fee schedule
@@ -526,7 +526,7 @@ class C_Coding extends Controller {
 		foreach($data['parent_codes'] as $parent) {
 			$thecode = $parent['code'];
 			unset($code_data);
-			$code_data =& ORdataObject::factory('CodingData');
+			$code_data =& Celini::newORDO('CodingData');
 			$code_data->populate_array($parent);
 			$code_data->set('code_id',$thecode);
 			$code_data->set('parent_id',0); // There is no parent for the parent...
@@ -543,7 +543,7 @@ class C_Coding extends Controller {
 			//var_dump($code_data);
 
 			unset($child_code_data);		
-			$child_code_data =& ORdataObject::factory('CodingData');
+			$child_code_data =& Celini::newORDO('CodingData');
 
 			if(isset($data['child_codes']) && is_array($data['child_codes'])){
 				foreach($data['child_codes'] as $code_id){
