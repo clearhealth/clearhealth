@@ -87,6 +87,7 @@ class C_FeeSchedule extends Controller {
 
 		$GLOBALS['loader']->requireOnce('datasources/Superbill_DS.class.php');
 		$ds = new Superbill_DS($superbillId,'procedure',$feeScheduleId);
+		unset($ds->filter['code']);
 		$ds->registerTemplate('code','<a href="#selectCode{$code}" onclick="selectCode(\'{$code_id}\')">{$code}</a>');
 
 
