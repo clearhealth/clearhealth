@@ -76,7 +76,7 @@ if(count($sqls) > 0) {
 }
 function addNew(&$sqls) {
 	global $db;
-	$sql = "INSERT INTO {$GLOBALS['newCHDB']}.payment_claimline (payment_claimline_id,payment_id,code_id,paid,writeoff,carry,coding_data_id) VALUES ".implode(',',$sqls);
+	$sql = "REPLACE INTO {$GLOBALS['newCHDB']}.payment_claimline (payment_claimline_id,payment_id,code_id,paid,writeoff,carry,coding_data_id) VALUES ".implode(',',$sqls);
 	$db->execute($sql);
 	$sqls = array();
 }
