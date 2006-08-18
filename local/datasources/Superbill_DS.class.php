@@ -67,7 +67,7 @@ class Superbill_DS extends Datasource_sql {
 		}
 		
 		$onclickJs = "\$('{$hiddenInput}').value='{$codeId}';\$('{$visibleInput}').value='{$realCode}'";
-		return "<a href=\"javascript:void(0)\" onclick=\"{$onclickJs};{$finalCall}();toggleSuperBill()\">{$value}</a>";
+		return "<a href=\"javascript:void(0)\" onclick=\"{$onclickJs};{$finalCall}();\">{$value}</a>";
 	}
 }
 ?>
