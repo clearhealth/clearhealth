@@ -48,6 +48,7 @@ class Datasource_AccountHistory extends Datasource {
 			'total_paid' 	=> 'Paid', 
 			'writeoff'	=> 'Write Off',
 			'balance' 	=> 'Balance',
+			'ref_num'	=> "Chk #",
 			'facility'	=> "Facility",
 			'provider'	=> "Provider",
 			'user'		=> "Entered By",
@@ -156,7 +157,8 @@ class Datasource_AccountHistory extends Datasource {
 					payer_id,
 					payment_date,
 					pa.timestamp,
-					u.username user',
+					u.username user,
+					ref_num',
 				'from' 	=> '
 					payment AS pa
 					LEFT JOIN encounter AS e USING(encounter_id)
