@@ -83,6 +83,7 @@ class C_Eob extends Controller {
 		foreach($codeList as $code) {
 			$billList[$i]['code'] = $code['code'];
 			$billList[$i]['code_id'] = $code['code_id'];
+			$billList[$i]['coding_data_id'] = $code['coding_data_id'];
 			$billList[$i]['description'] = $code['description'];
 			$billList[$i]['amount'] = $code['fee'];
 			$billList[$i]['paid'] = 0;
@@ -168,7 +169,7 @@ class C_Eob extends Controller {
 				$pcl =& Celini::newOrdo('PaymentClaimline',array(0,$payment_id));
 				$pcl->populate_array($line);
 				$pcl->persist();
-				$lineLookup[$line['code_id']] = $pcl->get('id');
+				$lineLookup[$line['coding_data_id']] = $pcl->get('id');
 				$total_paid += $pcl->get('paid');
 				$total_writeoff += $pcl->get('writeoff');
 				

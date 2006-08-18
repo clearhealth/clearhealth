@@ -120,7 +120,8 @@ class Patient_Statement_DS extends Datasource_sql {
 			inner join clearhealth_claim cc using(encounter_id)
 			inner join payment p on cc.claim_id = p.foreign_id
 			inner join payment_claimline pl using(payment_id)
-			inner join codes c using(code_id)
+			inner join coding_data cd using(coding_data_id)
+			inner join codes c ON(cd.code_id=c.code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
 		where

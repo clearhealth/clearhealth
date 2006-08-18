@@ -38,13 +38,16 @@
 <tbody>
 	{foreach from=$billList item=code}
 	<tr>
-		<td>{$code.description}<input type="hidden" name="bill[{$code.code}][code_id]" value="{$code.code_id}"></td>
+		<td>{$code.description}
+		<input type="hidden" name="bill[{$code.coding_data_id}][code_id]" value="{$code.code_id}">
+		<input type="hidden" name="bill[{$code.coding_data_id}][coding_data_id]" value="{$code.coding_data_id}">
+		</td>
 		<td align="right">{$code.amount}</td>
 		<td align="right">{$code.current_paid}</td>
 		<td align="right">{$code.current_writeoff}</td>
-		<td><input name="bill[{$code.code}][paid]" value="{$code.paid}" size=4 onchange="updateRow(this)"></td>
-		<td><input name="bill[{$code.code}][carry]" value="{$code.carry}" size=4 onchange="updateRow(this)"></td>
-		<td><input name="bill[{$code.code}][writeoff]" value="{$code.writeoff}" size=4 onchange="updateRow(this)"></td>
+		<td><input name="bill[{$code.coding_data_id}][paid]" value="{$code.paid}" size=4 onkeyup="updateRow(this)"></td>
+		<td><input name="bill[{$code.coding_data_id}][carry]" value="{$code.carry}" size=4 onkeyup="updateRow(this)"></td>
+		<td><input name="bill[{$code.coding_data_id}][writeoff]" value="{$code.writeoff}" size=4 onkeyup="updateRow(this)"></td>
 	</tr>
 	{/foreach}
 </tbody>

@@ -24,7 +24,8 @@ class Payment_EobAdjustment_DS extends Datasource_sql
 				'from'    => "eob_adjustment ea ".
 						$em->joinSql('eob_adjustment_type','adjustment_type').
 						" left join payment_claimline pc on ea.payment_claimline_id = pc.payment_claimline_id 
-						left join codes using(code_id)
+						LEFT JOIN coding_data cd USING(coding_data_id)
+						left join codes c ON(c.code_id=cd.code_id)
 						LEFT JOIN ordo_registry AS oreg ON(ea.eob_adjustment_id = oreg.ordo_id)
 						LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
 						",

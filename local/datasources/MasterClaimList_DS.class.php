@@ -105,8 +105,8 @@ class MasterClaimList_DS extends Datasource_sql
 					fbco.name AS "current_payer",
 					b.name facility,
 					CONCAT_WS(",",pro.last_name,pro.first_name) AS provider,
-					(chc.total_billed - chc.total_paid - SUM(ifnull(pcl.writeoff,0))) AS balance, 
-					SUM(ifnull(pcl.writeoff,0)) AS writeoff,
+					(chc.total_billed - chc.total_paid - wo.total_writeoff) AS balance, 
+					wo.total_writeoff AS writeoff,
 					u.username user
 					',
 				'from' 	=> 
@@ -120,11 +120,18 @@ class MasterClaimList_DS extends Datasource_sql
 					LEFT JOIN person AS pro ON(e.treating_person_id = pro.person_id)
 					LEFT JOIN fbclaim AS fbc ON(chc.identifier = fbc.claim_identifier)
 					INNER JOIN fblatest_revision flr ON(flr.claim_identifier = fbc.claim_identifier and fbc.revision = flr.revision)
-					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.index = 0)
+					LEFT JOIN fbcompany AS fbco ON(fbc.claim_id = fbco.claim_id AND fbco.type = "FBPayer" AND fbco.`index` = 0)
 					LEFT JOIN ordo_registry AS oreg ON(e.encounter_id = oreg.ordo_id)
 					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)
-
 					LEFT JOIN fbclaimline c ON fbc.claim_id = c.claim_id
+		LEFT JOIN ( 
+			select chc.claim_id,
+			SUM(ifnull(pcl.writeoff, 0)) total_writeoff
+			FROM clearhealth_claim AS chc
+			LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id) 
+			LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id) 
+			GROUP BY chc.claim_id
+		) wo ON(wo.claim_id = chc.claim_id)  
 					',
 				'where' => implode(' AND ', $whereSql),
 				'groupby' => 'chc.claim_id'

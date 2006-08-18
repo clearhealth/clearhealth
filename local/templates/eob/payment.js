@@ -1,7 +1,7 @@
 	function updateRow(input) {
 		var row = input.parentNode.parentNode;
 		var match = input.name.match(/bill\[(.+)\]\[(.+)\]/);
-		var code = match[1];
+		var coding_data_id = match[1];
 		var type = match[2];
 
 		var amountNode 		= row.cells[1].firstChild;

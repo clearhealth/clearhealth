@@ -64,43 +64,66 @@ class C_MasterAccountHistory extends Controller {
 		// setup actual grid
 		$ds =& new MasterAccountHistory_DS($this->filters);
 
-
 		// big hack to add totals
 
 		$sql = $ds->claims->_query;
-
+		$sql['cols'] = "chc.claim_id";
+		$db =& Celini::dbInstance();
+		$claimssql = "SELECT {$sql['cols']} FROM {$sql['from']} ";
+		$claimssql .= $sql['where'] != '' ? "WHERE {$sql['where']}" : '';
+		$claimssql .= " GROUP BY {$sql['groupby']}";
+		$res = $db->execute($claimssql);
+		$claims = array();
+		while($res && !$res->EOF) {
+			$claims[] = $res->fields['claim_id'];
+			$res->MoveNext();
+		}
+		//var_dump($claimssql);
 		$sql['cols'] = "
-			SUM(chc.total_billed) billed,
-			SUM(chc.total_paid) paid,
-			SUM(chc.total_billed) - SUM(chc.total_paid) - SUM(w.total_writeoff) AS balance,
-			SUM(w.total_writeoff) AS writeoff";
+			SUM(sums.billed) billed,
+			SUM(sums.paid) paid,
+			SUM(sums.billed)-SUM(sums.paid)-SUM(w.total_writeoff) balance,
+			SUM(w.total_writeoff) writeoff
+			";
 
 		// no more groupby we want a single total row
 		unset($sql['groupby']);
 
 		// you can't join on payment and payment_claimline and sum up chc.* anymore
 		$sql['from'] = str_replace(
-			array('LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)',
+			array(
+			'LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)',
 			'LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)',
+			'LEFT JOIN fbclaimline c ON fbc.claim_id = c.claim_id',
 			'LEFT JOIN codes AS c ON pcl.code_id = c.code_id'),
 				'',$sql['from']);
 
 
-		$sql['where'] = str_replace('c.code','w.codes',$sql['where']);
-
+//		$sql['where'] = str_replace('c.code','w.codes',$sql['where']);
+		$sql['where'] = "chc.claim_id IN('".implode("','",$claims)."')";
 		// use a subquery to get writeoff totals
-		$sql['from'] .= 'LEFT JOIN (
-				select
-					chc.claim_id,
-					SUM(ifnull(pcl.writeoff,0)) total_writeoff,
-					group_concat(c.code) codes
-				FROM
-					clearhealth_claim chc
-					LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id)
-					LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id)
-					LEFT JOIN codes AS c ON pcl.code_id = c.code_id
-				GROUP BY chc.claim_id
-			) w ON(w.claim_id = chc.claim_id)';
+		$sql['from'] = '
+		clearhealth_claim chc
+		LEFT JOIN (
+			select chc.claim_id,
+			SUM(chc.total_billed) billed,
+			SUM(chc.total_paid) paid,
+			(SUM(chc.total_billed) - SUM(chc.total_paid)) billedminuspaid
+			FROM
+			clearhealth_claim chc
+			GROUP BY claim_id
+		) sums ON(sums.claim_id=chc.claim_id)
+		LEFT JOIN ( 
+			select chc.claim_id,
+			SUM(ifnull(pcl.writeoff, 0)) total_writeoff,
+			group_concat(DISTINCT c.code) codes 
+			FROM clearhealth_claim chc 
+			LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id) 
+			LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id) 
+			LEFT JOIN codes c USING(code_id)
+			GROUP BY chc.claim_id
+		) w ON(w.claim_id = chc.claim_id)  
+		';
 
 		$totalDs = new Datasource_sql();
 		$totalDs->setup(Celini::dbInstance(),$sql,false);
