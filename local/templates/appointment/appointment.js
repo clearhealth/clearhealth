@@ -281,6 +281,9 @@ This function will call the rules checker
 before actually submitting the appointment.
 */
 function checkRules(form) {
+	if (!clni_validate(form)) {
+		return false;
+	}
 	if(document.getElementById('appointmentOverride') && document.getElementById('appointmentOverride').checked) {
 		form.submit();
 	}
