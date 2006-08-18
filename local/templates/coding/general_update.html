@@ -39,20 +39,6 @@ function hideSuperBill() {
 	toggleSelects();
 }
 
-function SBFade(element) {
-  var oldOpacity = Element.getInlineOpacity(element);
-  var options = Object.extend({
-  from: Element.getOpacity(element) || 1.0,
-  to:   0.0,
-  speed: 0.2,
-  afterFinishInternal: function(effect) { with(Element) { 
-    if(effect.options.to!=0) return;
-    hide(effect.element);
-    setStyle(effect.element, {opacity: oldOpacity}); }}
-  }, arguments[1] || {});
-  return new Effect.Opacity(element,options);
-}
-
 
 {/head}
 
@@ -126,13 +112,14 @@ function SBFade(element) {
 					<td colspan=2>
 						<div id="child_codes">
 			  			{foreach name="icd_list" from=$child_codes item=code}
+			  			{if $code.parent_id > 0}
 			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
-			  			{if $smart.foreach.icd_list.first}
+			  			{if $smarty.foreach.icd_list.first}
 						<strong>{$code.description}</strong><br />
 						{else}
 						{$code.description}<br />
 						{/if}
-						
+						{/if}
 						{/foreach}
 						</div>
 					</td>
