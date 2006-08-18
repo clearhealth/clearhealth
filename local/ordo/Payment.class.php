@@ -113,9 +113,10 @@ class Payment extends ORDataObject {
 			$ds->registerFilter('payer_id',array(&$this,'lookupPayer'));
 		}
 	       	$labels['title'] = 'Title';
+	       	$labels['ref_num'] = 'Chk #';
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, DATE_FORMAT(payment_date, '%m/%d/%Y') payment_date, timestamp, title",
+				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, DATE_FORMAT(payment_date, '%m/%d/%Y') payment_date, timestamp, title, ref_num",
 				'from' 	=> "$this->_table ",
 				'where' => " foreign_id = $foreign_id"
 			),
