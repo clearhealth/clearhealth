@@ -62,7 +62,8 @@ class C_Eob extends Controller {
 		}
 
 		foreach($payment_plans as $plan) {
-			$payers['plan'.$plan->get('id')] = 'Payment Plan '.$plan->get('id').' ('.count($plan->get_unpaid_payments()).' Remaining Payments, Balance: $'.sprintf('%.2f',$plan->get('balance')).')';
+			$payers['plan'.$plan->get('id')] = 'Payment Plan '.$plan->get('id').' ('.count($plan->get_unpaid_payments()).
+				' Remaining Payments, Balance: $'.sprintf('%.2f',$plan->get('balance')).')';
 		}
 		
 		if(count($payment_plans) == 0) {
@@ -72,12 +73,6 @@ class C_Eob extends Controller {
 		$billList = array();
 
 		$this->view->assign_by_ref('ppplan',$paymentplan);
-
-		$tmanager = new TransactionManager();
-		$trans = $tmanager->createTransaction('EstimateDiscountedClaim');
-		$trans->setAllFromEncounterId($claim->get('encounter_id'));
-		$trans->resultsInMap = true;
-		$fees = $tmanager->processTransaction($trans);
 
 		$i = 0;
 		foreach($codeList as $code) {
