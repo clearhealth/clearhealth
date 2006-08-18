@@ -127,10 +127,12 @@ class CodingData extends ORDataObject {
 	 * 
 	 * @param	string	$parent_id The string value of the desired parent id
 	 */
-	function getChildCodes($parent_id) {
+	function getChildCodes($parent_id,$foreign_id=0) {
 //	echo "CodingData getChildCodes with $parent_id <br>";
 		
 		$parent_id = intval($parent_id);
+		$foreign_id = intval($foreign_id);
+		$where = $foreign_id > 0 ? "foreign_id = {$foreign_id}" : "parent_id = {$parent_id}";
 		$sql = "
 			SELECT
 				cd.coding_data_id, 
@@ -145,10 +147,8 @@ class CodingData extends ORDataObject {
 			FROM 
 				coding_data AS cd
 				LEFT JOIN codes AS c ON cd.code_id = c.code_id 
-			WHERE 
-				parent_id = $parent_id
+			WHERE $where
 				";
-		
 		$res = $this->_execute($sql);
 		$ret = array();
 		while(!$res->EOF) {
