@@ -1,5 +1,6 @@
 {head type="js"}
 var selectVisible=true;
+var superBillVisible=false;
 function toggleSelects() {
 	if(document.all) {
 		var selects = document.getElementsByTagName('select');
@@ -18,17 +19,41 @@ function toggleSelects() {
 	}
 }
 function toggleSuperBill() {
-	toggleSelects();
-	Effect.toggle('superBillList','appear');
+	if(superBillVisible==true) {
+		hideSuperBill();
+	} else {
+		showSuperBill();
+	}
+//	Effect.toggle('superBillList','appear');
 }
 function showSuperBill() {
 	toggleSelects();
-	new Effect.Appear('superBillList');
+	superBillVisible=true;
+	document.getElementById('superBillList').style.display='block';
+//	new Effect.Appear('superBillList');
 }
 function hideSuperBill() {
-	new Effect.Fade('superBillList');
+	document.getElementById('superBillList').style.display='none';
+	superBillVisible=false;
+//	new Effect.Fade('superBillList');
 	toggleSelects();
 }
+
+function SBFade(element) {
+  var oldOpacity = Element.getInlineOpacity(element);
+  var options = Object.extend({
+  from: Element.getOpacity(element) || 1.0,
+  to:   0.0,
+  speed: 0.2,
+  afterFinishInternal: function(effect) { with(Element) { 
+    if(effect.options.to!=0) return;
+    hide(effect.element);
+    setStyle(effect.element, {opacity: oldOpacity}); }}
+  }, arguments[1] || {});
+  return new Effect.Opacity(element,options);
+}
+
+
 {/head}
 
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
