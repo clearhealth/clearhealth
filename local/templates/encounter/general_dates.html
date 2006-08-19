@@ -8,7 +8,7 @@
 	{if $encounter->get('status') != 'closed'}
 	<table>
 		<tr>
-			<td>{clni_input_date name="encounterDate[date]" value=$encounterDate->get('date')}</td>
+			<td>{clni_input_date name="encounterDate[date]" required=false value=$encounterDate->get('date')}</td>
 			<td><select name="encounterDate[date_type]">
 					<option>{l}Select Date Type{/l}</option>
 					{html_options options=$encounterDate->getDateTypeList() selected=$encounterDate->get('date_type')}

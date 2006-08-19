@@ -129,7 +129,11 @@ function hideSuperBill() {
 	</tr>
 	<tr>
 		<td colspan="2" align="right">
-			<input type="submit" name="saveCode" value="{if is_null($parent_id) }Add Claim Line{else}Edit Claim Line{/if}">
+		{if $editcodingdata}
+			<input type="submit" name="updateCode[{$editcodingdata}]" value="Edit Claim Line">
+		{else}
+			<input type="submit" name="saveCode" value="Add Claim Line">
+		{/if}
   		</td>
 	</tr>
 </table>
@@ -153,7 +157,7 @@ function hideSuperBill() {
 <a href="{link action='Edit' }template_id={$foreign_id}&delete_id={$code.coding_data_id}">X</a>&nbsp;
 {/if}
 
-<a href="{$EDIT_LINK}parent_id={$code.code_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
+<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
 {if $dentalpractice}
 Tooth: {$code.tooth} Side {$code.toothside}
 {/if}

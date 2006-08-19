@@ -14,6 +14,7 @@ class C_Encounter extends Controller {
 	var $encounter_value_id = 0;
 	var $encounter_person_id = 0;
 	var $payment_id = 0;
+	var $coding_data_id = 0;
 
 	function C_Encounter() {
 		$this->controller();
@@ -230,7 +231,7 @@ class C_Encounter extends Controller {
 		if ($encounter_id > 0) {
 			$this->coding->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 			$this->coding->assign("encounter", $encounter);
-			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_parent_id);
+			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_data_id);
 			$this->assign('codingHtml',$codingHtml);
 			$this->assign_by_ref('formDataGrid',$formDataGrid);
 			$this->assign_by_ref('formList',$formList);
@@ -275,6 +276,12 @@ class C_Encounter extends Controller {
 	
 	function processEdit($encounter_id=0) {
 		if (isset($_POST['saveCode'])) {
+			$this->coding->update_action_process();
+			return;
+		} elseif(isset($_POST['updateCode'])) {
+			$key = array_keys($_POST['updateCode']);
+			$key = $key[0];
+			$this->coding->coding_data_id = $key;
 			$this->coding->update_action_process();
 			return;
 		}
@@ -516,8 +523,8 @@ class C_Encounter extends Controller {
 		return false;
 	}
 
-	function update_action($foreign_id = 0, $parent_id = 0) {
-		$this->coding_parent_id = $parent_id;
+	function update_action($foreign_id = 0, $coding_data_id = 0) {
+		$this->coding_data_id = $coding_data_id;
 		return $this->actionEdit($this->get('encounter_id'));
 	}
 

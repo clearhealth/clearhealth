@@ -154,7 +154,8 @@ class FeeSchedule extends ORDataObject {
 					end
 				end as data 
 			from 
-				codes, 
+				codes
+				NATURAL JOIN 
 				fee_schedule fs 
 				left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) 
 				left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = $fsdId) 
@@ -162,6 +163,7 @@ class FeeSchedule extends ORDataObject {
 					(codes.code_id = fsdm.code_id and fsdm.fee_schedule_id = $fsdId and fsdm.modifier = $mod) 
 			where 
 				fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code =  $code
+			GROUP BY code
 			order by 
 				code
 			";
@@ -182,12 +184,12 @@ class FeeSchedule extends ORDataObject {
 		
 		$sql = "select "
 				." case when (fsd.data > 0) then fsd.data else fsdd.data end as data "
-				." from codes, fee_schedule fs "
+				." from codes NATURAL JOIN fee_schedule fs "
 				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
 				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
 				." where fs.priority = 1 and (fsdd.code_id IS NOT NULL or fsd.code_id IS NOT NULL) and codes.code_id =  $code_id "
+				." group by code "
 				." order by code";
-		
 		$res = $this->_execute($sql);
 		if ($res && isset($res->fields['data'])) {
 			return $res->fields['data'];
@@ -195,13 +197,12 @@ class FeeSchedule extends ORDataObject {
 		return 0.00;
 	}
 
-
 	function getMappedCodeFromCodeId($code_id) {
 		settype($code_id,'int');
 		
 		$sql = "select "
 				." case when (fsd.mapped_code > 0) then fsd.mapped_code else fsdd.mapped_code end as mapped_code "
-				." from codes, fee_schedule fs "
+				." from codes NATURAL JOIN fee_schedule fs "
 				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
 				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
 				." where fs.fee_schedule_id = ".$this->get('id')." and codes.code_id =  $code_id "
@@ -214,6 +215,23 @@ class FeeSchedule extends ORDataObject {
 		return 0.00;
 	}
 
+	function getMappedCodeFromCodingDataId($coding_data_id) {
+		settype($code_id,'int');
+		
+		$sql = "select "
+				." case when (fsd.mapped_code > 0) then fsd.mapped_code else fsdd.mapped_code end as mapped_code "
+				." from coding_data left join codes using(code_id) NATURAL JOIN fee_schedule fs "
+				." left join fee_schedule_data fsdd on (codes.code_id = fsdd.code_id and fsdd.fee_schedule_id = fs.fee_schedule_id) "
+				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
+				." where fs.fee_schedule_id = ".$this->get('id')." and codes.code_id =  $code_id "
+				." order by code";
+		
+		$res = $this->_execute($sql);
+		if ($res && isset($res->fields['mapped_code'])) {
+			return $res->fields['mapped_code'];
+		}
+		return 0.00;
+	}
 
 	/**
 	 * Set a default value for every code of type 3 or 5 (cpt, cdt)

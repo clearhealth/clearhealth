@@ -146,8 +146,8 @@ class ClearhealthClaim extends ORDataObject {
 				sum(pc.carry) carry 
 			from
 				payment_claimline pc
-				left join codes using(code_id)
 				LEFT JOIN coding_data cd ON(cd.coding_data_id=pc.coding_data_id)
+				left join codes ON(cd.code_id=codes.code_id)
 				inner join payment p on pc.payment_id = p.payment_id 
 			where
 				p.foreign_id = ".(int)$this->get('id') . " 

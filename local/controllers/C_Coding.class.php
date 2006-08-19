@@ -9,6 +9,7 @@ $loader->requireOnce('includes/LockManager.class.php');
 class C_Coding extends Controller {
 	var $foreign_id = 0;
 	var $parent_id = 0;
+	var $coding_data_id = 0;
 	var $superbill = 1;
 	
 	function C_Coding($template_mod = "general") {
@@ -103,7 +104,7 @@ class C_Coding extends Controller {
 		}
 	}
 
-	function update_action_edit($foreign_id = 0, $parent_id = 0) {
+	function update_action_edit($foreign_id = 0, $coding_data_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
 		$encounter_id = $foreign_id; //Makes so much more sense...
@@ -119,20 +120,21 @@ class C_Coding extends Controller {
 		$head->addExternalCss('suggest');
 
 
-
+		if($coding_data_id > 0) {
+			$this->view->assign('editcodingdata',$coding_data_id);
+		}
 		// tie in for calculating how much this encounter will be billed for when closed
 		$this->_calculateEncounterFees($encounter_id);
 
-		// The foreign id is irrelevant, it is the parent id that should drive out this process.
-		// I need to know where this is called to send it the right data.	
-		$code_data =& Celini::newORDO('CodingData');
+		// The foreign id is irrelevant, it is the coding data id that should drive out this process.
+		$code_data =& Celini::newORDO('CodingData',$coding_data_id);
 		
 
 		//Get the REAL parent_id. From the CodingData 
-		$parent_code =& Celini::newORDO('Code', $parent_id);
+		$parent_code =& Celini::newORDO('Code', $code_data->get('code_id'));
 	
 		
-		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($parent_id,$foreign_id);
+		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($coding_data_id);
 		$code_list = $code_data->getCodeList($encounter_id);
 		$GLOBALS['currentCodeList'] = $code_list;
 		if(is_array($child_codes) && count($child_codes) > 0){
@@ -151,9 +153,8 @@ class C_Coding extends Controller {
 		}
 		
 		$this->assign("EDIT_LINK", Celini::link("update", true, true, $foreign_id));
-		if ($parent_id > 0) {
+		if ($parent_code->get('id') > 0) {
 			$this->assign_by_ref("parent_code", $parent_code);
-			$this->assign("parent_id", $parent_id);
 		}
 		else {
 			$this->assign_by_ref("parent_code", Celini::newORDO('Code'));
@@ -240,6 +241,16 @@ class C_Coding extends Controller {
 
 		$changes = array();
 		$overlappingChanges = false;
+		if($this->coding_data_id > 0) {
+			// We're editing one of the old cpts, so let's remove it and its children.
+			$code_data =& Celini::newORDO('CodingData',$this->coding_data_id);
+			$children = $code_data->getChildCodes(0,$code_data->get('id'));
+			foreach($children as $child) {
+				$c =& Celini::newORDO('CodingData',$child['coding_data_id']);
+				$c->drop();
+			}
+			$code_data->drop();
+		}
 		foreach($_POST['parent_codes'] as $pid=>$parent) {
 			if($pid > 0) {
 				$changes['Parent '.$pid] = LockManager::hasOrdoChanged('CodingData',$pid,$lockTimestamp);
