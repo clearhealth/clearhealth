@@ -344,7 +344,7 @@ class Patient extends MergeDecorator {
 				inner join clearhealth_claim cc using(encounter_id)
 				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
 			WHERE
-				e.patient_id = '.$db->quote($this->get('id').'
+				e.patient_id = '.$db->quote($this->get('id')).'
 			group by
 				e.patient_id
 			) feeData
@@ -360,7 +360,7 @@ class Patient extends MergeDecorator {
 				inner join payment p on cc.claim_id = p.foreign_id
 				inner join payment_claimline pl on p.payment_id = pl.payment_id
 			WHERE
-				patient_id = '.$db->quote($this->get('id').'
+				patient_id = '.$db->quote($this->get('id')).'
 			group by
 				e.patient_id
 			) paymentData on feeData.patient_id = paymentData.patient_id
@@ -373,7 +373,7 @@ class Patient extends MergeDecorator {
                 from
                 	payment p
                 where encounter_id = 0
-                	AND patient_id = '.$db->quote($this->get('id').'
+                	AND patient_id = '.$db->quote($this->get('id')).'
                 group by
 					p.foreign_id
 			) coPay on feeData.patient_id = coPay.patient_id
