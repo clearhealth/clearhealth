@@ -105,3 +105,7 @@ left join (
 /* end from */
 where
 e.start >= '[start:date] 01:01:01' and e.end <= '[end:date] 23:59:59'
+/*
+Add filters for
+room, provider
+*/
