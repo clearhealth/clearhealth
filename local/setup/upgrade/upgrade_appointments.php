@@ -39,7 +39,8 @@ $oldAppointmentQuery = "
 		{$oldCHDB}.occurences
 		inner join user on occurences.user_id = user.user_id
 	WHERE
-		external_id > 0";
+		external_id > 0 AND occurences.event_id > 0
+		GROUP BY occurences.id";
 
 $oldAppointments = $db->execute($oldAppointmentQuery);
 debug("done!");
@@ -49,7 +50,6 @@ debug("Converting into new format.", false);
 
 $newAppointmentEntries = array();
 $newEventEntries = array();
-
 
 $counter = 0;
 $showCounterAt = $oldAppointments->recordCount() / 10;
@@ -71,7 +71,8 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 	$qCreatedDate = $db->quote($oldAppointment['timestamp']);
 	$qLastChangeId = $db->quote($oldAppointment['last_change_id']);
 	$qCreatorId = $qLastChangeId;
-	$qEventId = (int)$oldAppointment['event_id'];
+	$qEventId = (int)$oldAppointment['id'];
+//	$qEventId = $event_id;
 	$qProviderId = $db->quote($oldAppointment['provider_id']);
 	$qPatientId = $db->quote($oldAppointment['external_id']);
 	$qRoomId = $db->quote($oldAppointment['location_id']);
@@ -91,60 +92,31 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 		$qStart = $db->quote($oldAppointment['start']);
 		$qEnd = $db->quote($oldAppointment['end']);
 		
-		$newEventEntries[$oldAppointment['event_id']] = "({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})";
 		if (isset($tmp[$qEventId])) {
 			var_dump("({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})");
+		} else {
+			$newEventEntries[$oldAppointment['event_id']] = "({$qEventId}, {$qTitle}, {$qStart}, {$qEnd})";
 		}
 		$tmp[$qEventId] = $qEventId;
 	}
 	if(count($newEventEntries) > 50) {
-		insertApptEvents($newEventEntries);
+		insertApptEvents($newEventEntries,$newAppointmentEntries);
+		$newEventEntries = array();
+		$newAppointmentEntries = array();
 	}
 	
 	$oldAppointments->moveNext();
 }
 if(count($newEventEntries) > 0) {
-	insertApptEvents($newEventEntries);
+	insertApptEvents($newEventEntries,$newAppointmentEntries);
 }
 debug("done.");
 //var_dump(count($tmp));
 //var_dump(count($newEventEntries));
+debug('Inserting appointments...');
 
-
-// insert appointments
-$appointmentInsertValues = implode(', ', $newAppointmentEntries);
-$appointmentInsertSql = "
-	INSERT INTO
-		{$newCHDB}.appointment 
-	(
-		appointment_id, title, reason, walkin, group_appointment, created_date, last_change_id,
-		creator_id, event_id, provider_id, patient_id, room_id, practice_id
-	)
-	VALUES
-		{$appointmentInsertValues}";
-debug("Inserting " . count($newAppointmentEntries) . " upgraded appointments...", false);
-//var_dump(strlen($appointmentInsertSql));
-$db->execute($appointmentInsertSql);
-debug("done");
-
-/*
-// insert events
-$eventInsertValues = implode(",\n\t\t", $newEventEntries);
-$eventInsertSql = "
-	INSERT INTO
-		{$newCHDB}.event
-	(
-		event_id, title, start, end
-	)
-	VALUES
-		{$eventInsertValues}";
-
-debug("Inserting " . count($newEventEntries) . " upgraded events...", false);
-//$db->execute($eventInsertSql);
-echo $eventInsertSql;
-debug("done");
-*/
-echo "Successfully upgraded " . count($newAppointmentEntries) . " appointments\n";
+//echo "Successfully upgraded " . count($newAppointmentEntries) . " appointments\n";
+echo "Successfully upgraded appointments\n";
 
 
 /**
@@ -175,8 +147,9 @@ function getPracticeIdByRoomId($roomId) {
 	return $roomCache[$roomId];
 }
 
-function insertApptEvents(&$sqls) {
+function insertApptEvents(&$sqls,&$asqls) {
 	global $db;
+	global $newCHDB;
 	$eventInsertValues = implode(',',$sqls);
 	$eventInsertSql = "
 	INSERT INTO
@@ -189,6 +162,18 @@ function insertApptEvents(&$sqls) {
 
 	$db->execute($eventInsertSql);
 	$sqls = array();
+	// insert appointments
+	$appointmentInsertValues = implode(', ', $asqls);
+	$appointmentInsertSql = "
+        INSERT INTO
+                {$newCHDB}.appointment
+        (
+                appointment_id, title, reason, walkin, group_appointment, created_date, last_change_id,
+                creator_id, event_id, provider_id, patient_id, room_id, practice_id
+        )
+        VALUES
+                {$appointmentInsertValues}";
+	$db->execute($appointmentInsertSql);
 }
 
 /**

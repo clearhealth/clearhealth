@@ -39,12 +39,13 @@ $sql = "
 		left join {$oldCHDB}.occurences o using(user_id)
 		left join {$oldCHDB}.user AS oldu ON (s.user_id=oldu.user_id)
 	WHERE
-		o.external_id = 0";
-
+		o.external_id = 0
+	GROUP BY o.id
+";
 $res = $db->execute($sql);
 debug("done!");
 
-debug("Found " . $oldAppointments->recordCount() . " old schedule events\n");
+debug("Found " . $res->recordCount() . " old schedule events\n");
 debug("Converting into new format.", false);
 
 $scheds = array();
@@ -56,6 +57,8 @@ $idres = $db->execute($sql);
 $event_id = $idres->fields['event_id'];
 if($event_id < 1) {
 	$event_id = 1;
+} else {
+	$event_id++;
 }
 while($res && !$res->EOF) {
 	if(!isset($scheds[$res->fields['schedule_id']])) {

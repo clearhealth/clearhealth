@@ -56,13 +56,14 @@ while($oldres && !$oldres->EOF) {
 		SET primary_practice_id = {$oldres->fields['practice_id']}
 		WHERE person_id = {$oldres->fields['person_id']}";
 	$db->execute($sql);
+	$oldres->MoveNext();
 }
 debug("done!");
 
 debug("Finding secondary practices...");
 $sql = "
 	SELECT
-		a.person_id,
+		a.patient_id,
 		a.practice_id
 	FROM
 		{$newCHDB}.appointment a
@@ -79,10 +80,11 @@ $i=1;
 while($oldres && !$oldres->EOF) {
 	$sql = "
 	INSERT INTO {$newCHDB}.secondary_practice (secondary_practice_id,person_id,practice_id)
-	VALUES({$i},{$oldres->fields['person_id']},{$oldres->fields['practice_id']})
+	VALUES({$i},{$oldres->fields['patient_id']},{$oldres->fields['practice_id']})
 	";
 	$db->execute($sql);
 	$i++;
+	$oldres->MoveNext();
 }
 debug('Done!');
 
