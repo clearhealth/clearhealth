@@ -9,7 +9,7 @@ class C_MyAccount extends Controller {
 	/**
 	 * Update the password of the currently logged in user
 	 */
-	function password_action_edit() {
+	function password_action_view() {
 		$user =& $this->_me->get_user();
 
 		$this->assign_by_ref('user',$user);
