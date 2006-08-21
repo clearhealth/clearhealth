@@ -97,8 +97,14 @@ while ($oldAppointments && !$oldAppointments->EOF) {
 		}
 		$tmp[$qEventId] = $qEventId;
 	}
+	if(count($newEventEntries) > 50) {
+		insertApptEvents($newEventEntries);
+	}
 	
 	$oldAppointments->moveNext();
+}
+if(count($newEventEntries) > 0) {
+	insertApptEvents($newEventEntries);
 }
 debug("done.");
 //var_dump(count($tmp));
@@ -121,7 +127,7 @@ debug("Inserting " . count($newAppointmentEntries) . " upgraded appointments..."
 $db->execute($appointmentInsertSql);
 debug("done");
 
-
+/*
 // insert events
 $eventInsertValues = implode(",\n\t\t", $newEventEntries);
 $eventInsertSql = "
@@ -137,7 +143,7 @@ debug("Inserting " . count($newEventEntries) . " upgraded events...", false);
 //$db->execute($eventInsertSql);
 echo $eventInsertSql;
 debug("done");
-
+*/
 echo "Successfully upgraded " . count($newAppointmentEntries) . " appointments\n";
 
 
@@ -169,6 +175,21 @@ function getPracticeIdByRoomId($roomId) {
 	return $roomCache[$roomId];
 }
 
+function insertApptEvents(&$sqls) {
+	global $db;
+	$eventInsertValues = implode(',',$sqls);
+	$eventInsertSql = "
+	INSERT INTO
+		{$newCHDB}.event
+	(
+		event_id, title, start, end
+	)
+	VALUES
+		{$eventInsertValues}";
+
+	$db->execute($eventInsertSql);
+	$sqls = array();
+}
 
 /**
  * Outputs debugging code if debugging is turned on.
