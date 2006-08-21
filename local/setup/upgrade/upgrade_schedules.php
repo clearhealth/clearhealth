@@ -33,7 +33,7 @@ debug("done!");
 debug("Querying for old schedules...", false);
 $sql = "
 	SELECT 
-		s.*,o.*,s.id AS schedule_id,u.person_id
+		s.*,o.*,s.id AS schedule_id,oldu.person_id
 	FROM
 		{$oldCHDB}.schedules s
 		left join {$oldCHDB}.occurences o using(user_id)
@@ -50,13 +50,20 @@ debug("Converting into new format.", false);
 $scheds = array();
 $sqls = array();
 $eventInsertValues = array();
+// Get the max event_id to build from
+$sql = "SELECT MAX(event_id) AS event_id FROM {$newCHDB}.event";
+$idres = $db->execute($sql);
+$event_id = $idres->fields['event_id'];
+if($event_id < 1) {
+	$event_id = 1;
+}
 while($res && !$res->EOF) {
 	if(!isset($scheds[$res->fields['schedule_id']])) {
 		// Create the schedule
 		$sql = "
 		INSERT INTO {$newCHDB}.schedule
 		(schedule_id,title,description_long,description_short,schedule_code,provider_id)
-		VALUES({$res->fields['schedule_id']},'{".$db->quote($res->fields['name']).",".
+		VALUES({$res->fields['schedule_id']},".$db->quote($res->fields['name']).",".
 		$db->quote($res->fields['description_long']).",".$db->quote($res->fields['description_short']).",".
 		$db->quote($res->fields['schedule_code']).",".$res->fields['person_id'].")";
 		$db->execute($sql);
@@ -64,15 +71,18 @@ while($res && !$res->EOF) {
 		$sql = "
 		INSERT INTO {$newCHDB}.event_group
 		(event_group_id,title,room_id,schedule_id)
-		VALUES({$res->fields['schedule_id']},".$db->quote($res->fields['name']).",{$res->fields['room_id']},{$res->fields['schedule_id']}";
+		VALUES({$res->fields['schedule_id']},".$db->quote($res->fields['name']).",{$res->fields['room_id']},{$res->fields['schedule_id']})";
 		$db->execute($sql);
 		$scheds[$res->fields['schedule_id']] = true;
 		$currentSched = $res->fields['schedule_id'];
 	}
-	$eventInsertValues[] = "(".$res->fields['event_id'].','.$db->quote($res->fields['name']).','.$db->quote($res->fields['start']).','.$db->quote($res->fields['end']).')';
-	$sevents[] = "({$res->fields['event_id']},{$res->fields['schedule_id']})";
+	$eventInsertValues[] = "(".$event_id.','.$db->quote($res->fields['name']).','.$db->quote($res->fields['start']).','.$db->quote($res->fields['end']).')';
+	$sevents[] = "({$res->fields['schedule_id']},{$event_id})";
+	$event_id++;
 	if(count($eventInsertValues) > 50) {
 		insertSchedEvents($eventInsertValues,$sevents);
+		$eventInsertValues = array();
+		$sevents = array();
 	}
 	$res->MoveNext();
 }
@@ -83,6 +93,7 @@ if(count($eventInsertValues) > 0) {
 
 function insertSchedEvents(&$sqls,&$sevents) {
 	global $db;
+	global $newCHDB;
 	$eventInsertValues = implode(',',$sqls);
 	$eventInsertSql = "
 	INSERT INTO
