@@ -57,7 +57,7 @@ function startDuplicate(URL) {
 				</td>
 				<td style="white-space:nowrap;"><label>{l}Id #{/l}: </label></td>
 				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="{$person->get('identifier')}">
-					<select name="person[identifier_type]" >
+					<select name="person[identifier_type]" id="identifier_type">
 						{html_options options=$person->getIdentifierTypeList() selected=$person->get('identifier_type')}
 					</select>
 				</td>
@@ -167,6 +167,7 @@ function startDuplicate(URL) {
 {clni_register_validation_rule id="gender" message="Gender is Required"}
 {clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
 {clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
+{clni_register_validation_rule id="identifier" rule="upin" message="UPIN must be 1 letter and 2 digits or letters and 3 digits "}
 {clni_register_validation_rule id="record_number" rule="greaterthanzero" message="Record # must be greater than 0"}
 {if $person->get_person_id() == 0}
 {clni_register_validation_rule id="initialphone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
