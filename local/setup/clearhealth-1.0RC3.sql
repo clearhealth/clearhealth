@@ -3811,7 +3811,8 @@ CREATE TABLE `rooms` (
   `building_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   `color` varchar(10) NOT NULL default '',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `building_id` (`building_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
