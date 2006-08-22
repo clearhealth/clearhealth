@@ -157,7 +157,7 @@ function hideSuperBill() {
 <a href="{link action='Edit' }template_id={$foreign_id}&delete_id={$code.coding_data_id}">X</a>&nbsp;
 {/if}
 
-<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
+{$code.units} - <a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
 {if $dentalpractice}
 Tooth: {$code.tooth} Side {$code.toothside}
 {/if}
