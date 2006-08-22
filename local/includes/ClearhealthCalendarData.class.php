@@ -151,7 +151,8 @@ class ClearhealthCalendarData {
 		$profile =& Celini::getCurrentUserProfile();
 		if(count($filters['building']->getValue()) == 0 && !is_null($profile->getDefaultLocationId())) {
 			// We've just entered the calendar, so set the default building
-			$filters['building']->setValue(array($profile->getDefaultLocationId()));
+			$room =& Celini::newORDO('Room',$profile->getDefaultLocationId());
+			$filters['building']->setValue(array($room->get('building_id')));
 		}
 		if (count($filters['building']->getValue()) > 0) {
 			foreach($filters['building']->getValue() as $uid) {
