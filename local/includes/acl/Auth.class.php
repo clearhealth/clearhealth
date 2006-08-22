@@ -63,6 +63,11 @@ class Auth extends AbstractAuth
 			return;
 		}
 		
+		// the "add" action does not to have a per-practice check performed.
+		if (($where == 'patient' || $where == 'encounter') && $what == 'add') {
+			return;
+		}
+		
 		$filteredGet =& Celini::filteredGet();
 		switch ($where) {
 			case 'encounter' :
