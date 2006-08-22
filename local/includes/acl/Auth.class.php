@@ -45,25 +45,33 @@ class Auth extends AbstractAuth
 	 * because the query can happen at the same time.  See {@link C_PatientFinder::SmartSearch()} 
 	 * for an example.  This serves as a back-up to directly accessing a Patient, Encounter, etc.
 	 *
+	 * This method will return NULL if it does not apply to the current ACL request.  It will 
+	 * return TRUE or FALSE if it should be applied.
+	 *
 	 * @param  string  $who
 	 * @param  string  $what
 	 * @param  string  $where
-	 * @return boolean
+	 * @return boolean|null
 	 * @access private
+	 * @see    Auth::can()
 	 *
 	 * @todo Create an Auth::getInstance() so this information can be cached instead of having to
 	 *       query the DB each time a request comes through.
 	 */
 	function _patientPermission($who, $what, $where) {
+		// If the user is not logged in, or has override permissions do not perform a practice
+		// specific permission check
 		if (empty($who) || parent::can($who, 'override', $where)) {
 			return;
 		}
+		
+		// only perform practice specific permission checks on certain controllers
 		static $controllers = array('encounter', 'patient', 'patientdashboard');
 		if (!in_array(strtolower($where), $controllers)) {
 			return;
 		}
 		
-		// the "add" action does not to have a per-practice check performed.
+		// the "add" action does not to have a per-practice check performed
 		if (($where == 'patient' || $where == 'encounter') && $what == 'add') {
 			return;
 		}
