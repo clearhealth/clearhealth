@@ -76,6 +76,13 @@ class Auth extends AbstractAuth
 			return;
 		}
 		
+		// At this point, we should be running a practice specific ACL check.  Insure that the basic
+		// ACL permissions are granted, then query the database to determine that the practice
+		// permissions exist
+		if (parent::can($who, $what, $where) === false) {
+			return false;
+		}
+		
 		$filteredGet =& Celini::filteredGet();
 		switch ($where) {
 			case 'encounter' :
