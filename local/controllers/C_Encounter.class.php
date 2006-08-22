@@ -70,17 +70,44 @@ class C_Encounter extends Controller {
 			$this->set('patient_id',$patient_id,'c_patient');
 		}
 
+		$this->set('encounter_id',$encounter_id);
+		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
+
+		$appointments = $encounter->appointmentList();
+		$appointmentArray = array("" => " ");
+		foreach($appointments as $appointment) {
+			$appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
+		}
+		//
+		//if an appointment id is supplied the request is coming from the 
+		//calendar and so prepopulate the defaults
+		if ($appointment_id > 0 && $valid_appointment_id) {
+			$encounter->set("occurence_id",$appointment_id);
+			$encounter->set("patient_id",$this->get("patient_id", 'c_patient'));
+			if (isset($appointments[$appointment_id])) {
+				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
+			}
+			if (isset($appointments[$appointment_id])) {
+				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
+
+				$em =& Celini::enumManagerInstance();
+				$reason = $em->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
+				$encounter->set("encounter_reason",$reason);
+			}
+		}
+
 		
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
-		$this->set('encounter_id',$encounter_id);
-		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		if($encounter_id == 0) {
-			
 			$ir =& Celini::newOrdo('InsuredRelationship');
 			$payers = array_keys($ir->getProgramList($encounter->get('patient_id')));
 			$encounter->set('current_payer',$payers[0]);
+
+			if ($appointment_id > 0) {
+				$encounter->set('occurence_id',$appointment_id);
+			}
 			$encounter->persist();
 			$encounter_id = $encounter->get('id');
 			$this->set('encounter_id',$encounter_id);
@@ -130,12 +157,6 @@ class C_Encounter extends Controller {
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
-		$appointments = $encounter->appointmentList();
-		$appointmentArray = array("" => " ");
-		foreach($appointments as $appointment) {
-			$appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
-		}
-		
 		
 		// If this is a saved encounter, generate the following:
 		if ($this->get('encounter_id') > 0) {
@@ -160,23 +181,6 @@ class C_Encounter extends Controller {
 			}
 		}
 		
-		//if an appointment id is supplied the request is coming from the 
-		//calendar and so prepopulate the defaults
-		if ($appointment_id > 0 && $valid_appointment_id) {
-			$encounter->set("occurence_id",$appointment_id);
-			$encounter->set("patient_id",$this->get("patient_id", 'c_patient'));
-			if (isset($appointments[$appointment_id])) {
-				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
-			}
-			if (isset($appointments[$appointment_id])) {
-				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
-
-				$em =& Celini::enumManagerInstance();
-				$reason = $em->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
-				$encounter->set("encounter_reason",$reason);
-			}
-		}
-
 		$reports = array();
 		if ($encounter->get('patient_id') > 0) {
 			$pcc =& Celini::newOrdo('PatientChronicCode');
@@ -211,6 +215,7 @@ class C_Encounter extends Controller {
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 		$this->assign('RETURN_TO',Celini::link('edit',true,true,$encounter_id));
+		$this->assign('DELETE_ACTION',Celini::link('delete',true,true,$encounter_id));
 
 		$pconfig=&$practice->get_config();
 		if($pconfig->get('FacilityType',FALSE)){
@@ -254,8 +259,10 @@ class C_Encounter extends Controller {
 		else {
 			ORdataObject::factory_include('ClearhealthClaim');
 			$claim =& ClearhealthClaim::fromEncounterId($encounter_id);
+			$this->assign('encounter_has_claim',false);
 			if ($claim->get('identifier') > 0) {
 				$this->assign('claimSubmitValue', 'rebill');
+				$this->assign('encounter_has_claim',true);
 			}
 			else {
 				$this->assign('claimSubmitValue', 'close');
