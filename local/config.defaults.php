@@ -28,6 +28,10 @@ $config['calendar']['event_render'] = 'CalendarEventRender';
 $config['calendar']['ajax_handler'] = 'CalendarAJAXHandler'; 
 $config['calendar']['data_handler'] = 'ClearhealthCalendarData'; 
 
+################################################################################
+# Billing Options
+################################################################################
+$config['billing']['multipleByUnits'] = false;
 
 ################################################################################
 # Celini Options 

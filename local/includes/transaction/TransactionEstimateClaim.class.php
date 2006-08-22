@@ -88,6 +88,9 @@ class TransactionEstimateClaim {
 		$codingData =& Celini::newOrdo('CodingData');
 		$codeList = $codingData->getCodeList($this->encounterId);
 
+		$config =& Celini::configInstance();
+		$billingConf = $config->get('billing');
+
 		$numCodes = count($codeList);
 
 		$this->fees = array();
@@ -95,6 +98,9 @@ class TransactionEstimateClaim {
 		$i = 0;
 		foreach($codeList as $key => $code) {
 			$code['fee'] = $feeSchedule->getFee($code['code'],$code['modifier']);
+			if ($billingConf['multipleByUnits']) {
+				$code['fee'] = $code['fee'] * $code['units'];
+			}
 			$this->fees[$code['coding_data_id']]['code'] = $code['code'];
 			$this->fees[$code['coding_data_id']]['fee']  = $code['fee'];
 			$this->fees[$code['coding_data_id']]['coding_data_id'] = $code['coding_data_id'];
