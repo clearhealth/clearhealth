@@ -3,8 +3,8 @@
  * Configuration variables
  */
 
-$GLOBALS['oldCHDB'] = 'default';
-$GLOBALS['newCHDB'] = 'default';
+$GLOBALS['oldCHDB'] = 'clearhealth';
+$GLOBALS['newCHDB'] = 'clearhealth';
 $GLOBALS['debug'] = true;
 $GLOBALS['eol-style'] = "\n"; // change to <br /> for HTML output
 
