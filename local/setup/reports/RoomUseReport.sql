@@ -105,7 +105,13 @@ left join (
 /* end from */
 where
 e.start >= '[start:date] 01:01:01' and e.end <= '[end:date] 23:59:59'
-/*
-Add filters for
-room, provider
-*/
+and 	if(
+		LENGTH('[room]') > 0,
+		room.id = '[room:query:select r.id, concat(b.name,'->',r.name) name from rooms r inner join buildings b on b.id = r.building_id order by b.name, r.name]',
+		1
+	)
+and	if (
+		LENGTH('[provider]') > 0,
+			pro.person_id = '[provider:query:select p.person_id, concat(p.last_name,', ',p.first_name) from person p inner join provider pr using(person_id)]',
+		1
+	)
