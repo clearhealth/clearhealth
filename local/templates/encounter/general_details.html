@@ -52,6 +52,9 @@
         		{else}
             		open
             	{/if}
+            	{if $encounter->get('status') == 'open' && $encounter->get('id') > 0 && !$encounter_has_claim}
+		<a href="{$DELETE_ACTION}" onclick="return confirm('Delete this Encounter?')">Delete</a>
+		{/if}
 			</td>
 		</tr>
 	</table>

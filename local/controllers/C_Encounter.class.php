@@ -624,5 +624,22 @@ class C_Encounter extends Controller {
 		return $this->view->render("routeSlip.html");
 
 	}
+
+	function actionDelete() {
+		$eid = Enforcetype::int($this->getDefault('encounter_id'));
+		$e =& Celini::newOrdo('Encounter',$eid);
+			if ($e->isPopulated()) {
+				return "<form id='del' method='post' action='".Celini::link('delete')."'><input type='hidden' name='encounter_id' value='$eid'><input type='hidden' name='process' value='true'></form><script type='text/javascript'>$('del').submit()</script>";
+			}
+			else {
+				Celini::redirect('CalendarDisplay','day');
+			}
+		}
+
+	function processDelete() {
+		$eid = Enforcetype::int($this->POST->get('encounter_id'));
+		$e =& Celini::newOrdo('Encounter',$eid);
+		$e->drop();
+	}
 }
 ?>
