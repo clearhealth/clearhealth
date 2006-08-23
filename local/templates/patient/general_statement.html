@@ -1,4 +1,14 @@
-<div style="width: 7in">
+<div style="width: 7in; margin: .75in;">
+<div style="float:right">
+	{if $report->get('snapshot_style') == 2}
+		<a href='{$REPORT_ACTION}&snapshot=true'>Re-Run Report Making a Snapshot</a> &nbsp;
+	{/if}
+	{if $PRINT_ACTION || $PDF_ACTION}
+		<a target='print' href="{$PRINT_ACTION}">Print View</a>
+		<a target='print' href="{$PDF_ACTION}">PDF View</a>
+	{/if}
+</div>
+
 <table width="100%">
 	<tr>
 		<td><div>
