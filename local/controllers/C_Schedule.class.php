@@ -125,9 +125,17 @@ class C_Schedule extends Controller
 	 * @todo need to detect matching groups
 	 */
 	function createSchedule(&$wizard) {
-
 		// create a new schedule (if one does not already exist)
-		$schedule =& Celini::newORDO('Schedule', $wizard->get('provider_id'), 'ByProvider');
+		switch ($wizard->get('schedule_type')) {
+			case 'PS' :
+				$schedule =& Celini::newORDO('Schedule', $wizard->get('provider_id'), 'ByProvider');
+				break;
+			
+			case 'RS' :
+				$schedule =& Celini::newORDO('Schedule', $wizard->get('room_id'), 'ByRoomId');
+				break;
+		}
+		
 
 		$schedule->set('title',$wizard->get('name'));
 		$schedule->set('provider_id',$wizard->get('provider_id'));
