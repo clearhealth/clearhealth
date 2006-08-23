@@ -118,7 +118,6 @@ class C_Coding extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('scriptaculous');
 		$head->addExternalCss('suggest');
-		$head->addJs(array('clniConfirmLink', 'clniPopup'));
 
 
 		if($coding_data_id > 0) {
