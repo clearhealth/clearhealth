@@ -18,6 +18,7 @@ class Schedule extends CalendarSchedule{
 	 */
 	var $schedule_code = '';
 	var $provider_id = '';
+	var $room_id = '';
 	
 	var $_internalName='Schedule';
 	var $_foreignKeyList = array('practice_id' => 'Practice',
