@@ -45,6 +45,20 @@ class Schedule extends CalendarSchedule{
 			";
 		$this->helper->populateFromQuery($this, $sql);
 	}
+	
+	
+	/**
+	 * Setup a {@link Schedule} from a {@link Room} id.
+	 *
+	 * @param  int
+	 * @access protected
+	 */
+	function setupByRoomId($roomId) {
+		$tableNae = $this->tableName();
+		$qRoomId = $this->dbHelper->quote($roomId);
+		$sql = "SELECT * FROM {$tableName} AS s WHERE s.room_id = {$qRoomId}";
+		$this->helper->populateFromQuery($this, $sql);
+	}
 
 	function get_events() {
 		$events=$this->getChildren('ScheduleEvent');
