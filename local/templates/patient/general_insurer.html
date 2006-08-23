@@ -112,8 +112,8 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 			<tr>
 				<td><label>{l}Effective Date Range{/l}:</label></td>
 				<td> 
-					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start')} to 
-					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end')}
+					{clni_input_date name="insuredRelationship[effective_start]" value=$insuredRelationship->get('effective_start') required='false'} to 
+					{clni_input_date name="insuredRelationship[effective_end]" value=$insuredRelationship->get('effective_end') required='false'}
 				</td>
 			<tr>
 				<td><label>{l}Assigning{/l}:</label></td>
