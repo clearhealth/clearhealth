@@ -54,7 +54,7 @@ class Schedule extends CalendarSchedule{
 	 * @access protected
 	 */
 	function setupByRoomId($roomId) {
-		$tableNae = $this->tableName();
+		$tableName = $this->tableName();
 		$qRoomId = $this->dbHelper->quote($roomId);
 		$sql = "SELECT * FROM {$tableName} AS s WHERE s.room_id = {$qRoomId}";
 		$this->helper->populateFromQuery($this, $sql);
