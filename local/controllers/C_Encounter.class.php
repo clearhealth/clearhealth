@@ -449,6 +449,7 @@ class C_Encounter extends Controller {
 		if (isset($_POST['misc_charge'])) {
 			$miscCharge =& Celini::newOrdo('MiscCharge');
 			$miscCharge->populateArray($_POST['misc_charge']);
+			$miscCharge->set('encounter_id',$this->encounter_id);
 			$miscCharge->persist();
 		}
 
