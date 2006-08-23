@@ -57,7 +57,9 @@
 	
 	{include file="patientdashboard/general_chunkAccountInfo.html}
 	{include file="patientdashboard/general_chunkPatientStatistics.html}
-	{include file="patientdashboard/general_chunkEligibility.html}
+	{if $config->get('displayInsuranceEligibility')}
+		{include file="patientdashboard/general_chunkEligibility.html}
+	{/if}
 	{include file="patientdashboard/general_chunkGuaranteed.html}
 
 	</td>

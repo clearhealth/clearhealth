@@ -26,12 +26,14 @@ $config['module_paths']['calendar'] = APP_ROOT . '/modules/calendar';
 ################################################################################ 
 $config['calendar']['event_render'] = 'CalendarEventRender'; 
 $config['calendar']['ajax_handler'] = 'CalendarAJAXHandler'; 
-$config['calendar']['data_handler'] = 'ClearhealthCalendarData'; 
+$config['calendar']['data_handler'] = 'ClearhealthCalendarData';
 
 ################################################################################
 # Billing Options
 ################################################################################
 $config['billing']['multipleByUnits'] = false;
+
+$config['displayInsuranceElegibility'] = false;
 
 ################################################################################
 # Celini Options 

@@ -115,6 +115,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign_by_ref('note',$note);
 		$this->assign_by_ref('appointmentGrid',$appointmentGrid);
 		$this->assign_by_ref('eligibility',$el);
+		$this->assign_by_ref('config',Celini::configInstance());
 
 
 		$this->assign('ENCOUNTER_ACTION',Celini::link('add','Encounter') . 'patient_id=' . $p->get('id'));
