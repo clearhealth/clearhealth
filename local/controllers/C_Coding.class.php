@@ -118,6 +118,7 @@ class C_Coding extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('scriptaculous');
 		$head->addExternalCss('suggest');
+		$head->addJs(array('clniConfirmLink', 'clniPopup'));
 
 
 		if($coding_data_id > 0) {
@@ -313,7 +314,25 @@ class C_Coding extends Controller {
 	function delete_claimline($parent_id) {
 
 			
-		$code_data =& Celini::newORDO('CodingData');
+		$code_data =& Celini::newORDO('CodingData', $parent_id);
+		if ($this->GET->exists('void') && $this->GET->get('void') == 'true') {
+			$clearhealthClaim =& Celini::newORDO('ClearhealthClaim', $code_data->get('foreign_id'), 'ByEncounterId');
+			if (!$clearhealthClaim->isPopulated()) {
+				$this->messages->addMessage('Unable to void claimline', 'To void a claimline, the encounter must first be closed.  Will delete claimline instead.');
+			}
+			else {
+				if ($clearhealthClaim->get('total_paid') > 0) {
+					$this->messages->addMessage('Unable to void claimline', 'You can only void a claimline when no payment has been received.');
+					return;
+				}
+				else {
+					$clearhealthClaim->set('total_billed', $clearhealthClaim->get('total_billed') - $code_data->get('fee'));
+					$clearhealthClaim->persist();
+					$this->messages->addMessage('Claimline voided', '');
+				}
+			}
+		}
+		
 		$code_data->delete_claimline($parent_id);
 
 

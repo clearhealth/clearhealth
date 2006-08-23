@@ -39,6 +39,13 @@ function hideSuperBill() {
 	toggleSelects();
 }
 
+var confirmLinkManager = new clniConfirmLink();
+confirmLinkManager.modal = true;
+
+function confirmDeleteClaimLine(linkObj) {
+	confirmLinkManager.confirmLink(linkObj, 'confirmDeleteCode');
+	return false;
+}
 
 {/head}
 
@@ -151,7 +158,7 @@ function hideSuperBill() {
 {foreach from=$code_list item=code}
 {assign var=children value=$code_data->getChildCodes($code.coding_data_id)}
 {if $encounter && $encounter->get('status') != 'closed'}
-<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true">X</a>&nbsp;
+<a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true" onclick="return confirmDeleteClaimLine(this);">X</a>&nbsp;
 {/if}
 {if $incodingtemplate}
 <a href="{link action='Edit' }template_id={$foreign_id}&delete_id={$code.coding_data_id}">X</a>&nbsp;
@@ -189,7 +196,31 @@ Tooth: {$code.tooth} Side {$code.toothside}
 </td></tr></table>
 </form>
 
+<div style="display:none" id="confirmDeleteCode">
+	<p>
+		<strong>You are about to delete this claimline from this encounter.</strong></p>
+	<p>
+		You have three options:
+		<dl>
+			<dt>Delete claimline</dt>
+			<dd>Removes this claimline and leaves the total billed for the claim unaffected</dd>
+			
+			<dt>Void claimline</dt>
+			<dd>Remove this claimline and removes the total for the given procedure from the total</dd>
+			
+			<dt>Cancel</dt>
+			<dd>Do nothing</dd>
+		</dl>
+	</p>
+	
+	<ul class="menu centered">
+		<li><a href="javascript:confirmLinkManager.submit()">Delete claimline</a></li>
+		<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._linkObj + '&void=true';">Void claimline</a></li>
+		<li><a href="javascript:confirmLinkManager.cancel()">Cancel</a></li>
+	</ul>
+</div>
 <script language="javascript">
+ 
 {if $encounter && $encounter->value('status') != 'closed'}
 {literal}
 function setupAutoComplete(){

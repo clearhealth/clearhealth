@@ -61,6 +61,20 @@ class ClearhealthClaim extends ORDataObject {
 		$this->helper->populateFromResults($this,$res);
 	}
 
+	/**
+	 * A custom setup method to handle getting a ClearhealthClaim based on an encounter ID
+	 *
+	 * @param  int
+	 * @access protected
+	 */
+	function setupByEncounterId($encounterId) {
+		$qEncounterId = $this->dbHelper->quote($encounterId);
+		$tableName = $this->tableName();
+		$sql = "SELECT * FROM {$tableName} WHERE encounter_id = {$qEncounterId}";
+		$this->helper->populateFromQuery($this, $sql);
+	}
+	
+	
 	function &fromEncounterId($encounter_id) {
 		settype($encounter_id,'int');
 
