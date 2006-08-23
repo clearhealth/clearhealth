@@ -39,12 +39,8 @@ function hideSuperBill() {
 	toggleSelects();
 }
 
-var confirmLinkManager = new clniConfirmLink();
-confirmLinkManager.modal = true;
-
 function confirmDeleteClaimLine(linkObj) {
-	confirmLinkManager.confirmLink(linkObj, 'confirmDeleteCode');
-	return false;
+	return confirm('Are you sure you want to delete this claimline?');
 }
 
 {/head}
@@ -196,29 +192,6 @@ Tooth: {$code.tooth} Side {$code.toothside}
 </td></tr></table>
 </form>
 
-<div style="display:none" id="confirmDeleteCode">
-	<p>
-		<strong>You are about to delete this claimline from this encounter.</strong></p>
-	<p>
-		You have three options:
-		<dl>
-			<dt>Delete claimline</dt>
-			<dd>Removes this claimline and leaves the total billed for the claim unaffected</dd>
-			
-			<dt>Void claimline</dt>
-			<dd>Remove this claimline and removes the total for the given procedure from the total</dd>
-			
-			<dt>Cancel</dt>
-			<dd>Do nothing</dd>
-		</dl>
-	</p>
-	
-	<ul class="menu centered">
-		<li><a href="javascript:confirmLinkManager.submit()">Delete claimline</a></li>
-		<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._linkObj + '&void=true';">Void claimline</a></li>
-		<li><a href="javascript:confirmLinkManager.cancel()">Cancel</a></li>
-	</ul>
-</div>
 <script language="javascript">
  
 {if $encounter && $encounter->value('status') != 'closed'}

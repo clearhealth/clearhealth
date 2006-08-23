@@ -311,31 +311,26 @@ class C_Coding extends Controller {
 		//return $this->update_action($_POST['foreign_id']);
 	}
 	
-	function delete_claimline($parent_id) {
-
-			
+	function delete_claimline($parent_id) {	
 		$code_data =& Celini::newORDO('CodingData', $parent_id);
-		if ($this->GET->exists('void') && $this->GET->get('void') == 'true') {
-			$clearhealthClaim =& Celini::newORDO('ClearhealthClaim', $code_data->get('foreign_id'), 'ByEncounterId');
-			if (!$clearhealthClaim->isPopulated()) {
-				$this->messages->addMessage('Unable to void claimline', 'To void a claimline, the encounter must first be closed.  Will delete claimline instead.');
-			}
-			else {
-				if ($clearhealthClaim->get('total_paid') > 0) {
-					$this->messages->addMessage('Unable to void claimline', 'You can only void a claimline when no payment has been received.');
-					return;
-				}
-				else {
-					$clearhealthClaim->set('total_billed', $clearhealthClaim->get('total_billed') - $code_data->get('fee'));
-					$clearhealthClaim->persist();
-					$this->messages->addMessage('Claimline voided', '');
-				}
-			}
+		$clearhealthClaim =& Celini::newORDO('ClearhealthClaim', $code_data->get('foreign_id'), 'ByEncounterId');
+		
+		if ($clearhealthClaim->get('total_paid') > 0) {
+			$this->messages->addMessage(
+				'Unable to delete claimline', 
+				'You can only delete a claimline when no payment has been received.'
+			);
+			return;
+		}
+				
+		if ($clearhealthClaim->isPopulated()) {
+			$clearhealthClaim->set('total_billed', $clearhealthClaim->get('total_billed') - $code_data->get('fee'));
+			$clearhealthClaim->persist();
 		}
 		
 		$code_data->delete_claimline($parent_id);
-
-
+		
+		$this->messages->addMessage('Claimline deleted', 'Successfully removed the claimline');
 	}
 	function update_dg_action($superbill_id) {
 		$icd =& new IcdCodingDatasource();
