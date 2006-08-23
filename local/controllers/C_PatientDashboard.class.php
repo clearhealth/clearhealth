@@ -80,9 +80,8 @@ class C_PatientDashboard extends Controller {
 		$noteGrid->indexCol = false;
 		$noteGrid->setExternalId($p->get('id'));
 		
-		// todo: determine what this is doing and label it appropriately
-		$clearhealth_claim = Celini::newORDO("ClearhealthClaim");
-		$accountStatus = $clearhealth_claim->accountStatus($p->get('id'));
+		// Grab patients account status, billed, paid, writeoff, balance
+		$accountStatus = $p->accountStatus($p->get('id'));
 		
 		$payment =& Celini::newORDO('PatientPaymentPlan');
 		$unpaid = $payment->getByPatient($p->get('id'));

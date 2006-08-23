@@ -326,65 +326,51 @@ class Patient extends MergeDecorator {
 	}
 
 	function getBalance() {
-		$db =& Celini::dbInstance();
-		$sql='
-		select
-			feeData.patient_id,
-            charge,
-            (ifnull(credit,0.00) + ifnull(coPay.amount,0.00)) credit,
-			(charge - (ifnull(credit,0.00)+ifnull(coPay.amount,0.00))) balance
-		from
-			/* Fee total */
-			(
-			select
-				e.patient_id,
-				sum(cd.fee) charge
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
-			WHERE
-				e.patient_id = '.$db->quote($this->get('id')).'
-			group by
-				e.patient_id
-			) feeData
-		left join
-			/* Payment totals */
-			(
-			select
-				e.patient_id,
-				(sum(pl.paid) + sum(pl.writeoff)) credit
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join payment p on cc.claim_id = p.foreign_id
-				inner join payment_claimline pl on p.payment_id = pl.payment_id
-			WHERE
-				patient_id = '.$db->quote($this->get('id')).'
-			group by
-				e.patient_id
-			) paymentData on feeData.patient_id = paymentData.patient_id
-		left join
-            /* Co-Pay Totals */
-            (
-            	select
-                	p.foreign_id patient_id,
-                    sum(p.amount) amount
-                from
-                	payment p
-                where encounter_id = 0
-                	AND patient_id = '.$db->quote($this->get('id')).'
-                group by
-					p.foreign_id
-			) coPay on feeData.patient_id = coPay.patient_id
-		WHERE feeData.patient_id = '.$db->quote($this->get('id'));
-		
-		$result = $db->execute($sql);
-		if($result) {
-			return $result->fields['balance'];
-		}
-		return 0;
+		$status = $this->accountStatus($this->get('id'));
+		return $status['total_balance'];
 	}
+
+	function accountStatus($patient_id,$encounter_id = false) {
+		$status = array();
+		$sql = '
+			SELECT
+				SUM(IFNULL(total_billed,0))+SUM(IFNULL(mc.amount,0)) AS total_billed,
+				SUM(IFNULL(total_paid,0)) AS total_paid,
+				SUM(IFNULL(writeoffs.writeoff,0)) AS total_writeoff,
+				(SUM(IFNULL(total_billed,0))+SUM(IFNULL(mc.amount,0))) - (SUM(IFNULL(total_paid,0)) 
+					+ SUM(IFNULL(writeoffs.writeoff,0))) AS total_balance
+			FROM
+				encounter AS e
+				LEFT JOIN misc_charge mc on e.encounter_id = mc.encounter_id
+				LEFT JOIN clearhealth_claim AS cc on e.encounter_id = cc.encounter_id
+				LEFT JOIN (
+					SELECT
+						foreign_id,
+						SUM(ifnull(writeoff,0)) AS writeoff
+					FROM
+						payment 
+					WHERE
+						encounter_id = 0 and foreign_id = '.$this->dbHelper->quote($patient_id).'
+					GROUP BY
+						foreign_id
+				) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
+			WHERE 
+				patient_id = ' . $this->dbHelper->quote($patient_id);
+
+		if ($encounter_id) {
+			$sql .= " and e.encounter_id = ".(int)$encounter_id;
+		}
+		
+		$res = $this->_execute($sql);
+		if ($res && !$res->EOF) {
+			$status['total_billed'] = $res->fields['total_billed'];
+			$status['total_paid'] = $res->fields['total_paid'];
+			$status['total_writeoff'] = $res->fields['total_writeoff'];
+			$status['total_balance'] = $res->fields['total_balance'];
+		}
+		return $status;
+	}
+
 	
 	function &getProvider() {
 		$prov =& Celini::newORDO('Provider',$this->get('default_provider'));

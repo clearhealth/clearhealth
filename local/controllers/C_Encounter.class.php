@@ -159,7 +159,7 @@ class C_Encounter extends Controller {
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
 
-		$miscChargeGrid = new cGrid(new MiscCharge_Encounter_DS());
+		$miscChargeGrid = new cGrid(new MiscCharge_Encounter_DS($encounter_id));
 		$this->assign_by_ref('miscChargeGrid',$miscChargeGrid);
 		
 		// If this is a saved encounter, generate the following:

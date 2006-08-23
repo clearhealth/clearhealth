@@ -88,45 +88,6 @@ class ClearhealthClaim extends ORDataObject {
 
 	}
 	
-	function accountStatus($patient_id,$encounter_id = false) {
-		$status = array();
-		$sql = '
-			SELECT
-				SUM(total_billed) AS total_billed,
-				SUM(IFNULL(total_paid,0)) AS total_paid,
-				SUM(IFNULL(writeoffs.writeoff,0)) AS total_writeoff,
-				(SUM(IFNULL(total_billed,0)) - (SUM(IFNULL(total_paid,0)) + SUM(IFNULL(writeoffs.writeoff,0)))) AS total_balance
-			FROM
-				encounter AS e
-				INNER JOIN clearhealth_claim AS cc USING(encounter_id)
-				LEFT JOIN (
-					SELECT
-						foreign_id,
-						SUM(ifnull(writeoff,0)) AS writeoff
-					FROM
-						payment 
-					WHERE
-						encounter_id = 0
-					GROUP BY
-						foreign_id
-				) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
-			WHERE 
-				patient_id = ' . $this->dbHelper->quote($patient_id);
-
-		if ($encounter_id) {
-			$sql .= " and e.encounter_id = ".(int)$encounter_id;
-		}
-		
-		$res = $this->_execute($sql);
-		if ($res && !$res->EOF) {
-			$status['total_billed'] = $res->fields['total_billed'];
-			$status['total_paid'] = $res->fields['total_paid'];
-			$status['total_writeoff'] = $res->fields['total_writeoff'];
-			$status['total_balance'] = $res->fields['total_balance'];
-		}
-		return $status;
-	}
-
 	function summedPaymentsByCode() {
 		$sql = "
 			select
