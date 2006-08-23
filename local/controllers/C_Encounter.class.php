@@ -3,6 +3,7 @@ $loader->requireOnce('controllers/C_Coding.class.php');
 $loader->requireOnce('controllers/C_FreeBGateway.class.php');
 $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
 $loader->requireOnce('includes/LockManager.class.php');
+$loader->requireOnce('datasources/MiscCharge_Encounter_DS.class.php');
 
 /**
  * A patient Encounter
@@ -157,6 +158,9 @@ class C_Encounter extends Controller {
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 
+
+		$miscChargeGrid = new cGrid(new MiscCharge_Encounter_DS());
+		$this->assign_by_ref('miscChargeGrid',$miscChargeGrid);
 		
 		// If this is a saved encounter, generate the following:
 		if ($this->get('encounter_id') > 0) {
@@ -321,6 +325,7 @@ class C_Encounter extends Controller {
 			'encounterValue' => array('EncounterValue','encounter_value_id'),
 			'encounterPerson' => array('EncounterPerson','encounter_person_id'),
 			'payment' => array('Payment','payment_id'),
+			'misc_charge' => array('MiscCharge','misc_charge_id'),
 			);
 
 			foreach($subOrdos as $key => $info) {
@@ -440,6 +445,11 @@ class C_Encounter extends Controller {
 			}
 			$payment->persist();
 			$this->payment_id = $payment->get('id');
+		}
+		if (isset($_POST['misc_charge'])) {
+			$miscCharge =& Celini::newOrdo('MiscCharge');
+			$miscCharge->populateArray($_POST['misc_charge']);
+			$miscCharge->persist();
 		}
 
 		if (isset($_POST['encounter']['close'])) {

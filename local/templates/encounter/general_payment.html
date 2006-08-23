@@ -1,4 +1,16 @@
 <fieldset>
+	<legend>{l}Add Charges{/l}</legend>
+
+	{$miscChargeGrid->render()}
+
+	{if $encounter->get('status') != 'closed'}		
+	Amount: <input name="misc_charge[amount]" size=5"> Title: <input name="misc_charge[title]"> 
+	{*<br>Notes: <textarea name="misc_charge[note]" rows=1></textarea>*}
+	<input type="submit" value="Add Charge">
+	{/if}
+
+</fieldset>
+<fieldset>
 	<legend>{l}Copay{/l}</legend>
 	<p>Patient's Co-pay is: {$copay}</p>
 	
@@ -6,8 +18,8 @@
 	{if $paymentGrid->empty}
 	<p>{l}Encounter has no Copays{/l}</p>
 	{/if}
-	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
 	{if $encounter->get('status') != 'closed'}		
+	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
 	
 	<table>
 	{literal}
