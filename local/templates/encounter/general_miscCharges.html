@@ -1,0 +1,12 @@
+<fieldset>
+	<legend>{l}Misc Charges{/l}</legend>
+
+	{$miscChargeGrid->render()}
+
+	{if $encounter->get('status') != 'closed'}		
+	Amount: <input name="misc_charge[amount]" size=5"> Title: <input name="misc_charge[title]"> 
+	{*<br>Notes: <textarea name="misc_charge[note]" rows=1></textarea>*}
+	<input type="submit" value="Add Charge">
+	{/if}
+
+</fieldset>
