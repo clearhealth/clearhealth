@@ -41,6 +41,14 @@ class MiscCharge extends ORDataObject {
 		parent::ORDataObject();
 	}
 
+	function totalChargesForEncounter($encounterId) {
+		$eId = EnforceType::int($encounterId);
+
+		$sql = "select sum(amount) from misc_charge where encounter_id = $eId";
+		$ret = $this->dbHelper->getOne($sql);
+		//var_dump($ret);
+		return $ret;
+	}
 	
 }
 ?>
