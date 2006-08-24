@@ -363,6 +363,7 @@ class C_Appointment extends Controller {
 	function actionSearch() {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addExternalCss('calendar','calendar');
+		$head->addExternalCss('suggest');
 		if(!is_null($this->appointment)) {
 			return $this->appointment;
 		}
