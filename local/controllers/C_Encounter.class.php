@@ -446,7 +446,7 @@ class C_Encounter extends Controller {
 			$payment->persist();
 			$this->payment_id = $payment->get('id');
 		}
-		if (isset($_POST['misc_charge']) && !empty($_POST['title'])) {
+		if (isset($_POST['misc_charge']) && !empty($_POST['misc_charge']['title'])) {
 			$miscCharge =& Celini::newOrdo('MiscCharge');
 			$miscCharge->populateArray($_POST['misc_charge']);
 			$miscCharge->set('encounter_id',$this->encounter_id);
