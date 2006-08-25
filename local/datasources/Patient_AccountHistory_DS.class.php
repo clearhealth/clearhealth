@@ -25,6 +25,7 @@ class Datasource_AccountHistory extends Datasource {
 	var $filters = false;
 	var $adjustments = array();
 	var $adjustmentTypes = null;
+	var $charges = false;
 
 	function Datasource_AccountHistory($filters = false) {
 		$this->filters = $filters;
@@ -39,6 +40,8 @@ class Datasource_AccountHistory extends Datasource {
 
 		$claim =& ORDataObject::factory('ClearhealthClaim');
 		$this->claims = $claim->claimList($person_id,true,$this->filters);
+		$this->charges = $this->_miscChargeList($person_id);
+
 		$this->_labels = array ( 
 			'identifier' 	=> 'Id', 
 			'current_payer' => 'Payer Name',
@@ -85,6 +88,8 @@ class Datasource_AccountHistory extends Datasource {
 		$this->_valid = $this->claims->valid();
 	}
 
+	var $_chargeIndex = 0;
+
 	function next() {
 		$nextClaim = true;
 		if (isset($this->_res->fields['claim_id'])) {
@@ -92,7 +97,12 @@ class Datasource_AccountHistory extends Datasource {
 		}
 		$claim_id = $this->claim_id;
 
-		if (isset($this->payments[$claim_id]) && $nextClaim) {
+		if (isset($this->charges[$claim_id][$this->_chargeIndex])) {
+			$this->_res->fields = $this->charges[$claim_id][$this->_chargeIndex];
+			$this->_chargeIndex++;
+			$nextClaim = false;
+		}
+		else if (isset($this->payments[$claim_id]) && $nextClaim) {
 			if (!isset($this->paymentRewind[$claim_id])) {
 				$this->payments[$claim_id]->rewind();
 				$this->paymentRewind[$claim_id] = true;
@@ -119,6 +129,7 @@ class Datasource_AccountHistory extends Datasource {
 		}
 
 		if ($nextClaim) {
+			$this->_chargeIndex = 0;
 			$this->claims->next();
 			$this->_res = $this->claims->_res;
 			$this->_res->fields['type'] = 'Claim';
@@ -146,19 +157,20 @@ class Datasource_AccountHistory extends Datasource {
 		
 		$ds =& new Datasource_sql();
 		$ds->registerFilter('payer_id',array(&$payment,'lookupPayer'));
+		$format = DateObject::getFormat();
 
 		$ds->setup($payment->_db,array(
-				'cols' 	=> '
+				'cols' 	=> "
 					payment_id,
 					foreign_id,
 					payment_type, 
 					amount,
 					writeoff,
 					payer_id,
-					payment_date,
+					date_format(payment_date,'$format') payment_date,
 					pa.timestamp,
 					u.username user,
-					ref_num',
+					ref_num",
 				'from' 	=> '
 					payment AS pa
 					LEFT JOIN encounter AS e USING(encounter_id)
@@ -185,6 +197,47 @@ class Datasource_AccountHistory extends Datasource {
 		//echo $ds->preview();
 		$ds->registerFilter('payment_type',array(&$payment,'lookupPaymentType'));
 		return $ds;
+	}
+
+	/**
+	 *
+	 * Get an array for misc charges from the db using the patient id
+	 */
+	function &_miscChargeList($patient_id) {
+		$pId = EnforceType::int($patient_id);
+		
+		$ds =& new Datasource_sql();
+
+		$format = DateObject::getFormat();
+
+		$ds->setup(Celini::dbInstance(),array(
+				'cols' 	=> "
+					cc.claim_id,
+					mc.amount total_billed,
+					mc.title identifier,
+					date_format(mc.charge_date,'$format') billing_date,
+					'Misc Charge' current_payer,
+					user.username user
+
+					",
+				'from' 	=> '
+					misc_charge mc
+					inner join encounter e on mc.encounter_id = e.encounter_id
+					inner join clearhealth_claim cc on e.encounter_id = cc.encounter_id
+					inner join ordo_registry oreg on oreg.ordo_id = mc.misc_charge_id
+					inner join user on oreg.creator_id = user.user_id
+					',
+				'where' => "e.patient_id = $pId"
+			),
+			false
+		);
+		//echo $ds->preview();
+		$ret = array();
+		for($ds->rewind();$ds->valid();$ds->next()) {
+			$row = $ds->get();
+			$ret[$row['claim_id']][] = $row;
+		}
+		return $ret;
 	}
 	
 	function _getAdjustments($payment_id) {
