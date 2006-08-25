@@ -47,7 +47,7 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 				subscriber_to_patient_relationship subscriber_relationship, 
 				if(now() between effective_start and effective_end,concat('Until ',DATE_FORMAT(effective_end, '%m/%d/%Y')),
 				if (effective_end < now(),concat('Ended ',DATE_FORMAT(effective_end, '%m/%d/%Y')),concat('Starts ',DATE_FORMAT(effective_start, '%m/%d/%Y')))) effective,
-				active",
+				IF (active, 'Yes', 'No') AS formatted_active",
 				'from' 	=> "$this->_table ir left join insurance_program ip using (insurance_program_id) left join company c using (company_id)",
 				'where' => " person_id = $person_id",
 			),
@@ -59,7 +59,7 @@ class Person_InsuredRelationshipList_DS extends Datasource_sql
 				'copay' => 'Co-pay',
 				'subscriber_relationship' => 'Subscriber',
 				'effective'=>'Effective', 
-				'active' => 'Active'));
+				'formatted_active' => 'Active'));
 		$this->addOrderRule('program_order');
 		$this->registerFilter('subscriber_relationship',array($this,'lookupSubscriberRelationship'));
 		$this->registerFilter('effective',array($this,'effectiveColorFilter'), false, 'html');
