@@ -22,6 +22,7 @@ class C_Eob extends Controller {
 		$this->view->assign('REBILL_ACTION',Celini::link('rebillSelfPay','Eob',false));
 
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
+		$this->view->assign('BILLNEXT_ACTION',Celini::link('RebillNextPayer','Eob',false));
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
 		$patient =& Celini::newOrdo('Patient',$encounter->get('patient_id'));
 		$paymentplan =& Celini::newORDO('PatientPaymentPlan');
@@ -117,7 +118,7 @@ class C_Eob extends Controller {
 		}
 		$this->assign('payment_date',$payment->get('payment_date'));
 		
-		$this->assign('FORM_ACTION',Celini::link('payment',true,true,$claim_id));
+		$this->assign('FORM_ACTION',Celini::link('payment',true,'main',$claim_id));
 
 		return $this->view->render("payment.html");
 	}
@@ -245,6 +246,28 @@ class C_Eob extends Controller {
 		$gateway->send('rebill');
 
 		$this->messages->addMessage('Claim Rebilled to Self Pay');
+		$this->claimId = $claimId;
+	}
+
+	// meant to be called with an AJAX post
+	function actionRebillNextPayer_edit() {
+		$this->view->assign('ajax',true);
+		return $this->actionPayment_edit($this->claimId);
+	}
+
+	function processRebillNextPayer_edit() {
+		$claimId = $this->POST->getTyped('claim_id','int');
+		$claim =& Celini::newOrdo('ClearhealthClaim',$claimId);
+		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
+		$id = $encounter->get('next_payer_id');
+		$encounter->set('current_payer',$id);
+		$encounter->persist();
+
+		$GLOBALS['loader']->requireOnce('includes/freebGateway/ClearhealthToFreebGateway.class.php');
+		$gateway =& new ClearhealthToFreebGateway($this,$encounter);
+		$gateway->send('rebill');
+		$payer =& Celini::newORDO('InsuranceProgram',$id);
+		$this->messages->addMessage('Claim Rebilled to '.$payer->value('fullname'));
 		$this->claimId = $claimId;
 	}
 }

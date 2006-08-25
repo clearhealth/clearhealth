@@ -1,0 +1,56 @@
+{head type="js"}
+function deletePayer(id) {
+	document.getElementById('removePayer').value=id;
+	document.getElementById('pgForm').submit();
+}
+{/head}
+{clni_form id="pgForm action=$FORM_ACTION process=$PROCESS}
+<h3>Edit Payer Group <i>{$payerGroup->get('name')}</i></h3>
+		<fieldset class="radio">
+<div id="pgFormMessageBox"></div>
+<table CELLSPACING="0" CELLPADDING="3">
+<tr>
+	<td COLSPAN="1" ALIGN="LEFT" VALIGN="MIDDLE" >{l}Name{/l}</td>
+	<td COLSPAN="2" ALIGN="LEFT" VALIGN="MIDDLE" >
+		<input id="name" type="text" size="40" name="payergroup[name]" value="{$payerGroup->get('name')}"/>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+	<fieldset>
+	<legend>Insurance Programs</legend>
+	<table>
+	{assign var=counter value=1}
+	<tr><th>Order</th><th>Company => Program</th></tr>
+	{foreach from=$pgpayers item=payer}
+	<tr><td>
+	<input type="text" size="2" value="{$counter}" name="payerorder[{$payer->get('id')}]" />
+	{assign var=counter value = $counter+1}
+	</td><td>{$payer->get('insurance_company_name')} => {$payer->get('name')} </td><td><a href="javascript:;" onclick="deletePayer({$payer->get('id')});">Remove</a><br />
+	</td></tr>
+	{foreachelse}<tr><td colspan=2>No programs added yet</td></tr>
+	{/foreach}
+	</table>
+	<select name="newPayer">
+		<option value=""></option>
+		{html_options options=$payers}
+	</select>
+	<input type="submit" value="Add Payer" />
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	{if $payerGroup->get('id') > 1 }
+	<td><br /><input type="submit" value="Update" /></td>
+	{else}
+	<td><br /><input type="submit" value="Add" /></td>
+	{/if}
+</tr>
+</table>
+</div>
+<input type="hidden" id="removePayer" name="removePayer" value="" />
+<input type="hidden" name="payergroup[id]" value="{$payerGroup->get('id')}" />
+</form>
+
+{clni_register_message_target formId="pgForm" targetId="pgFormMessageBox"}
+{clni_register_validation_rule id="name" message="Name is Required"}

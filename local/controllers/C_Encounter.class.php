@@ -4,6 +4,7 @@ $loader->requireOnce('controllers/C_FreeBGateway.class.php');
 $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
 $loader->requireOnce('includes/LockManager.class.php');
 $loader->requireOnce('datasources/MiscCharge_Encounter_DS.class.php');
+$loader->requireOnce('datasources/Encounter_PayerGroup_DS.class.php');
 
 /**
  * A patient Encounter
@@ -102,9 +103,10 @@ class C_Encounter extends Controller {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
 		if($encounter_id == 0) {
-			$ir =& Celini::newOrdo('InsuredRelationship');
-			$payers = array_keys($ir->getProgramList($encounter->get('patient_id')));
-			$encounter->set('current_payer',$payers[0]);
+			$encounter->persist();
+			// Default to default payer group
+			// Setting 'payer_group' sets up the current payer too.
+			$encounter->set('payer_group',1);
 
 			if ($appointment_id > 0) {
 				$encounter->set('occurence_id',$appointment_id);
@@ -152,12 +154,19 @@ class C_Encounter extends Controller {
 			$payment->set('title','Co-Pay');
 		}
 		$payment->set("encounter_id",$encounter_id);
-		$paymentGrid = new cGrid($payment->paymentsFromEncounterId($encounter_id));
+		$payments = $payment->paymentsFromEncounterId($encounter_id);
+		$paymentGrid = new cGrid($payments);
 		$paymentGrid->name = "paymentGrid";
 		$paymentGrid->registerTemplate('amount','<a href="'.Celini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
-
+		
+		$payerGroupds = new Encounter_PayerGroup_DS($encounter->get('patient_id'),$encounter->get('payer_group'));
+		$payergroupGrid =& new cGrid($payerGroupds);
+		$payergroupGrid->indexCol = false;
+		$payergroupGrid->orderLinks = false;
+		$payergroupGrid->name = "encounterPayerGroupGrid";
+		$this->view->assign_by_ref('payergroupGrid',$payergroupGrid);
 
 		$miscChargeGrid = new cGrid(new MiscCharge_Encounter_DS($encounter_id));
 		$this->assign_by_ref('miscChargeGrid',$miscChargeGrid);
@@ -212,6 +221,7 @@ class C_Encounter extends Controller {
 		$this->assign_by_ref('encounterValue',$encounterValue);
 		$this->assign_by_ref('encounterValueGrid',$encounterValueGrid);
 		$this->assign_by_ref('payment',$payment);
+		$this->assign_by_ref('payments',$payments);
 		$this->assign_by_ref('paymentGrid',$paymentGrid);
 		$this->assign_by_ref('appointmentList',$appointments);
 		$this->assign_by_ref('appointmentArray',$appointmentArray);
@@ -357,12 +367,11 @@ class C_Encounter extends Controller {
 			$newencounter = true;
 		}
 		
-		if (isset($_POST['select_payer'])) {
-			$encounter->persist();
+		$encounter->persist();
+		if (isset($_POST['select_payer']) || isset($_POST['select_payer_group'])) {
 			return;
 		}
 		
-		$encounter->persist();
 		if($this->POST->exists('PatientPaymentPlan')) {
 			$plan =& Celini::newORDO('PatientPaymentPlan');
 			$plan->populate_array($this->POST->getRaw('PatientPaymentPlan'));
@@ -453,6 +462,23 @@ class C_Encounter extends Controller {
 			$miscCharge->set('charge_date','Y-m-d H:i:s');
 			$miscCharge->persist();
 		}
+		
+		if (isset($_POST['encounter']['rebillfromscratch']) && $_POST['encounter']['rebillfromscratch'] == "true") {
+			if($encounter->get('current_payer') < 1) {
+				$this->messages->addMessage('Encounter has no payers available.');
+				return;
+			}
+			$encounter->set('status', 'open');
+			$encounter->persist();
+			$sql = "
+			DELETE FROM clearhealth_claim 
+			WHERE
+				encounter_id = ".$encounter->get('id');
+			$db =& Celini::dbInstance();
+			$db->execute($sql);
+			$this->messages->addMessage('Previous Claims Deleted');
+			$this->_generateClaim($encounter);
+		}
 
 		if (isset($_POST['encounter']['close'])) {
 			$patient =& Celini::newORDO('Patient',$encounter->get('patient_id'));
@@ -463,9 +489,21 @@ class C_Encounter extends Controller {
 				$this->messages->addMessage("This Patient has no Insurance Information, please add insurance information and try again <br>");
 				return;
 			}else{	
-				$encounter->set("status","closed");	
+				$encounter->set('status', 'closed');
 				$encounter->persist();
 				$this->_generateClaim($encounter);
+			}
+		}
+		
+		if (isset($_POST['encounter']['override'])) {
+			$billtype = $_POST['encounter']['overridebilltype'];
+			$encounter->set('current_payer',$_POST['encounter']['overridepayer']);
+			$encounter->set('status', 'closed');
+			$encounter->persist();
+			if($billtype == 'close') {
+				$this->_generateClaim($encounter);
+			} else {
+				$this->_handleRebill($encounter);
 			}
 		}
 		
@@ -474,6 +512,12 @@ class C_Encounter extends Controller {
 			$encounter->set('status', 'closed');
 			$encounter->persist();
 			$this->_handleRebill($encounter);
+		}
+		
+		// If we're rebilling the next payer in the group, set the next biller
+		if(isset($_POST['encounter']['rebillnext'])) {
+			$encounter->set('current_group_payer',$this->POST->get('rebillnextpayer'));
+			$encounter->persist();
 		}
 	}
 
@@ -529,13 +573,27 @@ class C_Encounter extends Controller {
 			$status = $claim->accountStatus($encounter->get('patient_id'),$encounterId);
 			if ($status['total_balance'] > 0) {
 
+				// If we're using a payer group and aren't currently on the last payer...
+				if($encounter->get('payer_group') > 0) {
+					$pg =& Celini::newORDO('PayerGroup',$encounter->get('payer_group'));
+					$payers = $encounter->valueList('current_payers');
+					if($encounter->get('current_payer') < 1 && count($payers) > 0) {
+						return true;
+					}
+					$lastpayer =& $payers[count($payers)];
+					if($encounter->get('current_payer') != $lastpayer->get('id')) {
+						return true;
+					}
+				}
 				// check for a secondary payer
-
+				// Not sure if we should use this anymore with groups
+				/*
 				ORDataObject::factory_include('InsuredRelationship');
 				$payers = InsuredRelationship::fromPersonId($encounter->get('patient_id'));
 				if (count($payers) > 1) {
 					return true;
 				}
+				*/
 			}
 		}
 
@@ -554,7 +612,7 @@ class C_Encounter extends Controller {
 	/**
 	 * Handles the actual interaction with the gateway
 	 *
-	 * <i>$type</i> should always be "new" or "rebill"
+	 * <i>$type</i> should always be "new" or "rebill" or "rebillnext"
 	 *
 	 * @param  Encounter
 	 * @param  string

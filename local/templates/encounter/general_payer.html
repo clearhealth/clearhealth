@@ -1,10 +1,10 @@
-<fieldset>
-	<legend>{l}Select Payer{/l}</legend>
-	<select name="encounter[current_payer]">
-	{html_options options=$insuredRelationship->getProgramList($encounter->get('patient_id')) selected=$encounter->get('current_payer') }
-	</select>
-	{if $encounter->get('status') != 'closed'}
-		<input type="submit" name="select_payer" value="Select Payer">
+<fieldset id="payergroupsholder">
+	<legend>{l}Select Payer Group{/l}</legend>
+	{$payergroupGrid->render()}
+	{if $payergroupGrid->empty}
+	{l}No groups available for this patient.{/l}
 	{/if}
-	<br />
+	{if $encounter->get('status') != 'closed'}
+		<input type="submit" name="select_payer_group" value="Select Payer Group">
+	{/if}
 </fieldset>

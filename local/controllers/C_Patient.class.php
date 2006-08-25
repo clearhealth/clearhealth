@@ -30,15 +30,15 @@ class C_Patient extends Controller {
 	 *
 	 * @see actionEdit()
 	 */
-	function actionAdd() {
-		return $this->actionEdit(0);
+	function actionAdd_add() {
+		return $this->actionEdit_edit(0);
 	}
 	
 	/**
 	 * Edit/Add an Patient
 	 *
 	 */
-	function actionEdit($patient_id = 0) {
+	function actionEdit_edit($patient_id = 0) {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('quicksave','quicksave');
 		$head->addJs('scriptaculous');

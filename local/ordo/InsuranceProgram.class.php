@@ -84,7 +84,7 @@ class InsuranceProgram extends ORDataObject {
 	 * Get the insurance companies name
 	 */
 	function get_insurance_company_name() {
-		$company =& ORDataObject::Factory('Company',$this->get('company_id'));
+		$company =& Celini::newORDO('Company',$this->get('company_id'));
 		return $company->get('name');
 	}
 	/**#@-*/
@@ -264,6 +264,18 @@ class InsuranceProgram extends ORDataObject {
 			$res->MoveNext();
 		}
 		return($ret);
+	}
+	
+	function value_fullname() {
+		$sql = "
+		SELECT CONCAT(c.name,'->',ip.name) AS name
+		FROM
+			insurance_program AS ip
+			LEFT JOIN company AS c ON(ip.company_id=c.company_id)
+		WHERE
+			ip.insurance_program_id=".$this->dbHelper->quote($this->get('id'));
+		$res = $this->dbHelper->execute($sql);
+		return $res->fields['name'];
 	}
 }
 ?>

@@ -75,9 +75,9 @@ class StatementHistory extends ORDataObject {
 	}
 	function get_date_generated() {
 		if ($this->date_generated === false) {
-			$this->_setDate('date_generated', date('Y-m-d H:i:s'));
+			$this->_setDate('date_generated', date('Y-m-d'));
 		}
-		return $this->_getTimestamp('date_generated');
+		return $this->_getDate('date_generated');
 	}
 
 	function get_pay_by() {

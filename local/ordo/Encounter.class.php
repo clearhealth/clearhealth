@@ -6,11 +6,6 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-/**
- * Object Relational Persistence Mapping Class for table: encounter
- *
- * @package	com.uversainc.clearhealth
- */
 class Encounter extends ORDataObject {
 
 	/**#@+
@@ -31,7 +26,7 @@ class Encounter extends ORDataObject {
 	var $_erCache = false;
 
 	var $storage_metadata = array(
-		'int' => array('current_payer'=>'','payment_plan'=>''), 
+		'int' => array('current_payer'=>'','payment_plan'=>'','payer_group_id'=>''), 
 		'date' => array(),
 		'string' => array()
 	);
@@ -140,7 +135,113 @@ class Encounter extends ORDataObject {
 
 	}
 
+	/**
+	 * When setting the payer group, we will go ahead and set the 
+	 * current_payer to the first payer of that group.
+	 *
+	 * @param int $payer_group_id
+	 */
+	function set_payer_group($payer_group_id) {
+		if($this->get('payer_group_id') != $payer_group_id) {
+			$this->set('payer_group_id',$payer_group_id);
+			$pg =& Celini::newORDO('PayerGroup',$payer_group_id);
+			$payers = $this->valueList('current_payers');
+			$keys = array_keys($payers);
+			if(count($keys) > 0) {
+				$this->set('current_payer',$keys[0]);
+			}
+		}
+	}
+	
+	function get_payer_group() {
+		return $this->get('payer_group_id');
+	}
+	
+	/**
+	 * Returns the id of the next payer of the assigned PayerGroup.
+	 * Returns false if at the end of the list.
+	 *
+	 * @return int|false
+	 */
+	function get_next_payer_id() {
+		$db =& $this->dbHelper;
+		$payers = array_keys($this->valueList('current_payers'));
+		$payer_order = 0;
+		for($i=0;$i<count($payers);$i++) {
+			if($payers[$i] == $this->get('current_payer')) {
+				$payer_order = $i+1;
+			}
+		}
+		return $payers[$payer_order];
+		$res = $db->execute($sql);
+		if($res->EOF) {
+			return false;
+		}
+		return $res->fields['insurance_program_id'];
+	}
 
+	/**
+	 * Creates a list of the payer groups & specific payers available
+	 * to this encounter.
+	 *
+	 * @return array
+	 */
+	function valueList_payers() {
+		$db =& $this->dbHelper;
+		$sql = "
+		SELECT
+			insurance_program_id,CONCAT(co.name,'=>',ip.name) AS program
+		FROM
+			payer_group AS pg
+			INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
+			INNER JOIN insurance_program  AS ip USING(insurance_program_id)
+			INNER JOIN insured_relationship AS ir ON(ip.insurance_program_id=ir.insurance_program_id)
+			INNER JOIN company AS co USING(company_id)
+			INNER JOIN encounter AS e ON(e.patient_id=ir.person_id AND e.encounter_id = ".$db->quote($this->get('id')).")
+		WHERE
+			ir.active = 1 AND ir.person_id = ".$db->quote($this->get('id'))."
+		ORDER BY 
+			ipg.`order` ASC,pg.name ASC
+		";
+		$res = $db->execute($sql);
+		$payers = array();
+		for($res->MoveFirst();!$res->EOF;$res->MoveNext()) {
+			$payers[$res->fields['insurance_program_id']] = $res->fields['program'];
+		}
+		return $payers;
+	}
+
+	/**
+	 * Creates a list of the specific payers available
+	 * to this encounter depending on its selected PayerGroup
+	 *
+	 * @return array
+	 */
+	function valueList_current_payers() {
+		$db =& $this->dbHelper;
+		$sql = "
+		SELECT
+			insurance_program_id,CONCAT(co.name,'=>',ip.name) AS program
+		FROM
+			payer_group AS pg
+			INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
+			INNER JOIN insurance_program  AS ip USING(insurance_program_id)
+			INNER JOIN insured_relationship AS ir ON(ip.insurance_program_id=ir.insurance_program_id)
+			INNER JOIN company AS co USING(company_id)
+			INNER JOIN encounter AS e ON(e.patient_id=ir.person_id AND e.encounter_id = ".$db->quote($this->get('id')).")
+		WHERE
+			ir.active = 1 AND ir.person_id = ".$db->quote($this->get('patient_id'))."
+			AND pg.payer_group_id = ".$db->quote($this->get('payer_group_id'))."
+		ORDER BY
+			ipg.`order` ASC,pg.name ASC
+		";
+		$res = $db->execute($sql);
+		$payers = array();
+		for($res->MoveFirst();!$res->EOF;$res->MoveNext()) {
+			$payers[$res->fields['insurance_program_id']] = $res->fields['program'];
+		}
+		return $payers;
+	}
 
 	/**#@-*/
 

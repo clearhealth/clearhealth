@@ -10,6 +10,7 @@
 
 <input type="hidden" id="claimId" value="{$claim->get('id')}">
 <input type="hidden" id="rebillAction" value="{$REBILL_ACTION}">
+<input type="hidden" id="billnextAction" value="{$BILLNEXT_ACTION}">
 
 <h3 style="margin: 0px; padding:0px;">Payment History</h3>
 {$paymentGrid->render()}
@@ -107,7 +108,7 @@
 	<tr>
 		<td><label>{l}Payer{/l}:</label></td>
 		<td><select name="payment[payer]">
-				{html_options options=$payers}
+				{html_options options=$payers selected=$encounter->get('current_payer')}
 			</select>
 {if $nopatientpaymentplans}
 <br />	<a href="#newplan" onclick="document.getElementById('newPaymentPlan').style.display='block';">{l}New Patient Payment Plan{/l}</a>
@@ -134,7 +135,12 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="submit" id="submit" value="Record Payment"><button onclick="return rebillSelfPay()" id="rebill">Rebill as Self Pay</button></td>
+		<td style="white-space:nowrap;">
+			<input type="submit" id="submit" value="Record Payment"><button onclick="return rebillSelfPay()" id="rebill">Rebill as Self Pay</button>
+			{if $encounter->get('next_payer_id') > 0 }
+			<button onclick="return rebillNextPayer()" id="rebillnext">Rebill To Next Payer</button>
+			{/if}
+		</td>
 	</tr>
 </tbody>
 </table>

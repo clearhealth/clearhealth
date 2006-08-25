@@ -78,9 +78,9 @@ class ClearhealthClaim extends ORDataObject {
 	function &fromEncounterId($encounter_id) {
 		settype($encounter_id,'int');
 
-		$claim =& ORDataOBject::factory('ClearhealthClaim');
-
-		$res = $claim->_execute("select claim_id from $claim->_table where encounter_id = $encounter_id");
+		$claim =& Celini::newORDO('ClearhealthClaim');
+		
+		$res = $claim->dbHelper->execute("select claim_id from ".$claim->tableName()." where encounter_id = $encounter_id");
 		if ($res && isset($res->fields['claim_id'])) {
 			$claim->setup($res->fields['claim_id']);
 		}
@@ -102,7 +102,7 @@ class ClearhealthClaim extends ORDataObject {
 			where
 				foreign_id = ".(int)$this->get('id') . " 
 			group by pc.code_id ";
-		$res = $this->_execute($sql);
+		$res = $this->dbHelper->execute($sql);
 		$ret = array();
 		while ($res && !$res->EOF) {
 			$ret[$res->fields['code']] = $res->fields;
@@ -127,7 +127,7 @@ class ClearhealthClaim extends ORDataObject {
 			where
 				p.foreign_id = ".(int)$this->get('id') . " 
 			group by pc.coding_data_id ";
-		$res = $this->_execute($sql);
+		$res = $this->dbHelper->execute($sql);
 		$ret = array();
 		while ($res && !$res->EOF) {
 			$ret[$res->fields['coding_data_id']] = $res->fields;
