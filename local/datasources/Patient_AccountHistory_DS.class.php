@@ -117,12 +117,14 @@ class Datasource_AccountHistory extends Datasource {
 			//	$this->_res->fields['balance'] = $this->_res->fields['carry'];
 				//var_dump($this->_res->fields);
 				$this->_res->fields['date_of_treatment'] = $this->_res->fields['payment_date'];
-				if (!is_null($this->_res->fields['payment_type'])) {
-					$this->_res->fields['identifier'] = 'copay';
+				if (is_null($this->_res->fields['payer_id'])) {
+					$this->_res->fields['identifier'] = 'Misc Payment';
+					$this->_res->fields['current_payer'] = $this->_res->fields['title'];
 					$this->_res->fields['writeoff'] = '';
 				}
 				else {
-					$this->_res->fields['identifier'] = $this->_res->fields['payer_id'];
+					$this->_res->fields['identifier'] = 'Payment';
+					$this->_res->fields['current_payer'] = $this->_res->fields['payer_id'];
 				}
 				$this->_valid = $this->payments[$claim_id]->valid();
 			}
@@ -170,7 +172,9 @@ class Datasource_AccountHistory extends Datasource {
 					date_format(payment_date,'$format') payment_date,
 					pa.timestamp,
 					u.username user,
-					ref_num",
+					ref_num,
+					pa.title
+					",
 				'from' 	=> '
 					payment AS pa
 					LEFT JOIN encounter AS e USING(encounter_id)
@@ -214,9 +218,9 @@ class Datasource_AccountHistory extends Datasource {
 				'cols' 	=> "
 					cc.claim_id,
 					mc.amount total_billed,
-					mc.title identifier,
+					mc.title current_payer,
 					date_format(mc.charge_date,'$format') billing_date,
-					'Misc Charge' current_payer,
+					'Misc Charge' identifier,
 					user.username user
 
 					",
