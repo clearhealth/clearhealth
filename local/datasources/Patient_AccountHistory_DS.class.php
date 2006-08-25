@@ -58,6 +58,7 @@ class Datasource_AccountHistory extends Datasource {
 		);
 
 		$line =& ORDataObject::factory('PaymentClaimline');
+		$this->addDefaultOrderRule('date_of_treatment','DESC',3);
 
 		$this->_numRows = $this->claims->numRows();
 		for($this->claims->rewind(); $this->claims->valid(); $this->claims->next()) {
@@ -263,6 +264,16 @@ class Datasource_AccountHistory extends Datasource {
 			$res->MoveNext();
 		}
 		return $adjustments;
+	}
+
+	function addOrderRule($column,$direction='ASC',$order=0) {
+		parent::addOrderRule($column,$direction,$order);
+		$this->claims->addOrderRule($column,$direction,$order);
+	}
+
+	function addDefaultOrderRule($column,$direction='ASC',$order=false) {
+		parent::addDefaultOrderRule($column,$direction,$order);
+		$this->claims->addDefaultOrderRule($column,$direction,$order);
 	}
 }
 ?>
