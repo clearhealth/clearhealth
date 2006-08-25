@@ -236,6 +236,8 @@ class ClearhealthClaim extends ORDataObject {
 				'current_payer' => 'Payer Name'
 			)
 		);
+		$ds->orderHints['billing_date'] = 'fbc.date_sent';
+		$ds->orderHints['date_of_treatment'] = 'e.date_of_treatment';
 		//echo $ds->preview();
 		return $ds;
 	}
