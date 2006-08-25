@@ -221,7 +221,7 @@ class Encounter extends ORDataObject {
 		$db =& $this->dbHelper;
 		$sql = "
 		SELECT
-			insurance_program_id,CONCAT(co.name,'=>',ip.name) AS program
+			ip.insurance_program_id,CONCAT(co.name,'=>',ip.name) AS program
 		FROM
 			payer_group AS pg
 			INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
