@@ -115,9 +115,22 @@ class Payment extends ORDataObject {
 	       	$labels['title'] = 'Title';
 	       	$labels['ref_num'] = 'Chk #';
 
+		$format = DateObject::getFormat();
+
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, payment_type, amount, writeoff, payer_id, DATE_FORMAT(payment_date, '%m/%d/%Y') payment_date, timestamp, title, ref_num",
-				'from' 	=> "$this->_table ",
+				'cols' 	=> "
+					payment_id, 
+					foreign_id, 
+					payment_type, 
+					amount, 
+					writeoff, 
+					payer_id, 
+					DATE_FORMAT(payment_date, '$format') payment_date, 
+					timestamp, 
+					title, 
+					ref_num
+				",
+				'from' 	=> $this->tableName(),
 				'where' => " foreign_id = $foreign_id"
 			),
 			$labels
@@ -144,8 +157,20 @@ class Payment extends ORDataObject {
 		}
 
 		$ds->setup($this->_db,array(
-				'cols' 	=> "payment_id, foreign_id, encounter_id, payment_type, amount, writeoff, payer_id, payment_date, timestamp, title, ref_num",
-				'from' 	=> "$this->_table ",
+				'cols' 	=> "
+					payment_id, 
+					foreign_id, 
+					encounter_id,
+					payment_type, 
+					amount, 
+					writeoff, 
+					payer_id, 
+					DATE_FORMAT(payment_date, '$format') payment_date, 
+					timestamp, 
+					title, 
+					ref_num
+				",
+				'from' 	=> $this->tableName(),
 				'where' => " encounter_id = $foreign_id"
 			),
 			$labels
