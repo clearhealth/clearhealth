@@ -13,14 +13,13 @@ class Encounter_PayerGroup_DS extends Datasource_sql
 		$this->setup(
 			Celini::dbInstance(),
 			array(
-				'cols' 	=> 'pg.payer_group_id name,CONCAT(co.name,\'=>\',ip.name) AS program,ipg.`order`, insurance_program_id',
+				'cols' 	=> 'pg.payer_group_id name,CONCAT(co.name,\'=>\',ip.name) AS program,ipg.`order`, ipg.insurance_program_id',
 				'from' 	=> 
 					'payer_group AS pg
 					INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
-					INNER JOIN insurance_program  AS ip USING(insurance_program_id)
+					INNER JOIN insurance_program  AS ip ON(ipg.insurance_program_id=ip.insurance_program_id)
 					INNER JOIN insured_relationship AS ir ON(ip.insurance_program_id=ir.insurance_program_id)
 					INNER JOIN company AS co ON(ip.company_id = co.company_id) ',
-				'orderby' => 'ipg.order ASC,pg.name ASC',
 				'where' => 'ir.active = 1 AND ir.person_id = '.$patient_id
 			),
 			array(
@@ -29,6 +28,8 @@ class Encounter_PayerGroup_DS extends Datasource_sql
 			)
 		);
 		
+		$this->addDefaultOrderRule('pg.name');
+		$this->addDefaultOrderRule('ipg.`order`');
 		$this->registerFilter('name',array(&$this,'_pgLink'));
 
 	}
