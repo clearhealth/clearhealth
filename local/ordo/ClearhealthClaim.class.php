@@ -191,22 +191,24 @@ class ClearhealthClaim extends ORDataObject {
 		}
 		
 		if ($foreign_id == 0) $foreign_id = "NULL";
+
+		$format = DateObject::getFormat();
 		
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> '
+				'cols' 	=> "
 					chc.claim_id, 
 					chc.identifier,
-					date_format(fbc.date_sent, "%Y-%m-%d") AS billing_date,
-					date_format(e.date_of_treatment,"%Y-%m-%d") AS date_of_treatment, 
+					date_format(fbc.date_sent, '$format') AS billing_date,
+					date_format(e.date_of_treatment,'$format') AS date_of_treatment, 
 					chc.total_billed,
 					chc.total_paid,
-					fbco.name AS "current_payer",
+					fbco.name AS current_payer,
 					b.name facility,
-					concat_ws(",",pro.last_name,pro.first_name) AS provider,
+					concat_ws(',',pro.last_name,pro.first_name) AS provider,
 					(chc.total_billed - chc.total_paid - SUM(IFNULL(pcl.writeoff,0))) AS balance, 
 					SUM(IFNULL(pcl.writeoff,0)) AS writeoff,
-					u.username user',
+					u.username user",
 				'from' 	=> 
 					$this->_table . ' AS chc 
 					INNER JOIN encounter AS e USING(encounter_id)
