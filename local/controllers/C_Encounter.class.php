@@ -459,7 +459,7 @@ class C_Encounter extends Controller {
 			$miscCharge =& Celini::newOrdo('MiscCharge');
 			$miscCharge->populateArray($_POST['misc_charge']);
 			$miscCharge->set('encounter_id',$this->encounter_id);
-			$miscCharge->set('charge_date','Y-m-d H:i:s');
+			$miscCharge->set('charge_date',date('Y-m-d H:i:s'));
 			$miscCharge->persist();
 		}
 		
