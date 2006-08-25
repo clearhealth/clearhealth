@@ -58,6 +58,8 @@ class MasterAccountHistory_DS extends Datasource {
 
 		$line =& Celini::newORDO('PaymentClaimline');
 
+		$this->addDefaultOrderRule('date_of_treatment','DESC',3);
+
 		$this->_numRows = $this->claims->numRows();
 		for($this->claims->rewind(); $this->claims->valid(); $this->claims->next()) {
 			$row = $this->claims->get();
@@ -85,9 +87,13 @@ class MasterAccountHistory_DS extends Datasource {
 	}
 
 	function addOrderRule($column,$direction='ASC',$order=0) {
-
 		parent::addOrderRule($column,$direction,$order);
 		$this->claims->addOrderRule($column,$direction,$order);
+	}
+
+	function addDefaultOrderRule($column,$direction='ASC',$order=false) {
+		parent::addDefaultOrderRule($column,$direction,$order);
+		$this->claims->addDefaultOrderRule($column,$direction,$order);
 	}
 
 	function next() {
