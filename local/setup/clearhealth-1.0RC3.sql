@@ -795,7 +795,8 @@ CREATE TABLE `encounter` (
   PRIMARY KEY  (`encounter_id`),
   KEY `building_id` (`building_id`),
   KEY `treating_person_id` (`treating_person_id`),
-  KEY `last_change_user_id` (`last_change_user_id`)
+  KEY `last_change_user_id` (`last_change_user_id`),
+  KEY `patient_id` (`patient_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -2658,7 +2659,10 @@ CREATE TABLE `insured_relationship` (
   `effective_start` date NOT NULL default '0000-00-00',
   `effective_end` date NOT NULL default '0000-00-00',
   `active` tinyint(1) NOT NULL default '1',
-  PRIMARY KEY  (`insured_relationship_id`)
+  PRIMARY KEY  (`insured_relationship_id`),
+  KEY `person_id` (`person_id`),
+  KEY `subscriber_id` (`subscriber_id`),
+  KEY `active` (`active`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -2809,6 +2813,10 @@ INSERT INTO `menu` VALUES (1,'a',1,'','children',0,'','','main'),(2,'default',1,
 76, 'billing', '24', '', 'children', '900', 'Code Categories', 'CodeCategory/list', 'main'
 ),
 (77, 'patient', '11', '', 'children', '0', 'Edit Patient', 'Patient/Edit', 'main'
+),(78, 'default', 1, '', 'children', 0, 'Reports', 'CalendarDisplay/report', 'main'),
+(79, 'patient', 1, '', 'children', 0, 'Reports', 'Patient/report', 'main'
+),(80, 'billing', '24', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
+),(81, 'admin', '37', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
 );
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `menu` ENABLE KEYS */;
@@ -2865,6 +2873,18 @@ LOCK TABLES `menu_report` WRITE;
 INSERT INTO `menu_report` VALUES (810587,23,800614,'Aged Trail Balance',NULL),(810597,23,607649,'Balance Aging',NULL),(810598,23,607652,'Balance Aging By Patient',NULL),(810599,23,800634,'Balance Aging By Payer',NULL),(810600,23,607654,'Balance Aging By Provider',NULL),(817199,17,607877,'Family Patient Statement',NULL),(818831,30,607671,'No-Show Report',NULL),(818832,300819,607685,'Transaction Report',NULL),(818990,17,818961,'Email List',NULL);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `menu_report` ENABLE KEYS */;
+
+
+CREATE TABLE `misc_charge` (
+`misc_charge_id` INT NOT NULL ,
+`encounter_id` INT NOT NULL ,
+`amount` FLOAT( 7, 2 ) NOT NULL ,
+`charge_date` DATETIME NOT NULL ,
+`title` VARCHAR( 50 ) NOT NULL ,
+`note` TEXT NOT NULL ,
+PRIMARY KEY ( `misc_charge_id` ),
+KEY `encounter_id` (`encounter_id`)
+) TYPE = MYISAM ;
 
 --
 -- Table structure for table `name_history`
@@ -3180,6 +3200,34 @@ CREATE TABLE `patient_statistics` (
 LOCK TABLES `patient_statistics` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `patient_statistics` ENABLE KEYS */;
+
+
+
+CREATE TABLE `payer_group` (
+`payer_group_id` INT NOT NULL ,
+`name` VARCHAR( 255 ) NOT NULL ,
+`description` TEXT NOT NULL ,
+PRIMARY KEY ( `payer_group_id` )
+) ENGINE = MYISAM ;
+
+INSERT INTO `payer_group` ( `payer_group_id` , `name` , `description` )
+VALUES (
+'1', 'Default Group', 'Default payer group to exist for all payers/encounters (unless patient does not have Self Pay)'
+);
+
+CREATE TABLE `insurance_payergroup` (
+  `payer_group_id` int(11) NOT NULL,
+  `insurance_program_id` int(11) NOT NULL,
+  `order` int(11) NOT NULL,
+  KEY `payer_group_id` (`payer_group_id`)
+) ENGINE=MyISAM ;
+
+INSERT INTO `insurance_payergroup` ( `payer_group_id` , `insurance_program_id` , `order` )
+VALUES (
+'1', '100001', '1'
+);
+
+
 
 --
 -- Table structure for table `payment`
