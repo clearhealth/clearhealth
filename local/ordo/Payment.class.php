@@ -148,7 +148,6 @@ class Payment extends ORDataObject {
 		if ($foreign_id == 0) $foreign_id ="NULL";
 		
 		$ds =& new Datasource_sql();
-
 		$labels = array('payment_type' => 'Type','payment_date' => 'Payment Date', 'amount' => 'Amount','title' => 'Title','ref_num' => 'Chk #');
 		if ($extraCols) {
 			$labels['writeoff'] = "Write Off";
@@ -165,7 +164,7 @@ class Payment extends ORDataObject {
 					amount, 
 					writeoff, 
 					payer_id, 
-					DATE_FORMAT(payment_date, '$format') payment_date, 
+					DATE_FORMAT(payment_date, '".DateObject::getFormat()."') payment_date, 
 					timestamp, 
 					title, 
 					ref_num
