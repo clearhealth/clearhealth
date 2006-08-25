@@ -19,7 +19,7 @@ class Encounter_PayerGroup_DS extends Datasource_sql
 					INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
 					INNER JOIN insurance_program  AS ip USING(insurance_program_id)
 					INNER JOIN insured_relationship AS ir ON(ip.insurance_program_id=ir.insurance_program_id)
-					INNER JOIN company AS co USING(company_id) ',
+					INNER JOIN company AS co ON(ip.company_id = co.company_id) ',
 				'orderby' => 'ipg.order ASC,pg.name ASC',
 				'where' => 'ir.active = 1 AND ir.person_id = '.$patient_id
 			),

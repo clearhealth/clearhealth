@@ -196,7 +196,7 @@ class Encounter extends ORDataObject {
 			INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
 			INNER JOIN insurance_program  AS ip USING(insurance_program_id)
 			INNER JOIN insured_relationship AS ir ON(ip.insurance_program_id=ir.insurance_program_id)
-			INNER JOIN company AS co USING(company_id)
+			INNER JOIN company AS co ON(ip.company_id = co.company_id)
 			INNER JOIN encounter AS e ON(e.patient_id=ir.person_id AND e.encounter_id = ".$db->quote($this->get('id')).")
 		WHERE
 			ir.active = 1 AND ir.person_id = ".$db->quote($this->get('id'))."
