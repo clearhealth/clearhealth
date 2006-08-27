@@ -3676,6 +3676,7 @@ CREATE TABLE `recurrence` (
   `end_date` date NOT NULL default '0000-00-00',
   `start_time` time default NULL,
   `end_time` time default NULL,
+  `recurrence_pattern_id` INT(11) NOT NULL default '0',
   PRIMARY KEY  (`recurrence_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -3696,7 +3697,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `recurrence_pattern`;
 CREATE TABLE `recurrence_pattern` (
   `recurrence_pattern_id` int(11) NOT NULL default '0',
-  `pattern_type` enum('day','monthday','monthweek','yearmonthday','yearmonthweek') NOT NULL default 'day',
+  `pattern_type` enum('day','monthday','monthweek','yearmonthday','yearmonthweek','dayweek') NOT NULL default 'day',
   `number` int(11) default NULL,
   `weekday` enum('1','2','3','4','5','6','7') default NULL,
   `month` enum('01','02','03','04','05','06','07','08','09','10','11','12') default NULL,
