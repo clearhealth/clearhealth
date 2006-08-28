@@ -68,7 +68,7 @@ class C_MasterAccountHistory extends Controller {
 
 		$sql = $ds->claims->_query;
 		$sql['cols'] = "chc.claim_id";
-		$db =& Celini::dbInstance();
+		$db = new clniDb();
 		$claimssql = "SELECT {$sql['cols']} FROM {$sql['from']} ";
 		$claimssql .= $sql['where'] != '' ? "WHERE {$sql['where']}" : '';
 		$claimssql .= " GROUP BY {$sql['groupby']}";
