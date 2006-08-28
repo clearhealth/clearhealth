@@ -82,11 +82,7 @@
 Patient:
 {$patient->get('last_name')} {$patient->get('first_name')} #{$patient->get('record_number')}
 </td><td>
-Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
-</tr>
-<tr>
-	<td>Provider: {$provider->get('first_name')} {$provider->get('last_name')}, {$provider->get('salutation')}</td>
-	<td>Due&nbsp;Date:&nbsp;{$pay_by}</td>
+Statement&nbsp;Date:&nbsp;{$statement_date}{*&nbsp;#{$statement_number}*}</td>
 </tr>
 </table>
 <br><br>
@@ -97,31 +93,37 @@ Statement&nbsp;Date:&nbsp;{$statement_date}&nbsp;#{$statement_number}</td>
 		{if $familyStatement}
 		<th>Patient</th>
 		{/if}
+		<th>Provider</th>
 		<th>Procedure</th>
-		<th>Prodcedure Code</th>
+		<th>Code</th>
 		<th>Charges</th>
-		<th>Credits</th>
-		<th>Outstanding</th>
+		<th>Payments</th>{*
+		<th>Outstanding</th>*}
+		<th>Payer</th>
 	</tr>
 	{foreach from=$lines item=line key=key}
 	<tr {if $key%2 == 0}class="alt"{/if}>
-			<td>{$line.item_date}</td>
+			<td valign="top">{if $line.payer_id > 0}{$line.payment_ts}{else}{$line.item_date}{/if}</td>
 			{if $familyStatement}
-			<td>{$line.patient_name}</td>
+			<td valign="top">{$line.patient_name}</td>
 			{/if}
-			<td>{$line.code_text}</td>
-			<td>{$line.code}</td>
-			<td>{$line.charge}</td>
-			<td>{$line.credit}</td>
-			<td>{$line.outstanding}</td>
+			<td valign="top">{$line.provider_name}</td>
+			<td valign="top">{$line.code_text}</td>
+			<td valign="top">{$line.code}</td>
+			<td valign="top">{if $line.payer_id == 0}{$line.charge}{/if}</td>
+			<td valign="top">{if $line.payer_id > 0}{$line.credit}{/if}</td>{*
+			<td valign="top">{$line.outstanding}</td>*}
+			<td valign="top">{if $line.payer_id > 0}{$line.payer_name}{/if}</td>
 		</tr>
 	{/foreach}
+	{*
 	<tr>
-		<th colspan="{if $familyStatement}4{else}3{/if}" style="background-color: #ccc">Total</th>
+		<th colspan="{if $familyStatement}5{else}4{/if}" style="background-color: #ccc">Total</th>
 		<td style="background-color: #ccc">{$total_charges|string_format:"%.2f"}</td>
 		<td style="background-color: #ccc">{$total_credits|string_format:"%.2f"}</td>
 		<td style="background-color: #ccc">{$total_outstanding|string_format:"%.2f"}</td>
 	</tr>
+	*}
 </table>
 {if $plans}
 <br><br>

@@ -326,11 +326,10 @@ class C_Patient extends Controller {
 
 		list($sql,$agingSql) = $this->_genPatientStatementSql($patientId,$includeDependants);	
 		list($lines,$plines) = $this->_statementData($patientId,$includeDependants,$snapshotId,$sh,$sql,$agingSql);
-
 		if (isset($rs)) {
 			$rs->set('data',serialize($this->data));
 		}
-
+		
 		if (isset($this->noRender) && $this->noRender === true) {
 			return "statement.html";
 		}
@@ -348,7 +347,7 @@ class C_Patient extends Controller {
 		);
 
 
-		$db =& Celini::dbInstance();
+		$db =& new clniDB();
 		$res = $db->execute($sql);
 
 		$lines = array();
@@ -360,6 +359,8 @@ class C_Patient extends Controller {
 			$total_charges += $res->fields['charge'];
 			$total_credits += $res->fields['credit'];
 			$res->fields['outstanding'] = number_format($total_charges - $total_credits,2);
+			$payer =& Celini::newORDO('InsuranceProgram',$res->fields['payer_id']);
+			$res->fields['payer_name'] = $payer->value('fullname');
 			$lines[] = $res->fields;
 			$res->MoveNext();
 		}
@@ -541,7 +542,7 @@ class C_Patient extends Controller {
 		$encounterBalanceSql = "
 		select
 			feeData.encounter_id,
-			(charge - ifnull(credit,0.00)) balance
+			(charge + ifnull(misc_charge,0.00) - ifnull(credit,0.00)) balance
 		from
 			/* Fee total */
 			(
@@ -557,6 +558,19 @@ class C_Patient extends Controller {
 			group by
 				e.encounter_id
 			) feeData
+		left join
+			/* Misc charges */
+			(
+			select
+				e.encounter_id,
+				SUM(mc.amount) misc_charge
+			FROM
+				encounter e
+				INNER JOIN misc_charge mc USING(encounter_id)
+			WHERE
+				$patientSelectSql
+			GROUP BY e.encounter_id
+			) miscChargeData ON(feeData.encounter_id=miscChargeData.encounter_id)
 		left join
 			/* Payment totals */
 			(
@@ -608,7 +622,10 @@ class C_Patient extends Controller {
 			0.00 credit,
 			0.00 outstanding,
 			e.encounter_id,
-			concat_ws(', ',pr.last_name,pr.first_name) patient_name
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
+			prov.last_name AS provider_name,
+			'0000-00-00' AS payment_ts,
+			0 AS payer_id
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
@@ -616,6 +633,7 @@ class C_Patient extends Controller {
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
+			inner join person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql and balance > 0
@@ -631,7 +649,10 @@ class C_Patient extends Controller {
 			(pl.paid+pl.writeoff) credit,
 			0.00 outstanding,
 			e.encounter_id,
-			concat_ws(', ',pr.last_name,pr.first_name) patient_name
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
+			prov.last_name AS provider_name,
+			DATE_FORMAT(p.timestamp,'$format') AS payment_ts,
+			p.payer_id
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
@@ -639,6 +660,7 @@ class C_Patient extends Controller {
 			inner join payment_claimline pl using(payment_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
+			INNER JOIN person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql
@@ -656,7 +678,10 @@ class C_Patient extends Controller {
 			(pl.paid+pl.writeoff) credit,
 			0.00,
 			e.encounter_id,
-			concat_ws(', ',pr.last_name,pr.first_name) patient_name
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
+			prov.last_name provider_name,
+			DATE_FORMAT(p.timestamp,'$format') AS payment_ts,
+			p.payer_id
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
@@ -665,6 +690,7 @@ class C_Patient extends Controller {
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
+			inner join person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql
@@ -672,6 +698,7 @@ class C_Patient extends Controller {
 			$withbalance
 		) data
 		order by encounter_id DESC , item_date
+			,payment_ts ASC
 		";
 		return array($sql,$agingSql);
 	}
