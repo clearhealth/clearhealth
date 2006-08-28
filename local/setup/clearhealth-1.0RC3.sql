@@ -4168,6 +4168,7 @@ CREATE TABLE `storage_string` (
 
 /*!40000 ALTER TABLE `storage_string` DISABLE KEYS */;
 LOCK TABLES `storage_string` WRITE;
+INSERT INTO `storage_string` (`foreign_key`, `value_key`, `value`) VALUES (607876, 'system_report', '/Patient/familyStatement');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `storage_string` ENABLE KEYS */;
 
