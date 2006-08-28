@@ -9,6 +9,7 @@
 $loader->requireOnce('includes/Datasource.class.php');
 $loader->requireOnce('includes/Datasource_sql.class.php');
 $loader->requireOnce('datasources/MasterClaimList_DS.class.php');
+$loader->requireOnce('datasources/Claim_MiscCharge_DS.class.php');
 
 /**
  * Specialized datasource for managing account history
@@ -21,6 +22,7 @@ class MasterAccountHistory_DS extends Datasource {
 	var $lineRewind = array();
 	var $payments = array();
 	var $paymentRewind = array();
+	var $miscChargeRewind = array();
 	var $_res = false;
 	var $_numRows = false;
 	var $_valid = false;
@@ -28,6 +30,7 @@ class MasterAccountHistory_DS extends Datasource {
 	var $_type = 'html';
 	var $_internalName = 'MasterAccountHistory_DS';
 	var $csvRenderer = 'Grid_Renderer_AccountHistory_CSV';
+	var $miscCharges = array();
 
 	function MasterAccountHistory_DS($filters = false) {
 		$this->filters = $filters;
@@ -68,6 +71,8 @@ class MasterAccountHistory_DS extends Datasource {
 
 			$this->payments[$claim_id] =& $this->_paymentList($person_id,$claim_id);
 			$this->_numRows += $this->payments[$claim_id]->numRows();
+			$this->miscCharges[$claim_id] =& new Claim_MiscCharge_DS($claim_id);
+			$this->_numRows += $this->miscCharges[$claim_id]->numRows();
 		}
 	}
 
@@ -104,14 +109,30 @@ class MasterAccountHistory_DS extends Datasource {
 		$claim_id = $this->claim_id;
 
 		if (isset($this->payments[$claim_id]) && $nextClaim) {
-			if (!isset($this->paymentRewind[$claim_id])) {
+			if (!isset($this->miscChargeRewind[$claim_id])) {
+				$this->miscCharges[$claim_id]->rewind();
+				$this->miscChargeRewind[$claim_id] = true;
+			}
+			else if (!isset($this->paymentRewind[$claim_id])) {
 				$this->payments[$claim_id]->rewind();
 				$this->paymentRewind[$claim_id] = true;
 			}
 			else {
-				$this->payments[$claim_id]->next();
+				if ($this->miscCharges[$claim_id]->valid()) {
+					$this->miscCharges[$claim_id]->next();
+				}
+				else {
+					$this->payments[$claim_id]->next();
+				}
 			}
-			if ($this->payments[$claim_id]->valid()) {
+
+			if ($this->miscCharges[$claim_id]->valid()) {
+				$nextClaim = false;
+
+				$this->_res = $this->miscCharges[$claim_id]->_res;
+				$this->_valid = $this->miscCharges[$claim_id]->valid();
+			}
+			else if ($this->payments[$claim_id]->valid()) {
 				$nextClaim = false;
 				$this->_res = $this->payments[$claim_id]->_res;
 				$this->_res->fields['total_paid'] = $this->_res->fields['amount'];
