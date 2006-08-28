@@ -81,6 +81,40 @@ function addNew(&$sqls) {
 	$sqls = array();
 }
 
+// Upgrade to Payer groups if we only have the default payer (self pay) in the group.
+$sql = "
+	SELECT *
+	FROM
+		insurance_payergroup
+	";
+$res = $db->execute($sql);
+if($res->numRows() == 1) {
+	debug('Upgrading to Payer Groups');
+	$sql = "
+	SELECT insurance_program_id
+	FROM insurance_program
+	WHERE insurance_program_id > 110000
+	";
+	$res = $db->execute($sql);
+	$sqls = array();
+	$x = 1;
+	while($res && !$res->EOF) {
+		$x++;
+		$sqls[] = "({$res->fields['insurance_program_id']},1,{$x})";
+		$res->MoveNext();
+	}
+	if(count($sqls) > 0) {
+		$sql = "
+		INSERT INTO
+			insurance_payergroup (`insurance_program_id`,`payer_group_id`,`order`)
+			VALUES
+		".implode(',',$sqls);
+		$db->execute($sql);
+	}
+	$x--;
+	debug("Added $x Insurance Programs to default Payer Group");
+}
+
 debug("done.");
 
 
