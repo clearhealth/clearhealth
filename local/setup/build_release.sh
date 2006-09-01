@@ -5,12 +5,12 @@ SCRIPT_HOME=`dirname $0`
 NAME="clearhealth"
 RELEASE="1.0RC3"
 #REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/RB_$RELEASE"
-REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/trunk"
+REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/1.0.x"
 SVN_REV="HEAD"
 TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"
 BUILD_BASE="/tmp"
 CELINI_APP="true"
-CELINI_URL="https://svn2.uversainc.com/svn/celini/trunk"
+CELINI_URL="https://svn2.uversainc.com/svn/celini/branches/1.0.x"
 CELINI_REV="HEAD"
 INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
@@ -98,7 +98,7 @@ clean_release "$SCRIPT_HOME/no_package"
 for MODULE in $MODULES; do
 	echo "Exporting module $MODULE to $BUILD_DIR/modules/$MODULE"
 	#svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/RB_$RELEASE $BUILD_DIR/modules/$MODULE
-	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/trunk $BUILD_DIR/modules/$MODULE
+	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/1.0.x $BUILD_DIR/modules/$MODULE
 	if [ $? -ne 0 ]; then
 		echo "Could not export module $MODULE!"
 		exit 3
@@ -133,6 +133,7 @@ if [ $? -ne 0 ]; then
 	echo "Error creating db cache files"
 	exit 4
 fi
+
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
 CUR_DIR=`pwd`
