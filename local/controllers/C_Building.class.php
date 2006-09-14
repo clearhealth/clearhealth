@@ -16,7 +16,12 @@ class C_Building extends Controller
 		
 		$this->assign("building",$this->_ordo);
 		$s =& Celini::newORDO('Practice');
-		$this->assign("practices",$this->utility_array($s->practices_factory(),"id","name"));
+		$practices = $this->utility_array($s->practices_factory(),"id","name");
+		if(count($practices) == 0) {
+			$this->messages->addMessage('You must add a practice before adding a building.');
+			return;
+		}
+		$this->assign("practices",$practices);
 		
 		$fc = &new FacilityCode();
 		$this->assign('facilityCodeList', $fc->valueListForDropDown()); 

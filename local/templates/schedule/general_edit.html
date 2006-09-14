@@ -31,7 +31,7 @@ Providers should only have ONE schedule with the new wizard.
 	<input type="submit" value="Update" />
 	{/if}
 	{else}
-		<a href="{link defaultArg=$schedule->get('id')}event_group_id={$eventGroup->get('id')}">{l}Edit{/l} {$eventGroup->get('title')}</a><br />
+		<a href="{link defaultArg=$schedule->get('id')}event_group_id={$eventGroup->get('id')}">{l}Edit{/l} {$eventGroup->get('title')}</a> <a href="{link defaultArg=$schedule->get('id')}delete_event_group={$eventGroup->get('id')}" onclick="return confirm('{l}Confirm Event Group Deletion?{/l}');">D</a><br />
 	{/if}{* egid *}
 	{assign var=eventGroup value=$eventGroups->next()}
 </fieldset>

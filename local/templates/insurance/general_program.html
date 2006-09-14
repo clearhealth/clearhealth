@@ -13,6 +13,10 @@
 			<td><input name="insuranceProgram[name]" value="{$insuranceProgram->get('name')}"></td>
 		</tr>
 		<tr>
+			<td><label>{l}Payer Identifier{/l}:</label></td>
+			<td>{clni_input name="insuranceProgram[payer_identifier]" type="string" value=$insuranceProgram->get('payer_identifier')}</td>
+		</tr>
+		<tr>
 			<td><label>{l}Payer Type{/l}:</label></td>
 			<td><select name="insuranceProgram[payer_type]">
 					{html_options options=$insuranceProgram->getPayerTypeList() selected=$insuranceProgram->get('payer_type')}

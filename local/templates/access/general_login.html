@@ -10,7 +10,7 @@
 	</tr>
 	<tr>
 		<td>{l}Username{/l}:&nbsp;</td>
-		<td><input type="text" name="username" size="15" value="{$username}"></td>
+		<td><input type="text" name="username" size="15" value="{$username}" id="usernameBox"></td>
 	</tr>
 	<tr>
 		<td>{l}Password{/l}:&nbsp;</td>
@@ -22,5 +22,10 @@
 </table>
 <input type="hidden" name="process" value="{$PROCESS}">
 </form>
+
+<script type="text/javascript">
+document.getElementById("usernameBox").focus();
+</script>
+
 </body>
 </html>

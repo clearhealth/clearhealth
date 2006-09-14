@@ -1,4 +1,8 @@
+{if $addressErrorMessage}
+{clni_register_validation_rule id="addrName" message=$addressErrorMessage rule="address"}
+{else}
 {clni_register_validation_rule id="addrName" message="Every Person requires an Address, if this person does not have an address add one with a name of \"No Address\" to signify this." rule="address"}
+{/if}
 {head type="js"}
 	var addressElements = [];
 	Behavior.register('#address',function(element) 

@@ -49,7 +49,7 @@ class C_PayerGroup extends Controller {
 		$this->messages->addMessage('Payer Group Updated');
 		$this->payer_group_id = $pg->get('id');
 		$db =& new clniDB();
-		$payers = $pg->valueList('payerids');
+		$payers = $pg->valueList('payer_id');
 		if($this->POST->get('newPayer') != '') {
 			if(in_array($this->POST->get('newPayer'),$payers)) {
 				$this->messages->addMessage('Cannot add payers multiple times.');

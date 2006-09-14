@@ -10,7 +10,6 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 	function isValid() {
 		$cd = new ClearhealthCalendarData();
 		$appointments = $cd->appointmentsOverlapping($this->appointment->get('start'),$this->appointment->get('end'));
-
 		$valid = true;
 
 		$appId = $this->appointment->get('id');
@@ -46,10 +45,22 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 		// check for provider double booking - looks at how many appointments a provider is doing at once
 		$messages = array();
 		$providerId = $this->appointment->get('provider_id');
-		foreach($appointments as $appointment) {
-			if ($providerId == $appointment['provider_id']) {
-				$provider = $appointment['providerName'];
-				$messages[] = $this->appointmentSummary($appointment);
+		if ($providerId > 0) {
+			foreach($appointments as $appointment) {
+				if ($providerId == $appointment['provider_id']) {
+					$provider = $appointment['providerName'];
+					$messages[] = $this->appointmentSummary($appointment);
+				} else {
+					// Check if the provider exists in the appointment's breakdown
+					$providers = explode(',',$appointment['breakdown_providers']);
+					$providernames = explode(',',$appointment['breakdown_providernames']);
+					foreach($providers as $id=>$bkdnprovider) {
+						if($providerId == $bkdnprovider) {
+							$provider = $providernames[$id];
+							$messages[] = $this->appointmentSummary($appointment);
+						}
+					}
+				}
 			}
 		}
 		if (count($messages) > 0) {

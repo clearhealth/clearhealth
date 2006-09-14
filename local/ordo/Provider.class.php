@@ -137,9 +137,10 @@ class Provider extends MergeDecorator {
 		$sql = 'SELECT
 				DISTINCT u.user_id, u.username
 			FROM
-				user AS u
-				INNER JOIN person AS p USING(person_id)
-				INNER JOIN person_type AS pt USING(person_id)
+				provider AS pr
+				INNER JOIN user AS u ON(pr.person_id=u.person_id)
+				INNER JOIN person AS p ON(p.person_id=u.person_id)
+				INNER JOIN person_type AS pt ON(pt.person_id=u.person_id)
 				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
 				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
 			WHERE

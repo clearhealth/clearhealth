@@ -54,7 +54,11 @@ class C_User extends Controller {
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
 		$room =& ORdataObject::factory('Room');
-
+		$roomlist = $room->rooms_practice_factory();
+		if(count($roomlist) == 1) {
+			$this->messages->addMessage('Please create a practice with a building and room before creating any users.');
+			return;
+		}
 		$user =& User::fromPersonId($person_id);
 		if ($person->get('id') == 0) {
 			$person->set_type(2);
@@ -105,7 +109,7 @@ class C_User extends Controller {
 		$this->assign_by_ref('identifier',$identifier);
 		$this->assign_by_ref('nameHistoryGrid',$nameHistoryGrid);
 		$this->assign_by_ref('identifierGrid',$identifierGrid);
-		$this->assign("rooms_practice_array",$room->rooms_practice_factory());
+		$this->assign("rooms_practice_array",$roomlist);
 		$this->assign('now',date('Y-m-d'));
 
 		return $this->view->render('edit.html');

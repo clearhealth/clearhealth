@@ -1,4 +1,4 @@
-{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+{clni_form action=$FORM_ACTION autocomplete="off" process=$PROCESS id="insuranceForm"}
 {if $sicGrid}
 <div style="border: 2px solid rgb(153, 153, 153); width: 325px; background-color: rgb(255, 255, 153);">
 <div style="padding: 3px;">
@@ -13,7 +13,7 @@
 	<input type="hidden" name="checkSimilar" value="0">
 </fieldset>
 {/if}
-
+<div id="insuranceGeneralEditMessages"></div>
 {if $ipGrid}
 <br>
 <div style="border: 2px solid rgb(153, 153, 153); width: 325px; background-color: rgb(255, 255, 153);">
@@ -33,10 +33,12 @@
 	
 {if $company->get('id') > 0}
 	{assign var="parent" value=$company}
+	{assign var="addressErrorMessage" value="An insurance company must have at least one address for billing purposes."}
 	{include file="insurance/general_program.html"}
 	{include file="contacts/general_phone.html"}
 	{include file="contacts/general_address.html"}
 	{*{include file="contacts/general_related_companies.html"}*}
 {/if}
 </form>
+{clni_register_message_target formId="insuranceForm" targetId="insuranceGeneralEditMessages"}
 

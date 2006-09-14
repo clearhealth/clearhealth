@@ -104,7 +104,7 @@ class C_Coding extends Controller {
 		}
 	}
 
-	function update_action_edit($foreign_id = 0, $coding_data_id = 0) {
+	function update_action_edit($foreign_id = 0, $coding_data_id = 0, $icd_id = 0) {
 		if($foreign_id == 0)
 			$foreign_id = $this->foreign_id;
 		$encounter_id = $foreign_id; //Makes so much more sense...
@@ -132,9 +132,12 @@ class C_Coding extends Controller {
 
 		//Get the REAL parent_id. From the CodingData 
 		$parent_code =& Celini::newORDO('Code', $code_data->get('code_id'));
-	
-		
+
 		$child_codes = $foreign_id == 0 ? array() : $code_data->getChildCodes($coding_data_id);
+		$icd_code =& Celini::newORDO('Code',$icd_id);
+		if($icd_id > 0) {
+			$this->view->assign_by_ref('icd_edit_code',$icd_code);
+		}
 		$code_list = $code_data->getCodeList($encounter_id);
 		$GLOBALS['currentCodeList'] = $code_list;
 		if(is_array($child_codes) && count($child_codes) > 0){
@@ -392,8 +395,8 @@ class C_Coding extends Controller {
 				if ($limit) {
 					array_push($filterList, 'fsd.data > 0');
 					array_push($tableList,
-						'LEFT JOIN fee_schedule_data AS fsd USING (code_id)',
-						'LEFT JOIN fee_schedule AS fs USING (fee_schedule_id)');
+						'LEFT JOIN fee_schedule_data AS fsd on c.code_id = fsd.code_id',
+						'LEFT JOIN fee_schedule AS fs on fsd.fee_schedule_id = fs.fee_schedule_id');
 					$orderList[] = 'fs.priority DESC';
 				}
 				break;
@@ -402,8 +405,8 @@ class C_Coding extends Controller {
 				if ($limit) {
 					array_push($filterList,'fsd.data > 0');
 					array_push($tableList,
-						'LEFT JOIN fee_schedule_data AS fsd USING (code_id)',
-						'LEFT JOIN fee_schedule AS fs USING (fee_schedule_id)');
+						'LEFT JOIN fee_schedule_data AS fsd on c.code_id = fsd.code_id',
+						'LEFT JOIN fee_schedule AS fs USING fs on fsd.fee_schedule_id = fs.fee_schedule_id');
 					$orderList[] = 'fs.priority DESC';
 				}
 				break;

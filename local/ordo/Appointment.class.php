@@ -284,20 +284,25 @@ class Appointment extends ORDataObject {
 			$me =& Me::getInstance();
 			$this->set('last_changed_id', $me->get_id());
 		}
-		$db =& Celini::dbInstance();
-		$sql = "DELETE FROM appointment_breakdown WHERE appointment_id=".$db->quote($this->get('id'));
-		$res = $db->execute($sql);
+		$sql = "DELETE FROM appointment_breakdown WHERE appointment_id=".$this->dbHelper->quote($this->get('id'));
+		$res = $this->dbHelper->execute($sql);
 		if(is_array($this->breakdowns)) {
 			foreach($this->breakdowns as $breakdown) {
 				$breakdown->set('appointment_id',$this->get('id'));
 				$breakdown->persist();
 			}
 		}
+		$view = new clniView();
+		$view->clear_cache('general_singleappointment.html',$this->get('patient_id'),$this->get('id'));
+		$view->clear_cache('general_innerappointment.html',$this->get('patient_id'),$this->get('id'));
 	}
 	
 	function drop() {
 		$this->populateEvent();
 		$this->_event->drop();
+		$view = new clniView();
+		$view->clear_cache('general_singleappointment.html',$this->get('patient_id'),$this->get('id'));
+		$view->clear_cache('general_innerappointment.html',$this->get('patient_id'),$this->get('id'));
 		parent::drop();
 	}
 	

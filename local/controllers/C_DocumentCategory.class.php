@@ -33,7 +33,7 @@ class C_DocumentCategory extends Controller {
 	}
 
 	function list_action_view() {
-	 	//$this->tree->rebuild_tree(1,1);
+	 	$this->tree->rebuild_tree(1,1);
 		
 		$icon         = 'folder.gif';
 		$expandedIcon = 'folder-expanded.gif';
@@ -129,45 +129,44 @@ class C_DocumentCategory extends Controller {
 		if (!is_array($array)) {
 			$array = array();	
 		}
- 		$node = &$this->_last_node;
- 		$icon = 'folder.gif';
+		$node = &$this->_last_node;
+		$icon = 'folder.gif';
 		$expandedIcon = 'folder-expanded.gif';
- 		foreach($array as $id => $ar) {
- 			if (is_array($ar) || !empty($id)) {
- 			  if ($node == null) {
- 			  	
- 			  	//echo "r:" . $this->tree->get_node_name($id) . "<br>";
-			    $rnode = new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
-			    $this->_last_node = &$rnode;
- 			  	$node = &$rnode;
-			  }
-			  else {
-			  	//echo "p:" . $this->tree->get_node_name($id) . "<br>";
- 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
-			  }
- 			  if (is_array($ar)) {
- 			    $this->_array_recurse($ar);
- 			  }
- 			}
- 			else {
- 				if ($id === 0 && !empty($ar)) {
- 				  $info = $this->tree->get_node_info($id);
- 				  //echo "b:" . $this->tree->get_node_name($id) . "<br>";
- 				  $node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
- 				}
- 				else {
- 					//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
- 					//this conditional tree could be more efficient but working with trees makes my head hurt, TODO
- 					if ($id !== 0 && is_object($node)) {
- 					  //echo "n:" . $this->tree->get_node_name($id) . "<br>";
- 				  	  $node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
- 					}
- 				}
- 			}	
- 		}
- 		return $node;
- 	}
- 	
+		foreach($array as $id => $ar) {
+			if (is_array($ar) || !empty($id)) {
+				if ($node == null) {
+
+					//echo "r:" . $this->tree->get_node_name($id) . "<br>";
+					$rnode = new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
+					$this->_last_node = &$rnode;
+					$node = &$rnode;
+				}
+				else {
+					//echo "p:" . $this->tree->get_node_name($id) . "<br>";
+					$this->_last_node = &$node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+				}
+				if (is_array($ar)) {
+					$this->_array_recurse($ar);
+				}
+			}
+			elseif ($id === 0 && !empty($ar)) {
+				$info = $this->tree->get_node_info($id);
+				//echo "b:" . $this->tree->get_node_name($id) . "<br>";
+				if(isset($info['value'])) {
+					$node->addItem(new HTML_TreeNode(array('text' => $info['value'], 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+				}
+			}
+			else {
+				//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
+				//this conditional tree could be more efficient but working with trees makes my head hurt, TODO
+				if ($id !== 0 && is_object($node)) {
+					//echo "n:" . $this->tree->get_node_name($id) . "<br>";
+					$node->addItem(new HTML_TreeNode(array('text' => $this->tree->get_node_name($id), 'link' => Celini::link("add_node") . "parent_id=" . ($id) . "&", 'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+				}
+			}
+		}
+		return $node;
+	}
 }
 
 ?>

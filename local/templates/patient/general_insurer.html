@@ -92,7 +92,7 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 		<p>{l}Patient has no Payers Assigned{/l}</p>
 		{/if}
 
-		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
+		<input type="hidden" id="insured_relationship_holder" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
 		<table>
 			<tr>
 				<td><label>{l}Insurance Program{/l}:</label></td>
@@ -213,13 +213,13 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 							</tr>
 							<tr>
 								<td><label>{l}City{/l}:</label> </td>
-								<td><input name="newSubscriber[city]" size="15" value="{$subscriberAddress->get('city')}" onChange="userEntered = true;"></td>
+								<td><input name="newSubscriber[city]" size="15" value="{$subscriberAddress->get('city')}" onChange="userEntered = true;" id="zaddresscitysub"></td>
 								<td>
-									<select name="newSubscriber[state]" onChange="userEntered = true;">
+									<select name="newSubscriber[state]" onChange="userEntered = true;" id="zaddressstatesub">
 										{html_options options=$address->getStateList() selected=$subscriberAddress->get('state')}
 									</select>
 								</td>	
-								<td><label class="inline">{l}Zip{/l}:</label><input name="newSubscriber[postal_code]" size="10" value="{$subscriberAddress->get('postal_code')}" onChange="userEntered = true;"></td>
+								<td><label class="inline">{l}Zip{/l}:</label><input name="newSubscriber[postal_code]" size="10" value="{$subscriberAddress->get('postal_code')}" id="zaddresspostalcodesub" onKeyUp="userEntered = true; if(this.value.length==5) zipGrab(this.value,'sub');"></td>
 						      </tr>
 					      </table>
 					</div>
@@ -230,7 +230,7 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 			<tr>
 				<td></td>
 				<td><input type="submit" value="{if $insuredRelationship->get('id') > 0}Update{else}Add{/if} Payer">
-					{if $insuredRelationship->get('id') > 0}<input type="button" value="New Payer" onClick="window.location='{$NEW_PAYER}';">{/if}
+					{if $insuredRelationship->get('id') > 0}<input type="button" value="New Payer" onClick="document.getElementById('insured_relationship_holder').value=0;this.form.submit();">{/if}
 				</td>
 			</tr>
 		</table>

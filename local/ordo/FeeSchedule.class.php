@@ -144,10 +144,10 @@ class FeeSchedule extends ORDataObject {
 		$mod = Enforcetype::int($modifier);
 					
 		$sql = "select 
-				case when (fsdm.fee > 0) then
+				case when (fsdm.fee is not null) then
 					fsdm.fee
 				else
-					case when (fsd.data > 0) then 
+					case when (fsd.data is not null) then 
 						fsd.data 
 					else 
 						fsdd.data 

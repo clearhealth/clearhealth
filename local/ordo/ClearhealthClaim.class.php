@@ -199,7 +199,7 @@ class ClearhealthClaim extends ORDataObject {
 				'cols' 	=> "
 					chc.claim_id, 
 					chc.identifier,
-					date_format(fbc.date_sent, '$format') AS billing_date,
+					if (fbc.date_sent = '0000-00-00 00:00:00','Not Sent',date_format(fbc.date_sent, '$format')) AS billing_date,
 					date_format(e.date_of_treatment,'$format') AS date_of_treatment, 
 					chc.total_billed,
 					chc.total_paid,
@@ -237,7 +237,7 @@ class ClearhealthClaim extends ORDataObject {
 			)
 		);
 		$ds->orderHints['billing_date'] = 'fbc.date_sent';
-		$ds->orderHints['date_of_treatment'] = 'e.date_of_treatment';
+		$ds->orderHints['date_of_treatment'] = 'concat(e.date_of_treatment, e.encounter_id)';
 		//echo $ds->preview();
 		return $ds;
 	}
@@ -251,9 +251,9 @@ class ClearhealthClaim extends ORDataObject {
 	 */
 	function value_copay_total() {
 		if (is_null($this->_copayTotal)) {
-			$qForeignId = $this->dbHelper->quote($this->get('id'));
-			$sql = "SELECT SUM(amount) FROM payment WHERE foreign_id = {$qForeignId}";
-			$this->_copayTotal = $this->dbHelper->getOne($sql);
+			$qEncounterId = $this->dbHelper->quote($this->get('encounter_id'));
+			$sql = "SELECT ifnull(SUM(ifnull(amount,0)),0) FROM payment WHERE encounter_id = {$qEncounterId}";
+			$this->_copayTotal += $this->dbHelper->getOne($sql);
 		}
 		return $this->_copayTotal;
 	}
@@ -284,6 +284,32 @@ class ClearhealthClaim extends ORDataObject {
 		$this->id = $id;
 	}
 
+	/**
+	 * Get array of adjustment data (not ORDOs)
+	 */
+	function get_adjustments() {
+		$sql = "
+		SELECT
+			ea.*,codes.code
+		FROM
+			clearhealth_claim cc
+			LEFT JOIN payment p ON(p.foreign_id=cc.claim_id)
+			LEFT JOIN payment_claimline pc USING(payment_id)
+			INNER JOIN eob_adjustment ea ON(ea.payment_id=p.payment_id OR ea.payment_claimline_id = pc.payment_claimline_id)
+			LEFT JOIN codes ON(codes.code_id=pc.code_id)
+		WHERE
+			cc.claim_id = ".$this->dbHelper->quote($this->get('id'))."
+		GROUP BY
+			ea.eob_adjustment_id";
+		$res = $this->dbHelper->execute($sql);
+		$adjustments = array();
+		while($res && !$res->EOF) {
+			$adjustments[] = $res->fields;
+			$res->MoveNext();
+		}
+		return $adjustments;
+	}
+	
 	/**#@-*/
 }
 ?>

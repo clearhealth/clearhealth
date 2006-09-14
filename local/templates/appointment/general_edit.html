@@ -42,8 +42,8 @@ function newPatient() {
 {if $qreason_id}
 <input type="hidden" name="Appointment[qreason_id]" value="{$qreason_id}" />
 {/if}
-
 	<input name="Appointment[appointment_id]" type="hidden" value="{$appointment->get('id')}">
+	<input name="Appointment[appointment_code]" type="hidden" value="{$appointment->get('appointment_code')}" />
 
 	<div class="title">
 		{if $appointment->isPopulated()}
@@ -96,6 +96,7 @@ function newPatient() {
 		{$breakdown.title}
 		{if $appointment->get_breakdownPersonId($breakdown.occurence_breakdown_id) > 0}{assign var=currentUser value=$appointment->get_breakdownPersonId($breakdown.occurence_breakdown_id)}{/if}
 		<select name="Appointment[users][{$breakdown.occurence_breakdown_id}]" {if !$inCurrentReason}disabled='true'{/if}>
+			<option value="">No Provider</option>
 			{html_options options=$users_array[$breakdown.user_id] selected=$currentUser}
 		</select>
 		<br>
@@ -135,7 +136,7 @@ function newPatient() {
 
 	<div>
 		{l}Title{/l}<br>
-		<input type="text" name="Appointment[title]" size="15" value="{if $qreason_id > 0}{$visitqueuereason->get('reason')}{else}{$appointment->get('title')}{/if}">
+		<input type="text" name="Appointment[title]" size="43" value="{if $qreason_id > 0}{$visitqueuereason->get('reason')}{else}{$appointment->get('title')}{/if}">
 	</div>
 
 	<div>
@@ -144,7 +145,7 @@ href="javascript:newPatient();">New</a>&nbsp;&nbsp;<br>
 		<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="{if $patient_id > 0}{$patient_id}{else}{$appointment->get('patient_id')}{/if}">
 		<div class="SuggestInput">
 		{clni_img name="stock/stock_person-10.png"}
-		<input type="text" autocomplete="off" name="Appointment[patient_name]" id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}">
+		<input type="text" autocomplete="off" name="Appointment[patient_name]" id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}" size="30">
 		</div>
 		{literal}
 		<script type="text/javascript">

@@ -126,6 +126,7 @@ class C_Schedule extends Controller
 	 */
 	function createSchedule(&$wizard) {
 		// create a new schedule (if one does not already exist)
+		$shorterror = false;
 		switch ($wizard->get('schedule_type')) {
 			case 'PS' :
 				$schedule =& Celini::newORDO('Schedule', $wizard->get('provider_id'), 'ByProvider');
@@ -133,6 +134,10 @@ class C_Schedule extends Controller
 			
 			case 'RS' :
 				$schedule =& Celini::newORDO('Schedule', $wizard->get('room_id'), 'ByRoomId');
+				break;
+			
+			case 'ADM' :
+				$schedule =& Celini::newORDO('Schedule', $wizard->get('room_id'), 'ByMeetingRoomId');
 				break;
 		}
 		
@@ -195,11 +200,21 @@ class C_Schedule extends Controller
 			$recurrence = array();
 			$recurrence['id'] = '';
 			$recurrence['start_date'] = $wizard->get('date_start');
-			$recurrence['end_date'] = $wizard->get('date_end');
+			$end_ts = strtotime($wizard->get('date_end'));
+			$plustwoyears = strtotime($recurrence['start_date'].' +2 years');
+			if($plustwoyears < $end_ts) {
+				$newend = DateObject::createFromISO(date('Y-m-d',$plustwoyears));
+				$recurrence['end_date'] = $newend->toISO();
+				if($shorterror != true) {
+					$shorterror = true;
+					$this->messages->addMessage('Schedule Shortened',"The schedule creation wizard is limited to two years maximum.  Your schedule's end date was change to ".$newend->toString().".");
+				}
+			} else {
+				$recurrence['end_date'] = $wizard->get('date_end');
+			}
 			$recurrence['start_time'] = $time['start'];
 			$recurrence['end_time'] = $time['end'];
 			$recurrence['event_group'] = $eventGroupId;
-
 			$pattern = array('pattern_type'=> 'dayweek');
 			$pattern['days'] = $wizard->get('days');
 
@@ -207,10 +222,13 @@ class C_Schedule extends Controller
 			if($rec !== false) {
 				$eg =& $rec->getParent('EventGroup');
 				$eventids = $rec->getChildrenIds('ScheduleEvent');
+				$events = $rec->getChildren('ScheduleEvent');
 				$db =& $eg->dbHelper;
-				foreach($eventids as $id) {
-					//$sql = "UPDATE event SET `title`=".$eg->dbHelper->quote($eg->get('title'))." WHERE event_id=".$eg->dbHelper->quote($id);
-					//$db->execute($sql);
+				for($events->rewind();$events->valid();$events->next()) {
+					$event =& $events->current();
+					// Clear out old calendar columns from this date
+					$this->view->clear_cache('cache_column.html',$event->get('date'));
+					$id = $event->get('id');
 					$qScheduleEventId = $db->quote($id);
 					$qEventGroupId = $db->quote($eg->get('id'));
 					$sql = "
@@ -249,7 +267,18 @@ class C_Schedule extends Controller
 					$recurrence = array();
 					$recurrence['id'] = '';
 					$recurrence['start_date'] = $wizard->get('date_start');
-					$recurrence['end_date'] = $wizard->get('date_end');
+					$end_ts = strtotime($wizard->get('date_end'));
+					$plustwoyears = strtotime($recurrence['start_date'].' +2 years');
+					if($plustwoyears < $end_ts) {
+						$newend = DateObject::createFromISO(date('Y-m-d',$plustwoyears));
+						$recurrence['end_date'] = $newend->toISO();
+						if($shorterror != true) {
+							$shorterror = true;
+							$this->messages->addMessage('Schedule Shortened',"The schedule creation wizard is limited to two years maximum.  Your schedule's end date was change to ".$newend->toString().".");
+						}
+					} else {
+						$recurrence['end_date'] = $wizard->get('date_end');
+					}
 					$recurrence['start_time'] = $starts[$id];
 					$recurrence['end_time'] = $ends[$id];
 					$recurrence['event_group'] = $egs[$group]->get('id');
@@ -332,6 +361,26 @@ class C_Schedule extends Controller
 
 		$event =& Celini::newORDO('ScheduleEvent', $this->GET->getTyped('event_id', 'int'));
 		$this->view->assign_by_ref('event',$event);
+		
+		$delete_eg = $this->GET->get('delete_event_group');
+		if($delete_eg > 0) {
+			$eg =& Celini::newORDO('EventGroup',$delete_eg);
+			// Remove recurrences
+			$recs = $eg->getRecurrences();
+			for($recs->rewind();$recs->valid();$recs->next()) {
+				$rec =& $recs->current();
+				$rec->drop();
+			}
+			// Remove single events left over
+			$events = $eg->getEvents();
+			for($events->rewind();$events->valid();$events->next()) {
+				$event =& $events->current();
+				$event->drop();
+			}
+			$title = $eg->get('title');
+			$eg->drop();
+			$this->messages->addMessage("Event Group '{$title}' Removed");
+		}
 		
 		$eventGroup =& Celini::newORDO('EventGroup', $this->getDefault('event_group_id', 0));
 		$this->view->assign_by_ref('eventGroup',$eventGroup);

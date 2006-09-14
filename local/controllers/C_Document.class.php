@@ -3,7 +3,6 @@
 $loader->requireOnce('ordo/Document.class.php');
 $loader->requireOnce('includes/CategoryTree.class.php');
 $loader->requireOnce('lib/TreeMenu.php');
-$loader->requireOnce('local/ordo/Note.class.php');
 
 class C_Document extends Controller {
 
@@ -490,72 +489,70 @@ class C_Document extends Controller {
 	
 	function &_array_recurse($array,$categories = array()) {
 		if (!is_array($array)) {
-			$array = array();	
+			$array = array();
 		}
- 		$node = &$this->_last_node;
- 		$current_node = &$node;
+		$node = &$this->_last_node;
+		$current_node = &$node;
 		$expandedIcon = 'folder-expanded.gif';
- 		foreach($array as $id => $ar) {
- 			$icon = 'folder.gif';
- 			if (is_array($ar)  || !empty($id)) {
- 			  if ($node == null) {
- 			  	//echo "r:" . $this->tree->get_node_name($id) . "<br>";
-				$rnode = new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-						'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
-			    			'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
-			    $this->_last_node = &$rnode;
- 			  	$node = &$rnode;
- 			  	$current_node =&$rnode;
-			  }
-			  else {
-			  	//echo "p:" . $this->tree->get_node_name($id) . "<br>";
- 			    $this->_last_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-							'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
-							'icon' => $icon, 'expandedIcon' => $expandedIcon)));
- 			    $current_node =&$this->_last_node;
-			  }
- 			  
- 			  $this->_array_recurse($ar,$categories);
- 			}
- 			else {
- 				if ($id === 0 && !empty($ar)) {
- 				  $info = $this->tree->get_node_info($id);
- 				  //echo "b:" . $this->tree->get_node_name($id) . "<br>";
- 				  $current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $info['value'], 
-								'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
-								'icon' => $icon, 'expandedIcon' => $expandedIcon)));
- 				}
- 				else {
- 					//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
- 					//this conditional tree could be more efficient but working with recursive trees makes my head hurt, TODO
- 					if ($id !== 0 && is_object($node)) {
- 					  //echo "n:" . $this->tree->get_node_name($id) . "<br>";
- 				  	  $current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id), 
-								'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&", 
-								'icon' => $icon, 'expandedIcon' => $expandedIcon)));
- 				  	  
- 					}
- 				}
- 			}	
- 			
+		foreach($array as $id => $ar) {
+			$icon = 'folder.gif';
+			if (is_array($ar)  || !empty($id)) {
+				if ($node == null) {
+					//echo "r:" . $this->tree->get_node_name($id) . "<br>";
+					$rnode = new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id),
+					'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&",
+					'icon' => $icon, 'expandedIcon' => $expandedIcon, 'expanded' => false));
+					$this->_last_node = &$rnode;
+					$node = &$rnode;
+					$current_node =&$rnode;
+				}
+				else {
+					//echo "p:" . $this->tree->get_node_name($id) . "<br>";
+					$this->_last_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id),
+					'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&",
+					'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+					$current_node =&$this->_last_node;
+				}
+
+				$this->_array_recurse($ar,$categories);
+			}
+			elseif ($id === 0 && !empty($ar)) {
+				$info = $this->tree->get_node_info($id);
+				//echo "b:" . $this->tree->get_node_name($id) . "<br>";
+				if(isset($info['value'])) {
+					$current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $info['value'],
+					'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&",
+					'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+				}
+			}
+			else {
+				//there is a third case that is implicit here when title === 0 and $ar is empty, in that case we do not want to do anything
+				//this conditional tree could be more efficient but working with recursive trees makes my head hurt, TODO
+				if ($id !== 0 && is_object($node)) {
+					//echo "n:" . $this->tree->get_node_name($id) . "<br>";
+					$current_node = &$node->addItem(new HTML_TreeNode(array("id" => $id, 'text' => $this->tree->get_node_name($id),
+					'link' => Celini::link("upload",true,true,$this->id)."parent_id=$id&",
+					'icon' => $icon, 'expandedIcon' => $expandedIcon)));
+				}
+			}
 			if ($this->showDocumentsOnTree) {
 				$icon = "file3.png";
 				if (isset($categories[$id]) && is_array($categories[$id])) {
 					foreach ($categories[$id] as $doc) {
 						$current_node->addItem(new HTML_TreeNode(array('text' => '<span title="'.$doc['note'].'">'
-								.basename($doc['url']).'</span>', 
-								'link' => Celini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&", 
-								'icon' => $icon, 'expandedIcon' => $expandedIcon,
-								)
-							));
+						.basename($doc['url']).'</span>',
+						'link' => Celini::link("view",true,true,$this->id)."doc_id=". $doc['document_id'] . "&",
+						'icon' => $icon, 'expandedIcon' => $expandedIcon,
+						)
+						));
 					}
 				}
 			}
- 		}
- 		return $node;
- 	}
-	
-	
+		}
+		return $node;
+	}
+
+
 	var $_pullCats = array();
 	var $_pullParent = array();
 	function multi_upload_action_uploadFile($project_id,$parent_id = 1) {
@@ -595,7 +592,6 @@ class C_Document extends Controller {
 					$report[$fname] = "Current file name was changed to " . $fname ."\n";	
 				}
 		  	
-		  	
 				if (move_uploaded_file($_FILES['file']['tmp_name'][$key],$this->file_path.$fname)) {
 					if (!isset($report[$fname])) {
 						$report[$fname] = "";
@@ -616,7 +612,7 @@ class C_Document extends Controller {
 					$d->_Execute($sql);
 
 					if (!empty($_POST['note'][$key])) {
-						$n = new Note();
+						$n = Celini::newOrdo('Note');
 						$n->set('foreign_id',$d->get_id());
 						$n->set('note',$_POST['note'][$key]);
 						$n->set('owner',$this->_me->get_id());

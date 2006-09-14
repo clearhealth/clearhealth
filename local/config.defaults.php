@@ -34,6 +34,12 @@ $config['calendar']['data_handler'] = 'ClearhealthCalendarData';
 $config['billing']['multipleByUnits'] = false;
 
 $config['displayInsuranceElegibility'] = false;
+$config['generatePendingClaimsOnly'] = false;
+
+################################################################################
+## Printer options
+################################################################################
+$config['printMargin'] = 3;
 
 ################################################################################
 # Celini Options 

@@ -35,12 +35,16 @@
 		</tr>
 		<tr>
 			<td>{if $encounter->get('status') != 'closed'}<input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter">{/if}</td>
-			<td><label>{l}Status{/l}:</label></td>
-			<td> 
+			<td colspan="3">
 				<div style="white-space:nowrap;">
+		{*	<label class="inline">{l}Status{/l}:</label>*}
 				{if $encounter->get('status') == 'open' && $encounter->get('id') > 0}
 					{if $encounter->get('next_payer_id')}
+					{if $claimSubmitValue != 'close'}
 					<input type="submit" name="encounter[{$claimSubmitValue}]" value="{if $claimSubmitValue == 'close'}Close{else}Bill Next Payer{/if}" />
+					{/if}
+					{elseif $claimSubmitValue == 'close'}
+					{*<input type="submit" name="encounter[close]" value="Close" />*}
 					{/if}
 					<input type="submit" name="encounter[override]" value="Bill To:" /> 
 					<input type="hidden" name="encounter[overridebilltype]" value="{$claimSubmitValue}" />
@@ -48,10 +52,11 @@
 					{html_options options=$encounter->valueList('current_payers') selected=$encounter->get('current_payer')}
 					</select>
 				{elseif $encounter->get('status') == 'closed'}
+					Current Payer: {$encounter->value('current_payer')}<br>
 					<input type="hidden" name="encounter[rebillfromscratch]" id="rebillfromscratch" value="false" />
 					{if $payments->numRows() == 0}
 					{literal}
-					<input style="display:inline;" type="button" name="rebillfromscratchbutton" value="Remove Previous Claim(s) and Re-open" onclick="if(confirm('Are you sure you want to remove the previous claim(s)?')) {document.getElementById('rebillfromscratch').value='true';this.form.submit();}" />
+					<input style="display:inline;" type="button" name="rebillfromscratchbutton" value="Remove Previous Claim and Re-open" onclick="if(confirm('Are you sure you want to remove the previous claim?')) {document.getElementById('rebillfromscratch').value='true';this.form.submit();}" />
 					{/literal}
 					{/if}
 				</div>
@@ -68,7 +73,7 @@
             		open
             	{/if}
 		{if $encounter->get('status') == 'open' && $encounter->get('id') > 0 && !$encounter_has_claim}
-		<a href="{$DELETE_ACTION}" onclick="return confirm('Delete this Encounter?')">Delete</a>
+		<a href="{$DELETE_ACTION}" onclick="return confirm('Delete this Encounter?')">Delete Encounter</a>
 		{/if}
 			</td>
 		</tr>

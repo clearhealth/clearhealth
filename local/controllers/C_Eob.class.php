@@ -36,7 +36,7 @@ class C_Eob extends Controller {
 		$this->view->assign_by_ref('patientpaymentplans',$payment_plans);
 
 		$codingData =& Celini::newOrdo('CodingData');
-		$codeList = $codingData->getCodeList($claim->get('encounter_id'));
+		$codeList = $codingData->getCodeListByClaimId($claim->get('id'),$claim->get('encounter_id'));
 		$company =& Celini::newOrdo('Company');
 
 		$payer_ds = $company->companyListForType('Insurance');
@@ -97,8 +97,11 @@ class C_Eob extends Controller {
 
 		$adjustments = array();
 		for($enum->rewind();$enum->valid();$enum->next()) {
-			$adjustments[] = $enum->current();
+			$cur =& $enum->current();
+			$adjustments[$cur->key] = $cur;
 		}
+		$adjarray = $claim->get('adjustments');
+		$this->view->assign('adjarray',$adjarray);
 
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('scriptaculous');
@@ -111,6 +114,7 @@ class C_Eob extends Controller {
 		$this->assign_by_ref('payment',Celini::newOrdo('payment'));
 		$this->assign('billList',$billList);
 		$this->assign('payers',$payers);
+		$this->view->assign('codeList',$codeList);
 
 		$cp = $encounter->get('current_payer');
 		if (isset($payers[$cp])) {
@@ -221,7 +225,12 @@ class C_Eob extends Controller {
 		$claimId = $this->POST->getTyped('claim_id','int');
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claimId);
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
-
+		if($encounter->get('current_payer') == 100001) {
+			// We're already billed to self-pay!
+			$this->messages->addMessage('Currently billed to Self Pay');
+			$this->claimId = $claimId;
+			return;
+		}
 		$ir =& Celini::newOrdo('InsuredRelationship');
 		$list = $ir->getProgramList($encounter->get('patient_id'));
 		$id = array_search('System->Self Pay',$list);
@@ -235,6 +244,10 @@ class C_Eob extends Controller {
 					where c.name = 'System' and ip.name = 'Self Pay'";
 			$db = new clniDb();
 			$id = $db->getOne($sql);
+			if ($id == false) {
+				$this->messages->addMessage("Payer - System->Self Pay not found, can't rebill");
+				return;
+			}
 			$ir->set('insurance_program_id',$id);
 			$ir->persist();
 		}

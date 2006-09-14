@@ -57,7 +57,7 @@
 <div>
 	<br>
 	<br>
-{$guarantor->get('last_name')} {$guarantor->get('first_name')}
+{$guarantor->get('last_name')}, {$guarantor->get('first_name')}
 
 {$guarantorAddress->get('printDisplay')}
 </div>
@@ -80,7 +80,7 @@
 
 <table><tr><td width="100%">
 Patient:
-{$patient->get('last_name')} {$patient->get('first_name')} #{$patient->get('record_number')}
+{$patient->get('last_name')}, {$patient->get('first_name')} #{$patient->get('record_number')}
 </td><td>
 Statement&nbsp;Date:&nbsp;{$statement_date}{*&nbsp;#{$statement_number}*}</td>
 </tr>
@@ -103,15 +103,15 @@ Statement&nbsp;Date:&nbsp;{$statement_date}{*&nbsp;#{$statement_number}*}</td>
 	</tr>
 	{foreach from=$lines item=line key=key}
 	<tr {if $key%2 == 0}class="alt"{/if}>
-			<td valign="top">{if $line.payer_id > 0}{$line.payment_ts}{else}{$line.item_date}{/if}</td>
+			<td valign="top">{$line.item_date}</td>
 			{if $familyStatement}
 			<td valign="top">{$line.patient_name}</td>
 			{/if}
 			<td valign="top">{$line.provider_name}</td>
 			<td valign="top">{$line.code_text}</td>
 			<td valign="top">{$line.code}</td>
-			<td valign="top">{if $line.payer_id == 0}{$line.charge}{/if}</td>
-			<td valign="top">{if $line.payer_id > 0}{$line.credit}{/if}</td>{*
+			<td valign="top">{if $line.charge >  0}{$line.charge}{/if}</td>
+			<td valign="top">{if $line.credit > 0}{$line.credit}{/if}</td>{*
 			<td valign="top">{$line.outstanding}</td>*}
 			<td valign="top">{if $line.payer_id > 0}{$line.payer_name}{/if}</td>
 		</tr>

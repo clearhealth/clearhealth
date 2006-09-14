@@ -224,7 +224,7 @@ class C_PatientFinder extends Controller {
 			}
 			// internal ID
 			elseif (preg_match('/^[0-9]+$/', $searcharray[$x])) {
-				$sqls[] = "record_number = '" . (int)$searcharray[$x]."'";
+				$sqls[] = "record_number LIKE '" . (int)$searcharray[$x]."%'";
 			} else {
 			// Regular name
 				$GLOBALS['namesearch']=true;

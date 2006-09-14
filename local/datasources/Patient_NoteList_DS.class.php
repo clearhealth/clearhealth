@@ -91,7 +91,8 @@ class Patient_NoteList_DS extends Datasource_sql
 	}
 	
 	function _addEditLink($value, $rowValues) {
-		$url = Celini::link(true, true, true, $_GET[0]) . 'note_id=' . $rowValues['patient_note_id'];
+		$pid = isset($_GET['id']) ? $_GET['id'] : $_GET[0];
+		$url = Celini::link(true, true, true, $pid) . 'note_id=' . $rowValues['patient_note_id'];
 		return '<a href="' . $url . '">' . $value . '</a>';
 	}
 }

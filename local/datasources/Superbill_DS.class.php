@@ -28,12 +28,13 @@ class Superbill_DS extends Datasource_sql {
 
 		$cols = 'c.code_id, c.code, code, code_text, code_type';
 		$from = 'codes c inner join superbill_data s using(code_id)';
-
+		$groupby = '';
 		if ($feeScheduleId) {
 			$f = enforceType::int($feeScheduleId);
 			$cols .= ', fsd.data fee';
 			$from .= " left join fee_schedule_data fsd on c.code_id = fsd.code_id and fsd.fee_schedule_id = $f";
 			$labels['fee'] = 'Fee';
+			$groupby = 'fsd.code_id';
 		}
 
 		$this->setup(Celini::dbInstance(),
@@ -41,10 +42,14 @@ class Superbill_DS extends Datasource_sql {
 				'cols' => $cols,
 				'from' => $from,
 				'where' => "s.status = 1 and s.superbill_id = $id $twhere",
+				'groupby' => $groupby
 			),
 			$labels);
 
 		$this->addDefaultOrderRule('code','ASC',0);
+		if($feeScheduleId) {
+			$this->addDefaultOrderRule('fsd.revision_id','DESC');
+		}
 		$this->registerFilter('code', array(&$this, '_actionAddCodeLink'));
 	}
 	

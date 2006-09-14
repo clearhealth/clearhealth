@@ -67,7 +67,7 @@ function confirmDeleteClaimLine(linkObj) {
 					<td><label>{l}Procedure{/l}:&nbsp;</label></td>
 					<td>
 						<div class="SuggestContainer">
-							<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_id}">
+							<input TYPE="hidden" name="parent_id"  id="parent_id" value="{$parent_code->get('id')}">
 							<input TYPE="text" name="parent_code" id="parent_code" {if $dentalpractice}SIZE="25"{else}SIZE="35"{/if} autocomplete="off" value="{$parent_code->getCodeDesc()}">
 						</div>
 					</td>
@@ -103,8 +103,8 @@ function confirmDeleteClaimLine(linkObj) {
 				<tr>
 					<td><label>{l}Diagnosis{/l}:&nbsp;</label></td>
 					<td>
-						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="">
-						<input TYPE="text" name="child_code" id="child_code" SIZE="35" autocomplete="off" value="">
+						<input TYPE="hidden" name="child_codes[]"  id="child_id" value="{if $icd_edit_code}{$icd_edit_code->get('id')}{/if}">
+						<input TYPE="text" name="child_code" id="child_code" SIZE="35" autocomplete="off" value="{if $icd_edit_code}{$icd_edit_code->get('code')}: {$icd_edit_code->get('code_text')}{/if}">
 					</td>
 					<td>
 						&nbsp;<input type="button" name="add_code" value="Add Diagnosis" onClick="addICDCode()">
@@ -116,11 +116,13 @@ function confirmDeleteClaimLine(linkObj) {
 						<div id="child_codes">
 			  			{foreach name="icd_list" from=$child_codes item=code}
 			  			{if $code.parent_id > 0}
+			  			{if !$icd_edit_code || ($icd_edit_code && $code.code_id != $icd_edit_code->get('id'))}
 			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
 			  			{if $smarty.foreach.icd_list.first}
 						<strong>{$code.description}</strong><br />
 						{else}
 						{$code.description}<br />
+						{/if}
 						{/if}
 						{/if}
 						{/foreach}
@@ -166,7 +168,7 @@ Tooth: {$code.tooth} Side {$code.toothside}
 {/if}
 <br />
 {foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;{$child.description}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}&icd_id={$child.code_id}">{$child.description}</a><br />
 {/foreach}<br />
 {/foreach}
 &nbsp;

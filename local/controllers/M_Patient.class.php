@@ -127,7 +127,14 @@ class M_Patient extends Manager {
 			}
 		}
 		if ($continue) {
+			$recNum = $patient->get('record_number');
 			$patient->populateArray($_POST['person']);
+			if ($recNum != $patient->get('record_number')) {
+				if (!$patient->isRecordNumUnique()) {
+					$patient->set('record_number','');
+					$this->messages->addMessage('Non unique record number, auto generating record a new record number');
+				}
+			}
 			$isChanged = $patient->persist();
 			if($isChanged) {
 				if ($id == 0) {

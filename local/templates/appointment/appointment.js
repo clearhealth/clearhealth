@@ -78,12 +78,16 @@ function updateAppointmentTemplate(id) {
 	}
 }
 
-var currentlyEditing = 0;
+var currentlyEditing = 'Z';
+var currentlyEditingMeeting = 'Z';
 var appointmentPopup = false;
+var runSelectItems = false;
+var runSt = false;
+
 function showAddAppointment() {
 	appointmentPopup = new clniPopup('',false);
-	if(aptEditorChanged != false && aptEditorChanged != currentlyEditing) {
-		editAppointment(0);
+	if(aptEditorChanged != currentlyEditing) {
+		editAppointment(0,'');
 		return;
 	}
 	appointmentPopup.draggable = true;
@@ -91,14 +95,32 @@ function showAddAppointment() {
 	appointmentPopup.useElement = 'appointmentEditor';
 	appointmentPopup.modal = true;
 	appointmentPopup.display();
-	currentlyEditing = 0;
+	currentlyEditing = 'Z';
 }
 function hideAddAppointment() {
 	appointmentPopup.hide();
 }
 
+function showAddMeeting() {
+	appointmentPopup = new clniPopup('',false);
+	if(aptEditorChanged != currentlyEditingMeeting) {
+		editAppointment(0,'ADM');
+		return;
+	}
+	appointmentPopup.draggable = true;
+	appointmentPopup.draggableOptions = {handle:'title'};
+	appointmentPopup.useElement = 'appointmentEditor';
+	appointmentPopup.modal = true;
+	appointmentPopup.display();
+	currentlyEditingMeeting = 'Z';
+}
+
 st.selectItems = function(items) {
+	runSelectItems=items;
+	runSt=this;
 	showAddAppointment();
+}
+st.executeSelectedItems = function(items) {
 	var start = st.getEarliestSelected();
 	var end = st.getLatestSelected();
 	var id = st.getEarliestId();
@@ -138,18 +160,28 @@ st.selectItems = function(items) {
 			break;
 		}
 	}
-
-	
 }
 
-function editAppointment(id){
-	currentlyEditing = id;
-	HTML_AJAX.call('appointment','ajax_edit',editAppointmentcb,id);
+function editAppointment(id,type){
+	if(type == 'ADM') {
+		currentlyEditingMeeting = type+id;
+	} else {
+		currentlyEditing = id;
+	}
+	HTML_AJAX.call('appointment','ajax_edit',editAppointmentcb,id,type);
 }
 function editAppointmentcb(resultSet){
-	aptEditorChanged = resultSet[0];
+	aptEditorChanged = resultSet[2]+resultSet[0];
 	HTML_AJAX_Util.setInnerHTML(document.getElementById('appointmentEditor'),resultSet[1]);
-	showAddAppointment();
+	if(resultSet[2] == 'ADM') {
+		showAddMeeting();
+	} else {
+		if(runSelectItems != false) {
+			runSt.executeSelectedItems(runSelectItems);
+			runSelectItems = false;
+		}
+		showAddAppointment();
+	}
 }
 
 function cancelAppointment(id) {

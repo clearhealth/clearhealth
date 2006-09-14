@@ -11,7 +11,7 @@ class PayerGroup_List_DS extends Datasource_sql
 		$this->setup(
 			Celini::dbInstance(),
 			array(
-				'cols' 	=> 'pg.payer_group_id name,CONCAT(co.name,\'=>\',ip.name) AS program,ipg.order, ip.insurance_program_id',
+				'cols' 	=> 'pg.payer_group_id name,CONCAT(co.name,\'->\',ip.name) AS program,ipg.order, ip.insurance_program_id',
 				'from' 	=> 
 					'payer_group AS pg
 					LEFT JOIN insurance_payergroup AS ipg USING(payer_group_id)

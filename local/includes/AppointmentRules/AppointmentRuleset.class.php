@@ -66,5 +66,13 @@ class AppointmentRuleset {
 		}
 
 	}
+	
+	function canOverride() {
+		if(Auth::canI('override',$this->rulesetId)) {
+			return true;
+		}
+		return false;
+	}
+
 }
 ?>

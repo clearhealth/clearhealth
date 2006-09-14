@@ -92,6 +92,7 @@
 	}
 
 	function populateAdjCodes() {
+		return;
 		var rows = $('codeTable').tBodies[0].rows;
 		var select = $('adjCode');
 		for(var i = 0; i < rows.length; i++) {
@@ -102,15 +103,17 @@
 	}
 
 	function showAdjustmentList() {
-		new Effect.Appear('adjustmentList');
-		new Effect.Fade('adjustmentLink');
+		document.getElementById('adjustmentLink').style.display='none';
+		new Effect.BlindDown('adjustmentList');
+//		new Effect.BlindUp('adjustmentLink');
 
 		//window.setTimeout(function() {$('adjustmentList').style.overflow = 'auto';},400);
 	}
 
 	function hideAdjustmentList() {
-		new Effect.Fade('adjustmentList');
-		new Effect.Appear('adjustmentLink');
+		new Effect.BlindUp('adjustmentList');
+		document.getElementById('adjustmentLink').style.display='inline';
+//		new Effect.BlindDown('adjustmentLink');
 	}
 
 	function show_ref_num(val) {
@@ -141,7 +144,9 @@
 		
 		$('submit').disabled = true;
 		$('rebill').disabled = true;
-		$('rebillnext').disabled = true;
+		if(document.getElementById('rebillnext')) {
+			$('rebillnext').disabled = true;
+		}
 		$('rebill').innerHTML = 'Processing Please Wait ...';
 		HTML_AJAX.post($('rebillAction').value,{process:'true',claim_id:$('claimId').value},cb);
 		

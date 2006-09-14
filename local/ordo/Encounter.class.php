@@ -179,6 +179,16 @@ class Encounter extends ORDataObject {
 		}
 		return $res->fields['insurance_program_id'];
 	}
+	
+	/**
+	 * Return the next InsuranceProgram for the group
+	 *
+	 * @return ORDataObject
+	 */
+	function &get_next_payer() {
+		$payer =& Celini::newORDO('InsuranceProgram',$this->get('next_payer_id'));
+		return $payer;
+	}
 
 	/**
 	 * Creates a list of the payer groups & specific payers available
@@ -221,7 +231,7 @@ class Encounter extends ORDataObject {
 		$db =& $this->dbHelper;
 		$sql = "
 		SELECT
-			ip.insurance_program_id,CONCAT(co.name,'=>',ip.name) AS program
+			ip.insurance_program_id,CONCAT(co.name,'->',ip.name) AS program
 		FROM
 			payer_group AS pg
 			INNER JOIN insurance_payergroup AS ipg USING(payer_group_id)
@@ -241,6 +251,11 @@ class Encounter extends ORDataObject {
 			$payers[$res->fields['insurance_program_id']] = $res->fields['program'];
 		}
 		return $payers;
+	}
+
+	function value_current_payer() {
+		$cp = EnforceType::int($this->get('current_payer'));
+		return $this->dbHelper->getOne("select CONCAT(co.name,'->',ip.name) from insurance_program ip INNER JOIN company AS co ON(ip.company_id = co.company_id) where ip.insurance_program_id = $cp");
 	}
 
 	/**#@-*/

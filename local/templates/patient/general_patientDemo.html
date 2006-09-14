@@ -4,14 +4,17 @@
 		// This code is intended to update the patient field on the calendar page when
 		// a new patient is added from a pop-up window
 		function updateParent() {
-			if(opener != null && !opener.closed) {
+			var patient_id = {/literal}{$person->get('id')}{literal};
+			if(patient_id > 0 && opener != null && !opener.closed) {
 				var fname = document.getElementById('first_name').value;
 				var lname = document.getElementById('last_name').value;
 				var rn = document.getElementById('record_number').value;
-				var dest = opener.document.getElementById('patient_name_1');
+				var dest = opener.document.getElementById('aePatientName');
+				opener.document.getElementById('aePatientName');
 				if(fname != '' && lname != '' && rn != '') {
 					dest.value = lname + ', ' + fname + ' #' + rn;
 				}
+				opener.document.getElementById('aePatientId').value = patient_id;
 			}
 		}
 	</script>
@@ -105,7 +108,7 @@ function startDuplicate(URL) {
 				</td>
 				<td>
 					<select name="person[default_provider]" id="default_provider">
-						<option></option>
+						<option>No Provider</option>
 						{html_options options=$providers_array selected=$person->get('default_provider')}
 					</select>&nbsp;&nbsp;
 				</td>
@@ -160,12 +163,15 @@ function startDuplicate(URL) {
 			</tbody>
 		</table>
 		</fieldset>
+		<script type="text/javascript">
+		updateParent();
+		</script>
 {clni_register_message_target formId="patientGeneralEditForm" targetId="patientGeneralEditMessages"}
 {clni_register_validation_rule id="last_name" message="Last Name is Required"}
 {clni_register_validation_rule id="first_name" message="First Name is Required"}
 {clni_register_validation_rule id="date_of_birth" message="Date of Birth is Required"}
 {clni_register_validation_rule id="gender" message="Gender is Required"}
-{clni_register_validation_rule id="default_provider" message="Default Provider is Required"}
+{*{clni_register_validation_rule id="default_provider" message="Default Provider is Required"}*}
 {clni_register_validation_rule id="identifier" rule="ssn" message="SSN must be 9 digits with no spaces or 6 digits and 3 letters"}
 {clni_register_validation_rule id="identifier" rule="upin" message="UPIN must be 1 letter and 2 digits or letters and 3 digits "}
 {clni_register_validation_rule id="record_number" rule="greaterthanzero" message="Record # must be greater than 0"}

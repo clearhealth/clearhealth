@@ -1,0 +1,100 @@
+{head type="css"}
+#appointmentEditor {
+font-size: 8pt;
+border: ridge 2px black;
+background-color: white;
+padding: 2px;
+position: absolute;
+}
+#appointmentEditor input {
+font-size: 8pt;
+}
+#appointmentEditor .title {
+	font-size: 10pt; 
+	font-weight:bold;
+	border-bottom: solid 1px black;
+	text-align: center;
+	cursor: move;
+}
+{/head}
+
+{if !$ajaxedit}
+<div id="appointmentEditor"{if $mode == 'popup'} style="visibility:hidden"{/if}>
+{/if}
+{capture name=currentpage}{link}date={$apt_date}{/capture}
+{clni_form action=$FORM_ACTION process="generic" id="AppointmentEdit"}
+<table border=0>
+<tr><td colspan=2>
+
+	<input name="Appointment[appointment_id]" type="hidden" value="{$appointment->get('id')}">
+	<input name="Appointment[appointment_code]" type="hidden" value="{$appointment->get('appointment_code')}" />
+
+	<div class="title">
+		{if $appointment->get('id') > 0}
+		{l}Editing Meeting #{/l}{$appointment->get('id')}
+		{else}
+		{l}Add Meeting{/l}
+		{/if}
+	</div>
+	</td></tr>
+	<tr><td>
+	<div id="aeMessageTarget" style='width: 150px;'></div>
+
+
+	<div>
+		{l}Room: {/l}<br>
+		{html_options id="aeRoom" name="Appointment[room_id]" options=$room->valueList('current') selected=$room->get('id')}
+	</div>
+	
+	<div id="aeProvider">
+		{l}Provider: {/l}
+		<select name="Appointment[provider_id]">
+			{if $appointment->isPopulated()}
+			{html_options options=$users_array.2 selected=$appointment->get('provider_id')}
+			{else}
+			{html_options options=$users_array.2 selected=$currentUser}
+			{/if}
+		</select>
+	</div>
+	<div>
+		{l}Date{/l}
+		{if $appointment->isPopulated()}
+		{assign var=apt_date value=$appointment->get('USAdate')}
+		{/if}
+		{clni_input_date name="Appointment[date]" id="aeDate" size="9" value=$apt_date}
+	</div>
+
+	<div>
+		{l}Title{/l}<br>
+		<input type="text" name="Appointment[title]" size="15" value="{$appointment->get('title')}">
+	</div>
+
+	<div>
+		{l}Time{/l}<br>
+		<input id="aeStart" type="text" name="Appointment[start_time]" size="5" value="{if $start_time}{$start_time}{else}{$appointment->get('start_time')}{/if}"> 
+		{l}to{/l} 
+		<input type="text" name="Appointment[end_time]" size="5" value="{if $end_time}{$end_time}{else}{$appointment->get('end_time')}{/if}" id="aeEnd">
+	</div>
+
+	<div>
+		{l}Include All Providers{/l}<br>
+		<input type="radio" name="Appointment[allproviders]" {if $appointment->get('event_group_id') > 0}checked{/if}" value="1" /> Yes<br />
+		<input type="radio" name="Appointment[allproviders]" {if $appointment->get('event_group_id') < 1}checked{/if}" value="0" /> No
+	</div>
+
+	<div>
+		<input type="submit" value="{if $appointment->isPopulated()}{l}Update Meeting{/l}{else}{l}Make Meeting{/l}{/if}">
+	</div>
+	<div style="text-align:right">
+	<a href="javascript:hideAddAppointment()">hide</a>
+	</div>
+</td><td><div style="vertical-align:top;width:250px;height:264px;overflow:auto;{if !$appointment_alerts}display:none;{/if}" id="appointmentAlerts">{$appointment_alerts}</div>
+</td></tr></table>
+</form>
+{if !$ajaxedit}
+</div>
+{/if}
+{clni_register_message_target formId="appointmentEditor" targetId="aeMessageTarget"}
+{clni_register_validation id="aeDate" rules="required|date"}
+{clni_register_validation_rule id="aeStart"}
+{clni_register_validation_rule id="aeEnd"}

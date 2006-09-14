@@ -80,6 +80,10 @@ class C_Appointment extends Controller {
 		$this->view->assign_by_ref('room',$room);
 		$this->view->assign('mode',$this->uiMode);
 
+		// If we're editing an admin appointment, return the special form.
+		if($apt->get('appointment_code') == 'ADM') {
+			return $this->view->render('editmeeting.html');
+		}
 		// appointment template stuff
 		$manager =& EnumManager::getInstance();
 		$list =& $manager->enumList('appointment_reasons');
@@ -99,16 +103,119 @@ class C_Appointment extends Controller {
 		return $this->view->render('edit.html');
 	}
 
-	function ajax_edit($id) {
+	function ajax_edit($id,$type='') {
 		$this->appointment =& Celini::newOrdo('Appointment',$id);
+		$this->appointment->set('appointment_code',$type);
 		$this->view->assign('ajaxedit',true);
 		$this->assign('FORM_ACTION',Celini::link('Day','CalendarDisplay'));
-		return array($id,$this->actionEdit());
+		return array($id,$this->actionEdit(),$type);
 	}
 
 	function process($data) {
-		$this->_createAppointmentOrdo($data);
-		$this->appointment->persist();
+		if(isset($data['appointment_code']) && $data['appointment_code'] == 'ADM') {
+			$this->_processMeeting($data);
+		} else {
+			$this->_createAppointmentOrdo($data);
+			$this->appointment->persist();
+		}
+	}
+	
+	/**
+	 * Processes an administrative meeting edit
+	 *
+	 * @param array $data
+	 */
+	function _processMeeting($data) {
+		$db =& new clniDB();
+		$apt =& Celini::newORDO('Appointment',$data['appointment_id']);
+		$date = DateObject::create($data['date']);
+		if($apt->get('id') > 0) {
+			if($apt->get('event_group_id') > 0 && $data['allproviders'] == 1) {
+				$qstart = date('Y-m-d H:i:s',strtotime($apt->get('start')));
+				$qend = date('Y-m-d H:i:s',strtotime($apt->get('end')));
+				
+				$sql = "
+				SELECT
+					a.appointment_id,e.event_id
+				FROM
+					".$apt->tableName()." AS a
+					INNER JOIN event AS e USING(event_id)
+				WHERE
+					a.event_group_id = ".$apt->get('event_group_id')."
+					AND e.start=".$db->quote($qstart)."
+					AND e.end=".$db->quote($qend);
+				$res = $db->execute($sql);
+				// Only worry about schedule stuff if this event was part of a group of meetings
+				$eg =& Celini::newORDO('EventGroup',$apt->get('event_group_id'));
+				$schedule =& Celini::newORDO('Schedule',$data['room_id'],'ByMeetingRoomId');
+				if($schedule->get('id') < 1) {
+					$schedule->populateArray($data);
+					$schedule->set('schedule_code','ADM');
+					$room =& Celini::newORDO('Room',$data['room_id']);
+					$schedule->set('title','Meetings For '.$room->value('fullname'));
+					$schedule->persist();
+				}
+				if($eg->get('schedule_id') != $schedule->get('id')) {
+					$eg->set('schedule_id',$schedule->get('id'));
+					$eg->persist();
+				}
+				$apt->populateArray($data);
+				$qstart = date('Y-m-d H:i:s',strtotime($apt->get('start')));
+				$qend = date('Y-m-d H:i:s',strtotime($apt->get('end')));
+				
+				for($res->MoveFirst();!$res->EOF;$res->MoveNext()) {
+					$sql = "
+					UPDATE
+						".$apt->tableName()." AS a
+						INNER JOIN event AS e USING(event_id)
+					SET
+						a.title=".$db->quote($apt->get('title')).",
+						e.title=".$db->quote($apt->get('title')).",
+						e.start=".$db->quote($qstart).",
+						e.end=".$db->quote($qend).",
+						a.room_id=".$db->quote($apt->get('room_id'))."
+					WHERE
+						a.appointment_id='{$res->fields['appointment_id']}'
+						AND e.event_id='{$res->fields['event_id']}'
+					";
+					$db->execute($sql);
+				}
+			} else {
+				// Just updating a single appointment
+				$apt->populateArray($data);
+				// If we're just updating a single appointment that used to be part of a group, clear the group.
+				$apt->set('event_group_id',0);
+				$apt->persist();
+			}
+		} elseif($data['allproviders'] > 0) {
+			$schedule =& Celini::newORDO('Schedule',$data['room_id'],'ByMeetingRoomId');
+			if($schedule->get('id') == 0) {
+				$schedule->populateArray($data);
+				$schedule->set('schedule_code','ADM');
+				$room =& Celini::newORDO('Room',$data['room_id']);
+				$schedule->set('title','Meeting Schedule: '.$room->value('fullname'));
+				$schedule->persist();
+			}
+			$eg =& Celini::newORDO('EventGroup');
+			$eg->set('title',$data['title']);
+			$eg->set('room_id',$data['room_id']);
+			$eg->set('schedule_id',$schedule->get('id'));
+			$eg->persist();
+			$p =& Celini::newORDO('Provider');
+			$providers = $p->getProviderList();
+			$apt->populateArray($data);
+			$apt->set('event_group_id',$eg->get('id'));
+			foreach($providers as $pid=>$pname) {
+				$apt->set('id',0);
+				$apt->_event->set('id',0);
+				$apt->set('provider_id',$pid);
+				$apt->persist();
+			}
+		} else {
+			// Just updating a single appointment
+			$apt->populateArray($data);
+			$apt->persist();
+		}
 	}
 	
 	/**
@@ -171,7 +278,6 @@ class C_Appointment extends Controller {
 				$appointment->breakdowns[$breakdown_id]->set('person_id',$person_id);
 			}
 		}
-
 	}
 
 	function ajax_cancel($id) {
@@ -538,6 +644,7 @@ class C_Appointment extends Controller {
 	 *
 	 */
 	function check_rules($aptdata) {
+		
 		$apt =& Celini::newORDO('Appointment');
 		$aptdata = $this->GET->getRaw('Appointment');
 		if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
@@ -587,11 +694,13 @@ class C_Appointment extends Controller {
 		// appointment rules engine checks
 		$GLOBALS['loader']->requireOnce('includes/AppointmentRules/AppointmentRuleManager.class.php');
 		$ruleMan = new AppointmentRuleManager();
+		$override = true;
 		if (!$ruleMan->isValid($apt)) {
 			$alerts[] = $ruleMan->getMessage();
+			$override = $ruleMan->override;
 		}
 
-		if(count($alerts) > 0) {
+		if(count($alerts) > 0 && $override == true) {
 			$alerts[] = $this->view->render('overridecheckbox.html');
 		}
 		//$alerts[] = 'Debug Debug Debug';

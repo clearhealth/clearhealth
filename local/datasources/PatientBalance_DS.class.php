@@ -163,6 +163,7 @@ class PatientBalance_DS extends Datasource_sql
 	SUM(IF(writeoffs.writeoff IS NULL,0,writeoffs.writeoff)) total_writeoff
 	FROM patient AS pat
 	INNER JOIN person p ON pat.person_id=p.person_id
+	LEFT JOIN person_person pp ON(pp.guarantor=1 AND pp.related_person_id=pat.person_id)
 	INNER JOIN encounter AS e ON(pat.person_id = e.patient_id $encwhere)
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
 	INNER JOIN buildings b ON e.building_id=b.id
@@ -178,8 +179,7 @@ class PatientBalance_DS extends Datasource_sql
 		GROUP BY
 			foreign_id
 	) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
-	INNER JOIN storage_int AS current_payer ON (current_payer.foreign_key = e.encounter_id AND current_payer.value_key = 'current_payer'),
-	person_person pp
+	INNER JOIN storage_int AS current_payer ON (current_payer.foreign_key = e.encounter_id AND current_payer.value_key = 'current_payer')
 	$inwhere
 	GROUP BY pat.person_id
 	) AS DATA

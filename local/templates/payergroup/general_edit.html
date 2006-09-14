@@ -26,7 +26,7 @@ function deletePayer(id) {
 	<tr><td>
 	<input type="text" size="2" value="{$counter}" name="payerorder[{$payer->get('id')}]" />
 	{assign var=counter value = $counter+1}
-	</td><td>{$payer->get('insurance_company_name')} => {$payer->get('name')} </td><td><a href="javascript:;" onclick="deletePayer({$payer->get('id')});">Remove</a><br />
+	</td><td>{$payer->get('insurance_company_name')} -> {$payer->get('name')} </td><td><a href="javascript:;" onclick="deletePayer({$payer->get('id')});">Remove</a><br />
 	</td></tr>
 	{foreachelse}<tr><td colspan=2>No programs added yet</td></tr>
 	{/foreach}
@@ -40,7 +40,7 @@ function deletePayer(id) {
 	</td>
 </tr>
 <tr>
-	{if $payerGroup->get('id') > 1 }
+	{if $payerGroup->get('id') > 0 }
 	<td><br /><input type="submit" value="Update" /></td>
 	{else}
 	<td><br /><input type="submit" value="Add" /></td>

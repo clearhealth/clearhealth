@@ -195,9 +195,20 @@ class Address extends ORDataObject {
 	    return $ret;
     }
 
+	
+	/** 
+	 * Returns a list of states that can be associated with this address
+	 *
+	 * @return array
+	 * @access protected
+	 */
+	function valueList_state() {
+		$em =& Celini::enumManagerInstance();
+		return $em->enumArray('state');
+	}
+	
     function getStateList() {
-	    $list = $this->_load_enum('state',false);
-	    return array_flip($list);
+	    return $this->valueList('state');
     }
 
     function getTypeList() {

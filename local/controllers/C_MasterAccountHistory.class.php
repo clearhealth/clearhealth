@@ -59,7 +59,8 @@ class C_MasterAccountHistory extends Controller {
 		$this->view->assign('providerList', $provider->valueList());
 
 		$provider =& Celini::newORDO('Provider');
-		$this->view->assign('userList', $provider->valueList('username'));
+		$user =& Celini::newOrdo('User');
+		$this->view->assign('userList', $user->valueList('username'));
 		
 		// setup actual grid
 		$ds =& new MasterAccountHistory_DS($this->filters);

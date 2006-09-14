@@ -41,7 +41,6 @@ class EventGroup extends ORDataObject {
 	function getEvents($returnArray = false,$ordoName = 'CalendarEvent',$criteria = '1'){
 		$this->populateSchedule();
 		$criteria .= ' AND eg.event_group_id='.$this->dbHelper->quote($this->get('id'));
-		$joins = 'INNER JOIN schedule_event se ON se.event_id=event.event_id INNER JOIN event_group eg ON eg.event_group_id=se.event_group_id';
 		return $this->_schedule->getEvents($returnArray,$ordoName,$criteria);
 	}
 	

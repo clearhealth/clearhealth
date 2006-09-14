@@ -1,0 +1,109 @@
+{* Get arrays to work with *}
+{assign var="transaction_array" value=$Transaction_List_ds->toArray()}
+{assign var="total_payment_array" value=$Total_payment_amount_ds->toArray()}
+{assign var="payment_by_type_array" value=$Total_payment_amount_by_type_ds->toArray()}
+{assign var="payment_by_type_array2" value=$Total_payment_amount_by_type2_ds->toArray()}
+{assign var="payment_by_type_array3" value=$Total_payment_amount_by_type3_ds->toArray()}
+{assign var="encounters_array" value=$Total_encounters_ds->toArray()}
+{assign var="encounters_by_provider_array" value=$Total_encounters_by_provider_ds->toArray()}
+{assign var="values" value=$Transaction_List_filter->getValues()}
+
+{if empty($values.date) || isset($smarty.get.refilter)}
+	{$Transaction_List_filter->setMinimumAction()}
+	{$Transaction_List_filter->render()}
+{else}
+<a style="float:left" href="{$REPORT_ACTION}&refilter=true">Change Filter</a>
+{/if}
+
+{if $PRINT_ACTION}
+<a style="float:right" href="{$PRINT_ACTION}" target='print'>Print View</a>
+{/if}
+
+<h2>Transaction Report for: {query_lookup value=$values.user query="select user_id, concat_ws(', ',last_name,first_name) name from user u inner join person p using(person_id)"} {$values.date} {query_lookup value=$values.facility query="select id, name from buildings"}</h2>
+
+<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
+	<tr>
+		<th>Date</th><th>Patient</th><th>Record #</th><th>Type</th><th>Amount</th><th>Provider</th><th>Encounter Note</th><th>User</th>
+	</tr>
+{foreach from=$transaction_array item=row key=key}
+	<tr>
+		<td>{$row.payment_date}</td>
+		<td>{$row.patient}</td>
+		<td>{$row.record_number}</td>
+		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
+		<td>{$row.amount}</td>
+		<td>{$row.provider}</td>
+		<td>{$row.encounter_note}</td>
+		<td>{$row.user}</td>
+	</tr>
+{/foreach}
+</table>
+
+<h3 style="margin-bottom: 0px;">Amount Collected:</h3>
+<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
+	<tr>
+		<th>Type</th><th>Amount</th>
+	</tr>
+{foreach from=$payment_by_type_array item=row key=key}
+	{assign var=total1 value=$total1+$row.total}
+	<tr>
+		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
+		<td>{$row.total}</td>
+	</tr>
+{/foreach}
+	<tr>
+		<td style="background-color: #ddd">Total</td>
+		<td style="background-color: #ddd">{$total1|string_format:"%.2f"}</td>
+	</tr>
+</table>
+
+<h3 style="margin-bottom: 0px;">Amount Collected2:</h3>
+<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
+	<tr>
+		<th>Type</th><th>Amount</th>
+	</tr>
+{foreach from=$payment_by_type_array2 item=row key=key}
+	{assign var=total3 value=$total2+$row.total}
+	<tr>
+		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
+		<td>{$row.total}</td>
+	</tr>
+{/foreach}
+	<tr>
+		<td style="background-color: #ddd">Total</td>
+		<td style="background-color: #ddd">{$total2|string_format:"%.2f"}</td>
+	</tr>
+</table>
+<h3 style="margin-bottom: 0px;">Amount Collected3:</h3>
+<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
+	<tr>
+		<th>Type</th><th>Amount</th>
+	</tr>
+{foreach from=$payment_by_type_array3 item=row key=key}
+	{assign var=total3 value=$total1+$row.total}
+	<tr>
+		<td>{enum_lookup value=$row.payment_type name="payment_type"}</td>
+		<td>{$row.total}</td>
+	</tr>
+{/foreach}
+	<tr>
+		<td style="background-color: #ddd">Total</td>
+		<td style="background-color: #ddd">{$total3|string_format:"%.2f"}</td>
+	</tr>
+</table>
+<h3 style="margin-bottom: 0px;">Number Encounters:</h3>
+<table class="grid" border=1 cellspacing=0 style="background-color: darkgray">
+	<tr>
+		<th>Provider</th><th># Encounters</th>
+	</tr>
+{foreach from=$encounters_by_provider_array3 item=row key=key}
+	<tr>
+		<td>{$row.provider}</td>
+		<td>{$row.total}</td>
+	</tr>
+{/foreach}
+	<tr>
+		<td style="background-color: #ddd">Total</td>
+		<td style="background-color: #ddd">{$encounters_array.0.total}</td>
+	</tr>
+</table>

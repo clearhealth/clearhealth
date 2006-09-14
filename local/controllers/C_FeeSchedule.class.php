@@ -17,7 +17,14 @@ class C_FeeSchedule extends Controller {
 		$up =& Celini::getCurrentUserProfile();
 		$cp = $up->getCurrentPracticeId();
 
-		$sql = "select superbill_id, name from superbill where status = 1 and (practice_id = $cp or practice_id = 0)";
+		$sql = "
+		SELECT
+			superbill_id, name
+		FROM
+			superbill
+		WHERE
+			status = 1 and (practice_id = $cp or practice_id = 0)
+		";
 		$db = new clniDb();
 		$this->view->assign('superbills',$db->getAssoc($sql));
 		$this->view->assign('SUPERBILL_ACTION',Celini::link('superbill','FeeSchedule',false)."fee_schedule_id=$fsId&");

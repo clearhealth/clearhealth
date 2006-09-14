@@ -8,7 +8,9 @@
 <script>
 	//HTML_AJAX_Util.registerEvent(document.getElementById('event{$appointment->get('event_id')}'), 'mouseout', 'shrinkAppointmentHandler');
 </script>
+{if $innerappt}{$innerappt}{else}
 {include file="appointment/general_innerappointment.html"}
+{/if}
 </div>
 {/strip}
 

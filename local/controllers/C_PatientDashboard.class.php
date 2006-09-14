@@ -25,6 +25,20 @@ class C_PatientDashboard extends Controller {
 		$this->assign('CASETAB_ACTION',Celini::link('case',true,true,$patientId));
 		$this->assign('APPOINTMENT_ACTION', Celini::link('add', 'appointment') . 'patient_id=' . $patientId);
 		$GLOBALS['C_MAIN']['extra_css'] = array('patientDashboard.css');
+		// Check for access to tabs
+		$sec =& $GLOBALS['security'];
+		$objid = $sec->get_object_id('resources','emr','axo');
+		if($objid !== false) {
+			$this->view->assign('accessEMR',Auth::canI('view','emr'));
+		} else {
+			$this->view->assign('accessEMR',true);
+		}
+		$objid = $sec->get_object_id('resources','demo','axo');
+		if($objid !== false) {
+			$this->view->assign('accessDemo',Auth::canI('view','demo'));
+		} else {
+			$this->view->assign('accessDemo',true);
+		}
 	}
 
 	function actionView($patientId = '') {
@@ -145,6 +159,11 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionEMR_view($patientId) {
+		$sec =& $GLOBALS['security'];
+		$objid = $sec->get_object_id('resources','emr','axo');
+		if($objid !== false && Auth::canI('view','emr') === false) {
+			return 'No Access to EMR';
+		}
 		$config =& Celini::configInstance('Practice');
 		$this->assign_by_ref('config',$config);
 		

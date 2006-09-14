@@ -1,3 +1,15 @@
+{if $wizard->get('schedule_type') == 'ADM'}
+{head type="js"}
+function roomChanged(select) {
+	if (!$('group').changed) { 
+		$('group').value = select.options[select.selectedIndex].text;
+	}
+	if (!$('name').changed) {
+		$('name').value = 'Meeting Schedule: '+select.options[select.selectedIndex].text;
+	}
+}
+{/head}
+{else}
 {head type="js"}
 function roomChanged(select) {
 	if (!$('group').changed) { 
@@ -8,6 +20,7 @@ function roomChanged(select) {
 	}
 }
 {/head}
+{/if}
 {include file="schedule/general_wizard_header.html"}
 <h2>Select a Room</h2>
 

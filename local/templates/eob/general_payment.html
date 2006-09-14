@@ -4,9 +4,11 @@
 {$messages->render()}
 {/if}
 <h2>{l}Record Payment for Claim{/l}: {$claim->get('identifier')}</h2>
-<p>{l}Claim was created for encounter on{/l}: {$encounter->get('date_of_treatment')}</p>
-<p>{l}Encounter's current payer is set to{/l}: {$current_payer}</p>
-<p>{l}Patient{/l}: {$patient->get('last_name')}, {$patient->get('first_name')}</p>
+<p>
+<b>{l}Claim Date{/l}</b>: {$encounter->get('date_of_treatment')}  &nbsp;
+<b>{l}Current Payer{/l}</b>: {$current_payer} &nbsp;
+<b>{l}Patient{/l}</b>: {$patient->get('last_name')}, {$patient->get('first_name')}
+</p>
 
 <input type="hidden" id="claimId" value="{$claim->get('id')}">
 <input type="hidden" id="rebillAction" value="{$REBILL_ACTION}">
@@ -60,14 +62,15 @@
 	<table class="grid" id="adjustmentListTable">
 		<thead>
 			<tr>
-				<th>Code</th><th>Adjustment</th>
+				<th>Code</th><th>Adjustment</th><th>Amount</th>
 			</tr>
 		</thead>
 		<tbody>
-			{foreach from=$adjustments item='row' name="adjustments"}
+			{foreach from=$adjarray item='adjustment' name='adjustments'}
 			<tr{if $smarty.foreach.adjustments.iteration % 2} class="alt"{/if}>
-				<td>{$row->extra1}</td>
-				<td>{$row->value}</td>
+				<td>{$adjustment.code}</td>
+				<td>{$adjustments[$adjustment.adjustment_type]->value}</td>
+				<td>{$adjustment.value}</td>
 			</tr>
 			{/foreach}
 		</tbody>
@@ -88,7 +91,11 @@
 	</tbody>
 </table>
 <br>
-<select id="adjCode"><option value="0">Payment</option></select>
+<select id="adjCode"><option value="0">Payment</option>
+	{foreach from=$codeList item='code'}
+	<option value="{$code.coding_data_id}">{$code.code}</option>
+	{/foreach}
+</select>
 <select id="adjType">
 	{foreach from=$adjustments item='row'}
 	<option value="{$row->key}">{$row->extra1}: {$row->value|truncate:30:" ...":true}</option>
@@ -136,9 +143,10 @@
 	<tr>
 		<td></td>
 		<td style="white-space:nowrap;">
-			<input type="submit" id="submit" value="Record Payment"><button onclick="return rebillSelfPay()" id="rebill">Rebill as Self Pay</button>
+			<input type="submit" id="submit" value="Record Payment"> <button onclick="return rebillSelfPay()" id="rebill">Rebill as Self Pay</button>
 			{if $encounter->get('next_payer_id') > 0 }
-			<button onclick="return rebillNextPayer()" id="rebillnext">Rebill To Next Payer</button>
+			{assign var=nextpayer value=$encounter->get('next_payer')}
+			<button onclick="return rebillNextPayer()" id="rebillnext">Rebill To Next Payer ({$nextpayer->value('fullname')})</button>
 			{/if}
 		</td>
 	</tr>

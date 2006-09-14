@@ -69,8 +69,26 @@ class Patient extends MergeDecorator {
 	function generate_record_number() {
 		
 		$rn = $this->_db->GenID("record_sequence");
+		while(!$this->isRecordNumUnique($rn)) {
+			$rn = $this->_db->GenID("record_sequence");
+		}
 		return $rn;
 	}
+
+	function isRecordNumUnique($value = false) {
+		if ($value !== false) {
+			$rn = $this->dbHelper->quote($value);
+		}
+		else {
+			$rn = $this->dbHelper->quote($this->get('record_number'));
+		}
+		$sql = "select person_id from patient where record_number = $rn";
+		if ($this->dbHelper->getOne($sql)) {
+			return false;
+		}
+		return true;
+	}
+
 
 	/**
 	 * Persist the data
@@ -334,23 +352,24 @@ class Patient extends MergeDecorator {
 		$status = array();
 		$sql = '
 			SELECT
-				SUM(IFNULL(total_billed,0))+SUM(IFNULL(mc.amount,0)) AS total_billed,
+				SUM(IFNULL(total_billed,0)) AS total_billed,
 				SUM(IFNULL(total_paid,0)) AS total_paid,
 				SUM(IFNULL(writeoffs.writeoff,0)) AS total_writeoff,
-				(SUM(IFNULL(total_billed,0))+SUM(IFNULL(mc.amount,0))) - (SUM(IFNULL(total_paid,0)) 
+				SUM(IFNULL(total_billed,0)) - (SUM(IFNULL(total_paid,0)) 
 					+ SUM(IFNULL(writeoffs.writeoff,0))) AS total_balance
 			FROM
 				encounter AS e
-				LEFT JOIN misc_charge mc on e.encounter_id = mc.encounter_id
 				LEFT JOIN clearhealth_claim AS cc on e.encounter_id = cc.encounter_id
 				LEFT JOIN (
 					SELECT
 						foreign_id,
 						SUM(ifnull(writeoff,0)) AS writeoff
 					FROM
-						payment 
+						payment p
+						inner join clearhealth_claim cc on p.foreign_id = cc.claim_id
+						inner join encounter e on cc.encounter_id = e.encounter_id
 					WHERE
-						encounter_id = 0 and foreign_id = '.$this->dbHelper->quote($patient_id).'
+						p.encounter_id = 0 and e.patient_id = '.$this->dbHelper->quote($patient_id).'
 					GROUP BY
 						foreign_id
 				) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)

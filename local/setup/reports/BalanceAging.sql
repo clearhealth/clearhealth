@@ -27,7 +27,7 @@ from
 )
 patient
 LEFT JOIN (	
-	SELECT patient_id,e.encounter_id,e.encounter_id,
+	SELECT patient_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)
@@ -54,7 +54,7 @@ LEFT JOIN (
 
 )as `current` on current.patient_id = patient.person_id and current.encounter_id = patient.encounter_id
 LEFT JOIN (	
-	SELECT patient_id,e.encounter_id,e.encounter_id,
+	SELECT patient_id,e.encounter_id,
 	(IFNULL(SUM(total_billed),0) - (IFNULL(SUM(total_paid),0) + IFNULL(SUM(writeoffs.writeoff),0))) AS total_balance
 	FROM encounter as e
 	INNER JOIN clearhealth_claim AS cc USING(encounter_id)

@@ -17,6 +17,7 @@ class C_Encounter extends Controller {
 	var $encounter_person_id = 0;
 	var $payment_id = 0;
 	var $coding_data_id = 0;
+	var $edit_icd_code = 0;
 
 	function C_Encounter() {
 		$this->controller();
@@ -157,7 +158,7 @@ class C_Encounter extends Controller {
 		$payments = $payment->paymentsFromEncounterId($encounter_id);
 		$paymentGrid = new cGrid($payments);
 		$paymentGrid->name = "paymentGrid";
-		$paymentGrid->registerTemplate('amount','<a href="'.Celini::Managerlink('editPayment',$encounter_id).'id={$payment_id}&process=true">{$amount}</a>');
+		$paymentGrid->registerTemplate('amount','<a href="'.Celini::managerLink('editPayment',$encounter_id,'edit','Encounter').'id={$payment_id}&process=true">{$amount}</a>');
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 		
@@ -250,7 +251,7 @@ class C_Encounter extends Controller {
 		if ($encounter_id > 0) {
 			$this->coding->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 			$this->coding->assign("encounter", $encounter);
-			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_data_id);
+			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_data_id,$this->edit_icd_code);
 			$this->assign('codingHtml',$codingHtml);
 			$this->assign_by_ref('formDataGrid',$formDataGrid);
 			$this->assign_by_ref('formList',$formList);
@@ -477,7 +478,6 @@ class C_Encounter extends Controller {
 			$db =& Celini::dbInstance();
 			$db->execute($sql);
 			$this->messages->addMessage('Previous Claims Deleted');
-			$this->_generateClaim($encounter);
 		}
 
 		if (isset($_POST['encounter']['close'])) {
@@ -494,8 +494,7 @@ class C_Encounter extends Controller {
 				$this->_generateClaim($encounter);
 			}
 		}
-		
-		if (isset($_POST['encounter']['override'])) {
+		else if (isset($_POST['encounter']['override'])) {
 			$billtype = $_POST['encounter']['overridebilltype'];
 			$encounter->set('current_payer',$_POST['encounter']['overridepayer']);
 			$encounter->set('status', 'closed');
@@ -506,16 +505,14 @@ class C_Encounter extends Controller {
 				$this->_handleRebill($encounter);
 			}
 		}
-		
 		// If this is a rebill, pass it off to the rebill method
-		if (isset($_POST['encounter']['rebill'])) {
+		else if (isset($_POST['encounter']['rebill'])) {
 			$encounter->set('status', 'closed');
 			$encounter->persist();
 			$this->_handleRebill($encounter);
 		}
-		
 		// If we're rebilling the next payer in the group, set the next biller
-		if(isset($_POST['encounter']['rebillnext'])) {
+		else if(isset($_POST['encounter']['rebillnext'])) {
 			$encounter->set('current_group_payer',$this->POST->get('rebillnextpayer'));
 			$encounter->persist();
 		}
@@ -600,8 +597,9 @@ class C_Encounter extends Controller {
 		return false;
 	}
 
-	function update_action($foreign_id = 0, $coding_data_id = 0) {
+	function update_action($foreign_id = 0, $coding_data_id = 0, $icd_id = 0) {
 		$this->coding_data_id = $coding_data_id;
+		$this->edit_icd_code = $icd_id;
 		return $this->actionEdit($this->get('encounter_id'));
 	}
 

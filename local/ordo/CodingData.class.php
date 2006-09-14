@@ -158,21 +158,29 @@ class CodingData extends ORDataObject {
 		return $ret;
 	}
 	
-	
+	/**
+	 * Get code list using encounter_id
+	 *
+	 * @param int $foreign_id
+	 * @return array
+	 */
 	function getCodeList($foreign_id){
 	//echo "CodingData getCodeList with $foreign_id <br>";
 		$foreign_id = intval($foreign_id);
 		$sql = "
-			select cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
+		SELECT
+			cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
 			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, cd.fee,
 			cdd.tooth, cdd.toothside
-			FROM coding_data AS cd
+		FROM
+			coding_data AS cd
 			LEFT JOIN codes AS c ON cd.code_id = c.code_id 
 			LEFT JOIN coding_data_dental AS cdd ON cd.coding_data_id=cdd.coding_data_id
-			WHERE foreign_id = $foreign_id
+		WHERE foreign_id = $foreign_id
 			AND parent_id = 0
-			order by cd.coding_data_id
-				";
+		ORDER BY
+			cd.coding_data_id
+		";
 		$res = $this->_execute($sql);
 		$ret = array();
 		while(!$res->EOF) {
@@ -186,6 +194,47 @@ class CodingData extends ORDataObject {
 		return $ret;		
 	}
 	
+	/**
+	 * Get code list using claim_id and encounter_id
+	 *
+	 * @param int $claim_id
+	 * @param int $foreign_id
+	 * @return array
+	 */
+	function getCodeListByClaimId($claim_id,$foreign_id){
+		$claim_id = intval($claim_id);
+		$foreign_id = intval($foreign_id);
+		$sql = "
+		SELECT
+			cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
+			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, fbcl.amount AS fee,
+			cdd.tooth, cdd.toothside
+		FROM
+			encounter AS e
+			LEFT JOIN clearhealth_claim AS cc USING(encounter_id)
+			LEFT JOIN fbclaim AS fbc ON(fbc.claim_identifier=cc.identifier)
+			LEFT JOIN fbclaimline fbcl ON(fbcl.claim_id=fbc.claim_id)
+			LEFT JOIN codes AS c ON (c.code = fbcl.`procedure`)
+			LEFT JOIN coding_data cd ON(cd.code_id=c.code_id AND cd.foreign_id='$foreign_id')
+			LEFT JOIN coding_data_dental AS cdd ON cd.coding_data_id=cdd.coding_data_id
+		WHERE
+			cc.claim_id='$claim_id'
+			AND e.encounter_id='$foreign_id'
+			AND parent_id = 0
+		GROUP BY
+			cd.coding_data_id
+		ORDER BY
+			cd.coding_data_id
+		";
+		$res = $this->_execute($sql);
+		$ret = array();
+		while(!$res->EOF) {
+			$ret[$res->fields['coding_data_id']] = $res->fields;
+			$res->MoveNext();
+		}
+		return $ret;		
+	}
+
 	function getParentCode(){
 	//echo "CodingData getParentCodes with <br>";
 		if($this->_parentCode == null){

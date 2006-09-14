@@ -60,6 +60,8 @@ if($event_id < 1) {
 } else {
 	$event_id++;
 }
+$sevents = array();
+$relevents = array();
 while($res && !$res->EOF) {
 	if(!isset($scheds[$res->fields['schedule_id']])) {
 		// Create the schedule
@@ -81,22 +83,26 @@ while($res && !$res->EOF) {
 	}
 	$eventInsertValues[] = "(".$event_id.','.$db->quote($res->fields['name']).','.$db->quote($res->fields['start']).','.$db->quote($res->fields['end']).')';
 	$sevents[] = "({$res->fields['schedule_id']},{$event_id})";
+	$relevents[] = "('','EventGroup',{$res->fields['schedule_id']},'ScheduleEvent',{$event_id})";
 	$event_id++;
 	if(count($eventInsertValues) > 50) {
-		insertSchedEvents($eventInsertValues,$sevents);
+		insertSchedEvents($eventInsertValues,$sevents,$relevents);
 		$eventInsertValues = array();
 		$sevents = array();
+		$relevents = array();
 	}
 	$res->MoveNext();
 }
 
 if(count($eventInsertValues) > 0) {
-	insertSchedEvents($eventInsertValues,$sevents);
+	insertSchedEvents($eventInsertValues,$sevents,$relevents);
 }
 
-function insertSchedEvents(&$sqls,&$sevents) {
+function insertSchedEvents(&$sqls,&$sevents,&$relevents) {
 	global $db;
 	global $newCHDB;
+	
+	// Insert events
 	$eventInsertValues = implode(',',$sqls);
 	$eventInsertSql = "
 	INSERT INTO
@@ -109,12 +115,22 @@ function insertSchedEvents(&$sqls,&$sevents) {
 
 	$db->execute($eventInsertSql);
 	$sqls = array();
+
+	// Insert eventgroup-event item
 	$sevInsertSql = "
 	INSERT INTO
 	{$newCHDB}.schedule_event (event_group_id,event_id)
 	VALUES ".implode(',',$sevents);
 	$db->execute($sevInsertSql);
 	$sevents = array();
+	
+	// Insert relationship
+	$sevInsertSql = "
+	INSERT INTO
+	{$newCHDB}.relationship (relationship_id, parent_type, parent_id, child_type,child_id)
+	VALUES ".implode(',',$relevents);
+	$db->execute($sevInsertSql);
+	$relevents = array();
 }
 
 debug("done");

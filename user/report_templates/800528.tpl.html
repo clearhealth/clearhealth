@@ -1,0 +1,27 @@
+<table width="100%"  border="0" cellspacing="0" cellpadding="8">
+<tr>
+	<td><h1>Open Encounters Report</h1>
+		<p>{$report->get_description()}</p>
+
+	</td>
+</tr>
+<tr>
+	<td>
+		{php}
+			$action = Celini::link("encounter","Patient");
+			$this->_tpl_vars['default_ds']->registerTemplate('patient',"<a href='{$action}id={\$encounter_id}'>{\$patient}</a>");
+			$this->_tpl_vars['default_ds']->setLabel('date_of_treatment','Date of Treatment');
+			$this->_tpl_vars['default_ds']->setLabel('last_change','Last Change');
+			$this->_tpl_vars['default_ds']->setLabel('patient','Patient');
+			$this->_tpl_vars['default_ds']->setLabel('facility', 'Facility');
+			$this->_tpl_vars['default_ds']->addOrderRule('last_change','DESC',0);
+		{/php}
+		{$default_grid->render()}
+		{if $default_grid->empty}
+		<p>There are no open encounters.</p>
+		{/if}
+
+	</td>
+</tr>
+
+</table>

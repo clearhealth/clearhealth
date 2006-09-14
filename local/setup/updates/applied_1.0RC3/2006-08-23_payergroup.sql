@@ -24,9 +24,9 @@ VALUES (
 
 INSERT INTO `menu` ( `menu_id` , `site_section` , `parent` , `dynamic_key` , `section` , `display_order` , `title` , `action` , `prefix` )
 VALUES (
-NULL , 'billing', '24', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
+80 , 'billing', '24', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
 ), (
-NULL , 'admin', '37', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
+81 , 'admin', '37', '', 'children', '110', 'Payer Groups', 'PayerGroup/List', 'main'
 );
 
 ALTER TABLE `insured_relationship` ADD INDEX ( `person_id` ) ;

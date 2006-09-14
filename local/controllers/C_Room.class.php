@@ -16,6 +16,12 @@ class C_Room extends Controller
 		
 		$this->assign("room",$this->_ordo);
 		$b =& Celini::newORDO('Building');
+		$buildings = $b->valueList();
+		if($buildings == false || count($buildings) == 0) {
+			$this->messages->addMessage('You must add a building to a practice before adding any rooms.');
+			return;
+		}
+
 		$this->assign("buildings",$b->valueList());
 
 		$picker =& new colorPickerSelect('pastels','color','','#'.$this->_ordo->get('color'));

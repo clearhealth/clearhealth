@@ -57,9 +57,23 @@ class Schedule extends CalendarSchedule{
 	function setupByRoomId($roomId) {
 		$tableName = $this->tableName();
 		$qRoomId = $this->dbHelper->quote($roomId);
-		$sql = "SELECT * FROM {$tableName} AS s WHERE s.room_id = {$qRoomId}";
+		$sql = "SELECT * FROM {$tableName} AS s WHERE s.room_id = {$qRoomId} AND s.schedule_code='RS'";
 		$this->helper->populateFromQuery($this, $sql);
 	}
+	
+	/**
+	 * Setup a {@link Schedule} from a {@link Room} id (specifically, an admin meeting schedule).
+	 *
+	 * @param  int
+	 * @access protected
+	 */
+	function setupByMeetingRoomId($roomId) {
+		$tableName = $this->tableName();
+		$qRoomId = $this->dbHelper->quote($roomId);
+		$sql = "SELECT * FROM {$tableName} AS s WHERE s.room_id = {$qRoomId} AND s.schedule_code='ADM'";
+		$this->helper->populateFromQuery($this, $sql);
+	}
+	
 
 	function get_events() {
 		$events=$this->getChildren('ScheduleEvent');
@@ -81,6 +95,10 @@ class Schedule extends CalendarSchedule{
 		while($event=&$events->current() && $events->valid()){
 			$event->drop();
 			$events->next();
+		}
+		$egs = $this->getChildren('EventGroup');
+		for($egs->rewind();$egs->valid();$egs->next()) {
+			$eg->drop();
 		}
 		parent::drop();
 	}
@@ -273,7 +291,9 @@ class Schedule extends CalendarSchedule{
 			$criteria = '';
 		}
 		$criteria .= "eg.schedule_id=".$this->dbHelper->quote($this->get('id'));
-		$joins = 'INNER JOIN schedule_event se ON se.event_id = event.event_id INNER JOIN event_group eg ON se.event_group_id = eg.event_group_id';
+		$joins = 'LEFT JOIN schedule_event se ON se.event_id = event.event_id';
+		$joins .= ' LEFT JOIN appointment a ON a.event_id=event.event_id';
+		$joins .= ' INNER JOIN event_group eg ON se.event_group_id = eg.event_group_id OR eg.event_group_id=a.event_group_id';
 		$finder =& new ORDOFinder($eventType,$criteria,'',null,$joins);
 		$events =& $finder->find();
 		if($returnArray == true) {

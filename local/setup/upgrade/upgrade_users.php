@@ -32,6 +32,11 @@ debug("done!");
 $oldCHDB = $GLOBALS['oldCHDB'];
 debug("Querying Users...",false);
 
+// Set colors on users that don't have one
+$db->execute("UPDATE {$newCHDB}.user SET color='CC6699' WHERE color = ''");
+// Remove '#' from colors
+$db->execute("UPDATE {$newCHDB}.user SET color=RIGHT(color,6) WHERE color LIKE '#%'");
+
 // Get primary_practice_id based on default location
 $sql = "
 	SELECT

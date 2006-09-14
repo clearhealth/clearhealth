@@ -4,19 +4,24 @@ class AppointmentRuleManager {
 
 	var $rulesets = array();
 	var $messages = array();
-
+	var $override = true;
 
 	function isValid($appointment) {
 		$this->populateRules($appointment);
 
 		$status = true;
+		$overrides = array();
 		foreach($this->rulesets as $ruleset) {
 			$s = $ruleset->isValid($appointment);
 			if (!$s) {
 				$status = false;
 				$this->messages[] = $ruleset->getMessage();
+				$overrides[] = $ruleset->canOverride();
 			}
 			//$this->messages[] = $ruleset->getMessage(); // enable for debug
+		}
+		if(in_array(false,$overrides)) {
+			$this->override = false;
 		}
 
 		return $status;

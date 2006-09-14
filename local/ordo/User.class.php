@@ -83,5 +83,22 @@ class User extends Base_User {
 		}
 		return 0;
 	}
+
+	function valueList_username() {
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$where = " AND p.primary_practice_id = '$pid'";
+		$sql = 'SELECT
+				DISTINCT u.user_id, u.username
+			FROM
+				user AS u
+				INNER JOIN person AS p USING(person_id)
+			WHERE
+				p.inactive = 0
+				'.$where.'
+			ORDER BY
+				u.username';
+		return $this->dbHelper->cachedGetAssoc($sql);
+	}
 }
 ?>

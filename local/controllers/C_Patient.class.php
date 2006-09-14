@@ -528,9 +528,7 @@ class C_Patient extends Controller {
 	function _genPatientStatementSql($patientId,$includeDependants,$withbalance=true,$filters=array()) {
 		$format = DateObject::getFormat();
 
-		$patientSelectSql = "
-		e.patient_id = $patientId
-		";
+		$patientSelectSql = " e.patient_id = $patientId ";
 		$this->assign('familyStatement',false);
 		if ($includeDependants) {
 			$patientSelectSql = "(e.patient_id =$patientId or e.patient_id 
@@ -540,58 +538,38 @@ class C_Patient extends Controller {
 
 		$withbalance = $withbalance == true ? 'AND balance > 0' : '';
 		$encounterBalanceSql = "
-		select
-			feeData.encounter_id,
-			(charge + ifnull(misc_charge,0.00) - ifnull(credit,0.00)) balance
-		from
-			/* Fee total */
-			(
-			select
+			SELECT
 				e.encounter_id,
-				sum(cd.fee) charge
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join coding_data cd on e.encounter_id = cd.foreign_id and cd.parent_id = 0
-			where
-				$patientSelectSql
-			group by
-				e.encounter_id
-			) feeData
-		left join
-			/* Misc charges */
-			(
-			select
-				e.encounter_id,
-				SUM(mc.amount) misc_charge
+				SUM(IFNULL(total_billed,0)) AS total_billed,
+				SUM(IFNULL(total_paid,0)) AS total_paid,
+				SUM(IFNULL(writeoffs.writeoff,0)) AS total_writeoff,
+				SUM(IFNULL(total_billed,0)) - (SUM(IFNULL(total_paid,0)) 
+					+ SUM(IFNULL(writeoffs.writeoff,0))) AS balance
 			FROM
-				encounter e
-				INNER JOIN misc_charge mc USING(encounter_id)
-			WHERE
-				$patientSelectSql
-			GROUP BY e.encounter_id
-			) miscChargeData ON(feeData.encounter_id=miscChargeData.encounter_id)
-		left join
-			/* Payment totals */
-			(
-			select
-				e.encounter_id,
-				(sum(pl.paid) + sum(pl.writeoff)) credit
-			from
-				encounter e
-				inner join clearhealth_claim cc using(encounter_id)
-				inner join payment p on cc.claim_id = p.foreign_id
-				inner join payment_claimline pl on p.payment_id = pl.payment_id
+				encounter AS e
+				LEFT JOIN clearhealth_claim AS cc on e.encounter_id = cc.encounter_id
+				LEFT JOIN (
+					SELECT
+						foreign_id,
+						SUM(ifnull(writeoff,0)) AS writeoff
+					FROM
+						payment p
+						inner join clearhealth_claim cc on p.foreign_id = cc.claim_id
+						inner join encounter e on cc.encounter_id = e.encounter_id
+					WHERE
+						p.encounter_id = 0 and $patientSelectSql
+					GROUP BY
+						foreign_id
+				) AS writeoffs ON(writeoffs.foreign_id = cc.claim_id)
 			where
 				$patientSelectSql
+				and e.encounter_id NOT IN (
+					select e.encounter_id FROM encounter AS e
+					INNER JOIN relationship EPPP ON EPPP.parent_type = 'Encounter' AND EPPP.parent_id=e.encounter_id AND EPPP.child_type='PatientPaymentPlan'
+					INNER JOIN patient_payment_plan ppp ON ppp.patient_payment_plan_id=EPPP.child_id AND ppp.balance > 0
+				)
 			group by
 				e.encounter_id
-			) paymentData on feeData.encounter_id = paymentData.encounter_id
-		WHERE feeData.encounter_id NOT IN (
-			select e.encounter_id FROM encounter AS e
-			INNER JOIN relationship EPPP ON EPPP.parent_type = 'Encounter' AND EPPP.parent_id=e.encounter_id AND EPPP.child_type='PatientPaymentPlan'
-			INNER JOIN patient_payment_plan ppp ON ppp.patient_payment_plan_id=EPPP.child_id AND ppp.balance > 0
-			)
 		";
 
 		$agingSql = "
@@ -618,13 +596,12 @@ class C_Patient extends Controller {
 			date_format(e.date_of_treatment,'$format') item_date,
 			c.code_text,
 			c.code,
-			cc.total_billed charge,
+			cd.fee charge,
 			0.00 credit,
 			0.00 outstanding,
 			e.encounter_id,
 			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
 			prov.last_name AS provider_name,
-			'0000-00-00' AS payment_ts,
 			0 AS payer_id
 		from
 			encounter e
@@ -633,38 +610,61 @@ class C_Patient extends Controller {
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
-			inner join person prov ON(e.treating_person_id=prov.person_id)
+			left join person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
-			$patientSelectSql and balance > 0
+			$patientSelectSql $withbalance
 		";
-		// payments from co-pays
+		// misc charges
 		$sql .= "
 		union
 		select
-			date_format(p.payment_date,'$format') item_date,
-			'Co-Pay' code_text,
+			date_format(e.date_of_treatment,'$format') item_date,
+			'Misc Charge' code_text,
 			'' code,
-			0.00 charge,
-			(pl.paid+pl.writeoff) credit,
+			mc.amount charge,
+			0.00 credit,
 			0.00 outstanding,
 			e.encounter_id,
 			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
 			prov.last_name AS provider_name,
-			DATE_FORMAT(p.timestamp,'$format') AS payment_ts,
+			0 AS payer_id
+		from
+			encounter e
+			inner join misc_charge mc on mc.encounter_id = e.encounter_id
+			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
+			inner join person pr on e.patient_id = pr.person_id
+			left join person prov ON(e.treating_person_id=prov.person_id)
+		where
+			(e.status = 'billed' or e.status = 'closed') and
+			$patientSelectSql $withbalance
+		";
+		// misc payments
+		$sql .= "
+		union
+		select
+			date_format(p.payment_date,'$format') item_date,
+			'Misc Payment' code_text,
+			'' code,
+			0.00 charge,
+			p.amount credit,
+			0.00 outstanding,
+			e.encounter_id,
+			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
+			prov.last_name AS provider_name,
 			p.payer_id
 		from
 			encounter e
 			inner join clearhealth_claim cc using(encounter_id)
 			inner join payment p on e.encounter_id = p.encounter_id
-			inner join payment_claimline pl using(payment_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
-			INNER JOIN person prov ON(e.treating_person_id=prov.person_id)
+			left JOIN person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql
-			and balance > 0
+			$withbalance
+			AND p.amount != 0
 		";
 
 		// payments to claimlines
@@ -676,11 +676,10 @@ class C_Patient extends Controller {
 			c.code,
 			0 charge,
 			(pl.paid+pl.writeoff) credit,
-			0.00,
+			0.00 outstanding,
 			e.encounter_id,
 			concat_ws(', ',pr.last_name,pr.first_name) patient_name,
 			prov.last_name provider_name,
-			DATE_FORMAT(p.timestamp,'$format') AS payment_ts,
 			p.payer_id
 		from
 			encounter e
@@ -690,15 +689,15 @@ class C_Patient extends Controller {
 			inner join codes c using(code_id)
 			inner join ($encounterBalanceSql) b on e.encounter_id = b.encounter_id
 			inner join person pr on e.patient_id = pr.person_id
-			inner join person prov ON(e.treating_person_id=prov.person_id)
+			left join person prov ON(e.treating_person_id=prov.person_id)
 		where
 			(e.status = 'billed' or e.status = 'closed') and
 			$patientSelectSql
-			and p.encounter_id = 0
+			AND p.encounter_id = 0
+			AND (pl.paid+pl.writeoff) != 0
 			$withbalance
 		) data
-		order by encounter_id DESC , item_date
-			,payment_ts ASC
+		order by encounter_id DESC , item_date ASC, charge DESC
 		";
 		return array($sql,$agingSql);
 	}

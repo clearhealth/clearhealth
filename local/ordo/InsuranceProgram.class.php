@@ -27,6 +27,7 @@ class InsuranceProgram extends ORDataObject {
 	var $address_id		= '';
 	var $funds_source	= '';
 	var $program_type = '';
+	var $payer_identifier = '';
 	/**#@-*/
 	var $_table = 'insurance_program';
 	var $_internalName='InsuranceProgram';
@@ -59,6 +60,25 @@ class InsuranceProgram extends ORDataObject {
 	 */
 	function populate() {
 		parent::populate('insurance_program_id');
+	}
+	
+	/**
+	 * When we first persist a payer, we will automatically add it to the default payer group.
+	 *
+	 */
+	function persist() {
+		if($this->get('id') < 1) {
+			parent::persist();
+			$pg =& Celini::newORDO('PayerGroup',1);
+			$db =& new clniDB();
+			$payers = $pg->valueList('payer_id');
+			$count = count($payers) + 1;
+			$sql = "INSERT INTO insurance_payergroup (insurance_program_id,payer_group_id,`order`)
+			VALUES(".$db->quote($this->get('id')).",".$pg->get('id').",{$count})";
+			$db->execute($sql);
+		} else {
+			parent::persist();
+		}
 	}
 
 	/**#@+

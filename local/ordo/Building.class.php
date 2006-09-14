@@ -313,18 +313,8 @@ class Building extends ORDataObject{
 			ORDER BY
 				b.name,
 				r.name";
-		return $this->_buildValueList($this->dbHelper->execute($sql));
+		return $this->dbHelper->getAssoc($sql);
 	}
-	
-	function _buildValueList($result) {
-		$valueList = array();
-		while ($result && !$result->EOF) {
-			$valueList[$result->fields['id']] = $result->fields['name'];
-			$result->moveNext();
-		}
-		return $valueList;
-	}
-
-} // end of Class
+}
 
 ?>

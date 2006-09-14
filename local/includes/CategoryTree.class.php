@@ -21,36 +21,36 @@ class CategoryTree extends Tree {
 	}
 	
 	function _get_categories_array($patient_id,$group = false) {
-	  $categories = array();
-	  
-	  $g = "";
-	  if (is_array($group)) {
-		  $g = " and group_id in(".implode(',',$group).") ";
-	  }
+		$categories = array();
+		$g = "";
+		if (is_array($group)) {
+			$g = " and group_id in(".implode(',',$group).") ";
+		}
 		$this->_db->execute("drop temporary table if exist _firstNote");
 		$sql = "create temporary table _firstNote select min(id) id, foreign_id from note group by foreign_id";
 		$result = $this->_db->execute($sql);
 
-	  $sql = "SELECT c.id, c.name, d.id AS document_id, d.type, d.url, n.note 
-	  		FROM $this->_table AS c, $this->_document_table AS d 
+		$sql = "SELECT c.id, c.name, d.id AS document_id, d.type, d.url, n.note
+	  		FROM $this->_table AS c
 		  	LEFT JOIN $this->_relation_table AS c2d ON c.id = c2d.category_id 
+			INNER JOIN $this->_document_table AS d ON(c2d.document_id=d.id)
 			left join _firstNote fn on d.id = fn.foreign_id
 			left join note n on fn.id = n.id and n.foreign_id = d.id
-		  WHERE c2d.document_id = d.id";
-	  if (is_numeric($patient_id)) {
-	  		$sql .= " AND d.foreign_id = '" . $patient_id . "'";
-	  }
-	  $sql .= $g;
-	  //echo $sql;
-	  $result = $this->_db->Execute($sql);
-	  
-	  while ($result && !$result->EOF) {
-	  	$categories[$result->fields['id']][$result->fields['document_id']] = $result->fields;
-	  	$result->MoveNext();
-	  }
-	  
-	  return $categories;
-		
+		  WHERE 1";
+		if (is_numeric($patient_id)) {
+			$sql .= " AND d.foreign_id = '" . $patient_id . "'";
+		}
+		$sql .= $g;
+		//echo $sql;
+		$result = $this->_db->Execute($sql);
+
+		while ($result && !$result->EOF) {
+			$categories[$result->fields['id']][$result->fields['document_id']] = $result->fields;
+			$result->MoveNext();
+		}
+
+		return $categories;
+
 	}
 
 	function _get_category_names($id) {
