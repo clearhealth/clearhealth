@@ -3,6 +3,13 @@
 {else}
 {$messages->render()}
 {/if}
+
+<ul class="controllerMenu">
+	<li><a href="{link controller='Encounter' action='edit' defaultArg=$encounter->get('encounter_id') }">back</a></li>
+</ul>
+
+<div style="clear:both;"></div>
+
 <h2>{l}Record Payment for Claim{/l}: {$claim->get('identifier')}</h2>
 <p>
 <b>{l}Claim Date{/l}</b>: {$encounter->get('date_of_treatment')}  &nbsp;
