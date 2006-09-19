@@ -293,16 +293,16 @@ class Appointment extends ORDataObject {
 			}
 		}
 		$view = new clniView();
-		$view->clear_cache('general_singleappointment.html',$this->get('patient_id'),$this->get('id'));
-		$view->clear_cache('general_innerappointment.html',$this->get('patient_id'),$this->get('id'));
+		$view->caching = true;
+		$view->cache_lifetime = 900;
+		$view->clear_cache(null,null,$this->get('id'));
 	}
 	
 	function drop() {
 		$this->populateEvent();
 		$this->_event->drop();
 		$view = new clniView();
-		$view->clear_cache('general_singleappointment.html',$this->get('patient_id'),$this->get('id'));
-		$view->clear_cache('general_innerappointment.html',$this->get('patient_id'),$this->get('id'));
+		$view->clear_cache(null,null,$this->get('id'));
 		parent::drop();
 	}
 	

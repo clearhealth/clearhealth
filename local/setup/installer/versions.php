@@ -30,6 +30,7 @@ $version_1rc3->addTest('PHPMagicQuotes', array('Off'));
 $version_1rc3->addTest('PHPRegisterGlobals', array('Off'));
 $version_1rc3->addTest('PHPExtension', array('mysql'));
 $version_1rc3->addTest('WritableLocation', array($base_app_path.'/tmp'));
+$version_lrc3->addTest('WritableLocation', array($base_app_path.'/tmp/cache'));
 $version_1rc3->addTest('WritableLocation', array($base_app_path.'/local/config.php'));
 $version_1rc3->addTest('MysqlVersionOver', array(
 	'username_field' => 'db_user',

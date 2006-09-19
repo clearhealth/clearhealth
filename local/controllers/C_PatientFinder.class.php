@@ -82,7 +82,7 @@ class C_PatientFinder extends Controller {
 	function SmartSearch($search_string,$showNonPatients=false) {
 		$this->showNonPatients=$showNonPatients;
 		$join_type = "INNER";
-		if ($this->showNonPatients === true) {
+		if ($this->showNonPatients !== false) {
 			$join_type = "LEFT";
 		}
 
@@ -109,10 +109,11 @@ class C_PatientFinder extends Controller {
 		}
 		*/
 
+		$format = DateObject::getFormat();
 		$sql = "
 			SELECT 
 				CONCAT(last_name, ', ', first_name, ' ', middle_name) as name,
-				date_of_birth as DOB,
+				DATE_FORMAT(date_of_birth,'{$format}') as DOB,
 				psn.person_id as id,
 				record_number as pubpid, 
 				psn.identifier as ss,

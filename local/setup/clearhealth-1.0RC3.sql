@@ -2097,7 +2097,9 @@ CREATE TABLE IF NOT EXISTS `form` (
   `form_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
-  PRIMARY KEY  (`form_id`)
+  `system_name` varchar(100) NOT NULL default '',
+  PRIMARY KEY  (`form_id`),
+  UNIQUE KEY `system_name` (`system_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
 
 -- 
@@ -3138,8 +3140,10 @@ CREATE TABLE IF NOT EXISTS `hl7_message` (
   `control_id` varchar(50) NOT NULL default '',
   `message` longtext NOT NULL,
   `type` INT(11) NOT NULL default 0,
+  `processed` INT(11) NOT NULL default 0,
   PRIMARY KEY  (`hl7_message_id`),
-  KEY `control_id` (`control_id`)
+  KEY `control_id` (`control_id`),
+  KEY `processed` (`processed`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- 

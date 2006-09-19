@@ -48,6 +48,7 @@ class Person_Appointment_DS extends Datasource_sql {
 		$this->setup(Celini::dbInstance(),
 		array(
 			'cols' => "date_format(start,'%m/%d/%y %H:%i') start,
+					date_format(start,'%Y-%m-%d') isoday,
 					if (
 						((time_to_sec(end)-time_to_sec(start))/60 > 60), 
 						( concat( floor((time_to_sec(end)-time_to_sec(start))/60/60) ,'h ', 
@@ -62,6 +63,7 @@ class Person_Appointment_DS extends Datasource_sql {
 			),
 		$this->_labels);
 		$this->registerFilter('reason',array(&$this,'reasonFilter'));
+		$this->registerTemplate('start','<a href="'.Celini::link('day','CalendarDisplay').'date={$isoday}">{$start}</a>');
 
 		$enum =& ORDataObject::factory('Enumeration');
 		$this->reasonLookup = $enum->get_enum_list('appointment_reasons');

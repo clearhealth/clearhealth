@@ -240,6 +240,27 @@ class C_Patient extends Controller {
 	}
 
 	/**
+	 * Creates a batch statement printout from multiple patients.
+	 *
+	 * @param string $patients
+	 */
+	function actionBatchStatement_view($patients) {
+		$GLOBALS['loader']->requireOnce('controllers/C_Report.class.php');
+		$c_report =& new C_Report();
+		$patients = explode('-',$patients);
+		$output = '';
+		foreach($patients as $key=>$i) {
+			if($key != 0) {
+				$output .= '<DIV style="page-break-after:always"></DIV>';
+			}
+			$_GET['patient_id'] = $i;
+			$this->set('patient_id',$i);
+			$output .= $c_report->actionViewByCID('patient_statement');
+		}
+		return $output;
+	}
+	
+	/**
 	 * @todo figure out somewhere else to put all this sql, im not sure if a ds works with the derived tables, but maybe it does
 	 */
 	function actionStatement_view($patientId = false,$includeDependants=false) {
@@ -437,12 +458,15 @@ class C_Patient extends Controller {
 
 		$balance = $total_charges-$total_credits;
 
+		// calc insurance pending
+		$insurance_pending = $this->_calcInsurancePending($patientId,$includeDependants);
+
 		$this->assign('total_charges',$total_charges);
 		$this->assign('total_credits',$total_credits);
 		$this->assign('total_outstanding',$balance);
 		
 		$this->assign('total_account_balance',number_format($balance,2));
-		$this->assign('insurance_pending',number_format(0,2));
+		$this->assign('insurance_pending',number_format($insurance_pending,2));
 		if(count($plines) > 0) {
 			$this->assign('current_balance_due',number_format($pinfo['balance'],2));
 		} else {
@@ -472,6 +496,57 @@ class C_Patient extends Controller {
 		$this->assign('aging',$aging);
 
 		return array($lines,$plines);
+	}
+
+	function _calcInsurancePending($patientId,$includeDependants) {
+		$patientSelectSql = "e.patient_id =$patientId";
+		if ($includeDependants) {
+			$patientSelectSql = "(e.patient_id =$patientId or e.patient_id 
+				in(select person_id from person_person where related_person_id = $patientId and guarantor = 1))";
+		}
+
+		// insurance pending is claims out to an insurance company that haven't been paid
+		$sql = "
+			select
+			sum(fbcl.amount) - sum(paylines.writeoff) - sum(paylines.paid) amount
+			from
+				clearhealth_claim cc
+				inner join encounter e on cc.encounter_id = e.encounter_id
+				inner join fbclaim fbc on cc.identifier = fbc.claim_identifier
+				inner join fblatest_revision fblr on fbc.claim_identifier = fblr.claim_identifier and fbc.revision = fblr.revision
+				inner join fbclaimline fbcl on fbc.claim_id = fbcl.claim_id
+				LEFT JOIN (
+					SELECT
+						e.patient_id,
+						SUM(ifnull(writeoff,0)) AS writeoff,
+						SUM(ifnull(amount,0)) AS paid
+					FROM
+						payment p
+						inner join clearhealth_claim cc on p.foreign_id = cc.claim_id
+						inner join encounter e on cc.encounter_id = e.encounter_id
+					WHERE
+						p.encounter_id = 0 and $patientSelectSql
+					group by e.patient_id
+
+				) AS paylines ON(paylines.patient_id = e.patient_id)
+			where
+				$patientSelectSql
+				and fbc.claim_id in(
+					select 
+						fbc.claim_id
+					from
+						fbclaim fbc
+						inner join fbcompany fbco on fbc.claim_id = fbco.claim_id and fbco.type = 'FBPayer'
+					where
+						fbco.name != 'System'
+				)
+			";
+	
+
+		$db = new clniDb();
+		$amount = $db->getOne($sql);
+
+		return $amount;
 	}
 
 	function actionGuarantor_view() {
@@ -705,6 +780,7 @@ class C_Patient extends Controller {
 	function actionBalanceReport_view() {
 		$GLOBALS['loader']->requireOnce("datasources/PatientBalance_DS.class.php");
 		$ds =& new PatientBalance_DS($_GET);
+		
 		$grid =& new cGrid($ds);
 		$this->view->assign_by_ref('grid',$grid);
 		$prac =& Celini::newORDO('Practice');

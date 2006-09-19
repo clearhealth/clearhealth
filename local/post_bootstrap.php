@@ -5,7 +5,7 @@
 $ajax =& Celini::ajaxInstance();
 $ajax->jsLibraries[] = 'calendar';
 $ajax->jsLibraries[] = 'clniUtil';
-$ajax->jsLibraries[] = array('suggest');
+$ajax->jsLibraries[] = array('suggest','chsuggest');
 $ajax->jsLibraries[] = 'chBehaviors';
 $ajax->jsLibraries[] = 'zipcode';
 // Add application-specific js libraries
@@ -23,4 +23,5 @@ $conf->set('ajaxConfClasses',$ajaxConf);
 
 define('CLEARHEALTH_ROOT',APP_ROOT);
 $ajaxServer->registerJSLibrary('suggest', 'suggest.js', CELINI_ROOT . '/js/');
+$ajaxServer->registerJSLibrary('chsuggest', 'chsuggest.js', APP_ROOT . '/js/');
 ?>

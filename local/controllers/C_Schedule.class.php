@@ -227,7 +227,7 @@ class C_Schedule extends Controller
 				for($events->rewind();$events->valid();$events->next()) {
 					$event =& $events->current();
 					// Clear out old calendar columns from this date
-					$this->view->clear_cache('cache_column.html',$event->get('date'));
+					$this->view->clear_cache(null,$event->get('date'));
 					$id = $event->get('id');
 					$qScheduleEventId = $db->quote($id);
 					$qEventGroupId = $db->quote($eg->get('id'));

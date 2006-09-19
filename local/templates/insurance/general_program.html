@@ -67,7 +67,7 @@
 			<td><label>{l}Program Address{/l}</label></td>
 			<td><select name="insuranceProgram[address_id]">
 			{foreach from=$company->get_addresses() item=row}
-			<option value="{$row.id})">{$row.name} ({$row.type})</option>
+			<option value="{$row.address_id}" {if $insuranceProgram->get('address_id') == $row.address_id}selected{/if}>{$row.name} ({$row.type})</option>
 			{/foreach}
 			</select></td>
 		</tr>

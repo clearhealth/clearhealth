@@ -477,7 +477,14 @@ class C_Encounter extends Controller {
 				encounter_id = ".$encounter->get('id');
 			$db =& Celini::dbInstance();
 			$db->execute($sql);
-			$this->messages->addMessage('Previous Claims Deleted');
+			$sql = "
+			UPDATE fbclaim
+			SET
+				status='deleted'
+			WHERE
+				claim_identifier LIKE '%-%-".$encounter->get('id')."'";
+			$db->execute($sql);
+			$this->messages->addMessage('Previous Claim Deleted');
 		}
 
 		if (isset($_POST['encounter']['close'])) {

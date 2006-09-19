@@ -14,6 +14,7 @@ class HL7Message extends ORDataObject {
 	var $control_id		= '';
 	var $message		= '';
 	var $type		= '';
+	var $processed = 0;
 	/**#@-*/
 
 
