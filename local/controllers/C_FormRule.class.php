@@ -75,8 +75,12 @@ class C_FormRule extends Controller {
 		$form->populate_array($_POST['formRule']);
 		$form->persist();
 		$this->form_rule_id = $form->get('id');
-
-		$this->messages->addMessage('Form Rule Added Successfully');
+		if ($form_rule_id == 0) {
+			$this->messages->addMessage('Form Rule Added Successfully');
+		}
+		else {
+			$this->messages->addMessage('Form Rule Updated Successfully');
+		}
 	}
 	
 }
