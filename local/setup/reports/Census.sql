@@ -16,8 +16,8 @@ from
 where
  if ('[after]',o.start > '[after:date]',1) and
  if ('[before]',o.end < '[before:date]',1) and
- if ('[facility]',e.building_id = '[facility:query:select b.id, b.name from buildings b order by b.name]',1) and
- if ('[provider]',o.user_id = '[provider:query:select u.user_id, concat(p.last_name,', ',p.first_name) name from user inner join person p on u.person_id = p.person_id inner join provider pro using(person_id)]',1)
+ if ('[facility]',e.building_id = '[facility:facility_practice_level]',1) and
+ if ('[provider]',o.user_id = '[provider:provider_practice_level]',1)
 order by
  `Date` DESC, `Time` DESC
 /***

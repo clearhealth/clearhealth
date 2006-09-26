@@ -25,18 +25,13 @@ where
 concat_ws(', ',last_name,first_name) name from user u inner join person
 p using(person_id) order by last_name, first_name]',1)
 or
-if ('[user2]',e.created_by_user_id ='[user2:query:select user_id,
-concat_ws(', ',last_name,first_name) name from user u inner join person
-p using(person_id) order by last_name, first_name]',0)
+if ('[user2]',e.created_by_user_id ='[user2:user_practice_level]',0)
 or
-if ('[user3]',e.created_by_user_id ='[user3:query:select user_id,
-concat_ws(', ',last_name,first_name) name from user u inner join person
-p using(person_id) order by last_name, first_name]',0)
+if ('[user3]',e.created_by_user_id ='[user3:user_practice_level]',0)
 )
 and 
 if ('[date]', e.date_of_treatment = '[date:date]', e.date_of_treatment = CURDATE()) and
-if('[facility]',e.building_id = '[facility:query:select id, name
-from buildings order by name]',1)
+if('[facility]',e.building_id = '[facility:facility_practice_level]',1)
 
 
 

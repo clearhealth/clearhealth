@@ -25,7 +25,7 @@ where
  s.schedule_code = 'ns' and
  if ('[after]',o.start > '[after:date]',1) and
  if ('[before]',o.end < '[before:date]',1) and
- if ('[facility]',o.location_id = '[facility:query:select r.id, concat(r.name,'->',b.name) name from rooms r inner join buildings b on r.building_id = b.id]',1)
+ if ('[facility]',o.location_id = '[facility:rooms_building_practice_level]',1)
 
 /***
 dsFilters-Reason|enumLookup&ds|appointment_reasons

@@ -7,8 +7,8 @@ FROM
 WHERE
  IF ('[after]',e.date_of_treatment >= '[after:date]',1) AND
  IF ('[before]',e.date_of_treatment <= '[before:date]',1) AND
- IF ('[facility]',e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]',1) AND
- IF ('[provider]',e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]',1) AND
+ IF ('[facility]',e.building_id = '[facility:facility_practice_level]',1) AND
+ IF ('[provider]',e.treating_person_id = '[provider:provider_practice_level]',1) AND
  IF ('[reason]',e.encounter_reason = '[reason:enum:encounter_reason]',1)
 ---[total_encounters_by_reason,hideFilter,noPager]---
 SELECT

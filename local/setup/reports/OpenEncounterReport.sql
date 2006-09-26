@@ -22,8 +22,8 @@ WHERE
         (cd.primary_code = 1 OR cd.primary_code IS NULL) AND
 	IF ('[after]', e.date_of_treatment >= '[after:date]', 1) AND
 	IF ('[before]', e.date_of_treatment <= '[before:date]', 1) AND
-	IF ('[facility]', e.building_id = '[facility:query:SELECT id, name FROM buildings ORDER BY name]', 1) AND
-	IF ('[provider]', e.treating_person_id = '[provider:query:SELECT prov.person_id, CONCAT(per.first_name, " ", last_name) FROM provider AS prov JOIN person AS per USING(person_id)]', 1) AND
+	IF ('[facility]', e.building_id = '[facility:facility_practice_level]', 1) AND
+	IF ('[provider]', e.treating_person_id = '[provider:provider_practice_level]', 1) AND
 	IF ('[insurance]', insurer.insurance_program_id = '[insurance:query:SELECT insurance_program_id, name FROM insurance_program WHERE LENGTH(name) > 0]', 1)
 GROUP BY
 	e.encounter_id
