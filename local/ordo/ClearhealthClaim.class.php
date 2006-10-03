@@ -296,7 +296,8 @@ class ClearhealthClaim extends ORDataObject {
 			LEFT JOIN payment p ON(p.foreign_id=cc.claim_id)
 			LEFT JOIN payment_claimline pc USING(payment_id)
 			INNER JOIN eob_adjustment ea ON(ea.payment_id=p.payment_id OR ea.payment_claimline_id = pc.payment_claimline_id)
-			LEFT JOIN codes ON(codes.code_id=pc.code_id)
+			LEFT JOIN coding_data cd ON(cd.coding_data_id=pc.coding_data_id)
+			LEFT JOIN codes ON(codes.code_id=cd.code_id)
 		WHERE
 			cc.claim_id = ".$this->dbHelper->quote($this->get('id'))."
 		GROUP BY

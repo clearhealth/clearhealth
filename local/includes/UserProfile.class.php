@@ -72,19 +72,21 @@ class UserProfile extends AbstractUserProfile
 	 *
 	 * @return array
 	 */
-	function getBuildingNameList() {
+	function getBuildingNameList($forSelectedPractice=false) {
+		$db = new clniDB();
 		if (count($this->_practiceIds) == 0) {
 			$this->getPracticeIdList();
 		}
-		
-		if (Auth::canI('override')) {
+		if($forSelectedPractice !== false) {
+			$sql = "SELECT b.id,b.name FROM practices p INNER JOIN buildings b ON b.practice_id=".$db->quote($this->getCurrentPracticeId());
+		} elseif (Auth::canI('override')) {
 			$sql = "SELECT b.id,b.name FROM practices p INNER JOIN buildings b ON b.practice_id=p.id";
 		}
 		else {
 			$sql = "SELECT b.id,b.name FROM practices p INNER JOIN buildings b ON b.practice_id=p.id WHERE p.id IN (".implode(',',$this->_practiceIds).")";
 		}
 		$sql.=" ORDER BY p.name ASC,b.name ASC";
-		$result = $this->_db->getAssoc($sql);
+		$result = $db->getAssoc($sql);
 		return $result;
 	}
 

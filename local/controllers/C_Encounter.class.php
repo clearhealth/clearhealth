@@ -105,6 +105,41 @@ class C_Encounter extends Controller {
 		//}	
 		if($encounter_id == 0) {
 			$encounter->persist();
+			$this->encounter_id = $encounter->get('id');
+			// Find the encounter template, if set
+			$list =& $manager->enumList('encounter_reason');
+			$reason = false;
+			for($list->rewind();$list->valid();$list->next()) {
+				$row = $list->current();
+				if ($row->key == $encounter->get('encounter_reason')) {
+					$reason = $row;
+				}
+			}
+			if ($reason && $reason->extra1 !== '') {
+				$template = Celini::newOrdo('CodingTemplate',$reason->extra1);
+				$pcode =& Celini::newORDO('CodingData',$template->get('coding_parent_id'));
+				$code_data =& ORDataObject::factory('CodingData');
+
+				$child_codes = $code_data->getCodeList($template->get('id'));
+				foreach($child_codes as $code) {
+					$code_list = $pcode->getChildCodes($code['coding_data_id']);
+					$code['coding_data_id'] = 0;
+					$code['foreign_id'] = $this->encounter_id;
+					$xcode =& Celini::newORDO('CodingData');
+					$xcode->populate_array($code);
+					$xcode->persist();
+					foreach($code_list as $icdcode) {
+						$icdcode['coding_data_id'] = 0;
+						$icdcode['foreign_id'] = $this->encounter_id;
+						$icdcode['parent_id'] = $xcode->get('id');
+						$ycode =& Celini::newORDO('CodingData');
+						$ycode->populateArray($icdcode);
+						$ycode->persist();
+					}
+				}
+				$this->messages->addMessage('Encounter Template Applied');
+			}
+
 			// Default to default payer group
 			// Setting 'payer_group' sets up the current payer too.
 			$encounter->set('payer_group',1);
@@ -361,13 +396,12 @@ class C_Encounter extends Controller {
 		}
 
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
+		$changedreason = false;
+		if($encounter->get('reason') != $_POST['encounter']['encounter_reason']) {
+			$changedreason = true;
+		}
 		$encounter->populate_array($_POST['encounter']);
 
-		$newencounter = false;
-		if($encounter_id == 0) {
-			$newencounter = true;
-		}
-		
 		$encounter->persist();
 		if (isset($_POST['select_payer']) || isset($_POST['select_payer_group'])) {
 			return;
@@ -382,8 +416,44 @@ class C_Encounter extends Controller {
 		$this->encounter_id = $encounter->get('id');
 		$_GET[0] = $this->encounter_id;
 
-		$manager =& EnumManager::getInstance();
-		
+		if($changedreason) {
+			$manager =& EnumManager::getInstance();
+			// Find the encounter template, if set
+			$list =& $manager->enumList('encounter_reason');
+			$reason = false;
+			for($list->rewind();$list->valid();$list->next()) {
+				$row = $list->current();
+				if ($row->key == $encounter->get('encounter_reason')) {
+					$reason = $row;
+				}
+			}
+			if ($reason && $reason->extra1 !== '') {
+				$template = Celini::newOrdo('CodingTemplate',$reason->extra1);
+				$pcode =& Celini::newORDO('CodingData',$template->get('coding_parent_id'));
+				$code_data =& ORDataObject::factory('CodingData');
+
+				$child_codes = $code_data->getCodeList($template->get('id'));
+				foreach($child_codes as $code) {
+					$code_list = $pcode->getChildCodes($code['coding_data_id']);
+					$code['coding_data_id'] = 0;
+					$code['foreign_id'] = $this->encounter_id;
+					$xcode =& Celini::newORDO('CodingData');
+					$xcode->populate_array($code);
+					$xcode->persist();
+					foreach($code_list as $icdcode) {
+						$icdcode['coding_data_id'] = 0;
+						$icdcode['foreign_id'] = $this->encounter_id;
+						$icdcode['parent_id'] = $xcode->get('id');
+						$ycode =& Celini::newORDO('CodingData');
+						$ycode->populateArray($icdcode);
+						$ycode->persist();
+					}
+				}
+				$this->messages->addMessage('Encounter Template Applied');
+			}
+			
+		}
+
 		if($newencounter) {
 			// Find the encounter template, if set
 			$list =& $manager->enumList('encounter_reason');

@@ -100,7 +100,7 @@ class ClearhealthCalendarData {
 
 			case 'building':
 				$userProfile =& Celini::getCurrentUserProfile();
-				$options = $userProfile->getBuildingNameList();
+				$options = $userProfile->getBuildingNameList(true);
 				return $options;
 			default:
 				return FALSE;

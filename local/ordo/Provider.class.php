@@ -204,6 +204,27 @@ class Provider extends MergeDecorator {
 		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 
+	function valueList_fullName() {
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$where = " AND p.primary_practice_id = '$pid'";
+
+		$sql = 'SELECT
+				DISTINCT p.person_id, CONCAT_WS(", ", p.last_name, p.first_name) name
+			FROM
+				provider AS u
+				INNER JOIN person AS p USING(person_id)
+				INNER JOIN person_type AS pt USING(person_id)
+				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
+				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
+			WHERE
+				ed.name = "person_type" AND
+				p.inactive = 0 '.$where.'
+			ORDER BY
+				p.last_name ASC, p.first_name ASC';
+		return $this->dbHelper->cachedGetAssoc($sql);
+	}
+
 	function valueList_fullPersonId() {
 		$em =& Celini::enumManagerInstance();
 		$list =& $em->enumList('person_type');

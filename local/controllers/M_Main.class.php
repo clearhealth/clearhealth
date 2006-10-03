@@ -4,9 +4,6 @@ class M_Main extends Manager {
 	function preProcess() {
 		$me =& Me::getInstance();
 		$user =& $me->get_user();
-		if(isset($_GET['changepractice'])){
-			$_SESSION['defaultpractice']=$_GET['changepractice'];
-		}
 		if(!isset($_SESSION['defaultpractice']) && $user->get('id') > 0){
 			$_SESSION['defaultpractice']=$user->get('DefaultPracticeId');
 		}

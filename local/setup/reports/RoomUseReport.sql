@@ -63,7 +63,7 @@ SELECT
   e.patient_id, 
   max( p.payment_date ) payment_date
 FROM payment AS p
-  INNER JOIN encounter AS e ON p.encounter_id = p.encounter_id
+  INNER JOIN encounter AS e ON e.encounter_id = p.encounter_id
 GROUP BY 
   e.patient_id
 ) payment_dates

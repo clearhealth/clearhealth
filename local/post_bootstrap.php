@@ -24,4 +24,15 @@ $conf->set('ajaxConfClasses',$ajaxConf);
 define('CLEARHEALTH_ROOT',APP_ROOT);
 $ajaxServer->registerJSLibrary('suggest', 'suggest.js', CELINI_ROOT . '/js/');
 $ajaxServer->registerJSLibrary('chsuggest', 'chsuggest.js', APP_ROOT . '/js/');
+
+if(isset($_GET['changepractice']) && isset($_SESSION['defaultpractice']) && $_GET['changepractice'] != $_SESSION['defaultpractice']) {
+	if(isset($_GET['Filter'])) {
+		unset($_GET['Filter']);
+	}
+	$_SESSION['calendar']['filter_settings'] = array();
+}
+if(isset($_GET['changepractice'])){
+	$_SESSION['defaultpractice']=$_GET['changepractice'];
+}
+
 ?>
