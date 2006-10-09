@@ -38,7 +38,7 @@ class C_FormRule extends Controller {
 
 	
 	function actionList_view() {
-		$rule =& ORDataObject::factory('FormRule');
+		$rule =& Celini::newOrdo('FormRule');
 
 		$ds =& $rule->ruleList();
 		$ds->template['rule_name'] = "<a href='".Celini::link('edit','FormRule')."form_rule_id={\$form_rule_id}'>{\$rule_name}</a>";
@@ -57,7 +57,7 @@ class C_FormRule extends Controller {
 	
 	function actionEdit($form_rule_id = 0) {
 
-		$formRule =& ORDataObject::factory('FormRule',$form_rule_id);
+		$formRule =& Celini::newOrdo('FormRule',$form_rule_id);
 
 		$this->assign_by_ref('formRule',$formRule);
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$form_rule_id));
@@ -69,7 +69,7 @@ class C_FormRule extends Controller {
 		if (!isset($_POST['formRule'])) {
 			return "";
 		}
-		$form =& ORDataObject::factory('FormRule',$form_rule_id);
+		$form =& Celini::newOrdo('FormRule',$form_rule_id);
 		
 		//print_r ($_POST['formRule']);
 		$form->populate_array($_POST['formRule']);
