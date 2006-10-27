@@ -323,6 +323,11 @@ class Patient extends MergeDecorator {
 	function &get_defaultProviderPerson() {
 		$user =& Celini::newOrdo('User',$this->get('default_provider'),'ById');
 		$pro =& Celini::newOrdo('Provider',$user->get('person_id'));
+		if (!$pro->ispopulated()) {
+			$db = new clniDb();
+			$id = $db->getOne("select person_id from provider");
+			$pro =& Celini::newOrdo('Provider',$id);
+		}
 		return $pro;
 	}
 

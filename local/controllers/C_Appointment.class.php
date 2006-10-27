@@ -463,7 +463,7 @@ class C_Appointment extends Controller {
 	}
 
 	function getAJAXMethods(){
-		return array('actionView', 'ajax_edit', 'ajax_cancel', 'ajax_ns', 'ajax_delete', 'ajax_process');
+		return array('actionView', 'ajax_edit', 'ajax_cancel', 'ajax_ns', 'ajax_delete', 'ajax_process','ajax_viewalt');
 	}
 
 	function actionSearch() {
@@ -555,6 +555,13 @@ class C_Appointment extends Controller {
 				$this->assign('usadate',date('m/d/Y',$ts));
 			}
 		}
+	}
+	
+	function ajax_viewalt($appointmentId) {
+		//$event_id=str_replace('elementInfo','',$event_id);
+		$appt =& Celini::newORDO('Appointment',$appointmentId);
+		$this->view->assign_by_ref('appointment',$appt);
+		return $this->view->render('innerappointmentalt.html');
 	}
 	
 	function ajax_process($keysarray,$valuesarray) {

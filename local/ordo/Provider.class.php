@@ -178,6 +178,16 @@ class Provider extends MergeDecorator {
 				$types[] = $row->key;
 			}
 		}
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+
+		$types = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1) {
+				$types[] = $row->key;
+			}
+		}
 		$userProfile =& Celini::getCurrentUserProfile();
 		if($onlySelectedPractice) {
 			$pid = array($userProfile->getCurrentPracticeId());
@@ -190,8 +200,8 @@ class Provider extends MergeDecorator {
 				DISTINCT p.person_id, u.username
 			FROM
 				user AS u
-				INNER JOIN person AS p USING(person_id)
-				INNER JOIN person_type AS pt USING(person_id)
+				INNER JOIN person AS p ON(p.person_id=u.person_id)
+				INNER JOIN person_type AS pt ON(pt.person_id=p.person_id)
 				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
 				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
 			WHERE
@@ -204,27 +214,46 @@ class Provider extends MergeDecorator {
 		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 
-	function valueList_fullName() {
+	function valueList_fullName($onlySelectedPractice=true) {
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+
+		$types = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1) {
+				$types[] = $row->key;
+			}
+		}
 		$userProfile =& Celini::getCurrentUserProfile();
-		$pid = $userProfile->getCurrentPracticeId();
-		$where = " AND p.primary_practice_id = '$pid'";
+		if($onlySelectedPractice) {
+			$pid = array($userProfile->getCurrentPracticeId());
+		} else {
+			$pid = $userProfile->getPracticeIdList();
+		}
+		$where = " AND p.primary_practice_id IN (".implode(',',$pid).")";
 
 		$sql = 'SELECT
 				DISTINCT p.person_id, CONCAT_WS(", ", p.last_name, p.first_name) name
 			FROM
-				provider AS u
+				user AS u
 				INNER JOIN person AS p USING(person_id)
 				INNER JOIN person_type AS pt USING(person_id)
 				INNER JOIN enumeration_value AS ev ON(ev.key = pt.person_type)
 				INNER JOIN enumeration_definition AS ed USING(enumeration_id)
 			WHERE
 				ed.name = "person_type" AND
+				ev.key in('.implode(',',$types).') AND
 				p.inactive = 0 '.$where.'
 			ORDER BY
 				p.last_name ASC, p.first_name ASC';
 		return $this->dbHelper->cachedGetAssoc($sql);
 	}
 
+	function valueList_fullNameUnfiltered() {
+		return $this->valueList_fullName(false);
+	}
+	
 	function valueList_fullPersonId() {
 		$em =& Celini::enumManagerInstance();
 		$list =& $em->enumList('person_type');

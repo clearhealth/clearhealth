@@ -28,6 +28,9 @@ $config['calendar']['event_render'] = 'CalendarEventRender';
 $config['calendar']['ajax_handler'] = 'CalendarAJAXHandler'; 
 $config['calendar']['data_handler'] = 'ClearhealthCalendarData';
 
+$config['showCalendarWeekViewLinks'] = true;
+$config['hideCanceledAppointment'] = false;
+
 ################################################################################
 # Billing Options
 ################################################################################

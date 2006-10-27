@@ -1,5 +1,4 @@
 <?php
-$loader->requireOnce('/lib/PEAR/HTML/AJAX/Serializer/JSON.php');
 
 /**
  * Class the defines the default enumeration type
@@ -160,7 +159,6 @@ class EnumType_PerPractice extends EnumType_Default {
 		
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = array('clniConfirmLink', 'clniPopup');
-		$json = new HTML_AJAX_Serializer_JSON();
 
 		$practiceId = EnforceType::int($this->editingPracticeId);
 		$enumerationId = EnforceType::int($this->enumerationId);
@@ -202,7 +200,7 @@ class EnumType_PerPractice extends EnumType_Default {
 		var confirmLinkManager = new clniConfirmLink();
 		confirmLinkManager.modal = true;
 		function selectPractice(select) {
-			var inited = '.$json->serialize($list).';
+			var inited = '.$ajax->jsonEncode($list).';
 
 			var copy = 0;
 			if (!inited[select.value]) {

@@ -5,7 +5,6 @@ $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce("datasources/Patient_AccountHistory_DS.class.php");
 $loader->requireOnce("includes/Grid_Renderer_AccountHistory.class.php");
 $loader->requireOnce("datasources/AccountNote_DS.class.php");
-$loader->requireOnce("lib/PEAR/HTML/AJAX/Serializer/JSON.php");
 
 $loader->requireOnce('datasources/MasterClaimList_DS.class.php');
 $loader->requireOnce('datasources/MasterAccountHistory_DS.class.php');
@@ -25,10 +24,12 @@ class C_MasterAccountHistory extends Controller {
 		$this->template_mod = $template_mod;
 
 		//unset($_SESSION['clearhealth']['filters'][get_class($this)]);
-		if (!isset($_SESSION['clearhealth']['filters'][get_class($this)])) {
-			$_SESSION['clearhealth']['filters'][get_class($this)] = array();
+		if (!isset($_SESSION['clearhealth']['filters'][strtolower(get_class($this))])) {
+			$dates = array('dos_start'=>date('m/01/Y'),'dos_end'=>date('m/d/Y'));
+			$this->POST->set('filter',$dates);
+			$_SESSION['clearhealth']['filters'][strtolower(get_class($this))] = $dates;
 		}
-		$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)];
+		$this->filters = $_SESSION['clearhealth']['filters'][strtolower(get_class($this))];
 		$this->assign('filters',$this->filters);
 
 		$head =& Celini::HTMLHeadInstance();
@@ -149,7 +150,7 @@ class C_MasterAccountHistory extends Controller {
 	
 	function processView() {
 		if ($this->POST->exists('filter')) {
-			$this->filters = $_SESSION['clearhealth']['filters'][get_class($this)] = $_POST['filter'];
+			$this->filters = $_SESSION['clearhealth']['filters'][strtolower(get_class($this))] = $_POST['filter'];
 		}
 		$this->assign("filters",$this->filters);
 

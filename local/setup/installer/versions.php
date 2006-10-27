@@ -24,8 +24,7 @@ $versions->collectData('db_port', 'Database Server Port', 'text', '3306');
 
 $version_1rc3 = new Version('1.0RC3');
 $version_1rc3->addTest('PHPVersionOver', array('4.3.0'));
-$version_1rc3->addTest('PHPVersionUnder', array('5.0.0'));
-$version_1rc3->addTest('PHPMemory', array('8M'));
+$version_1rc3->addTest('PHPMemory', array('32M'));
 $version_1rc3->addTest('PHPMagicQuotes', array('Off'));
 $version_1rc3->addTest('PHPRegisterGlobals', array('Off'));
 $version_1rc3->addTest('PHPExtension', array('mysql'));

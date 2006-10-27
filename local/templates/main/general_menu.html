@@ -1,6 +1,6 @@
 <div id="nav">
 	{if $me->get_id() == 0}
-		<div class="section">
+		<div class="menuSection" onclick="menuHandler(this);">
 		<ul class="quicknav">
 			{if $translate[$navc.prefix]}
 				<li><a href="{$translate[$navc.prefix]}main/access/login">{l}Login{/l}</a></li>
@@ -13,7 +13,7 @@
 {foreach from=$menu.$menu_group item=nav}
 	{if $nav.display_order > 0}
 	
-	<div class="section" {if $nav.title eq "My Account"}style="position:absolute; left:450px; white-space: nowrap; width:60px;"{/if}  {if $nav.title eq "Help"}style="position:absolute; white-space: nowrap; left:520px; width:25px;"{/if} {if $nav.display_order eq 5000}style="position:absolute; white-space: nowrap; left:555px;"{/if}>
+	<div class="menuSection" onclick="menuHandler(this);" {if $nav.title eq "My Account"}style="position:absolute; left:450px; white-space: nowrap; width:60px;"{/if}  {if $nav.title eq "Help"}style="position:absolute; white-space: nowrap; left:520px; width:25px;"{/if} {if $nav.display_order eq 5000}style="position:absolute; white-space: nowrap; left:555px;"{/if}>
 	{if $nav.action}
 		{if $translate[$nav.prefix]}
 			<div class="topLevel"><a href="{$translate[$nav.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>

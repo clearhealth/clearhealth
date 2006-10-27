@@ -155,6 +155,9 @@ CREATE TABLE IF NOT EXISTS `appointment_rule` (
 
 INSERT INTO `appointment_rule` (`appointment_rule_id`, `appointment_ruleset_id`, `type`, `label`, `data`) VALUES (12348, 12347, 'OutOfSchedule', 'Out Of Schedule', ''),
 (12346, 12345, 'DoubleBook', 'Double Book', '');
+INSERT INTO `appointment_ruleset` (`appointment_ruleset_id`, `name`, `error_message`, `enabled`, `provider_id`, `procedure_id`, `room_id`) 
+VALUES (12347, 'Out Of Schedule', 'This appointment is outside of the provider/room\'s schedule.', 0, 0, 0, 0);
+
 
 -- --------------------------------------------------------
 
@@ -216,7 +219,8 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
   `log_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`audit_log_id`),
   KEY `ordo` (`ordo`),
-  KEY `type` (`type`)
+  KEY `type` (`type`),
+  KEY `ordo_id` (`ordo_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- 
@@ -608,6 +612,7 @@ CREATE TABLE IF NOT EXISTS `company_type` (
 -- 
 -- Dumping data for table `company_type`
 -- 
+insert into company_type values (100000,1);
 
 
 -- --------------------------------------------------------
@@ -627,6 +632,7 @@ CREATE TABLE IF NOT EXISTS `cronable` (
   `day_of_week` varchar(8) NOT NULL default '0',
   `year` varchar(8) NOT NULL default '0',
   `at_time` datetime NOT NULL default '0000-00-00 00:00:00',
+  `wrapper` varchar(255) NOT NULL default '',
   `controller` varchar(255) NOT NULL default '',
   `action` varchar(255) NOT NULL default '',
   `arguments` text NOT NULL,
@@ -3545,7 +3551,6 @@ INSERT INTO `menu_report` (`menu_report_id`, `menu_id`, `report_template_id`, `t
 (810598, 23, 607652, 'Balance Aging By Patient', NULL),
 (810599, 23, 800634, 'Balance Aging By Payer', NULL),
 (810600, 23, 607654, 'Balance Aging By Provider', NULL),
-(817199, 17, 607877, 'Family Patient Statement', NULL),
 (818831, 30, 607671, 'No-Show Report', NULL),
 (818832, 300819, 607685, 'Transaction Report', NULL),
 (818990, 17, 818961, 'Email List', NULL);

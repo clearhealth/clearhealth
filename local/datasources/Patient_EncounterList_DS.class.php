@@ -36,7 +36,7 @@ class Patient_EncounterList_DS extends Datasource_sql
 					LEFT JOIN person AS p ON(e.treating_person_id = p.person_id)',
 				'where' => " 
 					patient_id = $patient_id AND
-					b.practice_id IN(" . implode(', ', $userPracticeList) . ")
+					(b.practice_id IN(" . implode(', ', $userPracticeList) . ") or b.practice_id is null)
 					",
 			),
 			array('date_of_treatment' => 'Date of Treatment','encounter_reason' => 'Reason', 'building' => 'Building', 'treating_person' => 'Treated By', 'status' => 'Status'/*,'encounter_id' => "Encounter Id"*/));

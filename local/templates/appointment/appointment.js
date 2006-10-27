@@ -340,4 +340,19 @@ function checkRulescb(resultSet) {
 		document.getElementById('AppointmentEdit').submit();
 	}
 }
-
+function toggleInfoBox(link,id) {
+	var parent = link.parentNode;
+	var info = link.previousSibling;
+	info.id = 'info'+id;
+	info.className = 'elementInfo';
+	if(info.innerHTML == '') {
+		HTML_AJAX.replace('info'+id,'appointment','ajax_viewalt',id);
+	}
+	if (info.style.display == 'block') {
+		info.style.display = 'none';
+	}
+	else {
+		info.style.display = 'block';
+		info.style.height = parent.parentNode.offsetHeight+'px';
+	}
+}

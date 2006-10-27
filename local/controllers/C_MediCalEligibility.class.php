@@ -28,9 +28,13 @@ class C_MediCalEligibility extends Controller {
 
 	function actionBatchCheck() {
 		// grab patient_id's for all of tomorrows patients
-		$tomorrow = date('Y-m-d',strtotime('tomorrow'));
+		$serviceDate = 'tomorrow';
+		if ($this->GET->exists('serviceDate')) {
+			$serviceDate = $this->GET->get('serviceDate');
+		}
+		$tomorrow = date('Y-m-d',strtotime($serviceDate));
 		$sql = "select 
-				a.patient_id, p.identifier, p.date_of_birth 
+				a.patient_id, p.identifier, date_format(p.date_of_birth,'%m/%d/%Y') date_of_birth
 			from appointment a
 			inner join event using(event_id) 
 			inner join person p on a.patient_id = p.person_id
@@ -43,11 +47,14 @@ class C_MediCalEligibility extends Controller {
 		$checker = new MediCalEligibilityChecker();
 		$checker->login();
 
+
+		$today = date('m/d/Y');
+		$tomorrow = date('m/d/Y',strtotime($serviceDate));
 		while($res && !$res->EOF) {
 			$checker->checkEligibility(
 				$res->fields['identifier'],
 				$res->fields['date_of_birth'],
-				$tomorrow,
+				$today,
 				$tomorrow
 				);
 			$el =& Celini::newOrdo('EligibilityLog');

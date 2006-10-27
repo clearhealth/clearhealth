@@ -14,7 +14,7 @@ function roomChanged(select) {
 <h2>Select a Provider and Room</h2>
 <p>
 Provider:
-<select name="wizard[provider_id]" onclick="providerChanged(this)">
+<select name="wizard[provider_id]" onclick="providerChanged(this)" id="selectprovider">
 	<option></option>
 	{html_options options=$providers selected=$wizard->get('provider_id')}
 </select>
@@ -22,12 +22,13 @@ Provider:
 
 <p>
 Room:
-<select name="wizard[room_id]" onclick="roomChanged(this)">
+<select name="wizard[room_id]" onclick="roomChanged(this)" id="selectroom">
 	<option></option>
 	{html_options options=$rooms selected=$wizard->get('room_id')}
 </select>
 </p>
-
+{clni_register_validation_rule id="selectroom"}
+{clni_register_validation_rule id="selectprovider"}
 <p>
 Schedule Name: <input name="wizard[name]" id="name" onkeyup="this.changed = true" value="{$wizard->get('name')}" size=50>
 </p>

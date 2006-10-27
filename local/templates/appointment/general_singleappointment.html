@@ -1,4 +1,5 @@
 {strip}{assign var='noshows' value=$appointment->checkNoShows(11)}
+{if $mode == 'day'}
 <div id="event{$appointment->get('event_id')}oldheightholder" style="display:none;"></div>
 <div id="event{$appointment->get('event_id')}newheightholder" style="display:none;"></div>
 <div class="event calendarEvent{$appointment->get('provider_id')}" id="event{$appointment->get('event_id')}" style="{if $short}width:15px;height:{$height}px;{/if}overflow:hidden;{$eventcss}"
@@ -8,9 +9,11 @@
 <script>
 	//HTML_AJAX_Util.registerEvent(document.getElementById('event{$appointment->get('event_id')}'), 'mouseout', 'shrinkAppointmentHandler');
 </script>
+{else}
+<div class="event calendarEvent{$appointment->get('provider_id')}" id="event{$appointment->get('event_id')}" style="position:relative;">
+{/if}
 {if $innerappt}{$innerappt}{else}
 {include file="appointment/general_innerappointment.html"}
 {/if}
 </div>
 {/strip}
-

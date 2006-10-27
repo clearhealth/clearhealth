@@ -87,15 +87,28 @@ class M_User extends M_Patient {
 		
 		$person =& Celini::newORDO('Person',$person_id);
 
-		if ($person->value('type') == 'Provider') {
-			$provider =& Celini::newORDO('Provider',$person_id);
-			$provider->persist();
+		$types = $person->get('types');
+		
+		// Set a Provider for this user if their person_type is a provider
+		$em =& Celini::enumManagerInstance();
+		$list =& $em->enumList('person_type');
+		$providertypes = array();
+		for($list->rewind(); $list->valid(); $list->next()) {
+			$row = $list->current();
+			if ($row->extra1) {
+				$providertypes[] = $row->key;
+			}
 		}
-
+		foreach($types as $type) {
+			if(in_array($type,$providertypes)) {
+				$provider =& Celini::newORDO('Provider',$person_id);
+				$provider->persist();
+				break;
+			}
+		}
 
 		// Determine the user types of this new person
 		$t_list = $person->getTypeList();
-		$types = $person->get('types');
 		
 		// update gacl groups from type
 		if ($data['username'] != 'admin') {

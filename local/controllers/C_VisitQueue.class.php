@@ -55,10 +55,14 @@ class C_VisitQueue extends Controller
 			$queue =& Celini::newORDO('VisitQueue');
 			$queue->set('provider_id',$this->GET->get('provider_id'));
 			$patient =& Celini::newORDO('Patient',$this->GET->get('patient_id'));
-			$this->view->assign_by_ref('patient',$patient);
 		} else {
 			$queue =& Celini::newORDO('VisitQueue',$this->GET->get('queue_id'));
 		}
+		if (!isset($patient)) {
+			$patient =& Celini::newORDO('Patient');
+		}
+
+		$this->view->assign_by_ref('patient',$patient);
 		$template =& $queue->getTemplate();
 		$this->view->assign_by_ref('queue',$queue);
 		$this->view->assign_by_ref('template',$template);

@@ -50,7 +50,7 @@ class FormStructure extends ORDataObject {
 	function getFieldsList ($filename) {
 		$this->clearFormStructure();
 		
-		$formTemplate = file($filename,"r");
+		$formTemplate = file($filename);
 		for ($i=0; $i<(count ($formTemplate)); $i++)		{
 			if(preg_match('/name="(.*)"/s', $formTemplate [$i], $matches)) {
 				
@@ -96,6 +96,7 @@ class FormStructure extends ORDataObject {
 		$data =& Celini::newOrdo('FormData',$form_data_id);
 		$allData = $data->allData();
 		
+		$ar = array();
 		foreach ($allData as $field) {
 			$ar['forms.'.$form_name.'.'.$field ['name']] = $field['value'];
 		}

@@ -52,7 +52,7 @@
 	}
 
 	function addAdjustment() {
-		$('adjustmentTable').style.display = 'table';
+		$('adjustmentTable').style.display = '';
 		var row = document.createElement('tr');
 		var tdC = document.createElement('td');
 		var tdT = document.createElement('td');

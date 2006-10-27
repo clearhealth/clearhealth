@@ -100,6 +100,9 @@ class UserProfile extends AbstractUserProfile
 		if (!isset($_SESSION['defaultpractice'])) {
 			$_SESSION['defaultpractice'] = $this->getPrimaryPracticeId();
 		}
+		if (empty($_SESSION['defaultpractice'])) {
+			$_SESSION['defaultpractice'] = $this->getPrimaryPracticeId();
+		}
 		return $_SESSION['defaultpractice'];
 	}	
 }

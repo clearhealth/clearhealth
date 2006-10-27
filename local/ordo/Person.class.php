@@ -259,6 +259,11 @@ class Person extends ORDataObject {
 		$list = $this->_load_enum('gender',false);
 		return array_flip($list);
 	}
+
+	function value_gender() {
+		$em =& Celini::enumManagerInstance();
+		return $em->lookup('gender',$this->get('gender'));
+	}
 	
 	function get_print_gender() {
 		$list = array_flip($this->_load_enum('gender',false));

@@ -36,6 +36,9 @@ $config['db_table_prefix'] = "";
 ################################################################################
 $config['CalendarHourStart'] = 7;
 $config['CalendarHourLength'] = 13;
+$config['showCalendarWeekViewLinks'] = true;
+$config['hideCanceledAppointment'] = false;
+
 
 
 ################################################################################

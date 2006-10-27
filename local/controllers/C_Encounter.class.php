@@ -75,6 +75,9 @@ class C_Encounter extends Controller {
 
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
+		if ($encounter->get('payer_group_id') == '') {
+			$encounter->set('payer_group_id',1);
+		}
 
 		$appointments = $encounter->appointmentList();
 		$appointmentArray = array("" => " ");
@@ -402,6 +405,10 @@ class C_Encounter extends Controller {
 		}
 		$encounter->populate_array($_POST['encounter']);
 
+		// clear matching appointment cache
+		
+		
+		$this->view->regexClearCache('/'.$encounter->get('occurence_id').'/');	
 		$encounter->persist();
 		if (isset($_POST['select_payer']) || isset($_POST['select_payer_group'])) {
 			return;

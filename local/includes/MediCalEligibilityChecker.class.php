@@ -53,6 +53,10 @@ class MediCalEligibilityChecker {
 	}
 
 	function checkEligibility($subscriberId,$dob,$issueDate,$serviceDate) {
+		if (empty($subscriberId)) {
+			$this->html = 'Missing Subscriber ID';
+			return false;
+		}
 		$this->initCurl();
 		curl_setopt($this->curl, CURLOPT_POST,1);
 		curl_setopt($this->curl, CURLOPT_URL, $this->eligibilityPostUrl);

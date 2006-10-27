@@ -5,7 +5,6 @@ $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce("datasources/Patient_AccountHistory_DS.class.php");
 $loader->requireOnce("includes/Grid_Renderer_AccountHistory.class.php");
 $loader->requireOnce("datasources/AccountNote_DS.class.php");
-$loader->requireOnce("lib/PEAR/HTML/AJAX/Serializer/JSON.php");
 
 /**
  * Actions for working with an Account in Clearhealth, in this context this is a Patients Account
@@ -71,15 +70,15 @@ class C_Account extends Controller {
 		}
 		";
 		$head->addInlineJs($js);
-		$serializer = new HTML_AJAX_Serializer_Json();
-		$this->view->assign('notes',$serializer->serialize($data));
+		$ajax =& Celini::ajaxInstance();
+		$this->view->assign('notes',$ajax->jsonEncode($data));
 
 
 		$an =& Celini::newOrdo('AccountNote');
 		$this->assign_by_ref('accountNote',$an);
 
-		$provider =& Celini::newORDO('Provider');
-		$this->view->assign('userList', $provider->valueList('username'));
+		$u =& Celini::newORDO('User');
+		$this->view->assign('userList', $u->valueList('username'));
 
 		$this->assign('FORM_ACTION',celini::link(true,true,true,$patient_id));
 		

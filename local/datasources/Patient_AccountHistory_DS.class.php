@@ -183,7 +183,7 @@ class Datasource_AccountHistory extends Datasource {
 					LEFT JOIN clearhealth_claim AS chc ON (chc.claim_id = pa.foreign_id)
 					LEFT JOIN encounter AS e2 ON(chc.encounter_id = e2.encounter_id)
 					LEFT JOIN ordo_registry AS oreg ON(pa.payment_id = oreg.ordo_id)
-					LEFT JOIN user AS u ON(oreg.creator_id = u.user_id)',
+					LEFT JOIN user AS u ON(pa.user_id = u.user_id)',
 				'where' => '
 					(
 						e.patient_id = ' . $patient_id . ' OR

@@ -98,6 +98,7 @@
 	</tbody>
 </table>
 <br>
+<div style="display:none;">
 <select id="adjCode"><option value="0">Payment</option>
 	{foreach from=$codeList item='code'}
 	<option value="{$code.coding_data_id}">{$code.code}</option>
@@ -109,7 +110,8 @@
 	{/foreach}
 </select>
 <input id="adjValue" size=10>
-<button onclick="return addAdjustment()">Add Adjustment</button>
+</div>
+<button onclick="return addAdjustment()">Additional Adjustment</button>
 <br>
 
 

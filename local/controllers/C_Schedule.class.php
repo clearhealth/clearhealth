@@ -9,6 +9,17 @@ class ScheduleWizardData extends clniData{
 	var $ends = array();
 	var $multi_group = false;
 	var $provider_id = '';
+	var $time_start = '';
+	var $time_end = '';
+	var $lunch_start = '';
+	var $lunch_end = '';
+	var $date_start = '';
+	var $date_end = '';
+	
+	function ScheduleWizardData() {
+		$this->date_start = date('m/d/Y',time());
+		$this->date_end = date('m/d/Y',strtotime('+3 Months'));
+	}
 }
 
 class C_Schedule extends Controller
@@ -80,7 +91,70 @@ class C_Schedule extends Controller
 
 		$wizardData = $this->_getWizardData();
 		$wizardData->populate($this->POST->get('wizard'));
+		
+		// Validation
+		$error = false;
+		$time_error = array();
+		$date_error = array();
+		if($wizardData->get('schedule_type') == 'RS' || $wizardData->get('schedule_type') == 'PS') {
+			if($wizardData->get('date_start') != '') {
+				if(strtotime($wizardData->get('date_start')) > strtotime($wizardData->get('date_end'))) {
+					$date_error[] = 'Start date must be prior to or equal to the end date.';
+					$error = true;
+				}
+				if($wizardData->get('time_start') != '') {
+					if(strtotime($wizardData->get('date_start').' '.$wizardData->get('time_start')) >= strtotime($wizardData->get('date_start').' '.$wizardData->get('time_end'))) {
+						$error = true;
+						$time_error[] = 'Schedule start time must be before schedule end time.';
+					}
+				}
+				if($wizardData->get('lunch_start') != '') {
+					if(strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_start')) > strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_end'))) {
+						$error = true;
+						$time_error[] = 'Break start time must be before break end time.';
+					}
+					if(
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_start')) <
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('time_start'))
+					) {
+						$error = true;
+						$time_error[] = 'Break start must be after start of schedule time.';
+					}
+					if(
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_start')) >
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('time_end'))
+					) {
+						$error = true;
+						$time_error[] = 'Break start must be before end of schedule time.';
+					}
+					if(
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_end')) <
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('time_start'))
+					) {
+						$error = true;
+						$time_error[] = 'Break end must be after start of schedule time.';
+					}
+					if(
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('lunch_end')) >
+						strtotime($wizardData->get('date_start').' '.$wizardData->get('time_end'))
+					) {
+						$error = true;
+						$time_error[] = 'Break end must be before end of schedule time.';
+					}
+				}
+			}
+		}
 		$this->_setWizardData($wizardData);
+		if($error) {
+			if(count($date_error) > 0) {
+				$this->messages->addMessage('Date Error',implode('<br />',$date_error),'warningMessage');
+			}
+			if(count($time_error) > 0) {
+				$this->messages->addMessage('Time Error',implode('<br />',$time_error),'warningMessage');
+			}
+			$this->wizardPage = $this->POST->getTyped('current_page','int');
+			return;
+		}		
 
 		$this->wizardPage = $this->POST->getTyped('next_page','int');
 
@@ -142,6 +216,9 @@ class C_Schedule extends Controller
 		}
 		
 
+		// An array to hold the events so we can put them in a grid
+		$eventArray = array();
+		
 		$schedule->set('title',$wizard->get('name'));
 		$schedule->set('provider_id',$wizard->get('provider_id'));
 		$schedule->set('schedule_code',$wizard->get('schedule_type'));
@@ -226,8 +303,12 @@ class C_Schedule extends Controller
 				$db =& $eg->dbHelper;
 				for($events->rewind();$events->valid();$events->next()) {
 					$event =& $events->current();
+					// Add to the eventsArray
+					$eventArray[] = array('title'=>$egTitle."&nbsp;",'start'=>$event->get('start')."&nbsp;",'end'=>$event->get('end')."&nbsp;");
 					// Clear out old calendar columns from this date
-					$this->view->clear_cache(null,$event->get('date'));
+					$date =& $event->start->getDate();
+					$date = $date->toISO();
+					$this->view->regexClearCache('/^'.$date.'-/');
 					$id = $event->get('id');
 					$qScheduleEventId = $db->quote($id);
 					$qEventGroupId = $db->quote($eg->get('id'));
@@ -283,6 +364,12 @@ class C_Schedule extends Controller
 					$recurrence['end_time'] = $ends[$id];
 					$recurrence['event_group'] = $egs[$group]->get('id');
 					$rec =& $schedule->createRecurrence($recurrence,$pattern);
+					$events = $rec->getChildren('ScheduleEvent');
+					for($events->rewind();$events->valid();$events->next()) {
+						$event =& $events->current();
+						// Add to the eventsArray
+						$eventArray[] = array('title'=>$group."&nbsp;",'start'=>$event->get('start')."&nbsp;",'end'=>$event->get('end')."&nbsp;");
+					}
 					if($rec !== false) {
 						$eg =& $egs[$group];
 						$eventids = $rec->getChildrenIds('ScheduleEvent');
@@ -302,7 +389,14 @@ class C_Schedule extends Controller
 				}
 			}
 		}
-		
+		$GLOBALS['loader']->requireOnce('includes/Datasource_array.class.php');
+		$ds =& new Datasource_array();
+		$ds->setup(array('title'=>'Title','start'=>'Start','end'=>'End'),$eventArray);
+		$egrid =& new cGrid($ds);
+		$egrid->orderLinks = false;
+		$egrid->_allowHideColumns = false;
+		$this->view->assign_by_ref('eventGrid',$egrid);
+		$this->messages->addMessage('Shedule Created','Your schedule was added successfully, click edit below to view the groups that were created.');
 		$this->view->assign('EDIT_ACTION',Celini::link('edit','Schedule').'schedule_id='.$schedule->get('id'));
 
 	}

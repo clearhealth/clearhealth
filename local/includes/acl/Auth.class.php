@@ -86,12 +86,18 @@ class Auth extends AbstractAuth
 		$filteredGet =& Celini::filteredGet();
 		switch ($where) {
 			case 'encounter' :
+				if (!$filteredGet->get('id')) {
+					return;
+				}
 				$encounter =& Celini::newORDO('Encounter', $filteredGet->get('id'));
 				$patientId = $encounter->get('patient_id');
 				break;
 			
 			default:
 				$patientId = $filteredGet->get('id');
+				if (empty($patientId)) {
+					$patientId = $filteredGet->get('patient_id');
+				}
 				if (empty($patientId)) {
 					$patientId = $filteredGet->get(0);
 				}

@@ -16,6 +16,9 @@ class C_PatientDashboard extends Controller {
 		if ($this->GET->exists(0)) {
 			$patientId = $this->GET->get(0);
 		}
+		else if ($this->GET->exists('patient_id')) {
+			$patientId = $this->GET->get('patient_id');
+		}
 		else {
 			$patientId = $this->GET->get('id');
 		}
@@ -159,6 +162,7 @@ class C_PatientDashboard extends Controller {
 	}
 
 	function actionEMR_view($patientId) {
+
 		$sec =& $GLOBALS['security'];
 		$objid = $sec->get_object_id('resources','emr','axo');
 		if($objid !== false && Auth::canI('view','emr') === false) {

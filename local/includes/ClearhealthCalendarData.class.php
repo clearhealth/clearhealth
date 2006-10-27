@@ -5,19 +5,26 @@ class ClearhealthCalendarData {
 	var $schedules = null;
 	var $events = null;
 	var $interval = 900;
-	var $showEventsOn = array('day'=>true,'week'=>false,'month'=>false);
+	var $showEventsOn = array('day'=>true,'week'=>true,'month'=>false);
+	var $cache_identifier = null;
+
+	var $currentPractice;
 
 	function ClearhealthCalendarData() {
+		$userProfile =& Celini::getCurrentUserProfile();
+		$this->cache_identifier = $userProfile->getCurrentPracticeId();
+		$this->currentPractice = $userProfile->getCurrentPracticeId();
+
 		$GLOBALS['loader']->requireOnce('includes/PracticeConfig.class.php');
 		$pconfig =& Celini::configInstance('practice');
 		$increment = $pconfig->get('CalendarIncrement',900);
+		$this->filters['user'] = array('type' => 'Multiselect', 'label' => 'Provider', 'params' => array('type' => 'form','insertBlank'=>true,'size'=>5));
+		$this->filters['building'] = array('type' => 'Multiselect','label'=>'Building','params'=>array('type'=>'form','insertBlank'=>true,'size'=>5));
 		$this->filters['start'] = array('type' => 'DateTime', 'label' => 'Start Date', 'params' => array('hidden'=>true));
 		$this->filters['starttime'] = array('type' => 'Time', 'label' => 'Start Time', 'params' => array('increment'=>$increment/60));
 		$this->filters['end'] = array('type' => 'DateTime', 'label' => 'End Date', 'params' => array('hidden'=>true));
 		$this->filters['endtime'] = array('type' => 'Time', 'label' => 'End Time', 'params' => array('increment'=>$increment/60));
-		$this->filters['user'] = array('type' => 'Multiselect', 'label' => 'Provider', 'params' => array('type' => 'form','insertBlank'=>true,'size'=>5));
 		$this->filters['patient'] = array('type' => 'Suggest', 'label' => 'Patient', 'params' => array('jsfunc'=>'patientSuggest','person'=>true) );
-		$this->filters['building'] = array('type' => 'Multiselect','label'=>'Building','params'=>array('type'=>'form','insertBlank'=>true,'size'=>5));
 	}
 	
 	function getConfig() {
@@ -41,8 +48,13 @@ class ClearhealthCalendarData {
 	function extraDisplay(&$filters) {
 		$view =& new clniView();
 		$db =& new clniDb();
-
 		$values = array();
+		$html  = '';
+		foreach($filters as $filter){
+			if(isset($filter->params['hidden']) && $filter->params['hidden'] == true) continue;
+			$html.= $filter->getHTML($this->getFilterOptions($filter->getName()));
+		}
+		$view->assign('filter_html',$html);
 		foreach($this->filters as $key => $filter) {
 			$value = $filters[$key]->getValue();
 			if (is_null($value)) {
@@ -55,7 +67,7 @@ class ClearhealthCalendarData {
 					break;
 				case 'user':
 					if (count($value) > 0) {
-						$sql = "select username from user where user_id in (".implode(',',$value).")";
+						$sql = "select username from user where person_id in (".implode(',',$value).")";
 						$values[$filter['label']] = implode(', ',(array)$db->getCol($sql));
 					}
 					break;
@@ -95,7 +107,7 @@ class ClearhealthCalendarData {
 		switch ($filter_name){
 			case 'user':
 				$user =& Celini::newORDO('Provider');
-				$options = $user->valueList('username');
+				$options = $user->valueList('fullName');
 				return $options;
 
 			case 'building':
@@ -120,28 +132,29 @@ class ClearhealthCalendarData {
 		$criteriaArray = array();
 		$db =& Celini::dbInstance();
 		if(isset($filters['start']) && !is_null($filters['start']->getValue())) {
+			$time= $filters['starttime']->getValue();
+			$time = date('H:i:s',mktime($time['ap']=='AM' ? ($time['hour']=='12' ? '00' : $time['hour']) : $time['hour']+12,$time['minute'],$time['second']));
+
 			if($forevent == false) {
-		       	$criteriaArray[] = "UNIX_TIMESTAMP(event.start) >= ".$db->quote(strtotime($filters['start']->getValue()));
+				$criteriaArray[] = "event.start >= ".$db->quote($filters['start']->getValue().' '.$time);
 			} else {
-				$time= $filters['starttime']->getValue();
-				$time = date('H:i:s',mktime($time['ap']=='AM' ? ($time['hour']=='12' ? '00' : $time['hour']) : $time['hour']+12,$time['minute'],$time['second']));
-		       	$criteriaArray[] = "aevent.start >= ".$db->quote($filters['start']->getValue().' '.$time);
+				$criteriaArray[] = "aevent.start >= ".$db->quote($filters['start']->getValue().' '.$time);
 			}
 		}
 		
 		if(isset($filters['end']) && !is_null($filters['end']->getValue())) {
+			$time= $filters['endtime']->getValue();
+			$time = date('H:i:s',mktime($time['ap']=='AM' ? ($time['hour']=='12' ? '00' : $time['hour']) : $time['hour']+12,$time['minute'],$time['second']));
 			if($forevent == false) {
-				$criteriaArray[] = "UNIX_TIMESTAMP(event.start) <= ".$db->quote(strtotime($filters['end']->getValue()));
+				$criteriaArray[] = "event.start <= ".$db->quote($filters['end']->getValue().' '.$time);
 			} else {
-				$time= $filters['endtime']->getValue();
-				$time = date('H:i:s',mktime($time['ap']=='AM' ? $time['hour'] : $time['hour']+12,$time['minute'],$time['second']));
-		       	$criteriaArray[] = "aevent.start <= ".$db->quote($filters['end']->getValue().' '.$time);
+				$criteriaArray[] = "aevent.start <= ".$db->quote($filters['end']->getValue().' '.$time);
 			}
 		}
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
 			$string = array();
 			foreach($filters['user']->getValue() as $uid) {
-				$string[] = "u.user_id = ".$db->quote($uid);
+				$string[] = "u.person_id = ".$db->quote($uid);
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
@@ -168,6 +181,14 @@ class ClearhealthCalendarData {
 				$string[] = "b.id = ".$db->quote($uid);
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
+		}
+
+		// hide canceled appointments
+		$config = Celini::configInstance();
+		if ($config->get('hideCanceledAppointment',false)) {
+			if ($forevent) {
+				$criteriaArray[] = "a.appointment_code != 'CAN'";
+			}
 		}
 		
 		if($forevent == true && isset($filters['patient']) && $filters['patient']->getValue() > 0) {
@@ -225,19 +246,27 @@ class ClearhealthCalendarData {
 		$finder =& $event->relationshipFinder();
 		$this->_setFinderCriteria($finder,$filters);
 		$this->_setFinderRelationships($finder,$filters);
+		$finder->addJoin('INNER JOIN appointment ON(event.event_id=appointment.event_id)');
+		$finder->addGroupBy('event.event_id');
+		$finder->addOrderBy('event.start ASC');
 		return $finder;
 	}
 	
 	function _setFinderRelationships(&$finder,$filters) {
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
-			foreach($filters['user']->getValue() as $uid) {
-				$user =& Celini::newORDO('Provider',$uid);
-				$finder->addParent($user);
-			}
+			$finder->addJoin("LEFT JOIN relationship relprov ON(relprov.child_type='CalendarEvent' AND relprov.child_id=event.event_id AND relprov.parent_type='Provider')");
+			$where = '(appointment.provider_id IN ('.implode(',',$filters['user']->getValue()).') OR relprov.parent_id IN ('.implode(',',$filters['user']->getValue()).'))';
+			$finder->addCriteria($where);
 		}
-		if(isset($filters['patient']) && $filters['patient']->getValue() > 0) {
-			$patient =& Celini::newORDO('Patient',$filters['patient']->getValue());
-			$finder->addChild($patient);
+		if(isset($filters['patient'])) {
+			$pid = $filters['patient']->getValue();
+			if(is_array($pid)) {
+				$pid = $pid['value'];
+			}
+			if($pid > 0 || !empty($pid)) {
+				$patient =& Celini::newORDO('Patient',$filters['patient']->getValue());
+				$finder->addChild($patient);
+			}
 		}
 	}
 	
@@ -245,10 +274,10 @@ class ClearhealthCalendarData {
 		$criteriaArray = array();
 		$db =& Celini::dbInstance();
 		if(isset($filters['start']) && !is_null($filters['start']->getValue())) {
-			$finder->addCriteria("UNIX_TIMESTAMP(event.start) >= ".$db->quote(strtotime($filters['start']->getValue())));
+			$finder->addCriteria("event.start >= ".$db->quote(date('Y-m-d H:i:s',strtotime($filters['start']->getValue()))));
 		}
 		if(isset($filters['end']) && !is_null($filters['end']->getValue())) {
-			$finder->addCriteria("UNIX_TIMESTAMP(event.start) <= ".$db->quote(strtotime($filters['end']->getValue())));
+			$finder->addCriteria("event.start <= ".$db->quote(date('Y-m-d H:i:s',strtotime($filters['end']->getValue()))));
 		}
 	}
 
@@ -299,7 +328,6 @@ class ClearhealthCalendarData {
 			from
 				rooms r
 				inner join buildings b on r.building_id = b.id
-
 			";
 		$res = $db->execute($sql);
 		$ret = array();
@@ -314,6 +342,7 @@ class ClearhealthCalendarData {
 	 * Provide an array of schedules and the html to use as their headings
 	 */
 	function &getScheduleList(&$filters) {
+		$config = Celini::configInstance();
 		if(is_null($this->schedules)) {
 			$s = $this->providerSchedules($filters);
 			$this->schedules =& $s;
@@ -321,7 +350,6 @@ class ClearhealthCalendarData {
 			$s =& $this->schedules;
 		}
 		$map = $this->eventProviderMap($filters);
-
 		if (!is_array($map)) {
 			$map = array();
 		}
@@ -335,15 +363,18 @@ class ClearhealthCalendarData {
 					continue;
 				}
 			}
+			$data = array('id'=>$providerId,'color'=>'','nickname'=>'','name'=>'');
 			if (isset($pdata[$providerId])) {
 				$data = $pdata[$providerId];
 				$isRoom = 0;
 			}
 			else {
-				$data = $rdata[$providerId];
+				if (isset($rdata[$providerId])) {
+					$data = $rdata[$providerId];
+				}
 				$isRoom = 1;
 			}
-			$color = $data['color'];
+			$color = empty($data['color']) ? 'F0F0F0' : $data['color'];
 
 			$ic = new Image_Color();
 			$ic->setColors($color,$color);
@@ -353,6 +384,10 @@ class ClearhealthCalendarData {
 			$ic->changeLightness(40);
 			$background = $ic->_returnColor($ic->color1);
 			$font = $ic->getTextColor($color);
+			$labelextra = '';
+			if(!$isRoom && $config->get('showCalendarWeekViewLinks',true)) {
+				$labelextra = "<a align='right' href='".Celini::link('week').urlencode("Filter[user][]")."=$providerId'><img height=15 width=15 src='".Celini::link('week_on.gif','images',false)."'></a>";
+			}
 			$ret[$providerId] = array(
 				'color' => $color,
 				'borderColor' => $border,
@@ -360,7 +395,8 @@ class ClearhealthCalendarData {
 				'fontColor' => $font,
 				'label' => $data['name'],
 				'isRoom'    => $isRoom,
-				'schedules' => $schedules
+				'schedules' => $schedules,
+				'labelextra' => $labelextra
 			);
 			$head =& Celini::HTMLHeadInstance();
 			$head->addInlineCss(".calendarEvent$providerId { background-color: #$background; }");
@@ -482,7 +518,7 @@ class ClearhealthCalendarData {
 		$p = Enforcetype::int($providerId);
 		$d = "'".date('Y-m-d',strtotime($date))."'";
 		$where = "and provider.person_id = $p and date_format(event.start,'%Y-%m-%d') = $d";
-		return $this->_schedules($where);
+		return $this->_schedules($where,$date);
 	}
 	
 	/**
@@ -499,17 +535,43 @@ class ClearhealthCalendarData {
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
-		$return = $this->_schedules($where);
+		$date = $filters['start']->getValue();
+		
+		$return = $this->_schedules($where,$date);
 		return $return;
 	}
 
-	function &_schedules($where) {
+	function &_schedules($where,$date) {
+		$cache_id = $date.'-'.md5($where.$this->currentPractice);
+		$view = new clniView();
+		$view->caching = true;
+		$view->cache_lifetime = 3600;
+		if($view->is_cached('calendar/cache_providerschedules.html',$cache_id)) {
+			$out = unserialize($view->fetch('calendar/cache_providerschedules.html',$cache_id));
+			return $out;
+		}
 		$db = new clniDb();
-		$sql = "SELECT person_id FROM provider";
+		$sql = "
+			SELECT p.person_id 
+			FROM 
+				provider
+				INNER JOIN person p USING(person_id)
+			ORDER BY p.last_name ASC, p.first_name ASC";
 		$res = $db->execute($sql);
 		$ret = array();
 		while($res && !$res->EOF) {
 			$ret[$res->fields['person_id']] = array();
+			$res->MoveNext();
+		}
+		$sql = "
+			SELECT r.id 
+			FROM 
+				rooms r
+				INNER JOIN buildings b ON(b.id = r.building_id)
+			ORDER BY b.name ASC, r.name ASC";
+		$res = $db->execute($sql);
+		while($res && !$res->EOF) {
+			$ret[$res->fields['id']] = array();
 			$res->MoveNext();
 		}
 
@@ -532,7 +594,6 @@ class ClearhealthCalendarData {
 				INNER JOIN schedule_event se ON se.event_id=event.event_id
 				INNER JOIN event_group eg ON eg.event_group_id=se.event_group_id
 				INNER JOIN schedule s ON eg.schedule_id=s.schedule_id
-				
 				LEFT JOIN rooms r ON r.id=eg.room_id
 				LEFT JOIN buildings b ON r.building_id=b.id
 				LEFT JOIN user u ON s.provider_id = u.person_id
@@ -558,6 +619,11 @@ class ClearhealthCalendarData {
 			);
 			$res->MoveNext();
 		}
+		$view->assign('scheduledata',serialize($ret));
+		$view->cache_lifetime = 3600;
+		$view->caching = false;
+		$x = $view->fetch('calendar/cache_providerschedules.html',$cache_id);
+		$view->caching = false;
 		return $ret;
 	}
 
@@ -606,10 +672,22 @@ class ClearhealthCalendarData {
 		if(!empty($where)) {
 			$where = ' AND ('.$where.')';
 		}
-
 		$profile =& Celini::getCurrentUserProfile();
 		$practice_id = EnforceType::int($profile->getCurrentPracticeId());
- 
+ 		
+		$view = new clniView();
+ 		$view->caching = true;
+ 		$view->cache_lifetime = 3600; // One hour
+		$cache_id = $filters['start']->getValue().'-'.md5($where.'_'.$practice_id);
+		if($view->is_cached('calendar/cache_providerevents.html',$cache_id)) {
+			$entries = $view->fetch('calendar/cache_providerevents.html',$cache_id);
+			$entries = unserialize($entries);
+	 		$view->caching = false;
+			return $entries;
+		}
+ 		$view->caching = false;
+		
+
 		$sql = "
 			SELECT 
 				a.appointment_id,
@@ -691,7 +769,44 @@ class ClearhealthCalendarData {
 			
 			$res->MoveNext();
 		}
+		$view->assign('providerEvents',serialize($ret));
+ 		$view->caching = true;
+		$x = $view->fetch('calendar/cache_providerevents.html',$cache_id);		
+		$view->caching = false;
 		return $ret;
+	}
+
+	function _conflictCheck($events,$event) {
+		$conflicts = array();
+		//var_dump('EventId: '.$event['event_id'].' Start: '.date('H:i',$event['start_ts']).'End: '.date('H:i',$event['eventend_ts']));
+		foreach($events as $check) {
+			//var_dump('Start: '.date('H:i',$check['start_ts']).'End: '.date('H:i',$check['eventend_ts']));
+			if (
+				$event['start_ts'] > $check['start_ts'] && $event['start_ts'] < $check['eventend_ts'] ||
+				$event['eventend_ts'] > $check['start_ts'] && $event['eventend_ts'] < $check['eventend_ts'] ||
+
+				$check['start_ts'] > $event['start_ts'] && $check['start_ts'] < $event['eventend_ts'] ||
+				$check['eventend_ts'] > $event['start_ts'] && $check['eventend_ts'] < $event['eventend_ts'] 
+
+				|| ($check['start_ts'] == $event['start_ts'] && $check['event_id'] != $event['event_id']) 
+				|| ($check['eventend_ts'] == $event['eventend_ts'] && $check['event_id'] != $event['event_id'])
+			) {
+				$conflicts[] = $check['event_id'];
+			}
+		}
+		//var_dump($conflicts);
+		return $conflicts;
+	}
+
+	function _confSorter($a,$b) {
+		if ($a['created_date'] > $b['created_date']) {
+			return 1;
+		}
+		else if ($a['created_date'] < $b['created_date']) {
+			return -1;
+		}
+		//var_dump('got here');
+		return 0;
 	}
 	
 	/**
@@ -720,46 +835,91 @@ class ClearhealthCalendarData {
 		$eventids = implode(',',$eventids);
 		$db = new clniDb();
 		$sql = "SELECT 
-				IF(schedule_code = 'PS',1,IF(s.schedule_id IS NULL AND (ec.patient_id = 0),2,0)) AS schedule_sort,
+				IF(schedule_code = 'PS',1,0) AS schedule_sort,
 				UNIX_TIMESTAMP(event.start) start_ts,
-				UNIX_TIMESTAMP(c.start) conflict_ts,
-				UNIX_TIMESTAMP(c.end) end_ts,
-				c.event_id AS conflict_event_id, 
+				UNIX_TIMESTAMP(event.end) eventend_ts,
 				event.event_id AS event_id, 
 				ea.provider_id,
-				ea.room_id
+				ea.room_id,
+				UNIX_TIMESTAMP(ea.created_date) created_date
 			FROM 
 				`event`
 				INNER JOIN appointment ea on `event`.event_id = ea.event_id
 				LEFT JOIN event_group eg ON eg.event_group_id=ea.event_group_id
-				LEFT JOIN schedule s ON eg.schedule_id=s.schedule_id,
-				`event` as c
-				INNER JOIN appointment ec on c.event_id = ec.event_id
+				LEFT JOIN schedule s ON eg.schedule_id=s.schedule_id
 			WHERE 
-			( (c.start >= event.start AND c.start < event.end) or (event.start >= c.start AND  event.start < c.end) )
-			and ea.provider_id = ec.provider_id
-			and c.event_id != event.event_id
-			AND event.event_id IN($eventids)
-			AND c.event_id IN($eventids)
+			event.event_id IN($eventids)
 			 ORDER BY 
-			 	ec.created_date, event.start, c.start, c.event_id";
+			 	ea.created_date, event.start, event.event_id";
 //echo $sql;
+
 		$res = $db->execute($sql);
 		$conflicts = array();
 		$starts = array();
 
+		$roomAppts = array();
+		$providerAppts = array();
+
 		while($res && !$res->EOF) {
 			$start = $res->fields['start_ts'];
-			$pid = $res->fields['provider_id'] > 0 ? $res->fields['provider_id'] : $res->fields['room_id'];
-			if (!isset($conflicts[$pid][$res->fields['conflict_event_id']])) {
-				$conflicts[$pid][$res->fields['conflict_event_id']] = array();
+			$rid = $res->fields['room_id'];
+			$pid = $res->fields['provider_id'];//  > 0 ? $res->fields['provider_id'] : $res->fields['room_id'];
+			$eid = $res->fields['event_id'];
+
+			$starts[$rid][$eid] = $res->fields['start_ts'];
+			$starts[$pid][$eid] = $res->fields['start_ts'];
+
+			if ($rid > 0) {
+				$roomAppts[$rid][$eid] = $res->fields;
 			}
 
-			$conflicts[$pid][$res->fields['conflict_event_id']][$res->fields['event_id']] = $res->fields;
-			$starts[$pid][$res->fields['conflict_event_id']] = $res->fields['conflict_ts'];
+			if ($pid > 0) {
+				$providerAppts[$pid][$eid] = $res->fields;
+			}
+
 			$res->MoveNext();
 		}
+
+		foreach($providerAppts as $pid => $events) {
+			foreach($events as $eid => $event) {
+				$confs = $this->_conflictCheck($events,$event);
+				if (count($confs) > 0) {
+					foreach($confs as $cid) {
+						$conflicts[$pid][$eid][$cid] = $events[$cid];
+
+						$conflicts[$pid][$eid][$cid]['conflict_event_id'] = $eid;
+						$conflicts[$pid][$eid][$cid]['conflict_ts'] = $event['start_ts'];
+						$conflicts[$pid][$eid][$cid]['end_ts'] = $event['eventend_ts'];
+					}
+				}
+			}
+		}
+
+		foreach($roomAppts as $rid => $events) {
+			foreach($events as $eid => $event) {
+				$confs = $this->_conflictCheck($events,$event);
+				if (count($confs) > 0) {
+					foreach($confs as $cid) {
+						$conflicts[$rid][$eid][$cid] = $events[$cid];
+
+						$conflicts[$rid][$eid][$cid]['conflict_event_id'] = $eid;
+						$conflicts[$rid][$eid][$cid]['conflict_ts'] = $event['start_ts'];
+						$conflicts[$rid][$eid][$cid]['end_ts'] = $event['eventend_ts'];
+					}
+				}
+			}
+		}
+
+		// sort conflicts
+		foreach($conflicts as $id => $confs) {
+			foreach($confs as $tid => $tmp) {
+				uasort($conflicts[$id][$tid],array($this,'_confSorter'));
+			}
+		}
+		
 		// calc start/end times for overlap blocks
+		
+		// This code for provider AND room schedule conflicts
 		$blocks = array();
 		foreach($conflicts as $pid => $conflict) {
 			foreach($conflict as $events) {
@@ -777,17 +937,16 @@ class ClearhealthCalendarData {
 								$inBlock = true;
 								break;
 							}
-							// block start is inside current event
-							if ($block['start'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+							// event start is inside current block
+							if ($event['start_ts'] >= $block['start'] && $event['start_ts'] <= $block['end']) {
 								$inBlock = true;
 								break;
 							}
-							// block end is inside current event
-							if ($block['end'] >= $event['conflict_ts'] && $block['end'] <= $event['end_ts']) {
+							// event end is inside current block
+							if ($event['eventend_ts'] >= $block['start'] && $event['eventend_ts'] <= $block['end']) {
 								$inBlock = true;
 								break;
 							}
-
 						}
 					}
 					if ($inBlock) {
@@ -807,17 +966,31 @@ class ClearhealthCalendarData {
 				}
 			}
 		}
+	
 		foreach($blocks as $pid => $col) {
-			foreach($col as $blockId => $block) {
+			foreach($blocks[$pid] as $blockId => $block) {
 				if (isset($block['count'])) {
 					$blocks[$pid][$blockId]['count'] = array_sum($block['count']);
 				}
 				else {
-					$blocks[$pid][$blockId]['count'] = 0;
+					unset($blocks[$pid][$blockId]);
+					continue;
+				}
+				// Check for duplicate blocks
+				foreach($blocks[$pid] as $bblockId=>$bblock) {
+					if($bblockId > $blockId && $block['start'] == $bblock['start'] && $block['end'] == $bblock['end']) {
+						if(isset($bblock['count']) && is_array($bblock['count'])) {
+							$blocks[$pid][$blockId]['count'] += array_sum($bblock['count']);
+						} elseif(isset($bblock['count'])) {
+							$blocks[$pid][$blockId] += $bblock['count'];
+						}
+						unset($blocks[$pid][$bblockId]);
+					}
 				}
 			}
 		}
 		$conflictData = $conflicts;
+		
 		// just a list of which columns we have
 		$columns = array();
 		$unsets = array();
@@ -860,13 +1033,13 @@ class ClearhealthCalendarData {
 			}
 		}
 		$conflicts = $conflictData;
-		//$columns[$pid][$colId] = $colId;
 		foreach($columns as $pid => $column) {
 			foreach($column[0] as $id => $data) {
 				unset($conflicts[$pid][$id]);
 			}
 			unset($columns[$pid][0]);
 		}
+	
 		return array($conflicts,$columns,$blocks);
 	}
 	
@@ -876,36 +1049,34 @@ class ClearhealthCalendarData {
 	 *
 	 */
 	function &getColumns(&$filters,$renderType,&$dayIterator) {
+		$view =& new clniView();
+		$view->caching = true;
+		// Cache for 15 minutes
+		$view->cache_lifetime = 900;
+		$cache_id = $filters['start']->getValue().'-'.md5($this->toWhere($filters).$this->currentPractice);
+		$this->cache_identifier = $cache_id;
+
+		if($view->is_cached('calendar/cache_column.html',$cache_id)) {
+			$columns = $view->fetch('calendar/cache_column.html',$cache_id);
+			$columns = unserialize($columns);
+			return $columns;
+		}
+
 		if(is_null($this->events)) {
 			$a = $this->providerEvents($filters,$renderType,$dayIterator->interval);
 			$this->events =& $a;
 		} else {
 			$a =& $this->events;
 		}
-		$view =& new clniView();
-//		/*
-		$view->caching = true;
-		// Cache for 15 minutes
-		$view->cache_lifetime = 3600; // 1 hour
-		$compile_id = md5(print_r($filters,true));
-		$y = $dayIterator->date[0];
-		$m = strlen($dayIterator->date[1]) == 1 ? "0{$dayIterator->date[1]}" : $dayIterator->date[1];
-		$d = strlen($dayIterator->date[2]) == 1 ? "0{$dayIterator->date[2]}" : $dayIterator->date[2];
-		$cache_id="$y-$m-$d";
-		if($view->is_cached('cache_column.html',$cache_id,$compile_id)) {
-			$columns = $view->fetch('calendar/cache_column.html',$cache_id,$compile_id);
-			$columns = unserialize($columns);
-			return $columns;
-		}
-//		*/
+
 		$columns = $dayIterator->parent->getScheduleList();
 		list($conflicts,$conflictColumns,$conflictBlocks) = $this->getConflictingEvents($a);
-
 		$eventmap = $dayIterator->parent->eventScheduleMap;
 
 		// Let's build this thing!
 
 		$count = 0;
+		// Provider_id may also be room_id for this loop
 		foreach($columns as $provider_id => $col) {
 			$columns[$provider_id]['eventmap'] =& $eventmap[$provider_id];
 			$columns[$provider_id]['index'] = $count++;
@@ -921,14 +1092,15 @@ class ClearhealthCalendarData {
 			if (isset($conflictColumns[$provider_id])) {
 				$columns[$provider_id]['conflictColumns'] = $conflictColumns[$provider_id];
 				$columns[$provider_id]['conflictCount'] = count($conflictColumns[$provider_id]);
+				$columns[$provider_id]['conflictColumnCount'] = count($conflictColumns[$provider_id]);
 			}
 			if (isset($conflictBlocks[$provider_id])) {
 				$columns[$provider_id]['conflictBlocks'] = $conflictBlocks[$provider_id];
 			}
 			// now create the pre-columns (the appointment-dragger)
 			$view->assign_by_ref('dayIterator',$dayIterator);
-			
 			$room_id = 0;
+			$view->caching = false;
 			for($dayIterator->rewind(); $dayIterator->valid(); $dayIterator->next()) {
 				$ts =$dayIterator->getTimestamp();
 				$view->assign('timestamp',$ts);
@@ -952,14 +1124,14 @@ class ClearhealthCalendarData {
 				$dayIterator->next();
 				$nextTime = $dayIterator->getTime();
 				$dayIterator->previous();
-				$view->assign('title',$dayIterator->getTime().' - '.$nextTime.' '.$display);
-				$view->caching = false;
+				$view->assign('title',$dayIterator->getTime().' '.$display);
 				$columns[$provider_id]['precol'][$ts] = $view->fetch('calendar/general_precolumn.html');
-				$view->caching = true;
 			}
 		}
+		$view->caching = true;
+		$view->cache_lifetime = 900;
 		$view->assign('colinfo',serialize($columns));
-		$x = $view->fetch('calendar/cache_column.html',$cache_id,$compile_id);
+		$x = $view->fetch('calendar/cache_column.html',$cache_id);
 		return $columns;
 		
 	}

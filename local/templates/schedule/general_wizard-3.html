@@ -1,10 +1,12 @@
 {head type="js"}
-Behavior.register('#next',
+Behavior.register('#wizardForm',
 	function(element) {
-		$u.registerEvent(element,'click',function(e) {
+		$u.registerEvent(element,'submit',function(e) {
+			if(clni_validate(element) {
 			var message = new clniPopup('<h1>Creating Schedule Please Wait</h1>',false);
 			message.modal = true;
 			message.display();
+			}
 		});
 	}
 );
@@ -17,8 +19,8 @@ function switchForm(showid,hideid) {
 
 <h2>Select the date and time for the schedule</h2>
 
-<p>Schedule runs from {clni_input_date name="wizard[date_start]" value=$wizard->get('date_start')} 
-	to {clni_input_date name="wizard[date_end]" value=$wizard->get('date_end')}</p>
+<p>Schedule runs from {clni_input_date name="wizard[date_start]" value=$wizard->get('date_start') id="startdate"} 
+	to {clni_input_date name="wizard[date_end]" value=$wizard->get('date_end') id="enddate"}</p>
 
 <p>Schedule is applied to which days of the week:<br>
 <div style="margin-left: 1em">
@@ -64,8 +66,10 @@ function switchForm(showid,hideid) {
 
 </table>
 </div>
-
+{clni_register_validation_rule id="startdate"}
+{clni_register_validation_rule id="enddate"}
 	<input type="hidden" id="back" value=2>
+	<input type="hidden" name="current_page" value="3">
 	<input type="hidden" id="page" name="next_page" value=99>
 	{assign var=nextcreate value=true}
 {include file="schedule/general_wizard_footer.html"}

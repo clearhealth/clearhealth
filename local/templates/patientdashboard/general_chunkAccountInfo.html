@@ -4,16 +4,16 @@
 		<p><a href="{$ACCOUNT_ACTION}">Account History</a></p>
 		<table>
 			<tr>
-				<td><label>{l}Total Billed{/l}: </label></td><td>{$accountStatus.total_billed}</td>
+				<td><label>{l}Total Billed{/l}: </label></td><td style="text-align:right">{$accountStatus.total_billed}</td>
 			</tr>
 			<tr>
-				<td><label>{l}Total Paid{/l}: </label></td><td>{$accountStatus.total_paid}</td>
+				<td><label>{l}Total Paid{/l}: </label></td><td style="text-align:right">{$accountStatus.total_paid}</td>
 			</tr>
 			<tr>
-				<td><label>{l}Total Writeoff{/l}: </label></td><td>{$accountStatus.total_writeoff}</td>
+				<td><label>{l}Total Writeoff{/l}: </label></td><td style="text-align:right">{$accountStatus.total_writeoff}</td>
 			</tr>
 			<tr>
-				<td><label>{l}Balance{/l}: </label></td><td style="border-top: solid 1px black;">{$accountStatus.total_balance}</td>
+				<td><label>{l}Balance{/l}: </label></td><td style="border-top: solid 1px black; text-align:right">{$accountStatus.total_balance}</td>
 			</tr>
 			{if $unpaid_payments}
 			{assign var='total' value=0}

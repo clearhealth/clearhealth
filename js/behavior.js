@@ -2,29 +2,21 @@
 
 /* Menu Code */
 var visibleMenu = false;
-Behavior.register(
-	"div#nav div.section",
-	function(element) {
-		element.style.color = 'red';
-		var a = element.getElementsByTagName('a').item(0);
-		var handler = function(event) {
-			if (visibleMenu) {
-				visibleMenu.style.visibility = 'hidden';
-			}
-			var target = HTML_AJAX_Util.eventTarget(event).parentNode.getElementsByTagName('ul').item(0);
-			if (target != visibleMenu) {
-				target.style.visibility = 'visible';
-				visibleMenu = target;
-			}
-			else {
-				visibleMenu = false;
-			}
-		}
-		//HTML_AJAX_Util.registerEvent(a,'mouseover',handler);
-		HTML_AJAX_Util.registerEvent(a,'click',handler);
-		a.isMenu = true;
+function menuHandler(element) {
+	var a = element.getElementsByTagName('a').item(0);
+	a.isMenu=true;
+	if (visibleMenu) {
+		visibleMenu.style.visibility = 'hidden';
 	}
-);
+	var target = element.getElementsByTagName('ul').item(0);
+	if (target != visibleMenu) {
+		target.style.visibility = 'visible';
+		visibleMenu = target;
+	}
+	else {
+		visibleMenu = false;
+	}
+}
 
 Behavior.register(
 	"html",
@@ -41,10 +33,11 @@ Behavior.register(
 		HTML_AJAX_Util.registerEvent(element,'click',handler);
 	}
 );
+
 var toolTipTimeout = false;
 var toolTip = false;
 Behavior.register(
-	".tooltip",
+	"div.tooltip",
 	function(element) {
 
 		var handler = function(e) {
@@ -84,29 +77,5 @@ Behavior.register(
 
 		HTML_AJAX_Util.registerEvent(element,'mouseover',handler);
 		HTML_AJAX_Util.registerEvent(element,'mouseout',ohandler);
-	}
-);
-
-Behavior.register(
-	".element",
-	function(element) {
-		var a = document.createElement('a');
-		a.innerHTML = '<img src="' + base_dir + 'index.php/Images/stock/information.gif">';
-		a.className = 'elementLink';
-		element.appendChild(a);
-
-		var handler = function(e) {
-			var target = HTML_AJAX_Util.eventTarget(e);
-			var parent = target.parentNode.parentNode.parentNode;
-			var info = HTML_AJAX_Util.getElementsByClassName('elementInfo',parent)[0];
-			if (info.style.display == 'block') {
-				info.style.display = 'none';
-			}
-			else {
-				info.style.display = 'block';
-				info.style.height = parent.offsetHeight+'px';
-			}
-		}
-		HTML_AJAX_Util.registerEvent(a,'click',handler);
 	}
 );

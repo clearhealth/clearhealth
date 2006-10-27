@@ -4,18 +4,21 @@ SCRIPT_HOME=`dirname $0`
 
 NAME="clearhealth"
 RELEASE="1.0RC3"
+BRANCH="1.0.x"
 #REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/RB_$RELEASE"
-REPO_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/branches/1.0.x"
+REPO_URL="http://svn.clear-health.net/svn/clearhealth/clearhealth/branches/$BRANCH"
 SVN_REV="HEAD"
-TAG_URL="https://svn2.uversainc.com/svn/clearhealth/clearhealth/tags/$RELEASE"
+TAG_URL="http://svn.clear-health.net/svn/clearhealth/clearhealth/tags/$RELEASE"
 BUILD_BASE="/tmp"
 CELINI_APP="true"
-CELINI_URL="https://svn2.uversainc.com/svn/celini/branches/1.0.x"
+CELINI_URL="http://svn.clear-health.net/svn/celini/branches/$BRANCH"
 CELINI_REV="HEAD"
 INSTALLER_APP="true"
 INSTALLER_REV="HEAD"
 INSTALLER_CONFIG="`dirname $0`/installer/config.php"
 INSTALLER_VERSIONS="`dirname $0`/installer/versions.php"
+INSTALLER_URL="http://svn.clear-health.net/svn/installer/installer/trunk"
+MODULE_BASE_URL="http://svn.clear-health.net/svn/clearhealth"
 MODULES="calendar billing labs x12_importer"
 TAG="true"
 USAGE="You can use the following optional command line parameters
@@ -38,6 +41,7 @@ done
 # No need to mess with anything below here
 BUILD_DIR="$BUILD_BASE/$NAME-$RELEASE"
 if [ "HEAD" == $SVN_REV ]; then
+	echo "Looking up CURRENT_SVN_REV"
 	CURRENT_SVN_REV=`svn log $REPO_URL 2>/dev/null | head -2 | grep \| | cut -d\| -f1| cut -dr -f2`
 else
 	CURRENT_SVN_REV=$SVN_REV
@@ -76,6 +80,16 @@ if [ "$TAG" == "true" ]; then
 		echo "Please remove before releasing this version again!"
 		exit 1
 	fi
+
+	for MODULE in $MODULES; do
+		echo "Checking for existing tag in SVN, module $MODULE"
+		svn ls $MODULE_BASE_URL/$MODULE/tags/$RELEASE >/dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo "SVN tag already exists at $MODULE_BASE_URL/$MODULE/tags/$RELEASE"
+			echo "Please remove before releasing this version again!"
+			exit 1
+		fi
+	done;
 	
 	echo "Tagging version in SVN"
 	svn copy -m "Tagged release $RELEASE of $NAME" -r $SVN_REV $REPO_URL $TAG_URL
@@ -83,6 +97,14 @@ if [ "$TAG" == "true" ]; then
 		echo "Could not create tag, aborting!"
 		exit 2
 	fi
+
+	for MODULE in $MODULES; do
+		svn copy -m "Tagged release $RELEASE of $NAME:$MODULE" -r $SVN_REV $MODULE_BASE_URL/$MODULE/branches/$BRANCH $MODULE_BASE_URL/$MODULE/tags/$RELEASE
+		if [ $? -ne 0 ]; then
+			echo "Could not create tag, aborting!"
+			exit 2
+		fi
+	done;
 fi
 
 echo "Building $NAME $RELEASE into $BUILD_DIR"
@@ -98,7 +120,7 @@ clean_release "$SCRIPT_HOME/no_package"
 for MODULE in $MODULES; do
 	echo "Exporting module $MODULE to $BUILD_DIR/modules/$MODULE"
 	#svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/RB_$RELEASE $BUILD_DIR/modules/$MODULE
-	svn export https://svn2.uversainc.com/svn/clearhealth/$MODULE/branches/1.0.x $BUILD_DIR/modules/$MODULE
+	svn export $MODULE_BASE_URL/$MODULE/tags/$RELEASE $BUILD_DIR/modules/$MODULE
 	if [ $? -ne 0 ]; then
 		echo "Could not export module $MODULE!"
 		exit 3
@@ -116,7 +138,7 @@ fi
 #Setup installer
 if [ "true" == "$INSTALLER_APP" ]; then
 	echo "Exporting installer for application at rev $INSTALLER_REV to $BUILD_DIR/installer"
-	svn export -r $INSTALLER_REV https://svn2.uversainc.com/svn/installer/installer/trunk $BUILD_DIR/installer
+	svn export -r $INSTALLER_REV $INSTALLER_URL $BUILD_DIR/installer
 	clean_release "$BUILD_DIR/installer/no_package" "installer"
 fi
 
@@ -133,7 +155,6 @@ if [ $? -ne 0 ]; then
 	echo "Error creating db cache files"
 	exit 4
 fi
-
 
 echo "Creating release file $BUILD_BASE/$NAME-$RELEASE.tgz"
 CUR_DIR=`pwd`

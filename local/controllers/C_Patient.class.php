@@ -695,7 +695,7 @@ class C_Patient extends Controller {
 		union
 		select
 			date_format(e.date_of_treatment,'$format') item_date,
-			'Misc Charge' code_text,
+			CONCAT('Misc Charge: ',mc.title) code_text,
 			'' code,
 			mc.amount charge,
 			0.00 credit,

@@ -390,8 +390,9 @@ class C_Coding extends Controller {
 			case 'icd':
 				$filterList[] = 'c.code_type = 2';
 				break;
+			case 'hcpcs':
 			case 'cpt':
-				array_push($filterList, 'c.code_type = 3');
+				array_push($filterList, 'c.code_type = 3 or c.code_type = 10');
 				if ($limit) {
 					array_push($filterList, 'fsd.data > 0');
 					array_push($tableList,

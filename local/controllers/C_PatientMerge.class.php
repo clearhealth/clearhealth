@@ -106,9 +106,18 @@ class C_PatientMerge extends controller {
 		}
 		$this->messages->addMessage('Merged '.$child->value('patient').' into '.$parent->value('patient'),$messages);
 
+		$deletedId = $child->get('id');
+
 		$child->person->drop();
 		$child->drop();
 		$dq->drop();
+
+		$currentPatient = $this->get('patient_id','c_patient');
+		if ($deletedId == $currentPatient) {
+			$this->set("encounter_id", false, 'c_patient');	
+			$this->set("patient_id", false, 'c_patient');
+			$this->session->set('patient_action', Celini::link('list','PatientFinder'));
+		}
 	}
 
 	function updateId($table,$field,$newId,$oldId) {

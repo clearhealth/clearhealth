@@ -61,13 +61,14 @@ class Appointment extends ORDataObject {
 	}
 
 	function setup($id = 0) {
-		$sql = 'select event_id, a.* from '.$this->tableName().' a where appointment_id = '.enforceType::int($id);
-		$this->helper->populateFromQuery($this,$sql);
+		parent::setup($id);
+		$this->_event =& Celini::newORDO('CalendarEvent',$this->get('event_id'));
 	}
-
+	
 	function setupByEventId($id) {
 		$sql = 'select * from '.$this->tableName().' where event_id = '.enforceType::int($id);
 		$this->helper->populateFromQuery($this,$sql);
+		$this->_event =& Celini::newORDO('CalendarEvent',EnforceType::int($id));
 	}
 
 	/**
@@ -227,7 +228,7 @@ class Appointment extends ORDataObject {
 	 * Get the event that is linked to this appointment
 	 */
 	function populateEvent() {
-		if ($this->_event === false) {
+		if ($this->_event === false || !is_a($this->_event,'CalendarEvent')) {
 			$this->_event =& Celini::newOrdo('CalendarEvent',$this->get('event_id'));
 		}
 	}
@@ -292,17 +293,25 @@ class Appointment extends ORDataObject {
 				$breakdown->persist();
 			}
 		}
+
+
 		$view = new clniView();
 		$view->caching = true;
 		$view->cache_lifetime = 900;
-		$view->clear_cache(null,null,$this->get('id'));
+		// Clear cached information specific to this appointment
+		$view->regexClearCache('/'.$this->get('id').'-/');
+		// Clear any cached information for this date (calendar data)
+		$view->regexClearCache('/^'.$this->get('date').'-/');
 	}
 	
 	function drop() {
 		$this->populateEvent();
 		$this->_event->drop();
 		$view = new clniView();
-		$view->clear_cache(null,null,$this->get('id'));
+		// Clear cached information specific to this appointment
+		$view->regexClearCache('/^'.$this->get('id').'-/');
+		// Clear any cached information for this date (calendar data)
+		$view->regexClearCache('/^'.$this->get('date').'-/');
 		parent::drop();
 	}
 	
@@ -350,6 +359,9 @@ class Appointment extends ORDataObject {
 			$res = $db->execute($sql);
 			if($res && !$res->EOF) {
 				return $res->fields['person_id'];
+			} else {
+				// If breakdown user is not set, assume the appt provider
+				return $this->get('provider_id');
 			}
 			return 0;
 		}

@@ -15,10 +15,11 @@ Date: {clni_input_date name="wizard[date_start]" value=$wizard->get('date_start'
 
 <p>
 Room:
-<select name="wizard[room_id]">
+<select name="wizard[room_id]" id="roomselect">
 	<option></option>
 	{html_options options=$rooms selected=$wizard->get('room_id')}
 </select>
+{clni_register_validation_rule id="roomselect"}
 </p>
 
 <input type="hidden" id="back" value=1>

@@ -11,7 +11,7 @@ inner join buildings b on p.id = b.practice_id
 inner join encounter e on b.id = e.building_id
 left join practice_address pa on p.id = pa.practice_id
 left join address a using(address_id)
-where address_type = 4 and e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+where address_type = 4 and e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 ---[treating_facility]---
 select 
  b.name,
@@ -24,7 +24,7 @@ from buildings b
 inner join encounter e on b.id = e.building_id
 left join building_address ba on b.id = ba.building_id
 left join address a using(address_id)
-where e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+where e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 ---[treating_provider]---
 select 
  per.salutation,
@@ -46,7 +46,7 @@ left join address a on a.address_id = pa.person_id and address_type = 1
 left join person_number pn on p.person_id = pn.person_id
 left join number n on n.number_id = pn.number_id and n.number_type = 1
 where
- e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+ e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 ---[patient]---
 select * from person p
 inner join patient pat using(person_id)
@@ -55,7 +55,7 @@ left join person_address pa on p.person_id = pa.person_id
 left join address a on a.address_id = pa.address_id and address_type =1  
 left join person_number pn on p.person_id = pn.person_id
 left join number n on n.number_id = pn.number_id and n.number_type = 1
-where e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+where e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 ---[code_list]--- 
 select cpt.code_text `Procedure`, cpt.code Code, 
 concat_ws(', '
@@ -66,18 +66,19 @@ concat_ws(', '
 ) Diagnosis, cd.modifier, cd.units, cd.fee
 from coding_data cd
 inner join codes c using(code_id)
-inner join codes cpt on cd.parent_id = cpt.code_id
+inner join codes cpt on cd.code_id = cpt.code_id
 inner join encounter e on cd.foreign_id = e.encounter_id
-where e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+where e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 group by cd.parent_id
 union
 select 'Total','','',null,sum(units),sum(fee)
 from coding_data cd
-where foreign_id = '[encounter_id:CONTROLLER:C_Patient]' and primary_code = 1
+where foreign_id = '[encounter_id:CONTROLLER:c_encounter]' and primary_code = 1
 ---[payment_history]---
 select 
 date_format(payment_date, '%m/%d/%Y'), amount, payment_type
 from payment
-where encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+where encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
 ---[encounter]---
-select * from encounter e where e.encounter_id = '[encounter_id:CONTROLLER:C_Patient]'
+select * from encounter e where e.encounter_id = '[encounter_id:CONTROLLER:c_encounter]'
+

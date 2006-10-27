@@ -112,8 +112,8 @@ class C_FeeSchedule extends Controller {
 
 		$fs =& ORDataobject::factory('FeeSchedule');
 		$ds =& $fs->listFeeSchedules();
-		$ds->template['label'] = '<a href="'.Celini::link('edit').'id={$fee_schedule_id}">{$label}</a>';
-
+		$ds->registerTemplate('label','<a href="'.Celini::link('edit').'id={$fee_schedule_id}">{$label}</a>');
+		$ds->_renderMap = array_keys($ds->getColumnLabels());
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
 

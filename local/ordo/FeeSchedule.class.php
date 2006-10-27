@@ -52,6 +52,23 @@ class FeeSchedule extends ORDataObject {
 	}
 
 	/**
+	 *  Get a fee schedule from its name
+	 */
+	function setupByName($name) {
+		$tableName = $this->tableName();
+		$n = $this->dbHelper->quote($name);
+		$sql = "
+			SELECT 
+				*
+			FROM
+				{$tableName}
+			WHERE
+				name = {$n}
+			";
+		$this->helper->populateFromQuery($this, $sql);
+	}
+
+	/**
 	 * List all FeeScheduls
 	 */
 	function &listFeeSchedules() {
@@ -207,12 +224,12 @@ class FeeSchedule extends ORDataObject {
 				." left join fee_schedule_data fsd on (codes.code_id = fsd.code_id and fsd.fee_schedule_id = " . (int)$this->get('id') . ") " 
 				." where fs.fee_schedule_id = ".$this->get('id')." and codes.code_id =  $code_id "
 				." order by code";
-		
+
 		$res = $this->_execute($sql);
 		if ($res && isset($res->fields['mapped_code'])) {
 			return $res->fields['mapped_code'];
 		}
-		return 0.00;
+		return '';
 	}
 
 	function getMappedCodeFromCodingDataId($coding_data_id) {
@@ -230,7 +247,7 @@ class FeeSchedule extends ORDataObject {
 		if ($res && isset($res->fields['mapped_code'])) {
 			return $res->fields['mapped_code'];
 		}
-		return 0.00;
+		return '';
 	}
 
 	/**

@@ -52,7 +52,7 @@ class ClearhealthAJAX {
 	function initMenuForm(){
 		$GLOBALS['loader']->requireOnce("ordo/MenuForm.class.php");
 		$form=&new MenuForm();
-		$this->server->registerClass($form,'MenuForm');
+		$this->server->registerClass($form,'MenuForm',array('getformlist','addmenuentry','updatemenuentry','deletemenuentry'));
 	}
 
 	function initForm(){
