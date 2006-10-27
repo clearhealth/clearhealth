@@ -1,5 +1,5 @@
-	<fieldset class="radio" id="identifier">
-		<legend>{l}Statistics{/l}	{clni_section_links name="statisticss"}</legend>
+<div class="tab" title="{l}Statistics{/l}">
+
 		<input type="hidden" value="{$patientStatistics->get('id')}" name="patientStatistics[patient_statistics_id]">
 		<table>
 			<tr>
@@ -18,17 +18,25 @@
 				<td></td>
 			</tr>
 			<tr>
-				<td><label>{l}Income{/l}:</label></td>
-				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income') blank=""}</td>
 
 				<td><label>{l}Monthly Income{/l}:</label></td>
 				<td><input name="patientStatistics[monthly_income]" id="ps_monthly_income" value="{$patientStatistics->get('monthly_income')}" size=8 maxlength=8></td>
+				<td><label>{l}Income{/l}:</label></td>
+				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income') blank=""}</td>
 			</tr>
 			<tr>
 				<td><label>{l}Family Size{/l}:</label></td>
 				<td><input name="patientStatistics[family_size]" id="ps_family_size" value="{$patientStatistics->get('family_size')}" size=3 maxlength=3></td>
+
+				<td><label>Number of Adults: </label></td>
+				<td><input size=4></td>
+			</tr>
+			<tr>
 				<td><label>{l}Date of First Encounter:{/l}</label></td>
 				<td>{$encounter->getFirstDate($person->get('id'))}</td>
+
+				<td><label>{l}Sign in Date{/l}: </label></td>
+				<td>{clni_input_date name="patientStatistics[sign_in_date]" value=$patientStatistics->get('sign_in_date')}</td>
 			</tr>
 			<tr>
 				<td><label>{l}Registration Location{/l}: </label></td>
@@ -41,10 +49,24 @@
 				<td>{clni_input_date name="patientStatistics[sign_in_date]" value=$patientStatistics->get('sign_in_date') required='false'}</td>
 			</tr>
 			<tr>
+				<td><label>Employment Status: </label></td>
+				<td><select><option></option><option>Status 1</option></select></td>
+
+				<td><label>Occupation: </label></td>
+				<td><input></td>
+			</tr>
+			<tr>
+				<td><label>Education Level: </label></td>
+				<td><select><option></option><option>Level 1</option></select></td>
+
+				<td><label>US Veteran: </label></td>
+				<td><select><option></option><option>Yes</option></select></td>
+			</tr>
+			<tr>
 				<td><input type="submit" value="Save"></td>
 			</tr>
 		</table>
 		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
-	</fieldset>
 {clni_register_validation_rule id="ps_monthly_income" rule="number" message="Monthly income is a Number no commas should be used"}
 {clni_register_validation_rule id="ps_family_size" rule="number" message="Family size a Number"}
+</div>

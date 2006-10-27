@@ -26,10 +26,8 @@ function startDuplicate(URL) {
 {/head}
 	{* Photo area, need to rework positioning if turned back on *}
 	{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
-	<fieldset class="radio" id="person">
-		<legend>{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if} 
-			{clni_section_links name="detail"}
-			</legend>
+
+	<div class="tab selected" title="{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if}"> 
 			<table>
 			<tbody>
 			<tr>
@@ -162,7 +160,7 @@ function startDuplicate(URL) {
 			</tr>
 			</tbody>
 		</table>
-		</fieldset>
+		</div>
 		<script type="text/javascript">
 		updateParent();
 		</script>

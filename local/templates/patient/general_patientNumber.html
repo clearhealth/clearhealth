@@ -19,6 +19,9 @@
         </tr>
         {/foreach}
 </table>
+<button onclick="showForm('numberForm','add'); return false;">Add Number</button>
+<div style="display:none" id="numberForm">
+<div class="popHeader">Phone Number<a class="popClose" onclick="formPopup.hide()">X</a></div>
                 {if $number->get('id') > 0}
                 <input type="hidden" name="number[number_id]" value="{$number->get('id')}">
                 {/if}
@@ -54,4 +57,5 @@
                         {clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
                 {/if}
         </fieldset>
+</div>
 

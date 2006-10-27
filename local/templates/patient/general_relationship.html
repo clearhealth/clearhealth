@@ -1,5 +1,4 @@
-{literal}
-<style>
+{head type="css"}
 	.confirmBox {
 		position: absolute;
 		width: 300px;
@@ -8,8 +7,7 @@
 		border: solid 3px  black;
 		padding: 5px;
 	}
-</style>
-{/literal}
+{/head}
 <div style='display:none' id='guarantorPlacement'>
 	<div style="text-align: center">
 		<h2>Guarantor already exists</h2>
@@ -55,8 +53,7 @@
 	}
 	{/literal}
 </script>
-	<fieldset class="radio" id="relatedPeople">
-		<legend>{l}Related People{/l}</legend>
+<div class="tab selected" title="{l}Related People{/l}">
 
 		{$personPersonGrid->render()}
 		{if $personPersonGrid->empty}
@@ -99,4 +96,4 @@ patientSuggest('person_name_1','person_id_1');
 			</td>
 		</tr>
 		</table>
-	</fieldset>
+</div>

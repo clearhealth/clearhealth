@@ -1,0 +1,27 @@
+<div class="tab" title="{l}Secondary Identifiers{/l}">
+			{clni_section_links name="identifier"}
+			</legend>
+
+		{$identifierGrid->render()}
+		{if $identifierGrid->empty}
+		<p>{l}No Secondary Identifiers have been added{/l}</p>
+		{/if}
+
+		<table>
+			<tr>
+				<td><input name="identifier[identifier]" value="{$identifier->get('identifier')}"></td>
+				<td><select name="identifier[identifier_type]">
+						{html_options options=$identifier->getIdentifierTypeList() selected=$identifier->get('identifier_type')}
+				</select></td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="{if $identifier->get('id') > 0}Update{else}Add{/if} Identifier">
+					{if $identifier->get('id') > 0}
+					<input type="button" value="Cancel" onclick="location.href='{link controller=User action=edit defaultArg=$person->get('id')}';" />
+					{/if}
+					</td>
+			</tr>
+		</table>
+		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
+</div>

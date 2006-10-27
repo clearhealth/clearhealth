@@ -1,3 +1,62 @@
+{head type="js"}
+var tabCount = {};
+function selectTab(e) {
+	var selector = $u.eventTarget(e);
+	var id = /selector(.+)/.exec(selector.parentNode.id)[1];
+	var tabs = $u.getElementsByCssSelector('div.tab',$('tabset'+id));
+
+	for(var i = 0; i < tabs.length; i++) {
+		if (i == selector.index) {
+			$u.addClass(tabs[i],'selected');
+		}
+		else {
+			$u.removeClass(tabs[i],'selected');
+		}
+	}
+
+	var selectors = selector.parentNode.getElementsByTagName('a');
+	for(var i = 0; i < selectors.length; i++) {
+		$u.removeClass(selectors[i],'selected');
+	}
+	$u.addClass(selector,'selected');
+}
+
+Behavior.register('div.tabset div.tab',function(element) {
+	var id = /tabset(.+)/.exec(element.parentNode.id)[1];
+
+	if (!tabCount[id]) {
+		tabCount[id] = 0;
+	}
+
+	var newEl = document.createElement('a');
+	newEl.index = tabCount[id]++;
+	newEl.innerHTML = element.title;
+	$('selector'+id).appendChild(newEl);
+	$u.registerEvent(newEl,'click',selectTab);
+
+	if (tabCount[id] == 1) {
+		$u.addClass(newEl,'selected');
+		firstTab = false;
+	}
+	
+});
+
+var formPopup = false;
+function showForm(id,mode) {
+	if (formPopup) {
+		formPopup.hide();
+	}
+	formPopup = new clniPopup(id,true);	
+	formPopup.className = 'formPopup';
+	formPopup.draggable = true;
+	formPopup.useElement = id;
+	formPopup.display();
+}
+{/head}
+
+<div id="debug">
+</div>
+
 {include file="patient/general_setupJS.html"}
 {dynhead type="js"}var redirect_url = '{$FORM_ACTION}'; {/dynhead}
 {if $DuplicateList}
@@ -56,21 +115,31 @@ just entered. Please check the following list of existing patient records to see
 
 <table class="columns">
 	<tr>
-		<td>
-			{include file="patient/general_patientDemo.html"}
-			{include file="patient/general_patientNumber.html"}
-			{include file="patient/general_address.html"}
-			{include file="patient/general_emailAddresses.html"}
-			{include file="patient/general_chronic_codes.html"}
+		<td width="525">
+			<div class="selector" id="selector0"></div>
+			<div class="tabset" id="tabset0">
+				{include file="patient/general_patientDemo.html"}
+				{include file="patient/general_patient_statistics.html"}
+			</div>
+			</div>
 		</td>
 		<td>
+			{include file="patient/general_patientNumber.html"}
+			{include file="patient/general_address.html"}
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2>
 			{include file="patient/general_insurer.html"}
-			{include file="patient/general_relationship.html"}
-			{include file="contacts/general_identifier.html"}
-			{include file="contacts/general_name_history.html"}
-			{include file="patient/general_patient_statistics.html"}
-			
-			{$secondaryPracticeView}
+
+			<div class="selector" id="selector1"></div>
+			<div class="tabset" id="tabset1">
+				{include file="patient/general_relationship.html"}
+				{include file="patient/general_identifier.html"}
+				{include file="patient/general_name_history.html"}
+				{include file="patient/general_emailAddresses.html"}
+				{$secondaryPracticeView}
+			</div>
 		</td>
 	</tr>
 </table>

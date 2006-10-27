@@ -85,7 +85,7 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 </script>
 {/literal}
 	<fieldset class="radio" id="insurer">
-		<legend>{l}Payers{/l}</legend>
+		<legend>{l}Programs{/l}</legend>
 
 		{$insuredRelationshipGrid->render()}
 		{if $insuredRelationshipGrid->empty}
@@ -93,9 +93,13 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 		{/if}
 
 		<input type="hidden" id="insured_relationship_holder" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
+		<button onclick="showForm('programForm','add'); return false;">Add Program</button>
+<div style="display:none" id="programForm">
+<div class="popHeader">Program<a class="popClose" onclick="formPopup.hide()">X</a></div>
+		<input type="hidden" name="insuredRelationship[insured_relationship_id]" value="{$insuredRelationship->get('insured_relationship_id')}">
 		<table>
 			<tr>
-				<td><label>{l}Insurance Program{/l}:</label></td>
+				<td><label>{l}Program{/l}:</label></td>
 				<td><select name="insuredRelationship[insurance_program_id]">
 						<option value="0"></option>
 						{html_options options=$insuranceProgram->ProgramList() selected=$insuredRelationship->get('insurance_program_id')}
@@ -248,3 +252,4 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
 </script>
+</div>

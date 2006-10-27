@@ -2,7 +2,9 @@
 	<legend>Patient Addresses</legend>
 	
 	{include file="contacts/general_addressList.html"}
-
+<button onclick="showForm('addressForm','add'); return false;">Add Address</button>
+<div style="display:none" id="addressForm">
+	<div class="popHeader">Address<a class="popClose" onclick="formPopup.hide()">X</a></div>
 {if $address->get('id') <= 0}	
 	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEdit')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
 	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressBlock')" type="radio" name="_addressType" id="relatedAddress" />Add Address From Related Person</label>
@@ -45,3 +47,4 @@ switchAddressEditMode('addressEdit');
 </script>
 {/literal}
 {include file="contacts/general_addressValidation.js"}
+</div>
