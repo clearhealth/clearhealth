@@ -78,7 +78,7 @@ class ClearhealthCalendarData {
 					break;
 				case 'building':
 					if (count($value) > 0) {
-						$sql = "select name from buildings where id in (".implode(',',$value).")";
+						$sql = "select name from buildings where id in (".implode(',',$value).") order by name";
 						$values[$filter['label']] = implode(', ',(array)$db->getCol($sql));
 					}
 					break;

@@ -31,7 +31,7 @@ class Appointment extends ORDataObject {
 	/**#@-*/
 
 	var $_date		= '';
-
+	var $_oldDate		= false;
 
 	/**
 	 * DB Table
@@ -86,7 +86,9 @@ class Appointment extends ORDataObject {
 
 	function set_date($d) {
 		$this->populateEvent();
+		$this->_oldDate = $this->get('date');
 		$this->_date = $d;
+
 		if(strtotime($this->_event->get('start') != '' ? $this->_event->get('start') : 0) > 0) {
 			$this->_event->set('start',$this->_date.' '.$this->_event->get('start'));
 		}
@@ -302,6 +304,9 @@ class Appointment extends ORDataObject {
 		$view->regexClearCache('/'.$this->get('id').'-/');
 		// Clear any cached information for this date (calendar data)
 		$view->regexClearCache('/^'.$this->get('date').'-/');
+		if ($this->_oldDate != false) {
+			$view->regexClearCache('/^'.date('Y-m-d',strtotime($this->_oldDate)).'-/');
+		}
 	}
 	
 	function drop() {

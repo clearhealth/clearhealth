@@ -16,6 +16,7 @@
  * Input:<br>
  *           - patientId    optional (default is current patient)
  *           - formId
+ *           - formDataId   optional (if not set set uses the newest value)
  *           - field
  * @param array
  * @param Smarty
@@ -34,6 +35,11 @@ function smarty_function_form_value($params, &$smarty)
 	}
 
 	$formId = EnforceType::int($params['formId']);
+
+	$formDataQuery = '';
+	if (isset($params['formDataId'])) {
+		$formDataQuery = ' and fd.form_data_id = '.(int)$params['formDataId'];
+	}
 
 	$db = new clniDb();
 	$f = $db->quote($params['field']);
@@ -56,6 +62,7 @@ external_id = $patientId
 /* form is tied to a encounter of the patient */
 or external_id in (select encounter_id from encounter where patient_id = $patientId)
 )
+$formDataQuery
 ORDER BY fd.last_edit DESC
 limit 1
 	";
