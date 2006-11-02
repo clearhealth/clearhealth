@@ -354,3 +354,31 @@ ul.controllerMenu li a {
 	right: 0;
 	top: 0;
 }
+
+.minimizable {
+	position: relative;
+	padding-left: 10px;
+}
+.minimized {
+	overflow: hidden;
+	height: 14px;
+}
+.minimizer {
+	position: absolute;
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 26px;
+	top: 0;
+	left: 0;
+	line-height: 16px;
+	cursor: pointer;
+}
+.minimizedLabel {
+	font-weight: bold;
+	background-color: #eee;
+	padding-left: 6px;
+	border-bottom: solid 2px #333;
+	height: 12px;
+	cursor: pointer;
+}

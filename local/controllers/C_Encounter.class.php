@@ -330,6 +330,7 @@ class C_Encounter extends Controller {
 		
 		$head =& Celini::HTMLheadInstance();
 		$head->addExternalCss('suggest');
+		$head->addJs('ui');
 		return $this->view->render("edit.html");
 	}
 

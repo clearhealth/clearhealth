@@ -14,6 +14,7 @@ $ajaxServer->registerJSLibrary('chBehaviors', 'behavior.js', realpath(dirname(__
 $ajaxServer->registerJSLibrary('zipcode', 'zipcode.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('quicksave', 'quicksave.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('conflicts', 'conflicts.js', realpath(dirname(__FILE__) . '/..') . '/js/');
+$ajaxServer->registerJSLibrary('ui', 'ui.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 
 // todo: where should this setting end up, does it really make sense to have it user configurable
 $conf =& Celini::configInstance();

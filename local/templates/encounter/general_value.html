@@ -1,5 +1,4 @@
-<fieldset>
-	<legend>{l}Other Encounter Information{/l}</legend>
+<div class="tab" title="{l}Other{/l}">
 	{$encounterValueGrid->render()}
 	{if $encounterValueGrid->empty}
 	<p>{l}Encounter has no extra information{/l}</p>
@@ -25,4 +24,4 @@
 		</tr>
 	</table>
 	{/if}
-</fieldset>
+</div>

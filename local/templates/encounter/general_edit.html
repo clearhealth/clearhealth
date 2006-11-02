@@ -1,36 +1,90 @@
+{head type="css"}
+body {
+	width: 1016px;
+}
+{/head}
 {clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
 <input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
-	<fieldset>
-	<legend>{l}Encounter{/l}</legend>
-	<table>
-		<tr>
-			<td valign="top">
+
+<div class="minimizable" title="Show">
+	<div style="height: 40px; border: solid 1px black">Place Holder for Patient Demo</div>
+</div>
+
+<div class="minimizable" title="Show">
+	<div style="height: 75px; border: solid 1px black">Place Holder for Patient Info</div>
+</div>
+
+<table width="100%">
+	<tr>
+		<td valign="top">
+			<div class="selector" id="selector0"></div>
+			<div class="tabset" id="tabset0">
 				{include file="encounter/general_details.html"}
-				{include file="encounter/general_payment.html"}
-				{include file="encounter/general_forms.html"}
-				{include file="encounter/general_reports.html"}
-			{*	{include file="visitqueue/general_visitqueue.html"} *}
-			</td>
-			<td valign="top">
+			</div>
+		</td>
+		<td valign="top" width="400">
+			<div class="selector" id="selector2"></div>
+			<div class="tabset" id="tabset2">
+				{include file="encounter/general_payer.html"}
 				{include file="encounter/general_people.html"}
 				{include file="encounter/general_dates.html"}
 				{include file="encounter/general_value.html"}
-				{include file="encounter/general_payer.html"}
-			</td>
-		</tr>
-	</table>
-	</fieldset>
-{include file="encounter/general_miscCharges.html"}
-{clni_register_validation_rule id="date_of_treatment"}
-{if $encountertemplatelist}
-<fieldset>
-<legend>{l}Encounter Code Template{/l}</legend>
-{l}Reason:{/l} <select name="coding_template_id">
-<option value=''></option>
-{html_options options=$encountertemplatelist}
-</select>
-<input type="submit" value="{l}Add Codes{/l}" />
-</fieldset>
-{/if}
-</form>
-{$codingHtml}
+				{include file="encounter/general_forms.html"}
+				{include file="encounter/general_reports.html"}
+			</div>
+
+			<div class="selector" id="selector1"></div>
+			<div class="tabset" id="tabset1">
+			{include file="encounter/general_payment.html"}
+			{include file="encounter/general_miscCharges.html"}
+			</div>
+		</td>
+	</tr>
+</table>
+
+
+
+<div class="minimizable" title="Show Objective">
+	<div class="selector" id="selector3"></div>
+	<div class="tabset" id="tabset3">
+		<div class="tab selected" title="Objective">
+			{include file="encounter/mockup/general_objective.html"}
+		</div>
+	</div>
+</div>
+
+<div class="minimizable minimized" title="Show Physical Exams">
+	<div class="selector" id="selector4"></div>
+	<div class="tabset" id="tabset4">
+		<div class="tab selected" title="Physical Exams">
+			{include file="encounter/mockup/general_exams.html"}
+		</div>
+	</div>
+</div>
+
+<div class="minimizable" title="Show Assessment">
+	<div class="selector" id="selector5"></div>
+	<div class="tabset" id="tabset5">
+		<div class="tab selected" title="Assessment">
+		{clni_register_validation_rule id="date_of_treatment"}
+		{if $encountertemplatelist}
+			<legend>{l}Encounter Code Template{/l}</legend>
+			{l}Reason:{/l} <select name="coding_template_id"> <option value=''></option> {html_options options=$encountertemplatelist} </select>
+			<input type="submit" value="{l}Add Codes{/l}" />
+		{/if}
+		</form>
+
+		{$codingHtml}
+		</div>
+	</div>
+</div>
+
+<div class="minimizable" title="Show Plan">
+	<div class="selector" id="selector6"></div>
+	<div class="tabset" id="tabset6">
+		<div class="tab selected" title="Plan">
+			{include file="encounter/mockup/general_plan.html"}
+		</div>
+	</div>
+</div>
+

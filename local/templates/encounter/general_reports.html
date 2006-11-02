@@ -1,9 +1,8 @@
 {if $encounterBatchReports}
-<fieldset>
-	<legend>Encounter Batch Reports</legend>
+<div class="tab" title="{l}Batch Reports{/l}">
 
 	{foreach from=$encounterBatchReports item=code}
 	{$code.name}, {$code.num} Reports - <a href="{$code.url}">Run Reports</a><br>
 	{/foreach}
-</fieldset>
+</div>
 {/if}

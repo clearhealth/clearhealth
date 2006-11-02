@@ -42,6 +42,8 @@ class C_Patient extends Controller {
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('quicksave','quicksave');
 		$head->addJs('scriptaculous');
+		$head->addJs('ui');
+
 		$head->addExternalCss('suggest');
 		$this->_storeCurrentAction ();
 
