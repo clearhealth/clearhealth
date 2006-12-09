@@ -1,44 +1,13 @@
-{if $menu_group}
 
-{foreach from=$menu_array key=section_name item=section_data}
-
-<ul class="menu" id="{$section_name}Menu">
-        {foreach from=$section_data key=subsection item=subsection_data}
-                <li onMouseOver="menuShow(this);" onMouseOut="menuHide(this);" onclick="menuToggle(this);">
-                <a href="#">{$subsection|capitalize}</a>
-                <ul>
-                        {section name=menu_item loop=$subsection_data}
-                                {if !$subsection_data[menu_item].link}
-                                        <li><a href="{$base_dir}index.php/{$subsection_data[menu_item].prefix}/{$subsection_data[menu_item].action}">{$subsection_data[menu_item].title}</a></li>
-                                {else}
-                                        <li><a href="{$subsection_data[menu_item].link}">{$subsection_data[menu_item].title}</a></li>
-                                {/if}
-                                        <li>{$me->getusername()}</li>
-                        {/section}
-                </ul>
-                </li>
-        {/foreach}
-</ul>
-
-{/foreach}
-
-{/if}
-
-
-
-	{if $me->get_id() == 0}
-		<ul class="quicknav">
-			{if $translate[$navc.prefix]}
-				<li><a href="{$translate[$navc.prefix]}main/access/login">{l}Login{/l}</a></li>
-			{else}
-				<li><a href="{$NAV_ACTION}main/access/login">{l}Login{/l}</a></li>
-			{/if}
-		</ul>
-	{else}
-
-
-
-
+{if $me->get_id() == 0}
+	<ul class="quicknav">
+		{if $translate[$navc.prefix]}
+			<li><a href="{$translate[$navc.prefix]}main/access/login">{l}Login{/l}</a></li>
+		{else}
+			<li><a href="{$NAV_ACTION}main/access/login">{l}Login{/l}</a></li>
+		{/if}
+	</ul>
+{else}
 
 {foreach from=$menu key=section_name item=subsection}
 
