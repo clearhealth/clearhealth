@@ -1,6 +1,32 @@
-<div id="nav">
+{if $menu_group}
+
+{foreach from=$menu_array key=section_name item=section_data}
+
+<ul class="menu" id="{$section_name}Menu">
+        {foreach from=$section_data key=subsection item=subsection_data}
+                <li onMouseOver="menuShow(this);" onMouseOut="menuHide(this);" onclick="menuToggle(this);">
+                <a href="#">{$subsection|capitalize}</a>
+                <ul>
+                        {section name=menu_item loop=$subsection_data}
+                                {if !$subsection_data[menu_item].link}
+                                        <li><a href="{$base_dir}index.php/{$subsection_data[menu_item].prefix}/{$subsection_data[menu_item].action}">{$subsection_data[menu_item].title}</a></li>
+                                {else}
+                                        <li><a href="{$subsection_data[menu_item].link}">{$subsection_data[menu_item].title}</a></li>
+                                {/if}
+                                        <li>{$me->getusername()}</li>
+                        {/section}
+                </ul>
+                </li>
+        {/foreach}
+</ul>
+
+{/foreach}
+
+{/if}
+
+
+
 	{if $me->get_id() == 0}
-		<div class="menuSection" onclick="menuHandler(this);">
 		<ul class="quicknav">
 			{if $translate[$navc.prefix]}
 				<li><a href="{$translate[$navc.prefix]}main/access/login">{l}Login{/l}</a></li>
@@ -8,79 +34,39 @@
 				<li><a href="{$NAV_ACTION}main/access/login">{l}Login{/l}</a></li>
 			{/if}
 		</ul>
-		</div>
 	{else}
-{foreach from=$menu.$menu_group item=nav}
-	{if $nav.display_order > 0}
-	
-	<div class="menuSection" onclick="menuHandler(this);" {if $nav.title eq "My Account"}style="position:absolute; left:450px; white-space: nowrap; width:60px;"{/if}  {if $nav.title eq "Help"}style="position:absolute; white-space: nowrap; left:520px; width:25px;"{/if} {if $nav.display_order eq 5000}style="position:absolute; white-space: nowrap; left:555px;"{/if}>
-	{if $nav.action}
-		{if $translate[$nav.prefix]}
-			<div class="topLevel"><a href="{$translate[$nav.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
-		{else}
-			<div class="topLevel"><a href="{$NAV_ACTION}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
-			{/if}
-	{else}
-		<a>{$nav.title}</a>
-	{/if}
 
-	{if $nav.children || $nav.reports || $nav.forms || $nav.arrays}
-	<ul class="quicknav">
-		{foreach item=navc from=$nav.children}
-		{if $navc.display_order > 0}
-		{if $translate[$navc.prefix]}
-			<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-		{else}
-			{if $navc.prefix == 'RAW'}
-				<li> <a href="{$navc.action}">{$navc.title}</a></li>
-			{else}
-				<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-			{/if}
-		{/if}
-		{/if}
-		{/foreach}
 
-		{if $nav.more || $nav.reports}
-			{foreach item=navc from=$nav.more}
-				{if $navc.action}
-					{if $translate[$navc.prefix]}
-						<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{else}
-						<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{/if}
+
+
+
+{foreach from=$menu key=section_name item=subsection}
+
+	<ul class="menu" id="{$section_name}Menu">
+
+		{foreach from=$subsection item=submenu}
+			<li onMouseOver="menuShow(this);" onMouseOut="menuHide(this);" onclick="menuToggle(this);">
+			<a href="#">{$submenu.title}</a>
+			<ul>
+			{foreach from=$submenu.children item=nav}
+				{if $nav.display_order > 0}
+				{if $translate[$nav.prefix]}
+					<li><a href="{$translate[$nav.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></li>
 				{else}
-				<li> {$navc.title}</li>
+					{if $nav.prefix == 'RAW'}
+						<li><a href="{$nav.action}">{$nav.title}</a></li>
+					{else}
+						<li><a href="{$base_dir}index.php/{$nav.prefix}/{$nav.action}">{$nav.title}</a></li>
+					{/if}
+				{/if}
 				{/if}
 			{/foreach}
-			{if $nav.reports}
-				{foreach item=navc from=$nav.reports}
-					{if $translate[$navc.prefix]}
-						<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{else}
-						<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{/if}
-				{/foreach}
-			{/if}
-			{if $nav.forms}
-				{foreach item=navc from=$nav.forms}
-					{if $translate[$navc.prefix]}
-						<li> <a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{else}
-						<li> <a href="{$NAV_ACTION}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
-					{/if}
-				{/foreach}
-			{/if}
-		{/if}
-		{if $nav.arrays}
-			{foreach item=navc from=$nav.arrays}
-				<li>   <a href="{$navc.action}">{$navc.title}</a></li>
-			{/foreach}
-		{/if}
+			</ul>
+			</li>
+		{/foreach}
+
 	</ul>
-	{/if}
-	</div>
-	{/if}
+
 {/foreach}
-	{/if}
+
 <div class="clear"></div>
-</div>
