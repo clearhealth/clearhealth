@@ -50,7 +50,7 @@ function tabSwitch(element) {
 		document.getElementById('patientTab').className = undefined;
 	{/if}
 
-	{if $canViewBilling}
+	{if $canViewBill}
 		document.getElementById('billingMenu').style.display = 'none';
 		document.getElementById('billingTab').className = undefined;
 	{/if}
@@ -92,7 +92,7 @@ function menuToggle(element) {
 var switcher;
 
 function switchTimer(element) {
-	var timer = 15000;
+	var timer = 8000;
 
 	clearTimeout(switcher);
 	switcher = setTimeout('tabSwitch(\''+ element +'\');', timer);
@@ -104,34 +104,36 @@ function switchTimer(element) {
 <div class="logo"><b>ClearHealth</b></div>
 <div style="clear: both;"></div>
 {if $me->get_id() > 0}
-<ul class="tabbar">
+<div class="tabbar">
+<ul>
 	{if $canViewCalendar}
 		<li {if $menu_group == "default"}class="active"{/if} id="defaultTab"><a href="{$base_uri}index.php/main/calendarDisplay/day">Calendar</a>
-			<a href="#" onclick="tabSwitch('default');" onMouseOut="switchTimer(current_element);"><span>v</span></a>
+			<a href="#" onclick="tabSwitch('default');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
 		</li>
 	{/if}
 
 	{if $canViewPatient}
 		<li {if $menu_group == "patient"}class="active"{/if} id="patientTab"><a href="{$base_uri}index.php/main/PatientFinder">Patient</a>
-			<a href="#" onclick="tabSwitch('patient');" onMouseOut="switchTimer(current_element);"><span>v</span></a>
+			<a href="#" onclick="tabSwitch('patient');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
 		</li>
 	{/if}
 
-	{if $canviewBill}
-		<li {if $menu_group == "billing"}class="active"{/if} id="billTab"><a href="{$base_dir}index.php/main/MasterAccountHistory/View">Bill</a>
-			<a href="#" onclick="tabSwitch('bill');" onMouseOut="switchTimer(current_element);"><span>v</span></a>
+	{if $canViewBill}
+		<li {if $menu_group == "billing"}class="active"{/if} id="billingTab"><a href="{$base_dir}index.php/main/MasterAccountHistory/View">Bill</a>
+			<a href="#" onclick="tabSwitch('billing');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
 		</li>
 	{/if}
 
 	{if $canViewAdmin}
 		<li {if $menu_group == "admin"}class="active"{/if} id="adminTab"><a href="{$base_dir}index.php/main/admin">Admin</a>
-			<a href="#" onclick="tabSwitch('admin');" onMouseOut="switchTimer(current_element);"><span>v</span></a>
+			<a href="#" onclick="tabSwitch('admin');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
 		</li>
 	{/if}
-</ul>
+</ul style="clear: both;">
 
 {/if}
 <div style="clear: both"></div>
+</div>
 </div>
 
 <input type="hidden" name="menu_mode" id="menu_mode" value="none">
