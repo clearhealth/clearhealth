@@ -23,7 +23,7 @@ body {
         background: #eee;
 }
 
-.tabbar {
+.tabbar ul {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -34,7 +34,9 @@ body {
         border-top: 2px solid #aaa;
         border-left: 2px solid #aaa;
         border-right: 2px solid #aaa;
-        border-bottom: 1px solid #ddd;
+	bottom: -1px;
+	border-bottom: 1px solid #777;
+	position: relative;
         padding-right: 0.5em;
         padding-left: 0.5em;
         margin-right: 0.2em;
@@ -45,14 +47,15 @@ body {
 }
 
 .tabbar li.active {
+	position: relative;
+	bottom: -3px;
         background: #eee;
-        margin-bottom: -2px;
         font-weight: bold;
         color: #000;
         border-top: 2px solid #777;
         border-left: 2px solid #777;
         border-right: 2px solid #777;
-        border-bottom: 2px solid #eee;
+	border-bottom: none;
 }
 
 .tabbar li.active a {
@@ -60,11 +63,11 @@ body {
 }
 
 .tabbar li.active span {
-	border-left: 1px solid #000;
+	display: none;
 }
 
 .tabbar li span {
-	padding-left: 0.3em;
+	padding-left: 0.4em;
 	border-left: 1px solid #aaa;
 }
 
@@ -73,6 +76,7 @@ body {
         padding-left: 1em;
         padding-right: 1em;
         border-bottom: 2px solid #ccc;
+	z-index: 100000000;
 }
 
 .menu {
@@ -90,8 +94,11 @@ body {
         float: right;
 }
 
-#standard_menu {
+.standard_menu {
         float: right;
+}
+
+#main_menu {
 }
 
 #main_menu a {
@@ -115,6 +122,7 @@ body {
         padding-right: 0.8em;
         border-left: 1px solid transparent;
         border-right: 1px solid transparent;
+	z-index: 100000000;
 }
 
 .menu li ul {
@@ -130,7 +138,7 @@ body {
 }
 
 .menu li ul li {
-        background: transparent url("/trunk/images/menu_bg.png") repeat-y;
+        background: transparent url("/images/menu_bg.png") repeat-y;
         padding: 0;
         margin: 0;
         padding-left: 25px;
@@ -146,7 +154,7 @@ body {
 }
 
 .menu li ul li:hover {
-        background: #fafafa url("/trunk/images/menu_bg.png") repeat-y;
+        background: #fafafa url("/images/menu_bg.png") repeat-y;
         border-top: 1px solid #fff;
         border-bottom: 1px solid #ccc;
 }

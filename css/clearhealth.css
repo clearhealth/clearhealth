@@ -50,12 +50,14 @@ td th p {
  font-size: 10pt;
  font-weight: bold;
 }
+/*
 #header {
  background-color: #ccc;
  position: absolute;
  z-index: 1000;
  text-align: left;
 }
+*/
 #header h1 {
  position: relative;
  margin: 0;
@@ -74,7 +76,6 @@ div#nav {
  margin: 0px;
  padding: 0px;
 }
-
 div#nav div.menuSection {
  border: solid 1px #ccc;
  position: relative;
