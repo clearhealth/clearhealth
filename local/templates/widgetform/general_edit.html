@@ -1,5 +1,67 @@
+<script type="text/javascript">
+
+var widget_column = {$ordo->getWidgetColumn($ordo->get('form_id'))};
+var form_id = '{$ordo->get('form_id')}';
+
+{literal}
+
+function removeWidgetField(column_id) {
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/remove?form_id=' + form_id + '&column_id=' + column_id;
+	document.getElementById('column' + column_id).style.display = 'none';
+
+	return false;
+}
+
+function addWidgetField() {
+	column_id = widget_column + 1;
+	widget_column = column_id;
+
+        var field_name = document.getElementById('widget_form_add_column').value;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?form_id=' + form_id + '&column_id=' + column_id + '&field_name=' + field_name;
+
+	var newitem = document.createElement("li");
+	newitem.setAttribute('id', 'column' + column_id);
+	newitem.innerHTML = '<a href="#" onclick="removeWidgetField(\'' + column_id +'\');"><img src="/clearhealth/images/stock_trash-16.png"></a> - ' + field_name;
+	document.getElementById('WidgetFormFields').appendChild(newitem);
+
+	document.getElementById('widget_form_add_column').value = '';
+
+        return false;
+}
+
+{/literal}
+</script>
+
 <fieldset>
-	<legend>{l}Edit Widget Forms{/l}</legend>
-{new_auto_form action="$EDIT_ACTION" id="WidgetForm" object=$ordo process="generic"}
-{show_auto_form id="WidgetForm"}
+<legend>{l}Edit Widget Forms{/l}</legend>
+
+{clni_form id="WidgetForm" action=$EDIT_ACTION process="generic"}
+<input type='hidden' name="WidgetForm[widget_form_id]" value="{$ordo->get('widget_form_id')}">
+<table>
+<tr><td>Name:</td><td><input type='text' id='WidgetForm__name' name='WidgetForm[name]' value="{$ordo->get('name')}"></td></tr>
+<tr><td>Form ID:</td><td><select name="WidgetForm[form_id]">{html_options options=$ordo->getFormIds() selected=$ordo->get('form_id')}</select></td></tr>
+<tr><td>Type:</td><td><select name="WidgetForm[type]">{html_options options=$ordo->getWidgetTypes() selected=$ordo->get('type')}</select></td></tr>
+</table>
+<input type='submit' value='Add/Update'>
+</form>
 </fieldset>
+
+{if $ordo->get('type') == 2}
+<fieldset>
+<legend>Summary Columns</legend>
+{clni_form id="WidgetFormData" action=$ALTER_ACTION process="generic"}
+<input type='hidden' name="WidgetForm[widget_form_id]" value="{$ordo->get('widget_form_id')}">
+
+<table>
+<ul id="WidgetFormFields" style="list-style: none;">
+{foreach from=$ordo->getWidgetFields($ordo->get('form_id')) key=widget_column_id item=widgetField}
+<li id="column{$widget_column_id}"><a href="#" onclick="removeWidgetField('{$widget_column_id}');"><img src="/clearhealth/images/stock_trash-16.png"></a> - {$widgetField.name}</li>
+{* form_structure_id, field_name, field_type from form_structure *}
+{/foreach}
+</ul>
+</table>
+
+<input type="text" name="WidgetForm[add_column]" id="widget_form_add_column"><input type="button" onclick="addWidgetField();" value="Add Field">
+</form>
+</fieldset>
+{/if}

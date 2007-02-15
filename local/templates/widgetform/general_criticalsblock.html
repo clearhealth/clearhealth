@@ -1,0 +1,12 @@
+{foreach from=$widgets key=wname item=widget}
+<div class="critical_item">
+<fieldset>
+	<legend>{$wname} <a href="{$widget.form_link}">(add)</a></legend>
+<div style="width: 200px; height: 150px; clear: both; overflow: hidden;">
+	{if $widget.grid}{$widget.grid}{else}No form data present.{/if}
+</div>
+</fieldset>
+</div>
+{/foreach}
+
+
