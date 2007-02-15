@@ -36,7 +36,7 @@ class Patient_FormDataList_DS extends Datasource_sql
 				'orderby' => 'name, last_edit DESC',
 				'where'   => "external_id = {$external_id} || e.patient_id = {$external_id}"
 			),
-			array('name' => 'Form Name','last_edit'=>'Last Edit'));
+			array('name' => 'Form Named','last_edit'=>'Last Edit'));
 	}
 }
 

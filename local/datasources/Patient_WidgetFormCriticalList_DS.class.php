@@ -2,7 +2,7 @@
 
 require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 
-class Patient_WidgetFormDataList_DS extends Datasource_sql  {
+class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	/**
 	 * Stores the case-sensative class name for this ds and should be considered
 	 * read-only.
@@ -13,7 +13,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 	 *
 	 * @var string
 	 */
-	var $_internalName = 'Patient_WidgetFormDataList_DS';
+	var $_internalName = 'Patient_WidgetFormCriticalList_DS';
 
 	/**
 	 * The form type to show
@@ -24,13 +24,12 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 	var $fields = '';
 	var $case_sql = '';
 
-
-	function Patient_WidgetFormDataList_DS($patient_id) {
+	function Patient_WidgetFormCriticalList_DS($patient_id) {
 		$this->patient_id = intval($patient_id);
 		
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "type, last_edit, f.name, form_data_id, external_id ",
+				'cols'    => "type, storage_string.value, f.name, form_data_id, external_id ",
 				'from'    => "widget_form AS wf " .
 							 "INNER JOIN form AS f USING(form_id) ".
 							 "INNER JOIN form_data AS fd using (form_id) ".
@@ -44,7 +43,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 			),
 			false);
 	}
-
+	
 	function set_form_type($form_id) {
 		$this->form_id = $form_id;
 		$this->_query['where'] = "fd.external_id = " . EnforceType::int($this->patient_id) . " and wf.form_id = " . EnforceType::int($form_id);
@@ -62,7 +61,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 
 		$res = $db->query($sql);
 		$fields = array();
-		$labels = array("last_edit" => "Last Edit");
+		$labels = array("value" => "Title");
 		while($res && !$res->EOF) {
 			$ta = array();
 			$ta['source'] = $res->fields['source'];
