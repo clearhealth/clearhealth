@@ -49,6 +49,7 @@ class C_Encounter extends Controller {
 		$patient_id = $this->GET->getTyped('patient_id', 'int');
 		
 		$valid_appointment_id = false;
+		$manager =& EnumManager::getInstance();
 
 		$ajax =& Celini::AJAXInstance();
 		$ajax->stubs[] = 'Encounter';
@@ -92,12 +93,16 @@ class C_Encounter extends Controller {
 			$encounter->set("patient_id",$this->get("patient_id", 'c_patient'));
 			if (isset($appointments[$appointment_id])) {
 				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
+				//clear cache for this appointment because adding an encounter should cause it to reach "Has Encounter"
+				$cache_match = date("Y-m-d",strtotime($appointments[$appointment_id]['appointment_start']));
+				$this->view->regexClearCache('/'.$appointment_id.'/');
+				$this->view->regexClearCache('/^'.$cache_match.'/');
 			}
+			
 			if (isset($appointments[$appointment_id])) {
 				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
 
-				$em =& Celini::enumManagerInstance();
-				$reason = $em->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
+				$reason = $manager->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
 				$encounter->set("encounter_reason",$reason);
 			}
 		}
@@ -330,7 +335,6 @@ class C_Encounter extends Controller {
 		
 		$head =& Celini::HTMLheadInstance();
 		$head->addExternalCss('suggest');
-		$head->addJs('ui');
 		return $this->view->render("edit.html");
 	}
 
@@ -401,7 +405,7 @@ class C_Encounter extends Controller {
 
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		$changedreason = false;
-		if($encounter->get('reason') != $_POST['encounter']['encounter_reason']) {
+		if($encounter->get('encounter_reason') != $_POST['encounter']['encounter_reason']) {
 			$changedreason = true;
 		}
 		$encounter->populate_array($_POST['encounter']);
@@ -458,42 +462,6 @@ class C_Encounter extends Controller {
 					}
 				}
 				$this->messages->addMessage('Encounter Template Applied');
-			}
-			
-		}
-
-		if($newencounter) {
-			// Find the encounter template, if set
-			$list =& $manager->enumList('encounter_reason');
-			$reason = false;
-			for($list->rewind();$list->valid();$list->next()) {
-				$row = $list->current();
-				if ($row->key == $encounter->get('encounter_reason')) {
-					$reason = $row;
-				}
-			}
-			if ($reason && $reason->extra1 !== '') {
-				$template = Celini::newOrdo('CodingTemplate',$reason->extra1);
-				$pcode =& Celini::newORDO('CodingData',$template->get('coding_parent_id'));
-				$code_data =& ORDataObject::factory('CodingData');
-
-				$child_codes = $code_data->getCodeList($template->get('id'));
-				foreach($child_codes as $code) {
-					$code_list = $pcode->getChildCodes($code['coding_data_id']);
-					$code['coding_data_id'] = 0;
-					$code['foreign_id'] = $this->encounter_id;
-					$xcode =& Celini::newORDO('CodingData');
-					$xcode->populate_array($code);
-					$xcode->persist();
-					foreach($code_list as $icdcode) {
-						$icdcode['coding_data_id'] = 0;
-						$icdcode['foreign_id'] = $this->encounter_id;
-						$icdcode['parent_id'] = $xcode->get('id');
-						$ycode =& Celini::newORDO('CodingData');
-						$ycode->populateArray($icdcode);
-						$ycode->persist();
-					}
-				}
 			}
 			
 		}

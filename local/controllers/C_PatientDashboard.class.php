@@ -1,5 +1,7 @@
 <?php
 
+$loader->requireOnce('includes/Datasource.class.php');
+
 /**
  * Patient Dashboard
  */
@@ -88,14 +90,19 @@ class C_PatientDashboard extends Controller {
 		$encounterGrid->pageSize = 10;
 		$encounterGrid->setExternalId($p->get('id'));
 
-		
-		
 		// Setup note data block
 		$note =& Celini::newORDO('PatientNote', $this->GET->getTyped('note_id', 'int'));
 		$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
 		$noteGrid->pageSize = 10;
 		$noteGrid->indexCol = false;
 		$noteGrid->setExternalId($p->get('id'));
+
+		// Criticals data block
+		$GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
+                $cwf = new C_WidgetForm();
+                $widget_form_content = $cwf->actionShowCritical_view($patient_id);
+                $this->assign("widget_form_content",$widget_form_content);
+		$this->assign("cwf", $cwf);
 		
 		// Grab patients account status, billed, paid, writeoff, balance
 		$accountStatus = $p->accountStatus($p->get('id'));
@@ -125,6 +132,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign_by_ref('insuredRelationship',$insuredRelationship);
 		$this->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
 		$this->assign_by_ref('encounterGrid',$encounterGrid);
+		$this->assign_by_ref('criticalGrid',$criticalGrid);
 		$this->assign_by_ref('accountStatus',$accountStatus);
 		$this->assign_by_ref('noteGrid',$noteGrid);
 		$this->assign_by_ref('depnoteGrid',$depnoteGrid);
