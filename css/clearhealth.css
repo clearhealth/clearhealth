@@ -383,3 +383,16 @@ ul.controllerMenu li a {
 	height: 12px;
 	cursor: pointer;
 }
+
+.critical_item {
+	float: left;
+}
+
+.critical_item table {
+	width: 100%;
+}
+
+.scrollable {
+	overflow: auto;
+	height: 130px;
+}
