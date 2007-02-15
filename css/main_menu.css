@@ -138,7 +138,7 @@ body {
 }
 
 .menu li ul li {
-        background: transparent url("/images/menu_bg.png") repeat-y;
+        background: transparent url(/clearhealth/images/menu_bg.png) repeat-y;
         padding: 0;
         margin: 0;
         padding-left: 25px;
@@ -154,7 +154,7 @@ body {
 }
 
 .menu li ul li:hover {
-        background: #fafafa url("/images/menu_bg.png") repeat-y;
+        background: #fafafa url(/clearhealth/images/menu_bg.png) repeat-y;
         border-top: 1px solid #fff;
         border-bottom: 1px solid #ccc;
 }
