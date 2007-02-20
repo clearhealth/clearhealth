@@ -172,10 +172,9 @@ class C_Encounter extends Controller {
                 // Criticals data block
                 $GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
                 $cwf = new C_WidgetForm();
-                $widget_form_content = $cwf->actionShowCritical_view($patient_id);
+                $widget_form_content = $cwf->actionShowCritical_view($encounter->get('patient_id'));
                 $this->assign("widget_form_content",$widget_form_content);
                 $this->assign("cwf", $cwf);
-
 
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
@@ -244,7 +243,7 @@ class C_Encounter extends Controller {
 				}
 			}
 		}
-		
+
 		$reports = array();
 		if ($encounter->get('patient_id') > 0) {
 			$pcc =& Celini::newOrdo('PatientChronicCode');
