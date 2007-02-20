@@ -42,7 +42,7 @@ class C_Encounter extends Controller {
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
 		}
-		
+
 		$encounter_id = $this->_enforcer->int($encounter_id);
 		
 		$appointment_id = $this->GET->getTyped('appointment_id', 'int');
@@ -169,6 +169,10 @@ class C_Encounter extends Controller {
 		$session =& Celini::sessionInstance();
 		$session->set('Encounter:practice_id',$practice->get('id'));
 
+		$p =& $this->_loadPatient($encounter->get('patient_id'));
+		$this->assign_by_ref("person_data",$p);
+		$this->assign('current_patient_id', $encounter->get('patient_id'));
+		
                 // Criticals data block
                 $GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
                 $cwf = new C_WidgetForm();
@@ -768,5 +772,32 @@ class C_Encounter extends Controller {
 		$e =& Celini::newOrdo('Encounter',$eid);
 		$e->drop();
 	}
+
+        function &_loadPatient($patient_id) {
+                if (is_numeric($patient_id) && $patient_id > 0) {
+                        if ($this->get('patient_id', 'c_patient') != $patient_id) {
+                                $this->set("encounter_id", false, 'c_patient');
+                                $this->set("patient_id", $patient_id, 'c_patient');
+                        }
+                }
+
+                $patient_id = $this->_enforcer->int($this->get('patient_id', 'c_patient'));
+                $p =& Celini::newORDO('Patient', $patient_id);
+
+                // used to interact with stuff that just wants a generic id instead of patient one (C_Form, maybe others)
+                $this->set("patient_id", $patient_id, 'c_patient');
+                $this->set('external_id',$patient_id,'c_patient');
+
+                if (!$p->isPopulated()) {
+                        if ($this->GET->exists('id')) {
+                                // This is a hack patient_id is filled by the first _GET value like it was
+                                // or we determine that this is the new method.
+                                // DO NOT DUPLICATE!
+                                $p =& $this->_loadPatient($this->GET->get('id'));
+                        }
+                }
+                return $p;
+        }
+
 }
 ?>

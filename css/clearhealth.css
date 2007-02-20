@@ -396,3 +396,9 @@ ul.controllerMenu li a {
 	overflow: auto;
 	height: 130px;
 }
+.green {
+	color: green;
+}
+.red {
+	color: red;
+}

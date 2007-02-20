@@ -108,25 +108,25 @@ function switchTimer(element) {
 <ul>
 	{if $canViewCalendar}
 		<li {if $menu_group == "default"}class="active"{/if} id="defaultTab"><a href="{$base_uri}index.php/main/calendarDisplay/day">Calendar</a>
-			<a href="#" onclick="tabSwitch('default');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
+			<a href="#" onclick="tabSwitch('default');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
 		</li>
 	{/if}
 
 	{if $canViewPatient}
 		<li {if $menu_group == "patient"}class="active"{/if} id="patientTab"><a href="{$base_uri}index.php/main/PatientFinder">Patient</a>
-			<a href="#" onclick="tabSwitch('patient');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
+			<a href="#" onclick="tabSwitch('patient');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
 		</li>
 	{/if}
 
 	{if $canViewBill}
 		<li {if $menu_group == "billing"}class="active"{/if} id="billingTab"><a href="{$base_dir}index.php/main/MasterAccountHistory/View">Bill</a>
-			<a href="#" onclick="tabSwitch('billing');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
+			<a href="#" onclick="tabSwitch('billing');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
 		</li>
 	{/if}
 
 	{if $canViewAdmin}
 		<li {if $menu_group == "admin"}class="active"{/if} id="adminTab"><a href="{$base_dir}index.php/main/admin">Admin</a>
-			<a href="#" onclick="tabSwitch('admin');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif"></span></a>
+			<a href="#" onclick="tabSwitch('admin');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
 		</li>
 	{/if}
 </ul style="clear: both;">
