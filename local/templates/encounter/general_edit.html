@@ -1,3 +1,37 @@
+<script type="text/javascript">
+{literal}
+function showVis(id) {
+    var object = document.getElementById(id).style;
+    var showhide = document.getElementById(id + 'ShowHide');
+    object.display = "block";
+    showhide.getElementsByTagName('img').item(0).src = "{/literal}{$base_uri}{literal}index.php/images/emblem-cvs-controlled.png";
+    showhide.getElementsByTagName('span').item(0).style.display = "none";
+    window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/setWidgetVisibility/block';
+
+}
+
+function hideVis(id) {
+    var object = document.getElementById(id).style;
+    var showhide = document.getElementById(id + 'ShowHide');
+    object.display = "none";
+    showhide.getElementsByTagName('img').item(0).src = "{/literal}{$base_uri}{literal}index.php/images/emblem-cvs-controlled-2.png";
+    showhide.getElementsByTagName('span').item(0).style.display = "inline";
+    window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/setWidgetVisibility/none';
+
+}
+
+function toggleVis(id) {
+    //if an element is invisible, make it visible, else make it ivisible
+    if(document.getElementById(id).style.display == 'none') {
+        showVis(id);
+
+    } else {
+        hideVis(id);
+    }
+}
+{/literal}
+</script>
+
 {head type="css"}
 body {
 	width: 1016px;
@@ -10,9 +44,19 @@ body {
 	<div style="height: 40px; border: solid 1px black">Place Holder for Patient Demo</div>
 </div>
 
-<div class="minimizable" title="Show">
-	<div style="height: 75px; border: solid 1px black">Place Holder for Patient Info</div>
+<div class="dock" >
+<a style="width:100%;" href="#" onclick="toggleVis('criticalsdock');" id="criticalsdockShowHide">
+<img src="{$base_uri}index.php/images/emblem-cvs-controlled.png" style="float:left;padding:0;margin-top:2px;">
+<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Criticals<div style=" position:relative; left:100px; top:-10px;border: thin solid gr
+ay;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
 </div>
+<fieldset id="criticalsdock" {if $cwf->getWidgetVisibility() == none}style="display: none;"{/if}>
+<legend>{l}Criticals{/l}</legend>
+<div class="critical_item">
+{$widget_form_content}
+</div>
+<div class="clear"></div>
+</fieldset>
 
 <table width="100%">
 	<tr>
