@@ -40,15 +40,23 @@ body {
 {clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
 <input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 
-<div class="minimizable" title="Show">
-	<div style="height: 40px; border: solid 1px black">Place Holder for Patient Demo</div>
+<div class="dock" >
+<a style="width:100%;" href="#" onclick="toggleVis('demodock');" id="demodockShowHide">
+<img src="{$base_uri}index.php/images/emblem-cvs-controlled.png" style="float:left;padding:0;margin-top:2px;">
+<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Demographics<div style=" position:relative; left:100px; top:-10px;border: thin solid gray;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
 </div>
+<fieldset id="criticalsdock" {if $cwf->getWidgetVisibility() == none}style="display: none;"{/if}>
+<legend>{l}Demographic{/l}</legend>
+<div class="critical_item">
+{$demographic_content}
+</div>
+<div class="clear"></div>
+</fieldset>
 
 <div class="dock" >
 <a style="width:100%;" href="#" onclick="toggleVis('criticalsdock');" id="criticalsdockShowHide">
 <img src="{$base_uri}index.php/images/emblem-cvs-controlled.png" style="float:left;padding:0;margin-top:2px;">
-<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Criticals<div style=" position:relative; left:100px; top:-10px;border: thin solid gr
-ay;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
+<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Criticals<div style=" position:relative; left:100px; top:-10px;border: thin solid gray;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
 </div>
 <fieldset id="criticalsdock" {if $cwf->getWidgetVisibility() == none}style="display: none;"{/if}>
 <legend>{l}Criticals{/l}</legend>
