@@ -173,7 +173,12 @@ class C_Encounter extends Controller {
 		$this->assign_by_ref("person_data",$p);
 
 		$address =& Celini::newORDO('PersonAddress', array(0, $encounter->get('patient_id')));
-		list($key, $address) = each($p->get_addresses());
+		if (is_array($p->get_addresses())) {
+			list($key, $address) = each($p->get_addresses());
+		}
+		else {
+			$address = "No Address";
+		}
 		$this->assign('address', $address);
 		
                 // Criticals data block
