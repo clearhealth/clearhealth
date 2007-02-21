@@ -60,7 +60,7 @@ class C_PatientDashboard extends Controller {
 	function actionDemo_view($patient_id = '') {
 		$current = $this->trail->current();
 		$this->session->set('patient_action', $current->link());
-		
+
 		$p =& $this->_loadPatient($patient_id);
 		
 		// If we don't have a valid Patient, display an error message and stop.
@@ -100,7 +100,7 @@ class C_PatientDashboard extends Controller {
 		// Criticals data block
 		$GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
                 $cwf = new C_WidgetForm();
-                $widget_form_content = $cwf->actionShowCritical_view($patient_id);
+                $widget_form_content = $cwf->actionShowCritical_view($p->get('id'));
                 $this->assign("widget_form_content",$widget_form_content);
 		$this->assign("cwf", $cwf);
 		

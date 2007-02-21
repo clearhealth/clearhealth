@@ -171,7 +171,10 @@ class C_Encounter extends Controller {
 
 		$p =& $this->_loadPatient($encounter->get('patient_id'));
 		$this->assign_by_ref("person_data",$p);
-		$this->assign('current_patient_id', $encounter->get('patient_id'));
+
+		$address =& Celini::newORDO('PersonAddress', array(0, $encounter->get('patient_id')));
+		list($key, $address) = each($p->get_addresses());
+		$this->assign('address', $address);
 		
                 // Criticals data block
                 $GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");

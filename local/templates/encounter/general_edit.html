@@ -45,16 +45,28 @@ function toggleVis(id) {
 <table width="100%">
 <tr>
 	<td><b>{$person_data->get('first_name')}, {$person_data->get('last_name')}</b></td>
-	<td>$phone Home</td>
-	<td>$phone Work</td>
-	<td>$address</td>
+	<td>
+	{foreach from=$person_data->get_numbers() item=row name="phone"}
+		{if $row.number_type == 'Home'}
+			{formatPhoneNumber number=$row.number} {$row.number_type}
+		{/if}
+	{/foreach}
+	</td>
+	<td>
+	{foreach from=$person_data->get_numbers() item=row name="phone"}
+		{if $row.number_type == 'Work'}
+			{formatPhoneNumber number=$row.number} {$row.number_type}
+		{/if}
+	{/foreach}
+	</td>
+	<td>{$address.line1} {$address.line2} - {$address.city}, {$address.state} {$address.postal_code}</td>
 	<td>Default Provider:<b> {$person_data->get('print_default_provider')}</b></td>
 </tr>
 <tr>
-	<td>ID: <b>{$current_patient_id}</b></td>
+	<td>ID: <b>{$person_data->get('record_number')}</b></td>
 	<td>{$person_data->get('print_gender')} - {$person_data->get('print_marital_status')}</td>
 	<td>DOB: {$person_data->get('date_of_birth')} (Age: {$person_data->get('age')})</td>
-	<td><a href="#">Demographic Statistics</a></td>
+	<td><a href="#">Demographic Statistics</a><span class="demostats"></span></td>
 	<td>Status: {if $person->get('inactive') == 0}<span class="green">Active{else}<span class="red>Inactive{/if}</span></td>
 </tr>
 </table>
