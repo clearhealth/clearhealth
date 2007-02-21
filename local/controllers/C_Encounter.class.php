@@ -177,7 +177,7 @@ class C_Encounter extends Controller {
 			list($key, $address) = each($p->get_addresses());
 		}
 		else {
-			$address = "No Address";
+			$address = FALSE;
 		}
 		$this->assign('address', $address);
 		

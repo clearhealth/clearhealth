@@ -59,7 +59,7 @@ function toggleVis(id) {
 		{/if}
 	{/foreach}
 	</td>
-	<td>{$address.line1} {$address.line2} - {$address.city}, {$address.state} {$address.postal_code}</td>
+	<td>{if $address}{$address.line1} {$address.line2} - {$address.city}, {$address.state} {$address.postal_code}{else}No Address{/if}</td>
 	<td>Default Provider:<b> {$person_data->get('print_default_provider')}</b></td>
 </tr>
 <tr>
