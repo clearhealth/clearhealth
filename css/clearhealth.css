@@ -402,3 +402,18 @@ ul.controllerMenu li a {
 .red {
 	color: red;
 }
+
+.demostats {
+	position: absolute;
+	background: #ffd;
+	border: 1px solid #55e;
+	display: none;
+}
+
+.demostathover {
+	position: relative;
+}
+
+.demostathover:hover .demostats {
+	display: block;
+}

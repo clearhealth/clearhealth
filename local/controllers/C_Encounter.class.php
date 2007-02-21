@@ -188,6 +188,11 @@ class C_Encounter extends Controller {
                 $this->assign("widget_form_content",$widget_form_content);
                 $this->assign("cwf", $cwf);
 
+                // Retrieve PatientStatistics view
+                $GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
+                $patientStatsController =& new C_PatientStatistics();
+                $this->view->assign('patientStatisticsView', $patientStatsController->actionView($p->get('id')));
+
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
 		$encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$encounter_id));
