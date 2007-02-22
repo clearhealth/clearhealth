@@ -21,7 +21,7 @@ function addWidgetField() {
 
 	var newitem = document.createElement("li");
 	newitem.setAttribute('id', 'column' + column_id);
-	newitem.innerHTML = '<a href="#" onclick="removeWidgetField(\'' + column_id +'\');"><img src="/clearhealth/images/stock_trash-16.png"></a> - ' + field_name;
+	newitem.innerHTML = '<a href="#" onclick="removeWidgetField(\'' + column_id +'\');"><img src="{base_uri}index.php/images/stock_trash-16.png"></a> - ' + field_name;
 	document.getElementById('WidgetFormFields').appendChild(newitem);
 
 	document.getElementById('widget_form_add_column').value = '';
@@ -55,7 +55,7 @@ function addWidgetField() {
 <table>
 <ul id="WidgetFormFields" style="list-style: none;">
 {foreach from=$ordo->getWidgetFields($ordo->get('form_id')) key=widget_column_id item=widgetField}
-<li id="column{$widget_column_id}"><a href="#" onclick="removeWidgetField('{$widget_column_id}');"><img src="/clearhealth/images/stock_trash-16.png"></a> - {$widgetField.name}</li>
+<li id="column{$widget_column_id}"><a href="#" onclick="removeWidgetField('{$widget_column_id}');"><img src="{base_uri}index.php/images/stock_trash-16.png"></a> - {$widgetField.name}</li>
 {* form_structure_id, field_name, field_type from form_structure *}
 {/foreach}
 </ul>
