@@ -21,7 +21,7 @@ function addWidgetField() {
 
 	var newitem = document.createElement("li");
 	newitem.setAttribute('id', 'column' + column_id);
-	newitem.innerHTML = '<a href="#" onclick="removeWidgetField(\'' + column_id +'\');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a> - ' + field_name;
+	newitem.innerHTML = '<a href="#" onclick="removeWidgetField(\'' + column_id +'\');"><img src="{/literal}{$base_uri}{literal}index.php/images/stock_trash-16.png"></a> - ' + field_name;
 	document.getElementById('WidgetFormFields').appendChild(newitem);
 
 	document.getElementById('widget_form_add_column').value = '';
