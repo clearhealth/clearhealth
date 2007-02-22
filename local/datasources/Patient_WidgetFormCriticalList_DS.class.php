@@ -62,6 +62,9 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		$res = $db->query($sql);
 		$fields = array();
 		$labels = array("value" => "Title");
+		if ($form_id == 1002221) {
+			$labels = array("value" => "Title", "form_data_id"=> "Medication Dose");
+		}
 		while($res && !$res->EOF) {
 			$ta = array();
 			$ta['source'] = $res->fields['source'];
