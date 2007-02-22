@@ -44,7 +44,7 @@ function toggleVis(id) {
 <legend>{l}Demographic{/l}</legend>
 <table width="100%">
 <tr>
-	<td><b>{$person_data->get('first_name')}, {$person_data->get('last_name')}</b></td>
+	<td><b>{$person_data->get('last_name')}, {$person_data->get('first_name')}</b></td>
 	<td>
 	{foreach from=$person_data->get_numbers() item=row name="phone"}
 		{if $row.number_type == 'Home'}
