@@ -1,4 +1,65 @@
 <?php
+/*
+select type, form_data_id, external_id, name, value_key from (
+        
+        select * from (
+                select wf.type, fd.form_data_id, fd.external_id, f.name, ss.value, ss.value_key from widget_form wf
+                inner join form f using(form_id)
+                inner join form_data fd using(form_id)
+                left join storage_string ss on ss.foreign_key = fd.form_data_id
+                inner join summary_columns sc on sc.name = ss.value_key
+                where
+                fd.form_data_id = ss.foreign_key
+                and f.form_id = sc.form_id
+                and fd.external_id = 1000099
+        ) as string_table1
+
+UNION
+
+        select * from (
+                select wf.type, fd.form_data_id, fd.external_id, f.name, si.value, si.value_key from widget_form wf
+                inner join form f using(form_id)
+                inner join form_data fd using(form_id)
+                left join storage_int si on si.foreign_key = fd.form_data_id
+                inner join summary_columns sc on sc.name = si.value_key
+                where
+                fd.form_data_id = si.foreign_key
+                and f.form_id = sc.form_id
+                and fd.external_id = 1000099
+        ) as int_table1
+
+UNION
+
+        select * from (
+                select wf.type, fd.form_data_id, fd.external_id, f.name, st.value, st.value_key from widget_form wf
+                inner join form f using(form_id)
+                inner join form_data fd using(form_id)
+                left join storage_text st on st.foreign_key = fd.form_data_id
+                inner join summary_columns sc on sc.name = st.value_key
+                where
+                fd.form_data_id = st.foreign_key
+                and f.form_id = sc.form_id
+                and fd.external_id = 1000099
+        ) as text_table1
+
+UNION
+
+        select * from (
+                select wf.type, fd.form_data_id, fd.external_id, f.name, sd.value, sd.value_key from widget_form wf
+                inner join form f using(form_id)
+                inner join form_data fd using(form_id)
+                left join storage_date sd on sd.foreign_key = fd.form_data_id
+                inner join summary_columns sc on sc.name = sd.value_key
+                where
+                fd.form_data_id = sd.foreign_key
+                and f.form_id = sc.form_id
+                and fd.external_id = 1000099
+        ) as date_table1
+
+) as main_table
+group by form_data_id, value_key
+order by name
+*/
 
 require_once CELINI_ROOT . '/includes/Datasource_sql.class.php';
 

@@ -97,13 +97,6 @@ class C_PatientDashboard extends Controller {
 		$noteGrid->indexCol = false;
 		$noteGrid->setExternalId($p->get('id'));
 
-		// Criticals data block
-		$GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
-                $cwf = new C_WidgetForm();
-                $widget_form_content = $cwf->actionShowCritical_view($p->get('id'));
-                $this->assign("widget_form_content",$widget_form_content);
-		$this->assign("cwf", $cwf);
-		
 		// Grab patients account status, billed, paid, writeoff, balance
 		$accountStatus = $p->accountStatus($p->get('id'));
 		

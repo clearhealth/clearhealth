@@ -9,7 +9,7 @@ $loader->requireOnce('datasources/Encounter_PayerGroup_DS.class.php');
 /**
  * A patient Encounter
  */
-class C_Encounter extends Controller {
+class C_CriticalView extends Controller {
 	var $coding;
 	var $coding_parent_id = 0;
 	var $encounter_date_id = 0;
@@ -19,9 +19,9 @@ class C_Encounter extends Controller {
 	var $coding_data_id = 0;
 	var $edit_icd_code = 0;
 
-	function C_Encounter() {
+	function C_CriticalView() {
 		$this->controller();
-		$this->coding = new C_Coding();
+	//	$this->coding = new C_Coding();
 	}
 
 	function actionAdd() {
@@ -169,6 +169,26 @@ class C_Encounter extends Controller {
 		$session =& Celini::sessionInstance();
 		$session->set('Encounter:practice_id',$practice->get('id'));
 
+		$p =& $this->_loadPatient($encounter->get('patient_id'));
+		$this->assign_by_ref("person_data",$p);
+
+		$address =& Celini::newORDO('PersonAddress', array(0, $encounter->get('patient_id')));
+		if (is_array($p->get_addresses())) {
+			list($key, $address) = each($p->get_addresses());
+		}
+		else {
+			$address = FALSE;
+		}
+		$this->assign('address', $address);
+	
+                // Criticals data block
+                $GLOBALS['loader']->requireOnce("controllers/C_WidgetForm.class.php");
+                $cwf = new C_WidgetForm();
+                $widget_form_content = $cwf->actionShowCritical_view($encounter->get('patient_id'));
+                $this->assign("widget_form_content",$widget_form_content);
+                $this->assign("cwf", $cwf);
+	
+
                 // Retrieve PatientStatistics view
                 $GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
                 $patientStatsController =& new C_PatientStatistics();
@@ -295,14 +315,6 @@ class C_Encounter extends Controller {
 			$this->coding->assign('toothsidearray',array('N/A'=>'N/A','Front'=>'Front','Back'=>'Back','Top'=>'Top','Left'=>'Left','Right'=>'Right'));
 		}
 
-		if ($encounter_id > 0) {
-			$this->coding->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
-			$this->coding->assign("encounter", $encounter);
-			$codingHtml = $this->coding->update_action_edit($encounter_id,$this->coding_data_id,$this->edit_icd_code);
-			$this->assign('codingHtml',$codingHtml);
-			$this->assign_by_ref('formDataGrid',$formDataGrid);
-			$this->assign_by_ref('formList',$formList);
-		}
 
 		if ($encounter->get('status') === "closed") {
 			ORDataObject::factory_include('ClearhealthClaim');
@@ -339,7 +351,7 @@ class C_Encounter extends Controller {
 		
 		$head =& Celini::HTMLheadInstance();
 		$head->addExternalCss('suggest');
-		return $this->view->render("edit.html");
+		return $this->view->render("criticalview.html");
 	}
 
 	

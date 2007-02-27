@@ -145,6 +145,9 @@ function switchTimer(element) {
 </div>
 
 <div id="body">
+	{if $menu_group == 'patient'}
+		{$criticalview}
+	{/if}
         {if is_object($messages)}
         {$messages->render()}
         {elseif is_array($messages)}
