@@ -116,7 +116,7 @@ class Address extends ORDataObject {
 
 		$list = NULL;
 		while($res && !$res->EOF) {
-			$res->fields['state'] = $statel[$res->fields['state']];
+			@$res->fields['state'] = $statel[$res->fields['state']];
 
 			$res->fields['type'] = $typel[$res->fields['address_type']];
 

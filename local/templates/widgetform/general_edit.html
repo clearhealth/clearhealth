@@ -17,7 +17,9 @@ function addWidgetField() {
 	widget_column = column_id;
 
         var field_name = document.getElementById('widget_form_add_column').value;
-	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?form_id=' + form_id + '&column_id=' + column_id + '&field_name=' + field_name;
+        var pretty_name = document.getElementById('widget_form_add_pretty_name').value;
+        var table_name = document.getElementById('widget_form_add_table_name').value;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?form_id=' + form_id + '&column_id=' + column_id + '&field_name=' + field_name + '&pretty_name=' + pretty_name + '&table_name=' + table_name;
 
 	var newitem = document.createElement("li");
 	newitem.setAttribute('id', 'column' + column_id);

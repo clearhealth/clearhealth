@@ -20,6 +20,8 @@ $config['module_paths']['billing'] = APP_ROOT . '/modules/billing';
 $config['module_paths']['labs']    = APP_ROOT . '/modules/labs';
 $config['module_paths']['x12import'] = APP_ROOT . '/modules/x12_importer';
 $config['module_paths']['calendar'] = APP_ROOT . '/modules/calendar'; 
+$config['module_paths']['referral'] = APP_ROOT . '/modules/referral'; 
+$config['module_paths']['docsmart'] = APP_ROOT . '/modules/docsmart'; 
  
 ################################################################################ 
 # Calendar Module Options  

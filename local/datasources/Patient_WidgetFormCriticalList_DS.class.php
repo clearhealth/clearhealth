@@ -76,8 +76,9 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	        	$table = $ar['table_name'];
 
 	        	$value_name = $ar['name'];
-            
-		        $case_sql .= " MAX(CASE WHEN $table.value_key = '$value_name' THEN $table.value END)  as '$value_name', ";
+			if ($table) {
+			        $case_sql .= " MAX(CASE WHEN $table.value_key = '$value_name' THEN $table.value END)  as '$value_name', ";
+			}
 	        }
 	        $case_sql = substr($case_sql,0,-2);             
 	        $this->case_sql = $case_sql;

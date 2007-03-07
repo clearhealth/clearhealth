@@ -119,6 +119,8 @@ class C_WidgetForm extends C_CRUD {
 		$column_id = $_GET['column_id'];
 		$form_id = $_GET['form_id'];
 		$field_name = $_GET['field_name'];
+		$pretty_name = $_GET['pretty_name'];
+		$table_name = $_GET['table_name'];
 
 		$db =& new clniDB();
 		$sql = "select count(1) as count from summary_columns where summary_column_id = '$column_id' and form_id = '$form_id'";
