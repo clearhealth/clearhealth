@@ -56,9 +56,12 @@ class C_WidgetForm extends C_CRUD {
 		$return_link = Celini::link(true,true, true, $patient_id);
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block
-			$wflist_ds = $p->loadDatasource('WidgetFormCriticalList');
-			$wflist_ds->set_form_type($row["form_id"]);
-			
+                        $wflist_ds = $p->loadDatasource('WidgetFormCriticalList');
+                        $wflist_ds->set_form_type($row["form_id"]);
+                        $wflist_ds->_build_case_sql($row["form_id"]);
+                        $wflist_ds->buildquery($patient_id, $row["form_id"]);
+                        $wflist_ds->set_form_type($row["form_id"]);
+
 			$wfDataGrid =& new sGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
@@ -122,7 +125,7 @@ class C_WidgetForm extends C_CRUD {
 		$results = $db->execute($sql);
 
 		if ($results->fields["count"] == 0) {
-                	$sql = "insert into summary_columns (summary_column_id, form_id, name) values ('$column_id', '$form_id', '$field_name')";
+                	$sql = "insert into summary_columns (summary_column_id, form_id, name, pretty_name, table_name) values ('$column_id', '$form_id', '$field_name', '$pretty_name', '$table_name')";
                 	$results = $db->execute($sql);
 		
 			header("HTTP/1.1 204 No Content");
