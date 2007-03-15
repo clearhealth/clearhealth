@@ -76,7 +76,12 @@ class Appointment extends ORDataObject {
 	 */
 	function get_date() {
 		$this->populateEvent();
-		return date('Y-m-d',strtotime($this->_event->get('date')));
+		$date = date('Y-m-d');
+		if (strlen($this->_event->get('date')) > 0) {
+			$date = date('Y-m-d',strtotime($this->_event->get('date')));
+		}
+		
+		return $date;
 	}
 	
 	function get_USAdate() {

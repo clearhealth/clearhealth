@@ -651,9 +651,9 @@ class C_Appointment extends Controller {
 	 *
 	 */
 	function check_rules($aptdata) {
-		
 		$apt =& Celini::newORDO('Appointment');
 		$aptdata = $this->GET->getRaw('Appointment');
+
 		if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
 			$tmp = $aptdata['users'];
 			$aptdata['provider_id'] = array_shift($tmp);
@@ -698,6 +698,8 @@ class C_Appointment extends Controller {
 			}
 		}
 
+
+
 		// appointment rules engine checks
 		$GLOBALS['loader']->requireOnce('includes/AppointmentRules/AppointmentRuleManager.class.php');
 		$ruleMan = new AppointmentRuleManager();
@@ -713,6 +715,156 @@ class C_Appointment extends Controller {
 		//$alerts[] = 'Debug Debug Debug';
 		return $alerts;
 	}
+
+	function check_rules_local($aptdata) {
+		$apt =& Celini::newORDO('Appointment');
+		$aptdata = $this->GET->getRaw('Appointment');
+
+$fp = fopen('/tmp/aptdata.txt', 'w');
+fwrite($fp, serialize($aptdata));
+fclose($fp);
+
+		if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
+			$tmp = $aptdata['users'];
+			$aptdata['provider_id'] = array_shift($tmp);
+		}
+		$apt->populateArray($aptdata);
+		$alerts = array();
+
+		if($apt->get('id') > 0) {
+			$origapt =& Celini::newORDO('Appointment',$apt->get('id'));
+			if($origapt->get('patient_id') > 0 && $apt->get('patient_id') < 1) {
+				$alerts[] = 'You must provide a patient for an appointment.';
+			}
+		} elseif($apt->get('patient_id') < 1) {
+			$alerts[] = 'You must provide a patient for an appointment.';
+		}
+		// Alert code
+		// First check related for the day.
+		$p =& Celini::newORDO('Patient',$apt->get('patient_id'));
+		$related = $p->valueList('related_people');
+		if(count($related) > 0) {
+			$relatedids = array_keys($related);
+			$db =& Celini::dbInstance();
+			$sql = "SELECT a.appointment_id,a.patient_id,
+					DATE_FORMAT(ae.start,'%H:%i') start,
+					DATE_FORMAT(ae.end,'%H:%i') end 
+				FROM appointment a LEFT JOIN event ae ON a.event_id=ae.event_id
+				WHERE a.patient_id IN (".implode(',',$relatedids).") 
+				AND a.practice_id=".$db->quote($apt->get('practice_id'))." 
+				AND DATE_FORMAT(ae.start,'%Y-%m-%d') = ".$db->quote($apt->get('date'));
+			$res = $db->execute($sql);
+			while($res && !$res->EOF) {
+				$this->view->assign('relapt',$res->fields);
+				$rp =& Celini::newORDO('Patient',$res->fields['patient_id']);
+				$this->view->assign_by_ref('related',$rp);
+				if($rp->get('confidentiality') > 1) {
+					$this->view->assign('relatedConf',1);
+				} else {
+					$this->view->assign('relatedConf',0);
+				}
+				$alerts[] = $this->view->render('alertrelatedapt.html');
+				$res->MoveNext();
+			}
+		}
+
+
+
+		// appointment rules engine checks
+		$GLOBALS['loader']->requireOnce('includes/AppointmentRules/AppointmentRuleManager.class.php');
+		$ruleMan = new AppointmentRuleManager();
+		$override = true;
+		if (!$ruleMan->isValid($apt)) {
+			$alerts[] = $ruleMan->getMessage();
+			$override = $ruleMan->override;
+		}
+
+		if(count($alerts) > 0 && $override == true) {
+			$alerts[] = $this->view->render('overridecheckbox.html');
+		}
+		//$alerts[] = 'Debug Debug Debug';
+		return $alerts;
+	}
+
+        function ajax_reschedule($provider_id) {
+		$provider_list = array();
+		$provider_out = '';
+
+		$db =& Celini::dbInstance();
+		$query = "select u.person_id, p.salutation, p.first_name, p.last_name from user u
+				inner join provider prov on prov.person_id = u.person_id
+				inner join person p on p.person_id = u.person_id
+				where u.person_id <> '$provider_id'
+				and u.disabled = 'no';
+				";
+		$result = $db->execute($query);
+		while ($result && !$result->EOF) {
+			$provider_list[$result->fields['person_id']] = array("salutation"=>$result->fields['salutation'],
+										"first_name"=>$result->fields['first_name'],
+										"last_name"=>$result->fields['last_name']
+										); 
+			$result->MoveNext();
+		}
+
+		$provider_out = "Select a provider for appointment transfer:";
+		$provider_out .= "<br><select name='reschedule[provider_id]' id='new_provider_id'>";
+		while (list($new_provider_id, $provider_data) = each($provider_list)) {
+			$provider_out .= "<option value='$new_provider_id'>{$provider_data['salutation']} {$provider_data['last_name']}, {$provider_data['first_name']}\n";
+		}
+		$provider_out .= "</select>\n";
+
+		$provider_out .= "<br><br><input type='button' value='Reschedule' onclick=\"confirm_reschedule($provider_id);\">";
+
+                return $provider_out;
+        }
+
+        function confirm_ajax_reschedule($current_provider, $new_provider, $current_date) {
+		$errorlist = '';
+
+		$current_date = explode("/", substr($current_date, strpos($current_date, ',')+2));
+		$current_date = "{$current_date[2]}-{$current_date[0]}-{$current_date[1]}";
+
+		$db =& Celini::dbInstance();
+                $query = "select appt.reason, appt.provider_id, appt.room_id, appt.last_change_date,
+				concat(p.last_name, ', ', p.first_name) as person_name, ev.start as start_time,
+                                ev.end as end_time, appt.walkin, appt.patient_id
+                                from appointment appt
+				inner join person p on p.person_id = appt.patient_id
+                	        inner join event ev on ev.event_id = appt.event_id
+	               	                where appt.provider_id = '$current_provider'
+	                                and ev.start between '$current_date 00:00' and '$current_date 23:59'
+	                                and ev.end between '$current_date 00:00' and '$current_date 23:59'
+                        ";
+                $res = $db->execute($query);
+
+		if ($res && !$res->EOF) {
+	                while ($res && !$res->EOF) {
+				$aptdata = $res->fields;
+	                        $aptdata['provider_id'] = $new_provider;
+	                        $errorlist .= $this->check_rules_local($aptdata);
+	                        $res->MoveNext();
+	                }
+		}
+		else {
+			$errorlist = 'There are no appointments on file for the selected date!';
+		}
+
+                if (!$errorlist) {
+                        $query = "update appointment appt
+                                        inner join event ev on ev.event_id = appt.event_id
+                                        set appt.provider_id = '$new_provider'
+                                        where appt.provider_id = '$current_provider'
+                                        and ev.start between '$current_date 00:00' and '$current_date 23:59'
+                                        and ev.end between '$current_date 00:00' and '$current_date 23:59'
+                                ";
+                        $res = $db->execute($query);
+                }
+
+		return $errorlist;
+
+        }
+
+
 
 }
 ?>
