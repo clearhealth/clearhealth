@@ -14,6 +14,8 @@ class C_PatientFinder extends Controller {
 	var $showNonPatients = false;
 	
 	function C_PatientFinder($template_mod = "general") {
+		$GLOBALS['C_MAIN']['current_controller'] = "PatientFinder";
+
 		parent::Controller();
 		$this->_db = $GLOBALS['frame']['adodb']['db']; 
 		//$this->_join_db = $GLOBALS['frame']['config']['openemr_db'];

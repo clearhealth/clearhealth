@@ -791,6 +791,13 @@ fclose($fp);
 		$provider_out = '';
 
 		$db =& Celini::dbInstance();
+
+		$query = "select concat(salutation, ' ', last_name, ', ', first_name) as provider_name from person where person_id = '$provider_id'";
+		$result = $db->execute($query);
+		if ($result && !$result->EOF) {
+			$provider_name = $result->fields['provider_name'];
+		}
+
 		$query = "select u.person_id, p.salutation, p.first_name, p.last_name from user u
 				inner join provider prov on prov.person_id = u.person_id
 				inner join person p on p.person_id = u.person_id
@@ -806,7 +813,8 @@ fclose($fp);
 			$result->MoveNext();
 		}
 
-		$provider_out = "Select a provider for appointment transfer:";
+		$provider_out = "Transfer all appointments for $provider_name";
+		$provider_out .= "<br>on the selected date to:";
 		$provider_out .= "<br><select name='reschedule[provider_id]' id='new_provider_id'>";
 		while (list($new_provider_id, $provider_data) = each($provider_list)) {
 			$provider_out .= "<option value='$new_provider_id'>{$provider_data['salutation']} {$provider_data['last_name']}, {$provider_data['first_name']}\n";
