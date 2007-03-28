@@ -10,15 +10,11 @@
 {if $menu_group === "admin"}
 	{assign var="section_name" value="Administration"}
 {/if}
-{if $menu_group === "referrals"}
-	{assign var="section_name" value="Referral"}
-{/if}
 
 {assign var="canViewCalendar" value=$sec_obj->check("usage","main_calendar")}
 {assign var="canViewPatient" value=$sec_obj->check("usage","main_patient")}
 {assign var="canViewBill" value=$sec_obj->check("usage","main_billing")}
 {assign var="canViewAdmin" value=$sec_obj->check("usage","main_admin")}
-{assign var="canViewReferral" value=$sec_obj->check("usage","main_calendar")}
 
 {include file="main/general_header.html"}
 
@@ -65,10 +61,6 @@ function tabSwitch(element) {
 		document.getElementById('adminTab').className = undefined;
 	{/if}
 
-	{if $canViewReferral}
-		document.getElementById('referralsMenu').style.display = 'none';
-		document.getElementById('referralsTab').className = undefined;
-	{/if}
 
 {literal}
 
@@ -149,11 +141,6 @@ function switchTimer(element) {
 		</li>
 	{/if}
 
-	{if $canViewReferral}
-		<li {if $menu_group == "referrals"}class="active"{/if} id="referralsTab"><a href="{$base_dir}index.php/main/Referral">Referral</a>
-			<a href="#" onclick="tabSwitch('referrals');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
-		</li>
-	{/if}
 </ul style="clear: both;">
 
 {/if}

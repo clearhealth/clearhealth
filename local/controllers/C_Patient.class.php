@@ -38,7 +38,10 @@ class C_Patient extends Controller {
 	 * Edit/Add an Patient
 	 *
 	 */
-	function actionEdit_edit($patient_id = 0) {
+	function actionEdit_edit($patient_id = '') {
+                if ($patient_id == '') {
+			$patient_id = $this->get('patient_id', 'c_patient');
+                }
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('quicksave','quicksave');
 		$head->addJs('scriptaculous');
@@ -107,6 +110,10 @@ class C_Patient extends Controller {
 		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
 		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
 
+		$parProgramGrid =& new cGrid($person->loadDatasource('ParticipationProgram'));
+                $parProgramGrid->name = "parProgramGrid";
+		$parProgramAddLink = Celini::link('AddConnect','ParticipationProgram',true,$patient_id);
+
 		$personPerson =& ORDataObject::factory('PersonPerson',$this->person_person_id,$patient_id);
 		$personPersonGrid = new cGrid($person->loadDatasource('RelatedList'));
 		$personPersonGrid->name = "personPersonGrid";
@@ -145,6 +152,8 @@ class C_Patient extends Controller {
 		$this->view->assign_by_ref('identifierGrid',$identifierGrid);
 		$this->view->assign_by_ref('insuredRelationship',$insuredRelationship);
 		$this->view->assign_by_ref('insuredRelationshipGrid',$insuredRelationshipGrid);
+		$this->view->assign_by_ref('parProgramGrid',$parProgramGrid);
+		$this->view->assign_by_ref('parProgramAddLink',$parProgramAddLink);
 		$this->view->assign_by_ref('personPerson',$personPerson);
 		$this->view->assign_by_ref('personPersonGrid',$personPersonGrid);
 		$this->view->assign_by_ref('patientStatistics',$patientStatistics);

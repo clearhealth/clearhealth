@@ -22,6 +22,7 @@ $config['module_paths']['x12import'] = APP_ROOT . '/modules/x12_importer';
 $config['module_paths']['calendar'] = APP_ROOT . '/modules/calendar'; 
 $config['module_paths']['referral'] = APP_ROOT . '/modules/referral'; 
 $config['module_paths']['docsmart'] = APP_ROOT . '/modules/docsmart'; 
+$config['module_paths']['pharmacy'] = APP_ROOT . '/modules/pharmacy'; 
  
 ################################################################################ 
 # Calendar Module Options  

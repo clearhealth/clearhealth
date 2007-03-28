@@ -849,7 +849,7 @@ fclose($fp);
 	                while ($res && !$res->EOF) {
 				$aptdata = $res->fields;
 	                        $aptdata['provider_id'] = $new_provider;
-	                        $errorlist .= $this->check_rules_local($aptdata);
+	                        $errorlist[] = $this->check_rules_local($aptdata);
 	                        $res->MoveNext();
 	                }
 		}
@@ -868,7 +868,7 @@ fclose($fp);
                         $res = $db->execute($query);
                 }
 
-		return $errorlist;
+		return serialize($errorlist);
 
         }
 

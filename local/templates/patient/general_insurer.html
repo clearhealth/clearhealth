@@ -84,8 +84,7 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 
 </script>
 {/literal}
-	<fieldset class="radio" id="insurer">
-		<legend>{l}Programs{/l}</legend>
+<div class="tab selected" title="{l}Insurance Programs{/l}">
 
 		{$insuredRelationshipGrid->render()}
 		{if $insuredRelationshipGrid->empty}
@@ -238,7 +237,6 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 				</td>
 			</tr>
 		</table>
-	</fieldset>
 {clni_register_validation
 	id="insuredRelationship__group_name"
 	rules="requiredif(testElement:'insuredRelationship__group_number',testRule:'required',message:'Group name is required')"
@@ -252,4 +250,5 @@ var patientEditURL = '{link controller='Patient' action='edit' pageType="minimal
 <script language="javascript" type="text/javascript">
 selectSubscriber(document.getElementById('subscriberRelationship'));
 </script>
+</div>
 </div>
