@@ -1,0 +1,63 @@
+<script type="text/javascript">
+{literal}
+function addEntry(id) {
+	var anchor = document.getElementById('Entry');
+	var current_value = document.getElementById('list').value;
+	// This is supposed to detect if the item has already been created or not and doesn't work and I don't know why.
+	if (document.getElementById(id) == undefined) {
+		var newli = document.createElement('li');
+		var objIdName = 'entry' + current_value;
+		newli.setAttribute("id", objIdName);
+		newli.innerHTML =  current_value + ' <a href="#" onclick="removeEntry(\'' + objIdName + '\');"><img src="{/literal}{$base_uri}{literal}index.php/images/stock_trash-16.png"></a>';
+		anchor.appendChild(newli);
+	}
+}
+
+function removeEntry(liNum) {
+	var stripextra = /entry/;
+	if (confirm('Are you sure that you would like to remove ' +liNum.replace(stripextra, '')+ ' from the Planned Care List?')) {
+		var anchor = document.getElementById('Entry');
+		var deadli = document.getElementById(liNum);
+		anchor.removeChild(deadli);
+	}
+}
+{/literal}
+</script>
+
+
+<fieldset>
+<legend><b>Problem - Planned Care</b></legend>
+<!-- this needs to be converted to an enumeration and redone with ajax, but this should do for demonstation purposes /-->
+<select id="list">
+<option value="Diabetes I">Diabetes I
+<option value="Diabetes II">Diabetes II
+<option value="Diabetes III">Diabetes III
+<option value="Self Monitor BG">Self Monitor BG
+
+<option value="Hypertension">Hypertension
+<option value="Post MI">Post MI
+<option value="CHF">CHF
+<option value="CVA">CVA
+<option value="PVD">PVD
+<option value="Hyperlipidemia">Hyperlipidemia
+<option value="Nephropathy">Nephropathy
+<option value="Retinopathy">Retinopathy
+<option value="Depression">Depression
+<option value="Renal Failure">Renal Failure
+<option value="Asthma">Asthma
+<option value="Cancer">Cancer
+<option value="Obesity">Obesity
+<option value="Anticoagulation">Anticoagulation
+<option value="NKF">NKF
+</select>
+
+<input type="button" value="Add Entry" onclick="addEntry();">
+
+<input type="hidden" value="" id="divNum">
+<ul id="Entry">
+<li id="entryDiabetes II">Diabetes II <a href="#" onclick="removeEntry('entryDiabetes II');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a></li>
+<li id="entryHypertension">Hypertension <a href="#" onclick="removeEntry('entryHypertension');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a></li>
+</ul>
+
+<input type="text"><input type="button" value="Quick Add">
+</fieldset>
