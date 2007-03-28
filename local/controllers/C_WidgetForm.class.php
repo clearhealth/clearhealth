@@ -43,7 +43,7 @@ class C_WidgetForm extends C_CRUD {
 	
 	function actionShowCritical_view($patient_id) {
 		$p = Celini::newOrdo("Patient",$patient_id);
-		
+
 		$m = new Menu();
 		$form =& Celini::newORDO("Form"); 
 		$mf =& Celini::newORDO("MenuForm");

@@ -24,7 +24,7 @@ class WidgetForm_DS extends Datasource_Sql {
 				'cols'    => "*",
 				'from'    => "widget_form wf",
 				'orderby' => 'wf.widget_form_id',
-				'where'   => 'type = 2'
+				'where'   => 'type in (2,3)'
 			),
 			array('name' => 'Name', 'widget_form_id' => 'Form ID'));
 			$this->registerTemplate('widget_form_id','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">{$widget_form_id}</a>');

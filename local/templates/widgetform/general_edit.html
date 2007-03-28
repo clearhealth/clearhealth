@@ -47,8 +47,16 @@ function addWidgetField() {
 <input type='submit' value='Add/Update'>
 </form>
 </fieldset>
+{if $ordo->get('type') == 3}
+{clni_form id="WidgetFormData" action=$UPDATE_CONTROLLER process="generic"}
+<fieldset>
+<legend>Linked Controller</legend>
+Controller to use:<input type="text" name="WidgetForm[controller_id]" value="{$controller_name}"><input type='submit'>
+</fieldset>
+</form>
+{/if}
 
-{if $ordo->get('type') == 2}
+{if $ordo->get('type') == 2 || $ordo->get('type') == 3}
 <fieldset>
 <legend>Summary Columns</legend>
 {clni_form id="WidgetFormData" action=$ALTER_ACTION process="generic"}
@@ -58,7 +66,6 @@ function addWidgetField() {
 <ul id="WidgetFormFields" style="list-style: none;">
 {foreach from=$ordo->getWidgetFields($ordo->get('form_id')) key=widget_column_id item=widgetField}
 <li id="column{$widget_column_id}"><a href="#" onclick="removeWidgetField('{$widget_column_id}');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a> - {$widgetField.name}</li>
-{* form_structure_id, field_name, field_type from form_structure *}
 {/foreach}
 </ul>
 </table>
