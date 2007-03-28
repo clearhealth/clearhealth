@@ -17,9 +17,40 @@ class C_PlannedCare extends Controller {
 		return $this->view->render("list.html");
 	}
 
-	function actionEdit() {
-		return $this->view->render("edit.html");
+	function actionEdit($patient_id) {
+		$db =& new clniDB();
 
+		$query = "select form_id from widget_form_controller where controller_name = 'PlannedCare'";
+		$result = $db->execute($query);
+		if ($result && !$result->EOF) {
+			$form_id = $result->fields['form_id'];
+		}
+
+                $em =& Celini::enumManagerInstance();
+                $this->assign('planned_care_codes', $em->enumArray('planned_care_codes'));
+
+		$query = "select ss.value
+				from form f
+				inner join form_data fd on fd.form_id = f.form_id
+				inner join storage_string ss on ss.foreign_key = fd.form_data_id
+				inner join widget_form wf on wf.form_id = fd.form_id
+				inner join widget_form_controller wfc on wfc.form_id = wf.widget_form_id
+				where fd.external_id = $patient_id
+					and wfc.controller_name = 'PlannedCare'
+			";
+		$result = $db->execute($query);
+
+		$planned_care_items = array();
+
+		while ($result && !$result->EOF) {
+			$planned_care_items[] = $result->fields['value'];
+			$result->moveNext();
+		}
+
+
+		$this->assign('planned_care_items', $planned_care_items);
+
+		return $this->view->render("edit.html");
 	}
 	
 	function actionRemove() {
