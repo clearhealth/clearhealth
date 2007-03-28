@@ -83,5 +83,20 @@ class WidgetForm extends ORDataObject {
 
 	}
 
+        function getWidgetFormControllerName($form_id) {
+                $db = new clniDB();
+
+                $query = "select controller_name from widget_form_controller where
+                                form_id = '$form_id'";
+                $result = $db->execute($query);
+                if ($result && !$result->EOF) {
+                        return $result->fields['controller_name'];
+                }
+
+                return false;
+
+        }
+
+
 }
 ?>
