@@ -67,6 +67,33 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		}
 
 	}
+
+	function get_form_type($form_id) {
+		$db = Celini::dbInstance();
+
+		$sql = "select type from widget_form where form_id = '$form_id'";
+		$res = $db->execute($sql);
+
+		if ($res && !$res->EOF) {
+			return $res->fields["type"];
+		}
+		return false;
+	}
+
+	function get_controller_name($form_id) {
+		$db = Celini::dbInstance();
+
+		$sql = "select controller_name from widget_form_controller wfc
+				inner join widget_form wf on wf.widget_form_id = wfc.form_id
+				where wf.form_id = '$form_id'";
+		$res = $db->execute($sql);
+
+		if ($res && !$res->EOF) {
+			return $res->fields["controller_name"];
+		}
+
+		return false;
+	}
 	
 	function _build_case_sql($form_id) {
 

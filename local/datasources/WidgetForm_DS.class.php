@@ -26,7 +26,7 @@ class WidgetForm_DS extends Datasource_Sql {
 				'orderby' => 'wf.widget_form_id',
 				'where'   => 'type in (2,3)'
 			),
-			array('name' => 'Name', 'widget_form_id' => 'Form ID'));
+			array('name' => 'Name', 'widget_form_id' => 'Form ID', 'type' => 'Type'));
 			$this->registerTemplate('widget_form_id','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">{$widget_form_id}</a>');
 
 			$this->registerFilter('widgetType',array(&$this,'_widgetType'));

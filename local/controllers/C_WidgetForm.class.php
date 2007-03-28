@@ -9,6 +9,7 @@ class C_WidgetForm extends C_CRUD {
 	var $form_data_id = 0;
 	var $form_id = '';
 	var $column_id = '';
+	var $controller_name = '';
 
 	function actionShowForm_view($patient_id) {
 		$p = Celini::newOrdo("Patient",$patient_id);
@@ -50,7 +51,7 @@ class C_WidgetForm extends C_CRUD {
 		
 		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_DS.class.php");
 		$wfds = new WidgetForm_DS();
-		
+
 		$wfds->rewind();
 		$widgets = array();
 		$return_link = Celini::link(true,true, true, $patient_id);
@@ -66,11 +67,17 @@ class C_WidgetForm extends C_CRUD {
 			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
 			$tmpar = array();
-			$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link); 
+			if ($wflist_ds->get_form_type($row["form_id"]) == 3) {
+				$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('edit', $wflist_ds->get_controller_name($row["form_id"]), true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list', $wflist_ds->get_controller_name($row["form_id"]), true, $row["form_id"]). "&returnTo=" . $return_link);
+			}
+			else {
+				$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link); 
+			}
 			$wfds->next();
 		}
+
 		$this->assign_by_ref("widgets", $widgets);
-		
+
 		return $this->view->render("criticalsblock.html");
 	}
 	
