@@ -3,8 +3,19 @@ $loader->requireOnce("includes/Grid.class.php");
 
 class C_PlannedCare extends Controller {
 	
+	var form_id = '';
 
-	function actionList() {
+	function actionList($patient_id) {
+		$db =& new clniDB();
+		$query = "select form_id from widget_form_controller where controller_name = 'PlannedCare'";
+		
+		$result = $db->query($query);
+		if ($result && !$result->EOF) {
+			$form_id = $result->fields['form_id'];
+		}
+
+		print $form_id;
+
 		return $this->view->render("list.html");
 	}
 	

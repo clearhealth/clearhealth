@@ -95,6 +95,8 @@ class C_WidgetForm extends C_CRUD {
                 $this->assign("EDIT_ACTION", Celini::managerLink($id));
                 $this->view->assign_by_ref('ordo', $ordo);
 
+ 		$this->assign('controller_name',$ordo->getWidgetFormControllerName($id));
+
                 return $this->view->render('edit.html');
         }
 
