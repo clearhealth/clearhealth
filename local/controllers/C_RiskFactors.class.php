@@ -7,7 +7,7 @@ class C_RiskFactors extends Controller {
 
 	function actionList($patient_id) {
 		$db =& new clniDB();
-		$query = "select form_id from widget_form_controller where controller_name = 'PlannedCare'";
+		$query = "select form_id from widget_form_controller where controller_name = 'RiskFactors'";
 		
 		$result = $db->execute($query);
 		if ($result && !$result->EOF) {
@@ -28,6 +28,11 @@ class C_RiskFactors extends Controller {
 
                 $em =& Celini::enumManagerInstance();
                 $this->assign('risk_factors_codes', $em->enumArray('risk_factors_codes'));
+		$query = "select form_id from form where name = 'Risk Factors'";
+		$result = $db->execute($query);
+		if ($result && !$result->EOF) {
+			$form_id = $result->fields['form_id'];
+		}
 
 		$query = "select ss.value
 				from form f
@@ -40,57 +45,83 @@ class C_RiskFactors extends Controller {
 			";
 		$result = $db->execute($query);
 
-		$planned_care_items = array();
+		$risk_factors_items = array();
 
 		while ($result && !$result->EOF) {
-			$planned_care_items[] = $result->fields['value'];
+			$risk_factors_items[] = $result->fields['value'];
 			$result->moveNext();
 		}
 
-
+		$this->assign('form_id', $form_id);
+		$this->assign('patient_id', $patient_id);
 		$this->assign('risk_factors_items', $risk_factors_items);
 
 		return $this->view->render("edit.html");
 	}
 	
 	function actionRemove() {
-		$column_id = $_GET['column_id'];
+		$patient_id = $_GET['column_id'];
 		$form_id = $_GET['form_id'];
+		$storage_data = $_GET['storage_data'];
 
 		$db =& new clniDB();
-                $sql = "delete from summary_columns where summary_column_id = '$column_id' and form_id = '$form_id'";
-                $results = $db->execute($sql);
+                $query = "select ss.foreign_key
+                                from form f
+                                inner join form_data fd on fd.form_id = f.form_id
+                                inner join storage_string ss on ss.foreign_key = fd.form_data_id
+                                inner join widget_form wf on wf.form_id = fd.form_id
+                                inner join widget_form_controller wfc on wfc.form_id = wf.widget_form_id
+                                where fd.external_id = $patient_id
+                                        and ss.value = '$storage_data'
+                                        and wfc.controller_name = 'RiskFactors'
+			";
+
+                $result = $db->execute($sql);
+
+		if ($result && !$result->EOF) {
+			$foreign_key = $result->fields['foreign_key'];
+
+			$query = "delete from storage_string where foreign_key = '$foreign_key' and value = '$storage_data'";
+			$db->execute($query);
+
+			$query = "delete from form_data where form_data_id = '$foreign_key' and form_id = '$form_id'";
+			$db->execute($query);
+		}
 
 		header("HTTP/1.1 204 No Content");
 		exit;
 	}
 
 	function actionAdd() {
-                $id = $this->getDefault($this->_ordoName . "_id", '0');
-                $ordo =& Celini::newORDO($this->_ordoName, $id);
-                $this->assign("EDIT_ACTION", Celini::managerLink($id));
-                $this->view->assign_by_ref('ordo', $ordo);
-
-		$column_id = $_GET['column_id'];
+		$patient_id = $_GET['patient_id'];
+		$storage_data = $_GET['storage_data'];
 		$form_id = $_GET['form_id'];
-		$field_name = $_GET['field_name'];
 
 		$db =& new clniDB();
-		$sql = "select count(1) as count from summary_columns where summary_column_id = '$column_id' and form_id = '$form_id'";
-		$results = $db->execute($sql);
+		$query = "select ss.value
+				from form f
+				inner join form_data fd on fd.form_id = f.form_id
+				inner join storage_string ss on ss.foreign_key = fd.form_data_id
+				inner join widget_form wf on wf.form_id = fd.form_id
+				inner join widget_form_controller wfc on wfc.form_id = wf.widget_form_id
+				where fd.external_id = $patient_id
+					and ss.value = '$storage_data'
+					and wfc.controller_name = 'RiskFactors'
+			";
+		$result = $db->execute($query);
 
-		if ($results->fields["count"] == 0) {
-                	$sql = "insert into summary_columns (summary_column_id, form_id, name, pretty_name, table_name) values ('$column_id', '$form_id', '$field_name', '$pretty_name', '$table_name')";
-                	$results = $db->execute($sql);
-		
-			header("HTTP/1.1 204 No Content");
-			exit;
+		if ($result->fields["count"] == 0) {
+			$new_id = $db->nextId("sequences");
+
+			$sql = "insert into form_data (form_data_id, form_id, external_id, last_edit) values ('$new_id', '$form_id', '$patient_id', CURRENT_TIMESTAMP)";
+			$result = $db->execute($sql);
+
+			$sql = "insert into storage_string (foreign_key, value_key, value) values ('$new_id', 'risk', '$storage_data')";
+			$result = $db->execute($sql);
 		}
 
-
-		$this->assign("error_message", "An error occured when adding a new column, please submit your column name again.");
-
-                return $this->view->render('edit.html');
+		header("HTTP/1.1 204 No Content");
+		exit;
 	}
 
 }

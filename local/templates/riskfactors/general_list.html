@@ -26,10 +26,10 @@ function removeEntry(liNum) {
 
 
 <fieldset>
-<legend><b>Risk Factors</b></legend>
+<legend><b>Problem - Planned Care</b></legend>
 <!-- this needs to be converted to an enumeration and redone with ajax, but this should do for demonstation purposes /-->
 <select id="list">
-{foreach from=$risk_factors_codes key=current_key item=current_value}
+{foreach from=$planned_care_codes key=current_key item=current_value}
 <option value="{$current_value}">{$current_value}
 {/foreach}
 </select>
@@ -38,7 +38,7 @@ function removeEntry(liNum) {
 
 <input type="hidden" value="" id="divNum">
 <ul id="Entry">
-{foreach from=$risk_factors_items item=current_problem}
+{foreach from=$planned_care_items item=current_problem}
 <li id="entry{$current_problem}">{$current_problem} <a href="#" onclick="removeEntry('entry{$current_problem}');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a></li>
 {/foreach}
 </ul>
