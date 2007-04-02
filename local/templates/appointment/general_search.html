@@ -7,13 +7,25 @@
 	</tr>
 	<tr>
 		<td><label>{l}Provider{/l}:</label></td>
-		<td><select id="ffprovider" name="Search[provider]"><option></option>{html_options options=$providers selected=$search.provider}</select>
-		<input id="findfirst" type="checkbox" name="Search[find_first]" value="1" onchange="if(this.checked) document.getElementById('searchamount').style.display='inline';" {if $search.find_first eq 1}checked{/if}>&nbsp;{l}find first{/l} <div id="searchamount"  {if $search.time_amount == '' && $search.find_first != 1}style="display:none;"{else}style="display:inline;"{/if}><input id="ffamount" type="text" name="Search[time_amount]" value="{$search.time_amount}"> {l}Amount of time (HH:MM OR MM){/l}</div>
+		<td><select id="ffprovider" name="Search[provider]"><option></option>
+{if $default_provider}
+{html_options options=$providers selected=$default_provider}
+{else}
+{html_options options=$providers selected=$search.provider}
+{/if}
+</select>
+
+		<input id="findfirst" type="checkbox" name="Search[find_first]" value="1" onchange="if(this.checked) document.getElementById('searchamount').style.display='inline';" {if $search.find_first eq 1}checked{/if}>
+&nbsp;{l}find first{/l} <div id="searchamount"  {if $search.time_amount == '' && $search.find_first != 1}style="display:none;"{else}style="display:inline;"{/if}><input id="ffamount" type="text" name="Search[time_amount]" value="{$search.time_amount}"> {l}Amount of time (HH:MM OR MM){/l}</div>
 		</td>
 	</tr>
 	<tr>
 		<td><label>{l}Patient{/l}:</label></td>
 		<td>
+		{if is_object($patient) && $patient->get('person_id') > 0}
+		{$patient->get('first_name')} {$patient->get('last_name')}
+		<input type="hidden" name="Search[patient_id]" id="aePatientId" value="{$patient->get('id')}">
+		{else}
 		<input type="hidden" name="Search[patient_id]" id="aePatientId" value="{$search.patient_id}">
 		<div class="SuggestInput">
 		{clni_img name="stock/stock_person-10.png"}
@@ -24,11 +36,15 @@
 			var ps = new patientSuggest('aePatientName','aePatientId');
 		</script>
 		{/literal}
+		{/if}
 		</td>
 	</tr>
 	<tr>
 		<td><label>{l}Facility{/l}:</label></td>
-		<td><select name="Search[facility]"><option></option>{html_options options=$facility selected=$search.facility}</select></td>
+		<td>
+		<select name="Search[facility]"><option></option>
+		{html_options options=$facility selected=$search.facility}
+		</select></td>
 	</tr>
 	<tr>
 		<td><label>{l}Reason{/l}:</label></td>
@@ -44,9 +60,9 @@
 	</tr>
 	</table>
 </form>
-{if $ts}{* from findFirst *}
-<a href="{link controller='CalendarDisplay' action='Day'}date={$date}">{$usadate}</a> <a href="{link controller='CalendarDisplay' action='Day'}date={$date}&start_time={$start_time}&end_time={$end_time}">{l}Schedule Appointment for {/l}{$start_time} - {$end_time}</a>
-{/if}
+{foreach from=$appLinks item=link}
+{$link}<br />
+{/foreach}
 {literal}
 <script language="javascript">
 function expandAppointment() {

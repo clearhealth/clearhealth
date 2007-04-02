@@ -20,7 +20,9 @@ class C_PlannedCare extends Controller {
 	function actionEdit($patient_id) {
 		$db =& new clniDB();
 
-		$query = "select form_id from widget_form_controller where controller_name = 'PlannedCare'";
+		$query = "select wf.form_id from widget_form_controller wfc
+				inner join widget_form wf on wf.widget_form_id = wfc.form_id
+				 where controller_name = 'PlannedCare'";
 		$result = $db->execute($query);
 		if ($result && !$result->EOF) {
 			$form_id = $result->fields['form_id'];
@@ -60,7 +62,7 @@ class C_PlannedCare extends Controller {
 	}
 	
 	function actionRemove() {
-		$patient_id = $_GET['column_id'];
+		$patient_id = $_GET['patient_id'];
 		$form_id = $_GET['form_id'];
 		$storage_data = $_GET['storage_data'];
 
@@ -76,7 +78,7 @@ class C_PlannedCare extends Controller {
                                         and wfc.controller_name = 'PlannedCare'
 			";
 
-                $result = $db->execute($sql);
+                $result = $db->execute($query);
 
 		if ($result && !$result->EOF) {
 			$foreign_key = $result->fields['foreign_key'];
@@ -110,7 +112,7 @@ class C_PlannedCare extends Controller {
 			";
 		$result = $db->execute($query);
 
-		if ($result->fields["count"] == 0) {
+		if (!$result->fields['value']) {
 			$new_id = $db->nextId("sequences");
 
 			$sql = "insert into form_data (form_data_id, form_id, external_id, last_edit) values ('$new_id', '$form_id', '$patient_id', CURRENT_TIMESTAMP)";

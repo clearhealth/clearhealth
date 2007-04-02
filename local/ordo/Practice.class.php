@@ -324,6 +324,16 @@ class Practice extends ORDataObject{
 		}	
 		return $buildings;
 	}
+	function getFirstBuilding() {
+		$buildings = array();
+		$sql = "SELECT * from ".$this->_prefix."buildings where practice_id =" . $this->_db->qstr($this->id) . " limit 1";
+		$result = $this->_Execute($sql);
+		while ($result && !$result->EOF) {
+			$building = new Building($result->fields['id']);
+			return $building;	
+		}	
+		return false;
+	}
 	
 	function delete() {
 		$sql = "DELETE from " . $this->_prefix . $this->_table . " where id=" . $this->_db->qstr($this->id);

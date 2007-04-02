@@ -6,6 +6,11 @@ class C_SelfMgmtGoals extends Controller {
 	function actionList() {
 		return $this->view->render("list.html");
 	}
+
+	function actionEdit() {
+		$completed_Grid->pageSize = 10;
+		return $this->view->render("list.html");
+	}
 	
 	function actionRemove() {
 		$column_id = $_GET['column_id'];

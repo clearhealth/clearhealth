@@ -12,8 +12,7 @@ function addEntry(id, source) {
 		var newli = document.createElement('li');
 		var objIdName = 'entry' + current_value;
 
-//		window.location.href = '{/literal}{$base_uri}{literal}index.php/PlannedCare/add?patient_id=' + patient_id + '&form_id=' + form_id +'&storage_data=' + current_value;
-		window.location.href = '{/literal}http://suteki.org:8080/clearhealth/{literal}index.php/PlannedCare/add?patient_id=' + patient_id + '&form_id=' + form_id +'&storage_data=' + current_value;
+		window.location.href = '{/literal}{$base_uri}{literal}index.php/PlannedCare/add?patient_id=' + patient_id + '&form_id=' + form_id +'&storage_data=' + current_value;
 
 		newli.setAttribute("id", objIdName);
 		newli.innerHTML =  current_value + ' <a href="#" onclick="removeEntry(\'' + objIdName + '\');"><img src="{/literal}{$base_uri}{literal}index.php/images/stock_trash-16.png"></a>';

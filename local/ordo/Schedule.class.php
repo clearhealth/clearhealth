@@ -243,8 +243,8 @@ class Schedule extends CalendarSchedule{
 		$finder->_orderBy = 'ORDER BY event.start ASC, event.end ASC';
 		$finder->_criteria .= ' AND UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.$db->quote(strtotime($end));
 		$schedules =& $finder->find();
-
 		$event =& Celini::newORDO('CalendarEvent');
+		$found = array();
 		for($schedules->rewind();$schedules->valid();$schedules->next()) {
 			$sched =& $schedules->current();
 			$start = strtotime($sched->get('start'));
@@ -256,7 +256,7 @@ class Schedule extends CalendarSchedule{
 			$events =& $finder->find();
 			if($events->count() == 0) {
 				if($end - $start >= $amount) {
-					return $start;
+					$found[] = $start;
 				} else {
 					continue;
 				}
@@ -266,16 +266,19 @@ class Schedule extends CalendarSchedule{
 				if(!isset($evend)) $evend = $start;
 				$evstart = strtotime($event->get('start'));
 				if($evstart - $evend >= $amount) {
-					return $evend;
+					$found[] = $evend;
 				}
 				if($events->key()+1 == $events->count()) {
 					if($end - strtotime($event->get('end')) >= $amount) {
-						return strtotime($event->get('end'));
+						$found[] = strtotime($event->get('end'));
 					}
 				}
 				$evend = $evend > strtotime($event->get('end')) ? $evend : strtotime($event->get('end'));
 			}
 		}
+		if (count($found) >0) {
+			return ($found);
+		} 
 		return false;
 	}
 

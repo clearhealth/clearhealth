@@ -1,1 +1,4 @@
-<input type="checkbox" value="1" id="appointmentOverride" />{l}Override Alerts{/l}
+{if $NOTICE}
+{$NOTICE}<br />
+{/if}
+<input type="checkbox" value="1" id="appointmentOverride" />{l}Override Alerts{/l}<input type="hidden" id="appointmentOverrideNeeded" value="1" /><br />

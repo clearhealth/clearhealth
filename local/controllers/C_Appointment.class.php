@@ -4,6 +4,7 @@ class C_Appointment extends Controller {
 
 	var $uiMode = 'normal';
 	var $appointment = null;
+	var $_patient_id = '';
 
 	function actionAdd() {
 		return $this->actionEdit();
@@ -44,11 +45,19 @@ class C_Appointment extends Controller {
 			$this->view->assign_by_ref('provider',Celini::newORDO('Provider',$this->GET->get('provider_id')));
 			$this->view->assign('doappointmentpopup',true);
 		}
-		if($this->GET->get('patient_id') > 0) {
-			$this->view->assign('patient_id',$this->GET->GET('patient_id'));
-			$this->view->assign('patient',Celini::newORDO('Patient',$this->GET->get('patient_id')));
+		if($this->GET->get('patient_id') > 0 || $this->_patient_id > 0) {
+			$pid = $this->_patient_id;
+			if ($this->GET->get('patient_id')> 0) {
+				$pid = $this->GET->get('patient_id');
+			}
+			$this->view->assign('patient_id',$pid);
+			$patient = Celini::newORDO('Patient',$pid);
+			$this->view->assign('patient',$patient);
+			$this->view->assign('provider_id',$patient->get('default_provider'));
 			$this->view->assign('doappointmentpopup',true);
 		}
+
+		
 		if($this->GET->get('start_time') != '') {
 			$this->view->assign('start_time',$this->GET->get('start_time'));
 			$this->view->assign('end_time',$this->GET->get('end_time'));
@@ -103,10 +112,12 @@ class C_Appointment extends Controller {
 		return $this->view->render('edit.html');
 	}
 
-	function ajax_edit($id,$type='') {
+	function ajax_edit($id,$type='',$patient_id = '') {
 		$this->appointment =& Celini::newOrdo('Appointment',$id);
 		$this->appointment->set('appointment_code',$type);
 		$this->view->assign('ajaxedit',true);
+		$this->_patient_id = $patient_id;
+		$this->assign('patient_id',$patient_id);
 		$this->assign('FORM_ACTION',Celini::link('Day','CalendarDisplay'));
 		return array($id,$this->actionEdit(),$type);
 	}
@@ -466,7 +477,11 @@ class C_Appointment extends Controller {
 		return array('actionView', 'ajax_edit', 'ajax_cancel', 'ajax_ns', 'ajax_delete', 'ajax_process','ajax_viewalt');
 	}
 
-	function actionSearch() {
+	function actionSearch($patient_id = '') {
+		$post = $this->POST->getRaw('Search');
+		if (isset($post['patient_id'])) {
+			$patient_id = (int)$post['patient_id'];
+		}
 		$head =& Celini::HTMLHeadInstance();
 		$head->addExternalCss('calendar','calendar');
 		$head->addExternalCss('suggest');
@@ -480,9 +495,18 @@ class C_Appointment extends Controller {
 		$userProfile =& Celini::getCurrentUserProfile();
 		$pid = $userProfile->getCurrentPracticeId();
 		$r =& Celini::newORDO('Room');
+		$patient = ORDataobject::factory('Patient',(int)$patient_id);
+		$this->assign("patient",$patient);
+		$roomArray = $r->rooms_practice_factory($pid,false);
+		if ($patient->get('id') > 0) {
+			$this->assign("default_provider",$patient->get('default_provider'));
+			$search = array('find_first' => true, 'from' => date('Y-m-d'),'to' => date('Y-m-d', strtotime(" +2 weeks")));
+			$rk = array_keys($roomArray);
+			$search['facility'] = $rk[0];
+			$this->assign("search",$search);
+		}
 		
-		$this->assign("facility",$r->rooms_practice_factory($pid,false));
-
+		$this->assign("facility",$roomArray);
 		return $this->view->render("search.html");
 	}
 
@@ -547,12 +571,17 @@ class C_Appointment extends Controller {
 			if(!$ts) {
 				$this->messages->addMessage('No scheduled time in that amount found.');
 			} else {
-				$this->assign('ts',$ts);
+				$appLinks = array();
+				if (isset($search['patient_id'])) {
+					$patient = ORDataobject::factory('Patient',$search['patient_id']);
+				}
+				foreach($ts as $stamp) {
+					$appLinks[] = '<a href="' . Celini::link('Day','CalendarDisplay') . 'date='. date('Y-m-d',$stamp). '&patient_id=' . (int)$search['patient_id']  . '">'. date('m/d/Y',$stamp) . '</a> '.
+	'<a href="' . Celini::link('Day','CalendarDisplay') . 'date=' . date('Y-m-d',$stamp) . '&start_time=' . date('H:i',$stamp) .'&end_time=' . date('H:i',$stamp+$amount) . '&patient_id='. (int)$search['patient_id'] . '">Schedule Appointment for ' . date('H:i',$stamp) . ' - ' . date('H:i',$stamp+$amount) . '</a>';
+				}
+				$this->assign('appLinks',$appLinks);
+
 				$this->assign_by_ref('findfirstProvider',$provider);
-				$this->assign('date',date('Y-m-d',$ts));
-				$this->assign('start_time',date('H:i',$ts));
-				$this->assign('end_time',date('H:i',$ts+$amount));
-				$this->assign('usadate',date('m/d/Y',$ts));
 			}
 		}
 	}
@@ -652,13 +681,17 @@ class C_Appointment extends Controller {
 	 */
 	function check_rules($aptdata) {
 		$apt =& Celini::newORDO('Appointment');
-		$aptdata = $this->GET->getRaw('Appointment');
+                $aptdata = $this->GET->getRaw('Appointment');
 
-		if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
-			$tmp = $aptdata['users'];
-			$aptdata['provider_id'] = array_shift($tmp);
-		}
-		$apt->populateArray($aptdata);
+                if (isset($aptdata['users']) && count($aptdata['users']) > 0) {
+                        $tmp = $aptdata['users'];
+                        $aptdata['provider_id'] = array_shift($tmp);
+                }
+                $apt->populateArray($aptdata);
+		return $this->checkRulesObj($apt);
+	}
+
+	function checkRulesObj($apt,$showOverrideBox=true)	{
 		$alerts = array();
 
 		if($apt->get('id') > 0) {
@@ -709,7 +742,7 @@ class C_Appointment extends Controller {
 			$override = $ruleMan->override;
 		}
 
-		if(count($alerts) > 0 && $override == true) {
+		if(count($alerts) > 0 && $override == true && $showOverrideBox) {
 			$alerts[] = $this->view->render('overridecheckbox.html');
 		}
 		//$alerts[] = 'Debug Debug Debug';
@@ -786,91 +819,82 @@ fclose($fp);
 		return $alerts;
 	}
 
-        function ajax_reschedule($provider_id) {
-		$provider_list = array();
-		$provider_out = '';
-
-		$db =& Celini::dbInstance();
-
-		$query = "select concat(salutation, ' ', last_name, ', ', first_name) as provider_name from person where person_id = '$provider_id'";
-		$result = $db->execute($query);
-		if ($result && !$result->EOF) {
-			$provider_name = $result->fields['provider_name'];
-		}
-
-		$query = "select u.person_id, p.salutation, p.first_name, p.last_name from user u
-				inner join provider prov on prov.person_id = u.person_id
-				inner join person p on p.person_id = u.person_id
-				where u.person_id <> '$provider_id'
-				and u.disabled = 'no';
-				";
-		$result = $db->execute($query);
-		while ($result && !$result->EOF) {
-			$provider_list[$result->fields['person_id']] = array("salutation"=>$result->fields['salutation'],
-										"first_name"=>$result->fields['first_name'],
-										"last_name"=>$result->fields['last_name']
-										); 
-			$result->MoveNext();
-		}
-
-		$provider_out = "Transfer all appointments for $provider_name";
-		$provider_out .= "<br>on the selected date to:";
-		$provider_out .= "<br><select name='reschedule[provider_id]' id='new_provider_id'>";
-		while (list($new_provider_id, $provider_data) = each($provider_list)) {
-			$provider_out .= "<option value='$new_provider_id'>{$provider_data['salutation']} {$provider_data['last_name']}, {$provider_data['first_name']}\n";
-		}
-		$provider_out .= "</select>\n";
-
-		$provider_out .= "<br><br><input type='button' value='Reschedule' onclick=\"confirm_reschedule($provider_id);\">";
-
-                return $provider_out;
+        function ajaxReschedule($from_provider, $appointment_html) {
+		$applist = "";
+                preg_match_all("/div class=\"eventBody element\" id=\"([0-9]+)\">/",$appointment_html,$appIds);
+                if(isset($appIds) && isset($appIds[1]) && count($appIds[1]) > 0) {
+                        $this->view->assign("appCount",count($appIds[1]));
+                        $this->view->assign("provider",ORDataobject::factory('Person',$from_provider));
+                        $this->view->assign("confirmTime",time());
+                        $this->view->assign("appList",implode(",",$appIds[1]));
+			$prov = ORDataobject::factory('Provider');
+                	$provider_list = $prov->getProviderList();
+                	$this->view->assign("providerList",$provider_list);
+                }
+                else {
+                        $this->messages->addMessage('No appointments were found to move.');
+                        $this->view->assign("error",true);
+                }
+		return $this->view->render('reschedule.html');
         }
+	
+	function ajaxRescheduleCheckRules($appointmentIds,$newProviderId) {
+		$ids = explode(",",$appointmentIds);
+		$alerts = array();
+		foreach ($ids as $id) {
+			$app = ORDataObject::Factory('Appointment', (int)$id);
+			$app->set("provider_id",(int)$newProviderId);
+			$ta = $this->checkRulesObj($app, false);
+			$alerts = array_merge($alerts,$ta);
+		}
+		if (count($alerts > 0)) {
+			array_unshift($alerts, $this->view->render('overridecheckbox.html'));
+		}
+		return  $alerts;
+	}
 
-        function confirm_ajax_reschedule($current_provider, $new_provider, $current_date) {
-		$errorlist = '';
-
-		$current_date = explode("/", substr($current_date, strpos($current_date, ',')+2));
-		$current_date = "{$current_date[2]}-{$current_date[0]}-{$current_date[1]}";
-
-		$db =& Celini::dbInstance();
-                $query = "select appt.reason, appt.provider_id, appt.room_id, appt.last_change_date,
-				concat(p.last_name, ', ', p.first_name) as person_name, ev.start as start_time,
-                                ev.end as end_time, appt.walkin, appt.patient_id
-                                from appointment appt
-				inner join person p on p.person_id = appt.patient_id
-                	        inner join event ev on ev.event_id = appt.event_id
-	               	                where appt.provider_id = '$current_provider'
-	                                and ev.start between '$current_date 00:00' and '$current_date 23:59'
-	                                and ev.end between '$current_date 00:00' and '$current_date 23:59'
-                        ";
-                $res = $db->execute($query);
-
-		if ($res && !$res->EOF) {
-	                while ($res && !$res->EOF) {
-				$aptdata = $res->fields;
-	                        $aptdata['provider_id'] = $new_provider;
-	                        $errorlist[] = $this->check_rules_local($aptdata);
-	                        $res->MoveNext();
-	                }
+	function ajaxRescheduleConfirm($new_provider_id, $appointment_html) {
+		$applist = "";
+		preg_match_all("/div class=\"eventBody element\" id=\"([0-9]+)\">/",$appointment_html,$appIds);
+		if(isset($appIds) && isset($appIds[1]) && count($appIds[1]) > 0) {
+			$this->view->assign("appCount",count($appIds[1]));
+			$this->view->assign("provider",ORDataobject::factory('Person',$new_provider_id));
+			$this->view->assign("confirmTime",time());
+			$this->view->assign("appList",implode(",",$appIds[1]));
 		}
 		else {
-			$errorlist = 'There are no appointments on file for the selected date!';
+			$this->messages->addMessage('No appointments were found to move.');
+			$this->view->assign("error",true);
 		}
 
-                if (!$errorlist) {
-                        $query = "update appointment appt
-                                        inner join event ev on ev.event_id = appt.event_id
-                                        set appt.provider_id = '$new_provider'
-                                        where appt.provider_id = '$current_provider'
-                                        and ev.start between '$current_date 00:00' and '$current_date 23:59'
-                                        and ev.end between '$current_date 00:00' and '$current_date 23:59'
-                                ";
-                        $res = $db->execute($query);
-                }
 
-		return serialize($errorlist);
+		return $this->view->render('reschedule_confirm.html') . print_r($applist,true);
+	}
+	
+	function ajaxDoReschedule($appIds,$newProviderId,$appointmentOverride,$appointmentOverrideNeeded) {
+		if (strlen($appIds) > 0 && (int)$newProviderId >0) {
+			if ($appointmentOverrideNeeded == 1 && $appointmentOverride != 1) {
+				$this->view->assign("NOTICE","You must select to override the alerts in order to perform the rescheduling.");
+				return $this->view->render('overridecheckbox.html'); 
 
-        }
+			}
+			else {
+				$appIdArray = explode(',',$appIds);
+				$counter = 0;
+				foreach($appIdArray as $appId) {
+					$app = ORDataobject::factory('Appointment',$appId);
+					$app->set("provider_id",(int)$newProviderId);
+					$app->persist();
+					$counter++;
+				}
+				return $counter . ' Appointment(s) Updated. Click <a href="javascript:window.location.reload();">here</a> to refresh screen.';
+
+			}
+				
+
+		}
+		return "There was an error performing the reschedule." . $appIds;
+	}
 
 
 
