@@ -33,6 +33,7 @@ $config['calendar']['data_handler'] = 'ClearhealthCalendarData';
 
 $config['showCalendarWeekViewLinks'] = true;
 $config['hideCanceledAppointment'] = false;
+$config['showRescheduleLink'] = false;
 
 ################################################################################
 # Billing Options
