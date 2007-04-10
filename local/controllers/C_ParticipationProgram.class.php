@@ -18,7 +18,9 @@ class C_ParticipationProgram extends C_CRUD {
 		$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName);
+		if (strlen($options->administrationLink($id)) > 0) {
 		$this->view->assign("administerLink",'<a href="' . $options->administrationLink($id) .'">administer</a>');
+		}
 		$this->view->assign('FORM_ACTION',Celini::link('edit',true,true,$id));
 		return parent::actionEdit($id);
 	}
@@ -38,14 +40,9 @@ class C_ParticipationProgram extends C_CRUD {
 		$ppp = ORDataObject::factory('PersonParticipationProgram');	
 		$ppp->set("person_id", $person_id);
 		$this->view->assign('progNamesList',$parProg->valueList("name"));
-		$this->view->assign('FORM_ACTION',Celini::link('editConnect',true,true));
+		$this->view->assign('FORM_ACTION', Celini::link('editConnect',true,true,$ppp->get("person_program_id")));
 		$this->view->assign('ACTION_ADD',true);
 		$this->view->assign('ordo', $ppp);
-
-		//$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
-                //$loader->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
-                //$options = ORDataObject::factory($optionsClassName);
-		//$this->view->assign('options', $options);
 		
 		return $this->view->render("connect.html");
 	}
@@ -61,6 +58,7 @@ class C_ParticipationProgram extends C_CRUD {
                 $this->view->assign('options', $options);
 
 		$this->view->assign('progNamesList',$parProg->valueList("name"));
+		$this->view->assign('FORM_ACTION', Celini::link('editConnect',true,true,$ppp->get("person_program_id")));
 		
                 $this->view->assign('ordo', $ppp);
                 return $this->view->render("connect.html");
