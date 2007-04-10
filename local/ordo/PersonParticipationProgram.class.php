@@ -67,6 +67,23 @@ class PersonParticipationProgram extends ORDataObject {
 	function connectedProgramList($patient) {
 
 	}
+	function getByProgramPatient($program_id, $patient_id) {
+		$db = $db =& Celini::dbInstance(); 
+		$sql = "select person_program_id 
+			from person_participation_program
+			where participation_program_id = " . $db->quote($program_id)  . "
+			and person_id = " . $db->quote($patient_id);
+		$res = $db->execute($sql);
+		$ppp = '';
+		if (!$res->EOF) {
+			$ppp = ORDataObject::factory("PersonParticipationProgram", $res->fields['person_program_id']);
+		}
+		else {
+			$ppp = ORDataObject::factory("PersonParticipationProgram");
+		}
+		return $ppp;
+
+	}
 	/**#@-*/
 
 }
