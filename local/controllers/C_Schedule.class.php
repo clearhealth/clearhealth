@@ -1,10 +1,13 @@
 <?php
 $loader->requireOnce('includes/clni/clniData.class.php');
+$loader->requireOnce('includes/Grid.class.php');
+$loader->requireOnce('datasources/Person_ScheduleList_DS.class.php');
 
 class ScheduleWizardData extends clniData{
 	var $schedule_type = '';
 	var $days = array();
 	var $groups = array();
+	var $group = '';
 	var $starts = array();
 	var $ends = array();
 	var $multi_group = false;
@@ -56,7 +59,15 @@ class C_Schedule extends Controller
 		$session =& Celini::sessionInstance();
 		$session->set('schedule:wizardData',$str);
 	}
+	function ajaxAddEvents($startDate='', $endDate='') {
+		$em =& Celini::enumManagerInstance();
+		$this->view->assign_by_ref('em',$em);
+		$wizardData =& new ScheduleWizardData();
+		$this->view->assign('WIZARD_ACTION',Celini::link('wizard'));
+		$this->view->assign_by_ref('wizard',$wizardData);
+		return $this->view->render('wizard-31.html');
 
+	}
 	var $wizardPage = 1;
 	function actionWizard() {
 		$em =& Celini::enumManagerInstance();
@@ -86,12 +97,12 @@ class C_Schedule extends Controller
 		return $this->view->render('wizard-'.$this->wizardPage.'.html');
 	}
 
-	function processWizard() {
+	function processWizard($data = '') {
 		$session =& Celini::sessionInstance();
 
 		$wizardData = $this->_getWizardData();
-		$wizardData->populate($this->POST->get('wizard'));
-		
+		if (is_array($data)) { $wizardData->populate($data); }
+		else {$wizardData->populate($this->POST->get('wizard'));}
 		// Validation
 		$error = false;
 		$time_error = array();
@@ -153,10 +164,11 @@ class C_Schedule extends Controller
 				$this->messages->addMessage('Time Error',implode('<br />',$time_error),'warningMessage');
 			}
 			$this->wizardPage = $this->POST->getTyped('current_page','int');
-			return;
+			return $error;
 		}		
 
-		$this->wizardPage = $this->POST->getTyped('next_page','int');
+		if (is_array($data)) {$this->wizardPage = $data['wizard_page'];}
+		else {$this->wizardPage = $this->POST->getTyped('next_page','int');}
 
 		switch ($this->wizardPage) {
 			case 99:
@@ -173,9 +185,74 @@ class C_Schedule extends Controller
 				$wizardData =& new ScheduleWizardData();
 				$this->_setWizardData($wizardData);
 				break;
+			case 30:
+				$this->interactiveProviderSchedule();
+				$this->_setWizardData($wizardData);
+				break;
+			case 31:
+				$ret = $this->createSchedule($wizardData);
+				$this->view->assign("success", true);
+
+				break;
 		}
 	}
+	function ajaxEditEvent($event_id,$action ='',$data = array())	{
+		$ev = ORDataObject::factory("CalendarEvent",$event_id);
+		switch($action) {
+		  case 'update':
+			$ev->populateArray($data);
+			$ev->persist();
+			$this->messages->addMessage("Event updated");
+			$this->assign("event",$ev);
+			break;
+		  case 'addevents':
+			$data['schedule_type'] = 'PS';
+			$data['group'] = $data['name'];
+			$data['wizard_page'] = '31';
+			$this->processWizard($data);
+			return $this->view->render("addEventsMessages.html");
+			break;
+		  case 'delete':
+			$ev->drop();
+		  	break;
+		  default:
+			$this->assign("event",$ev);
+		}
+		return $this->view->render("editEvent.html");
+	}
 
+	function ajaxInteractiveProviderGrid($personId, $roomId, $start, $end) {
+		$scheduleDS =& new Person_ScheduleList_DS($personId,$roomId,$start,$end);
+		//return print_r($scheduleDS->toArray(),true);
+		//return $scheduleDS->preview();
+		$sgrid =& new cGrid($scheduleDS);
+		$sgrid->registerTemplate("start1",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_1})">{$start1}</a>&nbsp;&nbsp;');
+		$sgrid->registerTemplate("start2",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_2});">{$start2}</a>&nbsp;&nbsp;');
+		$sgrid->registerTemplate("note",'&nbsp;&nbsp;{$note}&nbsp;&nbsp;<a href="#" onclick="deleteEvent({$event_ids});">del</a>&nbsp;&nbsp;');
+		if ($scheduleDS->numRows() == 0)
+			return "No matching schedule data found";
+		//true without paging header
+		return $sgrid->render(true);
+		
+	}
+
+	function interactiveProviderSchedule() {
+		$this->ajaxInteractiveProviderGrid('1000119','1000091','2007-04-04','2007-04-05');
+		$providerId = '';
+		$prov = ORDataObject::factory('Provider',$providerId);
+		$provList = $prov->getProviderList();
+		$this->assign('providerList',$provList);
+
+		$userProfile =& Celini::getCurrentUserProfile();
+                $curPracticeId = $userProfile->getCurrentPracticeId();	
+		$curPractice = ORDataObject::factory('Practice',$curPracticeId);
+		$room =& Celini::newOrdo('Room');
+		$this->view->assign("roomList",$room->rooms_practice_factory($curPracticeId,false));
+
+
+
+	}
+	
 	function createAdminMeeting($wizard) {
 		$p =& Celini::newORDO('Provider');
 		$providers = $p->getProviderList();
@@ -226,7 +303,7 @@ class C_Schedule extends Controller
 		$room =& Celini::newOrdo('Room',$wizard->get('room_id'));
 		$provider =& Celini::newORDO('Provider',$wizard->get('provider_id'));
 		$schedule->persist();
-
+	
 	if($wizard->get('multi_group') == false) {
 		$db =& $schedule->dbHelper;
 		$egTitle = $wizard->get('group');
@@ -396,8 +473,9 @@ class C_Schedule extends Controller
 		$egrid->orderLinks = false;
 		$egrid->_allowHideColumns = false;
 		$this->view->assign_by_ref('eventGrid',$egrid);
-		$this->messages->addMessage('Shedule Created','Your schedule was added successfully, click edit below to view the groups that were created.');
+		$this->messages->addMessage('Schedule Created','Your schedule was added successfully.');
 		$this->view->assign('EDIT_ACTION',Celini::link('edit','Schedule').'schedule_id='.$schedule->get('id'));
+		return true;
 
 	}
 
