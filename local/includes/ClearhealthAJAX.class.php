@@ -31,6 +31,12 @@ class ClearhealthAJAX {
 		$appointment=&new C_Appointment();
 		$this->server->registerClass($appointment,'appointment');
 	}
+	function initschedule() {
+		$GLOBALS['loader']->requireOnce('controllers/C_Schedule.class.php');
+		$schedule=&new C_Schedule();
+		$this->server->registerClass($schedule,'schedule');
+
+	}
 
 	function initcoding(){
 		$GLOBALS['loader']->requireOnce('controllers/C_Coding.class.php');
