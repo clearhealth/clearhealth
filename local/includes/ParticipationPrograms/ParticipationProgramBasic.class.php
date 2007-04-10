@@ -42,6 +42,8 @@ class ParticipationProgramBasic extends ParticipationProgramAbstract {
 		$c = new Controller();
 		$c->view->path = APP_ROOT . "/user/participation_templates/";
 		$c->view->assign("options",$this);
+		$em =& Celini::enumManagerInstance();
+                $c->view->assign_by_ref('em',$em);
 		return $c->view->render("basic.html");
         }
 
