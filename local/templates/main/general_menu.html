@@ -1,4 +1,3 @@
-
 {if $me->get_id() == 0}
 	<ul class="menu">
 		{if $translate[$navc.prefix]}
@@ -95,7 +94,7 @@
 			<a href="#">{$nav.title}</a>
 			<ul>
 			{foreach from=$nav.children item=navc}
-				{if $navc.display_order > 0}
+				{*if $navc.display_order > 0*}
 				{if $translate[$navc.prefix]}
 					<li><a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
 				{else}
@@ -105,8 +104,13 @@
 						<li><a href="{$base_dir}index.php/{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
 					{/if}
 				{/if}
-				{/if}
+				{*/if*}
 			{/foreach}
+			{if $nav.arrays}
+                        {foreach item=navc from=$nav.arrays}
+                                <li>  <a href="{$navc.action}">{$navc.title}</a></li>
+                        {/foreach}
+                	{/if}
 			</ul>
 			</li>
 		{/if}
