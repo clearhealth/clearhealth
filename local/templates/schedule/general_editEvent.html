@@ -1,0 +1,25 @@
+<div class="title" id="title">Edit Schedule Event</div>
+<div>
+<fieldset>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+{if $error}
+<p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
+{else}
+<p>Edit event:</p>
+<p>Event starts at: <input id="startTime" name="event[start_time]" size=5 value="{$event->get('start_time')}"> 
+<p>Event ends at: <input id="endTime" name="event[end_time]" size=5 value="{$event->get('end_time')}"> (24-Hour Time)</p>
+<p>
+<br />
+<input type='button' id="update" value='Update' onclick="saveEvent({$event->get('event_id')});">
+</p>
+<br />
+<div id="alertMessages" style="display:none;overflow:auto; height:200px;"></div>
+</p>
+{/if}
+<p>
+<br />
+<a href="#" onclick="hidePopup();">close</a>
+</p>
+</fieldset>
