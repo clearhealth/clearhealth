@@ -324,6 +324,15 @@ class Practice extends ORDataObject{
 		}	
 		return $buildings;
 	}
+	function getBuildingList() {
+		$sql = "SELECT id, name from ".$this->_prefix."buildings where practice_id =" . $this->_db->qstr($this->id);
+		$result = $this->_Execute($sql);
+		if ($result && !$result->EOF) {
+			$buildings[$result->fields['id']] = $result->fields['name'];	
+			$result->MoveNext();
+		}	
+		return $buildings;
+	}
 	function getFirstBuilding() {
 		$buildings = array();
 		$sql = "SELECT * from ".$this->_prefix."buildings where practice_id =" . $this->_db->qstr($this->id) . " limit 1";
