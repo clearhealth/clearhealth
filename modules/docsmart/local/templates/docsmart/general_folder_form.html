@@ -1,0 +1,44 @@
+{clni_form id="folderForm" action="$FOLDER_FORM_ACTION" method="post" enctype="multipart/form-data" onsubmit="return clni_validate(this)" process="true"}
+	<input type="hidden" id="treeId" name="folder[tree_id]" value="{$folder.tree_id}">
+	<input type="hidden" id="folderId" name="folder[folder_id]" value="{$folder.node_id}">
+	<fieldset>
+		<legend id="folderFormLegend">Add folder</legend>
+		<label for="folderName">
+			Folder name:
+			<input type="input" id="folderName" name="folder[label]" value="{$folder.label}">
+		</label>
+		<br /><br />
+		<label for="webDavName">
+			Folder WebDav name:
+			<input type="input" id="webDavName" name="folder[webdavname]" value="{$folder.webdavname}">
+		</label>		
+		
+		<br /><br />
+		<label for="folderParent">
+			Parent folder:
+			<select name="folder[parentId]" id="folderParent">
+				<option value="1">ROOT</option>
+				{foreach from=$tree item=node}
+					<option value="{$node.tree_id}" {if $parent.tree_id == $node.tree_id}selected{/if}>{$node.label}
+				{/foreach}	
+			</select>
+		</label>
+		 
+		<br />
+		<input type="submit" name="submit" value="submit"><br /><br />
+	</fieldset>
+	{clni_register_validation_rule id="folderName" rule="required"}
+	{clni_register_validation_rule id="folderParent" rule="required"}
+</form>
+
+<script type="text/javascript">
+	folderTreeId = '{$folder.tree_id}';
+	folderId = '{$folder.node_id}';
+	parentId = '{$parent.tree_id}';
+	folderName = '{$folder.label}';
+	webDavName = '{$folder.webdavname}';
+	initializeForm('add');
+	{literal}
+		Event.observe($("folderName"), 'keyup', function(){$("webDavName").value=$("folderName").value;}, false);
+	{/literal}
+</script>

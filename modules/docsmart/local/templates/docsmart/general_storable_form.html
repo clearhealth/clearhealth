@@ -1,0 +1,30 @@
+{assign var="folderTreeId" value=$folder.tree_id}
+{clni_form 
+	id="storableForm" 
+	action="$STORABLE_FORM_ACTION" 
+	method="post" 
+	enctype="multipart/form-data" 
+	target="uploadTarget"
+	onCompleteUrl="$CURRENT_URL"
+	onsubmit="return doUpload(this);"
+	process="true"
+}
+<fieldset>
+<legend>Add storable</legend>
+<input type="hidden" name="storable[storage_type]" value="FS">
+<label for="storableFile">File:</label>
+<input type="file" id="storableFile" name="storable[filename]">
+<br /><br />
+<label for="storableWebDavName">File WebDav name:</label>
+<input type="text" id="storableWebDavName" name="storable[webdavname]">
+<br /><br />
+<input type="submit" name="submit" value="Upload"><br /><br />
+<div id="uploadStatus" style="display:none;">
+	<div id="uploadProgressBar"></div>
+	<div id="uploadStatusMessage"></div>
+</div>
+</fieldset>
+<input type="hidden" name="storable[folder_id]" value="{$folder.tree_id}">
+{clni_register_validation_rule id="storableFile" rule="required"}
+</form>
+

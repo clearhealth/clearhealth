@@ -1,0 +1,9 @@
+<form id="bulkDelete" name="bulkDelete" action="{link action="removestorable" controller="DocSmartStorable" pageType=""}" method="POST" onsubmit="return doRemoveStorables(this)">
+	{$grid->render()}
+<br />
+{if !$grid->empty}
+	<input type="submit" name="submit" value="Bulk delete" />	
+{else}	
+	There are no storables
+{/if}	
+</form>

@@ -1,0 +1,28 @@
+	<div id="header">
+		<form action="{link action="search" controller="DocSmartStorable" pageType=""}" method="post" id="searchForm" onsubmit="return !HTML_AJAX.formSubmit(this,'content')">
+			<fieldset>
+				<legend>Search form</legend>
+				<label for="query">Search:</label> <input type="text" id="query" name="query" value="" /><br />
+				<!-- search by: <input type="checkbox" id="searchBy[name]" name="searchBy[name]" value="1" checked /> file name
+				<input type="checkbox" id="searchBy[tag]" name="searchBy[tag]" value="1"  checked /> tags -->
+			</fieldset>
+		</form>
+	</div>
+
+	<iframe name="uploadTarget" id="uploadTarget"></iframe>	
+	
+	<hr />
+	<div id="treeMenu">
+		<h2>Structure</h2>
+		{$treeView}
+	<br />
+	<a href="javascript:void(0);" onclick="HTML_AJAX.replace('content','{link action="addfolder" controller="DocSmart" pageType=""}');">Add New Folder</a>		
+	</div>
+
+	<div id="content">
+		{include file='docsmart/general_flash.html'}
+		{$content_for_layout}
+	</div>	
+
+<hr />	
+

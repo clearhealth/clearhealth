@@ -1,0 +1,7 @@
+	<div class="person">{$note.username} {if $note.email}[<a href="mailto:{$note.email}">{$note.email}</a>]{/if}</div>
+	<div class="date">{$note.create_date}</div>
+	<div class="body">
+		<p><strong>Revision: {$note.revision}</strong></p>
+		<p>{$note.note}</p>
+		<p class="noteDelete"><a href="javascript:void(0)" onclick="noteDiv=this.parentNode.parentNode.parentNode; if(!confirm('Do you realy want delete it?')) return false; HTML_AJAX.grab('{link action="removenote" controller="DocSmartStorable" defaultArg=$note.note_id pageType=""}' , function(resp) {literal}{{/literal} new Effect.Fade(noteDiv); {literal}}{/literal});">delete</a></p>
+	</div>

@@ -1,0 +1,25 @@
+{clni_form 
+	id="revisionForm" 
+	action="$REVISION_FORM_ACTION" 
+	method="post" 
+	enctype="multipart/form-data" 
+	target="uploadTarget"
+	onCompleteUrl=""
+	onsubmit="return doUpload(this, true);"
+	style="display:none;"
+}
+<fieldset>
+<legend>Add revision</legend>
+<input type="hidden" id="storableId" name="revision[storable_id]" value="{$storable.storable_id}">
+<label for="storableFile">Revision file:</label>
+<input type="file" id="storableFile" name="revision[filename]">
+<input type="submit" name="submit" value="Upload"><br /><br />
+<div id="uploadStatus" style="display:none;">
+	<div id="uploadProgressBar"></div>
+	<div id="uploadStatusMessage"></div>
+</div>
+<br /><a href="javascript:void(0);" onclick="new Effect.Fade('revisionForm');">[close]</a>
+</fieldset>
+{clni_register_validation_rule id="storableFile" rule="required"}
+</form>
+
