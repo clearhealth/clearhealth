@@ -1,0 +1,10 @@
+<table>
+<tr><td>
+<label>Eligibility:</label></td>
+<td>
+{foreach from=$em->enumArray('pp_clinic_eligibility') item="label" key="key" name="floop"}
+<input name="ParticipationProgram[personparticipationprogram][options][eligibility]" type="radio" value="{$key}" {if $key eq $options->get('eligibility')}checked="checked"{/if} {if $smarty.foreach.floop.first &&  $options->get('eligibility') eq 0}checked="checked"{/if}> {$label} <br />
+{/foreach}
+</td>
+</tr>
+</table>

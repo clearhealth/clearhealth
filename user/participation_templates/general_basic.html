@@ -2,6 +2,20 @@
 <tr><td>
 <label>Federal Poverty Level:</label></td>
 <td>
-	<input name="ParticipationProgram[personparticipationprogram][options][federal_poverty_level]" type="text" value="{$options->get('federal_poverty_level')}"></td>
+	<select name="ParticipationProgram[personparticipationprogram][options][federal_poverty_level]" >
+
+{foreach from=$em->enumArray('federal_poverty_level') item="label" key="key" name="floop"}
+	<option value="{$key}" {if $key eq $options->get('federal_poverty_level')}selected="selected"{/if}>{$label} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
+{/foreach}
+</select>
+</td>
+</tr>
+<tr>
+<td>Program Eligibility</td>
+<td>
+{foreach from=$em->enumArray('refEligibility') item="label" key="key" name="floop"}
+<input name="ParticipationProgram[personparticipationprogram][options][eligibility]" type="radio" value="{$key}" {if $key eq $options->get('eligibility')}checked="checked"{/if} {if $smarty.foreach.floop.first &&  $options->get('eligibility') eq 0}checked="checked"{/if}> {$label} <br />
+{/foreach}
+</td>
 </tr>
 </table>
