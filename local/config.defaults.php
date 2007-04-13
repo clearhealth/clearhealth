@@ -1,5 +1,5 @@
 <?php
-//Don't require https, i.e. permit straight http connections
+//Require https, i.e. force https links even if not detected
 $config['forceHTTPS'] = "false";
 
 // default starting location /index.php/calendar/day
