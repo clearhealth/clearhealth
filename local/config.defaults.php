@@ -1,4 +1,7 @@
 <?php
+//Don't require https, i.e. permit straight http connections
+$config['forceHTTPS'] = "false";
+
 // default starting location /index.php/calendar/day
 $config['default_controller'] = "CalendarDisplay";
 $config['default_action'] = "day";
