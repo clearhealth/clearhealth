@@ -1,0 +1,20 @@
+<fieldset>
+<legend>Add Result Row</legend>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+<table  class="grid" id="labsTable">
+       <tr><th>Test</th><th>Value</th><th>Abnormal</th></tr>
+       <tr><td>{html_options name="labDescription"  id="labResultDescription" options=$em->enumArray('lab_manual_description_list')}</td>
+	<td>{input type="string" id="labValue"}</td><td>{html_options name="labAbnormal" id="labAbnormal" options=$em->enumArray('lab_manual_abnormal_list')}</td></tr>
+       </table>
+       </p>
+       <hr>
+       <b>Notes:</b><br>
+       <textarea cols=80 rows=3 id="labNote">{$note->get('note')}</textarea><br />
+<br />
+	<input type="hidden" name="labNoteId" id="labNoteId" value="{$note->get('note')}">
+       <input type="button" value="Save Lab Results" onclick="saveResultRow();">
+&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" value="Confirm Results" onclick="confirmResults({$order.lab_order_id});">
+</fieldset>

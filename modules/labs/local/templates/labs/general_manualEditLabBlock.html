@@ -1,0 +1,19 @@
+<fieldset>
+<legend>Input Lab Results</legend>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+<table class="grid">
+       <tr><th style="width:100px;">Lab Provider</th></tr>
+       <tr><td>{html_options name="test['lab_provider']" id="labProvider" options=$em->enumArray('lab_manual_company_list')}</td></tr>
+       <tr><th>Order #</th><th>Specimen Date/Time</th><th>Service</th></tr>
+<tr>
+<td>{input type="string"  id="labOrderNumber"}</td>
+<td>{input type="date" name="labSpecimenDate" id="labSpecimenDate"}</td>
+<td>{$order->get('manual_service_label')}</td>
+</tr>
+</table>
+<input type="hidden" value="{$order->get('manual_service_label')}" id="labManualService">
+<input type="hidden" value="{$order->get('lab_order_id')}" id="labOrderId">
+<input type="button" value="Save Result Header" onclick="saveResultHeader();">
+</fieldset>

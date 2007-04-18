@@ -1,0 +1,89 @@
+{literal}
+<script>
+function saveOrder() {
+  var hash = new Object();
+  hash['ordering_provider'] = document.getElementById('labOrderingProvider').value;
+  hash['patient_id'] = document.getElementById('labPatientId').value;
+  if (document.getElementById('labOrderId')) {
+    hash['lab_order_id'] = document.getElementById('labOrderId').value;
+  }
+  hash['manual_service'] = document.getElementById('labService').value;
+  hash['manual_order_date'] = document.getElementById('labOrderDate').value;
+
+  HTML_AJAX.call('Labs','ajaxEditOrder',updateView,hash);
+}
+function saveResultHeader(){
+  var hash = new Object();
+  hash['lab_order_id'] = document.getElementById('labOrderId').value;
+  hash['order_num'] = document.getElementById('labOrderNumber').value;
+  hash['service'] = document.getElementById('labManualService').value;
+  hash['status'] = 'F';
+  var labProviderBox = document.getElementById('labProvider');
+  hash['clia_disclosure'] = labProviderBox.options[labProviderBox.selectedIndex].label;
+  hash['specimen_received_time'] = document.getElementById('labSpecimenDate').value;
+  hash['report_time'] = document.getElementById('labSpecimenDate').value;
+  hash['manual_order_date'] = document.getElementById('labOrderDate').value;
+  HTML_AJAX.call('Labs','ajaxEditTest',updateView,hash);
+
+}
+function saveResultRow() {
+var hash = new Object();
+  hash['lab_order_id'] = document.getElementById('labOrderId').value;
+  hash['lab_test_id'] = document.getElementById('labTestId').value;
+  var labResultDescriptionBox = document.getElementById('labResultDescription');
+  hash['description'] = labResultDescriptionBox.options[labResultDescriptionBox.selectedIndex].label;
+  hash['value'] = document.getElementById('labValue').value;
+  var labAbnormalBox = document.getElementById('labAbnormal');
+  hash['abnormal_flag'] = labAbnormalBox.options[labAbnormalBox.selectedIndex].label;
+  hash['note'] = document.getElementById('labNote').value;
+  HTML_AJAX.call('Labs','ajaxEditResultRow',updateView,hash);
+}
+function deleteResult(resultId) {
+  HTML_AJAX.call('Labs','ajaxDeleteResult',updateView,resultId);
+}
+function confirmResults(labOrderId) {
+  HTML_AJAX.call('Labs','ajaxConfirmResults',updateView,labOrderId);
+}
+function processView(result) {
+  if (result) {
+  var personId = document.getElementById('smgPersonId').value;
+  HTML_AJAX.call('SelfMgmtGoals','ajaxList',updateView,personId); 
+  }
+  else {
+  document.getElementById('mainView').innerHTML = "An error occured processing your request"; 
+  }
+}
+function updateView(result) {
+  document.getElementById('mainView').innerHTML = result;
+  //innerhtml javascript is not parsed so it needs to be triggered here
+  if (document.getElementById('labSpecimenDate')) {
+    Calendar.setup( {inputField:"labSpecimenDate", showsTime: false,ifFormat:"%m/%d/%Y",button:"labSpecimenDate_trigger" }); 
+    clni_register_validation_rule('labSpecimenDate','date','alert');
+  }
+
+}
+
+</script>
+{/literal}
+<div id='popup_dialog'></div>
+<fieldset>
+                <legend>Manual Lab Addition</legend>
+                <table class="grid">
+                <tr><th>Ordering Provider</th><th>Order Date</th><th>Service</th></tr>
+<tr>
+<td>{input type="string" name="orderingProvider" id="labOrderingProvider" value=$order->get("ordering_provider")}</td>
+<td>{input type="date" name="orderDate" id="labOrderDate" value=$order->get("manual_order_date")}</td>
+<td>
+{html_options name="test['service']" id="labService" options=$em->enumArray('lab_manual_service_list')}
+</td>
+</tr>
+</table>
+<input type="hidden" value="{$patientId}" id="labPatientId">
+{if !$order->get('lab_order_id') >0}
+<input type="button" value="Add Lab Order" onclick="saveOrder();">
+{/if}
+<br><br>
+</fieldset>
+<div id="mainView">
+{$labBlock}
+</div>
