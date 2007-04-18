@@ -1,0 +1,8 @@
+<?php
+
+$db_username = 'INSTALL_DB_USERNAME';
+$db_password = 'INSTALL_DB_PASSWORD';
+
+$some_string = 'Error found on install: TEST_STRING';
+
+?>

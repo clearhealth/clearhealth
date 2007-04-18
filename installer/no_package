@@ -1,0 +1,6 @@
+# Remove test files
+test_replacement.txt
+test_replacement.txt.orig
+
+tmp/*
+
