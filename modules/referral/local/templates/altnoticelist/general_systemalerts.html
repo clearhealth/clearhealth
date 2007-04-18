@@ -1,0 +1,41 @@
+{if $popup}
+{literal}
+<style>
+ul.menu {
+ margin:0;
+ padding:0;
+}
+
+ul.menu li {
+ display:block;
+ text-align:center;
+ list-style-type:none;
+ white-space:nowrap;
+ background-color:#a8ae96;
+ border: 1px solid #000;
+ margin: 5px 20px;
+ padding:3px 5px;
+}
+
+ul.menu li a { display:block; text-decoration:none; color:#000; }
+ul.menu li:hover { background-color:#eec; text-decoration:underline; }
+
+#alertsDialog { display:none; }
+
+.confirmBox { border: 2px solid #000; overflow:auto; width: 600px; height:300px; background-color:#fff; }
+</style>
+{/literal}
+<div id="alertsDialog">
+	<ul class="menu aCenter">
+		<li><a href="javascript:popup.hide()">Close and Continue</a></li>
+	</ul>
+	<div style="clear:both; height:2px;"> &nbsp;</div>
+{/if}
+{$alertbody}
+{if $popup}
+</div>
+<script>
+var popup = new clniPopup('alertsDialog');
+popup.display();
+</script>
+{/if}

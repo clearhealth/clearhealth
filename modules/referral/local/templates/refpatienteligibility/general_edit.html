@@ -1,0 +1,72 @@
+{literal}
+<script type="text/javascript">
+function onClickSubmit() {
+	// do save
+	
+	if (window.name = 'chlreferral') {
+		//window.close();
+	}
+}
+</script>
+{/literal}
+{if $FORM_ACTION}<form action="{$FORM_ACTION}" method="post">{/if}
+<fieldset>
+	<legend>Patient's Eligibility Status for other Programs</legend>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>Program</th>
+				<th>Status</th>
+				<th><abbr title="Federal Poverty Level">FPL</abbr></th>
+				<th>Through</th>
+			</tr>
+		</thead>
+		
+		{if $FORM_ACTION}
+		<tfoot class="formControls">
+			<tr>
+				<td colspan="3" style="text-align:center;">
+					<input type="submit" value="Save" class="button" onmouseover="hover(this)" onmouseout="hover(this)" onclick="onClickSubmit('refPatientEligibility')"/>
+				</td>
+			</tr>
+		</tfoot>
+		{/if}
+		
+		<tbody>
+		{foreach name=elig from=$programEligibilityArray item=eligibility}
+		<tr>
+			<td>{$eligibility.program_name}</td>
+			
+			{if $person->isType('referral manager', $eligibility.refprogram_id)}
+				<td>{$eligibility.schema}</td>
+				<td>
+					{math assign=currentIteration equation="x - y" x=$smarty.foreach.elig.iteration y=1}
+					{if $fplValues[$currentIteration] != false}
+					<select name="refPatientEligibility[{$smarty.foreach.elig.iteration}][federal_poverty_level]">
+						<option value=""></option>
+						{html_options options=$fplValues[$currentIteration] selected=$eligibility.federal_poverty_level}
+					</select>
+					{/if}
+				</td>
+				<td>
+					{capture name=dateInputName}refPatientEligibility[{$smarty.foreach.elig.iteration}][eligible_thru]{/capture}
+					{if $eligibility.schema != 'Not Applicable'}
+						{clni_input_date name=$smarty.capture.dateInputName value=$eligibility.refPatientEligibility->get('eligible_thru')}
+					{/if}
+					<input type="hidden" name="refPatientEligibility[{$smarty.foreach.elig.iteration}][refpatient_eligibility_id]" value="{$eligibility.refpatient_eligibility_id}" />
+					<input type="hidden" name="refPatientEligibility[{$smarty.foreach.elig.iteration}][refprogram_id]" value="{$eligibility.refprogram_id}" />
+					<input type="hidden" name="refPatientEligibility[{$smarty.foreach.elig.iteration}][patient_id]" value="{$patient_id}" />
+					<input type="hidden" name="process" value="true" />
+				</td>
+			{else}
+				<td>{$eligibility.readOnlySchema}</td>
+				<td>{$eligibility.federal_poverty_level_value}</td>
+				<td>{$eligibility.refPatientEligibility->get('eligible_thru')}</td>
+			{/if}
+		</tr>
+		{/foreach}
+		</tbody>
+	</table>
+</fieldset>
+{if $FORM_ACTION}</form>{/if}

@@ -1,0 +1,202 @@
+{literal}
+<script type="text/javascript">
+function newInfoWindow() {
+	window.open('{/literal}{$chlcare_base}{literal}chlreferral/index.php/chlpopup/refpatient/info/{/literal}{$request->get("patient_id")}{literal}', 'chlreferral',
+	'menubar=no,location=no,resizable=no,scrollbars=auto,status=no,height=300,width=630');
+}
+</script>
+<style type="text/css">
+ul {
+ margin-left:0;
+ padding-left:0;
+}
+
+ul li { 
+ margin-left:20px;
+ list-style-type:circle; 
+}
+
+.inlineUL li {
+ float:left;
+}
+
+.menu li {
+ list-style-type:none;
+ margin: 0;
+}
+
+ul .selected {
+ list-style-type:disc;
+}
+
+.legend {
+ font-weight:bold;
+ display:block;
+}
+
+.inputButton {
+ background-color: #adad8d;
+ border: 1px solid #000;
+ padding:5px;
+ text-align:center;
+ color:#000;
+ 
+}
+
+table td {
+ vertical-align:top;
+}
+
+.fLeft { float:left; }
+
+</style>
+{/literal}
+<div id="appointmentGeneralEditMessage"></div>
+<table>
+	<tr>
+		<td width="59%">
+			<fieldset>
+				<legend>Make Appointment</legend>
+				{literal}
+				<style type="text/css">
+				td.outlined {
+					border:1px solid #000;
+					padding-left:5px;
+					padding-right:5px;
+					/* inherit padding-top/bottom */
+				}
+				</style>
+				{/literal}
+				<table>
+					<tr>
+						<td>Specialty Requested</td>
+						<td class="outlined">{$request->get('refSpecialty')}</td>
+					</tr>
+					
+					<tr>
+						<td>Requested Slot</td>
+						<td  class="outlined">
+							{$request->get('refRequested_day')}
+							{$request->get('refRequested_time')}
+						</td>
+					</tr>
+
+				</table>
+				
+				<fieldset>
+					<legend>Select Specialty Practice Slot</legend>
+					
+					<p>Make an appointment by selecting the Practice/Specialist link below</p>
+					<!-- Above copy needs to be changed - direct copy from PPT -->
+					
+					{$possibleMembers->render()}
+					
+					{if $possibleMembers->empty}
+					<p>No practices or specialists were found in this program.</p>
+					{/if}
+			</fieldset>
+		</td>
+	</tr>
+</table>
+
+<div id="appointmentPopupText" style="display:none;">
+<form action="{$SAVE_APPOINTMENT_ACTION}" method="post" onsubmit="return false;">
+	<div class="messageTarget"></div>
+	<p>Practice/Specialist: %practice%</p>
+	<table>
+		<tfoot>
+			<tr>
+				<td colspan="2">
+					<ul class="menu">
+						<li><a href="#" onclick="javascript:appointmentPopup.validateForm()">Save Appointment Information</a></li>
+						<li><a href="javascript:appointmentPopup.remove()">Cancel - Find another practice</a></li>
+					</ul>
+					<input type="hidden" name="process" value="true" />
+					<input type="hidden" name="refAppointment[refrequest_id]" value="{$GET->getTyped('refrequest_id', 'int')}" />
+					<input type="hidden" name="refAppointment[refpractice_id]" value="%practice_id%" />
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr>
+				<th>Select a Location</th>
+				<th>Select a Specialist</th>
+			</tr>
+			
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+			
+			<tr>
+				<th colspan="2">Services / Restrictions</th>
+			</tr>
+			<tr>
+				<td colspan="2">%servicesAndRestrictions%</td>
+			</tr>
+			
+			<tr>
+				<th colspan="2">Select a date and time</th>
+			</tr>
+			
+			<tr>
+				<td colpsan="2" style="text-align:center;">
+					<input class="required" size="5" name="refAppointment[time_digits]" />
+					<select name="refAppointment[time_suffix]">
+						<option>AM</option>
+						<option>PM</option>
+					</select>
+					{clni_month_dropdown name="refAppointment[date_month]" selected=$todaysMonth}
+					
+					<select class="required" name="refAppointment[date_date]">
+						<option></option>
+						{html_options options=$dateArray selected=$todaysDate}
+					</select>
+					<select class="required" name="refAppointment[date_year]">
+						<option></option>
+						{html_options options=$yearArray selected=$todaysYear}
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+</div>
+{literal}
+<script type="text/javascript">
+var appointmentPopup = new clniPopup('appointmentPopupText');
+
+function handleAppointmentPopupDisplay(name, refpractice_id, refprovider_id) {
+	appointmentPopup.prepare();
+	appointmentPopup._popup.innerHTML = appointmentPopup._popup.innerHTML.replace(/%practice%/g, name);
+	appointmentPopup._popup.innerHTML = appointmentPopup._popup.innerHTML.replace(/%practice_id%/g, refpractice_id);
+	
+	var practice = new C_Refpractice();
+	appointmentPopup._popup.getElementsByTagName('tbody').item(0).getElementsByTagName('td').item(1).innerHTML =
+		practice.actionEmbeddedProviderList_list(refpractice_id,refprovider_id);
+	
+	appointmentPopup._popup.getElementsByTagName('tbody').item(0).getElementsByTagName('td').item(0).innerHTML =
+		practice.actionEmbeddedLocationList_list(refpractice_id);
+		
+	appointmentPopup._popup.innerHTML = appointmentPopup._popup.innerHTML.replace(/%servicesAndRestrictions%/g,
+		practice.actionEmbeddedTextFields_list(refpractice_id, refprovider_id));
+	
+	appointmentPopup.validateForm = function() {
+		form = appointmentPopup._popup.getElementsByTagName('form').item(0);
+		if (clni_validate(form)) {
+			form.submit();
+		}
+		else {
+			form.messageTarget.innerHTML = 'Please fill in all of the required fields.';
+			form.messageTarget.className = 'clniMessageActive';
+			return false;
+		}
+	}
+	//appointmentPopup.form = appointmentPopup._popup.getElementsByTagName('form').item(0);
+	Behavior.apply();
+	appointmentPopup.display();
+}
+
+</script>
+{/literal}
+<div style="clear:both;">&nbsp;</div>

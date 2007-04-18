@@ -1,0 +1,68 @@
+<h1 style="font-size:1.1em; text-align:left;">Referral Requests Summary</h1>
+{if $canAdd}
+<fieldset>
+	<legend>Add a New Referral Request for this Patient</legend>
+	
+	<form action="{$FORM_ACTION}" method="get" onsubmit="handleValidation(this); return false;">
+	<table>
+		<tr>
+			<td>
+				Program<br />
+				{foreach name=programsForeach from=$programArray item=program key=id}
+				<label><input class="required" type="radio" value="{$id}" name="program_id" {if $smarty.foreach.programsForeach.first}checked="checked" {/if}/>{$program}</label><br />
+				{/foreach}
+			</td>
+			
+			<td valign="top">
+				Select Clinic Visit (if appropriate)<br />
+				<select name="visit_id">
+					{html_options options=$visitList->latestVisit()}
+					<option value="NULL"></option>
+					{html_options options=$visitList->toArray()}
+					<!-- <option>Last Visit</option>
+					<option value="null"></option>
+					<option>September 01 2005</option>
+					<option>July 13 2005</option> -->
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<input type="hidden" name="u" value="{$u}" />
+				<input type="hidden" name="patient_id" value="{$patient_id}" />
+				<input type="hidden" name="initiator_id" value="{$initiator_id}" />
+				<input type="submit" value="Add Referral Request">
+			</td>
+		</tr>
+	</table>
+	</form>
+</fieldset>
+{/if}
+<fieldset>
+	<legend>Referral Request History</legend>
+	{if !$requestListGrid->empty}
+	<p>
+		Select Referral Request date to access Previous Referral Requests for
+		this Patient</p>
+	
+	<div>
+		{$requestListGrid->render()}
+	</div>
+	{else}
+	<p>
+		This patient does not have any previous referral requests</p>
+	{/if}
+</fieldset>
+<script type="text/javascript">
+Behavior.apply();
+{literal}
+function handleValidation(formObj) {
+	if (clni_validate(formObj)) {
+		formObj.submit();
+		return true;
+	}
+	
+	return false;
+}
+{/literal}
+</script>

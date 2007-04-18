@@ -1,0 +1,27 @@
+{literal}
+<style>
+.alertContainer .header {
+ background-color:#cc9;
+ padding:5px 8px;
+ font-weight:bold;
+ border:1px solid #000;
+}
+
+.alertContainer .body {
+ background-color:#eec;
+ padding:5px 8px;
+ border:1px solid #cc9;
+}
+</style>
+{/literal}
+
+<div class="alertContainer">
+	<div class="header">
+		{$alert->get('title')}
+	</div>
+	<div class="body">
+		{$alert->get('note')}
+	</div>
+</div>
+
+

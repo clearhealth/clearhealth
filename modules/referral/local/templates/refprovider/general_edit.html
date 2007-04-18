@@ -1,0 +1,89 @@
+<form action="{$FORM_ACTION}" method="post">
+	<fieldset>
+		<legend>Referral Practices</legend>
+		
+		<table>
+			<tr>
+				<td class="aRight">Name</td>
+				<td>
+					<input name="refPractice[name]" value="{$practice->get('name')}" />
+				</td>
+			</tr>
+			<tr>
+				<td class="aRight">Specialities</td>
+				<td>
+					<select name="refPractice[specialties][]" multiple="multiple" size="3">
+						{html_options options=$refSpecialty selected=$practice->get('specialty_ids')}
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="aRight">Monthly Slots are Assigned By</td>
+				<td>
+					{$practice->get('assign_by')}
+					{html_radios name="refPractice[assign_by]" output="$possibleAssignBy" values="$possibleAssignBy" selected="$practice->get('assign_by')"}
+				</td>
+			<tr>
+				<td colspan="2">
+					<input type="submit" />
+				</td>
+		</table>
+		
+		{* Only display this after a Practice has been created *}
+		{if $practice->get('id') > 0}
+		<fieldset>
+			<legend>Locations</legend>
+			
+			{$practiceLocationListGrid->prepare()}
+			{if $practiceLocationListGrid->empty != true}
+			{$practiceLocationListGrid->render()}
+			{/if}
+			<table>
+				<tr>
+					<td class="aRight" rowspan="2">Address</td>
+					<td>
+						<input name="refPracticeLocation[address1]" value="{$location->get('address1')}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input name="refPracticeLocation[address2]" value="{$location->get('address2')}" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="aRight">City, State, Zipcode</td>
+					<td>
+						<input name="refPracticeLocation[city]" value="{$location->get('city')}" />,
+						<input name="refPracticeLocation[state]" value="{$location->get('state')}" maxlength="2" size="2" />
+						<input name="refPracticeLocation[zipcode]" value="{$location->get('zipcode')}" maxlength="10" size="5" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="aRight">Appt. Number</td>
+					<td>
+						<input name="refPracticeLocation[appointment_number]" value="{$location->get('appointment_number')}" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="aRight">Fax Number</td>
+					<td>
+						<input name="refPracticeLocation[fax_number]" value="{$location->get('fax_number')}" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="refPracticeLocation[id]" value="{$location->get('id')}" />
+						<input type="hidden" name="refPracticeLocation[refPractice_id]" value="{$practice->get('id')}" />
+						<input type="submit" {if $location->get('id') > 0}value="Update Location"{else}value="Add Location"{/if} />
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		{/if}
+	</fieldset>
+</form>
+

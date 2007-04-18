@@ -1,0 +1,251 @@
+{literal}
+<script>
+function changeToInput(idString, value) {
+	var el = document.getElementById(idString);
+	el.innerHTML = '<input type="text" size="2" value="' + value + '" onblur="changeToText(\'' + idString + '\', this.value);" />';
+	el.getElementsByTagName('input').item(0).focus();	
+}
+
+function changeToText(idString, value) {
+	var el = document.getElementById(idString);
+	el.innerHTML = '<a href="#" onclick="changeToInput(\'' + idString + '\', \'' + value + '\')">' + value + '</a>';
+}
+</script>
+
+<script type="text/javascript">
+var callback = {
+	updateByExternalIDYearMonth: function(result) {
+		//alert(result);
+	}
+}
+var remoteOrdo = new refProgramMemberSlot(callback);
+function editableTable(id) {
+	this.tableId = id;
+	this.addHandlers();
+}
+editableTable.prototype = {
+	currentEdit: false,
+	onChange: function(newValue,rowPos,colPos,month,year,externalID,programMemberID) {
+		remoteOrdo.updateByExternalIDYearMonth(externalID,year,month,programMemberID,newValue);
+	},
+	addHandlers: function() {
+		var tbody = document.getElementById(this.tableId).tBodies[0];
+		var self = this;
+		for(var i =0; i < tbody.rows.length; i++) {
+			var row = tbody.rows[i];
+			for(var c = 0; c < row.cells.length; c++) {
+				if (this.isEditable(row.cells[c])) {
+					row.cells[c].getElementsByTagName('div').item(0).onclick = function() { self.clickHandler(this); }
+					row.cells[c].getElementsByTagName('div').item(0).rowPos = i;
+					row.cells[c].getElementsByTagName('div').item(0).colPos = i;
+					row.cells[c].getElementsByTagName('div').item(0).slotMonth = row.cells[c].getElementsByTagName('div').item(3).innerHTML;
+					row.cells[c].getElementsByTagName('div').item(0).slotYear = row.cells[c].getElementsByTagName('div').item(4).innerHTML;
+					row.cells[c].getElementsByTagName('div').item(0).slotExternalID = row.cells[c].getElementsByTagName('div').item(5).innerHTML;
+					row.cells[c].getElementsByTagName('div').item(0).programMemberID = row.cells[c].getElementsByTagName('div').item(6).innerHTML;
+					this.showEditable(row.cells[c].getElementsByTagName('div').item(0));
+				}
+			}
+		}
+	},
+	showEditable: function(cell) {
+		cell.className = "editable editableText";
+	},
+	clickHandler: function(cell) {
+		var self = this;
+		if (this.currentEdit) {
+			this.makeReadOnly(this.currentEdit);
+		}
+		var node = this.makeEditable(cell.innerHTML);
+		cell.innerHTML = '';
+		cell.appendChild(node);
+		cell.className = 'editable editableTextInput';
+		this.currentEdit = cell;
+		this.currentEdit.getElementsByTagName('input').item(0).focus();
+		try {
+			this.currentEdit.getElementsByTagName('input').item(0).select();
+		}
+		catch (e) {
+			// this throws exceptions sometimes we don't case just hide them
+		}
+		this.currentEdit.getElementsByTagName('input').item(0).onblur = function() { self.makeReadOnly(self.currentEdit); } 
+	},
+	isEditable: function(cell) {
+		if (cell.className == 'editable') {
+			return true;
+		}	
+		return false;
+	},
+	makeEditable: function(value) {
+		var content = document.getElementById('editableTemplate').firstChild.cloneNode(true);
+		content.getElementsByTagName('input').item(0).value = value;
+		return content;
+	},
+	makeReadOnly: function(cell) {
+		var value = cell.getElementsByTagName('input').item(0).value;
+		this.onChange(value,cell.rowPos,cell.colPos, cell.slotMonth, cell.slotYear, cell.slotExternalID, cell.programMemberID);
+		cell.innerHTML = value;
+		cell.className = 'editable editableText';
+		cell.parentNode.getElementsByTagName('div').item(2).innerHTML = 
+			cell.parentNode.getElementsByTagName('div').item(0).innerHTML -
+			cell.parentNode.getElementsByTagName('div').item(1).innerHTML;
+		this.currentEdit = false;
+	}
+}
+
+// todo: move this into Celini
+function captureEnter (field, event) {
+	var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+	if (keyCode == 13) {
+		slotGridObj.makeReadOnly(field.parentNode.parentNode);
+		return false;
+	}
+	else 
+		return true;
+	
+}
+</script>
+{/literal}
+
+<form action="{$FORM_ACTION}" method="post">
+	<fieldset>
+		<legend>Referral Programs</legend>
+		
+		<table>
+			<tr>
+			<td class="aRight">Participation Program</td>
+			<td><select name="refProgram[refprogram_id]">{html_options options=$progNamesList selected=$program->get('refprogram_id')}</select></td>
+			</tr>
+
+{*			<tr>
+				<td class="aRight">Eligibility Mode</td>
+				<td>
+					<select name="refProgram[schema]">
+					{html_options options=$schemaList selected=$program->get('schema')}
+					</select>
+				</td>
+			</tr>}
+			
+{*			<tr>
+				<td class="aRight">Program Users</td>
+				<td>{$userGrid->render()}</td>
+			</tr>
+			
+			<tr>
+				<td class="aRight">Add User</td>
+				<td>
+					<select name="refUser[external_user_id]">
+						<option value="">Select a User</option>
+						<option value="">-----</option>
+						{html_options options=$providerArrayObj->toArray()}
+					</select>
+					
+					<select name="refUser[refusertype]">
+						<option value="">Select a Role</option>
+						<option value="">-----</option>
+						{html_options options=$roleTypeList}
+					</select>
+				</td>
+			</tr>
+*}					
+			<tr>
+				<td colspan="2">
+					<input type="hidden" name="process" value="true" />
+					<input type="submit" value="Save" />
+				</td>
+		</table>
+	</fieldset>
+	
+	{if $program->get('id') > 0}
+	{literal}
+	<style type="text/css">
+	#slotGrid td, #slotGrid th {
+		padding:3px;
+	}
+	#slotGrid th {
+	font-size: .8em;
+	text-decoration:underline;
+	}
+	
+	#slotGrid .editable {
+		text-align:right;
+	}
+	#slotGrid .editableText {
+		color:#458AC8;
+		text-decoration:underline;
+		border:1px solid #fff;
+		padding:2px;
+	}
+	
+	#slotGrid .editableTextInput {
+		border:1px inset #000;
+		padding:0;
+	}
+	#slotGrid .editableTextInput input {
+		text-align:right;
+		border:0;
+		padding:2px;
+	}
+	</style>
+	{/literal}
+	<fieldset>
+		<legend>Connected Practices</legend>
+		{if $programMemberArray}
+			<div style="display:none" id="editableTemplate"><div><input size="3" value="" onkeypress="return captureEnter(this, event)" /></div></div>
+			<table id="slotGrid">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Speciality</th>
+						<th>Slot Type</th>
+						{foreach from=$displayMonths item=displayMonth}
+						<th>{$displayMonth}</th>
+						{/foreach}
+					</tr>
+				</thead>
+				<tbody>
+				{foreach name="connectedPractice" from=$programMemberArray item=programMember}
+				<tr>
+					<td valign="top">{$programMember->value('name_link')}</td>
+					<td valign="top">
+					{foreach from=$programMember->get('specialties') item=specialty}
+						{$specialty}<br />
+					{/foreach}
+					</td>
+					<td>
+						{$programMember->get('external_type')}<br />
+						Total Offerred<br />
+						Committed<br />
+						Remaining
+					</td>
+					{foreach name="connectedPracticeSlot" from=$programMember->getSlots() item=programMemberSlot}
+					<td class="editable">
+						<div>{$programMemberSlot->get('total')}</div>
+						<div>{$programMemberSlot->get('used')}</div>
+						<div>{$programMemberSlot->get('available')}</div>
+						<div style="visibility: hidden; display: none;">{$programMemberSlot->get('month')}</div>
+						<div style="visibility: hidden; display: none;">{$programMemberSlot->get('year')}</div>
+						<div style="visibility: hidden; display: none;">{$programMemberSlot->get('external_id')}</div>
+						<div style="visibility: hidden; display: none;">{$programMemberSlot->get('refprogram_member_id')}</div>
+					</td>
+					{/foreach}
+				</tr>
+				<tr>
+					<td colspan="15">&nbsp;</td>
+				</tr>
+				{/foreach}
+				</tbody>
+			</table>
+			<script type="text/javascript">var slotGridObj = new editableTable('slotGrid');</script>
+		{else}
+			No connected practices
+		{/if}
+		
+		<div>
+			<a href="{$addPracticeLink}">Add a new practice</a>
+		</div>
+		
+		<div>
+			{$practiceGrid->render()}
+		</div>
+	{/if}
+</form>

@@ -1,0 +1,37 @@
+{literal}
+<style>
+.alertContainer .header {
+ background-color:#cc9;
+ padding:5px 8px;
+ font-weight:bold;
+ border:1px solid #000;
+}
+
+.alertContainer .body {
+ background-color:#eec;
+ padding:0;;
+ border:1px solid #cc9;
+ clear:both;
+}
+
+.alertContainer .body p {
+ margin:3px 8px;
+}
+
+.alertContainer .button {
+ float:right;
+ display:block;
+ padding:3px 5px;
+ background-color:#cc9;
+}
+</style>
+{/literal}
+
+<div class="alertContainer">
+	<div class="body">
+		<a class="button" href="{$DELETE_URL}&alert_id={$alert->get('id')}">Delete</a>
+		<p>{$alert->get('note')} - {$alert->get('due_date')}</p>
+	</div>
+</div>
+
+

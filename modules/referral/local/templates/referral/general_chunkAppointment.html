@@ -1,0 +1,83 @@
+<fieldset>
+	<legend>Appointment Details</legend>
+	{if $appointment->isPopulated() && $request->value('refStatus') == 'Requested'}
+	<div>
+		<strong>Note</strong>: This appointment has been cancelled and must be 
+		rescheduled.
+	</div>
+	
+	<hr style="border:0; border-top: 1px dashed #000;" />
+	{/if}
+	{if $appointment->isPopulated()}
+	<div>Practice: {$appointment->get('practice_name')}</div>
+	<div>Specialist: {$appointment->get('provider_name')}</div>
+	<div>
+	{if  $appointmentScheduled}
+		<div>
+			<form method="post">
+			Edit Time:<br /> 
+			<input class="required" size="5" name="Refappointment[time_digits]" value="{$appointment->get('time_digits')}" />
+			<select class="required" name="Refappointment[time_suffix]">
+				<option{if $appointment->get('time_suffix') == 'AM'} selected="selected"{/if}>AM</option>
+				<option{if $appointment->get('time_suffix') == 'PM'} selected="selected"{/if}>PM</option>
+			</select>
+			
+			{clni_month_dropdown name="Refappointment[date_month]" selected=$appointment->get('date_month')}
+			
+			<select class="required" name="Refappointment[date_date]">
+				<option></option>
+				{html_options options=$dateArray selected=$appointment->get('date_date')}
+			</select>
+			<select class="required" name="Refappointment[date_year]">
+				<option></option>
+				{html_options options=$yearArray selected=$appointment->get('date_year')}
+			</select>
+			<input type="hidden" name="Refappointment[id]" value="{$appointment->get('id')}" />
+			<input type="hidden" name="process" value="generic" />
+			<input type="submit" value="Save" class="button" onmouseover="hover(this)" onmouseout="hover(this)" />
+			</form>
+		</div>
+	{else}Time: {$appointment->get('time')} {$appointment->get('date')}{/if}
+	</div>
+	<div>
+		Location<br />
+		{$appointment->get('location_data')|nl2br}
+	</div>
+	{else}
+	<p>N/A</p>
+	{/if}
+	
+	{if true || $request->value('refStatus') != "Requested / Eligibility Pending"}
+		{if $APPOINTMENT_BUTTON_URL && (!$appointment->isPopulated() || $request->get('refStatus') == 1 || $request->get('refStatus') == 7)}
+			<div style="margin:.75em .2em;">
+				<a class="inputButton" href="{$APPOINTMENT_BUTTON_URL}">Set up an Appointment for this Request</a>
+			</div>
+		{elseif $APPOINTMENT_BUTTON_URL && $appointment->isPopulated() && ($request->get('refStatus') != 7 && $request->get('refStatus') != 1)}
+			<script type="text/javascript">
+			{literal}
+			function cancelAppointmentConfirm(linkObj) {
+				confirmLinkManager.confirmLink(linkObj, 'cancelAppointmentText'); 
+				return false;
+			}
+			{/literal}
+			</script>
+			<div style="margin:.75em .2em;">
+				<a class="inputButton" href="{$APPOINTMENT_BUTTON_URL}" {literal}onclick="return cancelAppointmentConfirm(this);"{/literal}>Cancel this Appointment</a>
+			</div>
+			
+			<div style="display:none;" id="cancelAppointmentText">
+				<p><strong>Are you sure you wish to cancel this appointment?</strong></p>
+				
+				<p>
+					Marking as cancelled will change the status back to <em>Requested</em> and<br />
+					allow another appointment to be scheduled.</p>
+			
+				<ul class="menu centered">
+					<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._originalLinkObj + this.parentNode.parentNode.parentNode.getElementsByTagName('select').item(0).value;">Yes, cancel this appointment.</a></li>
+					<li><a href="javascript:confirmLinkManager.cancel()">No, keep this appointment.</a></li>
+				</ul>
+			</div>
+		{/if}
+	{/if}
+</fieldset>
+

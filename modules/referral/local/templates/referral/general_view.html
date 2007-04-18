@@ -1,0 +1,147 @@
+{literal}
+<script type="text/javascript">
+function newInfoWindow() {
+	window.open('{/literal}{$chlcare_base}{literal}chlreferral/index.php/chlpopup/refpatient/info/{/literal}{$request->get("patient_id")}{literal}', 'chlreferral',
+	'menubar=no,location=no,resizable=no,scrollbars=auto,status=no,height=300,width=630');
+}
+</script>
+<style type="text/css">
+.legend {
+ font-weight:bold;
+ display:block;
+}
+
+.inputButton {
+ background-color: #adad8d;
+ border: 1px solid #000;
+ padding:5px;
+ text-align:center;
+ color:#000;
+ 
+}
+
+table td {
+ vertical-align:top;
+}
+
+</style>
+{/literal}
+<table>
+	<tr>
+		<td width="39%">
+			<fieldset>
+				<legend>Referral Request: {$refProgram->get('name')}</legend>
+				{include file="referral/general_chunkRequestInfo.html"}
+			</fieldset>
+		</td>
+		<td width="20%">
+			<fieldset>
+				<legend>Referral Status</legend>
+				{literal}
+				<script type="text/javascript">
+				var confirmLinkManager = new clniConfirmLink();
+				function confirmStatusChange(linkObj) {
+					switch(linkObj.innerHTML.replace(/^\s+/g, '').replace(/\s+$/g, '')) {
+						case 'Appointment Kept' :
+							confirmLinkManager.confirmLink(linkObj, 'popupNewAppointmentText');
+							return false;
+							break;
+							
+						case 'Cancelled' :
+							confirmLinkManager.confirmLink(linkObj, 'cancelConfirmText');
+							return false;
+							break;
+							
+						case 'Rejected' :
+							confirmLinkManager.confirmLink(linkObj, 'rejectConfirmText');
+							confirmLinkManager._linkObj+='&reason=';
+							// Make a backup so we can start fresh with every new reason change
+							confirmLinkManager._originalLinkObj = confirmLinkManager._linkObj;
+							return false;
+							break;
+					}
+					return true;
+				}
+				</script>
+				{/literal}
+				<ul>
+					{foreach from=$refStatuses item=refStatus key=refStatusKey}
+					<li{if $refStatusKey == $request->get('refStatus')} class="selected"{/if}>
+						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') != 7}<a href="{$refStatusLinks.$refStatusKey}" onclick="return confirmStatusChange(this);">{/if}
+						{$refStatus}
+						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') != 7}</a>{/if}
+					</li>
+					{/foreach}
+				</ul>
+				
+				{include file="referral/general_popupCancelConfirmText.html"}
+				{include file="referral/general_popupEligibilityText.html"}
+				{include file="referral/general_popupNewAppointmentText.html"}
+				
+				<div style="display:none;" id="rejectConfirmText">
+					<p>
+						Are you sure you want to Reject this Request?</p>
+					
+					<p>
+						If this Request needs more information to process, send an email to the<br />
+						Requestor to ask for the information.  Do not Reject this Request.</p>
+						
+					<p>
+						If this Request is to be rejected, provide a reason below.  The Requestor 
+						will be automatically notified</p>
+					
+					<div align="center">
+						<select onchange="confirmLinkManager._linkObj = confirmLinkManager._originalLinkObj + this.value;">
+							{html_options options=$refRejectionReasons}
+						</select>
+						<!-- <input size="40" type="text" onblur="confirmLinkManager._linkObj = confirmLinkManager._originalLinkObj + this.value;" /> -->
+						<ul class="menu centered">
+							<li><a href="javascript:confirmLinkManager.submit()" onclick="confirmLinkManager._linkObj = confirmLinkManager._originalLinkObj + this.parentNode.parentNode.parentNode.getElementsByTagName('select').item(0).value;">Yes, Reject/Return this Request.</a></li>
+							<li><a href="javascript:confirmLinkManager.cancel()">No, keep this Request active.</a></li>
+						</ul>
+					</div>
+				</div>
+			</fieldset>
+			
+			{include file="referral/general_chunkAttachment.html"}
+		</td>
+		
+		<td width="39%">
+			{include file="referral/general_chunkAppointment.html"}
+			<div>
+			</div>
+			</form>
+			{if $visitInfo != false}
+			<fieldset>
+				<legend>Visit Info</legend>
+				{$visitInfo}
+			</fieldset>
+			{/if}
+			
+			{if $initiator}
+			Requestor: {$initiator->get('full_name')}
+			{/if}
+			<fieldset>
+				<legend>Notes/Comments</legend>
+				<form action="{$FORM_ACTION}" method="post">
+					<div>
+						<textarea name="refRequest[notes]" style="width:100%">{$request->get('notes')}</textarea>
+					</div>
+					
+					<div>
+						<input type="hidden" name="process" value="true" />
+						<input type="submit" value="Save Note" class="button" onmouseover="hover(this)" onmouseout="hover(this)" />
+					</div>
+				</form>
+			</fieldset>
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="3" align="center">
+			<a target="_new" href="{link controller='chlPrintReferral' action='view' defaultArg=$request->get('id') pageType=''}" class="inputButton">Print Copy of Request</a>
+		</td>
+	</tr>
+</table>
+
+<div style="clear:both;">&nbsp;</div>

@@ -1,0 +1,22 @@
+{if $locationsArray != false}
+	{foreach from=$locationsArray item=location key=iteration}
+		<table>
+			<tr>
+				<td>
+					<input class="required" id="refPracticeLocation_{$iteration}" type="radio" name="refAppointment[reflocation_id]" value="{$location->get('id')}" {if $onelocation}checked="checked"{/if} />
+				</td>
+				<td>
+					<label for="refPracticeLocation_{$iteration}">
+						{$location->get('address1')}<br />
+						{if $location->get('address2') != ''}{$location->get('address2')}<br />{/if}
+						{$location->get('city')}, {$location->get('state')} {$location->get('zipcode')}<br />
+						Phone Number: {$location->value('phone_number')}<br />
+						Fax Number: {$location->value('fax_number')}
+					</label>
+				</td>
+			</tr>
+		</table>
+	{/foreach}
+{else}
+This provider does not have any locations.
+{/if}

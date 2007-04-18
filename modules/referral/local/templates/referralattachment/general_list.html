@@ -1,0 +1,12 @@
+<form id="bulkDelete" name="bulkDelete" action="{link controller='ReferralAttachment' action='remove'}" method="post" onsubmit="return doRemoveStorables(this)">
+	{$documentGrid->render()}
+	{if $documentGrid->empty}
+	<p>No attachments</p>
+	{else}
+	<div>
+		<input type="hidden" name="process" value="true" />
+		<input type="submit" value="Delete" />
+	</div>
+	{/if}
+</form>
+

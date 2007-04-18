@@ -1,0 +1,265 @@
+{literal}
+<script type="text/javascript">
+function newInfoWindow() {
+	window.open('{/literal}{$chlcare_base}{literal}chlreferral/index.php/chlpopup/refpatient/info/{/literal}{$request->get("patient_id")}{literal}', 'chlreferral',
+	'menubar=no,location=no,resizable=no,scrollbars=auto,status=no,height=300,width=630');
+}
+</script>
+<style type="text/css">
+ul {
+ margin-left:0;
+ padding-left:0;
+}
+
+ul li { 
+ margin-left:20px;
+ list-style-type:circle; 
+}
+
+.inlineUL li {
+ float:left;
+}
+
+.menu li {
+ list-style-type:none;
+ margin: 0;
+}
+
+ul .selected {
+ list-style-type:disc;
+}
+
+.legend {
+ font-weight:bold;
+ display:block;
+}
+
+.inputButton {
+ background-color: #adad8d;
+ border: 1px solid #000;
+ padding:5px;
+ text-align:center;
+ color:#000;
+ 
+}
+
+table td {
+ vertical-align:top;
+}
+
+.fLeft { float:left; }
+
+</style>
+{/literal}
+<table>
+	<tr>
+
+		<td width="39%">
+			<fieldset>
+				<legend>Referral Request</legend>
+				
+				<table>
+					<tr>
+						<td colspan="2" align="center" style="padding:3px;">
+							<a class="inputButton" href="javascript:newInfoWindow()" >Click here here for Patient Info</a>
+						</td>
+					</tr>
+					<tr>
+						<td>Request Date</td>
+						<td>{$request->get('date')|date_format:'%B %e, %Y'}	</td>
+					</tr>
+
+					<tr>
+						<td>Clinic Location</td>
+						<td>
+							{if $visitInfo}
+							{$visitLocation}
+							{else}
+							N/A
+							{/if}
+						</td>
+					</tr>
+
+					<tr>
+						<td>Program Eligibility</td>
+                                                <td>
+                                                        {if $eligibilitySchema == 'Not Applicable'}
+                                                                {$eligibilitySchema}
+                                                        {else}
+                                                                {$eligibilitySchema->toList($request->get('eligibility'))}
+                                                        {/if}
+                                                </td>
+
+					</tr>
+					
+					{if $eligibilitySchema != 'Not Applicable'}
+					<tr>
+						<td>Eligible Thru</td>
+						<td>{$request->get('eligible_thru')|date_format:'%B %e, %Y'}</td>
+					</tr>
+					{/if}
+					
+					<tr>
+						<td>Specialist Needed</td>
+						<td>
+							{$request->get('refSpecialty')}
+						</td>
+					</tr>
+					
+					<tr>
+						<td>Translator Needed</td>
+						<td>
+							{$request->get('translator')}
+						</td>
+					</tr>
+					
+					<tr>
+						<td>Transportation Needed</td>
+						<td>
+							{$request->get('transportation')}
+						</td>
+					</tr>
+					
+					<tr>
+						<td>Requested Slot</td>
+						<td>
+							{$request->get('refRequested_day')}
+							{$request->get('refRequested_time')}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<fieldset>
+								<legend class="legend">Referral Assessment/Reason:</legend>
+								{$request->get('reason')}
+							</fieldset>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="2">
+							<fieldset>
+								<legend class="legend">Brief History with Diagnosis and Results</legend>
+								{$request->get('history')}
+							</fieldset>
+						</td>
+					</tr>
+					
+				</table>
+			</fieldset>
+		</td>
+		<td width="20%">
+			<fieldset>
+				<legend>Referral Status</legend>
+				<ul>
+					{foreach from=$refStatuses item=refStatus key=refStatusKey}
+					<li{if $refStatusKey == $request->get('refStatus')} class="selected"{/if}>
+						{$refStatus}
+					</li>
+					{/foreach}
+				</ul>
+			</fieldset>
+			
+			<!--
+			<fieldset>
+				<legend>Referral Attachments</legend>
+				{$filelist}
+				<a href="{$UPLOAD_ACTION}" class="inputButton">Add New Attachment</a>
+			</fieldset>
+			-->
+		</td>
+		<td width="39%">
+			{literal}
+			<style type="text/css">
+			td.outlined {
+				border:1px solid #000;
+				padding-left:5px;
+				padding-right:5px;
+				/* inherit padding-top/bottom */
+			}
+			</style>
+			{/literal}
+			<table>
+				<tr>
+					<td>Status</td>
+					<td class="outlined">Appointment Kept</td>
+				</tr>
+				
+				<tr>
+					<td>Specialty Requested</td>
+					<td class="outlined">{$request->get('refSpecialty')}</td>
+				</tr>
+				
+				<tr>
+					<td>Other Requests</td>
+					<td class="outlined">
+						{if $request->get('translator') == "No" && $request->get('transportation') == "No"}
+						N/A
+						{else}
+							{if $request->get('translator') == "Yes"}
+							Translator Needed<br />
+							{/if}
+							{if $request->get('transportation') == "Yes"}
+							Transporation Needed<br />
+							{/if}
+						{/if}
+						</td>
+				</tr>
+				
+				<tr>
+					<td>Requested Slot</td>
+					<td  class="outlined">
+						{$request->get('refRequested_day')}
+						{$request->get('refRequested_time')}
+					</td>
+				</tr>
+				
+				<tr>
+					<td valign="top">Diagnoses</td>
+					<td class="outlined">
+						{foreach from=$diagnoses->get('diagnoses_array') item=procedure}{$procedure}<br />{/foreach}
+					</td>
+				</tr>
+				
+				<tr>
+					<td valign="top">Procedures</td>
+					<td class="outlined">
+						{foreach from=$diagnoses->get('procedures_array') item=procedure}{$procedure}<br />{/foreach}
+					</td>
+			</table>
+
+			
+			<fieldset>
+				<legend>Appointment Details</legend>
+				
+				<div>Practice: {$appointment->get('practice_name')}</div>
+				<div>Specialist: {$appointment->get('provider_name')}</div>
+				<div>Time: {$appointment->get('time')} {$appointment->get('date')}</div>
+				<div>
+					Location<br />
+					{$appointment->get('location_data')|nl2br}
+				</div>
+			</fieldset>
+			
+			{if $initiator}
+			Requestor: {$initiator->get('full_name')}
+			{/if}
+			
+			<fieldset>
+				<legend>Notes/Comments</legend>
+				<form action="{$FORM_ACTION}" method="post">
+					<div>
+						<textarea rows="3" cols="50" name="refRequest[notes]">{$request->get('notes')}</textarea>
+					</div>
+					
+					<div>
+						<input type="hidden" name="process" value="true" />
+						<input type="submit" value="Save Note" />
+					</div>
+				</form>
+			</fieldset>
+		</td>
+	</tr>
+</table>
+
+<div style="clear:both;">&nbsp;</div>
