@@ -7,7 +7,7 @@ class C_WidgetForm extends C_CRUD {
 	
 	var $_ordoName = "WidgetForm";
 	var $form_data_id = 0;
-	var $form_id = '';
+	var $widget_form_id = '';
 	var $column_id = '';
 	var $controller_name = '';
 
@@ -67,8 +67,8 @@ class C_WidgetForm extends C_CRUD {
 			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
 			$tmpar = array();
-                        if ($wflist_ds->get_form_type($row["form_id"]) == 3) {
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $wflist_ds->get_controller_name($row["form_id"]), true, $patient_id). "&returnTo=" . $return_link);
+                        if ($wflist_ds->get_form_type($row["widget_form_id"]) == 3) {
+                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $wflist_ds->get_controller_name($row["widget_form_id"]), true, $patient_id). "&returnTo=" . $return_link);
                         }
                         else {
                                 $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
@@ -102,17 +102,16 @@ class C_WidgetForm extends C_CRUD {
                 $this->assign("EDIT_ACTION", Celini::managerLink($id));
                 $this->view->assign_by_ref('ordo', $ordo);
 
- 		$this->assign('controller_name',$ordo->getWidgetFormControllerName($id));
 
                 return $this->view->render('edit.html');
         }
 
 	function actionRemove() {
-		$column_id = $_GET['column_id'];
-		$form_id = $_GET['form_id'];
+		$column_id = (int)$_GET['column_id'];
+		$widget_form_id = (int)$_GET['form_id'];
 
 		$db =& new clniDB();
-                $sql = "delete from summary_columns where summary_column_id = '$column_id' and form_id = '$form_id'";
+                $sql = "delete from summary_columns where summary_column_id = '" . (int)$column_id . "' and widget_form_id = '" . (int)$widget_form_id . "'";
                 $results = $db->execute($sql);
 
 		header("HTTP/1.1 204 No Content");
@@ -120,23 +119,35 @@ class C_WidgetForm extends C_CRUD {
 	}
 
 	function actionAdd() {
+		
                 $id = $this->getDefault($this->_ordoName . "_id", '0');
-                $ordo =& Celini::newORDO($this->_ordoName, $id);
+		$ordo = "";
+		if(is_object($this->_ordo)) {
+                  $ordo = $this->_ordo;
+		}else {
+                  $ordo = Celini::newORDO($this->_ordoName, $id);
+		}
                 $this->assign("EDIT_ACTION", Celini::managerLink($id));
                 $this->view->assign_by_ref('ordo', $ordo);
-
-		$column_id = $_GET['column_id'];
-		$form_id = $_GET['form_id'];
-		$field_name = $_GET['field_name'];
-		$pretty_name = $_GET['pretty_name'];
-		$table_name = $_GET['table_name'];
-
+		$column_id = '';
+                $widget_form_id = '';
+                $field_name = '';
+                $pretty_name = '';
+                $table_name = '';
 		$db =& new clniDB();
-		$sql = "select count(1) as count from summary_columns where summary_column_id = '$column_id' and form_id = '$form_id'";
+		if (isset($_GET['column_id']) && isset($_GET['widget_form_id']) && isset($_GET['field_name']) && isset($_GET['pretty_name']) && isset($_GET['table_name'])) {
+		$column_id = (int)$_GET['column_id'];
+		$widget_form_id = (int)$_GET['widget_form_id'];
+		$field_name = $db->quote($_GET['field_name']);
+		$pretty_name = $db->quote($_GET['pretty_name']);
+		$table_name = $db->quote($_GET['table_name']);
+		}
+
+		$sql = "select count(*) as count from summary_columns where summary_column_id = '$column_id' and widget_form_id = '" . (int)$widget_form_id . "'";
 		$results = $db->execute($sql);
 
 		if ($results->fields["count"] == 0) {
-                	$sql = "insert into summary_columns (summary_column_id, form_id, name, pretty_name, table_name) values ('$column_id', '$form_id', '$field_name', '$pretty_name', '$table_name')";
+                	$sql = "insert into summary_columns (summary_column_id, widget_form_id, name, pretty_name, table_name) values ($column_id, $widget_form_id, $field_name, $pretty_name, $table_name)";
                 	$results = $db->execute($sql);
 		
 			header("HTTP/1.1 204 No Content");

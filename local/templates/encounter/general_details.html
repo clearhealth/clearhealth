@@ -1,4 +1,5 @@
-<div class="tab selected" title="{l}Encounter{/l}">
+<fieldset>
+	<legend>{l}Details{/l}</legend>
 	<input type="hidden" name="encounter[patient_id]" value="{$encounter->get("patient_id")}">
 	<table>
 		<tr>
@@ -8,7 +9,7 @@
 				</select>
 			</td>
 			<td><label>{l}Treating Provider{/l}:</label></td>
-			<td><select name="encounter[2nd_provider_id]">
+			<td><select name="encounter[treating_person_id]">
 					<option value='0'>No Provider</option>
 					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('treating_person_id')}
 				</select>
@@ -18,13 +19,11 @@
 			<td><label>{l}Date of Treatment{/l}:</label></td>
 			<td>{clni_input_date name="encounter[date_of_treatment]" value=$encounter->get('date_of_treatment') id="date_of_treatment"}</td>
 
-			<td><label>{l}2nd Provider{/l}:</label></td>
-			<td><select name="encounter[treating_person_id]">
-					<option value='0'>No Provider</option>
-					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('2nd_provider_id')}
+			<td><label>{l}Encounter Reason{/l}:</label></td>
+			<td><select name="encounter[encounter_reason]">
+					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
 				</select>
 			</td>
-
 		</tr>
 		<tr>			
 			<td><label>{l}Appointment{/l}:</label></td>
@@ -35,35 +34,7 @@
 			
 		</tr>
 		<tr>
-			<td><label>{l}Registrar{/l}:</label></td>
-			<td><select name="encounter[registrar]">
-					<option value='0'></option>
-					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('registrar')}
-				</select>
-			</td>
-
-			<td><label>{l}New/Returning{/l}:</label></td>
-			<td><select><option></option><option>New</option><option>Returning</option></select>
-			</td>
-		</tr>
-		<tr>
-			<td><label>{l}Type of Encounter{/l}:</label></td>
-			<td><select name="encounter[encounter_reason]">
-					{html_options options=$encounter->getEncounterReasonList() selected=$encounter->get('encounter_reason')}
-				</select>
-			</td>
-
-			<td colspan=2 style="text-align:right"><label class="inline">{l}Reason{/l}:</label>
-			<input size="35"></td>
-		</tr>
-		<tr>
-			<td><b>Subjective</b><br><label>{l}Comments{/l}:</label></td>
-			<td colspan="3">
-				<textarea rows="2" cols="50"></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td>{if $encounter->get('status') != 'closed'}<input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if}">{/if}</td>
+			<td>{if $encounter->get('status') != 'closed'}<input type="submit" value="{if $encounter->get('id') > 0}Update{else}Add{/if} Encounter">{/if}</td>
 			<td colspan="3">
 				<div style="white-space:nowrap;">
 		{*	<label class="inline">{l}Status{/l}:</label>*}
@@ -107,7 +78,7 @@
 			</td>
 		</tr>
 	</table>
-</div>
+</fieldset>
 {literal}
 <script language="javascript" type="text/javascript">
 function populateEncounter(selected) {

@@ -1,4 +1,3 @@
-<div class="tab" title="{l}Statistics{/l}">
 
 		<input type="hidden" value="{$patientStatistics->get('id')}" name="patientStatistics[patient_statistics_id]">
 		<table>
@@ -69,4 +68,3 @@
 		<input type="hidden"  name="identifier[identifier_id]" value="{$identifier->get('id')}">
 {clni_register_validation_rule id="ps_monthly_income" rule="number" message="Monthly income is a Number no commas should be used"}
 {clni_register_validation_rule id="ps_family_size" rule="number" message="Family size a Number"}
-</div>

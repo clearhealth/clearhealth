@@ -228,7 +228,7 @@ class C_Schedule extends Controller
 		$sgrid =& new cGrid($scheduleDS);
 		$sgrid->registerTemplate("start1",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_1})">{$start1}</a>&nbsp;&nbsp;');
 		$sgrid->registerTemplate("start2",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_2});">{$start2}</a>&nbsp;&nbsp;');
-		$sgrid->registerTemplate("note",'&nbsp;&nbsp;{$note}&nbsp;&nbsp;<a href="#" onclick="deleteEvent({$event_ids});">del</a>&nbsp;&nbsp;');
+		$sgrid->registerTemplate("note",'&nbsp;&nbsp;<a href="#" onclick="deleteEvent({$event_ids});">del</a>&nbsp;&nbsp;{$note}&nbsp;&nbsp;');
 		if ($scheduleDS->numRows() == 0)
 			return "No matching schedule data found";
 		//true without paging header

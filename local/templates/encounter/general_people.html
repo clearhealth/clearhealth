@@ -1,4 +1,5 @@
-<div class="tab" title="{l}People{/l}">
+<fieldset>
+	<legend>{l}Encounter people{/l}</legend>
 	{$encounterPersonGrid->render()}
 	{if $encounterPersonGrid->empty}
 	<p>{l}Encounter has no extra people{/l}</p>
@@ -34,4 +35,4 @@
 		</tr>
 	</table>
 	{/if}
-</div>
+</fieldset>

@@ -163,6 +163,9 @@ class C_Patient extends Controller {
 
 		$this->assign('now',date('Y-m-d'));
 
+		$config = Celini::configInstance();
+                $this->view->assign('customPatientStats',$config->get('customPatientStatistics',false));
+
 		if ($this->GET->exists('view') && $this->GET->get('view') === 'narrow') {
 			return $this->view->render("singleColEdit.html");
 		}

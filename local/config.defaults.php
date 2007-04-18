@@ -1,10 +1,20 @@
 <?php
 //Require https, i.e. force https links even if not detected
-$config['forceHTTPS'] = "false";
+$config['forceHTTPS'] = false;
 
 // default starting location /index.php/calendar/day
 $config['default_controller'] = "CalendarDisplay";
 $config['default_action'] = "day";
+$config['CalendarDynamicTimes'] = false;
+
+################################################################################
+## Client Side Caching Options
+################################################################################
+$config['cacheHeadersEnabled'] = false;
+// caching notes: using caching will speed up a production site substantially, however it can make development confusing.
+$config['cacheHeadersDuration'] = 24 * 3600; // default caching for 24 hours
+$config['cacheHeadersImgMaxAge'] = 24 * 3600; // default caching for 24 hours
+
 
 ################################################################################
 # Confidential Actions
@@ -45,6 +55,13 @@ $config['billing']['multipleByUnits'] = false;
 
 $config['displayInsuranceElegibility'] = false;
 $config['generatePendingClaimsOnly'] = false;
+
+################################################################################
+# Labs Module Options
+################################################################################
+$config['labs'] = array();
+//This feature is experimental, do not use.
+$config['labs']['highlightAbnormal'] = false;
 
 ################################################################################
 ## Printer options

@@ -14,6 +14,7 @@ class WidgetForm extends ORDataObject {
 	var $name = '';
 	var $form_id		= '';
 	var $type		= '';
+	var $controller_name = '';
 	var $_widgetTypes = array();
 	/**#@-*/
 
@@ -58,9 +59,10 @@ class WidgetForm extends ORDataObject {
 		return $ret;
 	}
 
-	function getWidgetFields($form_id) {
+	function getWidgetFields($widget_form_id) {
+		
 		$db =& new clniDB();
-		$sql = "select summary_column_id, type, name from summary_columns where form_id = '$form_id' order by name";
+		$sql = "select summary_column_id, type, name from summary_columns where widget_form_id = '" . (int)$widget_form_id . "' order by name";
 		$results = $db->execute($sql);
 		while ($results && !$results->EOF) {
 			$ret[$results->fields[summary_column_id]] = $results->fields;
@@ -70,9 +72,9 @@ class WidgetForm extends ORDataObject {
 
 	}
 
-	function getWidgetColumn($form_id) {
+	function getWidgetColumn($widget_form_id) {
 		$db =& new clniDB();
-		$sql = "select max(summary_column_id) as summary_column_id from summary_columns where form_id = '$form_id'";
+		$sql = "select max(summary_column_id) as summary_column_id from summary_columns where widget_form_id = '" . (int)$widget_form_id . "'";
 		$results = $db->execute($sql);
 		$ret = $results->fields["summary_column_id"];
 
@@ -83,18 +85,8 @@ class WidgetForm extends ORDataObject {
 
 	}
 
-        function getWidgetFormControllerName($form_id) {
-                $db = new clniDB();
-
-                $query = "select controller_name from widget_form_controller where
-                                form_id = '$form_id'";
-                $result = $db->execute($query);
-                if ($result && !$result->EOF) {
-                        return $result->fields['controller_name'];
-                }
-
-                return false;
-
+        function getWidgetFormControllerName() {
+		return $this->get('controller_name');
         }
 
 

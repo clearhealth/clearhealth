@@ -45,7 +45,7 @@ class C_Main extends C_PageType {
 		}
 
 		$p =& new C_CriticalView();
-		$criticalview = $p->actionEdit();
+		$criticalview = $p->actionViewCriticals();
 		$this->assign("criticalview",$criticalview);
 
 		if (isset($GLOBALS['config']['extra_css']) && is_array($GLOBALS['config']['extra_css'])) {

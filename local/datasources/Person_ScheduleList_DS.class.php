@@ -40,7 +40,7 @@ class Person_ScheduleList_DS extends Datasource_sql {
 						MIN(ev.event_id) as event_id_1, 
 						MAX(ev.event_id) as event_id_2, 
 						
-						DATE_FORMAT(ev.start,'%Y-%m-%d') as day, 
+						DATE_FORMAT(ev.start,'%m/%d/%Y %a') as day, 
 						DATE_FORMAT(MIN(ev.start),'%r') as start1, 
 						DATE_FORMAT(MIN(ev.end),'%r') as end1, 
 						CASE WHEN COUNT(ev.start) >1 THEN DATE_FORMAT(MAX(ev.start),'%r') END as start2, 

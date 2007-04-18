@@ -37,11 +37,23 @@ class ClearhealthAJAX {
 		$this->server->registerClass($schedule,'schedule');
 
 	}
+	function initSelfMgmtGoals() {
+		$GLOBALS['loader']->requireOnce('controllers/C_SelfMgmtGoals.class.php');
+		$smgc=&new C_SelfMgmtGoals();
+		$this->server->registerClass($smgc,'SelfMgmtGoals');
+
+	}
+	function initLabs() {
+		$GLOBALS['loader']->requireOnce('controllers/C_Labs.class.php');
+		$labsc=&new C_Labs();
+		$this->server->registerClass($labsc,'Labs');
+
+	}
 
 	function initcoding(){
 		$GLOBALS['loader']->requireOnce('controllers/C_Coding.class.php');
 		$coding=&new C_Coding();
-		$this->server->registerClass($coding,'coding',array('cpt_search','icd_search','cdt_search','procedure_search','diagnosis_search'));
+		$this->server->registerClass($coding,'coding');
 	}
 
 	function initReport() {
@@ -70,6 +82,12 @@ class ClearhealthAJAX {
 	function initEncounter() {
 		$encounter =& Celini::newOrdo('Encounter');
 		$this->server->registerClass($encounter,'Encounter',array('appointmentlist_remoting'));
+	}
+	function initCEncounter() {
+		$GLOBALS['loader']->requireOnce('controllers/C_Encounter.class.php');
+		$enc=&new C_Encounter();
+		$this->server->registerClass($enc,'CEncounter');
+
 	}
 
 	function initFeeEstimator() {

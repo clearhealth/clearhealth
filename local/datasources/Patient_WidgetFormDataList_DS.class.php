@@ -23,14 +23,20 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 	var $patient_id = '';
 	var $fields = '';
 	var $case_sql = '';
+	var $form_id = '';
 
 
-	function Patient_WidgetFormDataList_DS($patient_id) {
+	function Patient_WidgetFormDataList_DS($patient_id,$form_id = '',$allCols = false) {
 		$this->patient_id = intval($patient_id);
-		
+		$form_id = (int)$form_id;
+		$this->form_id = $form_id;
+		$colList = '';
+		if ($form_id >0 && $allCols) {
+			$colList = " , " . $this->_buildColList();
+		}
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "type, last_edit, f.name, form_data_id, external_id ",
+				'cols'    => "type, last_edit, f.name, form_data_id, external_id {$colList} ",
 				'from'    => "widget_form AS wf " .
 							 "INNER JOIN form AS f USING(form_id) ".
 							 "INNER JOIN form_data AS fd using (form_id) ".
@@ -51,13 +57,13 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 		
 		$db = Celini::dbInstance();
 		
-		$sql = "select DISTINCT value_key, 'storage_int' as source  from storage_int si LEFT JOIN form_data fd ON si.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'
+		$sql = "select DISTINCT value_key, 'storage_int' as source  from storage_int si LEFT JOIN form_data fd ON si.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' 
 				UNION
-				select DISTINCT value_key, 'storage_date' as source from storage_date sd LEFT JOIN form_data fd ON sd.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'
+				select DISTINCT value_key, 'storage_date' as source from storage_date sd LEFT JOIN form_data fd ON sd.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "'
 				UNION
-				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'
+				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "'
 				UNION
-				select DISTINCT value_key, 'storage_text' as source from storage_text st LEFT JOIN form_data fd ON st.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' and value_key LIKE '%_summary'";
+				select DISTINCT value_key, 'storage_text' as source from storage_text st LEFT JOIN form_data fd ON st.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' order by value_key";
 //echo $sql ."<br>";
 
 		$res = $db->query($sql);
@@ -99,6 +105,9 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
         }
         $case_sql = substr($case_sql,0,-2);             
         $this->case_sql = $case_sql;
+	}
+	function _buildColList() {
+
 	}
 }
 

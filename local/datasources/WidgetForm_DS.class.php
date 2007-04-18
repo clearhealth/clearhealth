@@ -18,16 +18,27 @@ class WidgetForm_DS extends Datasource_Sql {
 	var $_type = 'html';
 
 
-	function WidgetForm_DS() {
+	function WidgetForm_DS($type = '') {
+		if (strlen($type) > 0) {
+			if ($type =="*") {
+				$type = "";
+			}
+			else {
+				$type = "type in (".$type.")";
+			}
+		}
+		else {
+			$type = "type in (1,2,3)";
+		}
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "*",
+				'cols'    => "*, widget_form_id as link",
 				'from'    => "widget_form wf",
 				'orderby' => 'wf.widget_form_id',
-				'where'   => 'type in (2,3)'
+				'where'   => $type
 			),
-			array('name' => 'Name', 'widget_form_id' => 'Form ID', 'type' => 'Type'));
-			$this->registerTemplate('widget_form_id','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">{$widget_form_id}</a>');
+			array('name' => 'Name', 'link' => 'Link', 'type' => 'Type'));
+			$this->registerTemplate('link','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">{$link}</a>');
 
 			$this->registerFilter('widgetType',array(&$this,'_widgetType'));
 	}

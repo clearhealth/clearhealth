@@ -3,6 +3,7 @@ $loader->requireOnce("/includes/Grid.class.php");
 $loader->requireOnce("includes/CodingDatasource.class.php");
 $loader->requireOnce("includes/Datasource_array.class.php");
 $loader->requireOnce("datasources/Superbill_DS.class.php");
+$loader->requireOnce("datasources/Practice_Superbill_DS.class.php");
 $loader->requireOnce("includes/transaction/TransactionManager.class.php");
 $loader->requireOnce('includes/LockManager.class.php');
 
@@ -103,6 +104,26 @@ class C_Coding extends Controller {
 			}
 		}
 	}
+	function actionTest() {
+		return $this->ajaxSuperbill();
+	}
+	function ajaxSuperbill() {
+		$sbs = array();
+		$head =& Celini::HTMLheadInstance();
+		$head->addJS('ui');
+		$p = ORDataObject::Factory("Practice");
+		$plist = $p->valueList_name();
+		$string = '';
+		foreach ($plist as $id => $name) {
+			$ds =& new Practice_Superbill_DS($id);
+			//$string .= "<br />" . $name . ":" . $id;
+                	$grid =& new cGrid($ds);
+                	$grid->orderLinks = false;
+			$sbs[$name] = $grid->render();
+		}
+                $this->view->assign_by_ref('sbs',$sbs);
+		return $string .$this->view->render("superbill.html");
+	}
 
 	function update_action_edit($foreign_id = 0, $coding_data_id = 0, $icd_id = 0) {
 		if($foreign_id == 0)
@@ -117,6 +138,7 @@ class C_Coding extends Controller {
 
 		$head =& Celini::HTMLHeadInstance();
 		$head->addJs('scriptaculous');
+                $head->addJs('clnipopup');
 		$head->addExternalCss('suggest');
 
 

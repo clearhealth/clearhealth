@@ -417,3 +417,275 @@ ul.controllerMenu li a {
 .demostathover:hover .demostats {
 	display: block;
 }
+#calendarCanvas {
+	background-color: #FFFFFF; border: 2px #A1A5A9 solid; 
+	position: relative;
+}
+.timeRow {
+	position: relative;
+	height: 25px;
+}
+.primaryBorder 	{ 
+	position: absolute;
+	width: 100%;
+	height: 1px;
+	border-top: 1px solid #A1A5A9;
+}
+.secondaryBorder{  
+	position: absolute;
+	width: 100%;
+	height: 1px;
+	border-top: 1px dashed #A1A5A9;
+}
+.timeLabel {
+	top: 0px;
+	border-right: 2px solid #A1A5A9;
+	height: 25px;
+	width: 50px;
+	vertical-align: top;
+	font-weight: bold;
+}
+.column {
+	margin-top: 1px;
+	position: absolute; 
+	top:0; 
+	overflow: hidden;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+#calendarOverlay {
+	position: absolute;
+	left: 52px;
+	top: 1px;
+	clear: both;
+}
+/* IE6 Compat hack, ie6 starts the calendarOverlay 1 pixel off, its top should be 0 */
+html>body #calendarOverlay {
+	top: 0px;
+}
+
+.schedule {
+	position: relative;
+	border: solid 1px black;
+	width: 100%;
+	top: 5px;
+}
+.schedule .header {
+	height: 21px;
+	padding: 2px;
+}
+.schedules div {
+	position: absolute;
+	width: 100%;
+	filter: alpha(Opacity=70);
+	-moz-opacity:.7;
+	opacity:.7;
+	z-index: 1;
+}
+
+.colItems {
+	position: absolute;
+	top: 30px;
+	margin-left: 4px;
+}
+.colItems div {
+	width: 100%;
+	height: 25px;
+}
+
+.navback {
+	white-space: nowrap;
+	background: #aaa;
+}
+
+/* innerColumns display with slight negative top and left offsets, im not sure what causes this, first we have a fix for ie, then for ff */
+.innerColumn {
+	position: absolute;
+	top: 6px;
+	left: 3px;
+	display: none;
+}
+/* Hide this rule from IE6 */
+html>body .innerColumn {
+	top: 5px;
+	left: 1px;
+}
+.primaryColumn {
+	margin-left: 24px;
+	display: block;
+}
+
+
+.conflictBlockBackground {
+	position: absolute;
+	border: solid 3px red;
+	width: 100%;
+}
+.conflictBlockLink {
+	position: absolute;
+	display: block;
+	width: 10px;
+	z-index: 20;
+	background-color: red;
+	color: red;
+	margin-top: 5px;
+}
+
+
+
+.event-styling
+{
+	font-size:8pt;
+	padding-left: 6px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-bottomleft: 10px;                                                                                  
+	padding-right: 6px;
+	-moz-border-radius-topright: 10px;                                                                                  
+	-moz-border-radius-bottomright: 10px;                                                                                  
+	color: #000;
+    background-color: #999;
+    padding: 0;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	border-color: #D33 !important;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.ms-highlight{
+	background-color: #99CC99;
+}
+
+/* CSS for events */
+.event {
+	position: absolute;
+	background: #eee !important;
+	width: 200px;
+	z-index: 50;
+	font-family: Arial, Helvetica, sans-serif; font-size: 11px;
+	overflow: hidden;
+	border: solid 1px black;
+}
+
+.eventTitle {
+	font-size: 8pt;
+	padding: 1px;
+	padding-bottom: 0;
+	border-bottom: solid 1px black;
+	color: black;
+}
+
+.eventBody {
+	padding: 2px;
+	padding-top: 0;
+}
+
+
+/* Css for click to drag selecting */
+.scheduleTarget {
+	position: absolute;
+	z-index: 2;
+	/*
+	position: relative;
+	width: 25px;
+	height: 25px;
+	*/
+}
+.stOver{
+	background-color: darkgray !important;
+}
+.stSelected{
+	background-color: blue !important;
+}
+
+
+#filterHTML {
+	display: none;
+	position: absolute;
+	background-color: white;
+	border: ridge 2px black;
+	padding: 2px;
+}
+#filterHTML .title {
+	font-size: 10pt; 
+	font-weight:bold;
+	border-bottom: solid 1px black;
+	text-align: center;
+	cursor: move;
+}
+.multiple .handle {
+	float: left;
+	border: solid 1px black;
+	cursor: pointer;
+}
+.multiple div.event {
+	margin-right: 4px;
+}
+.multiple .hidden {
+	display: none;
+}
+
+#appointmentEditor {
+	z-index: 100;
+	background: white;
+}
+
+#dock {
+	position:absolute;
+	top: 40px; 
+	right: 0px; 
+	width: 10px; 
+	height: 800px; 
+	background: white;  
+	z-index: 50000;
+	border-bottom: solid 10px gray;
+}
+
+#dockSlider {
+	display:block; 
+	position: absolute; 
+	top: 0px; 
+	left:0; 
+	background-color: gray; 
+	width: 10px; 
+	height: 800px; 
+	overflow: hidden; 
+	cursor: pointer; 
+}
+
+.filterToggle {
+	display: block;
+	border: solid 1px black;
+	background: #efefef;
+	width: 160px;
+	padding: 1px;
+	margin-bottom: 1px;
+	margin-top: 3px;
+	cursor: pointer;
+}
+.filterBody {
+	margin: 0;
+	padding: 0;
+}
+
+#popup_dialog {
+	position: absolute;
+	display: none;
+	left: 10%;
+	top: 20%;
+	padding: 10px;
+	border: 1px solid #000;
+	background: #FFFFFF;
+	z-index: 1000;
+}
+#popup_dialog .title {
+        font-size: 10pt;
+        font-weight:bold;
+        border-bottom: solid 1px black;
+        text-align: center;
+        cursor: move;
+}

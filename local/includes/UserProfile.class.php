@@ -18,6 +18,10 @@ class UserProfile extends AbstractUserProfile
 		$this->_initPerson();
 		return $this->_person->get('primary_practice_id');
 	}
+	function getPersonId() {
+		$this->_initPerson();
+		return $this->_person->get('person_id');
+	}
 	
 	/**
 	 * Returns an array IDs of the practices associated with this user
@@ -59,9 +63,9 @@ class UserProfile extends AbstractUserProfile
 	 * @return int|null
 	 */
 	function getDefaultLocationId() {
-		if (Auth::canI('override')) {
-			return;
-		}
+		//if (Auth::canI('override')) {
+		//	return;
+		//}
 		
 		$this->_initUser();
 		return $this->_user->get('default_location_id');

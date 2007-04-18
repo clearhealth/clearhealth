@@ -63,7 +63,13 @@ just entered. Please check the following list of existing patient records to see
 			<div class="selector" id="selector0"></div>
 			<div class="tabset" id="tabset0">
 				{include file="patient/general_patientDemo.html"}
-				{include file="patient/general_patient_statistics.html"}
+				<div class="tab" title="{l}Statistics{/l}">
+				{if $customPatientStats}
+                                {include file=$customPatientStats}
+                        	{else}
+                                {include file="patient/general_patient_statistics.html"}
+                        	{/if}
+				</div>
 			</div>
 			</div>
 		</td>

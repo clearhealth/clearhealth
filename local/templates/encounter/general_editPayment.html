@@ -1,0 +1,63 @@
+<div class="title" id="title">Charges & Payments {$smarty.now}</div>
+<div>
+<fieldset>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+{if $error}
+<p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
+{/if}
+
+<fieldset>
+	<legend>{l}Misc Payments{/l}</legend>
+
+	<p>Patient's Co-pay is: {$copay}</p>
+	
+	{$paymentGrid->render()}
+	{if $paymentGrid->empty}
+	<p>{l}Encounter has no Misc Payments{/l}</p>
+	{/if}
+	{if $encounter->get('status') != 'closed'}		
+	<input type="hidden" name="payment[payment_id]" value="{$payment->get('payment_id')}">
+	<input type="hidden" id="paymentEncounterId" value="{$encounter->get('id')}">
+	<input type="hidden" id="paymentAppointmentId" value="{$encounter->get('occurence_id')}">
+	<input type="hidden" id="paymentPatientId" value="{$encounter->get('patient_id')}">
+	
+	<table>
+		<tr>
+		{assign var=type_list value=$payment->getPaymentTypeList()}
+		{assign var=type_list_count value=$payment->get('payment_type')}
+			<td>{html_options name=payment[payment_type]  options=$payment->getPaymentTypeList() selected=$payment->get('payment_type') onchange="show_ref_num(this.options[this.selectedIndex].text);" id="paymentType"}</td>
+			<td><label>{l}Amt{/l}:</label></td>
+			<td><input name="payment[amount]" size="6" type="text" value="{$payment->get("amount")}" id="paymentAmount">&nbsp;</td>
+			<td><input name="payment[title]" size="8" type="text" value="{$payment->get("title")}" id="paymentTitle"></td>
+			<td><label id="chk_num_label" {if $type_list.$type_list_count ne "check"} style="visibility: hidden;"{/if}>{l}Chk #{/l}</label></td>
+			<td><input name="payment[ref_num]" size="4" type="text" value="{$payment->get("ref_num")}"  id="paymentRefNum" {if $type_list.$type_list_count ne "check"}style="visibility: hidden;"{/if}></td>
+			<td><input type="button" value="{if $payment->get('id') > 0}Update{else}Add{/if}" onclick="addUpdatePayment();">
+			</td>
+		</tr>
+	</table>
+	{/if}
+</fieldset>
+<hr/>
+<fieldset>
+	<legend>{l}Misc Charges{/l}</legend>
+
+	{$miscChargeGrid->render()}
+	{if $miscChargeGrid->empty}
+	<p>{l}Encounter has no Misc Charges{/l}</p>
+	{/if}
+
+	{if $encounter->get('status') != 'closed'}		
+	Amount: <input name="misc_charge[amount]" size="5" id="miscChargeAmount"> Title: <input name="misc_charge[title]" id="miscChargeTitle"> 
+	{*<br>Notes: <textarea name="misc_charge[note]" rows=1></textarea>*}
+	<input type="button" value="Add Charge" onclick="addUpdateMiscCharge();"
+>
+	{/if}
+<p>
+<br />
+<div id="alertMessages" style="display:none;overflow:auto; height:100px;"></div>
+<a href="#" onclick="hidePopup();">close</a>
+</p>
+</fieldset>
+</div>

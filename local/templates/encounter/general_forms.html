@@ -1,5 +1,6 @@
 {if $encounter->get('encounter_id') > 0}
-<div class="tab" title="{l}Forms{/l}">
+<fieldset>
+	<legend>{l}Encounter Forms{/l}</legend>
 	{$formDataGrid->render()}
 	{if $formDataGrid->empty}
 	<p>{l}Encounter has no completed forms{/l}</p>
@@ -12,5 +13,5 @@
 		</select>
 	</p>
 	{/if}
-</div>
+</fieldset>
 {/if}

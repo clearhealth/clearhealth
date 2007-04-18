@@ -35,6 +35,89 @@ class C_Encounter extends Controller {
 		return $this->actionEdit();
 	}
 
+	function ajaxEditPayment($appointmentId, $patientId) {
+		$appointmentId = (int)$appointmentId;
+		$patientId = (int)$patientId;
+	
+		$this->set('patient_id',$patientId,'c_patient');
+		$encounterId = $this->_existingEncounter($appointmentId);
+		$enc = Celini::newOrdo('Encounter',array($encounterId,$patientId));
+		if ($enc->get('encounter_id') == 0) {
+			$enc->set('occurence_id',$appointmentId);
+			$enc->persist();
+			$encounterId = $enc->get('encounter_id');
+		}
+		$payment =& Celini::newORDO('Payment');
+                if ($payment->_populated == false) {
+                        $payment->set('title','Co-Pay');
+                }
+                $payment->set("encounter_id",$encounterId);
+                $payments = $payment->paymentsFromEncounterId($encounterId);
+                $paymentGrid = new cGrid($payments);
+                $paymentGrid->name = "paymentGrid";
+                $paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
+		$miscChargeDS = new MiscCharge_Encounter_DS($encounterId);
+		$miscChargeGrid = new cGrid($miscChargeDS);
+                $this->assign_by_ref('miscChargeGrid',$miscChargeGrid);
+                $this->assign_by_ref('payment',$payment);
+                $this->assign_by_ref('payments',$payments);
+                $this->assign_by_ref('paymentGrid',$paymentGrid);
+                $this->assign_by_ref('encounter',$enc);
+		return $this->view->render("editPayment.html");
+
+	}
+	function ajaxAddUpdatePayment($data) {
+		$paymentId = 0;
+		if (isset($data['payment_id'])) $paymentId = (int)$data['payment_id'];
+		$pmt = ORDataObject::factory('Payment',$paymentId);
+		$pmt->populateArray($data);
+		$pmt->persist();
+		$this->messages->AddMessage("Payment added");	
+	}
+	function ajaxAddUpdateMiscCharge($data) {
+		$miscChargeId = 0;
+		if (isset($data['misc_charge_id'])) $miscChargeId = (int)$data['misc_charge_id'];
+		$miscCharge =& Celini::newOrdo('MiscCharge');
+		$miscCharge->populateArray($data);
+                $miscCharge->set('charge_date',date('Y-m-d H:i:s'));
+                $miscCharge->persist();
+		$this->messages->AddMessage("Misc Charge added");	
+	}
+
+	function _existingEncounter($appointment_id) {
+		$encounter_id = 0;
+		if ($appointment_id > 0) {
+                        ORDataObject::factory_include('Encounter');
+                        $id = Encounter::encounterIdFromAppointmentId($appointment_id);
+                        if ($id > 0) {
+                                $encounter_id         = $id;
+                        }
+                }
+		return $encounter_id;
+	}
+
+	function _populateAppointmentDefaults($encounter, $appointments, $appointment_id) {
+		$manager = EnumManager::getInstance();
+                        
+			$encounter->set("occurence_id",$appointment_id);
+                        $encounter->set("patient_id",$this->get("patient_id", "c_patient"));
+                        if (isset($appointments[$appointment_id])) {
+                                $encounter->set("building_id",$appointments[$appointment_id]['building_id']);
+                                //clear cache for this appointment because adding an encounter should cause it to reach "Has Encounter"
+                                $cache_match = date("Y-m-d",strtotime($appointments[$appointment_id]['appointment_start']));
+                                $this->view->regexClearCache('/'.$appointment_id.'/');
+                                $this->view->regexClearCache('/^'.$cache_match.'/');
+                        }
+
+                        if (isset($appointments[$appointment_id])) {
+                                $encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
+
+                                $reason = $manager->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
+			$encounter->set("encounter_reason",$reason);
+                        }
+		return $encounter;
+	}
+
 	/**
 	 * Edit/Add an encounter
 	 */
@@ -42,33 +125,24 @@ class C_Encounter extends Controller {
 		if (isset($this->encounter_id)) {
 			$encounter_id = $this->encounter_id;
 		}
-
 		$encounter_id = $this->_enforcer->int($encounter_id);
 		
 		$appointment_id = $this->GET->getTyped('appointment_id', 'int');
 		$patient_id = $this->GET->getTyped('patient_id', 'int');
 		
-		$valid_appointment_id = false;
 		$manager =& EnumManager::getInstance();
 
 		$ajax =& Celini::AJAXInstance();
 		$ajax->stubs[] = 'Encounter';
-
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
-			$valid_appointment_id = true;
-			ORDataObject::factory_include('Encounter');
-			$id = Encounter::encounterIdFromAppointmentId($appointment_id);
-			if ($id > 0) {
-				$encounter_id         = $id;
-				$valid_appointment_id = false;
-			} 
+		  $encounter_id = $this->_existingEncounter($appointment_id);
 		}
 
 		if ($encounter_id > 0) {
 			$this->assign('lockTimestamp',time());
 			$this->set('encounter_id',$encounter_id);
-			$this->set('external_id', $this->get('encounter_id'),'c_patient');
+			$this->set('external_id', $encounter_id,'c_patient');
 		}
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id,'c_patient');
@@ -79,32 +153,15 @@ class C_Encounter extends Controller {
 		if ($encounter->get('payer_group_id') == '') {
 			$encounter->set('payer_group_id',1);
 		}
-
 		$appointments = $encounter->appointmentList();
 		$appointmentArray = array("" => " ");
 		foreach($appointments as $appointment) {
 			$appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
 		}
-		//
 		//if an appointment id is supplied the request is coming from the 
 		//calendar and so prepopulate the defaults
-		if ($appointment_id > 0 && $valid_appointment_id) {
-			$encounter->set("occurence_id",$appointment_id);
-			$encounter->set("patient_id",$this->get("patient_id", 'c_patient'));
-			if (isset($appointments[$appointment_id])) {
-				$encounter->set("building_id",$appointments[$appointment_id]['building_id']);
-				//clear cache for this appointment because adding an encounter should cause it to reach "Has Encounter"
-				$cache_match = date("Y-m-d",strtotime($appointments[$appointment_id]['appointment_start']));
-				$this->view->regexClearCache('/'.$appointment_id.'/');
-				$this->view->regexClearCache('/^'.$cache_match.'/');
-			}
-			
-			if (isset($appointments[$appointment_id])) {
-				$encounter->set("treating_person_id",$appointments[$appointment_id]['provider_id']);
-
-				$reason = $manager->lookupKey('encounter_reason',$appointments[$appointment_id]['reason']);
-				$encounter->set("encounter_reason",$reason);
-			}
+		if ($appointment_id > 0) {
+			$encounter =& $this->_populateAppointmentDefaults($encounter, $appointments, $appointment_id);
 		}
 
 		
@@ -169,10 +226,6 @@ class C_Encounter extends Controller {
 		$session =& Celini::sessionInstance();
 		$session->set('Encounter:practice_id',$practice->get('id'));
 
-                // Retrieve PatientStatistics view
-                $GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
-                $patientStatsController =& new C_PatientStatistics();
-
 		$this->assign('NEW_ENCOUNTER_DATE',Celini::managerLink('editEncounterDate',$encounter_id)."id=0&process=true");
 
 		$encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$encounter_id));
@@ -206,6 +259,11 @@ class C_Encounter extends Controller {
 		$paymentGrid->name = "paymentGrid";
 		$paymentGrid->registerTemplate('amount','<a href="'.Celini::managerLink('editPayment',$encounter_id,'edit','Encounter').'id={$payment_id}&process=true">{$amount}</a>');
 		$paymentGrid->registerFilter('payment_date', array('DateObject', 'ISOToUSA'));
+		$this->assign_by_ref('payment',$payment);
+		$this->assign_by_ref('payments',$payments);
+		$this->assign_by_ref('paymentGrid',$paymentGrid);
+
+	
 		$this->assign('NEW_ENCOUNTER_PAYMENT',Celini::managerLink('editPayment',$encounter_id)."id=0&process=true");
 		
 		$payerGroupds = new Encounter_PayerGroup_DS($encounter->get('patient_id'),$encounter->get('payer_group'));
@@ -267,9 +325,6 @@ class C_Encounter extends Controller {
 		$this->assign_by_ref('encounterPersonGrid',$encounterPersonGrid);
 		$this->assign_by_ref('encounterValue',$encounterValue);
 		$this->assign_by_ref('encounterValueGrid',$encounterValueGrid);
-		$this->assign_by_ref('payment',$payment);
-		$this->assign_by_ref('payments',$payments);
-		$this->assign_by_ref('paymentGrid',$paymentGrid);
 		$this->assign_by_ref('appointmentList',$appointments);
 		$this->assign_by_ref('appointmentArray',$appointmentArray);
 		
@@ -338,6 +393,7 @@ class C_Encounter extends Controller {
 		
 		$head =& Celini::HTMLheadInstance();
 		$head->addExternalCss('suggest');
+		$head->addJS('ui');
 		return $this->view->render("edit.html");
 	}
 
@@ -402,13 +458,13 @@ class C_Encounter extends Controller {
 			if ($overlappingChanges) {
 				$changes['_POST'] = $_POST;
 				LockManager::prepareChangesAlert($changes,$this,$lockTimestamp);
-				return;
+			//	return;
 			}
 		}
-
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		$changedreason = false;
-		if($encounter->get('encounter_reason') != $_POST['encounter']['encounter_reason']) {
+		//var_dump($_POST);exit;
+		if($encounter->get('reason') != $_POST['encounter']['encounter_reason']) {
 			$changedreason = true;
 		}
 		$encounter->populate_array($_POST['encounter']);

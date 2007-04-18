@@ -1,0 +1,22 @@
+<div class="title" id="title">Superbills</div>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+{if $error}
+<p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
+{/if}
+<fieldset>
+<div class="selector" id="selector9"></div>
+<div class="tabset" id="tabset9">
+{foreach from=$sbs item=sb key=name name="sbsloop"}
+<div class="tab {if $smarty.foreach.sbsloop.first}selected{/if}" title="{$name}">
+{$sb}
+</div>
+{/foreach}
+</div>
+<p>
+<br />
+<div id="alertMessages" style="display:none;overflow:auto; height:100px;"></div>
+<a href="#" onclick="hidePopup();">close</a>
+</p>
+</fieldset>

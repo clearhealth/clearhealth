@@ -1,4 +1,5 @@
-<div id="payergroupsholder" class="tab selected" title="{l}Payer Group{/l}">
+<fieldset id="payergroupsholder">
+	<legend>{l}Payer Group{/l}</legend>
 	{$payergroupGrid->render()}
 	{if $payergroupGrid->empty}
 	{l}No groups available for this patient.{/l}
@@ -6,4 +7,4 @@
 	{if $encounter->get('status') != 'closed'}
 		<input type="submit" name="select_payer_group" value="Select Payer Group">
 	{/if}
-</div>
+</fieldset>

@@ -1,0 +1,22 @@
+<?php
+$loader->requireOnce("includes/Grid.class.php");
+$loader->requireOnce('includes/transaction/TransactionManager.class.php');
+$loader->requireOnce('datasources/Person_ClinicalSummary_DS.class.php');
+
+class C_ClinicalSummary extends Controller {
+
+	function __construct() {
+		parent::Controller();
+	}
+
+	function actionView_view($personId) {
+		$personId = (int)$personId;
+		$csDS =& new Person_ClinicalSummary_DS($personId);
+		$csGrid = new cGrid($csDS);
+		$this->assign('csGrid',$csGrid);
+		return $this->view->render('view.html');
+
+	}
+
+}
+?>

@@ -66,7 +66,7 @@ function toggleVis(id) {
 	<td>{$person_data->get('print_gender')} - {$person_data->get('print_marital_status')}</td>
 	<td>DOB: {$person_data->get('date_of_birth')} (Age: {$person_data->get('age')})</td>
 	<td class="demostathover"><a href="#">Demographic Statistics</a><span class="demostats">{$patientStatisticsView}</span></td>
-	<td>Status: {if $person->get('inactive') == 0}<span class="green">Active{else}<span class="red>Inactive{/if}</span></td>
+	<td>Status: {if $person_data->get('inactive') == 0}<span class="green">Active{else}<span class="red>Inactive{/if}</span></td>
 </tr>
 </table>
 </fieldset>

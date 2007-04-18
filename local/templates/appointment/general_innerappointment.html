@@ -26,6 +26,7 @@
 			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>
 			{if $appointment->get('group_appointment') == 0},
 				<a href="{link action="Edit" controller="Encounter" defaultArg="0"}appointment_id={$appointment->get('id')}&patient_id={$appointment->get('patient_id')}">enc</a>
+				<a href="javascript:paymentPopup({$appointment->get('id')},{$appointment->get('patient_id')});">pay</a>
 			{/if}
 		{/if}
 <br>

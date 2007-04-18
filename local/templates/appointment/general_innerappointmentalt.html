@@ -1,4 +1,4 @@
 			{l}Phone: {/l}{formatPhoneNumber number=$appointment->patientValue('phone')}<br>
-			{l}DOB: {/l}{$appointment->patientValue('date_of_birth')}<br>
+                       {l}DOB: {/l}{$appointment->patientValue('date_of_birth')}  &nbsp;&nbsp;&nbsp;&nbsp; {l}Age: {/l} {$appointment->patientValue('date_of_birth')|make_age}<br>
 			{l}Balance: {/l}{$appointment->patientValue('balance')}<br>
 			{l}Appt Created: {/l}{$appointment->value('creator_nick')}, {$appointment->get('created_date')}<br>

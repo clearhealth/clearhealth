@@ -1,12 +1,12 @@
 <script type="text/javascript">
 
-var widget_column = {$ordo->getWidgetColumn($ordo->get('form_id'))};
-var form_id = '{$ordo->get('form_id')}';
+var widget_column = {$ordo->getWidgetColumn($ordo->get('widget_form_id'))};
+var widget_form_id = '{$ordo->get('widget_form_id')}';
 
 {literal}
 
 function removeWidgetField(column_id) {
-	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/remove?form_id=' + form_id + '&column_id=' + column_id;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/remove?widget_form_id=' + widget_form_id + '&column_id=' + column_id;
 	document.getElementById('column' + column_id).style.display = 'none';
 
 	return false;
@@ -19,7 +19,7 @@ function addWidgetField() {
         var field_name = document.getElementById('widget_form_add_column').value;
         var pretty_name = document.getElementById('widget_form_add_pretty_name').value;
         var table_name = document.getElementById('widget_form_add_table_name').value;
-	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?form_id=' + form_id + '&column_id=' + column_id + '&field_name=' + field_name + '&pretty_name=' + pretty_name + '&table_name=' + table_name;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?widget_form_id=' + widget_form_id + '&column_id=' + column_id + '&field_name=' + field_name + '&pretty_name=' + pretty_name + '&table_name=' + table_name;
 
 	var newitem = document.createElement("li");
 	newitem.setAttribute('id', 'column' + column_id);
@@ -44,18 +44,16 @@ function addWidgetField() {
 <tr><td>Form ID:</td><td><select name="WidgetForm[form_id]">{html_options options=$ordo->getFormIds() selected=$ordo->get('form_id')}</select></td></tr>
 <tr><td>Type:</td><td><select name="WidgetForm[type]">{html_options options=$ordo->getWidgetTypes() selected=$ordo->get('type')}</select></td></tr>
 </table>
-<input type='submit' value='Add/Update'>
-</form>
+<input type='submit' value='Update'>
 </fieldset>
 {if $ordo->get('type') == 3}
-{clni_form id="WidgetFormData" action=$UPDATE_CONTROLLER process="generic"}
 <fieldset>
 <legend>Linked Controller</legend>
-Controller to use:<input type="text" name="WidgetForm[controller_id]" value="{$controller_name}"><input type='submit'>
+Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{$ordo->get('controller_name')}">
 </fieldset>
-</form>
 {/if}
 
+</form>
 {if $ordo->get('type') == 2 || $ordo->get('type') == 3}
 <fieldset>
 <legend>Summary Columns</legend>
@@ -64,7 +62,7 @@ Controller to use:<input type="text" name="WidgetForm[controller_id]" value="{$c
 
 <table>
 <ul id="WidgetFormFields" style="list-style: none;">
-{foreach from=$ordo->getWidgetFields($ordo->get('form_id')) key=widget_column_id item=widgetField}
+{foreach from=$ordo->getWidgetFields($ordo->get('widget_form_id')) key=widget_column_id item=widgetField}
 <li id="column{$widget_column_id}"><a href="#" onclick="removeWidgetField('{$widget_column_id}');"><img src="{$base_uri}index.php/images/stock_trash-16.png"></a> - {$widgetField.name}</li>
 {/foreach}
 </ul>

@@ -30,11 +30,11 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	}
 
 	function buildquery($patient_id, $form_id) {
-		$this->patient_id = intval($patient_id);
+		$this->patient_id = (int)$patient_id;
 
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "form_data_id $this->case_sql ",
+				'cols'    => "widget_form_id, form_data_id $this->case_sql ",
 				'from'    => "widget_form AS wf " .
 							 "INNER JOIN form AS f USING(form_id) ".
 							 "INNER JOIN form_data AS fd using (form_id) ".
@@ -42,20 +42,21 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 							 "LEFT JOIN storage_string ON storage_string.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_text ON storage_text.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_date ON storage_date.foreign_key = fd.form_data_id ",
-				'where'   => "fd.external_id = '" . $this->patient_id . "' and f.form_id = '" . $this->form_id . "'",
+				'where'   => "fd.external_id = '" . (int)$this->patient_id . "' and f.form_id = '" . (int)$form_id . "'",
 				'groupby'   => "fd.form_data_id"
 			),
 			false);
+	//echo $this->preview() . "<br />";
 	}
 	
-	function set_form_type($form_id) {
+	function set_form_type($widget_form_id) {
+		$widget_form_id = (int)$widget_form_id;
 		$labels = array();
-		$this->form_id = $form_id;
+		$this->form_id = $widget_form_id;
 		
 		$db = Celini::dbInstance();
 		
-		$sql = "select name, pretty_name, table_name from summary_columns where form_id = '$form_id'";
-//echo $sql ."<br>";
+		$sql = "select name, pretty_name, table_name from summary_columns where widget_form_id = '$widget_form_id'";
 
 		$res = $db->query($sql);
 		while($res && !$res->EOF) {
@@ -68,35 +69,19 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 
 	}
 
-	function get_form_type($form_id) {
-		$db = Celini::dbInstance();
-
-		$sql = "select type from widget_form where form_id = '$form_id'";
-		$res = $db->execute($sql);
-
-		if ($res && !$res->EOF) {
-			return $res->fields["type"];
-		}
-		return false;
+	function get_form_type($widget_form_id) {
+		$wf = ORDataObject::factory("WidgetForm",(int)$widget_form_id);
+		//echo "num: " . $wf->get('type');
+		return $wf->get('type');
 	}
 
-	function get_controller_name($form_id) {
-		$db = Celini::dbInstance();
-
-		$sql = "select controller_name from widget_form_controller wfc
-				inner join widget_form wf on wf.widget_form_id = wfc.form_id
-				where wf.form_id = '$form_id'";
-		$res = $db->execute($sql);
-
-		if ($res && !$res->EOF) {
-			return $res->fields["controller_name"];
-		}
-
-		return false;
+	function get_controller_name($widget_form_id) {
+		$wf = ORDataObject::factory("WidgetForm",(int)$widget_form_id);
+		return $wf->get('controller_name');
 	}
 	
 	function _build_case_sql($form_id) {
-
+		$form_id = (int)$form_id;
 	    	$case_sql = "";
 	    	if (count($this->_fields > 0)) $case_sql = " ,";
 	        foreach ($this->_fields as $ar) {
