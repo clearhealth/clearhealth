@@ -1,0 +1,77 @@
+<table width="100%"  border="0" cellspacing="0" cellpadding="8">
+            <tr>
+		    <td>
+			    {if $user->get('id') != 0 }
+			    <h1>Edit User</h1>
+			    {else}
+			    <h1>Add User</h1>
+			    {/if}
+
+                  <h2>Update information, click update to save changes</h2>
+
+
+<form name="user" id="h3sForm" method="post" action="{$TOP_ACTION}">
+	<fieldset>
+		<h2>User Details for <i>{$user->get('username')}</i><!-- <a OnClick="return confirm('Delete Enumeration {$user->get('username')}?');" href="{$drop}">Delete Enumeration</a>--></h2>
+		<fieldset class="radio">
+		<h3>User Details</h3>
+<table>
+	<!--<tr>
+		<td colspan="2">
+		{if $error}
+			{$error}<br><br>
+		{/if}
+		{if $messages}
+			{$messages}<br><br>
+		{/if}
+		</td>
+	</tr>-->
+	<tr>
+		<td colspan="2">Username must be the same as on the pop3 authentication server</td>
+	</tr>
+	<tr>
+		<td>Username:&nbsp;</td>
+		<td><input type="text" name="username" size="30" value="{$user->get('username')}"></td>
+	</tr>
+	<tr>
+		<td>Nickname:&nbsp;</td>
+		<td><input type="text" name="nickname" size="30" value="{$user->get('nickname')}"></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br>
+			{if $user->get('id') != 0}
+		<input type="submit" nae="submit" value="Update User">
+		{else}
+		<input type="submit" name="submit" value="Add User">
+		{/if}
+		</td>
+	</tr>
+</table>
+	</fieldset>
+	{if $user->get('id') != 0}
+	<fieldset class="radio">
+		<h3>Roles</h3>
+		<table>
+	<tr>
+		<td>Assigned to:&nbsp;</td>
+		<td>
+			<select name="groups[]" multiple="true" size="10">
+				{foreach from=$groups item=group}
+				<option value="{$group.id}" {$group.selected}>{$group.value}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br>
+			<input type="submit" nae="submit" value="Update Groups">
+		</td>
+	</tr>
+	</table>
+	{/if}
+
+<input type="hidden" name="process" value="{$PROCESS}">
+		</fieldset>
+	</fieldset>
+</form>
+</td></tr></form>

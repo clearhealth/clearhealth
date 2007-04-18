@@ -1,0 +1,10 @@
+{if $messages}
+<div class="statusMessage">
+{foreach from=$messages item=message}
+<div{if $message.class != ""} class="{$message.class}"{/if}>
+	<h1>{$message.title}</h1>
+	{if $message.message}<p>{$message.message}</p>{/if}
+</div>
+{/foreach}
+</div>
+{/if}

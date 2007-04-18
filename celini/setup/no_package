@@ -1,0 +1,9 @@
+# All of these paths will be relative to the
+# applications root directory.
+
+# Remove the docs
+Celini/docs
+
+# Remove the setup folder, don't need it on a deployed app
+Celini/setup
+

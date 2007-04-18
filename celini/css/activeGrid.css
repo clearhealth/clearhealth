@@ -1,0 +1,81 @@
+/* Scroll bar css */
+.scrollBar {
+	position: relative;
+	background: gray url('../images/scrollbar/scrollBack.png');
+	width: 21px;
+}
+.scrollBar .track {
+	position: relative;
+	top: 19px;
+	height: 100%;
+}
+
+.scrollBar .buttonUp {
+	position: absolute;
+	display: block;
+	top: 0px;
+	left: 0px;
+	width: 21px;
+	height: 19px;
+}
+.scrollBar .buttonDown {
+	position: absolute;
+	display: block;
+	bottom: 0px;
+	left: 0px;
+	width: 21px;
+	height: 19px;
+}
+.scrollBar .bar {
+	position: absolute;
+	width: 21px;
+	height: 20px;
+	top: 0px;
+}
+.scrollBar .capTop {
+	position: absolute;
+	width: 21px;
+	top: 0px;
+	left: 0px;
+	height: 2px;
+}
+
+.scrollBar .capBottom {
+	position: absolute;
+	width: 21px;
+	bottom: 0px;
+	left: 0px;
+	height: 2px;
+}
+.scrollBar .gripper {
+	position: absolute;
+	width: 21px;
+	top: 50%;
+	left: 0px;
+	height: 8px;
+	margin-top: -4px;
+}
+.scrollBar .barStatus {
+	position: absolute;
+	top: 45%;
+	left: 24px;
+	border: solid 1px black;
+	padding: 2px;
+	white-space: nowrap;
+	font-size: 10px;
+}
+
+table.activeGrid .gridHeaderHandle {
+	background-color: gray;
+	width: 1px;
+	top: -2px;
+	cursor: e-resize;
+}
+table.activeGrid th {
+	position: relative;
+	height: 20px;
+	border: solid 1px black;
+	padding: 2px;
+	background-color: white !important;
+	padding-right: 0px;
+}

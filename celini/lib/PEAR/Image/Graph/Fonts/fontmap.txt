@@ -1,0 +1,25 @@
+arial	Arial
+arialbd	Arial Bold
+arialbi	Arial Bold Italic
+ariali	Arial Italic
+cour	Courier New
+courbd	Courier New Bold
+courbi	Courier New Bold Italic
+couri	Courier New Italic
+gara	Garamond
+garabd	Garamond Bold
+garait	Garamond Italic
+gothic	Gothic
+gothicb	Gothic Bold
+gothicbi	Gothic Bold Italic
+gothici	Gothic Italic
+micross	Sans Serif
+refsan	Reference Sans Serif
+times	Times New Roman
+timesbd	Times New Roman Bold
+timesbi	Times New Roman Bold Italic
+timesi	Times New Roman Italic
+verdana	Verdana
+verdanab	Verdana Bold
+verdanaz	Verdana Bold Italic
+verdanai	Verdana Italic

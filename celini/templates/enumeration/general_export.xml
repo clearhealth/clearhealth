@@ -1,0 +1,8 @@
+<enumeration name="{$def->get('name')}" title="{$def->get('title')}" type="{$def->get('type')}">
+{foreach from=$data item=row}	<enum>
+{foreach from=$row item=field key=key}
+		<{$key}>{$field}</{$key}>
+{/foreach}
+	</enum>
+{/foreach}
+</enumeration>

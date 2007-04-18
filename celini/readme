@@ -1,0 +1,27 @@
+Celini is Uversa's Software Application Base
+http://uversainc.com/site/Software
+
+To setup a new app to use Celini
+
+Setup a new svn repo for the app.  
+Checkout Celini's trunk dir into the apps trunk and rename it to Celini.
+Create a local dir for the app, local has ordo,controllers,lib, and includes subdirs.
+	These directories match the Celini layout
+	ordo 		- ORDataObjects
+	controllers 	- controllers (it can also have a managers subdir containing managers
+	lib 		- 3rd party libraries, apps shouldn't need many since most are added at the Celini level
+	includes 	- custom classes
+	templates	- smarty template files
+
+Also create a tmp dir at the application root it will hold smarty compiled files, image cache files, etc
+
+You may also want to create a user dir at the app root where user uploaded files will live.
+
+In the local dir you will create 2 files, bootstrap.php and config.php
+bootstrap.php must include any objects that will be stored in the session (or do anything that needs to happen before the session starts)
+config.php is where application specific config lives.
+in Celini's setup dir there is an example app config.
+
+The Setup dir there are also some sql scripts to do basic database setup.  You will normally want all the sql files in the setup dir.  They are named by function so if your not using some part of the basic functionality that Celini provides then you can skip that sql file.
+
+Finally copy index.php and Celini.css from setup to the root of your app.  If you are using forcetype directory style nav read forcetype-readme.

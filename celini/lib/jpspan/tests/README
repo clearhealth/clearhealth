@@ -1,0 +1,7 @@
+$Id: README,v 1.1.1.1 2004/10/30 22:40:32 harryf Exp $
+
+PHP Tests need SimpleTest: http://www.lastcraft.com/simple_test.php
+
+Javscript Tests need JsUnit: http://www.edwardh.com/jsunit/
+
+Edit config.php in this directory to specify install locations
