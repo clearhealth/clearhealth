@@ -1,0 +1,46 @@
+{literal}
+<script type="text/javascript">
+function buildPattern(type){
+	switch (type){
+{/literal}
+		case 'day':
+			document.getElementById('patternholder').innerHTML='{l}Repeat Every{/l} <input type="text" name="RecurrencePattern[number]" /> {l}Day(s){/l}';
+			break;
+		case 'monthweek':
+			var out='{l}Repeat on the{/l} <select name="RecurrencePattern[week_of_month]">{html_options options=$em->enumArray('weeks_of_month')}</select>';
+			out += '&nbsp;<select name="RecurrencePattern[weekday]">{html_options options=$em->enumArray('days_of_week')}</select>';
+			out += '&nbsp;Every <input type="text" name="RecurrencePattern[number]" value=1 size=2 /> {l}Month(s){/l}';
+			document.getElementById('patternholder').innerHTML=out;
+			break;
+		case 'yearmonthweek':
+			var out='{l}Repeat on the{/l} <select name="RecurrencePattern[week_of_month]">{html_options options=$em->enumArray('weeks_of_month')}</select>';
+			out += '&nbsp;<select name="RecurrencePattern[weekday]">{html_options options=$em->enumArray('days_of_week')}</select>';
+			out += '&nbsp;of  <select name="RecurrencePattern[month]">{html_options options=$em->enumArray('months_of_year')}</select>';
+			out += '&nbsp;Every <input type="text" name="RecurrencePattern[number]" value=1 size=2 /> {l}Year(s){/l}';
+			document.getElementById('patternholder').innerHTML=out;
+			break;
+		case 'monthday':
+			var out='{l}Repeat on day{/l} <select name="RecurrencePattern[monthday]">{html_options options=$recur->getMonthDays()}</select>';
+			out += '&nbsp;Every <input type="text" name="RecurrencePattern[number]" value=1 size=2 /> {l}Month(s){/l}';
+			document.getElementById('patternholder').innerHTML=out;
+			break;
+		case 'yearmonthday':
+			var out='{l}Repeat on day{/l} <select name="RecurrencePattern[monthday]">{html_options options=$recur->getMonthDays()}</select>';
+			out += '&nbsp;of  <select name="RecurrencePattern[month]">{html_options options=$em->enumArray('months_of_year')}</select>';
+			out += '&nbsp;Every <input type="text" name="RecurrencePattern[number]" value=1 size=2 /> {l}Year(s){/l}';
+			document.getElementById('patternholder').innerHTML=out;
+			break;
+		case 'dayweek':
+			var out='{l}Repeat on day(s){/l} <select name="RecurrencePattern[days][]" multiple>{html_options options=$em->enumArray('days_of_week')}</select>';
+			document.getElementById('patternholder').innerHTML=out;
+			break;
+{literal}
+	}
+}
+</script>
+{/literal}
+{foreach from=$em->enumArray('recurrence_pattern_type') item=pattern key=patterntype}
+<input type="radio" name="RecurrencePattern[pattern_type]" value="{$patterntype}" onchange="buildPattern(this.value);" /> {$pattern}<br />
+{/foreach}
+<div id='patternholder'>
+</div>

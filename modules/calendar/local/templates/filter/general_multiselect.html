@@ -1,0 +1,24 @@
+{if $params.type=='ajax'}
+<div id="filter_{$name}">
+<a class="filterToggle" style="font-weight: bold;">{$label}</a>
+<div class="filterBody">
+{foreach from=$options key=key item=option}
+<div id="filter_{$name}_{$key}-{$option}" onclick="filterMultiselectOnClick(this)" class="filter-droppable{if $values[$key]} ms-highlight{/if}" STYLE="font-size: 10px; float: left; border-style: solid; border-width: 1px; margin: 2px; padding: 2px; cursor: pointer;">
+{$option}
+</div>
+{/foreach}
+</div>
+<div STYLE="clear: both"></div>
+{elseif $params.type=='form'}
+<div>
+	<a class="filterToggle" style="font-weight: bold;">{l}{$label}{/l}</a>
+	<div class="filterBody">
+	<select name="Filter[{$name}][]" multiple size="{$params.size}">
+	{if $params.insertBlank}<option value="" >{l}Clear Filter{/l}</option>{/if}
+	{foreach from=$options item=option key=key}
+		<option value="{$key}" {foreach from=$values item=value}{if $value == $key}selected{/if}{/foreach}>{$option}</option>
+	{/foreach}
+	</select>
+	</div>
+</div>
+{/if}

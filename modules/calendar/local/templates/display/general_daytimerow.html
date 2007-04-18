@@ -1,0 +1,20 @@
+	<div>
+{$dayIterator->rewind()}
+{while $dayIterator->valid()}
+	{assign var="timestamp" value=$dayIterator->getTimestamp()}
+
+	<div class="timeRow">
+	<div class="{if $dayIterator->needTimeLabel()}primaryBorder{else}secondaryBorder{/if}"></div>
+	<div class="timeLabel">
+	{if $dayIterator->needTimeLabel()}
+		{$dayIterator->getTime()}
+	{else}
+		&nbsp;
+	{/if}
+	</div>
+	</div>
+
+
+	{assign var=interval value=$dayIterator->next()}
+{/while}
+	</div>

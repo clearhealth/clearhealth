@@ -1,0 +1,36 @@
+<fieldset>
+	<legend>{if $addMode}Add{else}Edit{/if} Occurence</legend>
+	
+	<form method="post">
+		<table>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="Occurence[id]" value="{$occurence->get('id')}" />
+						<input type="hidden" name="Occurence[event_id]" value="{$occurence->get('event_id')}" />
+						<input type="hidden" name="process" value="GENERIC" />
+						{if $addMode}
+						<input type="submit" value="Add..." />
+						{else}
+						<input type="submit" value="Save..." />
+						{/if}
+					</td>
+				</tr>
+			</tfoot>
+			
+			<tbody>
+				<tr>
+					<td class="aRight">Start</td>
+					<td>
+						{clni_input_date name="Occurence[start]" value=$occurence->get('start')}
+					</td>
+				<tr>
+					<td class="aRight">End</td>
+					<td>
+						{clni_input_date name="Occurence[end]" value=$occurence->get('end')}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</fieldset>

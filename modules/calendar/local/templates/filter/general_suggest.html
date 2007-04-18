@@ -1,0 +1,14 @@
+	<div>
+		<a style="font-weight: bold;" class="filterToggle">{l}{$label}{/l}</a>
+		<div class="filterBody">
+		<input type="hidden" name="Filter[{$name}][id]" id="CalFilterSuggest{$name}" value="{$value.id}">
+		<div class="SuggestInput">
+		{if $params.person}{clni_img name="stock/stock_person-10.png"}{/if}
+		<input type="text" name="Filter[{$name}][value]" id="CalSuggest{$name}" value="{$value.value}" autocomplete="off">
+		</div>
+		<script type="text/javascript">
+			var CalSug{$name} = new {$params.jsfunc}('CalSuggest{$name}','CalFilterSuggest{$name}');
+		</script>
+		<a href="#here" onclick="document.getElementById('CalFilterSuggest{$name}').value='';document.getElementById('CalSuggest{$name}').value='';return(false);">{l}Clear{/l} {$name}</a>
+		</div>
+	</div>

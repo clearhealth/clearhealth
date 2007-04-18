@@ -1,0 +1,18 @@
+<fieldset class="radio" id="recurrences">
+	<legend>{l}Recurrences{/l}</legend>
+	{if !$recurrences}
+	{assign var=recurrences value=$schedule->getChildren('Recurrence')}
+	{/if}
+	Select checkbox and update to delete recurrence(s) and related dates.<br />
+	{if $recurrences->count() > 0}
+	{assign var=recur value=$recurrences->current()}
+	{while $recurrences->valid()}
+		<input type="checkbox" name="DeleteRecurrence[]" value="{$recur->get('id')}" />
+		{$recur->getPatternString()}, {l}Starting{/l} {$recur->get('start_date')} {l}And Ending{/l} {$recur->get('end_date')}, 
+		{l}From{/l} {$recur->get('start_time')} to {$recur->get('end_time')} {l}each day.{/l}<br />
+		{assign var=recur value=$recurrences->next()}
+	{/while}
+	{else}
+	No recurrences set.	
+	{/if}
+</fieldset>

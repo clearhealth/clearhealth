@@ -1,0 +1,10 @@
+<div id="filter_{$name}">
+{foreach from=$values item=value key=key}
+<div id="current_filter_{$name}_{$key}-{$value}" class="current-filter-droppable" STYLE="font-size: 10px;">
+{$label}: {$value}
+<script type="text/javascript" language="javascript">
+	new Draggable('current_filter_{$name}_{$key}-{$value}',{ldelim}revert:true{rdelim});
+</script>
+</div>
+{/foreach}
+</div>

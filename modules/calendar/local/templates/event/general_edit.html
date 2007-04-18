@@ -1,0 +1,35 @@
+<fieldset>
+	<legend>{if $addMode}Add{else}Edit{/if} Event</legend>
+		<table>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="Event[id]" value="{$event->get('id')}" />
+						{if $event->get('id') == 0}
+						<input type="submit" value="Add..." />
+						{else}
+						<input type="submit" value="Save..." />
+						{/if}
+					</td>
+				</tr>
+			</tfoot>
+			
+			<tbody>
+				<tr>
+					<td class="aRight">Title</td>
+					<td><input type="text" name="Event[title]" value="{$event->get('title')}" /></td>
+				</tr>
+				<tr>
+					<td class="aRight">Start</td>
+					<td>
+						{clni_input_date name="Event[start]" value=$event->get('start') time='true' format_popup="%Y-%m-%d %H:%M" size="17"}
+					</td>
+				<tr>
+					<td class="aRight">End</td>
+					<td>
+						{clni_input_date name="Event[end]" value=$event->get('end') time='true' format_popup="%Y-%m-%d %H:%M" size="17"}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</fieldset>
