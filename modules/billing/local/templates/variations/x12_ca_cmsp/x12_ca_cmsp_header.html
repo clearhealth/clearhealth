@@ -1,0 +1,90 @@
+{*edi start*}
+ISA*
+00*
+{""|pad:10}*
+00*
+{""|pad:10}*
+ZZ*
+{$practice->get("sender_id")|pad:15}*
+ZZ*
+{$practice->get("receiver_id")|pad:15}*
+{$smarty.now|date_format:"%y%m%d"}*					{*Date of interchange*}
+{$smarty.now|date_format:"%H%M"}*					{*Time of interchange*}
+U*
+00401*
+000000001*											{* System index for this particular call of the template *}
+0*
+{$claim->get("claim_mode")}*						{* T is symbol for test data, P is symbol for production data *}
+:~
+
+{*group start*}
+GS*
+HC*													{* HC is healthcare identifier code*}
+{$practice->get("sender_id")}*
+{$practice->get("receiver_id")}*
+{$smarty.now|date_format:"%Y%m%d"}*
+{$smarty.now|date_format:"%H%M"}*
+{$claim->get("id")}*						{* group identifier number for this transaction *}
+X*
+{$practice->get("x12_version")}~
+
+ST*
+837*												{*837 is X12 transaction type*}
+0001~ 												{*Transaction counter*}
+
+BHT*
+0019*
+00*													{*Generic identifier, usually matched transaction counter by convention*}
+000000001*
+{$smarty.now|date_format:"%Y%m%d"}*					{*Date of transaction*}
+{$smarty.now|date_format:"%H%M"}*					{*Time of transaction*}
+RP~													{*Contains chargeable information, i.e. claims*}
+
+REF*
+87*
+{$practice->get("x12_version")}~					{*When piloting the transaction set usually 004010X098DA1, in a production 004010X098A1 but varies payer to payer*}
+
+{*Loop 1000A*}
+NM1*
+41*													{*X12 code for submitter, alwasys 41 for 837 *} 
+2*													{*1 for person, 2 for non-person entity *}
+{$practice->get("name")}*
+****
+46*													{*X12 code for ETIN is 46, payers usually want something else in the next field though such as submitter id*}
+{$practice->get("sender_id")}~						{*NM09 is submitter primary ID number*}
+
+PER*												{*Submitter EDI contact info*}
+IC*													{*Contact function code=IC (information contact)*}
+{$billing_contact->get("name")}*						
+TE*													{*Describes PER04:  ED(edi), EM(email), FX(fax), TE(telephone)*}
+{$billing_contact->get("phone_number")|regex_replace:"/[^0-9]/":""}~				{*Complete communications (in our case phone) number*}
+{*NOTE: Apparently additional numbers w/qualifiers can be added her to PER via fields PER05 through PER08*)
+
+
+{*Loop 1000B*}
+NM1*												{*Receiver name loop*}
+40*													{*Identifier code. Must be 40, which means Receiver*}
+2*													{*Qualifier for NM103.  2=Non-Person entity*}
+MEDI-CAL*								{*Organization name or individual last name, Should be MEDI-CAL*}
+****
+{$payer->get("identifier_type")}*					{*Qualifier for NM109.  Always use 46 (ETIN)*}
+{$payer->get("program_name")}~
+
+
+{$loopedData}
+
+{*transaction end*}
+SE*
+{*POSTFILTER_SEGEMENT_COUNT is a special token which will be replace in post processing with the number of segements in the ST - SE hierarchy inclusiv*}
+POSTFILTER_SEGEMENT_COUNT*
+0001~
+
+{*group end*}
+GE*
+1*
+{$claim->get("id")}~
+
+{*transaction end*}
+IEA*
+1*
+000000001~

@@ -1,0 +1,78 @@
+{*Latest Visit/Consultation*}
+{if $patient->get('date_last_seen')}
+DTP*304*D8*{$patient->get('date_last_seen')|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of onset of current illness/symptom*}
+{if $patient->get("date_of_onset")}
+DTP*431*D8*{$claim->get("date_of_onset")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of Acute Manifestation*}
+{if $patient->get("date_of_last_visit")}
+DTP*453*D8*{$claim->get("date_of_acute_manifestation")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of similar illness/symptom onset*}
+{if $patient->get("date_of_last_visit")}
+DTP*438*D8*{$claim->get("date_of_similar_onset")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of accident*}
+{if $patient->get("date_of_accident")}
+DTP*439*D8*{$claim->get("date_of_accident")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of last menstrual period*}
+{if $patient->get("date_of_last_menstrual_period")}
+DTP*484*D8*{$patient->get("date_of_last_menstrual_period")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of last X-ray*}
+{if $patient->get("date_of_last_xray")}
+DTP*455*D8*{$patient->get("date_of_last_xray")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of hearing and vision prescription*}
+{if $patient->get("date_of_hearing_vision_prescription")}
+DTP*471*D8*{$patient->get("date_of_hearing_vision_prescription")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Disability begin date*}
+{if $patient->get("date_of_disability_begin")}
+DTP*360*D8*{$patient->get("date_of_disability_begin")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Disability end date*}
+{if $patient->get("date_of_disability_end")}
+DTP*361*D8*{$patient->get("date_of_disability_end")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date last worked*}
+{if $patient->get("date_of_last_work")}
+DTP*297*D8*{$patient->get("date_of_last_work")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date authorized to return to work*}
+{if $patient->get("date_auth_return_to_work")}
+DTP*296*D8*{$patient->get("date_auth_return_to_work")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of Admission*}
+{if $patient->get("ddate_of_admission")}
+DTP*435*D8*{$patient->get("date_of_admission")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Date of discharge*}
+{if $patient->get("date_of_discharge")}
+DTP*096*D8*{$patient->get("date_of_discharge")|date_format:"%Y%m%d"}~
+{/if}
+
+{*Assumed and Relinquished care dates*}
+{if $patient->get("date_of_assumed_care")}
+DTP*										
+090*										{*This will be either 90 (Report start) or 91 (Report end)*}
+D8*
+{$patient->get("date_of_assumed_care")}~
+{*Do we need two segments, one for start date (90) and one for end date (91)?*}
+{/if}

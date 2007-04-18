@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<!-- compliance patch for microsoft browsers -->
+<!--[if lt IE 7]>
+<script src="{$base_dir}js/ie7/ie7-standard.js" type="text/javascript">
+</script>
+<![endif]-->
+
+<!-- <script src="{$base_dir}js/validate.js" type="text/javascript"></script>
+<script src="{$base_dir}js/dateparse.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar-en.js" type="text/javascript"></script>
+<script src="{$base_dir}js/cal/calendar-setup.js" type="text/javascript"></script>
+ -->
+{ajax action="setupAJAX"}
+
+{literal}
+<SCRIPT LANGUAGE="JavaScript">
+function popUp(URL,width,height) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=' + width + ',height=' + height + ',left = 400,top = 150');");
+}
+
+</script>
+ 
+{/literal}
+{popup_init src="`$base_dir`js/overlib.js"}
+<link href="{$base_dir}celini.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">
+{foreach from=$extra_css item=css_file}
+<link href="{$base_dir}{$css_file}" rel="stylesheet" type="text/css" />
+{/foreach}
+{if $menu_group === "default"}
+	{assign var="section_name" value="Calendar"}
+{/if}
+{if $menu_group === "patient"}
+	{assign var="section_name" value="Patient"}
+{/if}
+{if $menu_group === "billing"}
+	{assign var="section_name" value="Billing"}
+{/if}
+{if $menu_group === "admin"}
+	{assign var="section_name" value="Administration"}
+{/if}
+<title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
+</head>
+<body>
+	<div id="header" class="section{$section_name}">
+	<h1>ClearHealth</h1>
+	{if $me->get_id() > 0}
+	<div id="sections">
+		{if $sec_obj->check("usage","main_calendar")}
+		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selected"{/if}>Calendar</a> 
+		{/if}
+		{if $sec_obj->check("usage","main_patient")}
+		<a href="{$base_dir}index.php/main/PatientFinder/find" {if $menu_group == "patient"}class="selected"{/if}>Patient</a> 
+		{/if}
+		{if $sec_obj->check("usage","main_billing")}
+		<a href="{$base_dir}index.php/main/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Billing</a>
+		{/if}
+		{if $sec_obj->check("usage","main_admin")}
+		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
+		{/if}
+
+		{if $menu_group == "patient"}
+		<div id="selectedItem">
+			{if $selectedPatient}
+			Selected Patient: <b>{$selectedPatient->get('first_name')} {$selectedPatient->get('last_name')} #{$selectedPatient->get('record_number')}</b>
+			{/if}
+		</div>
+		{/if}
+	</div>
+	{/if}
+	{include file="main/general_menu.html"}
+</div>
+<div id="body">
+	{if is_object($messages)}
+	{$messages->render()}
+	{elseif is_array($messages)}
+		{foreach from=$messages item=message}
+			{$message}<br>
+		{/foreach}
+	{elseif strlen($messages) >0}
+	{$messages}
+	{/if}
+	{$display}
+</div>
+</body>
+</html>

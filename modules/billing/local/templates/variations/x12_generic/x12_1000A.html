@@ -1,0 +1,17 @@
+{* Loop 1000A - Submitter Name *}
+NM1*
+41*													{*X12 code for submitter, alwasys 41 for 837 *} 
+2*													{*1 for person, 2 for non-person entity *}
+{$practice->get("name")|upper}*
+****
+46*													{*X12 code for ETIN is 46, payers usually want something else in the next field though such as submitter id*}
+{$practice->get("sender_id")|upper}~				{*NM09 is submitter primary ID number*}
+
+PER*												{*Submitter EDI contact info*}
+IC*													{*Contact function code=IC (information contact)*}
+{$billing_contact->get("name")|upper}*						
+TE*													{*Describes PER04:  ED(edi), EM(email), FX(fax), TE(telephone)*}
+{$billing_contact->get("phone_number")|regex_replace:"/[^0-9]/":""}~				{*Complete communications (in our case phone) number*}
+
+{*NOTE: Apparently additional numbers w/qualifiers can be added her to PER via fields PER05 through PER08*}
+

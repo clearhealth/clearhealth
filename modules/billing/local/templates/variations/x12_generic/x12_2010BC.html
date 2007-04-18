@@ -1,0 +1,19 @@
+{* Loop 2010BC - Responsible Party Name *}
+{if $responsible_party->get("last_name") != $patient->get("last_name") || $responsible_party->get("first_name") != $patient->get("first_name")}
+NM1*
+QD*													{*Always use QD (responsible party)*}
+1*													{*Use 1.  1=person 2=non-person*}
+{$responsible_party->get("last_name")|upper}*
+{$responsible_party->get("first_name")|upper}*
+{$responsible_party->get("middle_name")|upper}~			{*name suffix*}
+
+N3*
+{$responsible_party->get("print_address")|replace:"#":"num"|upper}~
+
+N4*
+{$responsible_party->get("city")|upper}*
+{$responsible_party->get("state")|upper}*
+{$responsible_party->get("zip")|pad:5|upper}~
+{*country required as N404 if outside of usa*}
+{/if}
+

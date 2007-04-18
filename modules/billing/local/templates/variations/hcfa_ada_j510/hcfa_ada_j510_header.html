@@ -1,0 +1,86 @@
+{* *** Standard HCFA/CMS 1500 Format *** *}
+{* *** Cups settings *** *}
+{* cpi:10 *}
+{* lpi:6 *}
+{* topmargin:0 Try adjusting this to move the lines lower on the page *}
+{* leftmargin:0 Try adjusting this to shift the character to the right*}
+{* bottommargin:0 *}
+{* rightmargin:0 *}
+{newline lines="6"}
+{$patient->value('print_name')|pad:40}
+{if $patient->is('male')}X{""|pad:1}{else}{""|pad:2}{/if}
+{if $patient->is('female')}X{""|pad:1}{else}{""|pad:2}{/if}
+{$patient->value('date_of_birth_month')|pad:4}
+{$patient->value('date_of_birth_date')|pad:3}
+{$patient->value('date_of_birth_year')|pad:4}
+
+{newline lines="3"}
+
+{$subscriber->value('print_address')|pad:65}
+{$subscriber->value('group_name')}
+
+{newline lines="1"}
+
+{$subscriber->value('print_city_state_zip')|pad:37}
+{$subscriber->value('date_of_birth_month')|pad:3}
+{$subscriber->value('date_of_birth_date')|pad:3}
+{$subscriber->value('date_of_birth_year')}
+
+{newline lines="3"}
+{""|pad:13}{$payer->value('name')}, {$payer->value('print_complete_address')}
+
+{newline lines="4"}
+{""|pad:57}
+{$subscriber->is('ins_self', 'X')|pad:3}
+{$subscriber->is('ins_parent', 'X')}
+
+{newline lines="1"}
+
+{if !$subscriber->is('ins_self')}
+{$subscriber->value('print_name')|pad:42}
+{$subscriber->value('date_of_birth_month')|pad:3}
+{$subscriber->value('date_of_birth_date')|pad:5}
+{$subscriber->value('date_of_birth_year')|pad:7}
+{else}
+{""|pad:57}
+{/if}
+
+{$subscriber->is('ins_spouse', 'X')|pad:3}
+{$subscriber->is('ins_other', 'X')}
+
+{newline lines="6"}
+{$provider->get('print_name')}
+
+{newline lines="2"}
+{$provider->get('print_address')}
+
+{newline lines="2"}
+{$provider->get('print_city_state_zip')}
+
+{newline lines="2"}
+{$provider->get('identifier')|pad:14}
+{$provider->get('identifier_2')|pad:11}
+{$provider->get('phone_number')}
+
+{newline lines="6"}
+{foreach name="claimline" item=claimline from=$claim_lines}
+{""|pad:12}
+{$claimline->get('tooth')|pad:2}
+{$claimline->get('toothside')|pad:4}
+{$claimline->get('comment')|pad:29}
+{$claimline->value('date_of_treatment_month')|pad:2}
+{$claimline->value('date_of_treatment_date')|pad:2}
+{$claimline->value('date_of_treatment_year_short')|pad:3}
+{$claimline->get('procedure')|pad:8}
+{$claimline->get('amount')|pad:7:false|replace:".":""}
+{newline lines="1"}
+{if $smarty.foreach.claimline.last}
+	{math equation="x - y" x="15" y=$smarty.foreach.claimline.iteration assign="numberOfLinesToSkip"}
+{/if}
+{/foreach}
+
+{newline lines=$numberOfLinesToSkip}
+{newline lines="5"}
+{$claim->value('amount_total')|pad:68:false|replace:".":""}
+{newline lines="2"}
+{$claim->value('amount_paid_total')|pad:68:false|replace:".":""}

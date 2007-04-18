@@ -1,0 +1,80 @@
+{* *** Standard HCFA/CMS 1500 Format *** *}
+{* *** Cups settings *** *}
+{* cpi:10 *}
+{* lpi:6 *}
+{* topmargin:0 Try adjusting this to move the lines lower on the page *}
+{* leftmargin:0 Try adjusting this to shift the character to the right*}
+{* bottommargin:0 *}
+{* rightmargin:0 *}
+{newline lines="1"}
+{$treating_facility->get("name")|pad:25}{""|pad:30}{$patient->get('record_number')}
+{newline lines="1"}
+{$treating_facility->get("line1")|pad:25}{""|pad:31}
+{newline lines="1"}
+{* *** Box 1 Line 3 ADDRESS LINE2*** *}
+{if $treating_facility->get("line2")}
+{$treating_facility->get("line2")|pad:25}
+{else}
+{""|pad:25}
+{/if}
+{""|pad:44}
+{newline lines="1"}
+{$patient->value('print_name_last_first')|pad:30}{$patient->value('print_complete_address')}
+{newline lines="2"}
+{$patient->value('date_of_birth')|pad:8}
+{$patient->value('gender')|pad:2}
+{$patient->value('marital_status')|substr:0:1|strtoupper|pad:2}
+{$patient->value('date_of_initial_treatment')|pad:10}
+{''|pad:12}{$claim->value('claim_identifier')|pad:30}
+{newline lines="2"}
+{newline lines="3"}
+{newline lines="6"}
+
+{math equation="x" x=0 assign=total}
+{foreach name="claimline" item=claimline from=$claim_lines}
+{''|pad:5}
+{$claimline->value('procedure_description')|pad:23}
+{$claimline->value('procedure')|pad:10}
+{$claimline->value('date_of_treatment')|date_format:"%y%m%d"|pad:8}
+{$claimline->value('units')|pad:7:true:Z}
+{$claimline->value('amount')|pad:10:false|replace:'.':' '}
+{math equation="x + y" x=$claimline->value('amount') y=$total assign="total" format="%.2f"}
+{if $smarty.foreach.claimline.last}
+	{math equation="x - y" x="22" y=$smarty.foreach.claimline.iteration assign="numberOfLinesToSkip"}
+{/if}
+{/foreach}
+
+{newline lines=$numberOfLinesToSkip}
+{'001'|pad:5}{'TOTAL'|pad:23}{''|pad:25}{$total|pad:10:false|replace:'.':' '}
+{newline lines="2"}
+
+{$payer->value('name')|pad:42}
+{$claim->value('amount_paid')|pad:10:false|replace:'.':' '}{''|pad:1}
+{$claim->value('net_amount_total')|pad:10:false|replace:'.':' '}
+
+{newline lines="1"}
+{''|pad:25}
+{$provider->value('identifier_2')}
+
+{newline lines="4"}
+{''|pad:27}
+{$subscriber->value('group_number')|pad:20}
+{$subscriber->value('group_name')}
+
+{newline lines="8"}
+{foreach name="diagnosis" from=$claim->value('allDiagnoses') item=diagnosis}
+{$diagnosis|pad:7}
+{if $smarty.foreach.diagnosis.last}
+  {math equation="(z - y) * x" x="7" y=$smarty.foreach.diagnosis.iteration z="8" assign="numberOfSpacesToPad"} 
+{/if}
+{/foreach}
+{''|pad:$numberOfSpacesToPad}
+
+{newline lines="2"}
+{''|pad:48}
+{$provider->value('identifier')}{$provider->value('print_name_last_first')|pad:30}
+
+{newline lines="6"}
+{''|pad:60}
+{$smarty.now|date_format:"%m/%d/%Y"|pad:10}
+

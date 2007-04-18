@@ -1,0 +1,32 @@
+{* Loop 2400 - Service Line *}
+LX*
+1~										{*increments for each service, only one service currently supported*}
+
+SV1*
+HC:{$claim_line->get("procedure")|upper}
+{foreach from=$claim_line->value('all_modifiers') item=modifier}
+:{$modifier|upper}
+{/foreach}
+*
+{if $claim_line->get("amount") == "0.00"}
+0*
+{else}
+{$claim_line->get("amount")}*
+{/if}
+UN*
+{$claim_line->get("units")|replace:".00":""}*													{*Claim line units*}																				
+{$treating_facility->get("facility_code")}**
+{foreach name="diag_count" from=$diagnoses item=d}{$smarty.foreach.diag_count.iteration}{if !$smarty.foreach.diag_count.last}:{/if}{/foreach}													
+~
+
+DTP*
+472*
+D8*
+{$claim_line->get("date_of_treatment")|date_format:"%Y%m%d"}~
+
+{* clia number loop *}
+{if $claim_line->get('clia_number') != ''}
+REF*
+X4*
+{$claim_line->get('clia_number')|upper}~
+{/if}

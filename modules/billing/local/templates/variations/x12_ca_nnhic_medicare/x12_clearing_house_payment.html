@@ -1,0 +1,6 @@
+{* NOTE: This is required only if credit/debit info is included with the claim.  This should not be sent to the payer.*}
+{if $clearing_house->get("credit_max_amount")}
+AMT*										{*Credit/Debit Card Maximum Amount*}
+MA*											{*Amount qualifier. Use MA (maximum amount) *}
+{$clearing_house->get("credit_max_amount")}~				{*Dollar amount.*}
+{/if}

@@ -1,0 +1,32 @@
+NM1*					{*Pay-to Provider*}
+87*													{* always use 87 *}
+2*													{* 1=person, 2=non-person *}
+{$practice->get("name")|upper}*
+****
+{$practice->get("identifier_type")}*				{*24=EIN, 34=SSN, XX=something else...  use 24 *}
+{$practice->get("identifier")|upper}~
+
+N3*
+{$practice->get("print_address")|replace:"#":"num"|upper}~					{*address*}
+
+N4*
+{$practice->get("city")|upper}*							{*city/state/zip*}
+{$practice->get("state")|upper}*
+{$practice->get("zip")|pad:5|upper}~
+{*Medicare specific segement *}
+
+{* Pay-To Provider Secondary Identifer *}
+REF*
+{* Default to 0B - State License Number - if no treatingFacilityIdType is specified *}
+{if $treatingFacilityIdType}
+{$treatingFacilityIdType}
+{else}
+0B
+{/if}*
+{if $treatingFacilityId}
+{$treatingFacilityId}
+{else}
+{$treating_facility->get("identifier")|upper}
+{/if}~
+{*NOTE: can optionally implement a REF here just as in loop 2010AA for secondary identification.*}
+

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>{$app_title}</title>
+	<link href="{$base_dir}celini.css" rel="stylesheet" type="text/css">	<link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">	<script src="{$base_dir}js/validate.js" type="text/javascript"></script>	<script src="{$base_dir}js/dateparse.js" type="text/javascript"></script>	<script src="{$base_dir}js/cal/calendar.js" type="text/javascript"></script>	<script src="{$base_dir}js/cal/calendar-en.js" type="text/javascript"></script>	<script src="{$base_dir}js/cal/calendar-setup.js" type="text/javascript"></script>
+</head>
+<body>
+	<div id="header">
+		<h1>FreeB 2.0</h1>
+	</div>
+	<table>
+		<tr>
+			<td id="nav">
+				<h2>Navigation</h2>				<ul>				<lh>Claims</lh>				<li><a href="{$base_dir}index.php/main/Claim/list">List</a></li>				<li><a href="{$base_dir}index.php/main/Claim/edit?claim_id=0">Add</a></li>				</ul>
+			</td>
+			<td id="body">
+				{$display}
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

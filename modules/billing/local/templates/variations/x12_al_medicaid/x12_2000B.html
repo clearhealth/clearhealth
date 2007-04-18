@@ -1,0 +1,104 @@
+{*Loop 2000B*} 
+HL*													{*Subscriber hierarchial level*}	
+{$hl_count}*													{*Hierarchial id number *}
+{$hl_parent}*													{*Hierarchical _Parent_ ID Number*}
+{*the above line will be the HL value assigned to the preceeding loop (loop 2000A), which was for the pay-to provider.*}
+22*													{*This will always be 22 (22=Subscriber)*}
+0~													{*Indicates if there are child segments to this one. 0=none, 1=some *}
+
+SBR*												{*Subscriber info segment*}
+{$payer->get("responsibility")|upper}*					{*Insurance Co's responsibility. (P=primary S=secondary T=Tertiary)*}
+{$subscriber->get("relationship_code")|upper}*			{*Individual relationship code. Use 18 (18=self)*}
+{$subscriber->get("group_number")|upper}*					{*Group/Policy Number*}
+{$subscriber->get("group_name")|upper}*					{*Group/Policy Name*}
+****												{*Note: if medicare/medicaid is not primary, then SBR05 is required.*}
+MB{* This.. $payer->get("claim_filing_code") is not being transfered by CH*}~		{*Code for type of claim.*}
+
+{if $subscriber->get("relationship") eq "self"}
+PAT*												{*Optional...used if patient is dead.*}
+****
+D8*													{*Date qualifier. Always use D8*}
+{$patient->get("date_of_death")}*					{*Date of Death*}
+01*													{*Unit, always use 01 (Actual pounds), only supply if weight is present*}
+{$patient->get("weight")}~							{*Weight at death*}
+{/if}
+
+{*This PAT segment is required if the subscriber is the same person as the patient, and this info (death/weight/pregnant) is required to file a claim.*}
+{*not in freeb1, needed for dead patients *PAT*****D8*19970314*01*146~* -- implemented above *}
+
+{*Loop 2010BA*}
+NM1*												{*Subscriber Name Loop*}
+IL*													{*ID Code.  Always use IL (Insured or Subscriber) *}
+1*													{*Type qualifier.  1=person, 2=non-person - for us it's 1 *}
+{$subscriber->get("last_name")|upper}*
+{$subscriber->get("first_name")|upper}*
+{$subscriber->get("middle_name")|upper}**
+*													{*field to contain name suffix*}
+MI*													{*ID Code qualifier.  MI or ZZ - for us its MI *}
+{$subscriber->get("id")}~							
+
+N3*
+{$subscriber->get("print_address")|replace:"#":"num"|upper}~
+{*Note:  N302 can be added if there are two lines for the address. *}
+
+N4*
+{$subscriber->get("city")|upper}*
+{$subscriber->get("state")|upper}*
+{$subscriber->get("zip")|pad:5}~
+{*Note: N404 is required (country code) if address is outside of USA. *}
+
+DMG*												{*Subscriber Demographic info*}
+D8*													{*Date/time qualifier. Use D8 (CCYYMMDD) *}
+{$subscriber->get("date_of_birth")|date_format:"%Y%m%d"}*
+{$subscriber->get("gender")|upper}~							{*Male/Female/Unknown*}
+
+{*Note: optional REF line can go here to specify additional identifying info such as ssn, client #, or other id #. *}
+{*Note: additional REF line can go here in some cases to specify a claim number.*}
+
+{*Loop 2010BB*}
+NM1*												{*Payer name loop*}
+PR*													{*Always use PR (payer)*}
+2*													{*Payer is 2 (non-person)*}
+NHIC{*{$payer->get("name")}*}*****
+PI*													{* PI (payer identification) or XV (PAYERID)*}
+{*{$payer->get("id")}~*}
+31146~
+
+{*
+N3*
+{$payer->get("print_address")|replace:"#":"num"|upper}~
+
+N4*
+{$payer->get("city")|upper}*
+{$payer->get("state")|upper}*
+{$payer->get("zip")|pad:5}~
+*}
+{*Can use optional REF line here for additional info if necessary to adjudicate the claim/encounter.*}
+
+
+
+
+
+
+{*Loop 2010BC*}
+{*responsible party, not in freeb1, case if patient/subscriber is not financially responsible, i.e. disabled*}
+{if $responsible_party->get("last_name") != $patient->get("last_name") || $responsible_party->get("first_name") != $patient->get("first_name")}
+NM1*
+QD*													{*Always use QD (responsible party)*}
+1*													{*Use 1.  1=person 2=non-person*}
+{$responsible_party->get("last_name")|upper}*
+{$responsible_party->get("first_name")|upper}*
+{$responsible_party->get("middle_name")|upper}~			{*name suffix*}
+{/if}
+
+N3*
+{$responsible_party->get("print_address")|replace:"#":"num"|upper}~
+
+N4*
+{$responsible_party->get("city")|upper}*
+{$responsible_party->get("state")|upper}*
+{$responsible_party->get("zip")|pad:5|upper}~
+{*country required as N404 if outside of usa*}
+
+{*There is a loop here 2010BD, however I dont think we're going to use it.  It holds credit card info.*}
+

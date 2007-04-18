@@ -1,0 +1,134 @@
+{* *** Standard HCFA/CMS 1500 Format *** *}
+{* *** Cups settings *** *}
+{* cpi:10 *}
+{* lpi:6 *}
+{* topmargin:0 Try adjusting this to move the lines lower on the page *}
+{* leftmargin:0 Try adjusting this to shift the character to the right*}
+{* bottommargin:0 *}
+{* rightmargin:0 *}
+{newline lines="2"}
+{* *** Line 0 Top right address of payer *** *}
+{""|pad:45}{$payer->get("name")|pad:30}
+{newline lines="1"}
+{""|pad:45}{$payer->get("line1")|pad:30}
+{newline lines="1"}
+{""|pad:45}{$payer->get("line2")|pad:30}
+{newline lines="1"}
+{""|pad:45}{$payer->get("city")|pad:15},{$payer->get("state")|pad:2}{""|pad:1}{$payer->get("zip")|pad:9}
+{newline lines="1"}
+{""|pad:45}{if $total_pages  > 1}Page {$current_page} of {$total_pages}{/if}
+{newline lines="2"}
+{* *** Line 1 1. MEDICARE *** *}
+{$payer->is("medicare","X")}{""|pad:7}{$payer->is("medicaid","X")}{""|pad:7}{$payer->is("champus","X")}{""|pad:8}{$payer->is("champva","X")}{""|pad:7}{$payer->is("ghp","X")}{""|pad:7}{$payer->is("feca","X")}{""|pad:7}{$payer->is("other","X")}{""|pad:8}{$subscriber->get("identifier")}
+{newline lines="2"}
+{* *** Line 2 2. PATIENT'S NAME *** *}
+{$patient->get("last_name")|pad:13}, {$patient->get("first_name")|pad:10} {$patient->get(middle_name)|pad:1}.{""|pad:2}{$patient->get("date_of_birth")|date_format:"%m %d %y"|pad:10}{""|pad:1}{$patient->is("male","X")}{""|pad:3}{$patient->is("female","X")}{""|pad:4}{$subscriber->get("last_name")}, {$subscriber->get("first_name")}, {$subscriber->get("middle_name")}
+{newline lines="2"}
+{* *** Line 3 5. PATIENT'S *** *}
+{$patient->get("line1")|pad:28}{""|pad:3}{$patient->is("ins_self","X")}{""|pad:4}{$patient->is("ins_spouse","X")}{""|pad:3}{$patient->is("ins_child","X")}{""|pad:3}{$patient->is("ins_other","X")}{""|pad:4}{$subscriber->get("line1")|pad:21}
+{newline lines="2"}
+{*{if $patient->get("line2") != '' || $subscriber->get("line2") != ''}
+{$patient->get("line2")|pad:28}{""|pad:16}{$subscriber->get("line2")|pad:21}
+{newline lines="1"}
+{/if}*}
+{* *** Line 4 CITY *** *}
+{$patient->get("city")|pad:22}{""|pad:3}{$patient->get("state")}{""|pad:6}{$patient->is("single","X")}{""|pad:5}{$patient->is("married","X")}{""|pad:4}{$patient->is("stat_other","X")}{""|pad:7}{$subscriber->get("city")|pad:23}{""|pad:1}{$subscriber->get("state")}
+{if $patient->get("line2") != '' || $subscriber->get("line2") != ''}
+{newline lines="1"}
+{else}
+{newline lines="2"}
+{/if}
+
+{* *** Line 5 ZIP CODE*** *}
+{$patient->get("zip")|pad:9}{""|pad:5}{$patient->get("phone_number")|pad:13}{""|pad:6}{$patient->is("employed","X")}{""|pad:5}{$patient->is("ftstudent","X")}{""|pad:4}{$patient->is("ptstudent","X")}{""|pad:8}{$subscriber->get("zip")|pad:14}{$subscriber->get("phone_number")|pad:12}
+
+{newline lines="2"}
+{* *** Line 6 9. OTHER INSURED'S NAME*** *}
+{if $subscribers.1}{$subscribers.1->get("print_name")|pad:34}{else}{""|pad:34}{/if}
+{""|pad:17}{$subscriber->get("group_number")|pad:34}
+{newline lines="1"}
+{* *** Line 7 a. OTHER INSURED'S POLICY*** *}
+{if $subscribers.1}
+{$subscribers.1->get("group_number")|pad:30}
+{else}{""|pad:30}{/if}
+{""|pad:3}{$claim->is("employment_related","X")}{""|pad:5}{$claim->is_not("employment_related","X")}{""|pad:15}{$subscriber->get("date_of_birth")|date_format:"%m %d %y"|pad:10}{""|pad:4}{$subscriber->is("male","X")|pad:1}{""|pad:5}{$subscriber->is("female","X")}
+{newline lines="2"}
+{if $subscribers.1}
+{* *** Line 8 b. OTHER INSURED'S DATE*** *}
+{$subscribers.1->get("date_of_birth")|date_format:"%m"}{""|pad:1}{$subscribers.1->get("date_of_birth")|date_format:"%m %d %y"|pad:10}{""|pad:12}{$subscribers.1->is("male","X")}{""|pad:3}{$subscribers.1->is("female","X")}
+{else}{""|pad:30}{/if}
+{""|pad:3}{$claim->is("auto_accident","X")}{""|pad:5}{$claim->is_not("auto_accident","X")}{""|pad:2}{$claim->get("auto_accident_state")}{""|pad:2}{$subscriber->get("employer")|pad:34}
+{newline lines="2"}
+{* *** Line 9 c. EMPLOYER'S*** *}
+{if $subscribers.1}
+{$subscribers.1->get("employer_name")|pad:30}
+{else}{""|pad:30}{/if}
+{""|pad:3}{$claim->is("other_accident","X")|pad:1}{""|pad:5}{$claim->is_not("other_accident","X")|pad:1}{""|pad:12}{$subscriber->get("group_name")}
+{newline lines="2"}
+{* *** Line 10 d. INSURANCE PLAN*** *}
+{if $subscribers.1}
+{$subscribers.1->get("group_name")|pad:30}
+{else}{""|pad:30}{/if}
+{""|pad:1}
+{$claim->get("hcfa_10d_comment")|pad:14}{""|pad:3}
+{if $payers.1}{"X"|pad:1}{else}{""|pad:1}{/if}{""|pad:2}{if !$payers.1}{"X"|pad:1}{else}{""|pad:1}{/if}
+{newline lines="4"}
+{* *** Line 11-12 PATIENT'S OR A*** *}
+{""|pad:5}{"Signature on file"|pad:29}{$smarty.now|date_format:"%m/%d/%Y"}{""|pad:12}{"Signature on file"}
+{newline lines="2"}
+{* *** END PATIENT AND INSURED INFORMATION.  BEGIN PHYSICIAN OR SUPPLIER INFORMATION *** *}
+{* *** Line 13 14. DATE OF CURRENT *** *}
+{""|pad:1}{$patient->get("date_of_onset")|date_format:"%m %d %y"|pad:10}{""|pad:25}{$patient->get("date_of_onset")|date_format:"%m %d %y"|pad:14}{""|pad:3}{$patient->get("date_of_cant_work_start")|date_format:"%m %d %y"|pad:10}{""|pad:4}{$patient->get("date_of_cant_work_end")|date_format:"%m %d %y"|pad:10}
+{newline lines="2"}
+{* *** Line 14 17. NAME OF REFERRING*** *}
+{$referring_provider->get("print_name")|pad:28}{$referring_provider->get("identifier")|pad:15}{""|pad:10}{$patient->get("date_of_hospitalization_start")|date_format:"%m %d %y"|pad:10}{""|pad:4}{$patient->get("date_of_hospitalization_end")|date_format:"%m %d %y"|pad:10}
+{newline lines="2"}
+{* *** Line 15 19. RESERVED FOR LOCAL*** *}
+{$patient->get("comment")|pad:38}{""|pad:3}{$claim->is("outside_lab","X")|pad:1}{""|pad:3}{$claim->is_not("outside_lab","X")|pad:1}{""|pad:18}{$claim->get_lab_amount()}
+{newline lines="2"}
+{* *** Line 16-17 21. DIAGNOSIS OR NATURE*** *}
+{""|pad:3}{$diagnoses.0|pad:5}{""|pad:20}{$diagnoses.2|pad:6}{""|pad:13}{$claim->get("medicaid_resubmission_code")|pad:11}{""|pad:1}{$claim->get("original_reference_number")|pad:8}
+{newline lines="2"}
+{""|pad:3}{$diagnoses.1|pad:5}{""|pad:20}{$diagnoses.3|pad:6}{""|pad:13}{$claim->get("prior_authorization_number")|pad:16}
+{newline lines="4"}
+{* *** Line 18-24 24. A DATE(S) OF SERVICE *** *}
+{section name=claimline loop=6}
+{if is_object($claim_lines[claimline])}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%m"}{""|pad:1}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%d"}{""|pad:1}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%y"}{""|pad:1}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%m"}{""|pad:1}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%d"}{""|pad:1}
+{$claim_lines[claimline]->get("date_of_treatment")|date_format:"%y"}{""|pad:1}
+{$treating_facility->get("facility_code")|pad:2}{""|pad:1}
+{*type of service, now deprecated*}{""|pad:2}{""|pad:2}
+{$claim_lines[claimline]->get("procedure")|pad:5}{""|pad:1}
+{$claim_lines[claimline]->get("modifier")|regex_replace:"/^0$/":""|pad:2}{""|pad:8}
+{$claim_lines[claimline]->get("diagnosis_pointer")|pad:7}{""|pad:1}
+{$claim_lines[claimline]->get("amount")|pad:7}{""|pad:1}
+{$claim_lines[claimline]->get("units")|pad:3}{""|pad:1}
+{$claim_lines[claimline]->is("EPSDT","X")|pad:2}{""|pad:1}
+{$claim_lines[claimline]->is("EMG","X")|pad:2}{""|pad:1}
+{$claim_lines[claimline]->is("COB","X")|pad:2}{""|pad:1}
+{$claim_lines[claimline]->get("comment")|pad:9}
+{/if}
+{if $smarty.section.claimloop.last}{newline lines="1"}{else}{newline lines="2"}{/if}
+{/section}
+{* *** Line 25 25. FEDERAL TAX I.D. *** *}
+{$practice->get("identifier")|pad:16}{$practice->is("identifier_ssn","X")}{""|pad:1}{$practice->is("identifier_ein","X")}{""|pad:3}{$patient->get("record_num")|pad:14}{$subscriber->is("accepts_assignment","X")}{""|pad:4}{$subscriber->is_not("accepts_assignment","X")}
+{""|pad:5}
+{if $claim_continues}
+{"continued"|pad:10}{""|pad:18}
+{else}
+{$claim->get("amount_total")|pad:10:false}{""|pad:1}{$claim->get("amount_paid_total")|pad:9:false}{""|pad:3}{$claim->get("net_amount_total")|pad:8:false}
+{/if}
+{* *** Line 26-28 31. SIGNATURE OF PHYSICIAN *** *}
+{newline lines="2"}
+{""|pad:21}{""|pad:1}{$treating_facility->get("name")|pad:26}{""|pad:1}{$provider->get("print_name")|pad:28}
+{newline lines="1"}
+{"Signature on file"|pad:21}{""|pad:1}{$treating_facility->get("line1")|pad:26}{""|pad:1}{$provider->get("print_address")|pad:28}
+{newline lines="1"}
+{""|pad:10}{$smarty.now|date_format:"%m/%d/%y"|pad:10}{""|pad:1}{$treating_facility->get("line2")|pad:27}{""|pad:1}{$provider->get("city")|cat:", "|cat:$provider->get("state")|cat:" "|cat:$provider->get("zip")|pad:29}
+{newline lines="1"}
+{""|pad:22}{$treating_facility->get("city")|cat:", "|cat:$treating_facility->get("state")|cat:" "|cat:$treating_facility->get("zip")|pad:28}{""|pad:1}{$provider->get("identifier")|pad:20}
+

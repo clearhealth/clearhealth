@@ -1,0 +1,369 @@
+{literal}
+<style>
+	fieldset form {
+		position: relative;
+	}
+	.loading div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #ddd;
+		text-align: center;
+	}
+</style>
+{/literal}
+<script type="text/javascript">
+	var ajaxTarget = '{$AJAX_ACTION}';
+{literal}
+HTML_AJAX.onError = function(e,r) {
+	var target = document.createElement('div');
+	target.style.position = 'absolute';
+	target.style.left = '50px';
+	target.style.top = '50px';
+	target.style.width = '400px';
+	target.style.height = '400px'
+	target.style.border = 'solid 2px black';
+	target.style.padding = '2px';
+	target.style.backgroundColor = 'white';
+
+	target.innerHTML = HTML_AJAX_Util.varDump(e);
+	document.getElementById('body').appendChild(target);
+//document.body.insertBefore(target,document.body.firstChild);
+}
+function indexTable() {
+	var t = document.getElementById('editor');
+	for(var i = 0; i < t.rows.length; i++) {
+		t.rows[i].index = i;
+	}
+}
+Behavior.register(
+	"#body form",
+	function(element) {
+		if (element.hasBehavior) {
+	       		return;
+		}
+		element.hasBehavior = true;
+		if (element.onsubmit) {
+			element.onsubmit = function() {};
+
+			var handler = function(e) {
+				var target = HTML_AJAX_Util.eventTarget(e);
+
+				var valid = clni_validate(target);
+
+				var section = target.parentNode.getElementsByTagName('legend').item(0).innerHTML;
+				if (valid) {
+					// do an ajax submission
+
+					var regExp = new RegExp('id=[a-zA-Z]+$');
+					if (!regExp.exec(target.action)) {
+						target.action = ajaxTarget+HTML_AJAX_Util.queryString(target.action)+'&id='+section;
+					}
+
+					HTML_AJAX.formSubmit(target,target, {
+						Open:function(r) { 
+						var div = document.createElement('div');
+						target.className = 'loading'; 
+						target.appendChild(div); 
+						div.style.height = target.offsetHeight + 'px';
+						div.innerHTML = '<p>Processing ...</p>';
+						}, 
+						Load:function(r) { target.className = 'radio'; } 
+						} 
+					);
+				}
+				// cancel submission in IE
+				e.returnValue = false;
+				// cancel submission in FF
+				if (e.preventDefault) {
+					e.preventDefault();
+				}
+			}
+			HTML_AJAX_Util.registerEvent(element,'submit',handler);
+		}
+	}
+);
+var remote = new Controller( {
+	dispatchAction: function(result) {
+try {
+		var tr = clniUtil.findParentOfTagName(this.current,'tr');
+		if (result.action == 'add') {
+			var insertAt = 0;
+			for(var i = tr.index; i < tr.parentNode.rows.length; i++) {
+				if (tr.parentNode.rows[i].className != tr.className) {
+					insertAt = i;
+					break;
+				}
+			}
+
+			var trNew = tr.parentNode.insertRow(insertAt);
+
+			trNew.className = tr.className;
+			var td = document.createElement('td');
+			td.colSpan = tr.cells[0].colSpan;
+			td.vAlign = tr.cells[0].vAlign;
+
+			document.getElementById('debug').innerHTML = (HTML_AJAX_Util.quickPrint(tr.cells[0]));
+			trNew.appendChild(td);
+			HTML_AJAX_Util.setInnerHTML(td,result.html);
+
+			var a = td.getElementsByTagName('a');
+			for(var i = 0; i < a.length; i++) {
+				HTML_AJAX_Util.registerEvent(a[i],'click',ajaxClick);
+			}
+			Behavior.apply();
+			new Effect.Highlight(trNew);
+		}
+		if (result.action == 'remove') {
+			var parentFieldset = clniUtil.findParentOfTagName(this.current, 'fieldset');
+			new Effect.Fade(parentFieldset);
+			window.setTimeout(function() { fieldset.parentNode.deleteRow(fieldset);  },1000);
+		}
+		indexTable();
+		lock = false;
+} catch (e) {
+	alert(HTML_AJAX_Util.quickPrint(e));
+}
+	},
+	Open: function() {
+		      alert('got here');
+		this.current.disabled = true;
+		document.body.style.cursor = 'wait';
+	},
+	Load: function() {
+		this.current.disabled = false;
+		document.body.style.cursor = '';
+	}
+});
+
+var lock = false;
+function ajaxClick(e) {
+try {
+	if (lock) {
+		alert('call in progress');
+	}
+	else {
+		lock = true;
+		var target = HTML_AJAX_Util.eventTarget(e);
+
+		var tmp = target.href.split('?');
+		var action = tmp[0].split('/').pop();
+		remote.dispatcher.callback.current = target;
+//		var outargs = HTML_AJAX_Util.parseQueryString(tmp[1]);
+		remote.dispatchAction('Claim',action+'_ajax',tmp[1]);
+	}
+
+	// cancel submission in IE
+	e.returnValue = false;
+	// cancel submission in FF
+	if (e.preventDefault) {
+		e.preventDefault();
+	}
+} catch (e) {
+	alert(HTML_AJAX_Util.quickPrint(e));
+}
+}
+
+Behavior.register(
+	"#body a",
+	function(element) {
+		if (element.hasBehavior) {
+	       		return;
+		}
+		element.hasBehavior = true;
+		HTML_AJAX_Util.registerEvent(element,'click',ajaxClick);
+	}
+);
+</script>
+{/literal}
+<table id="editor">
+	<tbody>
+<tr>
+<td colspan="2">{$message}</td>
+</tr>
+{if $claim->get("claim_id") == 0}
+<tr>
+	<td colspan="2" valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Claim</legend> 
+	{new_auto_form action="$NEW_ACTION" id="FBClaim" object=$claim process="true"}
+	{show_auto_form id="FBClaim"}
+	</fieldset>
+	</td>
+</tr>
+{else}
+<tr>
+<td><form action="{$CLOSE_ACTION}" method="post"><input name="close_claim" value="Close Claim" type="submit"><input type="hidden" name="process" value="true"></form></td>
+</tr>
+<tr>
+	<td colspan="2" valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Claim</legend> 
+	{new_auto_form action="$FORM_ACTION" id="FBClaim" object=$claim process="true"}
+	{show_auto_form id="FBClaim"}
+	</fieldset>
+	</td>
+</tr>
+<tr class="claimline">
+<td colspan=2 valign="top">
+<a href="{$ADD_ENTITY_ACTION}entity=FBClaimline&legend=Claimline&process=1" class="add">add claimline</a>
+</td>
+</tr>
+{if count($claim_lines) > 0}
+{foreach name=claimline_loop from=$claim_lines item=claimline}
+<tr class="claimline">
+	<td colspan="2" valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Claimline</legend> 
+	<a href="{$DROP_ENTITY_ACTION}entity_id={$claimline->get('id')}&entity=FBClaimline&process=1" class="remove">remove claimline</a>
+	{new_auto_form action="$FORM_ACTION" id="FBClaimline" object=$claimline process="true"}
+	{add_field id="FBClaimline" label="diagnosis_1" type="input" value=$claimline->get_diagnosis("0")}
+	{add_field id="FBClaimline" label="diagnosis_2" type="input" value=$claimline->get_diagnosis("1")}
+	{add_field id="FBClaimline" label="diagnosis_3" type="input" value=$claimline->get_diagnosis("2")}
+	{add_field id="FBClaimline" label="diagnosis_4" type="input" value=$claimline->get_diagnosis("3")}
+	{show_auto_form id="FBClaimline"}
+	</fieldset>
+	</td>
+</tr>
+{/foreach}
+{/if}
+<tr>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Patient</legend> 
+	{new_auto_form action="$FORM_ACTION" id="FBPatient" object=$patient process="true"}
+	{show_auto_form id="FBPatient"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Practice</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBPractice" object=$practice process="true"}
+	{show_auto_form id="FBPractice"}
+	</fieldset>
+	</td>
+</tr>
+<tr class="subscriber">
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Subscriber</legend>
+	{if count($subscribers) < 11}
+		<a href="{$ADD_ENTITY_ACTION}&entity=FBSubscriber&legend=Subscriber&process=1" class="add">add other subscriber</a>
+	{/if}
+	{new_auto_form action="$FORM_ACTION" id="FBSubscriber" object=$subscriber process="true"}
+	{show_auto_form id="FBSubscriber"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Payer</legend>
+	{if count($payers) < 5}
+	<a href="{$ADD_ENTITY_ACTION}entity=FBPayer&legend=Payer&process=1" class="add">add other payer</a>
+	{/if}
+	{new_auto_form action="$FORM_ACTION" id="FBPayer" object=$payer process="true"}
+	{show_auto_form id="FBPayer"}
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+	{foreach from=$subscribers item="otherSubscriber" name="otherSubscriber"}
+	{if $smarty.foreach.otherSubscriber.iteration > 1}
+	<fieldset class="radio" id="person">
+		<legend>Other Subscriber</legend>
+		<a href="{$DROP_ENTITY_ACTION}entity_id={$otherSubscriber->get('id')}&entity=FBSubscriber&process=1" class="remove">remove subscriber</a>
+		{new_auto_form action="$FORM_ACTION" id="FBSubscriber" object=$otherSubscriber process="true"}
+		{show_auto_form id="FBSubscriber"}
+	</fieldset>
+	{/if}
+	{/foreach}
+	</td>
+	<td valign="top">
+	{foreach from=$payers item="otherPayer" name="otherPayer"}
+	{if $smarty.foreach.otherPayer.iteration > 1}
+	<fieldset class="radio" id="person">
+		<legend>Other Payer</legend>
+		<a href="{$DROP_ENTITY_ACTION}entity_id={$otherPayer->get('id')}&entity=FBPayer&process=1" class="remove">remove payer</a>
+		{new_auto_form action="$FORM_ACTION" id="FBPayer" object=$otherPayer process="true"}
+		{show_auto_form id="FBPayer"}
+	</fieldset>
+	{/if}
+	{/foreach}
+	</td>
+</tr>
+
+<tr>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Provider</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBProvider" object=$provider process="true"}
+	{show_auto_form id="FBProvider"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Referring Provider</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBReferringProvider" object=$referring_provider process="true"}
+	{show_auto_form id="FBReferringProvider"}
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Treating Facility</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBTreatingFacility" object=$treating_facility process="true"}
+	{show_auto_form id="FBTreatingFacility"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Billing Facility</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBBillingFacility" object=$billing_facility process="true"}
+	{show_auto_form id="FBBillingFacility"}
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Clearing House</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBClearingHouse" object=$clearing_house process="true"}
+	{show_auto_form id="FBClearingHouse"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Billing Contact</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBBillingContact" object=$billing_contact process="true"}
+	{show_auto_form id="FBBillingContact"}
+	</fieldset>
+	</td>
+</tr>
+<tr>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Supervising Provider</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBSupervisingProvider" object=$supervising_provider process="true"}
+	{show_auto_form id="FBSupervisingProvider"}
+	</fieldset>
+	</td>
+	<td valign="top">
+	<fieldset class="radio" id="person">
+	<legend>Responsible Party</legend>
+	{new_auto_form action="$FORM_ACTION" id="FBResponsibleParty" object=$responsible_party process="true"}
+	{show_auto_form id="FBResponsibleParty"}
+	</fieldset>
+	</td>
+</tr>
+{/if}
+</tbody>
+</table>
+{literal}
+<script>
+indexTable();
+</script>
+{/literal}
+<pre id="debug"></pre>

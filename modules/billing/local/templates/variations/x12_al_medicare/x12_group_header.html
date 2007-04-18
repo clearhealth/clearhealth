@@ -1,0 +1,9 @@
+GS*
+HC*
+{$practice->get("x12_senderid")}*
+{$practice->get("x12_senderid")}*
+{date_format:"%y%m%d"}*								{*Date of interchange*}
+{date_format:"%H%M"}*								{*Time of interchange*}
+1*													{*This can be used as a group sequence number, not currently implemented by FreeB*}
+X*
+{$practice->get("x12_gsversion")}~

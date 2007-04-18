@@ -1,0 +1,17 @@
+{* Loop 2310D - Service Facility Location *}
+NM1*
+77*
+2*
+{$treating_facility->get("name")|upper}*
+****
+{$treating_facility->get("identifier_type")|upper}*
+{$treating_facility->get("identifier")|upper}~
+
+N3*
+{$treating_facility->get("print_address")|upper}~
+
+N4*
+{$treating_facility->get("city")|upper}*
+{$treating_facility->get("state")|upper}*
+{$treating_facility->get("zip")|pad:5}~
+

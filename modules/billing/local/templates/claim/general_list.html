@@ -1,0 +1,159 @@
+{literal}
+<style>
+	.legendPopup div {
+		position: absolute;
+		top: 60px;
+		right: 18px;
+		width: 125px;
+		display: none;
+	}
+	.legendPopup fieldset {
+		background-color: white;
+	}
+	.legendPopup span {
+		border-bottom: dotted 1px gray;
+		cursor: help;
+	}
+	.extraInfo {
+		border-bottom: dotted 1px black;
+		cursor: help;
+	}
+	#infoBox {
+		position: absolute;
+		border: solid 1px black;
+		background-color: white;
+		width: 400px;
+		height: 300px;
+		padding: 2px;
+		display: none;
+		overflow: auto;
+	}
+	#infoBox table {
+		font-size: 10pt;
+	}
+	#infoBox th {
+		text-align: right;
+		vertical-align: top;
+	}
+	#infoBox td {
+		vertical-align: top;
+	}
+	#list td div {
+		text-align: center;
+	}
+</style>
+{/literal}
+<script type="text/javascript">
+deleteClaimUrl = "{$DELETE_ACTION}";
+data = {$data};
+</script>
+
+<div id="infoBox"></div>
+<div id="infoBoxTemplate" style="display:none">
+	{literal}
+	<table>
+		<tr>
+			<th>Claim Identifier:</th>
+			<td>{$claim_identifier}</td>
+		</tr>
+		<tr>
+			<th> Claimlines:</th>
+			<td>{$claimlines}</td>
+		</tr>
+		<tr>
+			<th>Subscriber:</th>
+			<td>{$subscriber_name}</td>
+		</tr>
+		<tr>
+			<th>Referring Provider:</th>
+			<td>{$referring_provider_name}</td>
+		</tr>
+		<tr>
+			<th>Supervising Provider:</th>
+			<td>{$supervising_provider_name}</td>
+		</tr>
+		<tr>
+			<th>Responsible Party:</th>
+			<td>{$responsible_party_name}</td>
+		</tr>
+		<tr>
+			<th>Billing Contact:</th>
+			<td>{$billing_contact}</td>
+		</tr>
+		<tr>
+			<th>Billing Facility:</th>
+			<td>{$billing_facility}</td>
+		</tr>
+		<tr>
+			<th>Clearing House:</th>
+			<td>{$clearing_house}</td>
+		</tr>
+	</table>
+	{/literal}
+</div>
+<fieldset>
+<legend>Filter</legend>
+{clni_form action=$FILTER_ACTION process=$PROCESS}
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Status{/l}: </label>{html_options name="filter[status]" options=$claim->statusList() selected=$filters.status}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Revision Date{/l}: </label> {clni_input_date name="filter[start]" value=$filters.start required="false"} to {clni_input_date name="filter[end]" value=$filters.end required="false"}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Date of Service{/l}: </label> {clni_input_date name="filter[dos_start]" value=$filters.dos_start required="false"} to {clni_input_date name="filter[dos_end]" value=$filters.dos_end required="false"}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Name{/l}: </label>{clni_input type="string" name="filter[name]" value=$filters.name}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Facility{/l}: </label>{html_options name="filter[facility]" options=$claim->facilityList() selected=$filters.facility}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Identifier{/l}: </label>{clni_input type="string" name="filter[claim_identifier]" value=$filters.claim_identifier}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Payer{/l}: </label> {clni_input type="string" name="filter[payer]" value=$filters.payer}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Provider{/l}: </label> {clni_input type="string" name="filter[provider]" value=$filters.provider}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	<label>{l}Program{/l}: </label> {clni_input type="string" name="filter[program]" value=$filters.program}
+</div>
+<div style="float:left;margin-left:10px;margin-bottom: 10px;">
+	{clni_input type="submit" name="filter_submit" value="Filter"}
+</div>
+</form>
+</fieldset>
+<div id="debug"></div>
+{$queue}
+<fieldset id="list">
+	<legend>{l}List{/l}</legend>
+{if $grid->empty}
+<p>{l}No Claims Found{/l}</p>
+{/if}
+
+<div class="legendPopup">
+<span >View Status Legend</span>
+<div>
+	<fieldset>
+		<legend>{l}Status Legend{/l}</legend>
+		<table id="legend" cellspacing='5'>
+		{foreach from=$claim->statusListWithColor() item=row}
+		<tr>
+			<td style="background-color: {$row.color}">&nbsp; &nbsp;&nbsp;</td>
+			<td style="border-bottom: solid 1px {$row.color}">{$row.val}</td>
+		</tr>
+		{/foreach}
+		</table>
+	</fieldset>
+</div>
+</div>
+
+{$grid->render()}
+</fieldset>
+
+<script type="text/javascript">
+	setupLegend();
+</script>

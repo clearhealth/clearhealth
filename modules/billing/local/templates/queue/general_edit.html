@@ -1,0 +1,37 @@
+<fieldset>
+	<legend>Queues</legend>
+<table class="grid">
+	<tr>
+		<th>Name</th>
+		<th>Items</th>
+		<th></th>
+	</tr>
+	{foreach from=$queues item=queue key=key}
+		<tr {if $key%2 == 1}class="alt"{/if}>
+			<td><a href="{$EDIT_ACTION}id={$queue.id}">{$queue.name}</a></td>
+			<td>{$queue.numItems}/{$queue.maxItems}</td>
+			<td><a href="{$DELETE_ACTION}id={$queue.id}&process=true">X</a>
+		</tr>
+	{/foreach}
+</table>
+</fieldset>
+
+<fieldset>
+	<legend>{if $selectedQueue}Editing: {$selectedQueue.name} <a href="{$EDIT_ACTION}">Add New</a>{else}Add a new Queue{/if}</legend>
+{clni_form}
+<table>
+	<tr>
+		<td><label>Name:</label></td>
+		<td><input name="queue[name]" class="required" value="{$selectedQueue.name}"></td>
+	</tr>
+	<tr>
+		<td><label>Max Items:</label></td>
+		<td><input name="queue[maxItems]" class="requiredNumber" size=4 value="{$selectedQueue.maxItems}"></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td><input type="submit" value="{if $selectedQueue}Update{else}Add new{/if} Queue"></td>
+	</tr>
+</table>
+</form>
+</fieldset>

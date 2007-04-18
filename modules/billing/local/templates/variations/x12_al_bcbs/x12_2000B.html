@@ -1,0 +1,66 @@
+{*Loop 2000B*} 
+HL*													{*Subscriber hierarchial level*}	
+{$hl_count}*										{*Hierarchial id number *}
+{$hl_parent}*										{*Hierarchical _Parent_ ID Number*}
+{*the above line will be the HL value assigned to the preceeding loop (loop 2000A), which was for the pay-to provider.*}
+22*													{*This will always be 22 (22=Subscriber)*}
+0~													{*Indicates if there are child segments to this one. 0=none, 1=some *}
+
+SBR*												{*Subscriber info segment*}
+{$payer->get("responsibility")}*					{*Insurance Co's responsibility. (P=primary S=secondary T=Tertiary)*}
+{$subscriber->get("relationship_code")}*			{*Individual relationship code. Use 18 (18=self)*}
+{$subscriber->get("group_number")}*					{*Group/Policy Number*}
+{$subscriber->get("group_name")}*					{*Group/Policy Name*}
+****												{*Note: if medicare/medicaid is not primary, then SBR05 is required.*}
+BL~					{*Code for type of claim. {$payer->get("claim_filing_code")} *}
+
+{if $subscriber->get("relationship") eq "self"}
+PAT*												{*Optional...used if patient is dead.*}
+****
+D8*													{*Date qualifier. Always use D8*}
+{$patient->get("date_of_death")}*					{*Date of Death*}
+01*													{*Unit, always use 01 (Actual pounds), only supply if weight is present*}
+{$patient->get("weight")}~							{*Weight at death*}
+{/if}
+
+{*This PAT segment is required if the subscriber is the same person as the patient, and this info (death/weight/pregnant) is required to file a claim.*}
+{*not in freeb1, needed for dead patients *PAT*****D8*19970314*01*146~* -- implemented above *}
+
+{*Loop 2010BA*}
+NM1*												{*Subscriber Name Loop*}
+IL*													{*ID Code.  Always use IL (Insured or Subscriber) *}
+1*													{*Type qualifier.  1=person, 2=non-person - for us it's 1 *}
+{$subscriber->get("last_name")}*
+{$subscriber->get("first_name")}*
+{$subscriber->get("middle_name")}**
+*													{*field to contain name suffix*}
+MI*													{*ID Code qualifier.  MI or ZZ - for us its MI *}
+{$subscriber->get("group_number")}~							
+
+N3*
+{$subscriber->get("print_address")}~
+{*Note:  N302 can be added if there are two lines for the address. *}
+
+N4*
+{$subscriber->get("city")}*
+{$subscriber->get("state")}*
+{$subscriber->get("zip")|pad:5}~
+{*Note: N404 is required (country code) if address is outside of USA. *}
+
+DMG*												{*Subscriber Demographic info*}
+D8*													{*Date/time qualifier. Use D8 (CCYYMMDD) *}
+{$subscriber->get("date_of_birth")|date_format:"%Y%m%d"}*
+{$subscriber->get("gender")}~							{*Male/Female/Unknown*}
+
+{*Note: optional REF line can go here to specify additional identifying info such as ssn, client #, or other id #. *}
+{*Note: additional REF line can go here in some cases to specify a claim number.*}
+
+{* Loop 2010BB - Payer Name *}
+{include file="variations/x12_generic/x12_2010BB.html" payerIdentifer="00510"}
+
+{* Loop 2010BC - Responsible Party Name *}
+{include file="variations/x12_generic/x12_2010BC.html"}
+
+{*Loop 2010BD*}
+{* Currently not in use *}
+

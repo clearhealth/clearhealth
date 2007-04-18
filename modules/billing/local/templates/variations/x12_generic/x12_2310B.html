@@ -1,0 +1,23 @@
+{* Loop 2310B - Rendering Provider Name *}
+{if $provider->get('last_name') != ''}
+NM1*
+82*
+1*
+{$provider->get("last_name")|upper}*
+{$provider->get("first_name")|upper}*
+***
+{$practice->get("identifier_type")|upper}*
+{$practice->get("identifier")|upper}~
+
+{if $provider->get('identifier_2') != ''}
+REF*
+{if $providerIdType && $provider->get('identifier_type_2') == 'Default'}
+{$providerIdType}
+{else}
+{$provider->value('identifier_type_2')|upper}
+{/if}*
+{$provider->get('identifier_2')|upper}~
+{/if}
+
+{/if}
+
