@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('datasources/Lab_DS.class.php');
+$loader->requireOnce('datasources/Order_DS.class.php');
 class C_Labs extends Controller {
 
 	function actionList() {
@@ -9,6 +10,14 @@ class C_Labs extends Controller {
 
 		$this->view->assign_by_ref('grid',$grid);
 		return $this->view->render('list.html');
+	}
+	function actionOrderList() {
+
+		$ds =& new Order_DS();
+		$grid =& new cGrid($ds);
+
+		$this->view->assign_by_ref('grid',$grid);
+		return $this->view->render('orderList.html');
 	}
 
 	function actionView($orderId) {

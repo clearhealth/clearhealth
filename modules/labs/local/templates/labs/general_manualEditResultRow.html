@@ -14,7 +14,6 @@
        <textarea cols=80 rows=3 id="labNote">{$note->get('note')}</textarea><br />
 <br />
 	<input type="hidden" name="labNoteId" id="labNoteId" value="{$note->get('note')}">
-       <input type="button" value="Save Lab Results" onclick="saveResultRow();">
+       <input type="button" value="Save Result Row" onclick="saveResultRow();">
 &nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" value="Confirm Results" onclick="confirmResults({$order.lab_order_id});">
 </fieldset>

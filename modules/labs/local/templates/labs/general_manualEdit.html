@@ -81,6 +81,8 @@ function updateView(result) {
 <input type="hidden" value="{$patientId}" id="labPatientId">
 {if !$order->get('lab_order_id') >0}
 <input type="button" value="Add Lab Order" onclick="saveOrder();">
+{elseif $order->get('status') ne 'F'}
+<input type="button" value="Mark Lab As Final" onclick="confirmResults({$order->get('lab_order_id')});">
 {/if}
 <br><br>
 </fieldset>
