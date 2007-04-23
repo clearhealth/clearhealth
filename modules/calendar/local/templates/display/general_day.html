@@ -48,15 +48,19 @@ function doResult(result) {
         alertMessages.innerHTML = result;
 }
 function do_reschedule() {
-        newProviderId = document.getElementById('new_provider_id').value;
-	override = '';
-	overrideNeeded = '';
+        var newProviderId = document.getElementById('new_provider_id').value;
+	var override = '';
+	var overrideNeeded = '';
         if (document.getElementById('appointmentOverride'))
 		override = document.getElementById('appointmentOverride').value;
 	if (document.getElementById('appointmentOverrideNeeded'))
         	overrideNeeded = document.getElementById('appointmentOverrideNeeded').value;
-        appIds = document.getElementById('appIds').value;
-        HTML_AJAX.call('appointment','ajaxDoReschedule',doResult,appIds,newProviderId,override, overrideNeeded);
+        var appIds = document.getElementById('appIds').value;
+        var scheduleIds = '';
+	if (document.getElementById('copySchedule').checked == true) {
+        	scheduleIds = document.getElementById('scheduleIds').value;
+	}
+        HTML_AJAX.call('appointment','ajaxDoReschedule',doResult,appIds,newProviderId,override, overrideNeeded,scheduleIds);
 
         return false;
 }
@@ -195,7 +199,7 @@ Calendar.setup( {
 
 			<div class="schedules">
 				{foreach from=$col.schedules item="schedule"}
-				<div style="top: {$dayIterator->timestampToPosition($schedule.start)}px; height: {$dayIterator->timeDifferenceToHeight($schedule.start,$schedule.end)}px;background: #{$col.color}; ">{$schedule.display}&nbsp;</div>
+				<div schedule_event_id="{$schedule.schedule_event_id}" style="top: {$dayIterator->timestampToPosition($schedule.start)}px; height: {$dayIterator->timeDifferenceToHeight($schedule.start,$schedule.end)}px;background: #{$col.color}; ">{$schedule.display}&nbsp;</div>
 				{/foreach}
 			</div>
 		</div>
