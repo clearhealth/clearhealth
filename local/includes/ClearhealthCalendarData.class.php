@@ -588,7 +588,8 @@ class ClearhealthCalendarData {
 				if(s.provider_id=0,r.id,s.provider_id) provider_id, /* this is a hack for room schedules */
 				u.nickname,
 				r.name AS roomname,
-				r.id room_id
+				r.id room_id,
+				se.event_id as schedule_event_id
 			FROM 
 				`event` AS event
 				INNER JOIN schedule_event se ON se.event_id=event.event_id
@@ -615,6 +616,7 @@ class ClearhealthCalendarData {
 				'start'=>$res->fields['start'],
 				'end'=>$res->fields['end'],
 				'display'=>$display,
+				'schedule_event_id'=>$res->fields['schedule_event_id'],
 				'room_id'=>$res->fields['room_id']
 			);
 			$res->MoveNext();
