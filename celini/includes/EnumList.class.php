@@ -59,6 +59,7 @@ class EnumList {
 	
 	var $_keyMap = array();
 
+
 	/**
 	 * Pass in a Enumeration Name to populate the object with values
 	 *
@@ -111,9 +112,8 @@ class EnumList {
 		assert('is_a($type, "EnumType_Default")');
 		
 		$this->type =& $type;
-		
 		if (is_a($this->type,'EnumType_default')) {
-			$this->_values = $this->type->enumData($this->id);
+			$this->_values = $this->type->enumData($this->id,true);
 		}
 		/* 
 		 * make a map of the stored key values in from the DB to their real key
