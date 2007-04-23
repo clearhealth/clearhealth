@@ -21,6 +21,8 @@ function addListRow(data) {
 		data['sort'] = sort;
 	}
 	var row = document.getElementById('editTemplate').getElementsByTagName('tr').item(0).cloneNode(true);
+	var spacer = row.getElementsByTagName('div')[0];
+	spacer.style.marginLeft = data['depth'] +'0px';
 	var inputs = row.getElementsByTagName('input');
 	var c = document.getElementById('enumTable').tBodies[0].getElementsByTagName('tr').length;
 	for(var i = 0; i < inputs.length; i++) {
@@ -75,6 +77,41 @@ function  up(img) {
 		moveRow(cell.parentNode,current,to);
 	}
 }
+function  increaseDepth(img) {
+	var cell = img.parentNode.parentNode;
+	current = new Number(cell.getElementsByTagName('input').item(0).value).valueOf();
+	var currentRowId = Number(cell.parentNode.getElementsByTagName('input').item(0).value).valueOf();
+	to = current +1;
+	if (to >= 0 && to <2) {
+		tableRows = img.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('tr');
+		var lastRowId = 0;
+		for (var i=0; i<tableRows.length;i++) {
+			var loopRowId = Number(tableRows[i].getElementsByTagName('input').item(0).value).valueOf();
+			if(loopRowId == currentRowId && lastHigherRowId != 0) {
+				cell.parentNode.getElementsByTagName('input').item(1).value = lastHigherRowId;
+			}
+			if (Number(tableRows[i].getElementsByTagName('input').item(1).value).valueOf() == 0) {
+			lastHigherRowId = loopRowId;
+			}
+		}
+		cell.getElementsByTagName('input').item(0).value = to;
+		var spacer = cell.parentNode.getElementsByTagName('div').item(0);
+        	spacer.style.marginLeft = to +'0px';
+	}
+	
+}
+function  decreaseDepth(img) {
+        var cell = img.parentNode.parentNode;
+        current = new Number(cell.getElementsByTagName('input').item(0).value).valueOf();
+        to = current -1;
+        if (to >= 0 && to < 2) {
+                cell.getElementsByTagName('input').item(0).value = to;
+                var spacer = cell.parentNode.getElementsByTagName('div').item(0);
+                spacer.style.marginLeft = to +'0px';
+        }
+        
+}
+
 function moveRow(row,current,to) {
 	var tbody = row.parentNode;
 
@@ -115,6 +152,8 @@ function moveRow(row,current,to) {
 		{foreach from=$enumDef item=info key=key}
 		{if $info}
 		<td>
+
+		
 			{if !$doneHidden}
 				{foreach from=$enumDef item=hinfo key=hkey}
 					{if $hinfo.type === 'hidden'}
@@ -123,15 +162,21 @@ function moveRow(row,current,to) {
 				{/foreach}
 				{assign var='doneHidden' value=1}
 			{/if}
-
 			{if !$info.type}
+			<div id="spacer">
 			<input name="{$key}" size="{$info.size}">
+			</div>
 			{elseif $info.type === 'order'}
 			<input type='hidden' name="{$key}">
 			<div style='text-align:center'>
 				{clni_img name="stock/s_asc.png" border=0 onclick="up(this)"}
 				{clni_img name="stock/s_desc.png" border=0 onclick="down(this)"}
 			</div>
+			{elseif $info.type === 'depth'}
+			<input type='hidden' name="{$key}">
+			<div style='text-align:center'>
+				{clni_img name="stock/s_asc.png" border=0 onclick="increaseDepth(this)"}
+				{clni_img name="stock/s_desc.png" border=0 onclick="decreaseDepth(this)"}
 			{elseif $info.type === 'boolean'}
 			<div style='text-align:center'>
 				<input type='hidden' name="{$key}" value="0" class="static"><input type="checkbox" name="{$key}" value="1">
