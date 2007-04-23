@@ -972,11 +972,14 @@ class ORDataObject {
 		if (empty($this->$key)) {
 			return '';
 		}
-		if ($this->_inPersist || $this->_dbFormat) {
+		if (($this->_inPersist || $this->_dbFormat) && is_object($this->$key)) {
 			return $this->$key->toString('%Y-%m-%d %H:%i:%s');
 		}
-		else {
+		elseif(is_object($this->$key)) {
 			return $this->$key->toString();
+		}
+		else {
+			return $this->$key;
 		}
 	}
 	
