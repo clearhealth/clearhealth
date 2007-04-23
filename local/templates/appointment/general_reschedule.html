@@ -21,7 +21,12 @@
 	<p>Provider: {html_options id="new_provider_id" name="appointment[providerId]" options=$providerList}</p>
 <br />
 <p>
+<input type="checkbox" value="1" id="copySchedule" />&nbsp;Copy Schedule
+</p>
+<br />
+<p>
 <input type="hidden" id="appIds" name="appIds" value="{$appList}">
+<input type="hidden" id="scheduleIds" name="scheduleIds" value="{$scheduleList}">
                 <input type='button' id="reschedule" value='Reschedule' onclick="confirm_reschedule('{$appList}');">
                 <input type='button' id="confirm" value='Confirm' onclick="do_reschedule('{$appList}');" style="display:none;">
 </p>

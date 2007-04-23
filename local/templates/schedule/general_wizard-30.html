@@ -54,16 +54,21 @@ function saveEvents(event_id) {
   hash['days'] = days;
   HTML_AJAX.call('schedule','ajaxEditEvent',updateAddEventsView,event_id, 'addevents',hash);
 }
-function deleteEvent(event_id) {
-	var yn = confirm ("Are you sure you want to delete this event?");
-	if (yn) {
-	  HTML_AJAX.call('schedule','ajaxEditEvent',null,event_id, 'delete');
-	  ajaxView();
-	}
+function deleteEvent(eventIds) {
+	HTML_AJAX.call('schedule','ajaxDeleteEvents',editEventView,eventIds);
 }
 function addEvents() {
   HTML_AJAX.call('schedule','ajaxAddEvents',editEventView);
 
+}
+function deleteDaysEvents(eventIds) {
+	HTML_AJAX.call('schedule','ajaxDelDaysEvents',updateAddEventsView, eventIds);
+}
+function deleteAllEvents(eventId) {
+	personId = document.getElementById('providerId').value;
+	roomId = document.getElementById('roomId').value;
+	start = document.getElementById('date_start').value;
+	HTML_AJAX.call('schedule','ajaxDelAllEvents',updateAddEventsView, eventId, personId,roomId, start);
 }
 function updateAddEventsView(result) {
   var am = document.getElementById('alertMessages');

@@ -1,0 +1,28 @@
+<div class="title" id="title">Delete Schedule Events</div>
+<div>
+<fieldset>
+{if is_object($messages)}
+        {$messages->render()}
+{/if}
+{if $error}
+<p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
+{else}
+<p>
+Delete the events from the selected day only.
+</p>
+<input type='button' id="update" value='Delete Selected Days Schedule' onclick="deleteDaysEvents('{$eventIds}');">
+<hr>
+<p>
+Delete events from the selected day and all procedding days for this provider and building. (Use the "Events Out of Schedule Report" to find appointments no longer in a schedule)
+</p>
+<input type='button' id="update" value='Delete Selected Days and Proceeding Schedule' onclick="deleteAllEvents({$eventId1});">
+</p>
+<br />
+<div id="alertMessages" style="display:none;overflow:auto; height:200px;"></div>
+</p>
+{/if}
+<p>
+<br />
+<a href="#" onclick="hidePopup();">close</a>
+</p>
+</fieldset>
