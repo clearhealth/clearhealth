@@ -47,7 +47,7 @@ function smarty_function_new_auto_form($params, &$smarty)
         switch($_key) {
             case 'id':
                 $$_key = (string)$_val;
-                $call[$$_key] = (string)$_val;
+                $call[$_key] = (string)$_val;
                 break;
 
             case 'array':
