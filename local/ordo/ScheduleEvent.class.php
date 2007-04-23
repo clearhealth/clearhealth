@@ -17,6 +17,9 @@ class ScheduleEvent extends CalendarEvent{
 	
 	var $event_group_id = '';
 	var $room_id = '';
+	var $_key = 'event_id';
+	var $_table = 'schedule_event';
+
 	
 	/**
 	 * Constructor sets all attributes to their default value
