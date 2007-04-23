@@ -1,5 +1,5 @@
 <?php
-
+$loader->requireOnce('datasources/CopySchedule_DS.class.php');
 class C_Appointment extends Controller {
 
 	var $uiMode = 'normal';
@@ -819,7 +819,7 @@ fclose($fp);
 		return $alerts;
 	}
 
-        function ajaxReschedule($from_provider, $appointment_html) {
+        function ajaxReschedule($from_provider, $appointment_html, $copySchedule= false) {
 		$applist = "";
                 preg_match_all("/div class=\"eventBody element\" id=\"([0-9]+)\">/",$appointment_html,$appIds);
                 if(isset($appIds) && isset($appIds[1]) && count($appIds[1]) > 0) {
@@ -835,6 +835,13 @@ fclose($fp);
                         $this->messages->addMessage('No appointments were found to move.');
                         $this->view->assign("error",true);
                 }
+                
+		preg_match_all("/div schedule_event_id=\"([0-9]+)\"/",$appointment_html,$seIds);
+                if(isset($seIds) && isset($seIds[1]) && count($seIds[1]) > 0) {
+                        $this->view->assign("scheduleList",implode(",",$seIds[1]));
+
+		}
+
 		return $this->view->render('reschedule.html');
         }
 	
@@ -871,7 +878,8 @@ fclose($fp);
 		return $this->view->render('reschedule_confirm.html') . print_r($applist,true);
 	}
 	
-	function ajaxDoReschedule($appIds,$newProviderId,$appointmentOverride,$appointmentOverrideNeeded) {
+	function ajaxDoReschedule($appIds,$newProviderId,$appointmentOverride,$appointmentOverrideNeeded,$scheduleIds) {
+		$scheduleText = '';
 		if (strlen($appIds) > 0 && (int)$newProviderId >0) {
 			if ($appointmentOverrideNeeded == 1 && $appointmentOverride != 1) {
 				$this->view->assign("NOTICE","You must select to override the alerts in order to perform the rescheduling.");
@@ -887,7 +895,45 @@ fclose($fp);
 					$app->persist();
 					$counter++;
 				}
-				return $counter . ' Appointment(s) Updated. Click <a href="javascript:window.location.reload();">here</a> to refresh screen.';
+
+				$s = '';
+				$eg = '';
+				if (strlen($scheduleIds) >0 ) {
+					$csDS = new CopySchedule_DS($scheduleIds);
+					for($csDS->rewind();$csDS->valid();$csDS->next()) {
+                          		$row = $csDS->get();
+                          		$ev = ORDataObject::factory("CalendarEvent");
+                          		$ev->set('start',$row['start']);
+                          		$ev->set('end',$row['end']);
+                          		$ev->set('title',$row['title']);
+					$ev->fnord = "event";
+                          		$ev->persist();
+					if (!is_object($s)) {
+                          		$prov = ORDataObject::factory("Person",$newProviderId);
+                          		$s = ORDataObject::factory("Schedule");
+					$s->set('provider_id',$newProviderId);
+					$s->set('title',$prov->get('first_name') . " " .$prov->get('last_name') . "'s temp schedule");
+					$s->set('schedule_code',$row['schedule_code']);
+					$s->persist();
+					}
+					if (!is_object($eg)) {
+                          		$eg = ORDataObject::factory("EventGroup");
+					$eg->set('title',$row['title']);
+					$eg->set('room_id',$row['room_id']);
+					$eg->set('schedule_id',$s->get('schedule_id'));
+					$eg->persist();
+					}
+                          		$se = ORDataObject::factory("ScheduleEvent");
+					$se->set('event_id',$ev->get('event_id'));
+					$se->set('event_group_id',$eg->get('event_group_id'));
+					$se->persist();
+					$scheduleText = "Schedules Copied.";
+					
+                }
+
+
+				}
+				return $counter . ' Appointment(s) Updated. ' .  $scheduleText. 'Click <a href="javascript:window.location.reload();">here</a> to refresh screen.';
 
 			}
 				
