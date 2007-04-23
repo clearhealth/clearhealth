@@ -2,6 +2,7 @@
 $loader->requireOnce('includes/clni/clniData.class.php');
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('datasources/Person_ScheduleList_DS.class.php');
+$loader->requireOnce('datasources/Person_ScheduleLinearList_DS.class.php');
 
 class ScheduleWizardData extends clniData{
 	var $schedule_type = '';
@@ -196,6 +197,38 @@ class C_Schedule extends Controller
 				break;
 		}
 	}
+	function ajaxDeleteEvents($eventIds) {
+		$this->assign('eventIds',$eventIds);
+		$evAr = split(',',$eventIds);
+		$this->assign('eventId1',$evAr[0]);
+		
+		return $this->view->render('deleteEvents.html');
+	}
+	function ajaxDelDaysEvents($eventIds) {
+		$evIdAr = split(',',$eventIds);
+		foreach ($evIdAr as $evId) {
+			$ev = ORDataObject::factory("CalendarEvent",$evId);
+			$ev->drop();
+		}
+		$this->assign('success',true);
+		$this->messages->addMessage('Events deleted');
+		return $this->view->render('addEventsMessages.html');
+
+	}
+	function ajaxDelAllEvents($eventId, $personId, $roomId) {
+		$ev = ORDataObject::factory("CalendarEvent",$eventId);
+		$start = $ev->get('start');
+		$scheduleDS =& new Person_ScheduleLinearList_DS($personId,$roomId,$start,'2024-12-31');
+			for($scheduleDS->rewind();$scheduleDS->valid();$scheduleDS->next()) {
+			  $row = $scheduleDS->get();	
+			  $ev = ORDataObject::factory("CalendarEvent");
+			  $ev->set('event_id',$row['event_id']);
+			  $ev->drop();
+		}
+		$this->assign('success',true);
+		$this->messages->addMessage("Events deleted");
+		return $this->view->render('addEventsMessages.html');
+	}
 	function ajaxEditEvent($event_id,$action ='',$data = array())	{
 		$ev = ORDataObject::factory("CalendarEvent",$event_id);
 		switch($action) {
@@ -212,9 +245,6 @@ class C_Schedule extends Controller
 			$this->processWizard($data);
 			return $this->view->render("addEventsMessages.html");
 			break;
-		  case 'delete':
-			$ev->drop();
-		  	break;
 		  default:
 			$this->assign("event",$ev);
 		}
@@ -228,7 +258,7 @@ class C_Schedule extends Controller
 		$sgrid =& new cGrid($scheduleDS);
 		$sgrid->registerTemplate("start1",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_1})">{$start1}</a>&nbsp;&nbsp;');
 		$sgrid->registerTemplate("start2",'&nbsp;&nbsp;<a href="javascript:editEvent({$event_id_2});">{$start2}</a>&nbsp;&nbsp;');
-		$sgrid->registerTemplate("note",'&nbsp;&nbsp;<a href="#" onclick="deleteEvent({$event_ids});">del</a>&nbsp;&nbsp;{$note}&nbsp;&nbsp;');
+		$sgrid->registerTemplate("note",'&nbsp;&nbsp;<a href="#" onclick="deleteEvent(\'{$event_ids}\');">del</a>&nbsp;&nbsp;{$note}&nbsp;&nbsp;');
 		if ($scheduleDS->numRows() == 0)
 			return "No matching schedule data found";
 		//true without paging header
