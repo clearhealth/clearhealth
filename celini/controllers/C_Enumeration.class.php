@@ -67,7 +67,6 @@ class C_Enumeration extends Controller {
 		}
 		
 		$ed =& Celini::newORDO('EnumerationDefinition',$id);
-		
 		$fa = Celini::link('edit', true, true, $ed->get('id'));
 		$gets = array();
 		foreach($_GET as $key=>$val) {
@@ -77,7 +76,6 @@ class C_Enumeration extends Controller {
 			$fa.=implode('&',$gets);
 		}
 		$this->view->assign("FORM_ACTION",$fa);
-		
 		return $this->_handleEditDisplay($ed);
 	}
 	
@@ -197,11 +195,11 @@ class C_Enumeration extends Controller {
 					$enumArray[$key]->sort = $i++;
 				}
 			}
-			$enumList = $ajax->jsonEncode($enumArray);
+			$enumList = $ajax->jsonEncode($enumArray,true);
 			$this->assign('enumList',$enumList);
 
 			$def = $enum->type->definition;
-			$builtin = array('boolean','order','hidden');
+			$builtin = array('boolean','order','hidden','depth');
 			foreach($def as $key => $val) {
 				if (isset($val['type']) && !in_array($val['type'],$builtin)) {
 					$def[$key]['template'] = $enum->type->jsWidget($key,$val);
