@@ -1,0 +1,47 @@
+{literal}
+<style type="text/css">
+	h3 {
+		margin:  0px;
+		padding: 0px;
+		padding-top: 2px;
+	}
+</style>
+{/literal}
+
+{clni_form}
+<h3>integer</h3>
+{input name="integer" type="integer" size="4" maxlength="6"}
+
+<h3>checkbox</h3>
+{input name="checkbox" type="checkbox" id="checkbox1"}<label for="checkbox1">Checkbox Label</label>
+
+<h3>string</h3>
+{input name="string" type="string" size="40" maxlength="255"}
+
+<h3>text</h3>
+{input name="text" type="text" rows="2" cols="40"}
+
+<h3>date</h3>
+{input name="date" type="date"}
+
+<h3>select</h3>
+{input name="select" type="select" enumeration="payer_type"}
+
+<h3>radio</h3>
+{input name="radio" type="radio" enumeration="payer_type" display="horizontal"}
+
+<h3>multiselect</h3>
+{input name="multiselect" type="multiselect" enumeration="payer_type"}
+
+
+<h3>Validation</h3>
+{input name="validation" type="string" validation="required" message="The Validation field is required"}
+
+<h3>Submit Buttons</h3>
+{submit}
+&nbsp; &nbsp;
+{submit label="Update Form"}
+&nbsp; &nbsp;
+{submit label="Send Data" style="font-size:300%"}
+
+</form>
