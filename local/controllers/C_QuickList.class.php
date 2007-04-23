@@ -22,9 +22,8 @@ class C_QuickList extends Controller {
 		$db =& new clniDB();
 		$query = "select fd.form_data_id
                                 from form_data fd 
-                                inner join form f on f.form_id = ".$wf->get('form_id')."
-                                where fd.external_id = $patientId
-                        ";
+                                inner join form f on f.form_id = fd.form_id
+                                where fd.external_id = $patientId and f.form_id = " . $wf->get('form_id');
                 $result = $db->execute($query);
                 $form_data_id = $result->fields['form_data_id'];
 
@@ -82,8 +81,8 @@ class C_QuickList extends Controller {
 		$db =& new clniDB();
 		$query = "select fd.form_data_id
 				from form_data fd 
-				inner join form f on f.form_id = $form_id
-				where fd.external_id = $patient_id
+				inner join form f on f.form_id = fd.form_id
+				where fd.external_id = $patient_id and f.form_id = $form_id
 			";
 		$result = $db->execute($query);
 		$form_data_id = $result->fields['form_data_id'];
