@@ -36,27 +36,13 @@ var confirmBox = new clniConfirmBox();
 				</td>
 			</tr>
 			<tr>
-				<td class="aRight">Program Eligibility</td>
+				<td class="aRight">Program Options</td>
 				<td>
-					{$eligibilitySchema}
-					{if !$editReferralEligibility}
-					<input type="hidden" name="refRequest[eligibility]" value="{$request->get('eligibility')}" />
+					{if $eligibility->get('hasEligibility')}
+					{$eligibility->actionOptions(true)}
 					{/if}
-					{* html_radios name='refRequest[refEligibility]' id='refRequest[refEligibility]' options=$refEligibility selected=$request->get('refEligibility') *}
 				</td>
 			</tr>
-			{if $eligibilitySchema != 'Not Applicable'}
-			<tr>
-				<td class="aRight">Eligible Thru</td>
-				<td>
-					{if $editReferralEligibility}
-						{clni_input_date name="refRequest[eligible_thru]" value=$eligibility->get('eligible_thru')}
-					{else}
-						{$eligibility->get('eligible_thru')}
-					{/if}</td>
-			</tr>
-			{/if}
-			
 			<tr>
 				<td class="aRight">Specialist Needed</td>
 				<td>
@@ -71,6 +57,10 @@ var confirmBox = new clniConfirmBox();
 				<td>
 					{html_radios name='refRequest[translator]' id='refRequest[translator]' options=$yesNoArray selected=$request->get('translator_raw')}
 				</td>
+			</tr>
+			<tr>
+				<td>Referral Service</td>
+				<td>{html_options name="refRequest['translator']" options=$em->enumArray('referral_service')}</td>
 			</tr>
 			
 			<tr>
@@ -113,7 +103,11 @@ var confirmBox = new clniConfirmBox();
 					<input type="hidden" name="refRequest[patient_id]" value="{$GET->getTyped('patient_id', 'int')}" />
 					<input type="hidden" name="refRequest[initiator_id]" value="{$GET->getTyped('initiator_id', 'int')}" />
 					<input type="hidden" name="refRequest[refprogram_id]" value="{$GET->getTyped('program_id', 'int')}" />
-					<input class="inputBox3" type="submit" value="Save and Send Referral Request to Program Manager for Appointment" />
+				{if $pprog->get('name') ne 'Ad-hoc'}
+				<input class="inputBox3" type="submit" value="Save & Send to Program Manager for Appointment" />
+				{else}
+				<input class="inputBox3" type="submit" value="Complete Ad-Hoc Referral" />
+				{/if}
 				</td>
 			</tr>
 		</table>

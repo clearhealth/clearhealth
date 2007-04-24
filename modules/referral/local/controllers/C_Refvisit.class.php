@@ -2,6 +2,7 @@
 $loader->requireOnce('controllers/C_Chllabtests.class.php');
 $loader->requireOnce('includes/DatasourceFileLoader.class.php');
 $loader->requireOnce('includes/chlUtility.class.php');
+$loader->requireOnce('ordo/CodingData.class.php');
 
 /**
  * @todo abstract out CHLCare code so it only is called in instances where the
@@ -23,6 +24,19 @@ class C_Refvisit extends Controller
 			}
 			$this->view->assign('visitLocation', $refUser->value('clinicName'));
 		}
+		$cd = ORDataObject::factory('CodingData');
+		$pCodeList = $cd->getCodeList($visit_id);
+		$codeDisplay = array();
+		foreach ($pCodeList as $pCode) {
+			$childrenAr = $cd->getChildCodes($pCode['coding_data_id']);
+			$cCodeAr = array();
+			foreach ($childrenAr as $cCode) {
+				$cCodeAr[] = $cCode['code'];
+			}
+			$codeDisplay[] = array ('pcode' => $pCode['code'], 'diags' => implode(', ',$cCodeAr));
+
+		}
+		$this->view->assign_by_ref('codeList', $codeDisplay);
 		$this->view->assign_by_ref('visit', $visit);
 		return $this->view->render('chlvisit.html');
 	}

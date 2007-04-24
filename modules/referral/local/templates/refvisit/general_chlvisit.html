@@ -20,24 +20,16 @@
 	</tr>
 	
 	<tr>
-		<td colspan="2">ICD:</td>
-	</tr>
-	<tr>
-		<td colspan="2" style="padding-left:15px;">
-		{foreach from=$visit->get('diagnoses') item=diagnosis}
-			{$diagnosis}
+		<td >Code Display:</td>
+		<td > 
+		{foreach from=$codeList item=code }
+		Procedure: {$code.pcode} &nbsp;&nbsp;Diagnoses:{$code.diags}<br />
 		{/foreach}
 		</td>
 	</tr>
-	
-	<tr>
-		<td colspan="2">CPT:</td>
-	</tr>
 	<tr>
 		<td colspan="2" style="padding-left:15px;">
-		{foreach from=$visit->get('procedures') item=procedures}
-			{$procedures}
-		{/foreach}
+		
 		</td>
 	</tr>
 </table>

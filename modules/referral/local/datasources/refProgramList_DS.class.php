@@ -23,8 +23,8 @@ class refProgramList_DS extends Datasource_sql
 			array(
 				'cols' => 'rprog.refprogram_id,
 				           pprog.name',
-				'from' => 'participation_program pprog inner join refprogram AS rprog on rprog.refprogram_id = pprog.participation_program_id',
-				'where' => '',
+				'from' => "participation_program pprog inner join refprogram AS rprog on rprog.refprogram_id = pprog.participation_program_id",
+				'where' => " pprog.type = 'referral'",
 				'groupby' => 'rprog.refprogram_id'
 			),
 			array('name' => 'Program Name'));

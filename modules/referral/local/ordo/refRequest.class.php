@@ -22,6 +22,7 @@ class refRequest extends ORDataObject
 	var $patient_id = '';
 	var $initiator_id = '';
 	var $refappointment_id = '';
+	var $referral_serivce = '';
 	
 	/**#@+
 	 * All enum values

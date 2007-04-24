@@ -10,6 +10,7 @@ $loader->requireOnce('controllers/C_ReferralAttachment.class.php');
 $loader->requireOnce('includes/clni/clniAudit.class.php');
 $loader->requireOnce('ordo/PersonParticipationProgram.class.php');
 $loader->requireOnce('datasources/refRequestList_DS.class.php');
+$loader->requireOnce('datasources/refProgramList_DS.class.php');
 
 class C_Referral extends Controller
 {
@@ -65,8 +66,8 @@ class C_Referral extends Controller
 		
 		//get list of referral programs connected to patient
                 $ppp = ORDataObject::factory('PersonParticipationProgram',$patient->get('person_id'));
-		$conProgDS = new Person_ParticipationProgram_DS($patient->get('id'));
-		$conProgDS->setQuery('cols',"p2pp.participation_program_id, pprog.name as prog_name");
+		$conProgDS = new refProgramList_DS();
+		$conProgDS->setQuery('cols',"pprog.participation_program_id, pprog.name as prog_name");
 		$conProgDS->clearAll();
 		$progList = $conProgDS->toArray("participation_program_id","prog_name");
                 $this->view->assign('progNamesList',$progList);
@@ -379,7 +380,8 @@ class C_Referral extends Controller
 	function actionEdit($refRequest_id = 0) {
 		$me =& Me::getInstance();
 		$person =& Celini::newORDO('Person', $me->get_person_id());
-		$this->view->assign('editReferralEligibility', true);
+		$em =& EnumManager::getInstance();
+		$this->assign('em',$em);
 		
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = array('clniConfirmBox', 'clniPopup');
@@ -389,25 +391,30 @@ class C_Referral extends Controller
 		
 		$request->set('visit_id', $this->GET->getTyped('visit_id', 'int'));
 		$request->set('refprogram_id', $this->GET->getTyped('program_id', 'int'));
+		$request->set('patient_id', $this->GET->getTyped('patient_id', 'int'));
 		
 		$this->view->assign_by_ref('request', $request);
-
-		
-		$eligibility =& Celini::newORDO('refPatientEligibility',
-			array($this->GET->getTyped('program_id', 'int'), $this->GET->getTyped('patient_id', 'int')),
-			'ByProgramAndPatient');
-		$this->view->assign_by_ref('eligibility', $eligibility);
-		
 		$program =& Celini::newORDO('refProgram', $this->GET->get('program_id'));
+		$ppp = PersonParticipationProgram::getByProgramPatient($program->get('participation_program_id'),$request->get('patient_id'));
+		//if patient doesn't already belong to program add them
+			
+		if (!$ppp->get('person_program_id') >0 ) {
+			$ppp->set('start',date('Y-m-d'));
+			$ppp->set('end',date('Y-m-d',strtotime ('today +1 year')));
+			$ppp->set('expires',0);
+			$ppp->set('active',1);
+			$ppp->set('person_id',$request->get('patient_id'));
+			$ppp->set('participation_program_id',$program->get('refprogram_id'));
+			$ppp->persist();
+		}
+                $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
+                $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
+                $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
+                $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
+                $this->view->assign('eligibility', $options);
 		$this->view->assign_by_ref('refProgram', $program);
-		if ($program->get('schema') == 0) {
-			$this->view->assign('eligibilitySchema', 'Not Applicable');
-		}
-		else {
-			$schemaMapper =& new refEligibilitySchemaMapper($program->get('schema'));
-			$this->view->assign('eligibilitySchema', $schemaMapper->toInput($eligibility->get('eligibility'), !$person->isType('referral manager', $program->get('id'))));
-			$request->set('eligibility', $eligibility->get('eligibility'));
-		}
+		$this->view->assign_by_ref('pprog', $parProg);
+		$this->view->assign_by_ref('personParProgram', $ppp);
 				
 		$this->_addOccurence($request);
 		$this->_setupEnums();
@@ -462,12 +469,6 @@ class C_Referral extends Controller
 		$request->persist();
 		$this->_updatePatientEligibility($request);
 		//$request->persist();
-		
-		/* 
-		// send alert
-		altPostOffice::sendORDONoticeToGroup($request, 'referral manager', 
-			array('due_date' => date('Y-m-d H:i:s'), 'note' => 'New request added...')); 
-		*/
 		
 		header('Location: ' . Celini::link('view/' . $request->get('id')) );
 		exit;
