@@ -109,8 +109,6 @@ class C_Coding extends Controller {
 	}
 	function ajaxSuperbill() {
 		$sbs = array();
-		$head =& Celini::HTMLheadInstance();
-		$head->addJS('ui');
 		$p = ORDataObject::Factory("Practice");
 		$plist = $p->valueList_name();
 		$string = '';
