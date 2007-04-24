@@ -19,19 +19,37 @@ function toggleSelects() {
 	}
 }
 function showPopup(result) {
-        popdiv = document.getElementById('popup_dialog');
+        popdiv = document.getElementById('popupDialog');
         popdiv.innerHTML = '';
         popdiv.innerHTML = result;
         if (popdiv.style.display == '' || popdiv.style.display == 'none') {
           popup = new clniPopup('',false);
           popup.draggable = true;
           popup.draggableOptions = {handle:'title'};
-          popup.useElement = 'popup_dialog';
+          popup.useElement = 'popupDialog';
           popup.modal = true;
           popup.display();
         }
 }
+function registerTabs(element) {
+	var id = /tabset(.+)/.exec(element.parentNode.id)[1];
 
+        if (!tabCount[id]) {
+                tabCount[id] = 0;
+        }
+
+        var newEl = document.createElement('a');
+        newEl.index = tabCount[id]++;
+        newEl.innerHTML = element.title;
+        $('selector'+id).appendChild(newEl);
+        $u.registerEvent(newEl,'click',selectTab);
+
+        if (tabCount[id] == 1) {
+                $u.addClass(newEl,'selected');
+                firstTab = false;
+        }
+        element.minimizer = newEl;
+}
 function confirmDeleteClaimLine(linkObj) {
 	return confirm('Are you sure you want to delete this claimline?');
 }
@@ -45,7 +63,7 @@ function superbillPopup() {
 
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
-<div id="popup_dialog" > </div>
+<div id="popupDialog" > </div>
 {if !$encounter || $encounter->get('status') != 'closed'}
 <fieldset id="coding_data">
 <legend>{l}Edit Claim Line{/l}</legend>

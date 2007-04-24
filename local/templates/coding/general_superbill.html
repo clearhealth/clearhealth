@@ -1,15 +1,16 @@
 <div class="title" id="title">Superbills</div>
+<fieldset>
 {if is_object($messages)}
         {$messages->render()}
 {/if}
 {if $error}
 <p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
 {/if}
-<fieldset>
 <div class="selector" id="selector9"></div>
 <div class="tabset" id="tabset9">
 {foreach from=$sbs item=sb key=name name="sbsloop"}
-<div class="tab {if $smarty.foreach.sbsloop.first}selected{/if}" title="{$name}">
+<div class="tab{if $smarty.foreach.sbsloop.first} selected{/if}" title="{$name}">
+<img src="{$base_uri}/index.php/Images/75p_white.png" alt="" onLoad="registerTabs(this.parentNode);"/>
 {$sb}
 </div>
 {/foreach}
