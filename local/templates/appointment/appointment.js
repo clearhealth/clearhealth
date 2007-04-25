@@ -180,7 +180,7 @@ function editAppointmentcb(resultSet){
 			runSt.executeSelectedItems(runSelectItems);
 			runSelectItems = false;
 		}
-		//showAddAppointment();
+		showAddAppointment();
 	}
 }
 
