@@ -46,7 +46,8 @@ function addWidgetField() {
 </table>
 <input type='submit' value='Update'>
 </fieldset>
-{if $ordo->get('type') == 3}
+{* type 3 and 4 involve controllers, quicklink or generic*}
+{if $ordo->get('type') eq 3 || $ordo->get('type') eq 4}
 <fieldset>
 <legend>Linked Controller</legend>
 Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{$ordo->get('controller_name')}">
@@ -54,7 +55,7 @@ Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{
 {/if}
 
 </form>
-{if $ordo->get('type') == 2 || $ordo->get('type') == 3}
+{if $ordo->get('type') eq 2 || $ordo->get('type') eq 3 || $ordo->get('type') eq 4}
 <fieldset>
 <legend>Summary Columns</legend>
 {clni_form id="WidgetFormData" action=$ALTER_ACTION process="generic"}
