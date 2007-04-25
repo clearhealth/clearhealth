@@ -217,17 +217,19 @@ class C_PatientFinder extends Controller {
 				$searcharray[$x]=mysql_real_escape_string($searcharray[$x]);
 				$search=explode("-",$searcharray[$x]);
 				$sqls[]="(last_name LIKE '".$search[0]."-%".$search[1]."' OR last_name LIKE '".$search[0]."-".$search[1]."%' OR last_name LIKE '".$searcharray[$x]."-%' OR last_name LIKE '%-".$searcharray[$x]."' OR last_name = '".$search[0]."' OR last_name = '".$search[1]."')\n";
-			} elseif($xdate->isValid()){
-			// Date of birth
-				$sqls[]="date_of_birth = '".$xdate->toISO()."'";
 			} elseif(ereg('^([0-9]{3})\-?([0-9]{2})\-?([0-9]{4})$',$searcharray[$x],$date)){
 			// SSN
 				list($date,$a,$b,$c)=$date;
-				$sqls[]="(identifier='$a-$b-$c' OR identifier='$a$b$c')";
+				$sqls[]="(psn.identifier = '$a-$b-$c' OR psn.identifier = '$a$b$c')";
+				$sqls[] = "psn.person_id =" . (int)$searcharray[$x]."";
 			}
 			// internal ID
 			elseif (preg_match('/^[0-9]+$/', $searcharray[$x])) {
 				$sqls[] = "record_number LIKE '" . (int)$searcharray[$x]."%'";
+				$sqls[] = "psn.person_id =" . (int)$searcharray[$x]."";
+			} elseif($xdate->isValid()){
+			// Date of birth
+				$sqls[]="date_of_birth = '".$xdate->toISO()."'";
 			} else {
 			// Regular name
 				$GLOBALS['namesearch']=true;
