@@ -553,7 +553,12 @@ class Grid_Renderer_HTML_scrollable extends Grid_Renderer_HTML {
                         $data = $ds->get();
                         if (is_array($data)) {
                                 foreach($ds->getRenderMap() as $index => $key) {
+					if (isset($data) && isset($data[$key])) {
                                         $val = $data[$key];
+					}
+					else {
+					$val = '';
+					}
                                         if (strlen($val)==0) {
                                                 $val = '&nbsp;';
                                         }
@@ -691,7 +696,12 @@ class Grid_Renderer_HTML extends Grid_Renderer {
 			$data = $ds->get();
 			if (is_array($data)) {
 				foreach($ds->getRenderMap() as $index => $key) {
+					if (isset($data) && isset($data[$key])) {
 					$val = $data[$key];
+					}
+					else {
+					$val = '';
+					}
 					if (strlen($val)==0) {
 						$val = '&nbsp;';
 					}
