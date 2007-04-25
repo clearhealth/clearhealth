@@ -27,5 +27,8 @@ class ParticipationProgramAbstract extends ORDataObject {
 	function _createTables() {
 
 	}
+	function hasEligibility() {
+                return false;
+        }	
 }
 ?>

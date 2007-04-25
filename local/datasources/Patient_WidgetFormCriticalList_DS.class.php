@@ -43,7 +43,7 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 							 "LEFT JOIN storage_text ON storage_text.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_date ON storage_date.foreign_key = fd.form_data_id ",
 				'where'   => "fd.external_id = '" . (int)$this->patient_id . "' and f.form_id = '" . (int)$form_id . "'",
-				'groupby'   => "fd.form_data_id"
+				'groupby'   => "fd.form_data_id, storage_date.array_index, storage_string.array_index, storage_string.array_index, storage_text.array_index"
 			),
 			false);
 	//echo $this->preview() . "<br />";
@@ -60,8 +60,11 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 
 		$res = $db->query($sql);
 		while($res && !$res->EOF) {
+			$fields = array();
+			if (isset($res->fields['name'])) { 
 			$labels[$res->fields["name"]] = $res->fields["pretty_name"];
 			$fields[$res->fields["name"]] = array('name'=>$res->fields['name'], 'table_name'=>$res->fields['table_name']);
+}
 			$this->_labels = $labels;
 			$this->_fields = $fields;
 			$res->MoveNext();	

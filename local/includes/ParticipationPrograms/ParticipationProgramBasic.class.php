@@ -13,6 +13,7 @@ class ParticipationProgramBasic extends ParticipationProgramAbstract {
 	 */
 	var $person_program_id		= '';
 	var $federal_poverty_level	= '';
+	var $eligibility = '';
 	/**#@-*/
 
 
@@ -38,12 +39,13 @@ class ParticipationProgramBasic extends ParticipationProgramAbstract {
 		parent::ORDataObject();
 	}
 
-	function actionOptions() {
+	function actionOptions($display = false) {
 		$c = new Controller();
 		$c->view->path = APP_ROOT . "/user/participation_templates/";
 		$c->view->assign("options",$this);
 		$em =& Celini::enumManagerInstance();
                 $c->view->assign_by_ref('em',$em);
+		$c->view->assign("display",$display);
 		return $c->view->render("basic.html");
         }
 
@@ -65,6 +67,9 @@ class ParticipationProgramBasic extends ParticipationProgramAbstract {
                 )";
 	 $this->dbHelper->execute($sql);
         }
+	function hasEligibility() {
+		return true;
+	}
 
 	
 }
