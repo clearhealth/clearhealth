@@ -43,10 +43,11 @@ class C_Main extends C_PageType {
 			$this->menu =& Menu::getInstance();
 			$this->assign('menu_group',$this->menu->getSection());
 		}
-
-		$p =& new C_CriticalView();
-		$criticalview = $p->actionViewCriticals();
-		$this->assign("criticalview",$criticalview);
+		if ($this->get('patient_id','c_patient') >  0) {
+		  $p =& new C_CriticalView();
+		  $criticalview = $p->actionViewCriticals();
+		  $this->assign("criticalview",$criticalview);
+		}
 
 		if (isset($GLOBALS['config']['extra_css']) && is_array($GLOBALS['config']['extra_css'])) {
 			$this->assign('extra_css', $GLOBALS['config']['extra_css']);

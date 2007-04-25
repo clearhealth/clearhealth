@@ -1,6 +1,7 @@
 <?php
 
 $loader->requireOnce('includes/Datasource.class.php');
+$loader->requireOnce('datasources/Patient_NoteList_DS.class.php');
 
 /**
  * Patient Dashboard
@@ -92,7 +93,9 @@ class C_PatientDashboard extends Controller {
 
 		// Setup note data block
 		$note =& Celini::newORDO('PatientNote', $this->GET->getTyped('note_id', 'int'));
-		$noteGrid =& new cGrid($p->loadDatasource('NoteList'));
+		$noteDS =  new Patient_NoteList_DS($p->get('person_id'));
+		$noteGrid = new cGrid($noteDS);
+		$noteGrid->name = "noteListGrid";
 		$noteGrid->pageSize = 10;
 		$noteGrid->indexCol = false;
 		$noteGrid->setExternalId($p->get('id'));

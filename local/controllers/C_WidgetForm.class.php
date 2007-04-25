@@ -50,28 +50,41 @@ class C_WidgetForm extends C_CRUD {
 		$mf =& Celini::newORDO("MenuForm");
 		
 		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_DS.class.php");
-		$wfds = new WidgetForm_DS();
+		$wfds = new WidgetForm_DS('2,3,4');
 
 		$wfds->rewind();
 		$widgets = array();
 		$return_link = Celini::link(true,true, true, $patient_id);
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block
+			$wflist_ds = '';
+			// 4 is straight controller
+			if ($row['type'] == 4) {
+				$dsName = "WidgetForm_" . $row['controller_name'] . "_DS";
+				$GLOBALS['loader']->requireOnce('datasources/' . $dsName . ".class.php");
+				$wflist_ds = new $dsName($patient_id);
+			}
+			else {
                         $wflist_ds = $p->loadDatasource('WidgetFormCriticalList');
                         $wflist_ds->set_form_type($row["form_id"]);
                         $wflist_ds->_build_case_sql($row["form_id"]);
                         $wflist_ds->buildquery($patient_id, $row["form_id"]);
                         $wflist_ds->set_form_type($row["form_id"]);
+			}
 
 			$wfDataGrid =& new sGrid($wflist_ds);
-			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
+			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
 			$tmpar = array();
-                        if ($wflist_ds->get_form_type($row["widget_form_id"]) == 3) {
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $wflist_ds->get_controller_name($row["widget_form_id"]), true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link);
+                        if ($row["type"] == 3) {
+                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link);
+                        }
+                        elseif ($row['type'] == 4) {
+                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link);
                         }
                         else {
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
+                                //$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
+                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
                         }
                         $wfds->next();
                 }
@@ -143,10 +156,9 @@ class C_WidgetForm extends C_CRUD {
 		$table_name = $db->quote($_GET['table_name']);
 		}
 
-		$sql = "select count(*) as count from summary_columns where summary_column_id = '$column_id' and widget_form_id = '" . (int)$widget_form_id . "'";
+		$sql = "select count(*) as count from summary_columns where summary_column_id = '" . (int)$column_id . "' and widget_form_id = '" . (int)$widget_form_id . "'";
 		$results = $db->execute($sql);
-
-		if ($results->fields["count"] == 0) {
+		if ($widget_form_id> 0 && $results->fields["count"] == 0) {
                 	$sql = "insert into summary_columns (summary_column_id, widget_form_id, name, pretty_name, table_name) values ($column_id, $widget_form_id, $field_name, $pretty_name, $table_name)";
                 	$results = $db->execute($sql);
 		

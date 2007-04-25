@@ -11,7 +11,9 @@ class C_SelfMgmtGoals extends Controller {
                 $head->addJs('clniPopup');
 		parent::Controller();
 	}
-
+	function actionEdit_edit($personId) {
+		return $this->actionList_view($personId);
+	}
 	function actionList_view($personId) {
 		$personId = (int)$personId;
 		

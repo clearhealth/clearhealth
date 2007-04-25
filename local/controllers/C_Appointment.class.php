@@ -923,7 +923,8 @@ fclose($fp);
 					$eg->set('schedule_id',$s->get('schedule_id'));
 					$eg->persist();
 					}
-                          		$se = ORDataObject::factory("ScheduleEvent");
+					//use direct when you need to make a simple persist to the schedule_event table, the regular scheduleEvent ordo is fancified for complex calendar use
+                          		$se = ORDataObject::factory("ScheduleEventDirect");
 					$se->set('event_id',$ev->get('event_id'));
 					$se->set('event_group_id',$eg->get('event_group_id'));
 					$se->persist();

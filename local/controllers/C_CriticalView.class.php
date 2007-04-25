@@ -13,7 +13,6 @@ class C_CriticalView extends Controller {
 
 	function C_CriticalView() {
 		$this->controller();
-	//	$this->coding = new C_Coding();
 	}
 
 
