@@ -1,0 +1,18 @@
+{clni_form action=$FORM_ACTION process="true" method="get"}
+	<div>
+		{$grid->render()}
+	</div>
+	
+	<div>
+		<p>
+		<label><input type="checkbox">Automatically apply claims</label> with in $<input size="4" value=10> of complete payment
+		</p>
+		<input type="submit" value="Process 835" />
+	</div>
+{if $grid->empty}
+<div>
+	<p>There are currently no imported 835s awaiting parsing.</p>
+	
+	<p><a href="{link controller="X12Import" action="upload"}">Upload new file</a></p>
+</div>
+{/if}

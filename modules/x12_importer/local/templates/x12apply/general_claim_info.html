@@ -1,0 +1,11 @@
+{if $claim}
+{if $claim->fakeX12 && $history->isPopulated()}
+<h3>{if !$claim->fakeX12}X12 {/if}Claim Details</h3>
+{/if}
+{if $history->isPopulated()}
+<p style="font-size: 150%; font-weight: bold; color: red">{if !$claim->fakeX12}X12 {/if}Payment Applied on {$history->get('applied_date')}</p>
+{/if}
+<br>
+<input type="hidden" name="history[claim_id]" value="{$claim->get('identifier')}">
+<input type="hidden" name="history[transaction_id]" value="{$transaction_id}">
+{/if}

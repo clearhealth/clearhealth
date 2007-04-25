@@ -1,0 +1,13 @@
+{clni_form action=$FORM_ACTION}
+{if $numberOfFilesUploaded > 0}
+	<div>
+		<p>
+			You have already uploaded {$numberOfFilesUploaded} files.  
+			<a href="{link controller="X12Import" action="list"}">Click here to process</a>
+		</p>
+	</div>
+{/if}
+<h2>Select an x12 835 file to import</h2>
+<input type="file" name="x12file">
+<input type="submit" value="Upload X12 File">
+</form>

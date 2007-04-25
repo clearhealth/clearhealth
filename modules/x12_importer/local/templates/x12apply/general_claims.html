@@ -1,0 +1,36 @@
+<div style="height: 100px; overflow: auto; border: solid 1px black; float: left;">
+{$clGrid->render()}
+</div>
+<div style="clear:both"></div>
+
+{if $payer->get('name')}
+<h3 style="float:left;">Payer:</h3>
+
+<table class="grid">
+	<tr>
+		<td>Name</td>
+		<td>{$payer->get('name')}</td>
+	</tr>
+	{if $payer->get('contactInfo')}
+	<tr>
+		<td>Contact</td>
+		<td>
+		{if $payer->get('contactName')}
+		{$payer->get('contactName')}<br>
+		{/if}
+		{$payer->get('contactInfo')} ({$payer->get('contactInfoType')})</td>
+	</tr>
+	{/if}
+	{if $payer->get('line1')}
+	<tr>
+		<td>Address</td>
+		<td>
+			{$payer->address->get('line1')}<br>
+			{$payer->address->get('line2')}<br>
+			{$payer->address->get('city')} {$payer->address->get('state')}, {$payer->address->get('zip')}<br>
+		</td>
+	</tr>
+	{/if}
+</table>
+<div style="clear:both"></div>
+{/if}

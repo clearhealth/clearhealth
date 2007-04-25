@@ -1,0 +1,194 @@
+{literal}
+<style>
+#transactions {
+	position: absolute;
+	width: 260px;
+	border-right: dotted 1px black;
+	min-height: 400px;
+}
+#info {
+	position: relative;
+	left: 265px;
+	border-bottom: dotted 1px black;
+	padding-bottom: 2em;
+}
+#eob {
+	position: relative;
+	left: 265px;
+}
+.at {
+	position: absolute;
+	left: -.3em;
+	top: 1em;
+	font-weight: bold;
+	color: green;
+	font-size: 1.5em;
+}
+.claimSelected td {
+	background-color: yellow !important;
+}
+</style>
+<script type="text/javascript">
+var page = {tAt:0,cAt:0,fAt:true};
+{/literal}
+var processAction = '{$PROCESS_ACTION}';
+var data = {$data};
+var currentTransaction = {$currentTransaction};
+var currentTransactionId = {$currentTransactionId};
+page.claimId = {$currentClaim};
+var transClaims = {$transClaims};
+{literal}
+
+	var transactions = new Controller({dispatchAction: function(result) { finishNextTransaction(result) }});
+	var transaction = new Controller({dispatchAction: function(result) { finishSelectTransaction(result) }});
+	var claim = new Controller( { dispatchAction: function(result) { finishApplyClaim(result); } });
+
+	function next() {
+		var atCurrent = false;
+		var moved = false;
+		for(var i in transClaims[currentTransactionId]) {
+			if (atCurrent && transClaims[currentTransactionId][i] == '') {
+				moved = true;
+				applyClaim(i);
+				break;
+			}
+			if (i == page.claimId) {
+				atCurrent = true;
+			}
+		}
+		if (!moved) {
+			transactions.dispatchAction('X12Apply','transactions',{next:true});
+		}
+	}
+
+	function finishNextTransaction(result) {
+		$u.setInnerHTML('transactions',result);
+		new Effect.Highlight('transactions');
+	}
+
+	function updateDisplayPane() {
+		var id = data[currentTransaction].id;
+		selectTransaction(id);
+	}
+
+	function selectTransaction(transId) {
+		page.transId = transId;
+		transaction.dispatchAction('X12Apply','transactionClaims',{id:transId});
+	}
+
+	function finishSelectTransaction(result) {
+		page.fakeX12 = result.fakeX12;
+		document.getElementById('info').innerHTML = result.html; 
+		document.getElementById('eob').innerHTML = '';
+
+		applyClaim(document.getElementById('claimGrid').tBodies[0].rows[0].cells[1].firstChild.innerHTML);
+		
+		new Effect.Highlight('info'); 
+	}
+
+	function applyClaim(claimId) {
+		page.claimId = claimId;
+
+		claim.dispatchAction('X12Apply','eob',{transId:page.transId,claimId:page.claimId});
+
+		var rows = document.getElementById('claimGrid').tBodies[0].rows;
+		for(var i = 0; i < rows.length; i++) {
+			if (rows[i].cells[1].firstChild.innerHTML == page.claimId) {
+				$u.addClass(rows[i],'claimSelected');
+				Element.scrollTo(rows[i]);
+			}
+			else {
+				$u.removeClass(rows[i],'claimSelected');
+			}
+		}
+	}
+
+	function finishApplyClaim(result) {
+		HTML_AJAX_Util.setInnerHTML(document.getElementById('eob'),result.html,'replace'); 
+
+		var form = document.getElementById('eobForm');
+		var handler = function() {
+		}
+		HTML_AJAX_Util.registerEvent(form,'submit',handler);
+		HTML_AJAX.makeFormAJAX(form);
+		form.action = processAction+'id='+result.chClaimId;
+		var select = form.elements['payment[payer]'];
+		for(var i = 0; i < select.options.length; i++) {
+			if (select.options[i].value == result.data.payer) {
+				select.selectedIndex = i;
+				break;
+			}
+		}
+
+		var infoDiv = document.createElement('div');
+		infoDiv.innerHTML = result.info;
+		var before = clniUtil.findParentOfTagName(form.elements['payment[payment_date]'],'table');
+		before.parentNode.insertBefore(infoDiv,before);
+
+		var tSel = $('adjType');
+		var vIn = $('adjValue');
+		$A(result.adjustments).each(function(i) {
+			if(result.adjustments[i] == null) {
+				return;
+			}
+			for(var c = 0; c < tSel.options.length; c++) {
+				if (/([0-9]+)/.exec(tSel.options[c].text)[1] == result.adjustments[i].reason) {
+					tSel.selectedIndex = c;
+					break;
+				}
+			}
+			vIn.value = result.adjustments[i].amount;
+			addAdjustment();
+		});
+
+		if (!page.fakeX12) {
+			form.elements['note[note]'].value = 'Applied from X12 Transaction '+page.transId+"\nClaim status was: "+result.data.status;
+		}
+
+		// make a code:row map
+		var tbody = HTML_AJAX_Util.getElementsByCssSelector('#eobForm table.grid tbody')[0];
+
+		var rows = {};
+		for(var i = 0; i < tbody.rows.length; i++) {
+			var match = tbody.rows[i].cells[0].innerHTML.match(/^(.+) :/);
+			rows[match[1]] = i;
+		}
+
+		var lines = result.data.lines;
+		for(var i = 0; i < lines.length; i++) {
+			var code = lines[i].code;
+			if (rows[code]) {
+				tbody.rows[rows[code]].cells[4].getElementsByTagName('input')[0].value = lines[i].amount;
+				updateRow(tbody.rows[rows[code]].cells[4].getElementsByTagName('input')[0]);
+			}
+		}
+		
+		var form = document.getElementById('eobForm');
+
+		for(var i = 0; i < form.elements.length; i++) {
+			if (/bill\[.+\]\[paid\]/.test(form.elements[i].name) ) {
+				form.elements[i].focus();
+				form.elements[i].select();
+				break;
+			}
+		}
+		new Effect.Highlight('eob'); 
+	}
+</script>
+{/literal}
+<div style="position: relative">
+{$transactions} {* X12Apply/Transactions *}
+</div>
+
+<div id="info">
+	<h3>Transactions Patients</h3>
+</div>
+
+<div id="eob">
+	<p>Select a transaction and then a Patient to apply the transaction</p>
+</div>
+<pre id="debug"></pre>
+</div>
+<script type="text/javascript">
+	updateDisplayPane();
+</script>
