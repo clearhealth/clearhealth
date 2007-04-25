@@ -345,7 +345,7 @@ class Practice extends ORDataObject{
 	}
 	function getFirstRoom() {
                 $rooms = array();
-                $sql = "SELECT r.id from ".$this->_prefix."buildings b inner join rooms r on rooms.building_id = b.id where b.practice_id =" . $this->_db->qstr($this->id) . " limit 1";
+                $sql = "SELECT r.id from ".$this->_prefix."buildings b inner join rooms r on r.building_id = b.id where b.practice_id =" . $this->_db->qstr($this->id) . " limit 1";
                 $result = $this->_Execute($sql);
                 while ($result && !$result->EOF) {
                         $room = new Room($result->fields['id']);
