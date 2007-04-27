@@ -11,7 +11,7 @@
 {foreach from=$sbs item=sb key=name name="sbsloop"}
 <div class="tab{if $smarty.foreach.sbsloop.first} selected{/if}" title="{$name}">
 <img src="{$base_uri}/index.php/Images/75p_white.png" alt="" onLoad="registerTabs(this.parentNode);"/>
-{$sb}
+<table><tr><td valign="top">{$sb.procedure}</td><td width="20"></td><td valign="top">{$sb.diagnosis}</td></td></table>
 </div>
 {/foreach}
 </div>
