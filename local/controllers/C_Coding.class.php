@@ -3,7 +3,7 @@ $loader->requireOnce("/includes/Grid.class.php");
 $loader->requireOnce("includes/CodingDatasource.class.php");
 $loader->requireOnce("includes/Datasource_array.class.php");
 $loader->requireOnce("datasources/Superbill_DS.class.php");
-$loader->requireOnce("datasources/Practice_Superbill_DS.class.php");
+$loader->requireOnce("datasources/Popup_Superbill_DS.class.php");
 $loader->requireOnce("includes/transaction/TransactionManager.class.php");
 $loader->requireOnce('includes/LockManager.class.php');
 
@@ -104,20 +104,24 @@ class C_Coding extends Controller {
 			}
 		}
 	}
-	function actionTest() {
-		return $this->ajaxSuperbill();
-	}
 	function ajaxSuperbill() {
 		$sbs = array();
-		$p = ORDataObject::Factory("Practice");
-		$plist = $p->valueList_name();
+		$userProfile =& Celini::getCurrentUserProfile();
+		$pid = $userProfile->getCurrentPracticeId();
+		$superbill = ORDataObject::factory('Superbill');
+		$sbIds = $superbill->SuperBillsForPractice($pid);
 		$string = '';
-		foreach ($plist as $id => $name) {
-			$ds =& new Practice_Superbill_DS($id);
-			//$string .= "<br />" . $name . ":" . $id;
-                	$grid =& new cGrid($ds);
-                	$grid->orderLinks = false;
-			$sbs[$name] = $grid->render();
+		foreach ($sbIds as $id) {
+			$selSB = ORDataObject::factory('Superbill',$id);
+			$pDS = new Popup_Superbill_DS($id,'procedure');
+                	$pGrid = new cGrid($pDS);
+                	$pGrid->name = "procedureGrid";
+                	$pGrid->orderLinks = false;
+			$dDS = new Popup_Superbill_DS($id,'diagnosis');
+                	$dGrid = new cGrid($dDS);
+                	$dGrid->name = "diagnosisGrid";
+                	$dGrid->orderLinks = false;
+			$sbs[$selSB->get('name')] = array('procedure' => $pGrid->render(), 'diagnosis' =>$dGrid->render());;
 		}
                 $this->view->assign_by_ref('sbs',$sbs);
 		return $string .$this->view->render("superbill.html");

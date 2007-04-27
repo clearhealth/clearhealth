@@ -10,8 +10,11 @@ class C_MedicalHistory extends Controller {
 		parent::Controller();
 	}
 
-	function actionView_view($personId) {
+	function actionView_view($personId = 0) {
 		$personId = (int)$personId;
+		if (!$personId > 0 ) {
+			$personId = $this->get("patient_id","c_patient");
+		}
 		
 		$p = Celini::newOrdo("Patient",$personId);
 		

@@ -9,7 +9,10 @@ class C_ClinicalSummary extends Controller {
 		parent::Controller();
 	}
 
-	function actionView_view($personId) {
+	function actionView_view($personId = 0) {
+		if (!$personId > 0 ) {
+                        $personId = $this->get("patient_id","c_patient");
+                }
 		$personId = (int)$personId;
 		$csDS =& new Person_ClinicalSummary_DS($personId);
 		$csGrid = new cGrid($csDS);
