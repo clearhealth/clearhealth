@@ -37,18 +37,18 @@ WHEN le.encounter_id IS NOT NULL THEN 'linked encounter'
 END AS 'contact_type', 
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN ap.title
 WHEN le.encounter_id IS NOT NULL THEN le.encounter_reason
-END AS 'reason=', 
+END AS 'reason', 
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN CONCAT(rmbd.name,'->',rm.name)
 WHEN le.encounter_id IS NOT NULL THEN lebd.name
 END AS 'building',
-(select concat('Proc:',group_concat(DISTINCT c.code), ' Diag:',group_concat(DISTINCT c2.code))
+CASE WHEN le.encounter_id IS NULL THEN ap.title ELSE (select concat('Proc:',group_concat(DISTINCT c.code), ' Diag:',group_concat(DISTINCT c2.code))
 from encounter e2 
 left join coding_data cd on cd.foreign_id = e2.encounter_id   
 inner join codes c on c.code_id = cd.code_id and c.code_type in (3,4)
 left join coding_data cd2 on cd2.parent_id = cd.coding_data_id and cd2.coding_data_id 
 left join codes c2 on c2.code_id = cd2.code_id
 where e2.encounter_id = le.encounter_id
-group by e2.encounter_id) as 'description',
+group by e2.encounter_id) END as 'description',
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN concat(prov.first_name, ' ',prov.last_name)
 WHEN le.encounter_id IS NOT NULL THEN concat(leprov.first_name, ' ',leprov.last_name)
 END AS 'provider',
