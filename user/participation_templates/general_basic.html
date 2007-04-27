@@ -2,20 +2,29 @@
 <tr><td>
 <label>Federal Poverty Level:</label></td>
 <td>
+{if $display eq false}
 	<select name="ParticipationProgram[personparticipationprogram][options][federal_poverty_level]" >
 
 {foreach from=$em->enumArray('federal_poverty_level') item="label" key="key" name="floop"}
 	<option value="{$key}" {if $key eq $options->get('federal_poverty_level')}selected="selected"{/if}>{$label} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
 {/foreach}
 </select>
+}
+{else}
+{enum_lookup name="federal_poverty_level" value=$options->get('federal_poverty_level')} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
+{/if}
 </td>
 </tr>
 <tr>
 <td>Program Eligibility</td>
 <td>
+{if $display eq false}
 {foreach from=$em->enumArray('refEligibility') item="label" key="key" name="floop"}
 <input name="ParticipationProgram[personparticipationprogram][options][eligibility]" type="radio" value="{$key}" {if $key eq $options->get('eligibility')}checked="checked"{/if} {if $smarty.foreach.floop.first &&  $options->get('eligibility') eq 0}checked="checked"{/if}> {$label} <br />
 {/foreach}
+{else}
+{enum_lookup name="refEligibility" value=$options->get('eligibility')}
+{/if}
 </td>
 </tr>
 </table>
