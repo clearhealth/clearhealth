@@ -1,19 +1,15 @@
 <?php
 $loader->requireOnce('includes/Datasource_sql.class.php');
-class Practice_Superbill_DS extends Datasource_sql {
+class Popup_Superbill_DS extends Datasource_sql {
 
-	var $_internalName = 'Practice_Superbill_DS';
+	var $_internalName = 'Popup_Superbill_DS';
 	var $_type = 'html';
 
-	function Practice_Superbill_DS($id = false,$type = false,$feeScheduleId = false) {
+	function Popup_Superbill_DS($id = false,$type = false,$feeScheduleId = false) {
 		$labels = array( 'code' => 'Code', 'code_text' => 'Code name');
 
-		if ($id === false) {
-			$session =& Celini::SessionInstance();
-			$id = $session->get('Superbill:id');
-		}
-
 		$id = enforceType::int($id);
+		$feeScheduleId = enforceType::int($feeScheduleId);
 
 		$twhere = '';
 		if ($type) {
@@ -27,13 +23,15 @@ class Practice_Superbill_DS extends Datasource_sql {
 		}
 
 		$cols = 'c.code_id, c.code, code, code_text, code_type';
-		$from = 'codes c inner join superbill_data s using(code_id)
-			 inner join superbill sb on sb.superbill_id = s.superbill_id ';
+		$from = 'superbill sb 
+			 inner join superbill_data s on sb.superbill_id = s.superbill_id 
+			 inner join codes c on c.code_id = s.code_id
+			';
 		$groupby = '';
 		if ($feeScheduleId) {
 			$f = enforceType::int($feeScheduleId);
 			$cols .= ', fsd.data fee';
-			$from .= " left join fee_schedule_data fsd on c.code_id = fsd.code_id and fsd.fee_schedule_id = $f";
+			$from .= " inner join fee_schedule_data fsd on c.code_id = fsd.code_id and fsd.fee_schedule_id = $f";
 			$labels['fee'] = 'Fee';
 			$groupby = 'fsd.code_id';
 		}
@@ -42,7 +40,7 @@ class Practice_Superbill_DS extends Datasource_sql {
 			array(
 				'cols' => $cols,
 				'from' => $from,
-				'where' => "s.status = 1 and sb.practice_id = $id $twhere",
+				'where' => "s.status = 1 and sb.superbill_id = $id $twhere",
 				'groupby' => $groupby
 			),
 			$labels);
