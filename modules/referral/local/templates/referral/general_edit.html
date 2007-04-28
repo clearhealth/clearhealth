@@ -19,13 +19,17 @@
 var confirmBox = new clniConfirmBox();
 </script>
 {/literal}
-
+{if $pprog->get('adhoc')}
+<form id="referral_request_form" action="{$ADHOC_ACTION}" method="post" >
+<input type="hidden" name="process" value="true" />
+{else}
 <form id="referral_request_form" action="{$FORM_ACTION}" method="post" onsubmit="confirmBox.confirmForm(this); return false;">
+{/if}
 <table>
 	<tr>
 		<td style="width:49%;" valign="top">
 	<fieldset>
-		<legend>Referral Request: {$refProgram->get('name')}</legend>
+		<legend>Referral Request: {$pprog->get('name')}</legend>
 		
 		<table class="tableForm">
 			<tr>
@@ -103,10 +107,10 @@ var confirmBox = new clniConfirmBox();
 					<input type="hidden" name="refRequest[patient_id]" value="{$GET->getTyped('patient_id', 'int')}" />
 					<input type="hidden" name="refRequest[initiator_id]" value="{$GET->getTyped('initiator_id', 'int')}" />
 					<input type="hidden" name="refRequest[refprogram_id]" value="{$GET->getTyped('program_id', 'int')}" />
-				{if $pprog->get('name') ne 'Ad-hoc'}
-				<input class="inputBox3" type="submit" value="Save & Send to Program Manager for Appointment" />
-				{else}
+				{if $pprog->get('adhoc')}
 				<input class="inputBox3" type="submit" value="Initiate Ad-Hoc Referral" />
+				{else}
+				<input class="inputBox3" type="submit" value="Save & Send to Program Manager for Appointment" />
 				{/if}
 				</td>
 			</tr>

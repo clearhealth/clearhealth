@@ -57,7 +57,7 @@ class C_Referral extends Controller
 		$requestList =& new refRequestList_DS();
 		
 		$requestListGrid =& new cGrid($requestList);
-		$requestListGrid->name = "formDataGrid";
+		$requestListGrid->name = "requestGrid";
 		$requestListGrid->indexCol = false;
 		$requestListGrid->prepare();
 		
@@ -253,7 +253,7 @@ class C_Referral extends Controller
 				// create URL
 				switch ($value) {
 					case 'Appointment Kept' : 
-						$refStatusLinks[$key] = Celini::link('view', 'refvisit') . 'refRequest_id=' . $request->get('id');
+						$refStatusLinks[$key] = Celini::link('view', 'refvisit') . 'refRequest_id=' . $request->get('id'). "&process=true";
 						break;
 					default :
 						$refStatusLinks[$key] = Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $key;
@@ -313,7 +313,7 @@ class C_Referral extends Controller
 					// create URL
 					switch ($value) {
 						case 'Appointment Kept' :
-							$refStatusLinks[$key] = Celini::link('view', 'refvisit') . 'refRequest_id=' . $request->get('id');
+							$refStatusLinks[$key] = Celini::link('visit', 'Referral') . 'refRequest_id=' . $request->get('id'). "&process=true";
 							break;
 						
 						case 'Appointment Pending' :
@@ -413,6 +413,9 @@ class C_Referral extends Controller
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
                 $this->view->assign('eligibility', $options);
 		$this->view->assign_by_ref('refProgram', $program);
+		if ($parProg->get('adhoc') == 1) {
+			$this->assign('ADHOC_ACTION',Celini::link("form",'Referral') . "form_id=" . $parProg->get('form_id'));
+		}
 		$this->view->assign_by_ref('pprog', $parProg);
 		$this->view->assign_by_ref('personParProgram', $ppp);
 				
@@ -458,7 +461,42 @@ class C_Referral extends Controller
 		$this->_state =false;
 		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
 	}
-	
+	function processVisit() {
+		$requestId = (int)$_GET['refRequest_id'];
+		$request = ORDataObject::factory("refRequest",$requestId);
+		$this->_request = $request;
+		$refvisit = ORDataObject::factory("refVisit");
+		$refvisit->set('refreferral_visit_id',$request->get('refRequest_id'));
+		$refvisit->set('refappointment_id',$request->get('refappointment_id'));
+		$refvisit->persist();
+	}
+	function processForm() {
+		$request = Celini::newORDO('refRequest');
+                $request->populateArray($_POST['refRequest']);
+                $request->set('refStatus', 1);
+                $request->persist();
+                $this->_request = $request;
+	}
+	function actionVisit($requestId = '', $formId = '') {
+		$request = '';
+		if (is_object($this->_request)) {
+			$request = $this->_request;
+		}
+		else {
+			$request = ORDataObject::factory("refRequest",$requestId);
+		}
+		if (empty($formId)) {
+			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
+			$formId = $parProg->get('form_id');
+		}
+		return $this->actionForm($formId);
+
+	}
+	function actionForm($formId) {
+		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
+                $form_controller = new C_Form();
+                return $form_controller->actionFillout_edit($formId, $this->_request->get('refRequest_id'));
+	}
 	
 	function update_action($refRequest_id = 0) {
 		//printf('<pre>%s</pre>', var_export($_POST['refRequest'] , true));
