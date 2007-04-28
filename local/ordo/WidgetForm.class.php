@@ -48,17 +48,6 @@ class WidgetForm extends ORDataObject {
                 return $this->_widgetTypes;
         }
 
-	function getFormIds() {
-		$db =& new clniDB();
-		$sql = "select form_id, concat(name, ' - ', description) as name from form";
-		$results = $db->execute($sql);
-                while ($results && !$results->EOF) {
-			$ret[$results->fields[form_id]] = $results->fields[name];
-			$results->MoveNext();
-		}
-		return $ret;
-	}
-
 	function getWidgetFields($widget_form_id) {
 		
 		$db =& new clniDB();

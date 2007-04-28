@@ -55,6 +55,11 @@ class ClearhealthAJAX {
 		$coding=&new C_Coding();
 		$this->server->registerClass($coding,'coding');
 	}
+	function initWidgetForm(){
+		$GLOBALS['loader']->requireOnce('controllers/C_WidgetForm.class.php');
+		$wf=&new C_WidgetForm();
+		$this->server->registerClass($wf,'WidgetForm');
+	}
 
 	function initReport() {
 		$report= Celini::newOrdo('Report');

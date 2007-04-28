@@ -15,6 +15,8 @@ class ParticipationProgram extends ORDataObject {
 	var $type = '';
 	var $name		= '';
 	var $description		= '';
+	var $form_id = '';
+	var $adhoc = 0;
 	/**#@-*/
 
 

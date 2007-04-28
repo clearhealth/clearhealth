@@ -21,6 +21,9 @@ class C_ParticipationProgram extends C_CRUD {
 		if (strlen($options->administrationLink($id)) > 0) {
 		$this->view->assign("administerLink",'<a href="' . $options->administrationLink($id) .'">administer</a>');
 		}
+		$form = ORDataObject::factory("Form");
+                $formList = $form->simpleFormList();
+                $this->assign("formList",$formList);
 		$this->view->assign('FORM_ACTION',Celini::link('edit',true,true,$id));
 		return parent::actionEdit($id);
 	}
@@ -31,7 +34,6 @@ class C_ParticipationProgram extends C_CRUD {
 		$loader->requireOnce('includes/ParticipationPrograms/'.$optionsClassName. ".class.php");
 		$options = ORDataObject::factory($optionsClassName);
 		$options->_createTables();
-		$this->messages->addMessage('Participation Program Updated');
 	}
 
 	function actionAddConnect_edit($person_id) {
