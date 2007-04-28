@@ -5,6 +5,7 @@ $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
 $loader->requireOnce('includes/LockManager.class.php');
 $loader->requireOnce('datasources/MiscCharge_Encounter_DS.class.php');
 $loader->requireOnce('datasources/Encounter_PayerGroup_DS.class.php');
+$loader->requireOnce('datasources/WidgetForm_DS.class.php');
 
 /**
  * A patient Encounter
@@ -394,6 +395,17 @@ class C_Encounter extends Controller {
 		$head =& Celini::HTMLheadInstance();
 		$head->addExternalCss('suggest');
 		$head->addJS('ui');
+		$wfDS = new WidgetForm_DS('5'); //5 is encounter forms
+		$widgetForms = array();
+		for($wfDS->rewind();$wfDS->valid();$wfDS->next()) {
+			$row = $wfDS->get();
+			$onClick = "loadTabContents(this.parentNode,". $row['widget_form_id']  . ");";
+			$widgetForms[$row['widget_form_id']] = array(
+								'name' => $row['name'],
+								'onClick' => $onClick
+								);
+		}
+		$this->assign("widgetForms",$widgetForms);
 		return $this->view->render("edit.html");
 	}
 

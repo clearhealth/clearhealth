@@ -94,7 +94,7 @@ class C_WidgetForm extends C_CRUD {
 		return $this->view->render("criticalsblock.html");
 	}
 	
-	function actionFillout($form_id) {
+	function actionFillout_view($form_id) {
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
 		return $form_controller->actionFillout_edit($form_id, $this->form_data_id);
@@ -109,9 +109,20 @@ class C_WidgetForm extends C_CRUD {
 	}
 
 
-        function actionEdit($id) {
-                $id = $this->getDefault($this->_ordoName . "_id", '0');
-                $ordo =& Celini::newORDO($this->_ordoName, $id);
+        function actionEdit($id=0) {
+                $id = (int)$id;
+		$ordo = '';
+		if (is_object($this->_ordo)) {
+			$ordo = $this->_ordo;
+		}
+		else {
+                	$ordo = Celini::newORDO($this->_ordoName, $id);
+		}
+		$em =& Celini::enumManagerInstance();
+ 		$this->assign("em",$em);
+		$form = ORDataObject::factory("Form"); 
+		$formList = $form->simpleFormList();
+		$this->assign("formList",$formList);
                 $this->assign("EDIT_ACTION", Celini::managerLink($id));
                 $this->view->assign_by_ref('ordo', $ordo);
 
@@ -129,47 +140,6 @@ class C_WidgetForm extends C_CRUD {
 
 		header("HTTP/1.1 204 No Content");
 		exit;
-	}
-
-	function actionAdd() {
-		
-                $id = $this->getDefault($this->_ordoName . "_id", '0');
-		$ordo = "";
-		if(is_object($this->_ordo)) {
-                  $ordo = $this->_ordo;
-		}else {
-                  $ordo = Celini::newORDO($this->_ordoName, $id);
-		}
-                $this->assign("EDIT_ACTION", Celini::managerLink($id));
-                $this->view->assign_by_ref('ordo', $ordo);
-		$column_id = '';
-                $widget_form_id = '';
-                $field_name = '';
-                $pretty_name = '';
-                $table_name = '';
-		$db =& new clniDB();
-		if (isset($_GET['column_id']) && isset($_GET['widget_form_id']) && isset($_GET['field_name']) && isset($_GET['pretty_name']) && isset($_GET['table_name'])) {
-		$column_id = (int)$_GET['column_id'];
-		$widget_form_id = (int)$_GET['widget_form_id'];
-		$field_name = $db->quote($_GET['field_name']);
-		$pretty_name = $db->quote($_GET['pretty_name']);
-		$table_name = $db->quote($_GET['table_name']);
-		}
-
-		$sql = "select count(*) as count from summary_columns where summary_column_id = '" . (int)$column_id . "' and widget_form_id = '" . (int)$widget_form_id . "'";
-		$results = $db->execute($sql);
-		if ($widget_form_id> 0 && $results->fields["count"] == 0) {
-                	$sql = "insert into summary_columns (summary_column_id, widget_form_id, name, pretty_name, table_name) values ($column_id, $widget_form_id, $field_name, $pretty_name, $table_name)";
-                	$results = $db->execute($sql);
-		
-			header("HTTP/1.1 204 No Content");
-			exit;
-		}
-
-
-		$this->assign("error_message", "An error occured when adding a new column, please submit your column name again.");
-
-                return $this->view->render('edit.html');
 	}
 
         function getWidgetVisibility() {

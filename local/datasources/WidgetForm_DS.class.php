@@ -19,16 +19,11 @@ class WidgetForm_DS extends Datasource_Sql {
 
 
 	function WidgetForm_DS($type = '') {
-		if (strlen($type) > 0) {
-			if ($type =="*") {
-				$type = "";
-			}
-			else {
-				$type = "type in (".$type.")";
-			}
+		if (empty($type) || $type =="*") {
+			$type = "";
 		}
 		else {
-			$type = "type in (1,2,3)";
+			$type = "type in (".$type.")";
 		}
 		$this->setup(Celini::dbInstance(),
 			array(
@@ -38,18 +33,18 @@ class WidgetForm_DS extends Datasource_Sql {
 				'where'   => $type
 			),
 			array('name' => 'Name', 'link' => 'Link', 'type' => 'Type'));
-			$this->registerTemplate('link','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">{$link}</a>');
+			$this->registerTemplate('link','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">edit&nbsp;</a>');
 
-			$this->registerFilter('widgetType',array(&$this,'_widgetType'));
-	}
+			$this->registerFilter('type', array(&$this, '_lookup'));
+        }
 
-	function _widgetType($value) {
-		if (count($this->_widgetTypes) <= 0) {
-			$enum = ORDataObject::factory('Enumeration');
-			$this->_widgetTypes = $enum->get_enum_list('widget_type');
-		}
-		return $this->_widgetTypes[$value];
-	}
+
+
+        
+        function _lookup($value) {
+                $em =& Celini::enumManagerInstance();
+                return $em->lookup('widget_type', $value);
+        }
 
 }
 ?>

@@ -41,8 +41,8 @@ function addWidgetField() {
 <input type='hidden' name="WidgetForm[widget_form_id]" value="{$ordo->get('widget_form_id')}">
 <table>
 <tr><td>Name:</td><td><input type='text' id='WidgetForm__name' name='WidgetForm[name]' value="{$ordo->get('name')}"></td></tr>
-<tr><td>Form ID:</td><td><select name="WidgetForm[form_id]">{html_options options=$ordo->getFormIds() selected=$ordo->get('form_id')}</select></td></tr>
-<tr><td>Type:</td><td><select name="WidgetForm[type]">{html_options options=$ordo->getWidgetTypes() selected=$ordo->get('type')}</select></td></tr>
+<tr><td>Form ID:</td><td>{html_options name="WidgetForm[form_id]" options=$formList selected=$ordo->get('form_id')}</td></tr>
+<tr><td>Type:</td><td>{html_options name="WidgetForm[type]" options=$em->enumArray('widget_type') selected=$ordo->get('type')}</td></tr>
 </table>
 <input type='submit' value='Update'>
 </fieldset>
