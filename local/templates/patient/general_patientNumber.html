@@ -1,61 +1,16 @@
- <fieldset class="radio" id="number">
-                <legend>Phone Numbers {clni_section_links name="number"}</legend>
-<table class="grid" border="0" cellspacing="1" cellpadding="0">
-        {$pager}
-        <tr>
-                <th>{l}Number{/l}</th><th>{l}Type{/l}</th><th>{l}Status{/l}</th><th>{l}Notes{/l}</th>
-        </tr>
-        {foreach from=$parent->get_numbers() item=row name="phone"}
-        <tr {if $row.number_id == $number->get('id')}class="selectedRow"{else}{if $smarty.foreach.phone.iteration %2 == 1}class="alt"{/if}{/if}>
-                <td><a href="{$EDIT_NUMBER_ACTION}id={$row.number_id}&process=true">{$row.number}</a></td>
-                <td>{$row.number_type}</td>
-                <td>{if !$row.active}<div class="tooltip">DNC<div class="tooltipMessage">{$row.dnc_note}</div></div>{/if}</td>
-                <td>{$row.notes}</td>
-                <td><a onClick="return confirm('Delete Number {$row.number_type}:{$row.number}?')" href="{$DELETE_NUMBER_ACTION}id={$row.number_id}&process=true">delete</a></td>
-        </tr>
-        {foreachelse}
-        <tr>
-                <td colspan="3">{l}No Phone Numbers{/l}</td>
-        </tr>
-        {/foreach}
-</table>
-<button onclick="showForm('numberForm','add'); return false;">Add Number</button>
-<div style="display:none" id="numberForm">
-<div class="popHeader">Phone Number<a class="popClose" onclick="formPopup.hide()">X</a></div>
-                {if $number->get('id') > 0}
-                <input type="hidden" name="number[number_id]" value="{$number->get('id')}">
-                {/if}
-                    <table>
-                        <tr>
-                                <td><label>{l}Type{/l}: </label></td>
-                <td><select name="number[number_type]" >
-                                {html_options options=$number->getTypeList() selected=$number->get('number_type')}
-                                </select>
-                          </td>
-                                <td><label>{l}Number{/l}: </label></td>
-                                <input type="hidden" value="0" name="number[active]">
-                                <td><input id="phone" name="number[number]" size="14" value="{$number->get('number')}" > <label class='inline'>{l}DNC{/l}: </label> <input type="hidden" name="number[active]" value="1"><input type="checkbox" value="0" name="number[active]"
-                                        onclick="{literal}if(this.checked) { document.getElementById('dncNote').style.display=''; } else {
-                                        document.getElementById('dncNote').style.display='none';
-                                        }{/literal}"
-                                        {if $number->get('active') == 0}checked{/if}></td>
-                        </tr>
-                        <tr id="dncNote" {if $number->get('active')}style='display:none'{/if}>
-                                <td><label>{l}DNC Note{/l}: </label></td>
-                                <td colspan="3"><textarea rows=2 cols=30 name="number[dnc_note]">{$number->get('dnc_note')}</textarea></td>
-                        </tr>
-                        <tr>
-                                <td><label>{l}Notes{/l}: </label></td>
-                          <td colspan="3"><textarea name="number[notes]" rows="2" cols="35" >{$number->get('notes')}</textarea></td>
-                        </tr>
-                        <tr>
-                                <td></td><td><input type="submit" {if $number->get('id') > 0}value="Update"><input type="submit" value="Add as New" name="number[add_as_new]" >{else}value="Add">{/if}</td>
+{literal}
+<script>
+function numberPopup(numberId) {
+        HTML_AJAX.call('CPatient','ajaxEditNumber',showPopup, numberId);
+}
 
-                        </tr>
-                </table>
-                {if $person->get_person_id() > 0}
-                        {clni_register_validation_rule id="phone" rule="telephone" message="Phone Number must be in the form of 2223334444"}
-                {/if}
+</script>
+{/literal}
+
+<fieldset class="radio" id="number">
+                <legend>Phone Numbers {clni_section_links name="number"}</legend>
+	{include file="contacts/general_numberListAjax.html"}
+<button onclick="numberPopup(0);return false;">Add Number</button>
         </fieldset>
 </div>
 

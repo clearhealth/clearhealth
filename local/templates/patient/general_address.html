@@ -1,50 +1,14 @@
+{literal}
+<script>
+function addressPopup(addressId) {
+	HTML_AJAX.call('CPatient','ajaxEditAddress',showPopup, addressId);
+}
+
+</script>
+{/literal}
 <fieldset id="address">
 	<legend>Patient Addresses</legend>
 	
-	{include file="contacts/general_addressList.html"}
-<button onclick="showForm('addressForm','add'); return false;">Add Address</button>
-<div style="display:none" id="addressForm">
-	<div class="popHeader">Address<a class="popClose" onclick="formPopup.hide()">X</a></div>
-{if $address->get('id') <= 0}	
-	<label style="display:inline;"><input onclick="switchAddressEditMode('addressEdit')" type="radio" name="_addressType" checked="checked" />Add New Address</label>
-	<label style="display:inline;"><input onclick="switchAddressEditMode('relatedAddressBlock')" type="radio" name="_addressType" id="relatedAddress" />Add Address From Related Person</label>
-{/if}
-	<div id="addressEdit">
-		{if $address->value('isMultiple')}
-		<p>
-			This address belongs to the following people as well:
-			<ul>
-				{foreach from=$address->valueList('otherPeople') item=personName key=personId}
-				<li><a href="{link controller='PatientDashboard' action='view' defaultArg=$personId}">{$personName}</a></li>
-				{/foreach}
-			</ul>
-		</p>
-		{/if}
-		{include file="contacts/general_addressEdit.html"}
-	</div>
-	
-	<div id="relatedAddressBlock" style="display:none;">
-		{include file="patient/general_relatedAddresses.html"}
-	</div>
-	
-	<div id="addressEditBox"></div>
+	{include file="contacts/general_addressListAjax.html"}
+<button onclick="addressPopup(0); return false;">Add Address</button>
 </fieldset>
-
-<div id="debugDiv"></div>
-{literal}
-<script type="text/javascript">
-function switchAddressEditMode(newTemplate) {
-	if(newTemplate=='addressEdit') {
-		document.getElementById('relatedAddressBlock').style.display='none';
-		document.getElementById('addressEdit').style.display='block';
-	} else {
-		document.getElementById('addressEdit').style.display='none';
-		document.getElementById('relatedAddressBlock').style.display='block';
-	}
-}
-switchAddressEditMode('addressEdit');
-//switchAddressEditMode('relatedAddress');
-</script>
-{/literal}
-{include file="contacts/general_addressValidation.js"}
-</div>
