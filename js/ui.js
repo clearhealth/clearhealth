@@ -1,4 +1,5 @@
 var tabCount = {};
+var replaceTarget = '';
 function selectTab(e) {
 	var selector = $u.eventTarget(e);
 	var id = /selector(.+)/.exec(selector.parentNode.id)[1];
@@ -7,6 +8,16 @@ function selectTab(e) {
 	for(var i = 0; i < tabs.length; i++) {
 		if (i == selector.index) {
 			$u.addClass(tabs[i],'selected');
+			if (tabs[i].attributes.getNamedItem("actionname")) {
+				action = tabs[i].attributes.getNamedItem("actionname").value;
+				if (tabs[i].innerHTML.length == 0) {
+					var callback = function(result) {
+         				  replaceTarget.innerHTML = result;
+        				   };
+					replaceTarget = tabs[i];
+					HTML_AJAX.call('WidgetForm','ajaxFillout',callback,action);
+				}
+			}
 		}
 		else {
 			$u.removeClass(tabs[i],'selected');
