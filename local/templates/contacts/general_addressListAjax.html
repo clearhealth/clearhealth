@@ -1,0 +1,68 @@
+<script type="text/javascript">
+function confirmDeleteAddress(deleteLinkObj) {lcb}
+{literal}
+	var parentTr = clniUtil.findParentOfTagName(deleteLinkObj, 'tr');
+	
+	// insure that an address is always available
+	if (clniUtil.findParentOfTagName(parentTr, 'table').getElementsByTagName('tr').length <= 2) {
+		alert('You must always have one address.  Please add another address before deleting this one');
+		return false;
+	}
+	var addressData = parentTr.getElementsByTagName('td').item(6).getElementsByTagName('div');
+	
+	if (addressData.item(0).innerHTML == 'No Address' || addressData.item(0).innerHTML == 'NoAddress') {
+		return confirm('Are you sure you want to delete ' + addressData.item(0).innerHTML);
+	}
+	else {
+		return confirm(
+			'Delete Address ' + addressData.item(0).innerHTML + '?:\n' +
+			addressData.item(1).innerHTML.replace('<br>', '\n') + '\n' +
+			addressData.item(2).innerHTML);
+	}
+{/literal}
+{rcb}
+</script>
+
+<table class="grid" border="0" cellspacing="1" cellpadding="0">
+	{$pager}
+	<tr>
+		<th>{l}Name{/l}</th>
+		<th>{l}Type{/l}</th>
+		<th>{l}Address{/l}</th>
+		<th>{l}City{/l}</th>
+		<th>{l}Zip{/l}</th>
+	</tr>
+{foreach from=$parent->get_addresses() item=row name="address"}
+	<tr id="addressList_{$row.address_id}" {if $row.address_id == $address->get('address_id')}class="selectedRow"{else}{if $smarty.foreach.address.iteration %2 == 1}class="alt"{/if}{/if}>
+		<td>
+			<a href="javascript:addressPopup({$row.address_id})">{$row.name}</a>
+		</td>
+		<td>
+			{$row.type}
+		</td>
+		<td class="address">
+			<a href="javascript:addressPopup({$row.address_id})">{$row.line1}<br />{$row.line2}</a>
+		</td>
+		<td>
+			{$row.city}
+		</td>
+		<td>
+			{$row.postal_code}
+		</td>
+		<td>
+			<a onclick="return confirmDeleteAddress(this);return false;" href="{$DELETE_ADDRESS_ACTION}id={$row.address_id}&process=true">delete</a>
+		</td>
+		<td style="display:none;">
+			<div>{$row.name}</div>
+			<div>{$row.line1}<br />{$row.line2}</div>
+			<div>{$row.city}, {$row.state}, {$row.postal_code}</div>
+		</td>
+	</tr>
+{foreachelse}
+	<tr id="noAddresses">
+		<td colspan="5">{l}No Addresses{/l}
+			{assign var="addressRequired" value=1}
+		</td>
+	</tr>
+{/foreach}
+</table>
