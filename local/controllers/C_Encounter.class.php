@@ -402,7 +402,8 @@ class C_Encounter extends Controller {
 			$onClick = "loadTabContents(this.parentNode,". $row['widget_form_id']  . ");";
 			$widgetForms[$row['widget_form_id']] = array(
 								'name' => $row['name'],
-								'onClick' => $onClick
+								'onClick' => $onClick,
+								'form_id' => $row['form_id']
 								);
 		}
 		$this->assign("widgetForms",$widgetForms);

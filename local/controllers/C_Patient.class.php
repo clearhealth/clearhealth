@@ -13,6 +13,25 @@ class C_Patient extends Controller {
 	var $insured_relationship_id = 0;
 	var $person_person_id = 0;
 	var $patient_statistics_id = 0;
+	
+	function ajaxEditAddress($addressId) {
+		return $this->actionEditAddress_edit($addressId);
+	}
+
+	function actionEditAddress_edit($addressId = 0) {
+		$address = ORDataObject::factory('Address',$addressId);
+		$this->assign('address',$address);
+		return $this->view->render('addressPopup.html');
+	}
+	function ajaxEditNumber($numberId) {
+		return $this->actionEditNumber_edit($numberId);
+	}
+
+	function actionEditNumber_edit($numberId = 0) {
+		$number = ORDataObject::factory('Number',$numberId);
+		$this->assign('number',$number);
+		return $this->view->render('numberPopup.html');
+	}
 
 	function _storeCurrentAction() {
 		$current = $this->trail->current();

@@ -93,6 +93,9 @@ class C_WidgetForm extends C_CRUD {
 
 		return $this->view->render("criticalsblock.html");
 	}
+	function ajaxFillout($form_id) {
+		return $this->actionFillout_view($form_id);
+	}
 	
 	function actionFillout_view($form_id) {
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
