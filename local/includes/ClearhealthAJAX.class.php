@@ -92,7 +92,11 @@ class ClearhealthAJAX {
 		$GLOBALS['loader']->requireOnce('controllers/C_Encounter.class.php');
 		$enc=&new C_Encounter();
 		$this->server->registerClass($enc,'CEncounter');
-
+	}
+	function initCPatient() {
+		$GLOBALS['loader']->requireOnce('controllers/C_Patient.class.php');
+		$cp=&new C_Patient();
+		$this->server->registerClass($cp,'CPatient');
 	}
 
 	function initFeeEstimator() {
