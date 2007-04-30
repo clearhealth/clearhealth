@@ -625,7 +625,7 @@ class ClearhealthToFreebGateway
 				$payerList[$program->get('company_id')] = true;
 				$originalData = $program->toArray();
 				$data = $this->_cleanDataArray($originalData['company']);
-				$data['identifier'] = $data['name'];
+				$data['identifier'] = $data['payer_identifier'];
 				$data['index'] = $index;
 				$data['program_name'] = $originalData['program_name'];
 				$this->_freeb2->registerData($this->_claim_identifier,'Payer',$data, $index);
