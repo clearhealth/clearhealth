@@ -47,7 +47,7 @@ class Person_Appointment_DS extends Datasource_sql {
 		$this->user_id = $user_id;
 		$this->setup(Celini::dbInstance(),
 		array(
-			'cols' => "date_format(start,'%m/%d/%y %H:%i') start,
+			'cols' => "concat('<!--',UNIX_TIMESTAMP(start),'-->',date_format(start,'%m/%d/%y %H:%i')) start,
 					date_format(start,'%Y-%m-%d') isoday,
 					if (
 						((time_to_sec(end)-time_to_sec(start))/60 > 60), 
