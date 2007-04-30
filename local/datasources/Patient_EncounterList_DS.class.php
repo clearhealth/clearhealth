@@ -23,13 +23,13 @@ class Patient_EncounterList_DS extends Datasource_sql
 		$userPracticeList = $userProfile->getPracticeIdList();
 		$this->setup(Celini::dbInstance(), 
 			array(
-				'cols' 	=> '
-					DATE_FORMAT(date_of_treatment,"' . DateObject::getFormat() . '") AS date_of_treatment, 
+				'cols' 	=> "
+					concat('<!--',UNIX_TIMESTAMP(date_of_treatment),'-->',DATE_FORMAT(date_of_treatment,'" . DateObject::getFormat() . "')) AS date_of_treatment, 
 					encounter_reason,
 					b.name building,
-					CONCAT_WS(" ",p.first_name,p.last_name) AS treating_person,
+					CONCAT_WS(' ',p.first_name,p.last_name) AS treating_person,
 					e.status, 
-					encounter_id',
+					encounter_id",
 				'from' 	=> '
 					encounter AS e
 					LEFT JOIN buildings AS b ON(b.id = e.building_id)
