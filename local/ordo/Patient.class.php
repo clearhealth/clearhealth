@@ -34,6 +34,8 @@ class Patient extends MergeDecorator {
 	var $employer_name = "";
 	var $default_provider = "";
 	var $confidentiality = "";
+	var $specialNeedsNote = '';
+	var $specialNeedsTranslator = '';
 
 	var $_table = 'patient';
 	var $_key = 'person_id';
