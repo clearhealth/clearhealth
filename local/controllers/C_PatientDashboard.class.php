@@ -111,6 +111,7 @@ class C_PatientDashboard extends Controller {
 
 		$appointmentDS =& $p->loadDatasource('Appointment');
 		$appointmentGrid =& new cGrid($appointmentDS);
+		$appointmentGrid->name = "appointmentGrid";
 		$appointmentGrid->pageSize = 10;
 		$appointmentGrid->setExternalId($p->get('id'));
 		
