@@ -1,0 +1,17 @@
+	
+	<table>
+		<tr>
+			<td><em>{l}Notes{/l}</em></td><td>&nbsp;&nbsp;</td><td><em>{l}Options{/l}</em></td>
+		</tr>
+		
+		<tr>
+			<td>{clni_input type="text" name="person[specialNeedsNote]" rows="5" cols="35" value=$person->value('specialNeedsNote')}</td>
+			<td></td>
+			<td>Translator Needed: {html_options  options=$em->enumArray('simpleToggle')  name="person[specialNeedsTranslator]" selected=$person->value('specialNeedsTranslator')}</td>		
+		</tr>
+		
+		
+		<tr>
+			<td>{clni_input type="submit" value="Update"}</td>
+		</tr>
+	</table>
