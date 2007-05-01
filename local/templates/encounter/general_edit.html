@@ -1,15 +1,28 @@
-{clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
-<input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
+{literal}
+<script>
+function formSubmit(formId) {
+	HTML_AJAX.formSubmit('ajaxForm' + formId,'__'+formId);
+}
+</script>
+{/literal}
 	<table>
 		<tr>
 			<td valign="top">
 				<div class="selector" id="selector0"></div>
                         	<div class="tabset" id="tabset0">
                                 <div class="tab selected" title="Encounter">
+{clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
+<input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 				{include file="encounter/general_details.html"}
+</form>
 				</div>
+				{foreach from=$widgetForms key=wfFormId item=wf}
+                                <div class="tab" id="__{$wf.form_id}" title="{$wf.name}"  actionname="{$wf.form_id}"></div>
+				{/foreach}
+
 				</div>
-				</div>
+{clni_form action=$FORM_ACTION process=$PROCESS id="encounter"}
+<input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 				{include file="encounter/general_reports.html"}
 			{*	{include file="visitqueue/general_visitqueue.html"} *}
 			</td>
