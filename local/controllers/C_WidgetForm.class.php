@@ -2,11 +2,13 @@
 $loader->requireOnce('/controllers/C_CRUD.class.php');
 $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce('includes/transaction/TransactionManager.class.php');
+$loader->requireOnce('datasources/FormDataByExternalByFormId_DS.class.php');
 
-class C_WidgetForm extends C_CRUD {
+class C_WidgetForm extends Controller {
 	
 	var $_ordoName = "WidgetForm";
 	var $form_data_id = 0;
+	var $formId = 0;
 	var $widget_form_id = '';
 	var $column_id = '';
 	var $controller_name = '';
@@ -93,22 +95,50 @@ class C_WidgetForm extends C_CRUD {
 
 		return $this->view->render("criticalsblock.html");
 	}
-	function ajaxFillout($form_id) {
-		return $this->actionFillout_view($form_id);
+	function _getFormDataId($filloutType = 'encounter',$formId) {
+		$formDataId = 0;
+		switch($filloutType) {
+                  case 'encounter':
+                        $fdDS =  new FormDataByExternalByFormId_DS($this->get('encounter_id','c_encounter'),$formId);
+			//return $fdDS->preview();
+                        $fdDS->rewind();
+                        $row = $fdDS->get();
+
+                        if (is_array($row)) {
+                                $formDataId = $row['form_data_id'];
+                        }
+                }
+		return $formDataId;
+	}
+	function ajaxFillout($formId) {
+		return $this->actionFillout_view($formId);
 	}
 	
-	function actionFillout_view($form_id) {
+
+	function actionFillout_view($formId=0,$filloutType='encounter') {
+		if ($this->formId > 0) {
+			$formId = $this->formId;
+		}
+		$formDataId = $this->_getFormDataId($filloutType,$formId);	
+		$this->form_data_id = $formDataId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
-		return $form_controller->actionFillout_edit($form_id, $this->form_data_id);
+		return $form_controller->actionFillout_edit($formId, $this->form_data_id);
+	}
+	function ajaxProcessFillout($formId) {
+		return $this->processFillout_edit($formId);
 	}
 	
-	function processFillout_edit($form_id) {
+	function processFillout_edit($formId) {
+		$formId = (int)$_POST['form_id'];
+		$formDataId = $this->_getFormDataId($_POST['filloutType'],$formId);	
+		$this->form_data_id = $formDataId;
+		$this->formId = $formId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
-		$form_controller->processFillout_edit($form_id, $this->form_data_id);
+		$form_controller->setExternalId($this->get('encounter_id','c_encounter'));
+		$form_controller->processFillout_edit($formId, $this->form_data_id);
 		$this->form_data_id = $form_controller->form_data_id;
-		
 	}
 
 

@@ -6,7 +6,11 @@ $loader->requireOnce('includes/Grid.class.php');
  * Controller for generic form processing
  */
 class C_Form extends Controller {
-
+	var $_external_id = 0;
+	
+	function setExternalId($id) {
+		$this->_external_id = $id;
+	}
 	/**
 	 * List all the forms in the system
 	 */
@@ -128,6 +132,7 @@ class C_Form extends Controller {
 		}
 
 		$form =& ORDataObject::factory('Form',$form_id);
+		$this->assign('formId',$form->get('form_id'));
 		if ($form_id == false) {
 			$ds =& $form->formList();
 			$ds->template['name'] = '<a href="'.Celini::link('fillout').'id={$form_id}">{$name}</a>';
@@ -155,7 +160,13 @@ class C_Form extends Controller {
 			//print_r ($_POST);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
-			$data->set('external_id',$this->get('external_id','c_patient'));	
+			
+			if (!$data->get('external_id') >0 && $this->_external_id >0) {
+				$data->set('external_id',$this->_external_id);	
+			}
+			elseif(!$data->get('external_id') >0) {
+				$data->set('external_id',$this->get('external_id','c_patient'));	
+			}
 			$data->set('last_edit',date('Y-m-d H:i:s'));
 			$data->persist();
 			
