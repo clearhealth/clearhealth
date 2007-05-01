@@ -28,7 +28,6 @@ function smarty_function_input($params, &$smarty)
     require_once $smarty->_get_plugin_filepath('function','html_options');
 
     $extra = "";
-
     foreach($params as $_key => $_val) {
         switch($_key) {
             case 'validation':
@@ -46,7 +45,6 @@ function smarty_function_input($params, &$smarty)
             case 'system_list':
             case 'enumeration':
                 $system_list = (string)$_val;
-                break;
 
             case 'options':
                 $$_key = $_val;
@@ -130,7 +128,11 @@ function smarty_function_input($params, &$smarty)
                         if ($type == 'radio') {
                                 $ret = "<div>";
                                 foreach($options as $key => $val) {
-                                        $ret .= "<input type='radio' name='string[$name]' value='$key' id='{$id}_{$key}'><label for='{$id}_{$key}' class='inline'>$val</label>$sep";
+                                        $checked = '';
+                                        if ($key == $value) {
+                                                $checked = "checked='checked'";
+                                        }
+                                        $ret .= "<input type='radio' name='string[$name]' value='$key' id='{$id}_{$key}' $checked><label for='{$id}_{$key}' class='inline'>$key</label>$sep";
 
                                 }
                                 $ret .= "</div>";
