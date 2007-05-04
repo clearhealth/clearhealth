@@ -59,9 +59,11 @@ class FormStructure extends ORDataObject {
 				$this->field_name = $codes[0];
 				
 				preg_match('/type="(.*)"/s', $formTemplate [$i], $matches);
-				$code = $matches[1];
-				$codes = explode ("\"", $code);
-				$this->field_type = $codes[0];
+				if (isset($matches[1])) {
+					$code = $matches[1];
+					$codes = explode ("\"", $code);
+					$this->field_type = $codes[0];
+				}
 				
 				$this->put();
 			}
