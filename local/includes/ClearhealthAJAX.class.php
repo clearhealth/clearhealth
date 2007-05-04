@@ -98,6 +98,11 @@ class ClearhealthAJAX {
 		$cp=&new C_Patient();
 		$this->server->registerClass($cp,'CPatient');
 	}
+	function initCTabState() {
+		$GLOBALS['loader']->requireOnce('controllers/C_TabState.class.php');
+		$cts=&new C_TabState();
+		$this->server->registerClass($cts,'CTabState');
+	}
 
 	function initFeeEstimator() {
 		$GLOBALS['loader']->requireOnce("includes/FeeEstimator.class.php");
