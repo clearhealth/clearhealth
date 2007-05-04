@@ -69,6 +69,9 @@ class C_Patient extends Controller {
 		$head->addExternalCss('suggest');
 		$this->_storeCurrentAction ();
 
+		$em =& EnumManager::getInstance();
+		$this->view->assign('em',$em);
+
 		$this->assign('lockTimestamp',time());
 		if (isset($this->patient_id) && $this->patient_id >0) {
 			$patient_id = $this->patient_id;

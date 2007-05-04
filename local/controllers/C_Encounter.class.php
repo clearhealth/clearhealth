@@ -477,7 +477,9 @@ class C_Encounter extends Controller {
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		$changedreason = false;
 		//var_dump($_POST);exit;
-		if($encounter->get('reason') != $_POST['encounter']['encounter_reason']) {
+		$newReason = '';
+		if (isset($_POST['encounter']['encounter_reason'])) $newReason =  $_POST['encounter']['encounter_reason'];
+		if($encounter->get('reason') != $newReason) {
 			$changedreason = true;
 		}
 		$encounter->populate_array($_POST['encounter']);

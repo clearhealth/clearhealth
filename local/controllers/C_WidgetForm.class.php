@@ -3,8 +3,10 @@ $loader->requireOnce('/controllers/C_CRUD.class.php');
 $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce('includes/transaction/TransactionManager.class.php');
 $loader->requireOnce('datasources/FormDataByExternalByFormId_DS.class.php');
+$loader->requireOnce('datasources/WidgetForm_DS.class.php');
+$loader->requireOnce('datasources/Patient_WidgetFormCriticalList_DS.class.php');
 
-class C_WidgetForm extends Controller {
+class C_WidgetForm extends C_CRUD {
 	
 	var $_ordoName = "WidgetForm";
 	var $form_data_id = 0;
@@ -43,17 +45,31 @@ class C_WidgetForm extends Controller {
 		
 		return $this->view->render("widgetformblock.html");
 	}
+	function actionShowSingle_view($patientId,$widgetFormName,$encounterId) {
+		$patientId = (int)$patientId;	
+		$widgetFormId = (int)$widgetFormId;
+		
+		$wfds = new WidgetForm_DS('',$widgetFormName);
+		$widgets = $this->_generateWidgetDisplay($wfds,$patientId,$encounterId);
+		if (isset($widgets[0])) {
+			$this->assign_by_ref("widget", $widgets[0]);
+		}
+
+		return $this->view->render("singleBlock.html");
+	}
+	
 	
 	function actionShowCritical_view($patient_id) {
-		$p = Celini::newOrdo("Patient",$patient_id);
-
-		$m = new Menu();
-		$form =& Celini::newORDO("Form"); 
-		$mf =& Celini::newORDO("MenuForm");
-		
-		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_DS.class.php");
+		$patient_id = (int)$patient_id;	
+		//2,3,4 are widget form types
 		$wfds = new WidgetForm_DS('2,3,4');
+		$widgets = $this->_generateWidgetDisplay($wfds,$patient_id);
+		$this->assign_by_ref("widgets", $widgets);
 
+		return $this->view->render("criticalsblock.html");
+	}
+
+	function _generateWidgetDisplay($wfds,$patient_id)  {
 		$wfds->rewind();
 		$widgets = array();
 		$return_link = Celini::link(true,true, true, $patient_id);
@@ -67,33 +83,30 @@ class C_WidgetForm extends Controller {
 				$wflist_ds = new $dsName($patient_id);
 			}
 			else {
-                        $wflist_ds = $p->loadDatasource('WidgetFormCriticalList');
-                        $wflist_ds->set_form_type($row["form_id"]);
-                        $wflist_ds->_build_case_sql($row["form_id"]);
-                        $wflist_ds->buildquery($patient_id, $row["form_id"]);
-                        $wflist_ds->set_form_type($row["form_id"]);
+                        $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id']);
 			}
 
 			$wfDataGrid =& new sGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
 			$tmpar = array();
-                        if ($row["type"] == 3) {
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link);
+			$widget = array();
+			$widget["name"] = $row['name'];
+                        $widget["grid"] = $wfDataGrid->render();
+                        if ($row["controller_name"] != '') {
+				$widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
                         }
                         elseif ($row['type'] == 4) {
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_edit_link" => Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link);
+                                $widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
                         }
                         else {
                                 //$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
-                                $widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
+                                $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link;
                         }
+			$widgets[] = $widget;
                         $wfds->next();
                 }
-
-		$this->assign_by_ref("widgets", $widgets);
-
-		return $this->view->render("criticalsblock.html");
+		return $widgets;
 	}
 	function _getFormDataId($filloutType = 'encounter',$formId) {
 		$formDataId = 0;
@@ -123,6 +136,8 @@ class C_WidgetForm extends Controller {
 		$this->form_data_id = $formDataId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
+		$form_controller->view->assign('encounterId',$this->get('encounter_id','c_encounter'));
+		$form_controller->view->assign('patientId',$this->get('patient_id','c_patient'));
 		return $form_controller->actionFillout_edit($formId, $this->form_data_id);
 	}
 	function ajaxProcessFillout($formId) {
@@ -163,9 +178,27 @@ class C_WidgetForm extends Controller {
                 return $this->view->render('edit.html');
         }
 
-	function actionRemove() {
+	function actionAddSummaryItem() {
+		$db =& new clniDB();
+	        $column_id = (int)$_GET['column_id'];
+	        $widget_form_id = (int)$_GET['widget_form_id'];
+	        $field_name = $db->quote($_GET['field_name']);
+	        $pretty_name = $db->quote($_GET['pretty_name']);
+	        $table_name = $db->quote($_GET['table_name']);
+
+	        $sql = "select count(*) as count from summary_columns where summary_column_id = '" . $column_id . "' and widget_form_id = '" . $widget_form_id . "'";
+	        $results = $db->execute($sql);
+	        if ($widget_form_id> 0 && $results->fields["count"] == 0) {
+                    $sql = "insert into summary_columns (summary_column_id, widget_form_id, name, pretty_name, table_name) values ($column_id, $widget_form_id, $field_name, $pretty_name, $table_name)";
+                    $results = $db->execute($sql);
+		}
+            	header("HTTP/1.1 204 No Content");
+            	exit;
+	}
+
+	function actionRemoveSummaryItem() {
 		$column_id = (int)$_GET['column_id'];
-		$widget_form_id = (int)$_GET['form_id'];
+		$widget_form_id = (int)$_GET['widget_form_id'];
 
 		$db =& new clniDB();
                 $sql = "delete from summary_columns where summary_column_id = '" . (int)$column_id . "' and widget_form_id = '" . (int)$widget_form_id . "'";

@@ -23,15 +23,24 @@ class C_MedicalHistory extends Controller {
 		$mf =& Celini::newORDO("MenuForm");
 		
 		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_DS.class.php");
-		$wfds = new WidgetForm_DS("*");
+		$wfds = new WidgetForm_DS("1,2,3,4,5,6,7,8,9");
 		
 		$wfds->rewind();
 		$widgets = array();
 		$return_link = Celini::link(true,true, true, $personId);
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block 
-			$wflist_ds = $p->loadDatasource('WidgetFormDataList');
-			$wflist_ds->set_form_type($row["form_id"]);
+			$wflist_ds = '';
+			if ($row['type'] == 4) {
+                                $dsName = "MedHist_" . $row['controller_name'] . "_DS";
+                                $GLOBALS['loader']->requireOnce('datasources/' . $dsName . ".class.php");
+                                $wflist_ds = new $dsName($personId);
+                        }
+			else {
+				$wflist_ds = $p->loadDatasource('WidgetFormDataList');
+				$wflist_ds->set_form_type($row["form_id"]);
+			
+			}
 			
 			$wfDataGrid =& new cGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
