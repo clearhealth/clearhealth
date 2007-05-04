@@ -1,13 +1,21 @@
 var tabCount = {};
 var replaceTarget = '';
 function selectTab(e) {
-	var selector = $u.eventTarget(e);
+	selector = $u.eventTarget(e);
+	return _selectTabFromDiv(selector);
+}
+function _selectTabFromDiv(selector) {
 	var id = /selector(.+)/.exec(selector.parentNode.id)[1];
+	
 	var tabs = $u.getElementsByCssSelector('div.tab',$('tabset'+id));
 
 	for(var i = 0; i < tabs.length; i++) {
 		if (i == selector.index) {
 			$u.addClass(tabs[i],'selected');
+			if (tabs[i].attributes.getNamedItem("tabKey")) {
+				var tabKey = tabs[i].attributes.getNamedItem("tabKey").value;
+				HTML_AJAX.call('CTabState','selectTab',null,tabKey);
+			}
 			if (tabs[i].attributes.getNamedItem("actionname")) {
 				action = tabs[i].attributes.getNamedItem("actionname").value;
 				if (tabs[i].innerHTML.length == 0) {
@@ -46,6 +54,7 @@ Behavior.register('div.tabset div.tab',function(element) {
 
 	if (tabCount[id] == 1) {
 		$u.addClass(newEl,'selected');
+		//_selectTabFromDiv(newEl);
 		firstTab = false;
 	}
 	element.minimizer = newEl;
