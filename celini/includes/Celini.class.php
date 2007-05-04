@@ -368,6 +368,19 @@ class Celini {
 		}
 		return $GLOBALS['_CACHE']['clniSession'];
 	}
+	function isTabSelected($tabKey) {
+                $tabKey = preg_replace('/[^A-Za-z0-9\/]/','',$tabKey);
+                $tabKeys = split('/',$tabKey);
+                if (count($tabKeys) == 2) {
+                  $session =& Celini::SessionInstance();
+                  $session->setNamespace('tabState'.$tabKeys[0]);
+                  if ($session->_get($tabKeys[1],'',true) == 1) {
+                        return true;
+                  }
+                        return false;
+                }
+
+	}
 
 	/**
 	 * Get an ajax helper instance

@@ -148,7 +148,7 @@ function clni_validate(currentForm) {
 	// reset ok on all form elements
 	for(var i =0; i < clni_validation_rules.length; i++) {
 		rule = clni_validation_rules[i];
-		if (rule.obj) {
+		if (rule.obj && rule.obj.ok) {
 			rule.obj.ok = true;
 			eval('clni_notify_'+rule.notify+'_reset(rule.obj);');
 		}
@@ -213,8 +213,8 @@ function clni_validate(currentForm) {
 		for (var i in e) {
 			msg += i+':'+e[i]+"\n";
 		}
-		alert('Error in Validation Code form not submitted\n'+msg);
-		return false;
+		//alert('Error in Validation Code form not submitted\n'+msg);
+		return true;
 	}
 }
 

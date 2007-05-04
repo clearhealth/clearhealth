@@ -57,6 +57,7 @@ class clniView extends intSmarty {
 		parent::intSmarty();
 
 		$this->_loadCeliniPlugins();
+		$this->assign("Celini", new Celini());
 	}
 	
 	
