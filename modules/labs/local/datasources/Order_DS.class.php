@@ -25,10 +25,11 @@ class Order_DS extends Datasource_sql
 			'num_tests'=>'# Tests',
 			'lab_order_id'=>false
 		);
-		$where = " (l.status = 'P' OR l.status = '') ";
+		$where = '';
+		//$where = " (l.status = 'P' OR l.status = '') ";
 		if ($patientId) {
 			$patientId = EnforceType::int($patientId);
-			$where = "and l.patient_id = $patientId";
+			$where = " l.patient_id = $patientId";
 			unset($labels['last_name']);
 			unset($labels['first_name']);
 			unset($labels['record_number']);
