@@ -18,24 +18,27 @@ class WidgetForm_DS extends Datasource_Sql {
 	var $_type = 'html';
 
 
-	function WidgetForm_DS($type = '') {
-		if (empty($type) || $type =="*") {
-			$type = "";
+	function WidgetForm_DS($type = '',$widgetFormName = '') {
+		$type = preg_replace('/[^0-9,*]*/','',$type); 
+		$db = Celini::dbInstance();
+		$where = '1 ';
+		if (!empty($type) && $type !="*") {
+			$where .= " and wf.type in (".$type.")";
 		}
-		else {
-			$type = "type in (".$type.")";
+		if ($widgetFormName !='') {
+			$where .= " and wf.name = " . $db->quote($widgetFormName);
 		}
-		$this->setup(Celini::dbInstance(),
+		$this->setup($db,
 			array(
-				'cols'    => "*, widget_form_id as link",
+				'cols'    => "*, widget_form_id as link, type as pretty_type",
 				'from'    => "widget_form wf",
 				'orderby' => 'wf.widget_form_id',
-				'where'   => $type
+				'where'   => $where
 			),
-			array('name' => 'Name', 'link' => 'Link', 'type' => 'Type'));
+			array('name' => 'Name', 'link' => 'Link', 'pretty_type' => 'Type'));
 			$this->registerTemplate('link','<a href="'.substr(Celini::link('edit','WidgetForm',true,false),0,-1).'/{$widget_form_id}?">edit&nbsp;</a>');
 
-			$this->registerFilter('type', array(&$this, '_lookup'));
+			$this->registerFilter('pretty_type', array(&$this, '_lookup'));
         }
 
 
