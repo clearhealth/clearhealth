@@ -6,7 +6,7 @@ var widget_form_id = '{$ordo->get('widget_form_id')}';
 {literal}
 
 function removeWidgetField(column_id) {
-	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/remove?widget_form_id=' + widget_form_id + '&column_id=' + column_id;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/removeSummaryItem?widget_form_id=' + widget_form_id + '&column_id=' + column_id;
 	document.getElementById('column' + column_id).style.display = 'none';
 
 	return false;
@@ -19,7 +19,7 @@ function addWidgetField() {
         var field_name = document.getElementById('widget_form_add_column').value;
         var pretty_name = document.getElementById('widget_form_add_pretty_name').value;
         var table_name = document.getElementById('widget_form_add_table_name').value;
-	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/add?widget_form_id=' + widget_form_id + '&column_id=' + column_id + '&field_name=' + field_name + '&pretty_name=' + pretty_name + '&table_name=' + table_name;
+	window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/addSummaryItem?widget_form_id=' + widget_form_id + '&column_id=' + column_id + '&field_name=' + field_name + '&pretty_name=' + pretty_name + '&table_name=' + table_name;
 
 	var newitem = document.createElement("li");
 	newitem.setAttribute('id', 'column' + column_id);
@@ -47,7 +47,7 @@ function addWidgetField() {
 <input type='submit' value='Update'>
 </fieldset>
 {* type 3 and 4 involve controllers, quicklink or generic*}
-{if $ordo->get('type') eq 3 || $ordo->get('type') eq 4}
+{if $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6}
 <fieldset>
 <legend>Linked Controller</legend>
 Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{$ordo->get('controller_name')}">
@@ -55,7 +55,7 @@ Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{
 {/if}
 
 </form>
-{if $ordo->get('type') eq 2 || $ordo->get('type') eq 3 || $ordo->get('type') eq 4}
+{if $ordo->get('type') eq 2 || $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6}
 <fieldset>
 <legend>Summary Columns</legend>
 {clni_form id="WidgetFormData" action=$ALTER_ACTION process="generic"}

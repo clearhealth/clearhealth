@@ -1,4 +1,3 @@
-{foreach from=$widgets item=widget}
 <div class="critical_item">
 <fieldset>
 	<legend>{$widget.name} {if $widget.form_add_link}(<a href="{$widget.form_add_link}">add</a>){/if}{if $widget.form_list_link}(<a href="{$widget.form_list_link}">list</a>){/if}{if $widget.form_edit_link}(<a href="{$widget.form_edit_link}">edit</a>){/if}</legend>
@@ -7,6 +6,5 @@
 </div>
 </fieldset>
 </div>
-{/foreach}
 
 
