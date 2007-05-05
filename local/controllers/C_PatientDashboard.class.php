@@ -2,6 +2,7 @@
 
 $loader->requireOnce('includes/Datasource.class.php');
 $loader->requireOnce('datasources/Patient_NoteList_DS.class.php');
+$loader->requireOnce('ordo/Document.class.php');
 
 /**
  * Patient Dashboard
@@ -63,7 +64,7 @@ class C_PatientDashboard extends Controller {
 		$this->session->set('patient_action', $current->link());
 
 		$p =& $this->_loadPatient($patient_id);
-		
+		$patient_id = $p->get('person_id');	
 		// If we don't have a valid Patient, display an error message and stop.
 		if (!$p->isPopulated()) {
 			$this->messages->addMessage(
@@ -156,6 +157,15 @@ class C_PatientDashboard extends Controller {
 		$r =& Celini::newORDO('Report','/Patient/StatementReport','BySystemName');
 		$this->view->assign_by_ref('statementreport',$r);
 
+		$config = Celini::configInstance()->get("PatientPicture");
+		if (isset($config['enabled']) && $config['enabled'] == true) {
+		$width = $config['thumbWidth'];
+		$d = Document::FirstDocumentByCategoryName($patient_id,"Picture");
+		if (is_object($d)) {
+			$pictureTag = '<img src="'.Celini::link("thumb","Thumbnail") . 'src=/' . $patient_id . "/" . $d->get("name") . '&w='. $width . '">';
+			$this->view->assign("pictureTag",$pictureTag);
+		}
+		}
 		return $this->view->render("demo.html");
 	}
 

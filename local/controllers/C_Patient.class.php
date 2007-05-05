@@ -1,6 +1,7 @@
 <?php
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('controllers/C_SecondaryPractice.class.php');
+$loader->requireOnce('ordo/Document.class.php');
 
 /**
  * Controller Clearhealth Patient actions
@@ -191,6 +192,15 @@ class C_Patient extends Controller {
 		if ($this->GET->exists('view') && $this->GET->get('view') === 'narrow') {
 			return $this->view->render("singleColEdit.html");
 		}
+		$config = Celini::configInstance()->get("PatientPicture");
+                if (isset($config['enabled']) && $config['enabled'] == true) {
+                	$width = $config['thumbWidth'];
+                	$d = Document::FirstDocumentByCategoryName($patient_id,"Picture");
+                	if (is_object($d)) {
+                	        $pictureTag = '<img src="'.Celini::link("thumb","Thumbnail") . 'src=/' . $patient_id . "/" . $d->get("name") . '&w='. $width . '">';
+                		$this->view->assign("pictureTag",$pictureTag);
+                	}
+                }
 		return $this->view->render("edit.html");
 	}
 
