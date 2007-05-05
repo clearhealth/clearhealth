@@ -64,9 +64,18 @@ $config['labs'] = array();
 $config['labs']['highlightAbnormal'] = false;
 
 ################################################################################
-## Printer options
+## Printer options for billing prints offset left X chars
 ################################################################################
 $config['printMargin'] = 3;
+
+################################################################################
+## Patient Picture Options, just create a document category called Picture
+################################################################################
+$config['PatientPicture'] = array();
+$config['PatientPicture']['enabled'] = true;
+//width in px, automatically calculates ratioed height
+$config['PatientPicture']['thumbWidth'] = 150; 
+
 
 ################################################################################
 # Celini Options 
