@@ -225,6 +225,29 @@ class Document extends ORDataObject{
 		}
 	}
 
+	function FirstDocumentByCategoryName($patientId, $name) {
+		$db =& Celini::dbInstance();
+		$patientId = (int)$patientId;
+		$name = $db->quote($name);
+		
+		$sql = "SELECT d.id FROM  document d
+			INNER JOIN category_to_document ctd on ctd.document_id = d.id 
+			INNER JOIN category c on c.id=ctd.category_id
+			WHERE 
+			d.foreign_id = $patientId and
+			c.name= $name
+			ORDER BY d.date DESC LIMIT 1" ;
+                $result = $db->execute($sql);
+
+                if ($result && !$result->EOF) {
+                        if ($result->fields['id'] > 0) {
+                                return ORDataObject::factory("Document",$result->fields['id']);
+                        }
+                }
+		return false;
+
+	}
+
 	/**#@+
 	*	Getter/Setter methods used by reflection to affect object in persist/poulate operations
 	*	@param mixed new value for given attribute

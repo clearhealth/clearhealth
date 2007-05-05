@@ -98,9 +98,10 @@ just entered. Please check the following list of existing patient records to see
 			{include file="patient/general_patientNumber.html"}
 			{include file="patient/general_address.html"}
 		</td>
+		<td>{if $pictureTag}<fieldset><legend>{l}Picture{/l}</legend>{$pictureTag}</fieldset>{/if}</td>
 	</tr>
 	<tr>
-		<td colspan=2>
+		<td colspan=3>
 			<div class="selector" id="selector2"></div>
 			<div class="tabset" id="tabset2" style="margin-bottom:14px;">
 			{include file="patient/general_insurer.html"}
