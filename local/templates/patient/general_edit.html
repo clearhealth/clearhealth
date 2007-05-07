@@ -84,7 +84,6 @@ just entered. Please check the following list of existing patient records to see
 			<div class="tabset" id="tabset0">
 				{include file="patient/general_patientDemo.html"}
 				<div class="tab{if $Celini->isTabSelected('CPatientTabSet0/statistics')} selected{/if}" title="{l}Statistics{/l}" tabKey="CPatientTabSet0/statistics">
-		{$Celini->isTabSelected('CPatientTabSet0/statistics')}
 				{if $customPatientStats}
                                 {include file=$customPatientStats}
                         	{else}
