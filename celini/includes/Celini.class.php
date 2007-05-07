@@ -374,12 +374,34 @@ class Celini {
                 if (count($tabKeys) == 2) {
                   $session =& Celini::SessionInstance();
                   $session->setNamespace('tabState'.$tabKeys[0]);
-                  if ($session->_get($tabKeys[1],'',true) == 1) {
+		 // var_dump($session->_getAll());
+		  //var_dump($_SESSION['_clniSession']);
+		  if ($session->_getAll() === false) {
+			//no tab for this group currently selected so set this one as default
+			echo "jere";
+			$this->setTabSelected($tabKey);
+			$session->setNamespace("default");
+			return true;		
+		  }
+                  elseif ($session->_get($tabKeys[1],'',true) == 1) {
+			$session->setNamespace("default");
                         return true;
                   }
-                        return false;
                 }
+			$session->setNamespace("default");
+                        return false;
 
+	}
+	
+	function setTabSelected($tabKey) {
+		$tabKey = preg_replace('/[^A-Za-z0-9\/]*/','',$tabKey);
+                $tabKeys = split('/',$tabKey);
+                if (count($tabKeys) == 2) {
+                  $session =& Celini::SessionInstance();
+                  $session->setNamespace('tabState'.$tabKeys[0]);
+                  $session->clear();
+                  $session->set($tabKeys[1],1);
+                }
 	}
 
 	/**
