@@ -24,10 +24,8 @@ function startDuplicate(URL) {
 	var subWin = window.open(URL, 'dupeWindow','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=400');
 }
 {/head}
-	{* Photo area, need to rework positioning if turned back on *}
-	{*<td rowspan="6" align="center" ><div style="margin-top:-30px; margin-right:-15px;"><a href="{$base_dir}photo.php?id={$person->get('person_id')}&size=large" target="photo"><div  class="img-shadow"><img src="{$base_dir}photo.php?id={$person->get_person_id()}" style="border-style: solid; border-width:thin;"></div></div></a></td>*}
 
-	<div class="tab{if $Celini->isTabSelected('CPatientTabSet0/details')} selected{/if}" tabKey="CPatientTabSet0/details" title="{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if}"> 
+	<div class="tab{if $Celini->isTabSelected('CPatientTabSet0/details')} selected{/if}" tabKey="CPatientTabSet0/details" title="{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if}">
 			<table>
 			<tbody>
 			<tr>
