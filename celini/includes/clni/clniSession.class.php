@@ -70,13 +70,19 @@ class clniSession {
 		$this->set($property,array_merge($oldVal,$value));
 	}
 
-	function _get($property,$default,$print = false) {
+	function _get($property,$default) {
 		if (isset($_SESSION[$this->_mainNamespace][$this->namespace][$property])) {
 			$ret = $_SESSION[$this->_mainNamespace][$this->namespace][$property];
 			return $ret;
 		}
-		//if ($print) {echo $this->_mainNamespace .'//'.$this->namespace.'//'.$property; var_dump($_SESSION['_clniSession']);}
 		return $default;
+	}
+	function _getAll() {
+		if (isset($_SESSION[$this->_mainNamespace][$this->namespace])) {
+                        $ret = $_SESSION[$this->_mainNamespace][$this->namespace];
+                        return $ret;
+                }
+		return false;
 	}
 
 	function _set($property,$value) {
