@@ -45,6 +45,7 @@ class C_PatientFinder extends Controller {
 	 * @todo  remove once menu is updated
 	 */
 	function actionFind($form_name = '') {
+		$this->set("patient_id",0,"c_patient");
 		return $this->actionList($form_name);
 	}
 	
