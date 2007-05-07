@@ -124,7 +124,8 @@ function switchTimer(element) {
 	{/if}
 
 	{if $canViewPatient}
-		<li {if $menu_group == "patient"}class="active"{/if} id="patientTab"><a href="{$base_uri}index.php/main/PatientFinder">Patient</a>
+		<li {if $menu_group == "patient"}class="active"{/if} id="patientTab"><a href="{if $selectedPatient}{$base_uri}index.php/main/PatientDashboard/{$selectedPatient->get('person_id')}
+{else}{$base_uri}index.php/main/PatientFinder/Find{/if}">Patient</a>
 			<a href="#" onclick="tabSwitch('patient');" onMouseOut="switchTimer(current_element);"><span><img src="{$base_uri}/index.php/images/image002.gif" alt="#"></span></a>
 		</li>
 	{/if}
