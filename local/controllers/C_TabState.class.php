@@ -18,17 +18,7 @@ class C_TabState extends Controller {
 		}
 	}
 	function isSelected($tabKey) {
-		$tabKey = preg_replace('/[^A-Za-z0-9\/]/','',$tabKey);
-		$tabKeys = split('/',$tabKey);
-		if (count($tabKeys) == 2) {
-		  $session =& Celini::SessionInstance();
-		  $session->setNamespace('tabState'.$tabKeys[0]);
-		  if ($session->get($tabKeys[1]) == 1) {
-			return true;
-		  }
-			return false;
-		}
-
+		return Celini::isTabSelected($tabKey);
 	}
 
 } 
