@@ -93,7 +93,7 @@ class C_Patient extends Controller {
 		$this->assign('DELETE_NUMBER_ACTION',Celini::managerLink('deleteNumber',$patient_id));
 		$this->assign('EDIT_ADDRESS_ACTION',Celini::managerLink('editAddress',$patient_id));
 		$this->assign('DELETE_ADDRESS_ACTION',Celini::managerLink('deleteAddress',$patient_id));
-		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&&process=true");
+		$this->assign('NEW_PAYER',Celini::managerLink('editInsuredRelationship',$patient_id)."id=0&process=true");
 		$this->assign('DUPLICATE_ACTION',Celini::link('markDuplicate',true,'minimal').'patient_id='.$patient_id);
 		$this->assign('UNDUPLICATE_ACTION',Celini::managerLink('unmarkDuplicate',$patient_id));
 		
