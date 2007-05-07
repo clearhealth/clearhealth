@@ -51,12 +51,10 @@ Behavior.register('div.tabset div.tab',function(element) {
 	newEl.innerHTML = element.title;
 	$('selector'+id).appendChild(newEl);
 	$u.registerEvent(newEl,'click',selectTab);
-
-	if (tabCount[id] == 1) {
+	if (element.className == "tab selected") {
 		$u.addClass(newEl,'selected');
-		//_selectTabFromDiv(newEl);
-		firstTab = false;
-	}
+
+	}	
 	element.minimizer = newEl;
 });
 
