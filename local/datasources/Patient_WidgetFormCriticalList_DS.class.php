@@ -60,6 +60,7 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	function set_form_type() {
 		$widget_form_id = $this->widget_form_id;
 		$labels = array();
+		$fields = array();
 		
 		$db = Celini::dbInstance();
 		
@@ -67,15 +68,14 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 
 		$res = $db->query($sql);
 		while($res && !$res->EOF) {
-			$fields = array();
 			if (isset($res->fields['name'])) { 
 			$labels[$res->fields["name"]] = $res->fields["pretty_name"];
 			$fields[$res->fields["name"]] = array('name'=>$res->fields['name'], 'table_name'=>$res->fields['table_name']);
 }
-			$this->dynamicLabels = $labels;
-			$this->dynamicFields = $fields;
 			$res->MoveNext();	
 		}
+			$this->dynamicLabels = $labels;
+			$this->dynamicFields = $fields;
 
 	}
 
