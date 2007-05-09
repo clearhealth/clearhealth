@@ -13,7 +13,8 @@ class Order_DS extends Datasource_sql
 	var $_type = 'html';
 
 
-	function Order_DS($patientId = false) {
+	function Order_DS($patientId = 0,$encounterId = 0) {
+		$encounterId = (int)$encounterId;
 		$labels = array(	
 			'last_name'=>'Last Name',
 			'first_name'=>'First Name',
@@ -25,14 +26,18 @@ class Order_DS extends Datasource_sql
 			'num_tests'=>'# Tests',
 			'lab_order_id'=>false
 		);
-		$where = '';
+		$where = ' 1 ';
 		//$where = " (l.status = 'P' OR l.status = '') ";
-		if ($patientId) {
+		if ($patientId != '*') {
 			$patientId = EnforceType::int($patientId);
-			$where = " l.patient_id = $patientId";
+			$where .= " and l.patient_id = $patientId";
 			unset($labels['last_name']);
 			unset($labels['first_name']);
 			unset($labels['record_number']);
+		}
+
+		if ($encounterId > 0) {
+			$where .= " and l.encounter_id = $encounterId"; 
 		}
 
 		$format = DateObject::getFormat();

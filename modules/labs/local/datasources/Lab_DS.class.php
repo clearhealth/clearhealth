@@ -13,7 +13,7 @@ class Lab_DS extends Datasource_sql
 	var $_type = 'html';
 
 
-	function Lab_DS($patientId = false) {
+	function Lab_DS($patientId = 0) {
 		$labels = array(	
 			'last_name'=>'Last Name',
 			'first_name'=>'First Name',
@@ -26,7 +26,7 @@ class Lab_DS extends Datasource_sql
 			'lab_order_id'=>false
 		);
 		$where = '';
-		if ($patientId) {
+		if ($patientId != '*') {
 			$patientId = EnforceType::int($patientId);
 			$where = "l.patient_id = $patientId";
 			unset($labels['last_name']);

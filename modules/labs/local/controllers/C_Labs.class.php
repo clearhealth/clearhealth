@@ -96,6 +96,10 @@ class C_Labs extends Controller {
 	}
 	function actionEdit_edit($labOrderId=0) {
 		$labOrderId = (int)$labOrderId;
+		$encounterId = $this->GET->get('encounterId','int');
+		if ($encounterId > 0) {
+			$this->set("encounterId",$encounterId);
+		}
 		$order= ORDataObject::factory("LabOrder",$labOrderId);
 		$em =& Celini::enumManagerInstance();
                 $this->view->assign('em',$em);	
@@ -135,6 +139,10 @@ class C_Labs extends Controller {
 		if (isset($data['lab_order_id'])) $labOrderId = (int)$data['lab_order_id'];
 		$order = ORDataObject::factory("LabOrder",$labOrderId);
 		$order->populateArray($data);
+		if ($this->get('encounterId') > 0) {
+			$order->set('encounter_id',$this->get('encounterId'));
+			$this->set('encounterId',0);
+		}
 		$order->persist();
 		$this->messages->addMessage("Order added successfully");
 		return $this->_generateEditView($order->get('lab_order_id'));

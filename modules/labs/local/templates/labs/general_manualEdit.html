@@ -43,6 +43,7 @@ function deleteResult(resultId) {
 }
 function confirmResults(labOrderId) {
   HTML_AJAX.call('Labs','ajaxConfirmResults',updateView,labOrderId);
+  document.getElementById('confirmButton').style.display = 'none';
 }
 function processView(result) {
   if (result) {
@@ -60,6 +61,7 @@ function updateView(result) {
     Calendar.setup( {inputField:"labSpecimenDate", showsTime: false,ifFormat:"%m/%d/%Y",button:"labSpecimenDate_trigger" }); 
     clni_register_validation_rule('labSpecimenDate','date','alert');
   }
+  document.getElementById('orderButton').style.display = 'none';
 
 }
 
@@ -80,9 +82,9 @@ function updateView(result) {
 </table>
 <input type="hidden" value="{$patientId}" id="labPatientId">
 {if !$order->get('lab_order_id') >0}
-<input type="button" value="Add Lab Order" onclick="saveOrder();">
+<input id="orderButton" type="button" value="Add Lab Order" onclick="saveOrder();">
 {elseif $order->get('status') ne 'F'}
-<input type="button" value="Mark Lab As Final" onclick="confirmResults({$order->get('lab_order_id')});">
+<input id="confirmButton" type="button" value="Mark Lab As Final" onclick="confirmResults({$order->get('lab_order_id')});">
 {/if}
 <br><br>
 </fieldset>
