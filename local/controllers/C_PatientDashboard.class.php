@@ -23,8 +23,11 @@ class C_PatientDashboard extends Controller {
 		else if ($this->GET->exists('patient_id')) {
 			$patientId = $this->GET->get('patient_id');
 		}
-		else {
+		else if ($this->GET->exists('id')) {
 			$patientId = $this->GET->get('id');
+		}
+		else {
+			$patientId = $this->get('patient_id','c_patient');
 		}
 
 		$this->assign('DEMOTAB_ACTION',Celini::link('demo',true,true,$patientId));

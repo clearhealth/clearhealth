@@ -47,6 +47,7 @@ class C_WidgetForm extends C_CRUD {
 	}
 	function actionShowSingle_view($patientId,$widgetFormName,$encounterId) {
 		$patientId = (int)$patientId;	
+		$encounterId = (int)$encounterId;	
 		$widgetFormId = (int)$widgetFormId;
 		
 		$wfds = new WidgetForm_DS('',$widgetFormName);
@@ -69,10 +70,10 @@ class C_WidgetForm extends C_CRUD {
 		return $this->view->render("criticalsblock.html");
 	}
 
-	function _generateWidgetDisplay($wfds,$patient_id)  {
+	function _generateWidgetDisplay($wfds,$patient_id,$encounterId = '')  {
 		$wfds->rewind();
 		$widgets = array();
-		$return_link = Celini::link(true,true, true, $patient_id);
+		$return_link = $_SERVER['REQUEST_URI'];
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block
 			$wflist_ds = '';
@@ -83,18 +84,43 @@ class C_WidgetForm extends C_CRUD {
 				$wflist_ds = new $dsName($patient_id);
 			}
 			else {
-                        $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id']);
+                        $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId);
 			}
-
+			
 			$wfDataGrid =& new sGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
-			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
+
+			//make rows have an edit link
+			if ($row['type'] == 2 || $row['type'] == 6) {
+			$labels = $wflist_ds->getColumnLabels();
+			$linkLabel = "";
+			$linkField = "";
+
+			if (is_array($labels) && count($labels) > 0) {
+				$keys = array_keys($labels);
+				$labels = array_values($labels);
+				$linkLabel = $labels[0];
+				$linkField = $keys[0];
+			}
+			if (strlen($linkLabel) > 0) {
+				$encLink = "";
+				if ($encounterId > 0) {
+					$encLink = "&encounterId=$encounterId";
+				}
+				$editLink = '<a href="'.Celini::link('fillout','Form').'&form_id={$form_id}&id={$form_data_id}&returnTo=' . $return_link . $encLink  . '">' ."{\$" . $linkField  .'}</a>';
+				$wfDataGrid->registerTemplate($linkField,$editLink);
+			}
+			}
 			$tmpar = array();
 			$widget = array();
 			$widget["name"] = $row['name'];
                         $widget["grid"] = $wfDataGrid->render();
-                        if ($row["controller_name"] != '') {
+                        
+			if ($row["controller_name"] != '') {
 				$widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
+				if ($encounterId >0) {
+					$widget["form_edit_link"].= "&encounterId=$encounterId";
+				}
                         }
                         elseif ($row['type'] == 4) {
                                 $widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
@@ -102,6 +128,9 @@ class C_WidgetForm extends C_CRUD {
                         else {
                                 //$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
                                 $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link;
+				if ($encounterId >0) {
+					$widget["form_add_link"].= "&encounterId=$encounterId";
+				}
                         }
 			$widgets[] = $widget;
                         $wfds->next();

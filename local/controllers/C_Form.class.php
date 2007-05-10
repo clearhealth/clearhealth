@@ -124,6 +124,7 @@ class C_Form extends Controller {
 
 	function actionFillout_edit($form_id = 0,$form_data_id = 0) {
 		$form_data_id = EnforceType::int($form_data_id);
+		$encounterId = $this->GET->get("encounterId","int");
 
 		$retTo = "";
 		if ($this->GET->exists('returnTo')) {
@@ -143,7 +144,11 @@ class C_Form extends Controller {
 			if (isset($this->form_data_id)) {
 				$form_data_id = $this->form_data_id;
 			}
-			$this->assign('FORM_ACTION',Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id$retTo");
+			$formAction = Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id$retTo";
+			if ($encounterId > 0) {
+				$formAction .= "&encounterId=$encounterId"; 
+			}
+			$this->assign('FORM_ACTION',$formAction);
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			
 			$this->assign_by_ref('form',$form);
@@ -168,6 +173,10 @@ class C_Form extends Controller {
 				$data->set('external_id',$this->get('external_id','c_patient'));	
 			}
 			$data->set('last_edit',date('Y-m-d H:i:s'));
+			if ($this->GET->get("encounterId","int") > 0) {
+				$data->set("encounter_id",$this->GET->get("encounterId","int"));
+				
+			}
 			$data->persist();
 			
 			$structure=& Celini::newOrdo('FormStructure');

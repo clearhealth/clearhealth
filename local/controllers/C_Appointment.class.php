@@ -53,7 +53,9 @@ class C_Appointment extends Controller {
 			$this->view->assign('patient_id',$pid);
 			$patient = Celini::newORDO('Patient',$pid);
 			$this->view->assign('patient',$patient);
+			if (!isset($this->view->_tpl_vars['provider_id'])) {
 			$this->view->assign('provider_id',$patient->get('default_provider'));
+			}
 			$this->view->assign('doappointmentpopup',true);
 		}
 
@@ -112,12 +114,22 @@ class C_Appointment extends Controller {
 		return $this->view->render('edit.html');
 	}
 
-	function ajax_edit($id,$type='',$patient_id = '') {
+	function ajax_edit($id,$type='',$patient_id = '',$provider_id = '',$start_time ='',$end_time = '') {
 		$this->appointment =& Celini::newOrdo('Appointment',$id);
 		$this->appointment->set('appointment_code',$type);
 		$this->view->assign('ajaxedit',true);
 		$this->_patient_id = $patient_id;
 		$this->assign('patient_id',$patient_id);
+		if ($provider_id > 0) {
+		$this->assign('provider_id',$provider_id);
+		}
+		if ($start_time > 0) {
+		$this->assign('start_time',$start_time);
+		}
+		if ($end_time > 0) {
+		$this->assign('end_time',$end_time);
+		}
+
 		$this->assign('FORM_ACTION',Celini::link('Day','CalendarDisplay'));
 		return array($id,$this->actionEdit(),$type);
 	}
@@ -488,9 +500,10 @@ class C_Appointment extends Controller {
 		if(!is_null($this->appointment)) {
 			return $this->appointment;
 		}
-		$this->assign('search',$this->POST->getRaw('Search'));
+		$search = $this->POST->getRaw('Search');
+		$this->assign('search',$search);
 		$providers =& Celini::newORDO('Provider');
-		$providers = $providers->valueList('usernamePersonId');
+		$providers = $providers->valueList('fullName',true);
 		$this->assign('providers',$providers);
 		$userProfile =& Celini::getCurrentUserProfile();
 		$pid = $userProfile->getCurrentPracticeId();
@@ -498,9 +511,9 @@ class C_Appointment extends Controller {
 		$patient = ORDataobject::factory('Patient',(int)$patient_id);
 		$this->assign("patient",$patient);
 		$roomArray = $r->rooms_practice_factory($pid,false);
-		if ($patient->get('id') > 0) {
+		if ($patient->get('id') > 0 && !is_array($search)) {
 			$this->assign("default_provider",$patient->get('default_provider'));
-			$search = array('find_first' => true, 'from' => date('Y-m-d'),'to' => date('Y-m-d', strtotime(" +2 weeks")));
+			$search = array('find_first' => true, 'from' => date('Y-m-d',strtotime(" +1 week")),'to' => date('Y-m-d', strtotime(" +9 days")));
 			$rk = array_keys($roomArray);
 			$search['facility'] = $rk[0];
 			$this->assign("search",$search);
@@ -511,6 +524,7 @@ class C_Appointment extends Controller {
 	}
 
 	function processSearch() {
+		//$GLOBALS['startSearch'] = microtime(true);
 		$appointment =& Celini::newORDO('Appointment');
 		$where = array();
 		$search = $this->POST->getRaw('Search');
@@ -577,7 +591,7 @@ class C_Appointment extends Controller {
 				}
 				foreach($ts as $stamp) {
 					$appLinks[] = '<a href="' . Celini::link('Day','CalendarDisplay') . 'date='. date('Y-m-d',$stamp). '&patient_id=' . (int)$search['patient_id']  . '">'. date('m/d/Y',$stamp) . '</a> '.
-	'<a href="' . Celini::link('Day','CalendarDisplay') . 'date=' . date('Y-m-d',$stamp) . '&start_time=' . date('H:i',$stamp) .'&end_time=' . date('H:i',$stamp+$amount) . '&patient_id='. (int)$search['patient_id'] . '">Schedule Appointment for ' . date('H:i',$stamp) . ' - ' . date('H:i',$stamp+$amount) . '</a>';
+	'<a href="' . Celini::link('Day','CalendarDisplay') . 'date=' . date('Y-m-d',$stamp) . '&start_time=' . date('H:i',$stamp) .'&end_time=' . date('H:i',$stamp+$amount) . '&patient_id='. (int)$search['patient_id'] . '&provider_id=' . (int)$search['provider'] . '">Schedule Appointment for ' . date('H:i',$stamp) . ' - ' . date('H:i',$stamp+$amount) . '</a>';
 				}
 				$this->assign('appLinks',$appLinks);
 
