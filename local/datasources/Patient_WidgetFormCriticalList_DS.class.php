@@ -22,27 +22,35 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	 */
 	var $patient_id = '';
 	var $form_id = '';
+	var $widget_form_id = '';
+	var $encounterId = '';
 	var $case_sql = '';
 	var $dynamicLabels = array();
 	var $dynamicFields = array();
 
-	function Patient_WidgetFormCriticalList_DS($patient_id,$form_id,$widget_form_id) {
+	function Patient_WidgetFormCriticalList_DS($patient_id,$form_id,$widget_form_id,$encounterId) {
 		$this->patient_id = (int)$patient_id;
 		$this->form_id = (int)$form_id;
 		$this->widget_form_id = (int)$widget_form_id;
+		$this->encounterId = (int)$encounterId;
 		
 		$this->set_form_type();
 		$this->_build_case_sql();
 		$this->_labels = $this->dynamicLabels;
 		$this->_setupSql();
 		$this->_labels = $this->dynamicLabels;
-	//echo $this->preview() . "<br />";
+		//echo $this->preview() . "<br />";
 	}
 	
 	function _setupSql() {
+		$where = "";
+
+		if ($this->encounterId > 0) {
+			$where .= " and fd.encounter_id = " . $this->encounterId;
+		}
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "widget_form_id, form_data_id $this->case_sql ",
+				'cols'    => "widget_form_id, f.form_id, form_data_id $this->case_sql ",
 				'from'    => "widget_form AS wf " .
 							 "INNER JOIN form AS f USING(form_id) ".
 							 "INNER JOIN form_data AS fd using (form_id) ".
@@ -50,7 +58,7 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 							 "LEFT JOIN storage_string ON storage_string.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_text ON storage_text.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_date ON storage_date.foreign_key = fd.form_data_id ",
-				'where'   => "fd.external_id = '" . $this->patient_id . "' and f.form_id = '" . $this->form_id . "'",
+				'where'   => "fd.external_id = '" . $this->patient_id . "' and f.form_id = '" . $this->form_id . "' " . $where,
 				'groupby'   => "fd.form_data_id, storage_date.array_index, storage_string.array_index, storage_string.array_index, storage_text.array_index"
 			),
 			false);
