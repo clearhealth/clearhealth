@@ -26,7 +26,7 @@ class WidgetForm_DS extends Datasource_Sql {
 			$where .= " and wf.type in (".$type.")";
 		}
 		if ($widgetFormName !='') {
-			$where .= " and wf.name = " . $db->quote($widgetFormName);
+			$where .= " and wf.name = " . $db->quote($widgetFormName) . " and wf.type!=10"; //10 is disabled
 		}
 		$this->setup($db,
 			array(
