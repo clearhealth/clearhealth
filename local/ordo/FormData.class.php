@@ -26,6 +26,7 @@ class FormData extends ORDataObject {
 	var $form_id		= '';
 	var $external_id	= '';
 	var $last_edit		= '';
+	var $encounter_id		= '';
 	/**#@-*/
 
 	var $_table = 'form_data';
