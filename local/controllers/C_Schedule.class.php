@@ -270,7 +270,7 @@ class C_Schedule extends Controller
 		$this->ajaxInteractiveProviderGrid('1000119','1000091','2007-04-04','2007-04-05');
 		$providerId = '';
 		$prov = ORDataObject::factory('Provider',$providerId);
-		$provList = $prov->getProviderList();
+		$provList = $prov->valueList_fullName();
 		$this->assign('providerList',$provList);
 
 		$userProfile =& Celini::getCurrentUserProfile();
