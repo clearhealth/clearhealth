@@ -28,7 +28,7 @@ class Order_DS extends Datasource_sql
 		);
 		$where = ' 1 ';
 		//$where = " (l.status = 'P' OR l.status = '') ";
-		if ($patientId != '*') {
+		if ($patientId !== '*') {
 			$patientId = EnforceType::int($patientId);
 			$where .= " and l.patient_id = $patientId";
 			unset($labels['last_name']);

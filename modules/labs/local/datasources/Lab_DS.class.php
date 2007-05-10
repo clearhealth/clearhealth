@@ -26,7 +26,8 @@ class Lab_DS extends Datasource_sql
 			'lab_order_id'=>false
 		);
 		$where = '';
-		if ($patientId != '*') {
+		echo "pid: ". $patientId ;
+		if ($patientId !== '*') {
 			$patientId = EnforceType::int($patientId);
 			$where = "l.patient_id = $patientId";
 			unset($labels['last_name']);
@@ -60,6 +61,7 @@ class Lab_DS extends Datasource_sql
 		$this->orderHints['report_time'] = 't.report_time';
 		$this->addDefaultOrderRule('report_time','ASC',false);
 		$this->registerTemplate('lab_order_id','<a href="'.Celini::link('view','Labs').'id={$lab_order_id}">View</a>');
+		//echo $this->preview();
 	}
 }
 
