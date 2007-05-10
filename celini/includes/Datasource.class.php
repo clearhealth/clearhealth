@@ -475,7 +475,12 @@ class Datasource {
 					}
 					foreach($currentRow as $k => $v) {
 						$replace_search[] = "{\$$k}";
+						if (strlen($v) > 0) {
 						$replace_val[] = $v;
+						}
+						else {
+						$replace_val[] = "_";
+						}
 					}
 					$currentRow[$key] = str_replace($replace_search,$replace_val,$template);
 				}
