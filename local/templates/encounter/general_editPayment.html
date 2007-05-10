@@ -10,8 +10,9 @@
 
 <fieldset>
 	<legend>{l}Misc Payments{/l}</legend>
-
+	{if $copay}
 	<p>Patient's Co-pay is: {$copay}</p>
+	{/if}
 	
 	{$paymentGrid->render()}
 	{if $paymentGrid->empty}

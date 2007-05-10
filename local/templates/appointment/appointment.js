@@ -1,5 +1,5 @@
 var aptEditorChanged = false;
-
+var doAppointment = false;
 function timeToSeconds(time) {
 	var p = time.split(':');
 	return (p[0]*60*60)+(p[1]*60);
@@ -84,10 +84,10 @@ var appointmentPopup = false;
 var runSelectItems = false;
 var runSt = false;
 
-function showAddAppointment(patient_id) {
+function showAddAppointment(patient_id,provider_id, start_time, end_time) {
 	appointmentPopup = new clniPopup('',false);
 	if(aptEditorChanged != currentlyEditing) {
-		editAppointment(0,'',patient_id);
+		editAppointment(0,'',patient_id, provider_id, start_time, end_time);
 		return;
 	}
 	appointmentPopup.draggable = true;
@@ -148,6 +148,7 @@ st.executeSelectedItems = function(items) {
 	var select = $('aeProvider').getElementsByTagName('select')[0];
 	for(var i = 0; i < select.options.length; i++) {
 		if (select.options[i].value == provider) {
+			alert('setting'+select.name);
 			select.selectedIndex = i;
 			break;
 		}
@@ -162,13 +163,13 @@ st.executeSelectedItems = function(items) {
 	}
 }
 
-function editAppointment(id,type,patient_id){
+function editAppointment(id,type,patient_id,provider_id, start_time, end_time){
 	if(type == 'ADM') {
 		currentlyEditingMeeting = type+id;
 	} else {
 		currentlyEditing = id;
 	}
-	HTML_AJAX.call('appointment','ajax_edit',editAppointmentcb,id,type,patient_id);
+	HTML_AJAX.call('appointment','ajax_edit',editAppointmentcb,id,type,patient_id,provider_id,start_time,end_time);
 }
 function editAppointmentcb(resultSet){
 	aptEditorChanged = resultSet[2]+resultSet[0];
@@ -180,7 +181,11 @@ function editAppointmentcb(resultSet){
 			runSt.executeSelectedItems(runSelectItems);
 			runSelectItems = false;
 		}
-		showAddAppointment();
+		
+		if (!doAppointment == true) {
+			showAddAppointment();
+			doAppointment = false;
+		}
 	}
 }
 

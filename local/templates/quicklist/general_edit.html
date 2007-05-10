@@ -4,6 +4,7 @@ var patient_id = {$patient_id};
 var form_id = {$wf->get('form_id')};
 var form_data_id = {$form_data_id};
 var widget_form_id = {$wf->get('widget_form_id')};
+var encounterId = {$encounterId};
 
 {literal}
 function addEntry(id, source) {
@@ -14,7 +15,7 @@ function addEntry(id, source) {
 		var newli = document.createElement('li');
 		var objIdName =  current_value;
 
-		window.location.href = '{/literal}{$base_uri}{literal}index.php/QuickList/add?patient_id=' + patient_id + '&widget_form_id=' + widget_form_id +'&storage_data=' + current_value;
+		window.location.href = '{/literal}{$base_uri}{literal}index.php/QuickList/add?patient_id=' + patient_id + '&widget_form_id=' + widget_form_id +'&storage_data=' + current_value + '&encounterId=' + encounterId;
 
 		newli.setAttribute("id", objIdName);
 		newli.innerHTML =  current_value + ' <a href="#" onclick="removeEntry(\'' + objIdName + '\');"><img src="{/literal}{$base_uri}{literal}index.php/images/stock_trash-16.png"></a>';
@@ -49,6 +50,6 @@ function removeEntry(liNum) {
 <li id="{$current_problem}">{$current_problem} <a href="javascript:removeEntry('{$current_problem}');"><img src="{$base_uri}index.php/images/stock_trash-16.png" alt="#"></a></li>
 {/foreach}
 </ul>
-
-<input type="text" id="quickadd"><input type="button" value="Quick Add" onclick="addEntry('Entry', 'quickadd');">
+<!--
+<input type="text" id="quickadd"><input type="button" value="Quick Add" onclick="addEntry('Entry', 'quickadd');">-->
 </fieldset>
