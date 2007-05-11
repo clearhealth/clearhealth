@@ -97,7 +97,7 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 				
 				$claimElementsArray = array(	
 					'payers' => 'FBPayer',
-					'subscribers' = > 'FBSubscriber');
+					'subscribers' => 'FBSubscriber');
 				
 				// setup and include 2000B
 				$twoThousandBView =& $this->_newView();
