@@ -5,6 +5,7 @@
 
 {literal}
 <script>
+var popup = '';
 function switch_provider(provider_id) {
 	block = document.getElementById('column-' + provider_id).innerHTML;
         HTML_AJAX.call('appointment','ajaxReschedule',showPopup,provider_id, block);
@@ -14,15 +15,14 @@ function switch_provider(provider_id) {
 
 function showPopup(result) {
 	popdiv = document.getElementById('popup_dialog');
-        popdiv.innerHTML = '';
-        popdiv.innerHTML = result;
+        HTML_AJAX_Util.setInnerHTML('popup_dialog',result);
         if (popdiv.style.display == '' || popdiv.style.display == 'none') {
           popup = new clniPopup('',false);
-          popup.draggable = true;
-          popup.draggableOptions = {handle:'title'};
           popup.useElement = 'popup_dialog';
           popup.modal = true;
           popup.display();
+          popup.draggable = true;
+          popup.draggableOptions = {handle:'title'};
         }
 }
 function rulesCheckResult(result) {
@@ -67,11 +67,6 @@ function do_reschedule() {
 function paymentPopup(appointmentId,patientId) {
 	HTML_AJAX.call('CEncounter','ajaxEditPayment',showPopup,appointmentId,patientId);
 }
-function paymentPopupS() {
-  var appointmentId = document.getElementById('paymentAppointmentId').value;
-  var patientId = document.getElementById('paymentPatientId').value
-  HTML_AJAX.call('CEncounter','ajaxEditPayment',showPopup,appointmentId,patientId);
-}
 function addUpdatePayment() {
   var hash = new Object();
   hash['payment_type'] = document.getElementById('paymentType').value;
@@ -79,7 +74,9 @@ function addUpdatePayment() {
   hash['title'] = document.getElementById('paymentTitle').value;
   hash['ref_num'] = document.getElementById('paymentRefNum').value;
   hash['encounter_id'] = document.getElementById('paymentEncounterId').value;
-  HTML_AJAX.call('CEncounter','ajaxAddUpdatePayment',paymentPopupS(),hash);
+  var appointmentId = document.getElementById('paymentAppointmentId').value;
+  var patientId = document.getElementById('paymentPatientId').value
+  HTML_AJAX.call('CEncounter','ajaxAddUpdatePayment',showPopup,hash,appointmentId, patientId);
 
 }
 function addUpdateMiscCharge() {
@@ -89,7 +86,8 @@ function addUpdateMiscCharge() {
   hash['title'] = document.getElementById('miscChargeTitle').value;
   hash['encounter_id'] = document.getElementById('paymentEncounterId').value;
   var appointmentId = document.getElementById('paymentAppointmentId').value;
-  HTML_AJAX.call('CEncounter','ajaxAddUpdateMiscCharge',paymentPopup(appointmentId,patientId),hash);
+  var patientId = document.getElementById('paymentPatientId').value
+  HTML_AJAX.call('CEncounter','ajaxAddUpdateMiscCharge',showPopup,hash,appointmentId, patientId);
 }
 function show_ref_num(val) {
                 if (val == "check") {
