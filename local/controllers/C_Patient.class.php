@@ -33,6 +33,23 @@ class C_Patient extends Controller {
 		$this->assign('number',$number);
 		return $this->view->render('numberPopup.html');
 	}
+	function ajaxEditInsurer($insurerId) {
+		return $this->actionEditInsurer_edit($insurerId);
+	}
+
+	function actionEditInsurer_edit($insurerId = 0) {
+		$patientId = $this->get("patient_id");
+		$ir = ORDataObject::factory('InsuredRelationship',$insurerId,$patientId);
+		$this->assign('insuredRelationship',$ir);
+		$subscriber =& ORDataObject::factory('Patient',$ir->get('subscriber_id'));
+		$this->assign_by_ref('subscriber',$subscriber);
+		$insuranceProgram =& ORDataObject::Factory('InsuranceProgram');
+		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$patientId);
+		$this->view->assign_by_ref('address',$address);
+		$this->assign_by_ref('insuranceProgram',$insuranceProgram);
+		
+		return $this->view->render('insurerPopup.html');
+	}
 
 	function _storeCurrentAction() {
 		$current = $this->trail->current();
@@ -122,7 +139,7 @@ class C_Patient extends Controller {
 
 		$insuredRelationshipGrid =& new cGrid($person->loadDatasource('InsuredRelationshipList'));
 		$insuredRelationshipGrid->name = "insuredRelationshipGrid";
-		$insuredRelationshipGrid->registerTemplate('company','<a href="'.Celini::ManagerLink('editInsuredRelationship',$patient_id).'id={$insured_relationship_id}&process=true">{$company}</a>');
+		$insuredRelationshipGrid->registerTemplate('company','<a href="javascript:insurerPopup({$insured_relationship_id});">{$company}</a>');
 		$insuredRelationshipGrid->indexCol = false;
 
 		$insuredRelationship =& ORDataObject::factory('InsuredRelationship',$this->insured_relationship_id,$patient_id);

@@ -104,6 +104,11 @@ class C_Coding extends Controller {
 			}
 		}
 	}
+	function actionAjaxSuperbill() {
+		$head =& Celini::HTMLHeadInstance();
+		$head->addJs('ui');
+		return $this->ajaxSuperbill();
+	}
 	function ajaxSuperbill() {
 		$sbs = array();
 		$userProfile =& Celini::getCurrentUserProfile();

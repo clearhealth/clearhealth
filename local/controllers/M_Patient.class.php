@@ -302,9 +302,8 @@ class M_Patient extends Manager {
 				$ir->set('subscriber_id',$person->get('id'));
 			}
 			
-			if ($ir->persist()) {
-				$this->messages->addMessage('Payer Updated');
-			}
+			$ir->persist();
+			$this->messages->addMessage('Payer Updated');
 			$this->controller->insured_relationship_id = $ir->get('id');
 		}
 	}

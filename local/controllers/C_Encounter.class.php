@@ -67,15 +67,16 @@ class C_Encounter extends Controller {
 		return $this->view->render("editPayment.html");
 
 	}
-	function ajaxAddUpdatePayment($data) {
+	function ajaxAddUpdatePayment($data,$appointmentId,$patientId) {
 		$paymentId = 0;
 		if (isset($data['payment_id'])) $paymentId = (int)$data['payment_id'];
 		$pmt = ORDataObject::factory('Payment',$paymentId);
 		$pmt->populateArray($data);
 		$pmt->persist();
-		$this->messages->AddMessage("Payment added");	
+		$this->messages->AddMessage("Payment added");
+		return $this->ajaxEditPayment($appointmentId,$patientId);	
 	}
-	function ajaxAddUpdateMiscCharge($data) {
+	function ajaxAddUpdateMiscCharge($data,$appointmentId,$patientId) {
 		$miscChargeId = 0;
 		if (isset($data['misc_charge_id'])) $miscChargeId = (int)$data['misc_charge_id'];
 		$miscCharge =& Celini::newOrdo('MiscCharge');
@@ -83,6 +84,7 @@ class C_Encounter extends Controller {
                 $miscCharge->set('charge_date',date('Y-m-d H:i:s'));
                 $miscCharge->persist();
 		$this->messages->AddMessage("Misc Charge added");	
+		return $this->ajaxEditPayment($appointmentId,$patientId);	
 	}
 
 	function _existingEncounter($appointment_id) {
