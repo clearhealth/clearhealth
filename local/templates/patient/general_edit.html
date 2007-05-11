@@ -2,7 +2,8 @@
 <script>
 function showPopup(result) {
         popdiv = document.getElementById('popup_dialog');
-        popdiv.innerHTML = result;
+        HTML_AJAX_Util.setInnerHTML('popup_dialog',result);
+	//popdiv.innerHTML = result;
         
         if (popdiv.style.display == '' || popdiv.style.display == 'none') {
           popup = new clniPopup('',false);

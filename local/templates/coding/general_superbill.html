@@ -6,15 +6,12 @@
 {if $error}
 <p>No further action can be taken do to the errors. <a href="#" onclick="close_popup();">Close</a></p>
 {/if}
-<div class="selector" id="selector9"></div>
-<div class="tabset" id="tabset9">
 {foreach from=$sbs item=sb key=name name="sbsloop"}
-<div class="tab{if $smarty.foreach.sbsloop.first} selected{/if}" title="{$name}">
-<img src="{$base_uri}/index.php/Images/75p_white.png" alt="" onLoad="registerTabs(this.parentNode);"/>
+<fieldset>
+<legend>{$name}</legend>
 <table><tr><td valign="top">{$sb.procedure}</td><td width="20"></td><td valign="top">{$sb.diagnosis}</td></td></table>
-</div>
+</fieldset>
 {/foreach}
-</div>
 <p>
 <br />
 <div id="alertMessages" style="display:none;overflow:auto; height:100px;"></div>

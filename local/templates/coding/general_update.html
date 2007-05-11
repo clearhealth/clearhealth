@@ -20,8 +20,7 @@ function toggleSelects() {
 }
 function showPopup(result) {
         popdiv = document.getElementById('popupDialog');
-        popdiv.innerHTML = '';
-        popdiv.innerHTML = result;
+	popdiv.innerHTML = '';
         if (popdiv.style.display == '' || popdiv.style.display == 'none') {
           popup = new clniPopup('',false);
           popup.draggable = true;
@@ -30,25 +29,7 @@ function showPopup(result) {
           popup.modal = true;
           popup.display();
         }
-}
-function registerTabs(element) {
-	var id = /tabset(.+)/.exec(element.parentNode.id)[1];
-
-        if (!tabCount[id]) {
-                tabCount[id] = 0;
-        }
-
-        var newEl = document.createElement('a');
-        newEl.index = tabCount[id]++;
-        newEl.innerHTML = element.title;
-        $('selector'+id).appendChild(newEl);
-        $u.registerEvent(newEl,'click',selectTab);
-
-        if (tabCount[id] == 1) {
-                $u.addClass(newEl,'selected');
-                firstTab = false;
-        }
-        element.minimizer = newEl;
+	HTML_AJAX_Util.setInnerHTML('popupDialog',result);
 }
 function confirmDeleteClaimLine(linkObj) {
 	return confirm('Are you sure you want to delete this claimline?');

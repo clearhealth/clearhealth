@@ -148,7 +148,6 @@ st.executeSelectedItems = function(items) {
 	var select = $('aeProvider').getElementsByTagName('select')[0];
 	for(var i = 0; i < select.options.length; i++) {
 		if (select.options[i].value == provider) {
-			alert('setting'+select.name);
 			select.selectedIndex = i;
 			break;
 		}
