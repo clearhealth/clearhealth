@@ -85,7 +85,7 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 				$providerClaimView->assign('hl_count', $hl_count);
 				$providerClaimView->assign('hl_2000A', $parentHLValue); // need to change assigned name
 				
-				$claimElements = array(	
+				$claimElementsSingle = array(	
 					'payer' => 'FBPayer',
 					'practice' => 'FBPractice',
 					'patient' => 'FBPatient',
@@ -93,14 +93,20 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 					'referring_provider' => 'FBReferringProvider',
 					'supervising_provider' => 'FBSupervisingProvider',
 					'subscriber' => 'FBSubscriber',
-					'subscribers' => 'FBSubscriber',
 					'responsible_party' => 'FBResponsibleParty');
 				
+				$claimElementsArray = array(	
+					'payers' => 'FBPayer',
+					'subscribers' = > 'FBSubscriber');
 				
 				// setup and include 2000B
 				$twoThousandBView =& $this->_newView();
-				foreach ($claimElements as $assignTo => $ordoName) {
+				foreach ($claimElementSingle as $assignTo => $ordoName) {
 					$$assignTo =& $providerClaim->childEntity($ordoName);
+					$twoThousandBView->assign_by_ref($assignTo, $$assignTo);
+				}
+				foreach ($claimElementsArray as $assignTo => $ordoName) {
+					$$assignTo =& $providerClaim->childEntities($ordoName);
 					$twoThousandBView->assign_by_ref($assignTo, $$assignTo);
 				}
 				$twoThousandBView->assign('hl_parent', $parentHLValue);
@@ -108,8 +114,12 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 				$returnString .= $twoThousandBView->fetch($this->_determineTemplateName('x12_2000B'));
 				
 				
-				foreach ($claimElements as $assignTo => $ordoName) {
+				foreach ($claimElementsSingle as $assignTo => $ordoName) {
 					$$assignTo =& $providerClaim->childEntity($ordoName);
+					$providerClaimView->assign_by_ref($assignTo, $$assignTo);
+				}
+				foreach ($claimElementsArray as $assignTo => $ordoName) {
+					$$assignTo =& $providerClaim->childEntities($ordoName);
 					$providerClaimView->assign_by_ref($assignTo, $$assignTo);
 				}
 				$providerClaimView->assign_by_ref('claim_lines', $providerClaim->childEntities('FBClaimline'));
