@@ -66,6 +66,9 @@ class C_QuickList extends Controller {
 		$this->assign('form_data_id', $form_data_id);
 		$this->assign('wf',$wf);
 		$this->assign('selectedItems', $selectedItems);
+		if ($this->GET->exists('returnTo')) {
+                        $this->assign('returnTo',$this->GET->get('returnTo'));
+                }
 
 		return $this->view->render("edit.html");
 	}

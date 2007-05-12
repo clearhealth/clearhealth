@@ -55,6 +55,9 @@ class C_WidgetForm extends C_CRUD {
 		if (isset($widgets[0])) {
 			$this->assign_by_ref("widget", $widgets[0]);
 		}
+		else {
+			$this->assign("widgetName",$widgetFormName);
+		}
 
 		return $this->view->render("singleBlock.html");
 	}
@@ -73,7 +76,13 @@ class C_WidgetForm extends C_CRUD {
 	function _generateWidgetDisplay($wfds,$patient_id,$encounterId = '')  {
 		$wfds->rewind();
 		$widgets = array();
-		$return_link = $_SERVER['REQUEST_URI'];
+		$return_link = '';
+		if (!$this->GET->exists("returnTo")) {
+			$return_link = $_SERVER['REQUEST_URI'];
+		}
+		else {
+			$return_link = $this->GET->get("returnTo");
+		}
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block
 			$wflist_ds = '';
@@ -126,7 +135,7 @@ class C_WidgetForm extends C_CRUD {
                                 $widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
                         }
                         else {
-                                //$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link);
+                                $widget["form_list_link"] = Celini::link('view',"MedicalHistory",true). "#" . str_replace(' ','',$row['name']);
                                 $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link;
 				if ($encounterId >0) {
 					$widget["form_add_link"].= "&encounterId=$encounterId";
@@ -152,7 +161,15 @@ class C_WidgetForm extends C_CRUD {
                 }
 		return $formDataId;
 	}
-	function ajaxFillout($formId) {
+	function ajaxFillout($formId,$returnTo = '') {
+		if ($returnTo == 1) {
+			$_GET['returnTo'] = $_SERVER['HTTP_REFERER'];
+			$this->GET->set('returnTo', $_SERVER['HTTP_REFERER']);
+		}
+		elseif (strlen($returnTo) > 0 ) {
+			$_GET['returnTo'] = $returnTo;
+			$this->GET->set("returnTo",$returnTo);
+		}
 		return $this->actionFillout_view($formId);
 	}
 	
@@ -236,21 +253,6 @@ class C_WidgetForm extends C_CRUD {
 		header("HTTP/1.1 204 No Content");
 		exit;
 	}
-
-        function getWidgetVisibility() {
-                $session =& Celini::SessionInstance();
-                $vis = $session->get('WidgetVisibility');
-                return $vis;
-        
-        }
-        
-        function actionsetWidgetVisibility($mode) {
-                $session =& Celini::SessionInstance();
-                $session->set('WidgetVisibility', $mode);
-
-		header("HTTP/1.1 204 No Content");
-		exit;
-        }
 
 }
 ?>

@@ -46,8 +46,24 @@ class C_MedicalHistory extends Controller {
 			$wfDataGrid->name = "wfDataGrid" . $row['form_id'];
 			$wfDataGrid->registerTemplate('last_edit','<a href="'.Celini::link('data','Form').'id={$form_data_id}&returnTo=' . $return_link . '">{$last_edit}</a>');
 			$wfDataGrid->pageSize = 10;
+
+			$widget = array();
 			$tmpar = array();
-			$widgets[$row["name"]] = array("grid" => $wfDataGrid->render() , "form_add_link" => Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link, "form_list_link" => Celini::link('list',"Form",true, $row["form_id"]). "&returnTo=" . $return_link); 
+                        $widget["name"] = $row['name'];
+                        $widget["type"] = $row['type'];
+                        $widget["grid"] = $wfDataGrid->render();
+			if ($row["controller_name"] != '') {
+				$widget['edit'] = true;
+                                $widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $personId). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
+                        }
+                        elseif ($row['type'] == 4) {
+				$widget['edit'] = true;
+                                $widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $personId). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;
+                        }
+                        else {
+                                $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link;
+                        }
+                        $widgets[$row['name']] = $widget;
 			$wfds->next();
 		}
 		$this->assign_by_ref("widgets", $widgets);

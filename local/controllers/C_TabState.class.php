@@ -7,19 +7,23 @@ class C_TabState extends Controller {
 	}
 
 	function selectTab($tabKey) {
-		$tabKey = preg_replace('/[^A-Za-z0-9\/]*/','',$tabKey);
-		$tabKeys = split('/',$tabKey);
-		$_SESSION['_clniSession']['here'] = 1;
-		if (count($tabKeys) == 2) {
-		  $session =& Celini::SessionInstance();
-		  $session->setNamespace('tabState'.$tabKeys[0]);
-		  $session->clear();
-		  $session->set($tabKeys[1],1);
-		}
+		return Celini::setTabSelected($tabKey);
 	}
 	function isSelected($tabKey) {
 		return Celini::isTabSelected($tabKey);
 	}
+	function actionSetPaletteSelected($tabkey) {
+		Celini::setPaletteSelected($tabkey);
+                header("HTTP/1.1 204 No Content");
+                exit;
+
+        }
+	function actionSetPaletteUnselected($tabkey) {
+		Celini::setPaletteUnselected($tabkey);
+                header("HTTP/1.1 204 No Content");
+                exit;
+
+        }
 
 } 
 

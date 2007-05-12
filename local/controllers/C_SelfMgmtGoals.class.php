@@ -22,6 +22,9 @@ class C_SelfMgmtGoals extends Controller {
 		$this->view->assign('personId',$personId);
 		$smgBlock = $this->_generateSMGList($personId);
 		$this->view->assign('smgBlock',$smgBlock);
+		if ($this->GET->exists('returnTo')) {
+                        $this->assign('returnTo',$this->GET->get('returnTo'));
+                }
 
 
 		return $this->view->render('list.html');
