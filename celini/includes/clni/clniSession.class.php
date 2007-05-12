@@ -70,7 +70,7 @@ class clniSession {
 		$this->set($property,array_merge($oldVal,$value));
 	}
 
-	function _get($property,$default) {
+	function _get($property,$default = '') {
 		if (isset($_SESSION[$this->_mainNamespace][$this->namespace][$property])) {
 			$ret = $_SESSION[$this->_mainNamespace][$this->namespace][$property];
 			return $ret;

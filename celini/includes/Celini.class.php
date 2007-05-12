@@ -378,12 +378,11 @@ class Celini {
 		  //var_dump($_SESSION['_clniSession']);
 		  if ($session->_getAll() === false) {
 			//no tab for this group currently selected so set this one as default
-			echo "jere";
 			$this->setTabSelected($tabKey);
 			$session->setNamespace("default");
 			return true;		
 		  }
-                  elseif ($session->_get($tabKeys[1],'',true) == 1) {
+                  elseif ($session->_get($tabKeys[1]) == 1) {
 			$session->setNamespace("default");
                         return true;
                   }
@@ -402,7 +401,35 @@ class Celini {
                   $session->clear();
                   $session->set($tabKeys[1],1);
                 }
+		$session->setNamespace("default");
 	}
+
+	function setPaletteSelected($tabKey) {
+                $tabKey = preg_replace('/[^A-Za-z0-9\/]*/','',$tabKey);
+                $session =& Celini::SessionInstance();
+                $session->setNamespace('paletteState');
+                $session->set($tabKey,1);
+		$session->setNamespace("default");
+        }
+	function setPaletteUnselected($tabKey) {
+                $tabKey = preg_replace('/[^A-Za-z0-9\/]*/','',$tabKey);
+                $session =& Celini::SessionInstance();
+                $session->setNamespace('paletteState');
+                $session->set($tabKey,0);
+		$session->setNamespace("default");
+        }
+	function isPaletteSelected($tabKey) {
+                $tabKey = preg_replace('/[^A-Za-z0-9\/]/','',$tabKey);
+                $session =& Celini::SessionInstance();
+                $session->setNamespace('paletteState');
+                if ($session->_get($tabKey) == 1) {
+			$session->setNamespace("default");
+                        return true;
+                }
+		$session->setNamespace("default");
+                return false;
+	}
+	
 
 	/**
 	 * Get an ajax helper instance
