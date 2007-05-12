@@ -20,10 +20,11 @@ function _selectTabFromDiv(selector) {
 				action = tabs[i].attributes.getNamedItem("actionname").value;
 				if (tabs[i].innerHTML.length == 0) {
 					var callback = function(result) {
-         				  replaceTarget.innerHTML = result;
+         				  HTML_AJAX_Util.setInnerHTML(replaceTarget,result);
         				   };
 					replaceTarget = tabs[i];
-					HTML_AJAX.call('WidgetForm','ajaxFillout',callback,action);
+					//true is to generate a returnTo link from HTTP_REFERER
+					HTML_AJAX.call('WidgetForm','ajaxFillout',callback,action,true);
 				}
 			}
 		}
