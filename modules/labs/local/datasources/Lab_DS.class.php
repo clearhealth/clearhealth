@@ -26,7 +26,6 @@ class Lab_DS extends Datasource_sql
 			'lab_order_id'=>false
 		);
 		$where = '';
-		echo "pid: ". $patientId ;
 		if ($patientId !== '*') {
 			$patientId = EnforceType::int($patientId);
 			$where = "l.patient_id = $patientId";
