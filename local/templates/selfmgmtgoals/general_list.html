@@ -71,6 +71,9 @@ function hidePopup() {
 </script>
 {/literal}
 <div id='popup_dialog'></div>
+{if $returnTo}
+<a href="{$returnTo}">Back</a>
+{/if}
 <fieldset>
 <legend><b>Self Management Goals</b></legend>
 {html_options name="selfmgmtgoals['type']" id="smgType" options=$em->enumArray('self_mgmt_goals')}

@@ -1,10 +1,14 @@
 <div class="critical_item">
+{if $widget}
 <fieldset>
 	<legend>{$widget.name} {if $widget.form_add_link}(<a href="{$widget.form_add_link}">add</a>){/if}{if $widget.form_list_link}(<a href="{$widget.form_list_link}">list</a>){/if}{if $widget.form_edit_link}(<a href="{$widget.form_edit_link}">edit</a>){/if}</legend>
 <div style="width: 200px; height: 150px; clear: both; overflow: hidden;">
 	{if $widget.grid}{$widget.grid}{else}No form data present.{/if}
 </div>
 </fieldset>
+{else}
+No block named '{$widgetName}' could be found.
+{/if}
 </div>
 
 

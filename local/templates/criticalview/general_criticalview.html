@@ -6,7 +6,7 @@ function showVis(id) {
     object.display = "block";
     showhide.getElementsByTagName('img').item(0).src = "{/literal}{$base_uri}{literal}index.php/images/emblem-cvs-controlled.png";
     showhide.getElementsByTagName('span').item(0).style.display = "none";
-    window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/setWidgetVisibility/block';
+    window.location.href = '{/literal}{$base_uri}{literal}index.php/TabState/setPaletteSelected/'+id;
 
 }
 
@@ -16,7 +16,7 @@ function hideVis(id) {
     object.display = "none";
     showhide.getElementsByTagName('img').item(0).src = "{/literal}{$base_uri}{literal}index.php/images/emblem-cvs-controlled-2.png";
     showhide.getElementsByTagName('span').item(0).style.display = "inline";
-    window.location.href = '{/literal}{$base_uri}{literal}index.php/WidgetForm/setWidgetVisibility/none';
+    window.location.href = '{/literal}{$base_uri}{literal}index.php/TabState/setPaletteUnselected/'+id;
 
 }
 
@@ -35,11 +35,11 @@ function toggleVis(id) {
 {if $person_data->get('last_name')}
 
 <div class="dock" >
-<a style="width:100%;" href="#" onclick="toggleVis('demodock');" id="demodockShowHide">
+<a style="width:100%;text-decoration:none;" href="javascript:toggleVis('demodock');" id="demodockShowHide">
 <img src="{$base_uri}index.php/images/emblem-cvs-controlled.png" alt=">" style="float:left;padding:0;margin-top:2px;">
-<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Demographics<div style=" position:relative; left:100px; top:-10px;border: thin solid gray;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
+<span style="{if !$Celini->isPaletteSelected('demodock')}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;"><div style="border: thin solid gray;margin-left:10px;width:95%;margin-left:0px;margin-top:4px;">Demographics</div></span></a>
 </div>
-<fieldset id="demodock" {if $cwf->getWidgetVisibility() == none}style="display: none;"{/if}>
+<fieldset id="demodock" style="width:95%;margin-left:-16px;{if !$Celini->isPaletteSelected('demodock')}display: none;{/if}">
 <legend>{l}Demographic{/l}</legend>
 <table width="100%">
 <tr>
@@ -65,22 +65,23 @@ function toggleVis(id) {
 	<td>ID: <b>{$person_data->get('record_number')}</b></td>
 	<td>{$person_data->get('print_gender')} - {$person_data->get('print_marital_status')}</td>
 	<td>DOB: {$person_data->get('date_of_birth')} (Age: {$person_data->get('age')})</td>
-	<td class="demostathover"><a href="#">Demographic Statistics</a><span class="demostats">{$patientStatisticsView}</span></td>
+	<td class="demostathover"><a style="test-decoration:none;" href="#">Demographic Statistics</a><span class="demostats">{$patientStatisticsView}</span></td>
 	<td>Status: {if $person_data->get('inactive') == 0}<span class="green">Active{else}<span class="red>Inactive{/if}</span></td>
 </tr>
 </table>
 </fieldset>
 
 <div class="dock" >
-<a style="width:100%;" href="#" onclick="toggleVis('criticalsdock');" id="criticalsdockShowHide">
+<a style="width:100%;text-decoration:none" href="javascript:toggleVis('criticalsdock');" id="criticalsdockShowHide">
 <img src="{$base_uri}index.php/images/emblem-cvs-controlled.png" alt=">" style="float:left;padding:0;margin-top:2px;">
-<span style="{if $cwf->getWidgetVisibility() == none}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;">Criticals<div style=" position:relative; left:100px; top:-10px;border: thin solid gray;margin-left:10px;margin-right:50px;width:90%;"></div></span></a>
+<span style="{if !$Celini->isPaletteSelected('criticalsdock')}display: block;{else}display: none;{/if} font-weight:bold;font-size:11pt;"><div style="border: thin solid gray;margin-left:10px;width:95%;margin-left:0px;margin-top:4px;">Criticals</div></span></a>
 </div>
-<fieldset id="criticalsdock" {if $cwf->getWidgetVisibility() == none}style="display: none;"{/if}>
-<legend>{l}Criticals{/l}</legend>
+<fieldset id="criticalsdock" style="width:95%;margin-left:-16px;{if !$Celini->isPaletteSelected('criticalsdock')}display: none;{/if}">
+<legend>&nbsp;{l}Criticals{/l}</legend>
 <div class="critical_item">
 {$widget_form_content}
 </div>
-<div class="clear"></div>
+</div>
+<div class="clear" />
 </fieldset>
 {/if}

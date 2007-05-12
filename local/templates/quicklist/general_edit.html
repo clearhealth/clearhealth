@@ -37,7 +37,9 @@ function removeEntry(liNum) {
 }
 {/literal}
 </script>
-
+{if $returnTo}
+<a href="{$returnTo}">Back</a>
+{/if}
 <fieldset>
 <legend><b>{$wf->get('name')}</b></legend>
 {html_options values=$dropDownList output=$dropDownList id="dropDownList" name="dropDownList"}
