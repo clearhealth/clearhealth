@@ -101,7 +101,7 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 				
 				// setup and include 2000B
 				$twoThousandBView =& $this->_newView();
-				foreach ($claimElementSingle as $assignTo => $ordoName) {
+				foreach ($claimElementsSingle as $assignTo => $ordoName) {
 					$$assignTo =& $providerClaim->childEntity($ordoName);
 					$twoThousandBView->assign_by_ref($assignTo, $$assignTo);
 				}
