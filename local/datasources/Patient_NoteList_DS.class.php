@@ -31,12 +31,13 @@ class Patient_NoteList_DS extends Datasource_sql
 		settype($patient_id, 'integer');
 		
 		$labels = array(
-			'deprecated' => 'Dep',
+			'deprecated' => 'Done',
 			'priority'   => 'P',
 			'note_date'  => 'Date',
 			'username'   => 'User',
+			'reason'       => 'Reason',
 			'note'       => 'Note');
-		$this->setTypeDependentLabel('html', 'deprecated', '<span title="Deprecated">Dep</span>');
+		$this->setTypeDependentLabel('html', 'deprecated', 'Done');
 
 		$this->setup(Celini::dbInstance(),
 			array(
@@ -46,7 +47,9 @@ class Patient_NoteList_DS extends Datasource_sql
 					note,
 					username,
 					patient_note_id,
-					if(deprecated,'Yes','No') deprecated",
+					if(deprecated,'Yes','No') deprecated,
+					reason",
+						
 				'from' 	=> "patient_note n left join user u on u.user_id = n.user_id",
 				'where' => " patient_id = $patient_id",
 				'orderby' => "deprecated ASC",
@@ -61,9 +64,12 @@ class Patient_NoteList_DS extends Datasource_sql
 		$this->registerFilter('note',     array($this, 'multiLineFilter'));
 		$this->registerFilter('priority', array($this, 'colorLineFilter'), false, 'html');
 		$this->template['deprecated'] = "<a href='".Celini::managerLink('depnote',$patient_id)."pnote_id={\$patient_note_id}&current={\$deprecated}&process=true'>{\$deprecated}</a>";
+		$this->registerFilter('reason',array($this, '_lookup'));
 	}
-	
-	
+	function _lookup($value) {
+                $em =& Celini::enumManagerInstance();
+                return $em->lookup('patient_note_reason', $value);
+        }
 	function multiLineFilter($content) {
 		if (strstr($content,"\n")) {
 			$pos = strpos($content,"\n");

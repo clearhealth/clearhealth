@@ -22,8 +22,8 @@ class C_MedicalHistory extends Controller {
 		$form =& Celini::newORDO("Form"); 
 		$mf =& Celini::newORDO("MenuForm");
 		
-		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_DS.class.php");
-		$wfds = new WidgetForm_DS("1,2,3,4,5,6,7,8,9");
+		$GLOBALS['loader']->requireOnce("datasources/WidgetForm_MedicalHistory_DS.class.php");
+		$wfds = new WidgetForm_MedicalHistory_DS();
 		
 		$wfds->rewind();
 		$widgets = array();

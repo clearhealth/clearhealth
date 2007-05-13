@@ -7,7 +7,7 @@ class M_PatientDashboard extends Manager {
 	function process_note($patient_id) {
 		$note_id = $_POST['note']['note_id'];
 		$note =& ORDataObject::factory('PatientNote',$note_id);
-		$note->populate_array($_POST['note']);
+		$note->populateArray($_POST['note']);
 
 		if ($note_id == 0) {
 			$note->set('user_id',$this->controller->_me->get_user_id());
