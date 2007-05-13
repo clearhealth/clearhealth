@@ -22,6 +22,7 @@ class PatientNote extends ORDataObject {
 	var $priority		= '';
 	var $note_date		= '';
 	var $note		= '';
+	var $reason		= '';
 	var $deprecated 	= '';
 	/**#@-*/
 
