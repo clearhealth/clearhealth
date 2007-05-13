@@ -27,6 +27,8 @@
 		</div>
 		<div style="float:left; margin: 6px 0 0 0;">
 			<label class="inline">Priority: </label>{html_options options=$note->priorityList() selected=$note->get('priority') name="note[priority]"}
+	<label class="inline">Date</label>{input type="date-table" name="note[note_date]" value=$note->get('note_date')}
+	<label class="inline">Reason</label>{input type="select-table" enumeration="patient_note_reason" name="note[reason]" value=$note->get('reason') store_id="true"}
 		</div>
 		<div style="margin: 6px 0 0 0;">
 			<input type="submit" name="add_note" value="{if $note->get('id') > 0}Update{else}Add{/if} Note" style="margin: 0 0 0 10px;">

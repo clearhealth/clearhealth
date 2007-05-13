@@ -21,16 +21,26 @@ eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,lo
 }
 
 {/literal}
-var serverTimeOffset = {php}echo (date('Z')/60)*-1{/php};
-{literal}
+{php}
+$selectedDay = ''; 
+if(isset($_SESSION['_clniSession']['calendar']['selectedDay'])) {
+        $selectedDay = $_SESSION['_clniSession']['calendar']['selectedDay'];
+}
+echo "var serverTimeOffset =" . (date('Z',strtotime($selectedDay))/60)*-1 . ";\n";
+{/php}
+{if $smarty.session._clniSession.calendar.selectedDay}
+var d = new Date('{$smarty.session._clniSession.calendar.selectedDay|date_format:"%b %d, %Y"}');
+{else}
 var d = new Date();
+{/if}
+{literal}
 var timeZoneAdjust = 0;
 if (d.getTimezoneOffset() != serverTimeOffset) {
-	timeZoneAdjust = d.getTimezoneOffset() - serverTimeOffset;
+        timeZoneAdjust = d.getTimezoneOffset() - serverTimeOffset;
 }
 </script>
  
-{/literal}
+{/literal} 
 {if !$noOverlib}
 {popup_init src="`$base_dir`js/overlib.js"}
 {/if}

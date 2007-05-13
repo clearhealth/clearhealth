@@ -52,7 +52,7 @@ function startDuplicate(URL) {
 			{/if}
 			<tr>
 				<td style="white-space:nowrap;"><label>{l}Record Number{/l}: </label></td>
-				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}">
+				<td ><input id="record_number" name="person[record_number]" size="8" value="{$person->get('record_number')}" disabled="disabled">
 				</td>
 				<td style="white-space:nowrap;"><label>{l}Id #{/l}: </label></td>
 				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="{$person->get('identifier')}">

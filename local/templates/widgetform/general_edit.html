@@ -43,11 +43,12 @@ function addWidgetField() {
 <tr><td>Name:</td><td><input type='text' id='WidgetForm__name' name='WidgetForm[name]' value="{$ordo->get('name')}"></td></tr>
 <tr><td>Form ID:</td><td>{html_options name="WidgetForm[form_id]" options=$formList selected=$ordo->get('form_id')}</td></tr>
 <tr><td>Type:</td><td>{html_options name="WidgetForm[type]" options=$em->enumArray('widget_type') selected=$ordo->get('type')}</td></tr>
+<tr><td colspan="2">Show on Medical History: &nbsp;{input type="checkbox-table" name="WidgetForm[show_on_medical_history]" value=$ordo->get('show_on_medical_history')}</td></tr>
 </table>
 <input type='submit' value='Update'>
 </fieldset>
 {* type 3 and 4 involve controllers, quicklink or generic*}
-{if $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6}
+{if $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6 || $ordo->get('type' eq 7)}
 <fieldset>
 <legend>Linked Controller</legend>
 Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{$ordo->get('controller_name')}">
@@ -55,7 +56,7 @@ Controller to use:<input type="text" name="WidgetForm[controller_name]" value="{
 {/if}
 
 </form>
-{if $ordo->get('type') eq 2 || $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6}
+{if $ordo->get('type') eq 2 || $ordo->get('type') eq 3 || $ordo->get('type') eq 4 || $ordo->get('type') eq 6 || $ordo->get('type' eq 7)}
 <fieldset>
 <legend>Summary Columns</legend>
 {clni_form id="WidgetFormData" action=$ALTER_ACTION process="generic"}
