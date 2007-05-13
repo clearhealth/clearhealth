@@ -84,6 +84,13 @@ function smarty_function_input($params, &$smarty)
                         }
                         $ret = "<input type='hidden' name=\"int[$name]\" value=\"0\"><input type='checkbox' name=\"int[$name]\" value=\"1\" id=\"$id\"$checked$extra>";
                 break;
+                case "checkbox-table":
+                        $checked = "";
+                        if ($value == 1) {
+                                $checked = " CHECKED";
+                        }
+                        $ret = "<input type='hidden' name=\"$name\" value=\"0\"><input type='checkbox' name=\"$name\" value=\"1\" id=\"$id\"$checked$extra>";
+                break;
                 case "string":
                         $ret = "<input type='text' name=\"string[$name]\" value=\"$value\" id=\"$id\"$extra>";
                 break;
