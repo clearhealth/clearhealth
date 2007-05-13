@@ -38,6 +38,7 @@ function smarty_function_input($params, &$smarty)
             case 'display':
             case 'separator':
             case 'addempty':
+            case 'store_id':
             case 'id':
                 $$_key = (string)$_val;
                 break;
@@ -87,7 +88,7 @@ function smarty_function_input($params, &$smarty)
                 case "checkbox-table":
                         $checked = "";
                         if ($value == 1) {
-                                $checked = " checked=\"checked\" ";
+                                $checked = " checked=\"checked\"";
                         }
                         $ret = "<input type='hidden' name=\"$name\" value=\"0\"><input type='checkbox' name=\"$name\" value=\"1\" id=\"$id\"$checked$extra>";
                 break;
@@ -106,7 +107,11 @@ function smarty_function_input($params, &$smarty)
                 case "date":
                         $ret = smarty_function_clni_input_date(array('name'=>"date[$name]",'value'=>$value,'extra'=>$extra,'id'=>$id),$smarty);
                 break;
+                case "date-table":
+                        $ret = smarty_function_clni_input_date(array('name'=>$name,'value'=>$value,'extra'=>$extra,'id'=>$id),$smarty);
+                break;
                 case "select":
+                case "select-table":
                 case "radio":
                 case "multiselect":
                         if (!is_array($options)) {
@@ -128,8 +133,13 @@ function smarty_function_input($params, &$smarty)
                                 $e =& ORDataObject::factory('Enumeration');
                                 $tmp = $e->get_enum_list($system_list);
                                 $options = array();
+                                if ($store_id) {
+                                $options = $tmp;
+                                }
+                                else {
                                 foreach($tmp as $val) {
                                         $options[$val] = $val;
+                                }
                                 }
                         }
                         if ($type == 'radio') {
@@ -151,6 +161,9 @@ function smarty_function_input($params, &$smarty)
 
                                 }
                                 $ret .= "</div>";
+                        }
+                        else if ($type == "select-table") {
+                                $ret = smarty_function_html_options(array('name'=>$name,'selected'=>$value,'options'=>$options,'id'=>$id,'extra'=>$extra),$smarty);
                         }
                         else {
                                 $ret = smarty_function_html_options(array('name'=>"string[$name]",'selected'=>$value,'options'=>$options,'id'=>$id,'extra'=>$extra),$smarty);
