@@ -42,14 +42,23 @@ class EnumType_Tree extends EnumType_Default{
 	 */
 	function enumData($enumerationId) {
 		$enumerationId = EnforceType::int($enumerationId);
-		$sql = "select * from {$this->table} where enumeration_id = $enumerationId order by sort, enumeration_value_id";
+		//show parent entries
 		$sql = "SELECT ev.* , CASE WHEN ev2.value IS NOT NULL THEN concat( ev2.value, '->', ev.value ) ELSE ev.value END AS value
 			FROM {$this->table} ev
 			LEFT JOIN enumeration_value ev2 ON ev2.enumeration_value_id = ev.parent_id
 			WHERE ev.enumeration_id =$enumerationId
 			ORDER BY ev.sort, ev.enumeration_value_id";
 		//echo $sql;
-		
+		//hide parent entries, show children only
+		$sql = "SELECT ev.* , CASE WHEN ev2.value IS NOT NULL THEN concat( ev2.value, '->', ev.value ) ELSE ev.value END AS value,count(ev3.enumeration_value_id) as child_count
+			FROM {$this->table} ev
+			LEFT JOIN enumeration_value ev2 ON ev2.enumeration_value_id = ev.parent_id
+LEFT JOIN enumeration_value ev3 on ev.enumeration_value_id = ev3.parent_id
+			WHERE ev.enumeration_id =$enumerationId
+			GROUP BY ev.enumeration_value_id
+HAVING (ev.parent_id > 0 OR (ev.parent_id = 0 and child_count = 0))
+ORDER BY ev.sort, ev.enumeration_value_id";
+		//echo $sql;	
 		if ($this->editing) {	
 		$sql = "select * from {$this->table} where enumeration_id = $enumerationId order by sort, enumeration_value_id";
 
