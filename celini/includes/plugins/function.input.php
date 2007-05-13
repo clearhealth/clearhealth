@@ -87,7 +87,7 @@ function smarty_function_input($params, &$smarty)
                 case "checkbox-table":
                         $checked = "";
                         if ($value == 1) {
-                                $checked = " CHECKED";
+                                $checked = " checked=\"checked\" ";
                         }
                         $ret = "<input type='hidden' name=\"$name\" value=\"0\"><input type='checkbox' name=\"$name\" value=\"1\" id=\"$id\"$checked$extra>";
                 break;
