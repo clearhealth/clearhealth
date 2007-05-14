@@ -129,6 +129,10 @@ class Datasource_sql extends Datasource{
 					}
 					$sql .= $this->_buildQuery($part);
 				}
+				if (strlen($this->_query['limit']) > 0) {
+                                	$sql .= " LIMIT " . $this->_query["limit"];
+                        	}
+				//echo $sql;	
 				$res = $this->_query($sql);
 				$this->_numRows = $res->numRows();
 			} 
@@ -306,6 +310,9 @@ class Datasource_sql extends Datasource{
 			}
 			if (!empty($orderby['orderby'])) {
 				$sql .= " ORDER BY ".$orderby['orderby'];
+			}
+			if (strlen($this->_query['limit']) > 0) {
+				$sql .= " LIMIT " . $this->_query["limit"];
 			}
 		}
 		else {
