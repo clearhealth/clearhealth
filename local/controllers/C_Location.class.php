@@ -37,7 +37,7 @@ class C_Location extends Controller {
 		return $this->edit_action();
 	}
 
-	function actionList() {
+	function actionList_view() {
 		
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		
