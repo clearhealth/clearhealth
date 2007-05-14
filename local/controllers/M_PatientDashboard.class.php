@@ -11,7 +11,9 @@ class M_PatientDashboard extends Manager {
 
 		if ($note_id == 0) {
 			$note->set('user_id',$this->controller->_me->get_user_id());
-			$note->set('note_date',date('Y-m-d H:i:s'));
+			if (isset($_POST['note']['note_date']) && strlen($_POST['note']['note_date']) == 0) {
+				$note->set('note_date',date('Y-m-d H:i:s'));
+			}
 		}
 
 		$note->set('patient_id',$patient_id);

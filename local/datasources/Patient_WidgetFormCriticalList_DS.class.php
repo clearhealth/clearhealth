@@ -73,15 +73,18 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		$db = Celini::dbInstance();
 		
 		$sql = "select name, pretty_name, table_name from summary_columns where widget_form_id = '$widget_form_id'";
-
-		$res = $db->query($sql);
+		//echo $sql . "<br/>";
+		//something resets fetch mode here, unknown bug, workaround to reset it here
+		$db->SetFetchMode(ADODB_FETCH_ASSOC);
+		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
-			if (isset($res->fields['name'])) { 
+			if (isset($res->fields['name'])) {
 			$labels[$res->fields["name"]] = $res->fields["pretty_name"];
 			$fields[$res->fields["name"]] = array('name'=>$res->fields['name'], 'table_name'=>$res->fields['table_name']);
 }
 			$res->MoveNext();	
 		}
+		//var_dump($fields);var_dump($labels);
 			$this->dynamicLabels = $labels;
 			$this->dynamicFields = $fields;
 

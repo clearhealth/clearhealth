@@ -32,15 +32,15 @@ class Person_ClinicalSummary_DS extends Datasource_sql {
 					CASE WHEN ap.appointment_id IS NOT NULL and le.encounter_id IS NULL THEN ev.start
 WHEN le.encounter_id IS NOT NULL THEN le.date_of_treatment
 END AS 'date_of_service',
-CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN 'appointment'
-WHEN le.encounter_id IS NOT NULL THEN 'linked encounter'
+CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN 'app'
+WHEN le.encounter_id IS NOT NULL THEN 'linked enc'
 END AS 'contact_type', 
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN ap.title
 WHEN le.encounter_id IS NOT NULL THEN le.encounter_reason
 END AS 'reason', 
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN CONCAT(rmbd.name,'->',rm.name)
 WHEN le.encounter_id IS NOT NULL THEN lebd.name
-END AS 'building',
+END AS 'location',
 CASE WHEN le.encounter_id IS NULL THEN ap.title ELSE (select concat('Proc:',group_concat(DISTINCT c.code), ' Diag:',group_concat(DISTINCT c2.code))
 from encounter e2 
 left join coding_data cd on cd.foreign_id = e2.encounter_id   
@@ -72,8 +72,8 @@ LEFT JOIN person leprov on leprov.person_id = le.treating_person_id
 				   ),//1st query
 			   array ( 'cols'=> "
 					e.date_of_treatment as 'date_of_service', 
-'encounter' as 'Contact Type', e.encounter_reason as 'reason',
-bd.name as 'building',
+'encounter' as 'contact_type', e.encounter_reason as 'reason',
+bd.name as 'location',
 (select concat('Proc:',group_concat(DISTINCT c.code), ' Diag:',group_concat(DISTINCT c2.code))
 from encounter e2 
 left join coding_data cd on cd.foreign_id = e2.encounter_id   
@@ -101,11 +101,11 @@ WHEN ra.refappointment_id IS NOT NULL OR rv.refreferral_visit_id IS NOT NULL THE
 ra.date  
 END as 'date_of_service', 
 CASE WHEN rr.refrequest_id IS NOT NULL and ra.refappointment_id IS NULL and rv.refreferral_visit_id IS NULL THEN
-'referral request'  
+'ref request'  
 WHEN ra.refappointment_id IS NOT NULL and  rv.refreferral_visit_id IS  NULL THEN
-'referral appointment'  
+'ref app'  
 WHEN rv.refreferral_visit_id IS  NOT NULL THEN
-'referral visit'
+'ref visit'
 END
 'contact_type',
 rr.reason,
@@ -137,14 +137,16 @@ LEFT JOIN person ri on rr.initiator_id = p.person_id
 			    )//union
 			,
 			array(
-				'contact_type' => 'Contact Type',
+				'contact_type' => 'Contact',
 				'date_of_service' => 'Date Of Service',
+				'reason' => 'Reason',
 				'location' => 'Location',
 				'description' => 'Description',
 				'provider' => 'Provider',
 				'status' => 'Status'
 			)
 		);
+		//echo $this->preview();
 		
 		//var_dump($this->preview());
 		$this->registerFilter('address_type', array(&$this, '_addressTypeLookup'));

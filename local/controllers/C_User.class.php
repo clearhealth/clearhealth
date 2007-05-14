@@ -121,6 +121,7 @@ class C_User extends Controller {
 	function list_action_view() {
 		$ds =& new User_DS();
 		$grid =& new cGrid($ds);
+		$grid->name = "userGrid";
 		$this->view->assign_by_ref('grid',$grid);
 		return $this->view->render("list.html");
 	}

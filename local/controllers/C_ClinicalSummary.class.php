@@ -14,8 +14,10 @@ class C_ClinicalSummary extends Controller {
                         $personId = $this->get("patient_id","c_patient");
                 }
 		$personId = (int)$personId;
-		$csDS =& new Person_ClinicalSummary_DS($personId);
+		$csDS = new Person_ClinicalSummary_DS($personId);
 		$csGrid = new cGrid($csDS);
+		$csGrid->name = "clinicalSummaryGrid";
+		$csGrid->setPageSize(20);
 		$this->assign('csGrid',$csGrid);
 		return $this->view->render('view.html');
 
