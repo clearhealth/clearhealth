@@ -230,7 +230,7 @@ class Building extends ORDataObject{
 		$sql = "SELECT * from " . $this->_prefix . "rooms where building_id =" . $this->_db->qstr($this->id) . " limit 1";
 		$result = $this->_Execute($sql);
 		while ($result && !$result->EOF) {
-			$room = new Room($result->fields['id']);	
+			$room = ORDataObject::factory('Room',$result->fields['id']);	
 			return $room;
 		}	
 		return false;

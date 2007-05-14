@@ -7,6 +7,7 @@ class PersonAddress extends Address {
 	var $_fkey = "person_id";
 	
 	var $person_id = '';
+	var $address_type = '';
 
 	/**
 	 * Because the person_address table uses a composite primary key

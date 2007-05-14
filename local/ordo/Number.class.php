@@ -47,11 +47,12 @@ class Number extends ORDataObject {
 	function persist() {
 		parent::persist();
 		if ($this->_parent !== false) {
-			$phones = $this->_db->getAssoc("select number_id,number_id phone from $this->_relation where number_id =".(int)$this->get('id'));
+			$db =& new clniDB();
+			$phones = $db->getAssoc("select number_id,number_id phone from $this->_relation where number_id =".(int)$this->get('id'));
 			foreach($phones as $phone) {
 				if (!isset($this->_parent[$phone])) {
 					// delete
-					$this->_execute("delete from $this->_relation where number_id=".(int)$this->get('id')
+					$db->execute("delete from $this->_relation where number_id=".(int)$this->get('id')
 					." and $this->_fkey = $phone");
 				}
 			}

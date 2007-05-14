@@ -68,18 +68,19 @@ class Address extends ORDataObject {
 		parent::persist();
 
 		if ($this->_parent !== false) {
-			$addresses = $this->_db->getAssoc("select address_id,address_id $this->_table from $this->_relation where address_id =".(int)$this->id);
+			$db =& new clniDB();
+			$addresses = $db->getAssoc("select address_id,address_id $this->_table from $this->_relation where address_id =".(int)$this->id);
 			foreach($addresses as $address) {
 				if (!isset($this->_parent[$address])) {
 					// delete
-					$this->_execute("delete from $this->_relation where address_id =".(int)$this->id
+					$db->execute("delete from $this->_relation where address_id =".(int)$this->id
 					." and $this->_fkey = $address");
 				}
 			}
 			foreach($this->_parent as $id => $val) {
 				if (!isset($addresses[$id])) {
 					// add
-					$sql = "replace into $this->_relation values(".(int)$id.",".(int)$this->id.",".(int)$this->get('type').")";
+					$sql = "replace into $this->_relation values(".(int)$id.",".(int)$this->id.",".(int)$this->get('address_type').")";
 					$this->_execute($sql);
 				}
 			}
