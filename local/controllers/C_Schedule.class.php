@@ -509,7 +509,7 @@ class C_Schedule extends Controller
 
 	}
 
-	function actionList() {
+	function actionList_edit() {
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"","schedule",$this,false);
 		if($this->GET->getTyped('delete_schedule_id','int') > 0) {
 			$schedule =& Celini::newORDO('Schedule', $this->GET->getTyped('delete_schedule_id', 'int'));
