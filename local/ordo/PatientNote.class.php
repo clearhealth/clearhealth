@@ -64,6 +64,12 @@ class PatientNote extends ORDataObject {
 	function populate() {
 		parent::populate('patient_note_id');
 	}
+	function set_note_date($date) {
+                $this->_setDate('note_date', $date);
+        }
+        function get_note_date() {
+                return $this->_getDate('note_date');
+        }
 
 	/**#@+
 	 * Getters and Setters for Table: patient_note
