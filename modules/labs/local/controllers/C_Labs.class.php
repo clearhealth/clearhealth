@@ -5,7 +5,7 @@ class C_Labs extends Controller {
 
 	function actionList() {
 		$patientId = 0;
-		if ($this->get('patient_id','c_patient') > 0) $patient_id = $this->get('patient_id','c_patient');
+		if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
 		$ds =& new Lab_DS($patientId);
 		$grid =& new cGrid($ds);
 
@@ -14,8 +14,7 @@ class C_Labs extends Controller {
 	}
 	function actionOrderList() {
 		$patientId = 0;
-		if ($this->get('patient_id','c_patient') > 0) $patient_id = $this->get('patient_id','c_patient');
-
+		if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
 		$ds =& new Order_DS($patientId);
 		$grid =& new cGrid($ds);
 

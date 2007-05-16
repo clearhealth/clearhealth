@@ -35,7 +35,6 @@ class Order_DS extends Datasource_sql
 			unset($labels['first_name']);
 			unset($labels['record_number']);
 		}
-
 		if ($encounterId > 0) {
 			$where .= " and l.encounter_id = $encounterId"; 
 		}

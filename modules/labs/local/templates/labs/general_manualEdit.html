@@ -42,8 +42,14 @@ function deleteResult(resultId) {
   HTML_AJAX.call('Labs','ajaxDeleteResult',updateView,resultId);
 }
 function confirmResults(labOrderId) {
+  if (!labOrderId > 0) {
+	labOrderId = document.getElementById('labOrderId');
+  }
   HTML_AJAX.call('Labs','ajaxConfirmResults',updateView,labOrderId);
   document.getElementById('confirmButton').style.display = 'none';
+  if(document.getElementById('addResultRowFieldset')) {
+	document.getElementById('addResultRowFieldset').style.display = 'none';
+  }
 }
 function processView(result) {
   if (result) {
@@ -84,6 +90,7 @@ function updateView(result) {
 <input type="hidden" value="{$patientId}" id="labPatientId">
 {if !$order->get('lab_order_id') >0}
 <input id="orderButton" type="button" value="Add Lab Order" onclick="saveOrder();">
+<input id="confirmButton" type="button" value="Mark Lab As Final" onclick="confirmResults({$order->get('lab_order_id')});" style="display:none;" />
 {elseif $order->get('status') ne 'F'}
 <input id="confirmButton" type="button" value="Mark Lab As Final" onclick="confirmResults({$order->get('lab_order_id')});">
 {/if}
