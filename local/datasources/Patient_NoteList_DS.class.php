@@ -25,11 +25,12 @@ class Patient_NoteList_DS extends Datasource_sql
 	 * @var string
 	 */
 	var $_type = 'html';
-	
+	var $patientId = '';	
 	
 	function Patient_NoteList_DS($patient_id) {
 		settype($patient_id, 'integer');
-		
+		$this->patientId = $patient_id;
+
 		$labels = array(
 			'deprecated' => 'Done',
 			'priority'   => 'P',
@@ -97,8 +98,7 @@ class Patient_NoteList_DS extends Datasource_sql
 	}
 	
 	function _addEditLink($value, $rowValues) {
-		$pid = isset($_GET['id']) ? $_GET['id'] : $_GET[0];
-		$url = Celini::link(true, true, true, $pid) . 'note_id=' . $rowValues['patient_note_id'];
+		$url = Celini::link(true, true, true, $this->patientId) . 'note_id=' . $rowValues['patient_note_id'];
 		return '<a href="' . $url . '">' . $value . '</a>';
 	}
 }
