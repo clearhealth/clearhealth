@@ -11,6 +11,8 @@ function saveOrder() {
   hash['manual_order_date'] = document.getElementById('labOrderDate').value;
 
   HTML_AJAX.call('Labs','ajaxEditOrder',updateView,hash);
+  document.getElementById('orderButton').style.display = 'none';
+  document.getElementById('confirmButton').style.display = 'block';
 }
 function saveResultHeader(){
   var hash = new Object();
@@ -43,7 +45,7 @@ function deleteResult(resultId) {
 }
 function confirmResults(labOrderId) {
   if (!labOrderId > 0) {
-	labOrderId = document.getElementById('labOrderId');
+	labOrderId = document.getElementById('labOrderId').value;
   }
   HTML_AJAX.call('Labs','ajaxConfirmResults',updateView,labOrderId);
   document.getElementById('confirmButton').style.display = 'none';
@@ -67,8 +69,6 @@ function updateView(result) {
     Calendar.setup( {inputField:"labSpecimenDate", showsTime: false,ifFormat:"%m/%d/%Y",button:"labSpecimenDate_trigger" }); 
     clni_register_validation_rule('labSpecimenDate','date','alert');
   }
-  document.getElementById('orderButton').style.display = 'none';
-  document.getElementById('confirmButton').style.display = 'block';
 
 }
 
