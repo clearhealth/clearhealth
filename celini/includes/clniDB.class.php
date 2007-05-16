@@ -37,6 +37,7 @@ class clniDB {
 	 * @param	string	$table
 	 */
 	function listFields($table) {
+		$this->_db = $this->dbInstance(); 
 		$sql = "SHOW COLUMNS FROM ". $this->escape($table);
 		$res = $this->execute($sql);
 		$field_list = array();
