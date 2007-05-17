@@ -97,6 +97,24 @@ class Dispatcher {
 			unset($_GET['process']);
 			unset($qarray['process']);
 		}
+		//remove grid vars from get so not to screw up mapping of get vars to controller action arguments
+		foreach ($_GET as $key => $getvar) {
+		  if ($key === 0) continue;
+		  switch($key) { 
+			case 'PAGER_PAGE':
+			case 'GRID_MODE':
+			case 'GRID':
+			case 'ORDER':
+			case 'ORDER[direction]':
+			case 'ORDER[order]':
+			case 'ORDER[column]':
+			case 'MOVE':
+			$GLOBALS[$key] = $_GET[$key];
+			unset($_GET[$key]);
+			unset($qarray[$key]);
+			break;
+		  }
+		}
 		$tmp = $qarray;
 
 		// bootstrap me
@@ -104,8 +122,8 @@ class Dispatcher {
 
 		// get the controller name
 		$args = array_reverse($qarray);
-
 		$c_name = preg_replace("/[^A-Za-z0-9_]/","",array_pop($args));
+		//var_dump($args);
 		$parts = split("_",$c_name);
 		$name = "";
 
@@ -156,7 +174,6 @@ class Dispatcher {
 			}
 		}
 		$args = array_reverse($args);
-
 
 		// apply automatic acls and get the method postfix
 		$c_action_postfix = $this->autoAcl($c_obj,strtolower($c_name),strtolower($c_action));

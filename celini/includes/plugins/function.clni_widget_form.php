@@ -54,7 +54,7 @@ function smarty_function_clni_widget_form($params, &$smarty)
         
     if (!isset($patientId)) $patientId = 0;
     if (!isset($name)) $name = '';
-    if (!isset($encounterId)) $encounterId = 0;
+    if (!isset($encounterId)) $encounterId = '';
     
     $GLOBALS['loader']->requireOnce('controllers/C_WidgetForm.class.php');
     $cwf = new C_WidgetForm();

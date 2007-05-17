@@ -311,7 +311,7 @@ class Datasource_sql extends Datasource{
 			if (!empty($orderby['orderby'])) {
 				$sql .= " ORDER BY ".$orderby['orderby'];
 			}
-			if (strlen($this->_query['limit']) > 0) {
+			if (isset($this->_query['limit']) && strlen($this->_query['limit']) > 0) {
 				$sql .= " LIMIT " . $this->_query["limit"];
 			}
 		}

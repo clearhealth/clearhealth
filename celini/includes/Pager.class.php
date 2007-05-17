@@ -40,9 +40,10 @@ class Pager
 	*/
 	function update()
 	{
-		if (isset($_GET['PAGER_PAGE']))
+
+		if (isset($GLOBALS['PAGER_PAGE']))
 		{
-			$this->currentPage = (int)$_GET['PAGER_PAGE'];
+			$this->currentPage = (int)$GLOBALS['PAGER_PAGE'];
 			if ($this->currentPage < 0 || $this->currentPage > $this->lastPage) {
 				$this->currentPage = 1;
 			}

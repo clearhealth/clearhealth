@@ -322,6 +322,9 @@ class Datasource {
 		}
 	}
 	
+	function clearLabels() {
+		$this->_labels = array();
+	}
 	
 	/**
 	 * This adds a type dependent label
@@ -403,6 +406,16 @@ class Datasource {
 				$this->next();
 			}
 			return $ret;
+		}
+		elseif ($assoc_key !== false) {
+			$ret = array();
+                        $this->rewind();
+                        while($this->valid()) {
+                                $row = $this->get();
+                                $ret[] = $row[$assoc_key];
+                                $this->next();
+                        }
+                        return $ret;
 		}
 		else {
 			$ret = array();

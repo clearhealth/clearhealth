@@ -130,7 +130,7 @@ class cGrid {
 		$this->set_datasource($datasource);
 		$this->set_renderer($renderer);
 
-		if (isset($_GET['gridMode']) && $_GET['gridMode'] == 'pdf') {
+		if (isset($GLOBALS['GRIDMODE']) && $GLOBALS['GRIDMODE'] == 'pdf') {
 			$this->updateAttribute('table',0,array('border'=>1,'cellspacing'=>0,'cellpadding'=>2));
 			$this->orderLinks = false;
 		}
@@ -213,15 +213,15 @@ class cGrid {
 			}
 		}
 		
-		if (isset($_GET['grid']) && $_GET['grid'] == $this->name) {
+		if (isset($GLOBALS['GRID']) && $GLOBALS['GRID'] == $this->name) {
 			// load in new sorts from get
-			if (isset($_GET['order'])) {
-				$rule = $_GET['order'];
+			if (isset($GLOBALS['ORDER'])) {
+				$rule = $GLOBALS['ORDER'];
 
 				$this->_datasource->addOrderRule($rule['column'],$rule['direction'],$rule['order']);
 				$this->_datasource->_orderCurrent = $rule['column'];
-				if (isset($_GET['move'])) {
-					$this->_datasource->_orderCurrentDirection = $_GET['move'];
+				if (isset($GLOBALS['MOVE'])) {
+					$this->_datasource->_orderCurrentDirection = $GLOBALS['MOVE'];
 				}
 			}
 			$this->_datasource->getRenderMap();
@@ -246,11 +246,11 @@ class cGrid {
 				$this->link = $_SERVER['PHP_SELF']."?";
 				//$_GET['grid'] = $this->name;
 				foreach($_GET as $key => $val) {
-					if ($key !== "order" && $key != "grid") {
+					if ($key !== "ORDER" && $key != "GRID") {
 						$this->link .= "&$key=$val";
 					}
 				}
-				$this->link .= "&grid=$this->name";
+				$this->link .= "&GRID=$this->name";
 			}
 			if  ($this->imageDir === false) {
 				$this->imageDir = str_replace('//','/',dirname($_SERVER['SCRIPT_NAME'])."/".$GLOBALS['config']['entry_file']."/images/stock/");
@@ -410,7 +410,7 @@ class sGrid extends cGrid {
                 $this->set_datasource($datasource);
                 $this->set_renderer($renderer);
 
-                if (isset($_GET['gridMode']) && $_GET['gridMode'] == 'pdf') {
+                if (isset($GLOBALS['GRIDMODE']) && $GLOBALS['GRIDMODE'] == 'pdf') {
                         $this->updateAttribute('table',0,array('border'=>1,'cellspacing'=>0,'cellpadding'=>2, 'class'=>'sgrid'));
                         $this->orderLinks = false;
                 }
@@ -653,16 +653,16 @@ class Grid_Renderer_HTML extends Grid_Renderer {
 
 			
 			if ($rule[1] === "DESC" || $rule[1] === "ASC") {
-				$link = "<a href=\"{$this->_grid->link}&order[column]=$col&order[direction]=$op&order[order]=$order\">$text</a><img src='{$this->_grid->imageDir}$dir'>";
+				$link = "<a href=\"{$this->_grid->link}&ORDER[column]=$col&ORDER[direction]=$op&ORDER[order]=$order\">$text</a><img src='{$this->_grid->imageDir}$dir'>";
 			}
 		}
 
 		if (!isset($link)) {
-			$link = "<a href=\"{$this->_grid->link}&order[column]=$col&order[direction]=$op&order[order]=$order\">$text</a>";
+			$link = "<a href=\"{$this->_grid->link}&ORDER[column]=$col&ORDER[direction]=$op&ORDER[order]=$order\">$text</a>";
 		}
 
-		$left = "<a class='orderLink' href=\"{$this->_grid->link}&move=left&order[column]=$col&order[direction]=$curr&order[order]=".($order-1)."\"><</a>";
-		$right = "<a class='orderLink' href=\"{$this->_grid->link}&move=right&order[column]=$col&order[direction]=$curr&order[order]=".($order+1)."\">></a>";
+		$left = "<a class='orderLink' href=\"{$this->_grid->link}&MOVE=left&ORDER[column]=$col&ORDER[direction]=$curr&ORDER[order]=".($order-1)."\"><</a>";
+		$right = "<a class='orderLink' href=\"{$this->_grid->link}&MOVE=right&ORDER[column]=$col&ORDER[direction]=$curr&ORDER[order]=".($order+1)."\">></a>";
 		if ($order == 0) {
 			$left = "";
 		}

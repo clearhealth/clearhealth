@@ -25,7 +25,9 @@ class C_CRUD extends Controller{
 	function actionEdit($id) {
 		$ordo = '';
 		if (!is_object($this->_ordo)) {
-		  $id = $this->getDefault($this->_ordoName . "_id", '0');
+		  if (!$id > 0) {
+		    $id = $this->getDefault($this->_ordoName . "_id", '0');
+		  }
 		  $ordo =& Celini::newORDO($this->_ordoName, $id);
 		}
 		else { 
