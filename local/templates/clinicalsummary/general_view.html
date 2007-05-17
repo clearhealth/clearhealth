@@ -3,3 +3,26 @@
 {$csGrid->render()}
 
 </fieldset>
+<table>
+<tr>
+<td valign="top">
+</td>
+<td valign="top">
+{clni_widget_form patientId=$patientId name="Immunizations" }
+</td>
+<td valign="top">
+<fieldset>
+<legend>Special Needs</legend>
+<p>Translator Needed: {$em->lookup('simpleToggle',$patient->value('specialNeedsTranslator'))}</p>
+<b>Notes:</b>
+<p>
+{if $patient->get('specialNeedsNote')}
+{$patient->get('specialNeedsNote')}
+{else}
+No Notes
+{/if}
+</p>
+</fieldset>
+</td>
+</tr>
+</table>
