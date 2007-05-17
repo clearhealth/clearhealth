@@ -53,8 +53,7 @@ class C_Referral extends Controller
                         Celini::redirect('PatientFinder', 'List');
                 }
 		$patient = ORDataObject::factory('Person',$patient_id);
-		//$this->_initPatientData($patient->get('id'));
-		$requestList =& new refRequestList_DS();
+		$requestList =& new refRequestList_DS($patient_id);
 		
 		$requestListGrid =& new cGrid($requestList);
 		$requestListGrid->name = "requestGrid";
@@ -149,13 +148,7 @@ class C_Referral extends Controller
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
                 $this->view->assign('options', $options);
-		/*if ($program->get('schema') == 0) {
-			$this->view->assign('eligibilitySchema', 'Not Applicable');
-		}
-		else {
-			$schemaMapper =& new refEligibilitySchemaMapper($program->get('schema'));
-			$this->view->assign('eligibilitySchema', $schemaMapper);
-		}*/
+		$this->view->assign_by_ref('parProg', $parProg);
 		
 		$this->view->assign('FORM_ACTION', Celini::link('view/' . $request->get('id'), 'referral'));
 		
@@ -413,10 +406,7 @@ class C_Referral extends Controller
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
                 $this->view->assign('eligibility', $options);
 		$this->view->assign_by_ref('refProgram', $program);
-		if ($parProg->get('adhoc') == 1) {
-			$this->assign('ADHOC_ACTION',Celini::link("form",'Referral') . "form_id=" . $parProg->get('form_id'));
-		}
-		$this->view->assign_by_ref('pprog', $parProg);
+		$this->view->assign_by_ref('parProg', $parProg);
 		$this->view->assign_by_ref('personParProgram', $ppp);
 				
 		$this->_addOccurence($request);
@@ -424,7 +414,6 @@ class C_Referral extends Controller
 		
 		//$this->_initPatientData($this->GET->getTyped('patient_id', 'int'));
 		
-		$this->view->assign('FORM_ACTION', Celini::link("update/{$refRequest_id}", 'Referral'));
 		return $this->view->render('edit.html');
 	}
 	
@@ -492,12 +481,50 @@ class C_Referral extends Controller
 		return $this->actionForm($formId);
 
 	}
-	function actionForm($formId) {
+	function actionForm($formId,$requestId) {
+		$formId = (int)$formId;
+		$requestId = (int)$requestId;
+		
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
-                $form_controller = new C_Form();
-                return $form_controller->actionFillout_edit($formId, $this->_request->get('refRequest_id'));
+		$fc = new C_Form();
+
+		$request = ORDataObject::factory('refRequest',$requestId);
+		$enc = ORDataObject::factory('Encounter',$request->get('visit_id'));
+		$fc->view->assign("enc",$enc);
+
+		$perParProg = PersonParticipationProgram::getByProgramPatient($request->get('refprogram_id'),$request->get('patient_id'));
+		$parProg = ORDataObject::factory('ParticipationProgram',$perParProg->get('participation_program_id'));
+		$fc->view->assign("parProg",$parProg);
+
+		$fd = ORDataObject::factory("FormData");
+		$fd->set("form_id",$formId);
+		$fd->set("external_id",$perParProg->get('person_program_id'));
+		$fd->persist();
+
+		$fc->view->assign("request",$request);
+
+		$GLOBALS['loader']->requireOnce("controllers/C_Coding.class.php");
+                $cc = new C_Coding();
+		$codingBlock = $cc->update_action_edit($fd->get("form_data_id"),$fd->get("form_data_id"));
+		$fc->assign('codingBlock',$codingBlock);
+
+		$GLOBALS['loader']->requireOnce('datasources/Coding_List_DS.class.php');
+		//true is to show only distinct codes, type 1 is CPT
+		$cptDS = new Coding_List_DS($request->get('visit_id'),"1,3",true);
+		$cptDS->clearLabels();
+		$cptDS->setTypeDependentLabel("html","code","CPT");
+		$cpts = implode(',',$cptDS->toArray("code"));
+		$fc->assign("cpts",$cpts);
+		
+		
+		$icdDS = new Coding_List_DS($request->get('visit_id'),"2",true);
+		$icdDS->clearLabels();
+		$icdDS->setTypeDependentLabel("html","code","ICD");
+		$icds = implode(",",$icdDS->toArray("code"));
+		$fc->assign("icds",$icds);
+
+                return $fc->actionFillout_edit($formId);
 	}
-	
 	function update_action($refRequest_id = 0) {
 		//printf('<pre>%s</pre>', var_export($_POST['refRequest'] , true));
 		$request =& Celini::newORDO('refRequest', $refRequest_id);
@@ -508,9 +535,23 @@ class C_Referral extends Controller
 		$this->_updatePatientEligibility($request);
 		//$request->persist();
 		
+	}
+	function processEdit($refRequest_id = 0) {
+                $request = ORDataObject::factory('refRequest', $refRequest_id);
+                $this->_request = $request;
+                $request->populateArray($_POST['refRequest']);
+                $request->set('refStatus', 1);
+                $request->persist();
+                $parProg = ORDataObject::factory('ParticipationProgram', $request->get("refprogram_id"));
+		$this->_continue_processing = false;
+		if ($parProg->get('adhoc') == 1) {
+			header('Location: ' . Celini::link('form') . "formId=" . $parProg->get('form_id') . "&requestId=" . $request->get('id'));
+		exit;
+		}
 		header('Location: ' . Celini::link('view/' . $request->get('id')) );
 		exit;
-	}
+
+        }
 
 	function _addOccurence(&$request) {
 		if ($request->get('visit_id') > 0) {

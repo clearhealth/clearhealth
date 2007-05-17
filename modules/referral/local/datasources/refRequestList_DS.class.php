@@ -20,21 +20,30 @@ class refRequestList_DS extends Datasource_sql
 	/**
 	 * Handle initialization of DS
 	 */
-	function refRequestList_DS() {
+	function refRequestList_DS($patientId = 0) {
+		$patientId = (int)$patientId;
+		$where = '1';
+		if ($patientId >0 ) {
+			$where .= " and r.patient_id = $patientId";
+		}
 		$this->setup(Celini::dbInstance(), 
 			array(
 				'cols' => 'refRequest_id,
 				           date_format(`date`, "%M %d, %Y") AS `formatted_date`,
-						   refStatus,
+					   refStatus,
 				           reason,
-				           refSpecialty',
-				'from' => 'refRequest AS r'
+				           refSpecialty,
+					   r.referral_service   
+					',
+				'from' => 'refRequest AS r',
+				'where' => $where
 			),
 			array(
 				'formatted_date' => 'Referral Request',
 				'refStatus' => 'Status',
 				'reason' => 'Reason', 
-				'refSpecialty' => 'Specialty'
+				'refSpecialty' => 'Specialty',
+				'referral_service' => 'Service'
 			)
 		);
 		$this->registerFilter('formatted_date', array($this, '_addLinkToList'));
@@ -42,6 +51,7 @@ class refRequestList_DS extends Datasource_sql
 		$enumCallback = array(&$this, '_enumValue');
 		$this->registerFilter('refStatus', $enumCallback, 'refStatus');
 		$this->registerFilter('refSpecialty', $enumCallback, 'refSpecialty');
+		$this->registerFilter('referral_service', $enumCallback, 'referral_service');
 		
 		$this->orderHints['formatted_date'] = 'date';
 		$this->addDefaultOrderRule('formatted_date', 'DESC');
