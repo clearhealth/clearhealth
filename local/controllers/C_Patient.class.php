@@ -164,8 +164,6 @@ class C_Patient extends Controller {
 		
 		$patientStatistics =& ORDataObject::factory('PatientStatistics',$patient_id);
 
-		$pcc =& Celini::newOrdo('PatientChronicCode');
-		$chronicCodes = $pcc->patientCodeArray($patient_id,true);
 		
 		$relatedAddressList =& $person->loadDatasource('RelatedAddressList');
 		$relatedAddressGrid =& new cGrid($relatedAddressList);
@@ -199,7 +197,6 @@ class C_Patient extends Controller {
 		$this->view->assign_by_ref('patientStatistics',$patientStatistics);
 		$this->view->assign_by_ref('subscriber',$subscriber);
 		$this->view->assign('hide_type',true);
-		$this->view->assign('chronicCodes',$chronicCodes);
 
 		$this->assign('now',date('Y-m-d'));
 
