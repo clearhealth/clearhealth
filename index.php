@@ -100,6 +100,5 @@ else {
 $d->check_input();
 
 $d->trail_build($args);
-
 echo $d->act($args);
 ?>
