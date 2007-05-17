@@ -32,8 +32,8 @@ class User_DS extends Datasource_sql
 				'from' => '
 					person AS p
 					INNER JOIN person_type AS pt USING(person_id)
-					INNER JOIN user AS u USING(person_id)',
-				'orderby' => 'p.last_name, p.first_name'
+					INNER JOIN user AS u USING(person_id)'
+				//'orderby' => 'p.last_name, p.first_name'
 			),
 			array(
 				'last_name' => 'Last Name',

@@ -13,7 +13,7 @@ class Coding_List_DS extends Datasource_sql
 	var $_type = 'html';
 
 
-	function Coding_List_DS($externalId = false,$code_type = '1,2,3,4') {
+	function Coding_List_DS($externalId = false,$code_type = '1,2,3,4',$distinct = false) {
 		$externalId = (int)$externalId;
 		$code_type = preg_replace('/[^0-9,]*/','',$code_type);
 		$labels = array(	
@@ -24,11 +24,14 @@ class Coding_List_DS extends Datasource_sql
 		if ($code_type != '') {
 		  $where .= " and c.code_type in (" . $code_type . ")";
 		}
+		$select = ' * ';
+		if ($distinct) {
+			$select = " DISTINCT c.code ";
+		}
 		
 		$this->setup(Celini::dbInstance(),
 			array(
-				'cols'    => "*
-						",
+				'cols'    =>  $select,
 				'from'    => "coding_data cd 
 						inner join codes c on c.code_id = cd.code_id  
 						",

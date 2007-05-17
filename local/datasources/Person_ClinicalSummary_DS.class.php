@@ -54,7 +54,7 @@ WHEN le.encounter_id IS NOT NULL THEN concat(leprov.first_name, ' ',leprov.last_
 END AS 'provider',
 CASE WHEN ev.event_id IS NOT NULL and le.encounter_id IS NULL THEN ''
 WHEN le.encounter_id IS NOT NULL THEN le.status
-END AS 'status'
+END AS 'status', ap.appointment_id, le.encounter_id
  
 						",
 				   'from'=> "
@@ -83,7 +83,7 @@ left join codes c2 on c2.code_id = cd2.code_id
 where e2.encounter_id = e.encounter_id
 group by e2.encounter_id) as 'description',
 concat(prov.first_name, ' ',prov.last_name) as 'provider',
-e.status
+e.status, '',e.encounter_id
  
 						",
 				   'from'=> "
@@ -116,7 +116,7 @@ rp.name
 END as 'location',
 '' as description,
 concat('RI:',ri.first_name, ' ', ri.last_name) as 'provider',
-rr.refStatus as 'status'
+rr.refStatus as 'status', ra.refappointment_id, rr.refrequest_id
  
 					
 						",
@@ -148,11 +148,33 @@ LEFT JOIN person ri on rr.initiator_id = p.person_id
 		);
 		//echo $this->preview();
 		
-		//var_dump($this->preview());
-		$this->registerFilter('address_type', array(&$this, '_addressTypeLookup'));
-		$this->registerFilter('line1', array(&$this, '_twoLineFormatting'));
+		//print_r($this->preview());
+		$this->registerFilter('reason', array($this, '_reason'), false, 'html');
+		$this->registerFilter('contact_type', array($this, '_contactLink'), false, 'html');
 	}
 	
+	function _contactLink($value,$row) {
+		switch ($value) {
+		case 'encounter':
+		case 'linked enc':
+		  return '<a href="'.Celini::link('edit','Encounter').'encounter_id=' . $row['encounter_id'] . '">'.$value.'</a>';
+		  break;
+		default:
+		  return $value;  
+		}
+	}
+	function _reason($value,$row) {
+		$em = Celini::enumManagerInstance();
+		switch ($row['contact_type']) {
+		case 'encounter':
+		case 'linked enc':
+		  return $em->lookup('encounter_reason',$value);
+		  break;
+		default:
+		  return $value;  
+		}
+	}
+
 	
 	function _twoLineFormatting($value, $row) {
 		if (!isset($row['line2']) || empty($row['line2'])) {
