@@ -187,7 +187,7 @@ Calendar.setup( {
 		 
 		<div class="schedule" style="border-color: #{$col.borderColor};" id="schedule-{$row_id}">
 			<div class="header" style="background-color: #{$col.color};">
-				{$col.label} {$col.labelextra} {if $rescheduleFlag}<a href="#" onclick="switch_provider({$row_id});">reschedule</a>{/if}
+				{$col.label} {$col.labelextra} {if $rescheduleFlag}<a href="#" onclick="switch_provider({$row_id});">{clni_img name="reschedule.png"}</a>{/if}
 			</div>
 			{foreach from=$col.conflictBlocks item=block}
 			<div class="conflictBlockBackground block-{$row_id}" style="top: {$dayIterator->timestampToPosition($block.start)}px;height:{$dayIterator->timeDifferenceToHeight($block.start,$block.end)-4}px;">
