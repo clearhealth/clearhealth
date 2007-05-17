@@ -47,8 +47,11 @@ class C_WidgetForm extends C_CRUD {
 	}
 	function actionShowSingle_view($patientId,$widgetFormName,$encounterId) {
 		$patientId = (int)$patientId;	
-		$encounterId = (int)$encounterId;	
+		if ($encounterId != '') {
+			$encounterId = (int)$encounterId;	
+		}
 		$widgetFormId = (int)$widgetFormId;
+		
 		
 		$wfds = new WidgetForm_DS('',$widgetFormName);
 		$widgets = $this->_generateWidgetDisplay($wfds,$patientId,$encounterId);
@@ -95,7 +98,6 @@ class C_WidgetForm extends C_CRUD {
 			else {
                         $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId);
 			}
-			
 			$wfDataGrid =& new sGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
 

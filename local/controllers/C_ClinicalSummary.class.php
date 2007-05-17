@@ -14,6 +14,11 @@ class C_ClinicalSummary extends Controller {
                         $personId = $this->get("patient_id","c_patient");
                 }
 		$personId = (int)$personId;
+		$this->assign("patientId",$personId);
+		$patient = ORDataObject::factory('Patient',$personId);
+		$this->assign("patient",$patient);
+		$em =& Celini::enumManagerInstance();
+		$this->assign("em",$em);
 		$csDS = new Person_ClinicalSummary_DS($personId);
 		$csGrid = new cGrid($csDS);
 		$csGrid->name = "clinicalSummaryGrid";

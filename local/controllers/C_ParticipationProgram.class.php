@@ -14,6 +14,7 @@ class C_ParticipationProgram extends C_CRUD {
 		return parent::actionAdd();
         }
 	function actionEdit($id) {
+		$id = (int)$id;
 		$parProg = ORDataObject::factory('ParticipationProgram',$id);
 		$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");

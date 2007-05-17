@@ -71,7 +71,7 @@ class C_Form extends Controller {
 
 		$this->messages->addMessage('Form Added Successfully');
 
-		if (isset($_FILES['form']['tmp_name']['upload_form'])) {
+		if (isset($_FILES['form']['tmp_name']['upload_form']) && strlen($_FILES['form']['tmp_name']['upload_form']) > 0) {
 			$filename = $form->get('file_path');
 
 			if (!move_uploaded_file($_FILES['form']['tmp_name']['upload_form'],$filename)) {
