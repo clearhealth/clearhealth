@@ -68,6 +68,8 @@ class C_Patient extends Controller {
 	 * @see actionEdit()
 	 */
 	function actionAdd_add() {
+		$this->patient_id = 0;
+		$this->set("patient_id",0);
 		return $this->actionEdit_edit(0);
 	}
 	
@@ -76,7 +78,7 @@ class C_Patient extends Controller {
 	 *
 	 */
 	function actionEdit_edit($patient_id = '') {
-                if ($patient_id == '') {
+                if ($patient_id === '') {
 			$patient_id = $this->get('patient_id', 'c_patient');
                 }
 		$head =& Celini::HTMLHeadInstance();
