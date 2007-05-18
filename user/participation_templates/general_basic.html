@@ -9,7 +9,7 @@
 	<option value="{$key}" {if $key eq $options->get('federal_poverty_level')}selected="selected"{/if}>{$label} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
 {/foreach}
 </select>
-}
+
 {else}
 {enum_lookup name="federal_poverty_level" value=$options->get('federal_poverty_level')} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
 {/if}
