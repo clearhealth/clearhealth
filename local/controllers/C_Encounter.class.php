@@ -137,9 +137,12 @@ class C_Encounter extends Controller {
 
 		$ajax =& Celini::AJAXInstance();
 		$ajax->stubs[] = 'Encounter';
+
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
 		  $encounter_id = $this->_existingEncounter($appointment_id);
+		  $app = ORDataObject::factory("Appointment",$appointment_id);
+		  $this->assign('appointment_title',$app->get('title'));
 		}
 
 		if ($encounter_id > 0) {
@@ -153,6 +156,9 @@ class C_Encounter extends Controller {
 
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
+		
+		
+
 		if ($encounter->get('payer_group_id') == '') {
 			$encounter->set('payer_group_id',1);
 		}
@@ -166,6 +172,9 @@ class C_Encounter extends Controller {
 		if ($appointment_id > 0) {
 			$encounter =& $this->_populateAppointmentDefaults($encounter, $appointments, $appointment_id);
 		}
+		
+		$app = ORDataObject::factory("Appointment",$encounter->get('occurence_id'));
+		$this->assign('appointment_title',$app->get('title'));
 
 		
 		//if ($encounter_id == 0 && $this->get('encounter_id') > 0) {

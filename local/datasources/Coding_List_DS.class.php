@@ -26,7 +26,7 @@ class Coding_List_DS extends Datasource_sql
 		}
 		$select = ' * ';
 		if ($distinct) {
-			$select = " DISTINCT c.code ";
+			$select = " DISTINCT c.code, c.code_text ";
 		}
 		
 		$this->setup(Celini::dbInstance(),

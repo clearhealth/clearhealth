@@ -80,6 +80,7 @@ class C_ParticipationProgram extends C_CRUD {
                   $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                   $options = ORDataObject::factory($optionsClassName, $person_program_id);
 		  $options->populateArray($ppdata['options']);
+		  $options->set('person_program_id',$ppp->get('person_program_id'));
 		  $options->persist();	
 		}
 		$this->_person_program_id = $ppp->get("person_program_id");

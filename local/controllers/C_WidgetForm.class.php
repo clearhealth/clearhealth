@@ -160,13 +160,24 @@ class C_WidgetForm extends C_CRUD {
                         if (is_array($row)) {
                                 $formDataId = $row['form_data_id'];
                         }
+		  case 'participation':
+                        $fdDS =  new FormDataByExternalByFormId_DS($this->get('requestId','c_referral'),$formId);
+			//return $fdDS->preview();
+                        $fdDS->rewind();
+                        $row = $fdDS->get();
+
+                        if (is_array($row)) {
+                                $formDataId = $row['form_data_id'];
+                        }
                 }
 		return $formDataId;
 	}
 	function ajaxFillout($formId,$returnTo = '') {
 		if ($returnTo == 1) {
-			$_GET['returnTo'] = $_SERVER['HTTP_REFERER'];
-			$this->GET->set('returnTo', $_SERVER['HTTP_REFERER']);
+			if (isset($_SERVER['HTTP_REFERER'])) {
+			  $_GET['returnTo'] = $_SERVER['HTTP_REFERER'];
+			  $this->GET->set('returnTo', $_SERVER['HTTP_REFERER']);
+			}
 		}
 		elseif (strlen($returnTo) > 0 ) {
 			$_GET['returnTo'] = $returnTo;
@@ -185,6 +196,7 @@ class C_WidgetForm extends C_CRUD {
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
 		$form_controller->view->assign('encounterId',$this->get('encounter_id','c_encounter'));
+		$form_controller->view->assign('encounterId',$this->get('requestId','c_request'));
 		$form_controller->view->assign('patientId',$this->get('patient_id','c_patient'));
 		return $form_controller->actionFillout_edit($formId, $this->form_data_id);
 	}

@@ -25,6 +25,10 @@
 				</select>
 			</td>
 		</tr>
+		<tr>
+			<td><label>{l}App. Title{/l}:</label></td>
+			<td colspan="3"><div id="appointmentTitle">{$appointment_title}</div></td>
+		</tr>
 		<tr>			
 			<td><label>{l}Appointment{/l}:</label></td>
 			<td colspan="3">{html_options name="encounter[occurence_id]" options=$appointmentArray selected=$encounter->get("occurence_id") onChange="populateEncounter(this.selectedIndex)"}
@@ -46,7 +50,7 @@
 					{elseif $claimSubmitValue == 'close'}
 					{*<input type="submit" name="encounter[close]" value="Close" />*}
 					{/if}
-					<input type="submit" name="encounter[override]" value="Bill To:" /> 
+					<input type="submit" name="encounter[override]" value="Close ->" /> 
 					<input type="hidden" name="encounter[overridebilltype]" value="{$claimSubmitValue}" />
 					<select  name="encounter[overridepayer]" style="display:inline;">
 					{html_options options=$encounter->valueList('current_payers') selected=$encounter->get('current_payer')}
@@ -89,7 +93,7 @@ function populateEncounter(selected) {
 	var treating_person = document.forms.encounter['encounter[treating_person_id]'];
 	var building = document.forms.encounter['encounter[building_id]'];
 	var reason = document.forms.encounter['encounter[encounter_reason]'];
-
+	var title = document.getElementById('appointmentTitle');
 	var dot = document.forms.encounter['encounter[date_of_treatment]'];
 
 	dot.value = results['appointment_start'].substr(0,10);
@@ -111,6 +115,7 @@ function populateEncounter(selected) {
 		 	reason[i].selected = true;
 		 }
 	}
+	title.innerHTML = results['title'];
 }
 </script>
 {/literal}

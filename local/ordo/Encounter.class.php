@@ -319,7 +319,8 @@ class Encounter extends ORDataObject {
 				concat_ws(' ',pr.first_name,pr.last_name) AS provider_name,
 				a.provider_id AS provider_id, 
 				e.start AS appointment_start,
-				ev.value reason 
+				ev.value reason,
+				a.title 
 			FROM 
 				event e
 				INNER JOIN appointment a ON e.event_id = a.event_id
