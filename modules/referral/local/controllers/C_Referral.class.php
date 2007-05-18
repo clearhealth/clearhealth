@@ -388,7 +388,7 @@ class C_Referral extends Controller
 		
 		$this->view->assign_by_ref('request', $request);
 		$program =& Celini::newORDO('refProgram', $this->GET->get('program_id'));
-		$ppp = PersonParticipationProgram::getByProgramPatient($program->get('participation_program_id'),$request->get('patient_id'));
+		$ppp = PersonParticipationProgram::getByProgramPatient($program->get('refprogram_id'),$request->get('patient_id'));
 		//if patient doesn't already belong to program add them
 			
 		if (!$ppp->get('person_program_id') >0 ) {
@@ -400,6 +400,7 @@ class C_Referral extends Controller
 			$ppp->set('participation_program_id',$program->get('refprogram_id'));
 			$ppp->persist();
 		}
+		$this->assign("ppp",$ppp);
                 $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
                 $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
@@ -412,8 +413,26 @@ class C_Referral extends Controller
 		$this->_addOccurence($request);
 		$this->_setupEnums();
 		
-		//$this->_initPatientData($this->GET->getTyped('patient_id', 'int'));
-		
+		$enc = ORDataObject::factory('Encounter',$request->get('visit_id'));
+		$this->view->assign("enc",$enc);
+		$GLOBALS['loader']->requireOnce('datasources/Coding_List_DS.class.php');
+                //true is to show only distinct codes, type 1 is CPT
+                $cptDS = new Coding_List_DS($request->get('visit_id'),"1,3",true);
+                $cptDS->clearLabels();
+                $cptDS->setTypeDependentLabel("html","code","CPT");
+                $cpts = implode(',',$cptDS->toArray("code"));
+                $this->assign("cpts",$cpts);
+
+
+                $icdDS = new Coding_List_DS($request->get('visit_id'),"2",true);
+                $icdDS->clearLabels();
+                $icdDS->setTypeDependentLabel("html","code","ICD");
+                $icds = implode(",",$icdDS->toArray("code"));
+                $this->assign("icds",$icds);
+		if ($request->get('refRequest_id') > 0) {
+			$this->set('requestId',$request->get('refRequest_id'));	
+		}
+
 		return $this->view->render('edit.html');
 	}
 	
@@ -544,6 +563,9 @@ class C_Referral extends Controller
                 $request->persist();
                 $parProg = ORDataObject::factory('ParticipationProgram', $request->get("refprogram_id"));
 		$this->_continue_processing = false;
+		if ($request->get('refRequest_id') > 0) {
+			$this->set('requestId',$request->get('refRequest_id'));	
+		}
 		if ($parProg->get('adhoc') == 1) {
 			header('Location: ' . Celini::link('form') . "formId=" . $parProg->get('form_id') . "&requestId=" . $request->get('id'));
 		exit;
@@ -660,7 +682,6 @@ class C_Referral extends Controller
 		
 		$newRequest =& Celini::newORDO('refRequest', $request->get('id'));
 		$request =& $newRequest;
-		
 	}
 }
 

@@ -36,7 +36,7 @@ var confirmBox = new clniConfirmBox();
 				</td>
 			</tr>
 			<tr>
-				<td class="aRight">Program Options</td>
+				<td class="aRight"><a href="{link controller="ParticipationProgram" action="editConnect" defaultArg=$ppp->get('person_program_id')}" target="_NEW">Program Options</a></td>
 				<td>
 					{if $eligibility->get('hasEligibility')}
 					{$eligibility->actionOptions(true)}
@@ -115,14 +115,40 @@ var confirmBox = new clniConfirmBox();
 
 		</td>
 		<td style="width:49%;" valign="top">
-			{if $visitInfo != false}
 			
 			<fieldset>
 				<legend>Encounter Info</legend>
-				{$visitInfo}
-			</fieldset>
-			{/if}
-			
+{if $enc}
+{$enc->get("encounter_id")}
+<table>
+        <tr>
+          <td>Date of Encounter:</td>
+          <td>{$enc->get("date_of_treatment")}</td>
+        </tr>
+        <tr>
+          <td>Encounter Location:</td>
+          <td>{$enc->get("facility_name")}</td>
+        </tr>
+        <tr>
+          <td>Reason:</td>
+          <td>{$enc->get_encounter_reason_print()}</td>
+        </tr>
+        <tr>
+          <td>Treating Provider:</td>
+          <td>{$enc->get_treating_person_print()}</td>
+        </tr>
+        <tr>
+          <td>Procedures:</td>
+	<td>{$cpts}</td>
+        </tr>
+        <tr>
+          <td>Diagnoses:</td>
+          <td>{$icds}</td>
+        </tr>
+</table>
+{else}
+This referral is not associated with an encounter.
+{/if}
 			<fieldset>
 				<legend>Notes/Comments</legend>
 				<div>
