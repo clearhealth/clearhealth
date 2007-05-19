@@ -36,7 +36,8 @@ var confirmBox = new clniConfirmBox();
 				</td>
 			</tr>
 			<tr>
-				<td class="aRight"><a href="{link controller="ParticipationProgram" action="editConnect" defaultArg=$ppp->get('person_program_id')}" target="_NEW">Program Options</a></td>
+				<td class="aRight"><a href="javascript:void(0);" onclick="window.open('{link pageType="minimal" controller="ParticipationProgram" action="editConnect" defaultArg=$ppp->get('person_program_id')}', 'subWin',
+'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');">Program Options</a></td>
 				<td>
 					{if $eligibility->get('hasEligibility')}
 					{$eligibility->actionOptions(true)}
@@ -119,7 +120,6 @@ var confirmBox = new clniConfirmBox();
 			<fieldset>
 				<legend>Encounter Info</legend>
 {if $enc}
-{$enc->get("encounter_id")}
 <table>
         <tr>
           <td>Date of Encounter:</td>

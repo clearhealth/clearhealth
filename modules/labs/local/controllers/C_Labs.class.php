@@ -95,9 +95,9 @@ class C_Labs extends Controller {
 	}
 	function actionEdit_edit($labOrderId=0) {
 		$labOrderId = (int)$labOrderId;
-		$encounterId = $this->GET->get('encounterId','int');
-		if ($encounterId > 0) {
-			$this->set("encounterId",$encounterId);
+		$externalId = $this->GET->get('externalId','int');
+		if ($externalId > 0) {
+			$this->set("externalId",$externalId);
 		}
 		$order= ORDataObject::factory("LabOrder",$labOrderId);
 		$em =& Celini::enumManagerInstance();
@@ -138,9 +138,9 @@ class C_Labs extends Controller {
 		if (isset($data['lab_order_id'])) $labOrderId = (int)$data['lab_order_id'];
 		$order = ORDataObject::factory("LabOrder",$labOrderId);
 		$order->populateArray($data);
-		if ($this->get('encounterId') > 0) {
-			$order->set('encounter_id',$this->get('encounterId'));
-			$this->set('encounterId',0);
+		if ($this->get('externalId') > 0) {
+			$order->set('external_id',$this->get('externalId'));
+			$this->set('externalId',0);
 		}
 		$order->persist();
 		$this->messages->addMessage("Order added successfully");

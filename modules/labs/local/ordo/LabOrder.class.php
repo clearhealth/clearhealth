@@ -17,7 +17,7 @@ class LabOrder extends ORDataObject {
 	var $ordering_provider		= '';
 	var $manual_service		= '';
 	var $manual_order_date		= '';
-	var $encounter_id		= '';
+	var $external_id		= '';
 	/**#@-*/
 
 

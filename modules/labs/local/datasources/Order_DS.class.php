@@ -13,8 +13,8 @@ class Order_DS extends Datasource_sql
 	var $_type = 'html';
 
 
-	function Order_DS($patientId = 0,$encounterId = 0) {
-		$encounterId = (int)$encounterId;
+	function Order_DS($patientId = 0,$externalId = 0) {
+		$externalId = (int)$externalId;
 		$labels = array(	
 			'last_name'=>'Last Name',
 			'first_name'=>'First Name',
@@ -35,8 +35,8 @@ class Order_DS extends Datasource_sql
 			unset($labels['first_name']);
 			unset($labels['record_number']);
 		}
-		if ($encounterId > 0) {
-			$where .= " and l.encounter_id = $encounterId"; 
+		if ($externalId > 0) {
+			$where .= " and l.external_id = $externalId"; 
 		}
 
 		$format = DateObject::getFormat();

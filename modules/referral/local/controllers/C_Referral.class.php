@@ -11,10 +11,12 @@ $loader->requireOnce('includes/clni/clniAudit.class.php');
 $loader->requireOnce('ordo/PersonParticipationProgram.class.php');
 $loader->requireOnce('datasources/refRequestList_DS.class.php');
 $loader->requireOnce('datasources/refProgramList_DS.class.php');
+$loader->requireOnce('datasources/FormDataByExternalByFormId_DS.class.php');
 
 class C_Referral extends Controller
 {
 	var $_request = null;
+	var $form_data_id = '';
 	
 	function C_Referral() {
 		parent::Controller();
@@ -478,13 +480,6 @@ class C_Referral extends Controller
 		$refvisit->set('refappointment_id',$request->get('refappointment_id'));
 		$refvisit->persist();
 	}
-	function processForm() {
-		$request = Celini::newORDO('refRequest');
-                $request->populateArray($_POST['refRequest']);
-                $request->set('refStatus', 1);
-                $request->persist();
-                $this->_request = $request;
-	}
 	function actionVisit($requestId = '', $formId = '') {
 		$request = '';
 		if (is_object($this->_request)) {
@@ -497,12 +492,13 @@ class C_Referral extends Controller
 			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
 			$formId = $parProg->get('form_id');
 		}
-		return $this->actionForm($formId);
+		return $this->actionFillout($formId);
 
 	}
-	function actionForm($formId,$requestId) {
+	function actionFillout($formId,$requestId) {
 		$formId = (int)$formId;
 		$requestId = (int)$requestId;
+                $formDataId = $this->_getFormDataId('participation',$formId);
 		
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$fc = new C_Form();
@@ -515,16 +511,20 @@ class C_Referral extends Controller
 		$parProg = ORDataObject::factory('ParticipationProgram',$perParProg->get('participation_program_id'));
 		$fc->view->assign("parProg",$parProg);
 
-		$fd = ORDataObject::factory("FormData");
+		$fd = ORDataObject::factory("FormData",$formDataId);
+		if (!$fd->isPopulated()) {
 		$fd->set("form_id",$formId);
-		$fd->set("external_id",$perParProg->get('person_program_id'));
+		$fd->set("external_id",$request->get('refRequest_id'));
 		$fd->persist();
+		}
 
 		$fc->view->assign("request",$request);
 
 		$GLOBALS['loader']->requireOnce("controllers/C_Coding.class.php");
                 $cc = new C_Coding();
-		$codingBlock = $cc->update_action_edit($fd->get("form_data_id"),$fd->get("form_data_id"));
+		//put coding block section in ajax submit mode
+		$cc->assign("ajaxSubmit",true);
+		$codingBlock = $cc->update_action_edit($request->get('refRequest_id'));
 		$fc->assign('codingBlock',$codingBlock);
 
 		$GLOBALS['loader']->requireOnce('datasources/Coding_List_DS.class.php');
@@ -535,26 +535,28 @@ class C_Referral extends Controller
 		$cpts = implode(',',$cptDS->toArray("code"));
 		$fc->assign("cpts",$cpts);
 		
-		
 		$icdDS = new Coding_List_DS($request->get('visit_id'),"2",true);
 		$icdDS->clearLabels();
 		$icdDS->setTypeDependentLabel("html","code","ICD");
 		$icds = implode(",",$icdDS->toArray("code"));
 		$fc->assign("icds",$icds);
+		$fc->view->assign('patientId',$this->get('patient_id','c_patient'));
 
-                return $fc->actionFillout_edit($formId);
+                return $fc->actionFillout_edit($formId,$fd->get('form_data_id'));
 	}
-	function update_action($refRequest_id = 0) {
-		//printf('<pre>%s</pre>', var_export($_POST['refRequest'] , true));
-		$request =& Celini::newORDO('refRequest', $refRequest_id);
-		$this->_request =& $request;
-		$request->populate_array($_POST['refRequest']);
-		$request->set('refStatus', 1);
-		$request->persist();
-		$this->_updatePatientEligibility($request);
-		//$request->persist();
+	function processFillout_edit($formId) {
+                $formId = (int)$_POST['form_id'];
+                $formDataId = $this->_getFormDataId($_POST['filloutType'],$formId);
 		
-	}
+                $this->form_data_id = $formDataId;
+                $this->formId = $formId;
+                $GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
+                $form_controller = new C_Form();
+                $form_controller->setExternalId($this->get('requestId'));
+                $form_controller->processFillout_edit($formId, $this->form_data_id);
+                $this->form_data_id = $form_controller->form_data_id;
+        }
+
 	function processEdit($refRequest_id = 0) {
                 $request = ORDataObject::factory('refRequest', $refRequest_id);
                 $this->_request = $request;
@@ -567,7 +569,7 @@ class C_Referral extends Controller
 			$this->set('requestId',$request->get('refRequest_id'));	
 		}
 		if ($parProg->get('adhoc') == 1) {
-			header('Location: ' . Celini::link('form') . "formId=" . $parProg->get('form_id') . "&requestId=" . $request->get('id'));
+			header('Location: ' . Celini::link('fillout') . "formId=" . $parProg->get('form_id') . "&requestId=" . $request->get('id'));
 		exit;
 		}
 		header('Location: ' . Celini::link('view/' . $request->get('id')) );
@@ -617,71 +619,20 @@ class C_Referral extends Controller
 		$this->view->assign_by_ref('requestListGrid', $requestListGrid);
 		return $this->view->fetch(Celini::getTemplatePath('/referral/' . $this->template_mod . '_summary.html'));
 	}
+	function _getFormDataId($filloutType = 'participation',$formId) {
+                $formDataId = 0;
+                switch($filloutType) {
+                  case 'participation':
+                        $fdDS =  new FormDataByExternalByFormId_DS($this->get('requestId'),$formId);
+                        $fdDS->rewind();
+                        $row = $fdDS->get();
+
+                        if (is_array($row)) {
+                                $formDataId = $row['form_data_id'];
+                        }
+                }
+                return $formDataId;
+        }
 	
-	/**
-	 * Sets up the environment and loads C_Document
-	 *
-	 * @access private
-	 */
-	function _initDocument(&$request) {
-		// See if this info is available from CHLCare's session.  If it isn't, fake it.
-		if (!isset($_SESSION['patientRow']['patient_id']) || empty($_SESSION['patientRow']['patient_id'])) {
-			$_SESSION['patientRow']['patient_id'] = $request->get('patient_id');
-		}
-		elseif (!isset($_SESSION['patientRow'])) {
-			$_SESSION['patientRow'] = array('patient_id', $request->get('patient_id'));
-		}
-		
-		$controller =& new C_ReferralAttachment();
-		$this->view->assign('documentList', $controller->actionList($request->get('id')));
-		
-		if ($request->get('id') > 0) {
-			$session =& Celini::sessionInstance();
-			$session->set('DocSmart:storableForm', 
-				array(
-					'controller' => 'ReferralAttachment',
-					'extra' => 'refRequest_id=' . EnforceType::int($request->get('id'))
-				)
-			);
-			
-			$redirectUrl = Celini::link('list', 'ReferralAttachment', false, $request->get('id')); 
-			$this->set('redirectUrl', $redirectUrl, 'C_DocSmartStorable');
-		}
-	}
-	
-	
-/*	function _initPatientData($patient_id) {
-		if ($patient_id <= 0) {
-			return;
-		}
-		
-		global $loader;
-		if ($loader->requireOnce('includes/chlUtility.class.php')) {
-			chlUtility::loadPatientInfo($patient_id);
-		}
-	}*/
-	
-	
-	/**
-	 * @access private
-	 * @todo Consider refractoring into it's own object?  The code in the while() loop should be
-	 *    a Visitor once collections are capable of being visited.
-	 */
-	function _updatePatientEligibility(&$request) {
-		$patientEligibility =& Celini::newORDO('refPatientEligibility',
-			array($request->get('refprogram_id'), $request->get('patient_id')),
-			'ByProgramAndPatient');
-		if (isset($_POST['refPatientEligibility'])) {
-			$patientEligibility->populateArray($_POST['refPatientEligibility']);
-			$patientEligibility->persist();
-		}
-		
-		$GLOBALS['loader']->requireOnce('includes/refEligibilityForRequestChanger.class.php');
-		$changer =& new refEligibilityForRequestChanger($patientEligibility);
-		$changer->doChange();
-		
-		$newRequest =& Celini::newORDO('refRequest', $request->get('id'));
-		$request =& $newRequest;
-	}
 }
 
