@@ -36,7 +36,7 @@ function smarty_function_clni_widget_form($params, &$smarty)
             case 'name':
                 $$_key = (string)$_val;
                 break;
-            case 'encounterId':
+            case 'externalId':
                 $$_key = (int)$_val;
                 break;
 
@@ -54,11 +54,10 @@ function smarty_function_clni_widget_form($params, &$smarty)
         
     if (!isset($patientId)) $patientId = 0;
     if (!isset($name)) $name = '';
-    if (!isset($encounterId)) $encounterId = '';
-    
+    if (!isset($externalId)) $externalId = '';
     $GLOBALS['loader']->requireOnce('controllers/C_WidgetForm.class.php');
     $cwf = new C_WidgetForm();
-    $display = $cwf->actionShowSingle_view($patientId,$name,$encounterId);
+    $display = $cwf->actionShowSingle_view($patientId,$name,$externalId);
     $_html_result = $display;
 
     return $_html_result;
