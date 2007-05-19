@@ -153,7 +153,7 @@ class C_Coding extends Controller {
 			$this->view->assign('editcodingdata',$coding_data_id);
 		}
 		// tie in for calculating how much this encounter will be billed for when closed
-		$this->_calculateEncounterFees($encounter_id);
+		$this->_CalculateEncounterFees($encounter_id);
 
 		// The foreign id is irrelevant, it is the coding data id that should drive out this process.
 		$code_data =& Celini::newORDO('CodingData',$coding_data_id);
@@ -545,8 +545,7 @@ class C_Coding extends Controller {
 		else {
 			$this->super = "";
 		}	
-		
-
+		if (! isset($_POST['ajaxSubmit'])) {	
 		$encounter =& Celini::newORDO('Encounter',$this->foreign_id);
 
 		// get the patients primary insured relationship
@@ -564,7 +563,7 @@ class C_Coding extends Controller {
 			ORdataObject::Factory_include('FeeSchedule');
 			$feeSchedule =& FeeSchedule::defaultFeeSchedule();
 		}
-
+		}
 
 		if (!isset($data['parent_codes'])) {
 			$data['parent_codes'] = array();

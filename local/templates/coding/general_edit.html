@@ -1,6 +1,8 @@
 {assign var='codingsubmit' value=true}
+{if !$ajaxSubmit}
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 <input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
+{/if}
 {include file='coding/general_update.html'}
 
 {literal}

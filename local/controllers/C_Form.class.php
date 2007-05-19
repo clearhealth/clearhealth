@@ -124,7 +124,7 @@ class C_Form extends Controller {
 
 	function actionFillout_edit($form_id = 0,$form_data_id = 0) {
 		$form_data_id = EnforceType::int($form_data_id);
-		$encounterId = $this->GET->get("encounterId","int");
+		$externalId = $this->GET->get("externalId","int");
 
 		$retTo = "";
 		if ($this->GET->exists('returnTo')) {
@@ -145,8 +145,8 @@ class C_Form extends Controller {
 				$form_data_id = $this->form_data_id;
 			}
 			$formAction = Celini::link('fillout',true,true,$form_id)."form_data_id=$form_data_id$retTo";
-			if ($encounterId > 0) {
-				$formAction .= "&encounterId=$encounterId"; 
+			if ($externalId > 0) {
+				$formAction .= "&externalId=$externalId"; 
 			}
 			$this->assign('FORM_ACTION',$formAction);
 			$data =& ORDataObject::factory('FormData',$form_data_id);

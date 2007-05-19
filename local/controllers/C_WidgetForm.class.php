@@ -160,15 +160,6 @@ class C_WidgetForm extends C_CRUD {
                         if (is_array($row)) {
                                 $formDataId = $row['form_data_id'];
                         }
-		  case 'participation':
-                        $fdDS =  new FormDataByExternalByFormId_DS($this->get('requestId','c_referral'),$formId);
-			//return $fdDS->preview();
-                        $fdDS->rewind();
-                        $row = $fdDS->get();
-
-                        if (is_array($row)) {
-                                $formDataId = $row['form_data_id'];
-                        }
                 }
 		return $formDataId;
 	}

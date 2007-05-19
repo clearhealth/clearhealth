@@ -1,3 +1,4 @@
+<div id="codingBlock">
 {head type="js"}
 var selectVisible=true;
 var superBillVisible=false;
@@ -41,8 +42,12 @@ function superbillPopup() {
         HTML_AJAX.call('coding','ajaxSuperbill',showPopup);
 }
 {/head}
-
+{if $ajaxSubmit}
+<form action="{$base_uri}index.php/Coding/update" id="ajaxCodingForm" method="post" autocomplete="off">
+<input type="hidden" name="process" value="true" />
+{else}
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
+{/if}
 <input type="hidden" name="foreign_id" value="{$foreign_id}">
 <div id="popupDialog" > </div>
 {if !$encounter || $encounter->get('status') != 'closed'}
@@ -111,34 +116,43 @@ function superbillPopup() {
 			  			<input TYPE="hidden" name="child_codes[{$code.code_id}]" value="{$code.code_id}">
 			  			{if $smarty.foreach.icd_list.first}
 						<strong>{$code.description}</strong><br />
-						{else}
-						{$code.description}<br />
-						{/if}
-						{/if}
-						{/if}
-						{/foreach}
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="right">
+					{else}
+					{$code.description}<br />
+					{/if}
+					{/if}
+					{/if}
+					{/foreach}
+					</div>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td colspan="2" align="right">
+	{if $ajaxSubmit}
+	{if $editcodingdata}
+		<input type="button" onClick="formSubmit('ajaxCodingForm','codingBlock');" name="updateCode[{$editcodingdata}]" value="Edit Claim Line">
+		{else}
+			<input type="button" onClick="formSubmit('ajaxCodingForm','codingBlock');" value="Add Claim Line">
+		{/if}
+		{else}
 		{if $editcodingdata}
 			<input type="submit" name="updateCode[{$editcodingdata}]" value="Edit Claim Line">
 		{else}
 			<input type="submit" name="saveCode" value="Add Claim Line">
+		{/if}
 		{/if}
   		</td>
 	</tr>
 </table>
 </fieldset>
 
-
+{if !$ajaxSubmit}
 {if !$incodingtemplate}
 {clni_register_validation_rule id="parent_code" rule="hascpt"}
 {clni_register_validation_rule id="child_code" rule="hasicd"}
+{/if}
 {/if}
 {/if}
 <table><tr><td valign='top'>
@@ -187,7 +201,6 @@ Tooth: {$code.tooth} Side {$code.toothside}
 
 <script language="javascript">
  
-{if $encounter && $encounter->value('status') != 'closed'}
 {literal}
 function setupAutoComplete(){
 	var ac = new procedureSuggest('parent_code','parent_id',false,
@@ -197,7 +210,6 @@ function setupAutoComplete(){
 			function(suggest) { suggest.params = [$('superbillBox').checked]; });
 }
 {/literal}
-{/if}
 {literal}
 
 var CPTSearch = function cpt_search(searchString) {
@@ -323,7 +335,6 @@ function addCPTCode() {
 }
 
 {/literal}
-{if $encounter && $encounter->value('status') != 'closed'}
 setupAutoComplete();
-{/if}
 </script>
+</div>
