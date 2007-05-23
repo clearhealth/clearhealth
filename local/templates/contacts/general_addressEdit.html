@@ -4,7 +4,7 @@
 		<td><input id="addrName" name="address[name]" size="20" value="{$address->get('name')}"></td>
 		<td><label>{l}Type{/l}:</label> </td>
 		<td>
-			<select name="address[type]" class="requiredIfAny" onclick="updateAddrName(this)">
+			<select name="address[address_type]" class="requiredIfAny" onclick="updateAddrName(this)">
 				<option></option>
 				{html_options options=$address->getTypeList() selected=$address->get('type')}
 			</select>
@@ -56,7 +56,7 @@
 			{if $address->get('address_id') > 0}
 				<input type="hidden" name="address[address_id]" value="{$address->get('address_id')}">
 			{/if}
-			<input type="submit" {if $address->get('address_id') > 0}value="Update"><input type="submit" value="Add as New" name="address[add_as_new]">{else}value="Add3" onClick="this.submit();">{/if}
+			<input type="submit" {if $address->get('address_id') > 0}value="Update"><input type="submit" value="Add as New" name="address[add_as_new]">{else}value="Add" onClick="this.submit();">{/if}
 		</td>
 	</tr>
 </table>
