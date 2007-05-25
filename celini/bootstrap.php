@@ -67,6 +67,17 @@ if (file_exists(APP_ROOT."/local/config.php") && filesize(APP_ROOT."/local/confi
 
 require_once CELINI_ROOT."/config.php";
 
+if (isset($GLOBALS['config']['maintenanceMode']) && $GLOBALS['config']['maintenanceMode'] === true) {
+	$f = APP_ROOT . "/user/maintenance.tpl.html";
+  if (file_exists($f)) {
+	require_once($f);
+	exit;	
+  }
+
+}
+
+
+
 require_once CELINI_ROOT."/includes/FileLoader.class.php";
 require_once CELINI_ROOT."/includes/FileFinder.class.php";
 $finder =& new FileFinder();
