@@ -436,7 +436,7 @@ class Person extends ORDataObject {
 
 	
 	function get_addresses() {
-		$a = new PersonAddress();
+		$a = ORDataObject::factory('PersonAddress');
 		return $a->addressList($this->get('id'));
 	}
 
