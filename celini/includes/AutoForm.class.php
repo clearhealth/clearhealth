@@ -78,7 +78,7 @@ class AutoForm {
 					$line .="<input type='text' id='{$inputID}' name='{$inputName}' value=\"".$obj->get($field)."\">";
 				break;
 				case "X":
-					$line .="<textarea id='{$inputID}' name='{$inputName}'>".$obj->get($field)."</textarea>";
+					$line .="<textarea id='{$inputID}' cols='45' rows='10' name='{$inputName}'>".$obj->get($field)."</textarea>";
 				break;
 				case "B":
 					$line .="<input type='file' id='{$inputID}' name='{$inputName}' value=\"".$obj->get($field)."\">";

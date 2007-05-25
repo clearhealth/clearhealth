@@ -22,7 +22,7 @@ class C_CRUD extends Controller{
 		return $this->actionEdit(0);
 	}
 
-	function actionEdit($id) {
+	function actionEdit($id = 0) {
 		$ordo = '';
 		if (!is_object($this->_ordo)) {
 		  if (!$id > 0) {
