@@ -29,9 +29,81 @@ table td {
 <table>
 	<tr>
 		<td width="39%">
-			<fieldset>
-				<legend>Referral Request: {$parProg->get('name')}</legend>
-				{include file="referral/general_chunkRequestInfo.html"}
+	<fieldset>
+		<legend>Referral Request: {$parProg->get('name')}</legend>
+		
+		<table class="tableForm">
+			<tr>
+				<td class="aRight">Request Date</td>
+				<td>
+					{$request->get('date')|date_format:'%B %e, %Y'}	
+					<input type="hidden" name="refRequest[date]" value="{$request->get('date')|date_format:'%m/%d/%Y'}" />
+				</td>
+			</tr>
+			<tr>
+				<td class="aRight"><a href="javascript:void(0);" onclick="window.open('{link pageType="minimal" controller="ParticipationProgram" action="editConnect" defaultArg=$ppp->get('person_program_id')}', 'subWin',
+'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');">Program Options</a></td>
+				<td>
+					{if $options->get('hasEligibility')}
+					{$options->actionOptions(true)}
+					{/if}
+				</td>
+			</tr>
+			<tr>
+				<td class="aRight">Specialist Needed</td>
+				<td>
+					<select name="refRequest[refSpecialty]" style="z-index:1">
+						{html_options options=$refSpecialty selected=$request->get('refSpecialty')}
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="aRight">Translator Needed</td>
+				<td>
+					{html_radios name='refRequest[translator]' id='refRequest[translator]' options=$yesNoArray selected=$request->get('translator_raw')}
+				</td>
+			</tr>
+			<tr>
+				<td>Referral Service</td>
+				<td>{html_options name="refRequest['translator']" options=$em->enumArray('referral_service')}</td>
+			</tr>
+			
+			<tr>
+				<td class="aRight">Transportation Needed</td>
+				<td>
+					{html_radios name='refRequest[transportation]' id='refRequest[transportation]' options=$yesNoArray selected=$request->get('transportation_raw')}
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="aRight">Requested Slot</td>
+				<td>
+					<select name="refRequest[refRequested_day]">
+						{html_options options=$refRequested_day selected=$request->get('refRequested_day')}
+					</select>
+					
+					<select name="refRequest[refRequested_time]">
+						{html_options options=$refRequested_time selected=$request->get('refRequested_time')}
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<span class="legend">Referral Assessment/Reason:</span>
+					<textarea style="width:100%" name="refRequest[reason]">{$request->get('reason')}</textarea>
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<span class="legend">Brief History with Diagnosis and Results</span>
+					<textarea style="width:100%" name="refRequest[history]">{$request->get('history')}</textarea>
+				</td>
+			</tr>
+			</table>
+			
 			</fieldset>
 		</td>
 		<td width="20%">
@@ -111,12 +183,38 @@ table td {
 			<div>
 			</div>
 			</form>
-			{if $visitInfo != false}
-			<fieldset>
-				<legend>Visit Info</legend>
-				{$visitInfo}
+			<fieldset><legend>Encounter Info</legend>
+			{if $enc}
+<table>
+        <tr>
+          <td>Date of Encounter:</td>
+          <td>{$enc->get("date_of_treatment")}</td>
+        </tr>
+        <tr>
+          <td>Encounter Location:</td>
+          <td>{$enc->get("facility_name")}</td>
+        </tr>
+        <tr>
+          <td>Reason:</td>
+          <td>{$enc->get_encounter_reason_print()}</td>
+        </tr>
+        <tr>
+          <td>Treating Provider:</td>
+          <td>{$enc->get_treating_person_print()}</td>
+        </tr>
+        <tr>
+          <td>Procedures:</td>
+        <td>{$cpts}</td>
+        </tr>
+        <tr>
+          <td>Diagnoses:</td>
+          <td>{$icds}</td>
+        </tr>
+</table>
+{else}
+This referral is not associated with an encounter.
+{/if}
 			</fieldset>
-			{/if}
 			
 			{if $initiator}
 			Requestor: {$initiator->get('full_name')}

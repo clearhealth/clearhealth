@@ -22,43 +22,6 @@
 			{/if}
 			</td>
 		</tr>
-		{* todo display eligibility<tr>
-			<td>Program Eligibility</td>
-			<td>
-			</td>
-		</tr>*}
-		
-		{if $eligibilitySchema != 'Not Applicable'}
-		{*eligibility fix?
-		<tr>
-			<td>Eligible Thru</td>
-			<td>{todo permission fix}
-				{if true }
-				{clni_input_date name="refPatientEligibility[eligible_thru]" value=$request->get('eligible_thru')}
-				{else}
-				{if $request->get('eligible_thru') != '00/00/0000'}
-					{$request->get('eligible_thru')|date_format:'%B %e, %Y'}
-				{else}
-					Not set
-				{/if}
-				{/if}
-			</td>
-		</tr>*}
-		
-		<tr>
-			<td>Federal Poverty Level</td>
-			<td>
-			{*todo permission fix*}
-				{if true}
-				<select name="refPatientEligibility[federal_poverty_level]">
-					{html_options options=$fplList selected=$patientEligibility->get('federal_poverty_level')}
-				</select>
-				{else}
-					{$patientEligibility->value('federal_poverty_level')}
-				{/if}
-			</td>
-		</tr>
-		
 		<tr>
 			<td>Office Visit Fee</td>
 			<td>${$fplData->extra1}</td>
@@ -67,7 +30,6 @@
 			<td>Procedure Fee</td>
 			<td>${$fplData->extra2}</td>
 		</tr>
-		{/if}
 		<tr>
 			<td>Specialist Needed</td>
 			<td>

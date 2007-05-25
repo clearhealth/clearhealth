@@ -116,6 +116,32 @@ class C_Referral extends Controller
 		$request =& Celini::newORDO('refRequest', $refRequest_id);
 		$this->_request =& $request;
 		$this->view->assign_by_ref('request', $request);
+		$program =& Celini::newORDO('refProgram', $this->GET->get('program_id'));
+                $ppp = PersonParticipationProgram::getByProgramPatient($program->get('refprogram_id'),$request->get('patient_id'));
+                //if patient doesn't already belong to program add them
+
+                if (!$ppp->get('person_program_id') >0 ) {
+                        $ppp->set('start',date('Y-m-d'));
+                        $ppp->set('end',date('Y-m-d',strtotime ('today +1 year')));
+                        $ppp->set('expires',0);
+                        $ppp->set('active',1);
+                        $ppp->set('person_id',$request->get('patient_id'));
+                        $ppp->set('participation_program_id',$program->get('refprogram_id'));
+                        $ppp->persist();
+                }
+                $this->assign("ppp",$ppp);
+                $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id'));
+                $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
+                $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
+                $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
+                $this->view->assign('options', $options);
+                $this->view->assign_by_ref('refProgram', $program);
+                $this->view->assign_by_ref('parProg', $parProg);
+                $this->view->assign_by_ref('personParProgram', $ppp);
+		$enc = ORDataObject::factory('Encounter',$request->get('visit_id'));
+		$this->view->assign("enc",$enc);
+
+
 		$requester =& Celini::newORDO('refUser',$request->get('initiator_id'),'ByExternalUserId');
 		$this->view->assign_by_ref('requester',$requester);
 		
@@ -144,24 +170,16 @@ class C_Referral extends Controller
 		$program =& Celini::newORDO('refProgram', $request->get('refprogram_id'));
 		$this->view->assign_by_ref('refProgram', $program);
 
-		$ppp = PersonParticipationProgram::getByProgramPatient($program->get('refprogram_id'),$request->get('patient_id'));
-                $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id'));
-                $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
-                $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
-                $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
-                $this->view->assign('options', $options);
-		$this->view->assign_by_ref('parProg', $parProg);
 		
 		$this->view->assign('FORM_ACTION', Celini::link('view/' . $request->get('id'), 'referral'));
 		
 		// url to attach files
 		$this->view->assign('PRINT_URL', Celini::link('view/' . $request->get('id'), 'referral', 'minimal'));
 
-		$this->_initDocument($request);
+		//$this->_initDocument($request);
 		$this->assign_by_ref('initiator', $request->get('initiator'));
 		
 		//$this->_initPatientData($request->get('patient_id'));
-		
 		$me =& Me::getInstance();
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		
@@ -170,21 +188,16 @@ class C_Referral extends Controller
 		$this->view->assign('editReferralEligibility', true);
 		$this->view->assign('editTextFields', true);
 		
-		// setup eligibility data for patient
-		$patientEligibility =& Celini::newORDO('refPatientEligibility', 
-			array($request->get('refprogram_id'), $request->get('patient_id')),
-			'ByProgramAndPatient'
-		);
-		$this->view->assign_by_ref('patientEligibility', $patientEligibility);
 		
 		$em =& Celini::enumManagerInstance();
+		$this->view->assign('em',$em);
 		$session =& Celini::sessionInstance();
 		$session->set('referral:currentProgramId', $request->get('refprogram_id'));
 		$fplEnumList =& $em->enumList('federal_poverty_level');
-		if ($patientEligibility->get('federal_poverty_level') > 0) {
+		if ($options->get('federal_poverty_level') > 0) {
 			while ($fplEnumList->valid()) {
 				$fplData =& $fplEnumList->current();
-				if ($fplData->key == $patientEligibility->get('federal_poverty_level')) {
+				if ($fplData->key == $options->get('federal_poverty_level')) {
 					break;
 				}
 				$fplEnumList->next();
@@ -195,21 +208,7 @@ class C_Referral extends Controller
 		
 		$fplList = $em->enumArray('federal_poverty_level');
 		$this->view->assign('fplList', $fplList);
-		
-		
-		switch($request->get('refStatus')) {
-			//case 3 : // Appointment Pending
-				//return $this->_appointmentPendingView($request);
-				//break;
-			
-			case 5 : // Appointment Kept
-				return $this->_appointmentKeptView($request);
-				break;
-			
-			default :
-				return $this->_defaultView($request);
-				break;
-		}
+		return $this->_defaultView($request);
 	}
 	
 	function processView($refRequest_id) {
@@ -290,49 +289,22 @@ class C_Referral extends Controller
 		$me =& Me::getInstance();
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		
-		//TODO fix permission
-		//$isManager = $person->isType('referral manager', $request->get('refprogram_id'));
-		$isManager = true;
-		//$isInitiator = $person->isType('referral initiator', $request->get('refprogram_id'));
-		$isInitiator = true; 
-		if ($isManager || $isInitiator) {
-			$refStatusList =& $em->enumList('refStatus');
-			$refStatuses = $refStatusList->toArray();
-			$refStatusLinks = array();
-			foreach ($refStatuses as $key => $value) {
-				if ((($request->get('refStatus') == 2 || $request->get('refStatus') == 3 || $request->get('refStatus') == 4 || $request->get('refStatus') == 6) && preg_match('/Appointment/', $value)) || 
-					preg_match('/Return/', $value)) {
-					// Managers can't fiddle with appointment statuses
-					//todo fix permissions
-					
-					// create URL
-					switch ($value) {
-						case 'Appointment Kept' :
-							$refStatusLinks[$key] = Celini::link('visit', 'Referral') . 'refRequest_id=' . $request->get('id'). "&process=true";
-							break;
-						
-						case 'Appointment Pending' :
-							// no need to set it to pending again
-							break;
-						
-						case 'Returned':
-							if (!$isManager || preg_match('/Appointment/', $request->value('refStatus'))) {
-								break;
-							}
-						
-						case 'Appointment Confirmed' :
-							if ($request->value('refStatus') == 'Appointment Confirmed') {
-								break;
-							}
-							
-						default :
-							$refStatusLinks[$key] = Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $key;
-							break;
-					}
-				}
-				elseif ($request->get('refStatus') == 7) {
+		$refStatusList =& $em->enumList('refStatus');
+		$refStatuses = $refStatusList->toArray();
+		$refStatusLinks = array();
+		foreach ($refStatuses as $key => $value) {
+			// Managers can't fiddle with appointment statuses
+			//todo fix permissions
+			
+			// create URL
+			switch ($value) {
+				case 'Appointment Kept' :
+					$refStatusLinks[$key] = Celini::link('visit', 'Referral') . 'refRequest_id=' . $request->get('id'). "&process=true";
+					break;
+			default :
 					$refStatusLinks[$key] = Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $key;
-				}
+					break;
+					//$refStatusLinks[$key] = Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $key;
 			}
 			$this->view->assign('refStatusLinks', $refStatusLinks);
 		}
@@ -407,7 +379,7 @@ class C_Referral extends Controller
                 $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
-                $this->view->assign('eligibility', $options);
+                $this->view->assign('options', $options);
 		$this->view->assign_by_ref('refProgram', $program);
 		$this->view->assign_by_ref('parProg', $parProg);
 		$this->view->assign_by_ref('personParProgram', $ppp);
@@ -482,6 +454,8 @@ class C_Referral extends Controller
 	}
 	function actionVisit($requestId = '', $formId = '') {
 		$request = '';
+		$requestId = (int)$requestId;
+		$formId = (int)$formId;
 		if (is_object($this->_request)) {
 			$request = $this->_request;
 		}
@@ -492,7 +466,8 @@ class C_Referral extends Controller
 			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
 			$formId = $parProg->get('form_id');
 		}
-		return $this->actionFillout($formId);
+		
+		return $this->actionFillout($formId,$requestId);
 
 	}
 	function actionFillout($formId,$requestId) {
@@ -541,6 +516,10 @@ class C_Referral extends Controller
 		$icds = implode(",",$icdDS->toArray("code"));
 		$fc->assign("icds",$icds);
 		$fc->view->assign('patientId',$this->get('patient_id','c_patient'));
+		if ($request->get('refappointment_id') > 0) {
+		$appointment =& Celini::newORDO('refAppointment', $request->get('refappointment_id'));
+		$fc->assign('appointment', $appointment);
+		}
 
                 return $fc->actionFillout_edit($formId,$fd->get('form_data_id'));
 	}
