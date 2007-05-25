@@ -52,6 +52,13 @@ class C_Base_Access extends Controller {
 			$status = $this->login($_POST['username'],$_POST['password']);
 		}
 		if ($status) {
+			if (	isset($GLOBALS['config']['maintenanceMode']) &&
+				$GLOBALS['config']['maintenanceMode'] === 'splash' &&
+				!$_SESSION['clicked_through_splash'] == true) {
+				
+				header ("Location: ".Celini::link('splash','Access'));
+				exit;
+			}
 			header ("Location: ".Celini::link('default','Access'));
 			exit;
 		}
@@ -173,6 +180,16 @@ class C_Base_Access extends Controller {
 		$pwreset->drop();
 		location('Location: '.Celini::link('login','access'));
 		die();
+	}
+	function actionSplash() {
+		$ordo = ORDataObject::factory("Splash",0);
+		$this->view->assign("ordo",$ordo);
+		return $this->view->render('splash.html');
+	}
+	function processSplash()  {
+		$_SESSION['clicked_through_splash'] = true;
+		header ("Location: ".Celini::link('default','Access'));
+                exit;
 	}
 }
 ?>
