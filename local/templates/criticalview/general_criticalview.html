@@ -58,14 +58,14 @@ function toggleVis(id) {
 		{/if}
 	{/foreach}
 	</td>
-	<td>{if $address}{$address.line1} {$address.line2} - {$address.city}, {$address.state} {$address.postal_code}{else}No Address{/if}</td>
+	<td>{if $address}{$address.line1} {$address.line2} - {$address.city}, {$address.state} {$address.postal_code} Home{else}No Home Address{/if}</td>
 	<td>Default Provider:<b> {$person_data->get('print_default_provider')}</b></td>
 </tr>
 <tr>
 	<td>ID: <b>{$person_data->get('record_number')}</b></td>
 	<td>{$person_data->get('print_gender')} - {$person_data->get('print_marital_status')}</td>
 	<td>DOB: {$person_data->get('date_of_birth')} (Age: {$person_data->get('age')})</td>
-	<td class="demostathover"><a style="test-decoration:none;" href="#">Demographic Statistics</a><span class="demostats">{$patientStatisticsView}</span></td>
+	<td class="demostathover"><a style="text-decoration:none;" href="#">Demographic Statistics</a><span class="demostats">{$patientStatisticsView}</span></td>
 	<td>Status: {if $person_data->get('inactive') == 0}<span class="green">Active{else}<span class="red>Inactive{/if}</span></td>
 </tr>
 </table>
