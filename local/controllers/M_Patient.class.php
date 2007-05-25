@@ -331,7 +331,7 @@ class M_Patient extends Manager {
 				unset($data['address_id']);
 			}
 			$address =& ORDataObject::factory('PersonAddress',$id,$patient_id);
-			$address->helper->populateFromArray($address,$data);
+			$address->populateArray($data);
 			if ($address->persist()) {
 				$this->messages->addMessage('Address Updated');
 			}

@@ -32,7 +32,14 @@ class C_CriticalView extends Controller {
                 $GLOBALS['loader']->requireOnce('controllers/C_PatientStatistics.class.php');
                 $patientStatsController =& new C_PatientStatistics();
 		$p =& $this->_loadPatient($this->get('patient_id','c_patient'));
-                $this->assign_by_ref("person_data",$p);		
+                $this->assign_by_ref("person_data",$p);	
+		$adds = $p->get_addresses();	
+		foreach ($adds as $add) {
+			if ($add['type'] == 'Home') {
+				$this->assign("address",$add);
+				break;
+			}
+		}
 
                 $this->view->assign('patientStatisticsView', $patientStatsController->actionView($this->get('patient_id','c_patient')));
 
