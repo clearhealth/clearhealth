@@ -64,12 +64,17 @@ class CalendarDescriptionDay {
 		$profile =& Celini::getCurrentUserProfile();
 		$data =& CalendarData::getInstance();
                 $filters = $data->getFilters();
-                if(is_null($filters['building']->getValue())) {
-                	$room =& ORDataObject::factory('Room',$profile->getDefaultLocationId());
+                if(is_null($filters['building']->getValue()) || count($filters['building']->getValue()) == 0) {
+			if ($profile->getDefaultLocationId()) {
+                	$room =& ORDataObject::factory('Room',$profile->getDefaultLocationId());			
+			}
+			else {
+                	$room = Room::getFirstRoom();			
+			}
                         $filters['building']->setValue(array($room->get('building_id')));
                 }
                 $building_list = implode(",",$filters['building']->getValue());
-
+		
                 $sql = "select DATE_FORMAT(MIN(start),'%H') as start, DATE_FORMAT(MAX(end),'%H') as end from event ev left join appointment ap on ap.event_id = ev.event_id left join schedule_event se on se.event_id = ev.event_id left join rooms r on r.id = ap.room_id left join buildings b on b.id = r.building_id left join event_group eg on eg.event_group_id = se.event_group_id  left join rooms r2 on r2.id = eg.room_id left join buildings b2 on b2.id = r2.building_id
 where (r.building_id 
                         IN(" .$building_list . ") OR r2.building_id 
