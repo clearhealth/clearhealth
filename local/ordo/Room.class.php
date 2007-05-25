@@ -81,6 +81,17 @@ class Room extends ORDataObject{
 
 		return $rooms;
 	}
+	function getFirstRoom() {
+                $rooms = array();
+                $sql = "SELECT r.id from rooms r";
+		$db = new clniDB();
+                $result = $db->execute($sql);
+                while ($result && !$result->EOF) {
+                        $room = new Room($result->fields['id']);
+                        return $room;
+                }
+                return false;
+        }
 	
 	/**
 	 * Convenience function to get an array of many objects
