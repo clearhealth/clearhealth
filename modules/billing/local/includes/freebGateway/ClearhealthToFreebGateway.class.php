@@ -532,7 +532,7 @@ class ClearhealthToFreebGateway
 		$relationships = InsuredRelationship::fromPersonId($patient->get('id'));
 
 		if ($relationships == null) {
-			$this->messages->addMessage("This Patient has no Insurance Information to register the claim data, please add insurance information and try again <br>");
+			$this->_caller->messages->addMessage("This Patient has no Insurance Information to register the claim data, please add insurance information and try again <br>");
 			return false;
 		}
 
@@ -758,7 +758,7 @@ class ClearhealthToFreebGateway
 			//	var_dump($freeb_error);
 				if($freeb_error_number==110){// 110 = Unknown Registration name. 
 					//FreeB does not know what to do with this type of person.
-				$this->messages->addMessage("FreeB did not understand person type $encounter_person_type");
+				$this->_caller->messages->addMessage("FreeB did not understand person type $encounter_person_type");
 				
 					continue;
 				}else{// lets give a fuller debugging message!!
