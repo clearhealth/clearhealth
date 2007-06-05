@@ -3,6 +3,7 @@ $loader->requireOnce('/controllers/C_CRUD.class.php');
 $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce('includes/transaction/TransactionManager.class.php');
 $loader->requireOnce('datasources/FormDataByExternalByFormId_DS.class.php');
+$loader->requireOnce('datasources/FormDataByEncounterByFormId_DS.class.php');
 $loader->requireOnce('datasources/WidgetForm_DS.class.php');
 $loader->requireOnce('datasources/Patient_WidgetFormCriticalList_DS.class.php');
 
@@ -152,7 +153,7 @@ class C_WidgetForm extends C_CRUD {
 		$formDataId = 0;
 		switch($filloutType) {
                   case 'encounter':
-                        $fdDS =  new FormDataByExternalByFormId_DS($this->get('encounter_id','c_encounter'),$formId);
+                        $fdDS =  new FormDataByEncounterByFormId_DS($this->get('encounter_id','c_encounter'),$formId);
 			//return $fdDS->preview();
                         $fdDS->rewind();
                         $row = $fdDS->get();
@@ -182,7 +183,7 @@ class C_WidgetForm extends C_CRUD {
 		if ($this->formId > 0) {
 			$formId = $this->formId;
 		}
-		$formDataId = $this->_getFormDataId($filloutType,$formId);	
+		$formDataId = $this->_getFormDataId($filloutType,$formId);
 		$this->form_data_id = $formDataId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
