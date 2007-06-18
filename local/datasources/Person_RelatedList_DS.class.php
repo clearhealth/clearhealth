@@ -26,6 +26,7 @@ class Person_RelatedList_DS extends Datasource_sql
 			'left_name'     => 'Person',
 			'relation_type' => 'Relation Of',
 			'right_name'    => 'Relation',
+			'date_of_birth'	=> 'DOB',
 			'guarantor'	=> 'Guarantor?',
 			'action_delete' => ''
 		);
@@ -39,6 +40,7 @@ class Person_RelatedList_DS extends Datasource_sql
 						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
 						relation_type,
 						CONCAT_WS(' ',r.first_name, r.last_name) right_name,
+						r.date_of_birth,
 						r.person_id right_id,
 						p.person_id left_id,
 						if(guarantor=1,concat('Yes (R of P) #',guarantor_priority+1),'No') guarantor",
@@ -56,6 +58,7 @@ class Person_RelatedList_DS extends Datasource_sql
 						CONCAT_WS(' ',p.first_name, p.last_name) left_name,
 						p.person_id right_id,
 						r.person_id left_id,
+						r.date_of_birth,
 						if(guarantor=1,concat('Yes (P of R) #',guarantor_priority+1),'No') guarantor",
 					'from' 	=> "
 						person_person AS t
