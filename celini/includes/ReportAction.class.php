@@ -241,6 +241,8 @@ class ReportAction {
 				$view->assign_by_ref($key.'_flags',$reports[$key]['flags']);
 				//var_dump($key);
 			}
+			$em = EnumManager::getInstance();
+			$view->assign_by_ref('em',$em);
 
 			return $view->fetch($template);
 		}
