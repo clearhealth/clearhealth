@@ -65,6 +65,7 @@ function smarty_function_input($params, &$smarty)
             $data = $smarty->_tpl_vars['data']->allData();
             if (isset($data[$name])) {
                     $value = $data[$name]['value'];
+                    
             }
     }
 
@@ -94,6 +95,9 @@ function smarty_function_input($params, &$smarty)
                 break;
                 case "string":
                         $ret = "<input type='text' name=\"string[$name]\" value=\"$value\" id=\"$id\"$extra>";
+                break;
+                case "string-table":
+                        $ret = "<input type='text' name=\"$name\" value=\"$value\" id=\"$id\"$extra>";
                 break;
                 case "hidden":
                         $ret = "<input type='hidden' name=\"string[$name]\" value=\"$value\" id=\"$id\"$extra>";
