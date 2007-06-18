@@ -391,7 +391,7 @@ class C_Schedule extends Controller
 				$recurrence['end_date'] = $newend->toISO();
 				if($shorterror != true) {
 					$shorterror = true;
-					$this->messages->addMessage('Schedule Shortened',"The schedule creation wizard is limited to two years maximum.  Your schedule's end date was change to ".$newend->toString().".");
+					$this->messages->addMessage('Schedule Shortened',"The schedule creation wizard is limited to two years maximum.  Your schedule's end date was changed to ".$newend->toString().".");
 				}
 			} else {
 				$recurrence['end_date'] = $wizard->get('date_end');
