@@ -589,9 +589,10 @@ class C_Appointment extends Controller {
 				if (isset($search['patient_id'])) {
 					$patient = ORDataobject::factory('Patient',$search['patient_id']);
 				}
+				$rm = ORDataObject::factory('Room',$search['facility']);
 				foreach($ts as $stamp) {
 					$appLinks[] = '<a href="' . Celini::link('Day','CalendarDisplay') . 'date='. date('Y-m-d',$stamp). '&patient_id=' . (int)$search['patient_id']  . '">'. date('m/d/Y',$stamp) . '</a> '.
-	'<a href="' . Celini::link('Day','CalendarDisplay') . 'date=' . date('Y-m-d',$stamp) . '&start_time=' . date('H:i',$stamp) .'&end_time=' . date('H:i',$stamp+$amount) . '&patient_id='. (int)$search['patient_id'] . '&provider_id=' . (int)$search['provider'] . '">Schedule Appointment for ' . date('H:i',$stamp) . ' - ' . date('H:i',$stamp+$amount) . '</a>';
+	'<a href="' . Celini::link('Day','CalendarDisplay') . 'date=' . date('Y-m-d',$stamp) . '&start_time=' . date('H:i',$stamp) .'&end_time=' . date('H:i',$stamp+$amount) . '&patient_id='. (int)$search['patient_id'] . '&provider_id=' . (int)$search['provider'] . '&Filter[building][]=' . $rm->get('building_id') . '">Schedule Appointment for ' . date('H:i',$stamp) . ' - ' . date('H:i',$stamp+$amount) . '</a>';
 				}
 				$this->assign('appLinks',$appLinks);
 
