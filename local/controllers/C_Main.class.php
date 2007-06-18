@@ -53,6 +53,13 @@ class C_Main extends C_PageType {
 		if (isset($GLOBALS['config']['base_dir'])) {
 			$this->assign('base_dir', $GLOBALS['config']['base_dir']);
 		}
+		if (isset($_SESSION['defaultpractice'])) {
+			$this->set('defaultpractice',$_SESSION['defaultpractice']);
+		}
+		if ($this->_me->get_id() > 0) {
+			$this->set('user_id',$this->_me->get_id());
+
+		}
 	}
 
 	function display($display = '') {
