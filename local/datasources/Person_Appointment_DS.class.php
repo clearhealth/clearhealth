@@ -35,6 +35,7 @@ class Person_Appointment_DS extends Datasource_sql {
 			'length'	=> 'Time',
 			'title'		=> 'Title',
 			'reason'	=> 'Reason',
+			'appointment_code'	=> 'Code',
 			'provider'	=> 'Provider',
 			'location'	=> 'Location',
 		);
@@ -55,7 +56,7 @@ class Person_Appointment_DS extends Datasource_sql {
 							(mod(round(time_to_sec(end)-time_to_sec(start))/60,60)) ,'m') ),
 						concat(round((time_to_sec(end)-time_to_sec(start))/60),'m')
 					) length, concat(b.name,' -> ',r.name) location,
-					a.title, reason, concat_ws(', ',p.last_name,p.first_name) provider ",
+					a.title, reason, appointment_code, concat_ws(', ',p.last_name,p.first_name) provider,b.id as building_id",
 			'from' => 'appointment a inner join event e on a.event_id = e.event_id inner join rooms r on r.id = a.room_id inner join buildings b on b.id = r.building_id
 			left join person p on a.provider_id = p.person_id ',
 			'orderby' => 'start DESC',
@@ -63,7 +64,7 @@ class Person_Appointment_DS extends Datasource_sql {
 			),
 		$this->_labels);
 		$this->registerFilter('reason',array(&$this,'reasonFilter'));
-		$this->registerTemplate('start','<a href="'.Celini::link('day','CalendarDisplay').'date={$isoday}">{$start}</a>');
+		$this->registerTemplate('start','<a href="'.Celini::link('day','CalendarDisplay').'date={$isoday}&Filter[building][]={$building_id}">{$start}</a>');
 
 		$enum =& ORDataObject::factory('Enumeration');
 		$this->reasonLookup = $enum->get_enum_list('appointment_reasons');
