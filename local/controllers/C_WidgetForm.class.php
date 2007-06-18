@@ -97,7 +97,7 @@ class C_WidgetForm extends C_CRUD {
 				$wflist_ds = new $dsName($patient_id);
 			}
 			else {
-                        $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId);
+                        $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId); 
 			}
 			$wfDataGrid =& new sGrid($wflist_ds);
 			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
@@ -139,9 +139,12 @@ class C_WidgetForm extends C_CRUD {
                         }
                         else {
                                 $widget["form_list_link"] = Celini::link('view',"MedicalHistory",true). "#" . str_replace(' ','',$row['name']);
-                                $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"]). "&returnTo=" . $return_link;
+                                $widget["form_add_link"] = Celini::link('fillout',"Form",true, $row["form_id"])."form_id=0&form_data_id=0";
 				if ($encounterId >0) {
 					$widget["form_add_link"].= "&encounterId=$encounterId";
+				}
+				if (strlen($return_link) > 0) {
+				$widget["form_add_link"].= "&returnTo=" . $return_link;
 				}
                         }
 			$widgets[] = $widget;
@@ -154,7 +157,7 @@ class C_WidgetForm extends C_CRUD {
 		switch($filloutType) {
                   case 'encounter':
                         $fdDS =  new FormDataByEncounterByFormId_DS($this->get('encounter_id','c_encounter'),$formId);
-			//return $fdDS->preview();
+		//	return $fdDS->preview();
                         $fdDS->rewind();
                         $row = $fdDS->get();
 
@@ -187,8 +190,15 @@ class C_WidgetForm extends C_CRUD {
 		$this->form_data_id = $formDataId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
+		if ($this->get('encounter_id','c_encounter') > 0) {
+		$enc = ORDataObject::factory("Encounter",$this->get('encounter_id','c_encounter'));
+		if ($enc->get('status') == "open") {
+		$form_controller->view->assign('open',true);
+		}
+
+		}
 		$form_controller->view->assign('encounterId',$this->get('encounter_id','c_encounter'));
-		$form_controller->view->assign('encounterId',$this->get('requestId','c_request'));
+		$form_controller->view->assign('requestId',$this->get('requestId','c_request'));
 		$form_controller->view->assign('patientId',$this->get('patient_id','c_patient'));
 		return $form_controller->actionFillout_edit($formId, $this->form_data_id);
 	}
@@ -203,7 +213,8 @@ class C_WidgetForm extends C_CRUD {
 		$this->formId = $formId;
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$form_controller = new C_Form();
-		$form_controller->setExternalId($this->get('encounter_id','c_encounter'));
+		$form_controller->setExternalId($this->get('patient_id','c_patient'));
+		$form_controller->setEncounterId($this->get('encounter_id','c_encounter'));
 		$form_controller->processFillout_edit($formId, $this->form_data_id);
 		$this->form_data_id = $form_controller->form_data_id;
 	}
