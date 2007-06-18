@@ -395,7 +395,7 @@ class Person extends ORDataObject {
 					LEFT JOIN secondary_practice sp USING(person_id)
 				where {$where} AND " . implode(' OR ', $sqlPersonTypes) . "
 				GROUP BY p.person_id
-				order by last_name, first_name";
+				order by p.primary_practice_id, last_name, first_name";
 		$returnArray = $this->dbHelper->getAssoc($sql);
 		if ($blank) {
 			$tmp= array(''=>'');
