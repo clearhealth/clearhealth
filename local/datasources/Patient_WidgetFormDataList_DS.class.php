@@ -90,7 +90,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 		$this->_query['cols'] .= $this->case_sql;
 		$this->_labels = $labels;
 		
-		//echo $this->preview()."<br>";
+	//	echo $this->preview()."<br>";
 	}
 	
 	function _build_case_sql() {
@@ -102,12 +102,20 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
         	$value_name = $ar['name'];
             
             $case_sql .= " MAX(CASE WHEN $table.value_key = '$value_name' THEN $table.value END)  as '$value_name', ";
+		if (strpos($value_name,"_active") >0) {
+			$this->registerFilter($value_name, array($this, '_enumVal'));
+		}
         }
         $case_sql = substr($case_sql,0,-2);             
         $this->case_sql = $case_sql;
 	}
 	function _buildColList() {
 
+	}
+	function _enumVal($value) {
+		$em =& Celini::enumManagerInstance();
+		$val = $em->lookup('simpleToggle',$value);
+		return $val;
 	}
 }
 
