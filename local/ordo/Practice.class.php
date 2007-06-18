@@ -3,6 +3,7 @@ $loader->requireOnce('ordo/Address.class.php');
 $loader->requireOnce('ordo/PracticeAddress.class.php');
 $loader->requireOnce('ordo/PersonNumber.class.php');
 $loader->requireOnce('ordo/PhoneNumber.class.php');
+$loader->requireOnce('ordo/Building.class.php');
 
 /**
  *
@@ -324,19 +325,29 @@ class Practice extends ORDataObject{
 		}	
 		return $buildings;
 	}
-	function getBuildingList() {
-		$sql = "SELECT id, name from ".$this->_prefix."buildings where practice_id =" . $this->_db->qstr($this->id);
-		$result = $this->_Execute($sql);
-		if ($result && !$result->EOF) {
+	function getBuildingList($id = '') {
+		$id = (int)$id;
+		if (!$id >0) {
+		$id = $this->id;
+		}
+		$db = new clniDB();
+		$sql = "SELECT id, name from buildings where practice_id =" . $db->quote($id);
+		$result = $db->execute($sql);
+		while ($result && !$result->EOF) {
 			$buildings[$result->fields['id']] = $result->fields['name'];	
 			$result->MoveNext();
 		}	
 		return $buildings;
 	}
-	function getFirstBuilding() {
+	function getFirstBuilding($id = '') {
+		$id = (int)$id;
+		if (!$id > 0) {
+		  $id = $this->id;
+		}
 		$buildings = array();
-		$sql = "SELECT * from ".$this->_prefix."buildings where practice_id =" . $this->_db->qstr($this->id) . " limit 1";
-		$result = $this->_Execute($sql);
+		$db = new clniDB();
+		$sql = "SELECT * from buildings where practice_id =" . $db->quote($id) . " limit 1";
+		$result = $db->execute($sql);
 		while ($result && !$result->EOF) {
 			$building = new Building($result->fields['id']);
 			return $building;	
