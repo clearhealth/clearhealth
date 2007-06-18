@@ -56,20 +56,26 @@ class refRequestListByStatus_DS extends Datasource_sql
 		$this->setup(Celini::dbInstance(), 
 			array(
 				'cols' => 'r.refRequest_id,
-				           r.patient_id AS last_name,
-				           r.patient_id AS first_name,
-						   (r.patient_id ) AS record_number,
+				           p.last_name AS last_name,
+				           p.first_name AS first_name,
+					   pat.record_number,
 				           r.refRequest_id,
 				           date_format(`r`.`date`, "%M %d, %Y") AS `formatted_date`,
 						   r.refStatus,
 				           r.reason,
 						   pprog.name AS program_name,
-				           r.refSpecialty',
+				           r.refSpecialty,
+					  b.name as location						
+',
 				'from' => '
 					refRequest AS r
 					INNER JOIN participation_program pprog on r.refprogram_id=pprog.participation_program_id
 					INNER JOIN refprogram AS prog on prog.refprogram_id = pprog.participation_program_id
 					INNER JOIN person AS p ON(r.patient_id = p.person_id)
+					INNER JOIN patient pat ON(r.patient_id = pat.person_id)
+					INNER JOIN user u  ON r.initiator_id = u.person_id
+					INNER JOIN rooms rm  ON rm.id = u.default_location_id
+					INNER JOIN buildings b  ON b.id = rm.building_id
 					',
 				'where' => " 1 AND 
 				$whereSql"
@@ -77,24 +83,21 @@ class refRequestListByStatus_DS extends Datasource_sql
 			array(
 				'last_name' => 'Last Name',
 				'first_name' => 'First Name',
-				'chl_id' => 'CHL ID',
+				'record_number' => 'MRN',
 				'formatted_date' => 'Referral Request',
 				'refStatus' => 'Status',
 				'reason' => 'Reason', 
 				'program_name' => 'Program Name',
-				'clinic_name' => 'Location',
+				'location' => 'Location',
 				'refSpecialty' => 'Specialty'
 				//'ref
 				));
-		
 		$this->registerFilter('formatted_date', array($this, '_addLinkToList'));
 		
 		$enumCallback = array(&$this, '_enumValue');
 		$this->registerFilter('refStatus', $enumCallback, 'refStatus');
 		$this->registerFilter('reason', $enumCallback, 'refRejectionReason');
 		$this->registerFilter('refSpecialty', $enumCallback, 'refSpecialty');
-		$this->registerFilter('last_name', array(&$this, '_lastNameLookup'), 'last_name');
-		$this->registerFilter('first_name', array(&$this, '_firstNameLookup'), 'first_name');
 		
 		$this->orderHints['formatted_date'] = '`date`';
 		$this->addDefaultOrderRule('formatted_date', 'DESC');

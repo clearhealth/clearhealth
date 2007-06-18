@@ -81,6 +81,11 @@ class refAppointment extends ORDataObject
 		return $practice->get('name');
 	}
 	
+	function get_practice_phone() {
+		$practice =& $this->getChild('refPracticeLocation');
+		return $practice->get('phone_number');
+	}
+	
 	
 	/**
 	 * Deprecated, use {@link value_provider_name()} instead

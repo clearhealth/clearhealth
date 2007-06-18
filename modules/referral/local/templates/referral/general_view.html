@@ -44,6 +44,10 @@ table td {
 				<td class="aRight"><a href="javascript:void(0);" onclick="window.open('{link pageType="minimal" controller="ParticipationProgram" action="editConnect" defaultArg=$ppp->get('person_program_id')}', 'subWin',
 'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=600,height=400');">Program Options</a></td>
 				<td>
+					Eligibility Expires: {if $ppp->get('expires')}Y{else}N{/if}<br />
+					{if $ppp->get('expires')}
+					Eligible Thru: {$ppp->get('end')}
+					{/if}
 					{if $options->get('hasEligibility')}
 					{$options->actionOptions(true)}
 					{/if}
@@ -53,7 +57,7 @@ table td {
 				<td class="aRight">Specialist Needed</td>
 				<td>
 					<select name="refRequest[refSpecialty]" style="z-index:1">
-						{html_options options=$refSpecialty selected=$request->get('refSpecialty')}
+						{html_options options=$refSpecialty selected=$request->get('rawSpecialty')}
 					</select>
 				</td>
 			</tr>
@@ -61,7 +65,7 @@ table td {
 			<tr>
 				<td class="aRight">Translator Needed</td>
 				<td>
-					{html_radios name='refRequest[translator]' id='refRequest[translator]' options=$yesNoArray selected=$request->get('translator_raw')}
+					{html_options name='refRequest[translator]' id='refRequest[translator]' options=$yesNoArray selected=$request->get('translator_raw')}
 				</td>
 			</tr>
 			<tr>
@@ -72,7 +76,7 @@ table td {
 			<tr>
 				<td class="aRight">Transportation Needed</td>
 				<td>
-					{html_radios name='refRequest[transportation]' id='refRequest[transportation]' options=$yesNoArray selected=$request->get('transportation_raw')}
+					{html_options name='refRequest[transportation]' id='refRequest[transportation]' options=$yesNoArray selected=$request->get('transportation_raw')}
 				</td>
 			</tr>
 			
@@ -139,7 +143,7 @@ table td {
 				<ul>
 					{foreach from=$refStatuses item=refStatus key=refStatusKey}
 					<li{if $refStatusKey == $request->get('refStatus')} class="selected"{/if}>
-						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') != 7}<a href="{$refStatusLinks.$refStatusKey}" onclick="return confirmStatusChange(this);">{/if}
+						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') ne $refStatusKey}<a href="{$refStatusLinks.$refStatusKey}" onclick="return confirmStatusChange(this);">{/if}
 						{$refStatus}
 						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') != 7}</a>{/if}
 					</li>
@@ -217,7 +221,7 @@ This referral is not associated with an encounter.
 			</fieldset>
 			
 			{if $initiator}
-			Requestor: {$initiator->get('full_name')}
+			Requestor: {$initiator->get('first_name')} {$initiator->get('last_name')}
 			{/if}
 			<fieldset>
 				<legend>Notes/Comments</legend>
@@ -237,7 +241,6 @@ This referral is not associated with an encounter.
 	
 	<tr>
 		<td colspan="3" align="center">
-			<a target="_new" href="{link controller='chlPrintReferral' action='view' defaultArg=$request->get('id') pageType=''}" class="inputButton">Print Copy of Request</a>
 		</td>
 	</tr>
 </table>

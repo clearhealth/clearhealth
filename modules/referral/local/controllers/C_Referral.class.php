@@ -46,8 +46,9 @@ class C_Referral extends Controller
 		return $this->view->fetch(Celini::getTemplatePath('/referral/' . $this->template_mod . '_list.html'));
 	}
 	
-	function actionAdd() {
+	function actionAdd($encounterId=0) {
 		$patient_id = $this->get('patient_id', 'c_patient');
+		$encounterId = (int)$encounterId;
 		if ($patient_id <= 0) {
                         $this->messages->addMessage(
                                 'No Patient Selected',
@@ -88,7 +89,7 @@ class C_Referral extends Controller
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		//TODO fix permission, referal initator only, used in template
 		$this->view->assign('canAdd', true);
-		
+		$this->view->assign("encounterId",$encounterId);
 		if ($this->GET->exists('embedded')) {
 			return $this->_minimalAdd();
 		}
@@ -114,9 +115,15 @@ class C_Referral extends Controller
 		$ajax->jsLibraries[] = array('clniConfirmLink', 'clniPopup');
 		
 		$request =& Celini::newORDO('refRequest', $refRequest_id);
+		if ($request->get('patient_id') > 0) {
+		$this->set('patient_id',$request->get('patient_id'),'c_patient');
+		}
+		if ($request->get('refRequest_id') > 0) {
+			$this->set('requestId',$request->get('refRequest_id'));	
+		}
 		$this->_request =& $request;
 		$this->view->assign_by_ref('request', $request);
-		$program =& Celini::newORDO('refProgram', $this->GET->get('program_id'));
+		$program =& Celini::newORDO('refProgram', $request->get('refprogram_id'));
                 $ppp = PersonParticipationProgram::getByProgramPatient($program->get('refprogram_id'),$request->get('patient_id'));
                 //if patient doesn't already belong to program add them
 
@@ -134,6 +141,11 @@ class C_Referral extends Controller
                 $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
+		//if patient is eligible set request to request if current status is request/elig pending
+		if ($options->get('eligibility') == 1 && $request->get('refStatus') == 2) {
+                       $request->set('refStatus', 1); //1 is requested
+                       $request->persist();
+                }
                 $this->view->assign('options', $options);
                 $this->view->assign_by_ref('refProgram', $program);
                 $this->view->assign_by_ref('parProg', $parProg);
@@ -170,7 +182,6 @@ class C_Referral extends Controller
 		$program =& Celini::newORDO('refProgram', $request->get('refprogram_id'));
 		$this->view->assign_by_ref('refProgram', $program);
 
-		
 		$this->view->assign('FORM_ACTION', Celini::link('view/' . $request->get('id'), 'referral'));
 		
 		// url to attach files
@@ -193,21 +204,7 @@ class C_Referral extends Controller
 		$this->view->assign('em',$em);
 		$session =& Celini::sessionInstance();
 		$session->set('referral:currentProgramId', $request->get('refprogram_id'));
-		$fplEnumList =& $em->enumList('federal_poverty_level');
-		if ($options->get('federal_poverty_level') > 0) {
-			while ($fplEnumList->valid()) {
-				$fplData =& $fplEnumList->current();
-				if ($fplData->key == $options->get('federal_poverty_level')) {
-					break;
-				}
-				$fplEnumList->next();
-			}
-			
-			$this->view->assign_by_ref('fplData', $fplData);
-		}
 		
-		$fplList = $em->enumArray('federal_poverty_level');
-		$this->view->assign('fplList', $fplList);
 		return $this->_defaultView($request);
 	}
 	
@@ -226,11 +223,7 @@ class C_Referral extends Controller
 		if (isset($cleanRefRequest['history'])) {
 			$request->set('history', $cleanRefRequest['history']);
 		}
-		$request->persist();
-
-		if (isset($_POST['refPatientEligibility'])) {
-			$this->_updatePatientEligibility($request);
-		}
+                $request->persist();
 	}
 	
 	function _appointmentPendingView(&$request) {
@@ -280,7 +273,7 @@ class C_Referral extends Controller
 	}
 
 	
-	function _defaultView(&$request) {
+	function _defaultView($request) {
 		$em =& Celini::enumManagerInstance();
 		$this->view->assign('refRejectionReasons', $em->enumArray('refRejectionReason'));
 		// URL to change status - has the id appended to it in the template
@@ -320,7 +313,7 @@ class C_Referral extends Controller
 			}
 			else {
 				$this->view->assign('appointmentScheduled', true);
-				$requestedStatus = $em->lookupKey('refStatus', 'Requested');
+				$requestedStatus = $em->lookupKey('refStatus', 'Requested / Eligibility Pending');
 				$this->assign('APPOINTMENT_BUTTON_URL', Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $requestedStatus);
 				//$this->assign('APPOINTMENT_FORM_ACTION', Celini::link('edit', 'refappointment') . 'refappointment_id=' . (int)$appointment->get('id') . '&embedded');
 				
@@ -345,9 +338,11 @@ class C_Referral extends Controller
 	}
 	
 	function actionEdit($refRequest_id = 0) {
+		
 		$me =& Me::getInstance();
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		$em =& EnumManager::getInstance();
+		$patientId = $this->GET->getTyped('patient_id', 'int');
 		$this->assign('em',$em);
 		
 		$ajax =& Celini::ajaxInstance();
@@ -355,13 +350,18 @@ class C_Referral extends Controller
 		
 		$request =& Celini::newORDO('refRequest', $refRequest_id);
 		$this->_request =& $request;
-		
+		if (!$request->isPopulated()) {
 		$request->set('visit_id', $this->GET->getTyped('visit_id', 'int'));
 		$request->set('refprogram_id', $this->GET->getTyped('program_id', 'int'));
-		$request->set('patient_id', $this->GET->getTyped('patient_id', 'int'));
+		$request->set('patient_id', $patientId);
+		}
+		if ($patientId > 0){
+		$this->set('patient_id',$patientId,'c_patient');
+		}
 		
 		$this->view->assign_by_ref('request', $request);
-		$program =& Celini::newORDO('refProgram', $this->GET->get('program_id'));
+		$this->_request = $request;
+		$program =& Celini::newORDO('refProgram', $request->get('refprogram_id'));
 		$ppp = PersonParticipationProgram::getByProgramPatient($program->get('refprogram_id'),$request->get('patient_id'));
 		//if patient doesn't already belong to program add them
 			
@@ -406,6 +406,12 @@ class C_Referral extends Controller
 		if ($request->get('refRequest_id') > 0) {
 			$this->set('requestId',$request->get('refRequest_id'));	
 		}
+		$em =& EnumManager::getInstance();
+		$this->view->assign("em", $em);
+          
+                $GLOBALS['loader']->requireOnce('includes/SpecialtyEnumByProgram.class.php');
+                $enumGenerator =& new SpecialtyEnumByProgram($request->get('refprogram_id'));
+                $this->view->assign('refSpecialty', $enumGenerator->toArray());
 
 		return $this->view->render('edit.html');
 	}
@@ -540,9 +546,19 @@ class C_Referral extends Controller
                 $request = ORDataObject::factory('refRequest', $refRequest_id);
                 $this->_request = $request;
                 $request->populateArray($_POST['refRequest']);
-                $request->set('refStatus', 1);
+		//var_dump($_POST);exit;
+                $request->set('refStatus', 2);
                 $request->persist();
                 $parProg = ORDataObject::factory('ParticipationProgram', $request->get("refprogram_id"));
+		$ppp = PersonParticipationProgram::getByProgramPatient($request->get('refprogram_id'),$request->get('patient_id'));
+		$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
+                $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
+                $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
+		//eligibility == 1 is eligible
+		if ($options->get('eligibility') == 1) {
+                	$request->set('refStatus', 1); //1 is requested
+                	$request->persist();
+		}
 		$this->_continue_processing = false;
 		if ($request->get('refRequest_id') > 0) {
 			$this->set('requestId',$request->get('refRequest_id'));	
@@ -611,6 +627,16 @@ class C_Referral extends Controller
                         }
                 }
                 return $formDataId;
+        }
+	function _buildTimestamp($array) {
+                $dateString =
+                        $array['date_year'] . '-' .
+                        $array['date_month'] . '-' .
+                        $array['date_date'];
+                $timeObj = &TimeObject::create12Hour(
+                        $array['time_digits'] . ' ' .
+                        $array['time_suffix']);
+                return $dateString . ' ' . $timeObj->toString('%H:%i:%s');
         }
 	
 }

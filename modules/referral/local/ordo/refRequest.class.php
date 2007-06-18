@@ -30,9 +30,9 @@ class refRequest extends ORDataObject
 	 * @var int
 	 */
 	var $refSpecialty      = '';
-	var $refRequested_day  = 'Any';
-	var $refRequested_time = 'Any';
-	var $refStatus         = 'Requested';
+	var $refRequested_day  = '';
+	var $refRequested_time = '';
+	var $refStatus         = 'Requested / Eligibility Pending';
 	var $transportation    = '-1';
 	var $translator        = '-1';
 	/**#@- */
@@ -143,17 +143,17 @@ class refRequest extends ORDataObject
 	}
 	
 	function get_refRequested_day() {
-		if ($this->_inPersist) {
+		//if ($this->_inPersist) {
 			return $this->refRequested_day;
-		}
-		return $this->_enumManager->lookup('days', $this->refRequested_day);
+		//}
+		//return $this->_enumManager->lookup('days', $this->refRequested_day);
 	}
 	
 	function get_refRequested_time() {
-		if ($this->_inPersist) {
+		//if ($this->_inPersist) {
 			return $this->refRequested_time;
-		}
-		return $this->_enumManager->lookup('refRequested_time', $this->refRequested_time);
+		//}
+		//return $this->_enumManager->lookup('refRequested_time', $this->refRequested_time);
 	}
 	
 	
@@ -166,6 +166,10 @@ class refRequest extends ORDataObject
 			return $this->refSpecialty;
 		}
 		return $this->_enumManager->lookup('refSpecialty', $this->refSpecialty);
+	}
+
+	function get_rawSpecialty() {
+			return $this->refSpecialty;
 	}
 	
 	/**

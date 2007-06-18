@@ -18,7 +18,7 @@
 				<select name="visit_id">
 					{html_options options=$visitList->latestVisit()}
 					<option value="NULL"></option>
-					{html_options options=$visitList->toArray()}
+					{html_options options=$visitList->toArray() selected=$encounterId}
 					<!-- <option>Last Visit</option>
 					<option value="null"></option>
 					<option>September 01 2005</option>

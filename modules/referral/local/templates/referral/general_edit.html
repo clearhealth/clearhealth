@@ -48,7 +48,7 @@ var confirmBox = new clniConfirmBox();
 				<td class="aRight">Specialist Needed</td>
 				<td>
 					<select name="refRequest[refSpecialty]" style="z-index:1">
-						{html_options options=$refSpecialty selected=$request->get('refSpecialty')}
+						{html_options options=$refSpecialty selected=$request->get('rawSpecialty')}
 					</select>
 				</td>
 			</tr>
@@ -56,7 +56,7 @@ var confirmBox = new clniConfirmBox();
 			<tr>
 				<td class="aRight">Translator Needed</td>
 				<td>
-					{html_radios name='refRequest[translator]' id='refRequest[translator]' options=$yesNoArray selected=$request->get('translator_raw')}
+					{html_options name='refRequest[translator]' id='refRequest[translator]' options=$em->enumArray('yesNo') selected=$request->get('translator_raw')}
 				</td>
 			</tr>
 			<tr>
@@ -67,7 +67,7 @@ var confirmBox = new clniConfirmBox();
 			<tr>
 				<td class="aRight">Transportation Needed</td>
 				<td>
-					{html_radios name='refRequest[transportation]' id='refRequest[transportation]' options=$yesNoArray selected=$request->get('transportation_raw')}
+					{html_options name='refRequest[transportation]' id='refRequest[transportation]' options=$yesNoArray selected=$request->get('transportation_raw')}
 				</td>
 			</tr>
 			

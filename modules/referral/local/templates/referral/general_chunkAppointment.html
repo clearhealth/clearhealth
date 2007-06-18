@@ -41,7 +41,8 @@
 	</div>
 	<div>
 		Location<br />
-		{$appointment->get('location_data')|nl2br}
+		{$appointment->get('location_data')|nl2br}<br />
+		Phone: {$appointment->get('practice_phone')}
 	</div>
 	{else}
 	<p>N/A</p>
