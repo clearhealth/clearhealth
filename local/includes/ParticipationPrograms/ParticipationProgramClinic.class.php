@@ -13,6 +13,8 @@ class ParticipationProgramClinic extends ParticipationProgramAbstract {
 	 */
 	var $person_program_id		= '';
 	var $eligibility	= '';
+	var $initial_date	= '';
+	var $recent_date	= '';
 	/**#@-*/
 
 
@@ -48,7 +50,7 @@ class ParticipationProgramClinic extends ParticipationProgramAbstract {
         }
 
         function processOptions($data) {
-		$this->popularArray($data);
+		$this->populateArray($data);
 		$this->persist();
         }
 
@@ -66,7 +68,18 @@ class ParticipationProgramClinic extends ParticipationProgramAbstract {
                 ";
 	 $this->dbHelper->execute($sql);
         }
-
+	function set_initial_date($date) {
+		$this->_setDate('initial_date',$date);
+	}
+	function set_recent_date($date) {
+		$this->_setDate('recent_date',$date);
+	}
+	function get_initial_date() {
+		return $this->_getDate('initial_date');
+	}
+	function get_recent_date() {
+		return $this->_getDate('recent_date');
+	}
 	
 }
 ?>
