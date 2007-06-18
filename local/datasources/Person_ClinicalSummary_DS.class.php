@@ -125,7 +125,9 @@ rr.refStatus as 'status', ra.refappointment_id, rr.refrequest_id
 				LEFT JOIN refRequest rr on rr.patient_id = p.person_id
 LEFT JOIN refappointment ra on ra.refrequest_id = rr.refrequest_id
 LEFT JOIN refreferral_visit rv on rv.refappointment_id = ra.refappointment_id
-LEFT JOIN buildings bd on rr.building_id = bd.id
+LEFT JOIN user u on u.person_id = rr.initiator_id
+LEFT JOIN rooms rm on rm.id = u.default_location_id
+LEFT JOIN buildings bd on rm.building_id = bd.id
 LEFT JOIN refpractice rp on rp.refpractice_id = ra.refpractice_id
 LEFT JOIN person ri on rr.initiator_id = p.person_id
 
