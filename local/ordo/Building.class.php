@@ -45,6 +45,7 @@ class Building extends ORDataObject{
 	 * @var int
 	 */
 	var $facility_code_id = '';
+	var $phone_number = '';
 
 
 	/**
