@@ -20,7 +20,7 @@ class AppointmentRuleOutOfSchedule extends AppointmentRule {
 			schedule
 			INNER JOIN event_group USING(schedule_id)
 			INNER JOIN schedule_event USING(event_group_id)
-			INNER JOIN event 
+			INNER JOIN event on event.event_id = schedule_event.event_id 
 		WHERE
 			event.start <= ".$db->quote($start)."
 			AND event.end >= ".$db->quote($end)."
