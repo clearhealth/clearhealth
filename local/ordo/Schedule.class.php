@@ -193,9 +193,9 @@ class Schedule extends CalendarSchedule{
 				
 				$sql = "
 					INSERT INTO relationship 
-						(`parent_type`,`parent_id`,`child_type`,`child_id`)
+						(`relationship_id`,`parent_type`,`parent_id`,`child_type`,`child_id`)
 					VALUES 
-						('EventGroup', {$qEventGroupId}, 'ScheduleEvent', {$qOccurenceId})";
+						(".$this->dbHelper->nextId('sequences').",'EventGroup', {$qEventGroupId}, 'ScheduleEvent', {$qOccurenceId})";
 				$this->dbHelper->execute($sql);
 				
 				$sql = "
