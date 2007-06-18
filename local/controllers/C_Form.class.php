@@ -7,9 +7,13 @@ $loader->requireOnce('includes/Grid.class.php');
  */
 class C_Form extends Controller {
 	var $_external_id = 0;
+	var $_encounter_id = 0;
 	
 	function setExternalId($id) {
-		$this->_external_id = $id;
+		$this->_external_id = (int)$id;
+	}
+	function setEncounterId($id) {
+		$this->_encounter_id = (int)$id;
 	}
 	/**
 	 * List all the forms in the system
@@ -125,6 +129,7 @@ class C_Form extends Controller {
 	function actionFillout_edit($form_id = 0,$form_data_id = 0) {
 		$form_data_id = EnforceType::int($form_data_id);
 		$externalId = $this->GET->get("externalId","int");
+		$encounterId = $this->GET->get("encounterId","int");
 
 		$retTo = "";
 		if ($this->GET->exists('returnTo')) {
@@ -148,6 +153,9 @@ class C_Form extends Controller {
 			if ($externalId > 0) {
 				$formAction .= "&externalId=$externalId"; 
 			}
+			if ($encounterId > 0) {
+				$formAction .= "&encounterId=$encounterId"; 
+			}
 			$this->assign('FORM_ACTION',$formAction);
 			$data =& ORDataObject::factory('FormData',$form_data_id);
 			
@@ -162,7 +170,6 @@ class C_Form extends Controller {
 
 	function processFillout_edit($form_id = 0, $form_data_id = 0) {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
-			//print_r ($_POST);
 			$data->populate_array($_POST);
 			$data->set('form_id',$form_id);
 			
@@ -176,6 +183,10 @@ class C_Form extends Controller {
 			if ($this->GET->get("encounterId","int") > 0) {
 				$data->set("encounter_id",$this->GET->get("encounterId","int"));
 				
+			}
+			elseif ($this->_encounter_id > 0) {
+				$data->set("encounter_id",$this->_encounter_id);
+			
 			}
 			$data->persist();
 			
