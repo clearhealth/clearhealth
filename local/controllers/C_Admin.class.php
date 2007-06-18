@@ -16,7 +16,7 @@ class C_Admin extends Controller {
 	}
 
 	function acl_action_edit() {
-		return "<iframe src='{$this->base_dir}celini/lib/phpgacl/admin/index.php' width='800px' height='700px'></iframe>";
+		return "<iframe src='{$this->base_dir}celini/lib/phpgacl/admin/index.php' width='1024px' height='768px'></iframe>";
 	}
 
 
