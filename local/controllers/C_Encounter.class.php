@@ -1,6 +1,7 @@
 <?php
 $loader->requireOnce('controllers/C_Coding.class.php');
 $loader->requireOnce('controllers/C_FreeBGateway.class.php');
+$loader->requireOnce('ordo/Practice.class.php');
 $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
 $loader->requireOnce('includes/LockManager.class.php');
 $loader->requireOnce('datasources/MiscCharge_Encounter_DS.class.php');
@@ -137,13 +138,13 @@ class C_Encounter extends Controller {
 
 		$ajax =& Celini::AJAXInstance();
 		$ajax->stubs[] = 'Encounter';
-
 		// check if an encounter_id already exists for this appointment
 		if ($appointment_id > 0) {
 		  $encounter_id = $this->_existingEncounter($appointment_id);
 		  $app = ORDataObject::factory("Appointment",$appointment_id);
 		  $this->assign('appointment_title',$app->get('title'));
 		}
+
 
 		if ($encounter_id > 0) {
 			$this->assign('lockTimestamp',time());
@@ -157,7 +158,16 @@ class C_Encounter extends Controller {
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		
-		
+		$userProfile =& Celini::getCurrentUserProfile();
+                $pid = $userProfile->getCurrentPracticeId();
+		$userPractice =& Celini::newORDO('Practice',$pid);
+		if ($encounter->get('building_id')>0) {
+			$building = ORDataObject::factory("Building",$encounter->get('building_id'));
+			if ($building->get('practice_id') >0 && $building->get('practice_id') != $pid) {
+				$this->messages->addMessage('Your current practice selection must match the practice of this encounter in order to edit it.');
+			return $this->fetch("main/general_message.html");
+			}	
+		}
 
 		if ($encounter->get('payer_group_id') == '') {
 			$encounter->set('payer_group_id',1);
@@ -331,6 +341,7 @@ class C_Encounter extends Controller {
 		$this->assign_by_ref('encounter',$encounter);
 		$this->assign_by_ref('person',$person);
 		$this->assign_by_ref('building',$building);
+		$this->assign_by_ref('userPractice',$userPractice);
 		$this->assign_by_ref('encounterDate',$encounterDate);
 		$this->assign_by_ref('encounterDateGrid',$encounterDateGrid);
 		$this->assign_by_ref('encounterPerson',$encounterPerson);
@@ -634,7 +645,9 @@ class C_Encounter extends Controller {
 		}
 		else if (isset($_POST['encounter']['override'])) {
 			$billtype = $_POST['encounter']['overridebilltype'];
+			if (isset($_POST['encounter']['overridepayer'])) {
 			$encounter->set('current_payer',$_POST['encounter']['overridepayer']);
+			}
 			$encounter->set('status', 'closed');
 			$encounter->persist();
 			if($billtype == 'close') {
