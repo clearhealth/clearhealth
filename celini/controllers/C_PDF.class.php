@@ -39,7 +39,7 @@ class C_PDF extends C_PageType {
 	}
 
 	function buildPagePrintCmd($html_file,$tmp_file) {
-		putenv('LD_LIBRARY_PATH=/usr/lib/mozilla');
+		putenv('LD_LIBRARY_PATH=/usr/lib64/mozilla-seamonkey-1.0.9/');
 		putenv('DISPLAY=:10');
 		putenv('HOME=/tmp');
 		$print = '';
@@ -69,7 +69,7 @@ class C_PDF extends C_PageType {
 				}
 			}
 		}
-		$cmd = $GLOBALS['config']['pageprint'] ." file://$html_file $tmp_file $print";// -hn set-cookie -hv session_id".' > /tmp/ppdebug';
+		$cmd = $GLOBALS['config']['pageprint'] ." file://$html_file $tmp_file $print 2>&1";// -hn set-cookie -hv session_id".' > /tmp/ppdebug';
 		return $cmd;
 	}
 
@@ -97,25 +97,31 @@ class C_PDF extends C_PageType {
 				fwrite($fp,$html);
 				fclose($fp);
 
+				$desc_array = array(0=>array("pipe","r"),1=>array("pipe","r"),2=>array("file","/tmp/pperror.txt","a"));
+
 				$cmd = $this->buildPagePrintCmd($fname,$tmp_filename);
-				$process = popen($cmd,"r");
-				if (is_resource($process)) {
-				} else
-				{
-					$error = true;
-					$error_text = "Could not exec pageprint: $cmd";	
-				}
-
-
-				$data = "";
-				while(!feof($process)) {
-					$data .= fgets($process,1024);
-				}
-
 				/*$output = exec($cmd,$retvar);
 				var_dump($retvar);
 				var_dump($output);
 				*/
+		$fp = fsockopen('localhost',23451, $errno, $errstr, 30);
+                if (!$fp) {
+                        // handle error
+                        echo "$errstr ($errno)<br />\n";
+                }
+                else {
+                        fwrite($fp,$cmd. "\n");
+                        $status = '';
+                        while (!feof($fp)) {
+                                $line = fgets($fp, 1024);
+                               $status .= $line;
+                               if (trim($line) == 'GOODBYE') {
+                                       break;
+                               }
+                        }
+                        fclose($fp);
+                }
+                       echo $status;
 				break;
 			default:
 				$cmd = $this->buildHtmldocCmd($fancy,$tmp_filename);
