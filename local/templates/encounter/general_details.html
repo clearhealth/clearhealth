@@ -5,7 +5,7 @@
 		<tr>
 			<td><label>{l}Facility{/l}:</label></td>
 			<td><select name="encounter[building_id]">
-					{html_options options=$building->getBuildingList() selected=$encounter->get('building_id')}
+					{html_options options=$userPractice->getBuildingList() selected=$encounter->get('building_id')}
 				</select>
 			</td>
 			<td><label>{l}Treating Provider{/l}:</label></td>
