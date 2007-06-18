@@ -41,7 +41,7 @@
 <tr>
 	<td>
 		{if $report.flags && in_array('noPager',$report.flags)}
-			{$report.grid->setPageSize(1000)}
+			{$report.grid->setPageSize(false)}
 		{/if}
 		{if $report.flags && in_array('infoBox',$report.flags)}
 			{assign var=tmp value=$report.ds->toArray()}
