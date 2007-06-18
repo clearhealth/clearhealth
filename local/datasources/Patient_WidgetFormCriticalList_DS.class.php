@@ -27,6 +27,7 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 	var $case_sql = '';
 	var $dynamicLabels = array();
 	var $dynamicFields = array();
+	var $_active_only = false;
 
 	function Patient_WidgetFormCriticalList_DS($patient_id,$form_id,$widget_form_id,$encounterId) {
 		$this->patient_id = (int)$patient_id;
@@ -39,7 +40,6 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		$this->_labels = $this->dynamicLabels;
 		$this->_setupSql();
 		$this->_labels = $this->dynamicLabels;
-		//echo $this->preview() . "<br />";
 	}
 	
 	function _setupSql() {
@@ -47,6 +47,10 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 
 		if ($this->encounterId > 0) {
 			$where .= " and fd.encounter_id = " . $this->encounterId;
+		}
+		$having = '';
+		if ($this->_active_only) {
+			$having = "HAVING active = 1";
 		}
 		$this->setup(Celini::dbInstance(),
 			array(
@@ -59,10 +63,10 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 							 "LEFT JOIN storage_text ON storage_text.foreign_key = fd.form_data_id ".
 							 "LEFT JOIN storage_date ON storage_date.foreign_key = fd.form_data_id ",
 				'where'   => "fd.external_id = '" . $this->patient_id . "' and f.form_id = '" . $this->form_id . "' " . $where,
-				'groupby'   => "fd.form_data_id, storage_date.array_index, storage_string.array_index, storage_string.array_index, storage_text.array_index"
+				'groupby'   => "fd.form_data_id, storage_date.array_index, storage_string.array_index, storage_string.array_index, storage_text.array_index $having"
 			),
 			false);
-
+//echo $this->preview();
 	}
 
 	function set_form_type() {
@@ -78,7 +82,12 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		$db->SetFetchMode(ADODB_FETCH_ASSOC);
 		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
-			if (isset($res->fields['name'])) {
+			if (strpos($res->fields['name'],'_active') > 0) {
+			$fields[$res->fields["name"]] = array('name'=>'active', 'table_name'=>$res->fields['table_name']);
+			$this->_active_only = true;
+			}
+			else if (isset($res->fields['name'])) {
+			
 			$labels[$res->fields["name"]] = $res->fields["pretty_name"];
 			$fields[$res->fields["name"]] = array('name'=>$res->fields['name'], 'table_name'=>$res->fields['table_name']);
 }
@@ -94,12 +103,12 @@ class Patient_WidgetFormCriticalList_DS extends Datasource_sql  {
 		$form_id = $this->form_id;
 	    	$case_sql = "";
 	    	if (count($this->dynamicFields > 0)) $case_sql = " ,";
-	        foreach ($this->dynamicFields as $ar) {
+	        foreach ($this->dynamicFields as $field => $ar) {
 	        	$table = $ar['table_name'];
 
 	        	$value_name = $ar['name'];
 			if ($table) {
-			        $case_sql .= " MAX(CASE WHEN $table.value_key = '$value_name' THEN $table.value END)  as '$value_name', ";
+			        $case_sql .= " MAX(CASE WHEN $table.value_key = '$field' THEN $table.value END)  as '$value_name', ";
 			}
 	        }
 	        $case_sql = substr($case_sql,0,-2);             
