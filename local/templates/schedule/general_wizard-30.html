@@ -8,7 +8,7 @@ function ajaxView() {
   HTML_AJAX.call('schedule','ajaxInteractiveProviderGrid',updateView,personId, roomId, start, end);
 }
 function updateView(result) {
-  document.getElementById('scheduleDisplay').innerHTML = result; 
+	HTML_AJAX_Util.setInnerHTML('scheduleDisplay', result); 
 }
 function editEvent(event_id) {
   HTML_AJAX.call('schedule','ajaxEditEvent',editEventView,event_id);
@@ -16,7 +16,7 @@ function editEvent(event_id) {
 }
 function editEventView(result) {
 	popdiv = document.getElementById('popup_dialog');
-        popdiv.innerHTML = result;
+        HTML_AJAX_Util.setInnerHTML('popup_dialog',result);
 	
 	if (popdiv.style.display == '' || popdiv.style.display == 'none') {
           popup = new clniPopup('',false);
