@@ -70,7 +70,7 @@ table td {
 			</tr>
 			<tr>
 				<td>Referral Service</td>
-				<td>{html_options name="refRequest['translator']" options=$em->enumArray('referral_service')}</td>
+				<td>{html_options name="refRequest[referral_service]" options=$em->enumArray('referral_service') selected=$request->get('referral_service')}</td>
 			</tr>
 			
 			<tr>

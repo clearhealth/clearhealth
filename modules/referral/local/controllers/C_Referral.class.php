@@ -468,6 +468,9 @@ class C_Referral extends Controller
 		else {
 			$request = ORDataObject::factory("refRequest",$requestId);
 		}
+		//set to appointment kept status
+		$request->set('refStatus',5);
+		$request->persist();
 		if (empty($formId)) {
 			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
 			$formId = $parProg->get('form_id');
@@ -496,6 +499,7 @@ class C_Referral extends Controller
 		if (!$fd->isPopulated()) {
 		$fd->set("form_id",$formId);
 		$fd->set("external_id",$request->get('refRequest_id'));
+		$fd->set("last_edit",date('Y-m-d H:i:s'));
 		$fd->persist();
 		}
 
@@ -548,6 +552,9 @@ class C_Referral extends Controller
                 $request->populateArray($_POST['refRequest']);
 		//var_dump($_POST);exit;
                 $request->set('refStatus', 2);
+		$me =& Me::getInstance();
+		$request->set('initiator_id', $me->get_person_id());
+//		echo $this->_me->get_person_id();exit;
                 $request->persist();
                 $parProg = ORDataObject::factory('ParticipationProgram', $request->get("refprogram_id"));
 		$ppp = PersonParticipationProgram::getByProgramPatient($request->get('refprogram_id'),$request->get('patient_id'));
