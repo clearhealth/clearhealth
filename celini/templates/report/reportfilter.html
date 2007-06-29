@@ -14,7 +14,7 @@
 				{if $READONLY}
 					{$var.value}
 				{else}
-					<input type="text" name="rf[{$var.name}]" width=15" value="{$var.value}">
+					<input style="" type="text" name="rf[{$var.name}]" width=15" value="{$var.value}">
 				{/if}
 			{/if}
 			{if $var.type[0] == "date"}
@@ -40,6 +40,16 @@
 					{query_options query=$var.type[1] selected=$var.value lookup=1}
 				{else}
 				<select name="rf[{$var.name}]" id="filter_select_{$var.name}">
+					<option></option>
+					{query_options query=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multiquery"}
+				{if $READONLY}
+					{query_options query=$var.type[1] selected=$var.value lookup=1}
+				{else}
+				<select style="vertical-align:text-top;" name="rf[{$var.name}][]" multiple="multiple" id="filter_select_{$var.name}" size="10">
 					<option></option>
 					{query_options query=$var.type[1] selected=$var.value}
 				</select>
