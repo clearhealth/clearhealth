@@ -172,6 +172,7 @@ class ReportAction {
 			if($this->controller->GET->get('pageSize') > 0) {
 				$pageSize = $this->controller->GET->get('pageSize');
 			}
+			//echo $reports[$key]['ds']->preview(). "<br>";
 			$reports[$key]['grid'] =& new cGrid($reports[$key]['ds']);
 			$reports[$key]['grid']->pageSize = $pageSize;
 			$reports[$key]['grid']->name = $key;
