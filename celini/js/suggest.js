@@ -154,6 +154,9 @@ clniSuggest.prototype = {
 	},
 
 	_onOut: function(item) {
+		if (item.className == 'SuggestMatchingText') {
+                item = item.parentNode;
+                }
 		item.className = '';
 	},
 
@@ -206,12 +209,18 @@ clniSuggest.prototype = {
 	},
 
 	_onOver: function(item) {
+		if (item.className == 'SuggestMatchingText') {
+		item = item.parentNode;
+		}
 		item.className = 'SuggestHighlight';
 		this._highlightIndex = item.index;
 	},
 
 
 	_onSelect: function(item) {
+		if (item.className == 'SuggestMatchingText') {
+			item = item.parentNode;
+		}
 		this._selectedIndex = item.index;
 		this.selectedValue = item.data;
 
