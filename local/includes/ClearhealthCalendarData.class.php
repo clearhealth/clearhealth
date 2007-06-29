@@ -477,6 +477,13 @@ class ClearhealthCalendarData {
 		$db = new clniDb();
 		$s = $db->quote(date('Y-m-d H:i:s',strtotime($start)));
 		$e = $db->quote(date('Y-m-d H:i:s',strtotime($end)));
+		$config = Celini::configInstance();
+		$hideCan = '';
+                if ($config->get('hideCanceledAppointment',false)) {
+                	$hideCan = " and a.appointment_code != 'CAN' ";
+                }
+
+
 		$sql = "SELECT
 				event.*,
 				a.*,
@@ -500,8 +507,9 @@ class ClearhealthCalendarData {
 				left join person bkdnpr ON(ab.person_id=bkdnpr.person_id)
 				LEFT JOIN user bkdnu ON(bkdnpr.person_id=bkdnu.person_id)
 			WHERE
-				(event.end > $s and event.end <= $e) or
-				(event.start >= $s and event.start < $e)
+				((event.end > $s and event.end <= $e) or
+				(event.start >= $s and event.start < $e))
+				$hideCan
 			GROUP BY
 				a.appointment_id
 			";
