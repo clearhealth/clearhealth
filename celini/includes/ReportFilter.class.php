@@ -143,7 +143,7 @@ class ReportFilter
 		if (isset($_REQUEST['rf'])) {
 			$this->values = $_REQUEST['rf'];
 			foreach ($this->values as $key => $value) {
-				if ($d =& DateObject::create($value) !== false) {
+				if (!is_array($value) &&  $d =& DateObject::create($value) !== false) {
 					if ($d->toUSA() == $value || $d->toISO() == $value) {
 						$this->values[$key] = $d->toISO();
 					}
@@ -187,7 +187,13 @@ class ReportFilter
 				$varname = $this->variables[$key];
 			}
 			if (isset($this->values[$varname])) {
+				//handle array filters like multi-selects
+				if (is_array($this->values[$varname])) {
+					$values[] = implode(',',$this->values[$varname]);
+				}
+				else {
 				$values[] = $this->values[$varname];
+				}
 			}
 			else if (isset($this->controller_values[$varname])) {
 				$values[] = $this->controller_values[$varname];
