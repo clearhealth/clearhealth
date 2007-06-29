@@ -100,10 +100,12 @@ class TimeObject
 		}
 		list(, $hour, , $minutes, , $seconds, , $suffix) = $matches;
 		
-		if (strtoupper($suffix) == 'PM') {
+		if (strtoupper($suffix) == 'PM' && $hour != 12) {
 			$hour = $hour + 12;
 		}
-			
+		elseif (strtoupper($suffix) == 'AM' && $hour == 12) {
+			$hour = 0;
+		}
 		//$return =& new TimeObject();
 		$return->_set('hour', $hour);
 		$return->_set('minute', $minutes);
@@ -193,7 +195,7 @@ class TimeObject
 	 * @return string
 	 */
 	function getMeridiem() {
-		return $this->hour > 12 ? 'PM' : 'AM';
+		return $this->hour >= 12 ? 'PM' : 'AM';
 	}
 
 	/**
