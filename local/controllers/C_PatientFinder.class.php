@@ -228,6 +228,11 @@ class C_PatientFinder extends Controller {
 			elseif (preg_match('/^[0-9]+$/', $searcharray[$x])) {
 				$sqls[] = "record_number LIKE '" . (int)$searcharray[$x]."%'";
 				$sqls[] = "psn.person_id =" . (int)$searcharray[$x]."";
+			}
+			elseif (preg_match('/^\%.*$/', $searcharray[$x])) {
+				$searchval = preg_replace('/[^0-9]*/','',$searcharray[$x]);
+				$sqls[] = "psn.person_id =" . (int)$searchval;
+			
 			} elseif($xdate->isValid()){
 			// Date of birth
 				$sqls[]="date_of_birth = '".$xdate->toISO()."'";
