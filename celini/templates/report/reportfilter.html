@@ -29,9 +29,29 @@
 				{if $READONLY}
 					{enum_lookup name=$var.type[1] value=$var.value}
 				{else}
-				<select name="rf[{$var.name}]" id="filter_select_{$var.name}">
+				<select  style="vertical-align:text-top;" name="rf[{$var.name}]" id="filter_select_{$var.name}">
 					<option></option>
 					{enum_options name=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multienum"}
+				{if $READONLY}
+					{enum_lookup name=$var.type[1] value=$var.value }
+				{else}
+				<select   style="vertical-align:text-top;" multiple="multiple" size="10" name="rf[{$var.name}][]" id="filter_select_{$var.name}">
+					<option></option>
+					{enum_options name=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multienuml"}
+				{if $READONLY}
+					{$var.value }
+				{else}
+				<select   style="vertical-align:text-top;" multiple="multiple" size="10" name="rf[{$var.name}][]" id="filter_select_{$var.name}">
+					<option></option>
+					{html_options selected=$var.value options=$em->enumArray($var.type[1],"value","value")}
 				</select>
 				{/if}
 			{/if}
