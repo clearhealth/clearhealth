@@ -189,7 +189,17 @@ class ReportFilter
 			if (isset($this->values[$varname])) {
 				//handle array filters like multi-selects
 				if (is_array($this->values[$varname])) {
-					$values[] = implode(',',$this->values[$varname]);
+					$im = "','";
+					if (is_numeric($this->values[$varname][0])) {
+					$values[] = implode(",",$this->values[$varname]);
+
+}
+else {
+					$values[] = "'" . implode("','",$this->values[$varname]). "'";
+
+}
+
+
 				}
 				else {
 				$values[] = $this->values[$varname];
@@ -199,7 +209,7 @@ class ReportFilter
 				$values[] = $this->controller_values[$varname];
 			}
 			else {
-				$values[] = "";
+				$values[] = "0";
 			}
 		}
 		$ret = str_replace($replace,$values,$query);
@@ -420,6 +430,9 @@ echo "<pre>".print_r($this->variable_type,true)."</pre>";
 
 		
 		$this->controller->assign("vars",$vars);
+		$em =& EnumManager::getInstance();
+		$this->controller->assign('em',$em);
+
 		if (!$this->action) {
 			$this->action = $_SERVER["REQUEST_URI"];
 		}
