@@ -38,6 +38,14 @@ class C_User extends Controller {
 		}
 
 		$person =& Celini::newORDO('Person',$person_id);
+		$userProfile =& Celini::getCurrentUserProfile();
+                $pid = $userProfile->getCurrentPracticeId();
+		$prac =& Celini::newORDO('Practice',$person->get('primary_practice_id'));
+		if ($person->get('person_id') > 0 && $person->get('primary_practice_id') != $pid) {
+		$this->messages->addMessage('Your current practice selection must match the practice of this user/person in order to edit them. Their practice is: ' . $prac->get('name'));
+                        return $this->fetch("main/general_message.html");
+		}
+
 		if($person_id == 0 && isset($_POST['person'])){
 			$person->populateArray($_POST['person']);
 			$person->persist();
@@ -54,7 +62,8 @@ class C_User extends Controller {
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
 		$room =& ORdataObject::factory('Room');
-		$roomlist = $room->rooms_practice_factory();
+		$fid = array_keys($prac->genericList());
+		$roomlist = $room->rooms_practice_factory($fid);
 		if(count($roomlist) == 1) {
 			$this->messages->addMessage('Please create a practice with a building and room before creating any users.');
 			return;
