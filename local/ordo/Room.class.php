@@ -106,12 +106,17 @@ class Room extends ORDataObject{
 			
 		if(is_array($foreign_id)){
 			$practices=$foreign_id;
-		} elseif(is_a($foreign_id,'Practice')) {
+		} 
+		elseif(is_a($foreign_id,'Practice')) {
 			$practices = array($foreign_id);
-		} else {
+		}
+		else {
 			$practices=array(ORDataObject::factory('Practice',$foreign_id));
 		}
 		foreach($practices as $practice){
+			if (is_numeric($practice)) {
+				$practice = ORDataObject::factory('Practice',$practice);
+			}
 			$foreign_id=$practice->get('id');
 			if (empty($foreign_id)) {
 				 $foreign_id= "like '%'";
