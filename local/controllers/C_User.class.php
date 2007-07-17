@@ -62,8 +62,10 @@ class C_User extends Controller {
 		$address =& ORDataObject::factory('PersonAddress',$this->address_id,$person_id);
 		$identifier =& ORDataObject::factory('Identifier',$this->identifier_id,$person_id);
 		$room =& ORdataObject::factory('Room');
-		$fid = array_keys($prac->genericList());
+		$up =& Celini::getCurrentUserProfile();
+		$fid = array_values($up->getPracticeIdList());
 		$roomlist = $room->rooms_practice_factory($fid);
+		$this->assign('practiceList',$prac->genericList(false));
 		if(count($roomlist) == 1) {
 			$this->messages->addMessage('Please create a practice with a building and room before creating any users.');
 			return;
@@ -72,6 +74,24 @@ class C_User extends Controller {
 		if ($person->get('id') == 0) {
 			$person->set_type(2);
 		}
+		$roles = $user->getDisplayGroups('roles');
+		$currentRoles = $user->get('selected_group_ids');
+		$em =& Celini::enumManagerInstance();
+		$templateRoles = $roles;
+		
+		if (isset($currentRoles[1]) && is_array($roles) && strlen($roles[$currentRoles[1]]) > 0) {
+			if ($roles[$currentRoles[1]] == "Provider" || $roles[$currentRoles[1]] == "clinicadmin") {
+		$permittedRoles = $em->enumArray('clinicadmin_permissions');
+		$templateRoles = array();
+		foreach ($roles as $key => $role) {
+			if (array_search($role,$permittedRoles)) {
+				$templateRoles[$key] = $role;
+			}
+			
+		}
+		}
+		}
+		$this->assign("roles",$templateRoles);
 		$picker =& new colorPickerSelect('pastels','user[color]','','#'.$user->get('color'));
 		$picker->id = 'colorPicker';
 		$this->view->assign_by_ref('colorpicker',$picker);
