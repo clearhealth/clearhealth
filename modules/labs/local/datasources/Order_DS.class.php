@@ -46,10 +46,10 @@ class Order_DS extends Datasource_sql
 				'cols'    => "p.last_name,
 						p.first_name,
 						pt.record_number,
-						l.type,
+						l.manual_service as type,
 						l.status,
 						l.ordering_provider,
-						date_format(min(t.report_time),'$format') report_time,
+						date_format(min(l.manual_order_date),'$format') report_time,
 						count(t.lab_test_id) num_tests,
 						l.lab_order_id
 						",
@@ -65,6 +65,11 @@ class Order_DS extends Datasource_sql
 		$this->orderHints['report_time'] = 't.report_time';
 		$this->addDefaultOrderRule('report_time','ASC',false);
 		$this->registerTemplate('lab_order_id','<a href="'.Celini::link('edit','Labs').'id={$lab_order_id}">Edit</a>');
+		$this->registerFilter('type',array(&$this,'_manualService'));
+	}
+	function _manualService($value) {
+		$em =& Celini::enumManagerInstance();
+		return $em->lookup('lab_manual_service_list',$value);
 	}
 }
 
