@@ -75,13 +75,16 @@ class C_User extends Controller {
 			$person->set_type(2);
 		}
 		$roles = $user->getDisplayGroups('roles');
-		$currentRoles = $user->get('selected_group_ids');
+		$curuser =& User::fromPersonId($this->_me->get_person_id());
+		$currentRoles = $curuser->get('selected_group_ids');
 		$em =& Celini::enumManagerInstance();
 		$templateRoles = $roles;
 		
 		if (isset($currentRoles[1]) && is_array($roles) && strlen($roles[$currentRoles[1]]) > 0) {
-			if ($roles[$currentRoles[1]] == "Provider" || $roles[$currentRoles[1]] == "clinicadmin") {
-		$permittedRoles = $em->enumArray('clinicadmin_permissions');
+		
+		$permittedRoles = $em->enumArray(strtolower(preg_replace('/\ /','',$roles[$currentRoles[1]])) . '_permissions');
+		
+			if (count($permittedRoles) > 0) {
 		$templateRoles = array();
 		foreach ($roles as $key => $role) {
 			if (array_search($role,$permittedRoles)) {
