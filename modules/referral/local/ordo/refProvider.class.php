@@ -148,13 +148,13 @@ class refProvider extends ORDataObject
 			if (!in_array($enumValue->key, $this->_specialtyKeys)) {
 				continue;
 			}
-			$valueSQL[] = '("refprovider", "' . $this->get('id') . '", "' . $enumValue->enumeration_value_id . '")';
+			$valueSQL[] = '"refprovider", "' . $this->get('id') . '", "' . $enumValue->enumeration_value_id . '"';
 		}
 		
 		$sql = '
 			INSERT INTO refSpecialtyMap 
-				(external_type, external_id, enumeration_value_id) 
-			VALUES ' . implode(', ', $valueSQL);
+				(refSpecialityMap_id, external_type, external_id, enumeration_value_id) 
+			VALUES (' . $this->_db->nextId() . ',' . implode(', ', $valueSQL) . ")";
 		$this->_db->Execute($sql);
 		// handle mapping of specialist enum to refSpecialtyMap
 	}
