@@ -91,10 +91,10 @@ class C_WidgetForm extends C_CRUD {
 			// Setup form data block
 			$wflist_ds = '';
 			// 4 is straight controller
-			if ($row['type'] == 4) {
+			if ($row['type'] == 4 || $row['type'] == 8) {
 				$dsName = "WidgetForm_" . $row['controller_name'] . "_DS";
 				$GLOBALS['loader']->requireOnce('datasources/' . $dsName . ".class.php");
-				$wflist_ds = new $dsName($patient_id);
+				$wflist_ds = new $dsName($patient_id,$row['widget_form_id']);
 			}
 			else {
                         $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId); 
