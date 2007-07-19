@@ -21,6 +21,15 @@ class M_Main extends Manager {
 			$patient =& ORDataObject::factory('Patient',$patient_id);
 			$this->controller->assign_by_ref('selectedPatient',$patient);
 
+			//cross practice code
+			$ppId = $patient->get('primary_practice_id');
+			$userProfile =& Celini::getCurrentUserProfile();
+                	$pid = $userProfile->getCurrentPracticeId();
+			
+			if ($pid != $ppId) {
+				$this->controller->assign('crossPractice', 1);
+			}
+
 			// confidentiality overlay code
 			$this->controller->view->assign('showConfidentialityBanner',false);
 			$c = $patient->get('confidentiality');
