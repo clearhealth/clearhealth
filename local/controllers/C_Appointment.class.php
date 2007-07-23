@@ -843,7 +843,7 @@ fclose($fp);
                         $this->view->assign("confirmTime",time());
                         $this->view->assign("appList",implode(",",$appIds[1]));
 			$prov = ORDataobject::factory('Provider');
-                	$provider_list = $prov->getProviderList();
+                	$provider_list = $prov->valueList_fullName(true);
                 	$this->view->assign("providerList",$provider_list);
                 }
                 else {
