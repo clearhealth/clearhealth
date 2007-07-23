@@ -26,8 +26,9 @@ class M_Main extends Manager {
 			$userProfile =& Celini::getCurrentUserProfile();
                 	$pid = $userProfile->getCurrentPracticeId();
 			
-			if ($pid != $ppId) {
+			if ($ppId > 0 && $pid != $ppId && !isset($_SESSION['confidentiality'][$patient_id])) {
 				$this->controller->assign('crossPractice', 1);
+				$_SESSION['confidentiality'][$patient_id] = true;
 			}
 
 			// confidentiality overlay code
