@@ -1,3 +1,13 @@
+{literal}
+<script>
+function reloadParent() {
+  if (window.opener) {
+    window.opener.location.reload();
+  }
+}
+</script>
+{/literal}
+
 {clni_form}
 <table>
 <td><label>Program:</label></td>
@@ -40,7 +50,7 @@ This program has no options.
 {/if}
 </td>
 </tr>
-<tr><td></td><td><input type='submit' value='{if $ACTION_ADD}Add{else}Update{/if}'></td></tr>
+<tr><td></td><td><input type='submit' value='{if $ACTION_ADD}Add{else}Update{/if}' onclick="reloadParent();"></td></tr>
 </table>
 <input type="hidden" name="ParticipationProgram[personparticipationprogram][person_id]" value="{$ordo->get('person_id')}">
 <input type="hidden" name="ParticipationProgram[personparticipationprogram][person_program_id]" value="{$ordo->get('person_program_id')}">
