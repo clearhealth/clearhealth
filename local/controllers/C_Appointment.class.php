@@ -835,6 +835,7 @@ fclose($fp);
 	}
 
         function ajaxReschedule($from_provider, $appointment_html, $copySchedule= false) {
+		Auth::canI('edit','schedule');
 		$applist = "";
                 preg_match_all("/div class=\"eventBody element\" id=\"([0-9]+)\">/",$appointment_html,$appIds);
                 if(isset($appIds) && isset($appIds[1]) && count($appIds[1]) > 0) {
