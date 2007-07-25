@@ -1,9 +1,14 @@
 {literal}
 <script>
+
 function reloadParent() {
   if (window.opener) {
     window.opener.location.reload();
   }
+}
+if (window.opener) {
+window.onload = reloadParent();
+
 }
 </script>
 {/literal}
@@ -50,7 +55,7 @@ This program has no options.
 {/if}
 </td>
 </tr>
-<tr><td></td><td><input type='submit' value='{if $ACTION_ADD}Add{else}Update{/if}' onclick="reloadParent();"></td></tr>
+<tr><td></td><td><input type='submit' value='{if $ACTION_ADD}Add{else}Update{/if}' ></td></tr>
 </table>
 <input type="hidden" name="ParticipationProgram[personparticipationprogram][person_id]" value="{$ordo->get('person_id')}">
 <input type="hidden" name="ParticipationProgram[personparticipationprogram][person_program_id]" value="{$ordo->get('person_program_id')}">
