@@ -48,9 +48,9 @@ table td {
 					{if $ppp->get('expires')}
 					Eligible Thru: {$ppp->get('end')}
 					{/if}
-					{if $options->get('hasEligibility')}
+					{*if $options->get('hasEligibility')*}
 					{$options->actionOptions(true)}
-					{/if}
+					{*/if*}
 				</td>
 			</tr>
 			<tr>
