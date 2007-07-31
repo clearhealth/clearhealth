@@ -114,7 +114,7 @@ class CalendarRecurrence extends ORDataObject{
 		}
 		$ocs=$rp->createEvents($this->start_date,$this->end_date,$this->start_time,$this->end_time,$ordoName);
 		foreach($ocs as $ocid){
-			$sql = "INSERT INTO relationship (`parent_id`,`parent_type`,`child_id`,`child_type`) VALUES (".$this->dbHelper->quote($this->get('id')).",".$this->dbHelper->quote($this->name()).",".$this->dbHelper->quote($ocid).",".$this->dbHelper->quote($ordoName).")";
+			$sql = "INSERT INTO relationship (`relationship_id`,`parent_id`,`parent_type`,`child_id`,`child_type`) VALUES (" . $this->dbHelper->nextId('sequences') . ",".$this->dbHelper->quote($this->get('id')).",".$this->dbHelper->quote($this->name()).",".$this->dbHelper->quote($ocid).",".$this->dbHelper->quote($ordoName).")";
 			$this->dbHelper->execute($sql);
 		}
 		return $ocs;
