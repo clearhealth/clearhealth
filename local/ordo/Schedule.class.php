@@ -251,13 +251,13 @@ class Schedule extends CalendarSchedule{
 			$end = strtotime($sched->get('end'));
 			$finder =& $event->relationshipFinder();
 			$finder->_orderBy = 'event.start';
-			$finder->_joins .= ' LEFT JOIN appointment ON appointment.event_id = event.event_id,appointment_breakdown ab';
-			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND (appointment.provider_id ='.$db->quote($provider_id)." OR (ab.appointment_id=appointment.appointment_id AND ab.person_id=".$db->quote($provider_id)."))");
+			$finder->_joins .= ' LEFT JOIN appointment ON appointment.event_id = event.event_id';
+			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND (appointment.provider_id ='.$db->quote($provider_id)." )");
 			$finder->_groupBy = 'event.event_id';
 			$events =& $finder->find();
 			if($events->count() == 0) {
 				if($end - $start >= $amount) {
-					$found[] = $start;
+					continue;//$found[] = $start;
 				} else {
 					continue;
 				}
@@ -266,10 +266,11 @@ class Schedule extends CalendarSchedule{
 				$event =& $events->current();
 				if(!isset($evend)) $evend = $start;
 				$evstart = strtotime($event->get('start'));
+				//echo $evstart . " :: " . $evend . "<br>";
 				if($evstart - $evend >= $amount) {
 					$found[] = $evend;
 				}
-				if($events->key()+1 == $events->count()) {
+				elseif($events->key()+1 == $events->count()) {
 					if($end - strtotime($event->get('end')) >= $amount) {
 						$found[] = strtotime($event->get('end'));
 					}
