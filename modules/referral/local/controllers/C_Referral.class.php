@@ -212,18 +212,25 @@ class C_Referral extends Controller
 		$cleanRefRequest = $this->POST->getTyped('refRequest', 'htmlsafe');
 		$request =& Celini::newORDO('refRequest', $refRequest_id);
 		$this->_request =& $request;
+		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
 		
 		if (isset($cleanRefRequest['notes'])) {
+			checkPermission($pprog);
 			$request->set('notes', $cleanRefRequest['notes']);
 		}
 		
-		if (isset($cleanRefRequest['reason'])) {
-			$request->set('reason', $cleanRefRequest['reason']);
-		}
-		if (isset($cleanRefRequest['history'])) {
-			$request->set('history', $cleanRefRequest['history']);
-		}
                 $request->persist();
+	}
+	function checkPermission($pprog) {
+			if(Auth::canI('edit',$pprog->get('participation_program_id'))) {
+			}
+			elseif(Auth::canI('add',$pprog->get('participation_program_id'))) {
+			}
+			else {
+			$this->sec_obj->acl_qcheck("edit",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+			$this->sec_obj->acl_qcheck("add",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+			}
+
 	}
 	
 	function _appointmentPendingView(&$request) {
@@ -334,6 +341,10 @@ class C_Referral extends Controller
 		}
 		
 		$this->assign_by_ref('person', $person);
+		//appointment kept redirect to form
+		if ($request->get('refStatus') == 5 ) {
+			return $this->actionVisit($request->get('refRequest_id'));
+		}
 		return $this->view->render('view.html');
 	}
 	
@@ -426,7 +437,47 @@ class C_Referral extends Controller
 	function processChangeStatus_edit() {
 		$request =& Celini::newORDO('refRequest', $this->GET->getTyped('refRequest_id', 'int'));
 		$this->_request =& $request;
-		$request->set('refStatus', $this->GET->get('refStatus'));
+		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
+		switch ($this->GET->get('refStatus')) {
+			//can't change elig pending, request, app pending
+			case 1:
+			case 2:
+			case 3:
+			  break;
+			///confirmed, kept, no-show initiator only
+			case 4:
+			case 5:
+			  if (!$request->get('refappointment_id') > 0) {
+			    $this->messages->addMessage("The Request must have an appointment to be set to 'Appointment Kept'");
+			    break;	
+				
+			  }
+			  else {
+			
+				$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
+                		if ($initiator->get('primary_practice_id')>0) {
+                        		if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
+                                		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it.');
+                        	return $this->fetch("main/general_message.html");
+                     		}
+                		}
+			  }
+			case 6:
+			  $this->sec_obj->acl_qcheck("add",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+			  $request->set('refStatus', $this->GET->get('refStatus'));
+			  break;
+			//returned
+			case 7:
+			  if ($request->get('refStatus') == 1 || $request->get('refStatus') == 2) {
+			    $this->sec_obj->acl_qcheck("edit",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+			    $request->set('refStatus', $this->GET->get('refStatus'));
+			  }
+			  else{
+			    $this->messages->addMessage("Requests must be 'Requested' or 'Eligibility Pending' to be returned.");	
+			  }
+			  break;
+			
+		}
 		$request->persist();
 		
 		// if rejected
@@ -480,14 +531,22 @@ class C_Referral extends Controller
 
 	}
 	function actionFillout($formId,$requestId) {
-		$formId = (int)$formId;
 		$requestId = (int)$requestId;
+		$request = ORDataObject::factory('refRequest',$requestId);
+		$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
+                	if ($initiator->get('primary_practice_id')>0) {
+                        	if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
+                               		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it.');
+                        	return $this->fetch("main/general_message.html");
+                     		}
+                	}
+
+		$formId = (int)$formId;
                 $formDataId = $this->_getFormDataId('participation',$formId);
 		
 		$GLOBALS['loader']->requireOnce("controllers/C_Form.class.php");
 		$fc = new C_Form();
 
-		$request = ORDataObject::factory('refRequest',$requestId);
 		$enc = ORDataObject::factory('Encounter',$request->get('visit_id'));
 		$fc->view->assign("enc",$enc);
 
