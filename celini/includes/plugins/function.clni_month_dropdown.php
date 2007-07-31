@@ -27,7 +27,11 @@ function smarty_function_clni_month_dropdown($params, &$smarty)
 		'July', 'August', 'September', 'October', 'November', 'December');
 	
 	$name = htmlspecialchars($params['name']);
-	$html_string = '<select name="' . $name . '">';
+	$html_string = '<select name="' . $name . '" ';
+        if (isset($params['disabled'])) {
+                $html_string .= ' disabled="disabled" ';
+        }
+        $html_string .= '>';
 	foreach ($months as $month_number => $month) {
 		$html_string .= '<option value="' . ($month_number + 1) . '"';
 		if (($month_number + 1) == $selected) {
