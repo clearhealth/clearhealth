@@ -71,8 +71,9 @@ class CalendarDescriptionDay {
 			else {
                 	$room = Room::getFirstRoom();			
 			}
-                        $filters['building']->setValue(array($room->get('building_id')));
+                        $data->setFilter('building',array($room->get('building_id')));
                 }
+                $filters = $data->getFilters();
                 $building_list = implode(",",$filters['building']->getValue());
 		
                 $sql = "select DATE_FORMAT(MIN(start),'%H') as start, DATE_FORMAT(MAX(end),'%H') as end from event ev left join appointment ap on ap.event_id = ev.event_id left join schedule_event se on se.event_id = ev.event_id left join rooms r on r.id = ap.room_id left join buildings b on b.id = r.building_id left join event_group eg on eg.event_group_id = se.event_group_id  left join rooms r2 on r2.id = eg.room_id left join buildings b2 on b2.id = r2.building_id
@@ -83,12 +84,17 @@ where (r.building_id
                         ev.end <= '" . date('Y-m-d',$this->dateTs) ." 23:59:59'";
                 $db = new clniDB();
                 $res = $db->execute($sql);
-               	if (!$res->EOF) {
+               	if ($res && !$res->EOF) {
                   $start = $res->fields['start'];
                   $end = $res->fields['end'];
+               	}
+		if (!$start > 0 && !$end > 0 ){
+                  $start = $GLOBALS['config']['CalendarHourStart'] . ":00";
+                  $end = (($GLOBALS['config']['CalendarHourStart'] + $GLOBALS['config']['CalendarHourLength'])%24) . ":00";
+
+		}
                	  $this->setStartTS($start);
                	  $this->setEndTS($end);
-               	}
 
 	}
 	
