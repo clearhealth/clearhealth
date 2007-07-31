@@ -252,7 +252,7 @@ class Schedule extends CalendarSchedule{
 			$finder =& $event->relationshipFinder();
 			$finder->_orderBy = 'event.start';
 			$finder->_joins .= ' LEFT JOIN appointment ON appointment.event_id = event.event_id';
-			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND (appointment.provider_id ='.$db->quote($provider_id)." )");
+			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND (appointment.provider_id ='.$db->quote($provider_id)." ) and appointment.appointment_code != 'CAN'");
 			$finder->_groupBy = 'event.event_id';
 			$events =& $finder->find();
 			if($events->count() == 0) {
@@ -272,7 +272,7 @@ class Schedule extends CalendarSchedule{
 				}
 				elseif($events->key()+1 == $events->count()) {
 					if($end - strtotime($event->get('end')) >= $amount) {
-						$found[] = strtotime($event->get('end'));
+				//		$found[] = strtotime($event->get('end'));
 					}
 				}
 				$evend = $evend > strtotime($event->get('end')) ? $evend : strtotime($event->get('end'));
