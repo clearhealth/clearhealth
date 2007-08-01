@@ -242,40 +242,48 @@ class Schedule extends CalendarSchedule{
 		}
 		$finder->_orderBy = 'ORDER BY event.start ASC, event.end ASC';
 		$finder->_criteria .= ' AND UNIX_TIMESTAMP(event.start) >= '.strtotime($start).' AND UNIX_TIMESTAMP(event.start) <= '.$db->quote(strtotime($end));
+		//echo $finder->preview();
 		$schedules =& $finder->find();
 		$event =& Celini::newORDO('CalendarEvent');
 		$found = array();
 		for($schedules->rewind();$schedules->valid();$schedules->next()) {
 			$sched =& $schedules->current();
 			$start = strtotime($sched->get('start'));
+			//echo "start: " . date('Y-m-d H:i:s',$start) . " ";
 			$end = strtotime($sched->get('end'));
+			//echo "end: " . date('Y-m-d H:i:s',$end) . "<br>";
 			$finder =& $event->relationshipFinder();
 			$finder->_orderBy = 'event.start';
 			$finder->_joins .= ' LEFT JOIN appointment ON appointment.event_id = event.event_id';
 			$finder->addCriteria('UNIX_TIMESTAMP(event.start) >= '.$start.' AND UNIX_TIMESTAMP(event.start) < '.$end.' AND (appointment.provider_id ='.$db->quote($provider_id)." ) and appointment.appointment_code != 'CAN'");
 			$finder->_groupBy = 'event.event_id';
+			//echo $finder->preview();
 			$events =& $finder->find();
+			//no events in schedule case
 			if($events->count() == 0) {
 				if($end - $start >= $amount) {
-					continue;//$found[] = $start;
+					$found[] = $start;
 				} else {
 					continue;
 				}
 			}
+			unset($evend);
 			for($events->rewind();$events->valid();$events->next()) {
 				$event =& $events->current();
 				if(!isset($evend)) $evend = $start;
 				$evstart = strtotime($event->get('start'));
-				//echo $evstart . " :: " . $evend . "<br>";
-				if($evstart - $evend >= $amount) {
+				//echo $event->get("event_id") . " " .date('Y-m-d H:i:s',$evstart) . " :: " . date('Y-m-d H:i:s',strtotime($event->get("end"))) . "<br>";
+				if($evstart - $evend >= $amount && $evend <= $end  && array_search($evend,$found) === false) {
 					$found[] = $evend;
+					//echo "found1: " . date('Y-m-d H:i:s',$evend) .  date('Y-m-d H:i:s',$end) . "<br>";
 				}
 				elseif($events->key()+1 == $events->count()) {
-					if($end - strtotime($event->get('end')) >= $amount) {
-				//		$found[] = strtotime($event->get('end'));
+					if($end - strtotime($event->get('end')) >= $amount && array_search(strtotime($event->get('end')),$found) === false) {
+						$found[] = strtotime($event->get('end'));
+						//echo "found2: " . strtotime($event->get('end')) . "<br>";
 					}
 				}
-				$evend = $evend > strtotime($event->get('end')) ? $evend : strtotime($event->get('end'));
+				$evend = strtotime($event->get('end'));
 			}
 		}
 		if (count($found) >0) {
