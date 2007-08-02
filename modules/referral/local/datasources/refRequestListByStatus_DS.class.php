@@ -31,18 +31,17 @@ class refRequestListByStatus_DS extends Datasource_sql
 		$me = Me::getInstance();
 		$chuser = $me->get_user();
 		$userid = $me->get_person_id();
-		$clinicid = $chuser->get("default_location_id");
 		$clinicgroup = $_SESSION['defaultpractice'];
 		$db =& Celini::dbInstance();
 		$initprogs = array();
 		$manprogs = array();
-		/*for($res->MoveFirst();!$res->EOF;$res->MoveNext()) {
-		//	if($res->fields['refusertype'] == 1) {
-				$initprogs[] = $res->fields['refprogram_id'];
-		//	} elseif($res->fields['refusertype'] == 2) {
-				$manprogs[] = $res->fields['refprogram_id'];
-		//	}
-		}*/
+		$sql = "select participation_program_id,name from participation_program pp where type='referral'";
+		$res = $db->execute($sql);
+		while($res && !$res->EOF) {
+			if (Auth::canI('edit',$res->fields['participation_program_id'])) $manprogs[] = $res->fields['participation_program_id'];
+			if (Auth::canI('add',$res->fields['participation_program_id'])) $initprogs[] = $res->fields['participation_program_id'];
+			$res->MoveNext();
+		}
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		
 		$qRefStatus = $db->quote($status_key);
@@ -51,8 +50,15 @@ class refRequestListByStatus_DS extends Datasource_sql
 
 		//TODO:this is where referral manager/multiple practice permission limit to query goes
 		//$whereSql .= ' AND c.clinic_id_string = ' . $db->quote($person->get('clinic_id_string'));
-//		var_dump($manprogs);
-//		$db->debug = true;
+		
+		$where = " up.primary_practice_id IN (" . (int)$_SESSION['defaultpractice']  . ") OR up.primary_practice_id IS NULL ";
+
+		if (count($manprogs) > 0) {
+			$where .= " OR pprog.participation_program_id IN (" . implode ($manprogs) . ") ";
+		}
+		if (count($initprogs) > 0) {
+			$where .= " OR pprog.participation_program_id IN (" . implode ($initprogs) . ") ";
+		}
 		$this->setup(Celini::dbInstance(), 
 			array(
 				'cols' => 'r.refRequest_id,
@@ -69,16 +75,17 @@ class refRequestListByStatus_DS extends Datasource_sql
 ',
 				'from' => '
 					refRequest AS r
-					INNER JOIN participation_program pprog on r.refprogram_id=pprog.participation_program_id
+					INNER JOIN participation_program pprog on r.refprogram_id=pprog.participation_program_id and pprog.type = "referral"
 					INNER JOIN refprogram AS prog on prog.refprogram_id = pprog.participation_program_id
 					INNER JOIN person AS p ON(r.patient_id = p.person_id)
 					INNER JOIN patient pat ON(r.patient_id = pat.person_id)
 					INNER JOIN user u  ON r.initiator_id = u.person_id
+					LEFT JOIN person up ON up.person_id = u.person_id
 					INNER JOIN rooms rm  ON rm.id = u.default_location_id
 					INNER JOIN buildings b  ON b.id = rm.building_id
 					',
-				'where' => " 1 AND 
-				$whereSql"
+				'where' => "  
+				$where "
 			),
 			array(
 				'last_name' => 'Last Name',
