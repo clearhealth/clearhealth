@@ -39,25 +39,21 @@ class refRequestListByStatus_DS extends Datasource_sql
 		$res = $db->execute($sql);
 		while($res && !$res->EOF) {
 			if (Auth::canI('edit',$res->fields['participation_program_id'])) $manprogs[] = $res->fields['participation_program_id'];
-			if (Auth::canI('add',$res->fields['participation_program_id'])) $initprogs[] = $res->fields['participation_program_id'];
 			$res->MoveNext();
 		}
 		$person =& Celini::newORDO('Person', $me->get_person_id());
 		
 		$qRefStatus = $db->quote($status_key);
 		$qExternalUserId = $db->quote($person->get('id'));
-		$whereSql = "r.refStatus = {$qRefStatus}";
+		$where = " r.refStatus = {$qRefStatus} AND ( ";
 
 		//TODO:this is where referral manager/multiple practice permission limit to query goes
 		//$whereSql .= ' AND c.clinic_id_string = ' . $db->quote($person->get('clinic_id_string'));
 		
-		$where = " up.primary_practice_id IN (" . (int)$_SESSION['defaultpractice']  . ") OR up.primary_practice_id IS NULL ";
+		$where .= " up.primary_practice_id IN (" . (int)$_SESSION['defaultpractice']  . ") OR up.primary_practice_id IS NULL ";
 
 		if (count($manprogs) > 0) {
 			$where .= " OR pprog.participation_program_id IN (" . implode ($manprogs) . ") ";
-		}
-		if (count($initprogs) > 0) {
-			$where .= " OR pprog.participation_program_id IN (" . implode ($initprogs) . ") ";
 		}
 		$this->setup(Celini::dbInstance(), 
 			array(
@@ -85,7 +81,7 @@ class refRequestListByStatus_DS extends Datasource_sql
 					INNER JOIN buildings b  ON b.id = rm.building_id
 					',
 				'where' => "  
-				$where "
+				$where ) "
 			),
 			array(
 				'last_name' => 'Last Name',
@@ -100,7 +96,6 @@ class refRequestListByStatus_DS extends Datasource_sql
 				//'ref
 				));
 		$this->registerFilter('formatted_date', array($this, '_addLinkToList'));
-		
 		$enumCallback = array(&$this, '_enumValue');
 		$this->registerFilter('refStatus', $enumCallback, 'refStatus');
 		$this->registerFilter('reason', $enumCallback, 'refRejectionReason');
