@@ -62,7 +62,17 @@ class ORDOFinder extends GenericFinder
 		}
 	}
 	
-	
+	function preview() {
+		 $sql = sprintf('SELECT %s.* FROM %s %s WHERE %s %s',
+                        $this->_ordo->tableName(),
+                        $this->_ordo->tableName(),
+                        $this->_joins,
+                        is_string($this->_criteria) ? $this->_criteria : $this->_criteria->toString(),
+                        is_string($this->_orderBy) ? $this->_orderBy : $this->_orderBy->toString()
+                );
+		return $sql;
+
+	}	
 	/**
 	 * Runs the actual search and returns a {@link ORDOCollection} object
 	 *
