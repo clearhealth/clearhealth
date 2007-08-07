@@ -36,7 +36,8 @@ function smarty_function_clni_building_list($params, &$smarty)
             case 'id':
                 $$_key = (string)$_val;
                 break;
-                
+            case 'disabled':
+                                $$_key = (string)$_val;
             default:
                 if(!is_array($_val)) {
                     $extra .= ' '.$_key.'="'.smarty_function_escape_special_chars($_val).'"';
@@ -56,7 +57,7 @@ function smarty_function_clni_building_list($params, &$smarty)
         
     $building = ORDataObject::factory("Building");
     $bl = $building->getBuildingList();
-    $ret = smarty_function_html_options(array('name'=>"string[$name]",'selected'=>$value,'options'=>$bl,'id'=>$id,'extra'=>$extra),$smarty);
+    $ret = smarty_function_html_options(array('name'=>"string[$name]",'selected'=>$value,'options'=>$bl,'id'=>$id,'extra'=>$extra,'disabled'=>$disabled),$smarty);
 
     return $ret;
 
