@@ -76,8 +76,8 @@ table td {
 					<tr>
 						<td>Requested Slot</td>
 						<td  class="outlined">
-							{$request->get('refRequested_day')}
-							{$request->get('refRequested_time')}
+							{$em->lookup('days',$request->get('refRequested_day'))}
+							{$em->lookup('refRequested_time',$request->get('refRequested_time'))}
 						</td>
 					</tr>
 
