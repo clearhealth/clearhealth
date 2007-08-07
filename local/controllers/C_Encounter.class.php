@@ -504,7 +504,7 @@ class C_Encounter extends Controller {
 		if($encounter->get('reason') != $newReason) {
 			$changedreason = true;
 		}
-		$encounter->populate_array($_POST['encounter']);
+		if (isset($_POST['encounter'])) { $encounter->populate_array($_POST['encounter']); }
 
 		// clear matching appointment cache
 		
