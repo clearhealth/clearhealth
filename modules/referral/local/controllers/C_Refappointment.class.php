@@ -10,7 +10,7 @@ class C_Refappointment extends Controller
 		$ajax->stubs[] = 'C_Refpractice';
 		
 		$request =& Celini::newORDO('refRequest', $this->GET->get('refrequest_id'));
-		$pprog = ORDataObject:factory('ParticipationProgram',$request->get('refprogram_id'));
+		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);	
 		$this->view->assign_by_ref('request', $request);
 		
@@ -54,6 +54,9 @@ class C_Refappointment extends Controller
 		// URL to change status - has the id appended to it in the template
 		$this->assign('CHANGE_STATUS_URL', Celini::link('changestatus') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=');
 		$this->assign('SAVE_APPOINTMENT_ACTION', Celini::link('addAppointment'));
+
+		$em =& Celini::enumManagerInstance();
+		$this->assign('em',$em);
 		
 
 		return $this->view->render('add.html');
