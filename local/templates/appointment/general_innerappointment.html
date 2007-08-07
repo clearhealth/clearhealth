@@ -21,7 +21,7 @@
 {/if}
 		{if $ev_edit}
 			<a href="javascript:void(0);" onclick="editAppointment({$appointment->get('id')},'{$appointment->get('appointment_code')}');">edit</a>,
-			<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>{if $appointment->get('patient_id')},
+			<!--<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>,--> {if $appointment->get('patient_id')}
 			<a href="javascript:void(0);" onclick="NSAppointment({$appointment->get('id')});">ns</a>, 
 			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>
 			{if $appointment->get('group_appointment') == 0},
