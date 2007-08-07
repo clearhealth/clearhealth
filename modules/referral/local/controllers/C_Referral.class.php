@@ -215,7 +215,7 @@ class C_Referral extends Controller
 		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
 		
 		if (isset($cleanRefRequest['notes'])) {
-			checkPermission($pprog);
+			$this->checkPermission($pprog);
 			$request->set('notes', $cleanRefRequest['notes']);
 		}
 		
@@ -321,7 +321,7 @@ class C_Referral extends Controller
 			else {
 				$this->view->assign('appointmentScheduled', true);
 				$requestedStatus = $em->lookupKey('refStatus', 'Requested / Eligibility Pending');
-				$this->assign('APPOINTMENT_BUTTON_URL', Celini::link('changestatus', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $requestedStatus);
+				$this->assign('APPOINTMENT_BUTTON_URL', Celini::link('changeStatusCancel', 'referral') . 'refRequest_id=' . $request->get('id') . '&process=true&refStatus=' . $requestedStatus);
 				//$this->assign('APPOINTMENT_FORM_ACTION', Celini::link('edit', 'refappointment') . 'refappointment_id=' . (int)$appointment->get('id') . '&embedded');
 				
 				// setup dates/years
@@ -427,6 +427,17 @@ class C_Referral extends Controller
 		return $this->view->render('edit.html');
 	}
 	
+	function processChangeStatusCancel_edit() {
+		$request =& Celini::newORDO('refRequest', $this->GET->getTyped('refRequest_id', 'int'));
+		$this->_request =& $request;
+		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
+		$this->sec_obj->acl_qcheck("edit",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+		$request->set('refStatus', $this->GET->get('refStatus'));
+		$request->persist();
+		$this->_state =false;
+		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
+	}
+
 	/**
 	 * Process changing status on a request.
 	 *
@@ -438,19 +449,28 @@ class C_Referral extends Controller
 		$request =& Celini::newORDO('refRequest', $this->GET->getTyped('refRequest_id', 'int'));
 		$this->_request =& $request;
 		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
+		$this->checkPermission($pprog);
 		switch ($this->GET->get('refStatus')) {
 			//can't change elig pending, request, app pending
 			case 1:
 			case 2:
 			case 3:
+			    $this->messages->addMessage("This status cannot be selected manually.");
 			  break;
 			///confirmed, kept, no-show initiator only
 			case 4:
+			  $this->checkPermission($pprog);
+			  if (!$request->get('refappointment_id') > 0) {
+			    $this->messages->addMessage("The Request must have an appointment to be set to the selected status.");
+			    break;	
+			  }
+			  $request->set('refStatus', $this->GET->get('refStatus'));
+			  break;
+			//kept
 			case 5:
 			  if (!$request->get('refappointment_id') > 0) {
-			    $this->messages->addMessage("The Request must have an appointment to be set to 'Appointment Kept'");
+			    $this->messages->addMessage("The Request must have an appointment to be set to the selected status.");
 			    break;	
-				
 			  }
 			  else {
 			
@@ -458,12 +478,18 @@ class C_Referral extends Controller
                 		if ($initiator->get('primary_practice_id')>0) {
                         		if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
                                 		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it.');
+				$this->_state = false;
                         	return $this->fetch("main/general_message.html");
                      		}
                 		}
 			  }
+			//no-show
 			case 6:
-			  $this->sec_obj->acl_qcheck("add",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
+			  $this->checkPermission($pprog);
+			  if (!$request->get('refappointment_id') > 0) {
+			    $this->messages->addMessage("The Request must have an appointment to be set to the selected status.");
+			    break;	
+			  }
 			  $request->set('refStatus', $this->GET->get('refStatus'));
 			  break;
 			//returned
@@ -496,13 +522,19 @@ class C_Referral extends Controller
 			$request->set('reason', $this->GET->getTyped('reason', 'int'));
 			$request->persist();
 		}
-		
 		$this->_state =false;
 		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
 	}
 	function processVisit() {
 		$requestId = (int)$_GET['refRequest_id'];
 		$request = ORDataObject::factory("refRequest",$requestId);
+		if (!$request->get('refappointment_id') > 0) {
+                            $this->messages->addMessage("The Request must have an appointment to be set to the selected status.");
+			  header('Location: ' . Celini::link('view','Referral',true,$requestId));
+                            exit;
+                }
+		$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
+		$this->checkPermission($parProg);
 		$this->_request = $request;
 		$refvisit = ORDataObject::factory("refVisit");
 		$refvisit->set('refreferral_visit_id',$request->get('refRequest_id'));
@@ -614,8 +646,12 @@ class C_Referral extends Controller
 		$me =& Me::getInstance();
 		$request->set('initiator_id', $me->get_person_id());
 //		echo $this->_me->get_person_id();exit;
-                $request->persist();
                 $parProg = ORDataObject::factory('ParticipationProgram', $request->get("refprogram_id"));
+		//permissions apply only to non-adhoc programs
+		if ($parProg->get('adhoc') == 0) {
+			$this->checkPermission($parProg);
+		}
+                $request->persist();
 		$ppp = PersonParticipationProgram::getByProgramPatient($request->get('refprogram_id'),$request->get('patient_id'));
 		$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
