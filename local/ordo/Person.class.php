@@ -390,12 +390,12 @@ class Person extends ORDataObject {
 		$pid = $userProfile->getCurrentPracticeId();
 		$where = "(p.primary_practice_id = '$pid' OR sp.practice_id='$pid') AND p.inactive = 0 ";
 		
-		$sql = "select p.person_id, concat_ws(' ',first_name,last_name) name from person p 
+		$sql = "select p.person_id, concat_ws(', ',last_name,first_name) name from person p 
 					inner join person_type ct using(person_id) 
 					LEFT JOIN secondary_practice sp USING(person_id)
 				where {$where} AND " . implode(' OR ', $sqlPersonTypes) . "
 				GROUP BY p.person_id
-				order by p.primary_practice_id, last_name, first_name";
+				order by last_name, first_name";
 		$returnArray = $this->dbHelper->getAssoc($sql);
 		if ($blank) {
 			$tmp= array(''=>'');
