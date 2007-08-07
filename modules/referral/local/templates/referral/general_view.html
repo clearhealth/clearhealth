@@ -145,7 +145,7 @@ table td {
 					<li{if $refStatusKey == $request->get('refStatus')} class="selected"{/if}>
 						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') ne $refStatusKey}<a href="{$refStatusLinks.$refStatusKey}" onclick="return confirmStatusChange(this);">{/if}
 						{$refStatus}
-						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') != 7}</a>{/if}
+						{if $refStatusLinks.$refStatusKey && $request->get('refStatus') ne $refStatusKey}</a>{/if}
 					</li>
 					{/foreach}
 				</ul>
