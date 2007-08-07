@@ -101,7 +101,7 @@
 		<td>
 			<select name="person[primary_practice_id]" id="person__primary_practice_id" class="required">
 				<option></option>
-				{html_options options=$person->valueList('primary_practice_id') selected=$person->get('primary_practice_id')}
+				{html_options options=$practiceList selected=$person->get('primary_practice_id')}
 			</select>
 		</td>
 	</tr>
