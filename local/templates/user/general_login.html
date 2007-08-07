@@ -24,7 +24,7 @@
 		<tr>
 			<td>
 				<select size="5" name="user[groups][]">
-					{html_options options=$user->getDisplayGroups('roles') selected=$user->get('selected_group_ids')}
+					{html_options options=$roles selected=$user->get('selected_group_ids')}
 				</select>
 			</td>
 		</tr>
