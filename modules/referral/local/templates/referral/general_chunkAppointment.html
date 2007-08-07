@@ -21,13 +21,13 @@
 				<option{if $appointment->get('time_suffix') == 'AM'} selected="selected"{/if}>AM</option>
 				<option{if $appointment->get('time_suffix') == 'PM'} selected="selected"{/if}>PM</option>
 			</select>
-				{clni_month_dropdown name="Refappointment[date_month]"  selected=$appointment->get('date_month') disabled="disabled"}
+				{clni_month_dropdown name="Refappointment[date_month]"  selected=$appointment->get('date_month') }
 			
 			<select class="required" name="Refappointment[date_date]">
 				<option></option>
 				{html_options options=$dateArray selected=$appointment->get('date_date')}
 			</select>
-			<select  name="Refappointment[date_year]" disabled="disabled">
+			<select  name="Refappointment[date_year]" >
 				<option></option>
 				{html_options options=$yearArray selected=$appointment->get('date_year')}
 			</select>
