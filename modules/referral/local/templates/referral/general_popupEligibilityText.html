@@ -1,4 +1,4 @@
-{if $options->get('eligibility') == 2}
+{if $options->get('eligibility') eq 2 || $options->get('eligibility') eq 3}
 <div style="display:none" id="popupEligiblityText">
 	<p>
 		The system currently has the Eligibility status for this patient as either<br /> 
