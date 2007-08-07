@@ -1,0 +1,10 @@
+<form method="post">
+<input type="hidden" name="process" value="true">
+<input type="radio" name="searchtype" {if $searchtype eq 'levenshtein'}checked="checked"{/if} value="levenshtein">Levenshtein &nbsp;&nbsp;
+<input type="radio" {if $searchtype eq 'metaphone'}checked="checked"{/if} name="searchtype" value="metaphone">Metaphone &nbsp;&nbsp;
+<input type="text" name="threshold" value="{$threshold}" size="3"> Threshold
+<br />
+<input type="submit" value="search">
+</form>
+
+{$dfgrid->render()}
