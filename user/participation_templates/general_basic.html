@@ -11,7 +11,7 @@
 </select>
 
 {else}
-{enum_lookup name="federal_poverty_level" value=$options->get('federal_poverty_level')} - VF:{$em->lookup('federal_poverty_level',$key,'extra1')}/PF:{$em->lookup('federal_poverty_level',$key,'extra2')}
+{enum_lookup name="federal_poverty_level" value=$options->get('federal_poverty_level')} - VF:{$em->lookup('federal_poverty_level',$options->get('federal_poverty_level'),'extra1')}/PF:{$em->lookup('federal_poverty_level',$options->get('federal_poverty_level'),'extra2')}
 {/if}
 </td>
 </tr>
