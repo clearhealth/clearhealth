@@ -440,12 +440,12 @@ class Practice extends ORDataObject{
 		return $config;
 	}
 	
-	function genericList() {
+	function genericList($checkPerm = true) {
 		$tableName = $this->tableName();
 		$userProfile =& Celini::getCurrentUserProfile();
 		$allowedPracticeList = $userProfile->getPracticeIdList();
 		
-		if (count($allowedPracticeList) == 1) {
+		if (count($allowedPracticeList) == 1 && $checkPerm == true) {
 			$sql = "SELECT p.id, p.name FROM {$tableName} AS p ORDER BY p.name";
 		}
 		else {
