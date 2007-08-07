@@ -74,9 +74,12 @@ class C_ParticipationProgram extends C_CRUD {
 		$ppdata=$ppdata['personparticipationprogram'];
 		$ppp = ORDataObject::factory('PersonParticipationProgram',$person_program_id);
 		$ppp->populateArray($ppdata);
+		$parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
+		if ($parProg->get('adhoc') == 0) {
+		$this->security->acl_qcheck('edit',$this->_me,'resources',$parProg->get('participation_program_id'),$this,false);
+		}
 		$ppp->persist();
 		if(isset($ppdata['options']) && count($ppdata['options'] > 1)) {
-		  $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
 		  $optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                   $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                   $options = ORDataObject::factory($optionsClassName, $person_program_id);
