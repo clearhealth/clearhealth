@@ -151,6 +151,20 @@ class C_Referral extends Controller
                 $this->view->assign_by_ref('parProg', $parProg);
                 $this->view->assign_by_ref('personParProgram', $ppp);
 		$enc = ORDataObject::factory('Encounter',$request->get('visit_id'));
+		$GLOBALS['loader']->requireOnce('datasources/Coding_List_DS.class.php');
+                //true is to show only distinct codes, type 1 is CPT
+                $cptDS = new Coding_List_DS($request->get('visit_id'),"1,3",true);
+                $cptDS->clearLabels();
+                $cptDS->setTypeDependentLabel("html","code","CPT");
+                $cpts = implode(',',$cptDS->toArray("code"));
+                $this->assign("cpts",$cpts);
+
+
+                $icdDS = new Coding_List_DS($request->get('visit_id'),"2",true);
+                $icdDS->clearLabels();
+                $icdDS->setTypeDependentLabel("html","code","ICD");
+                $icds = implode(",",$icdDS->toArray("code"));
+                $this->assign("icds",$icds);
 		$this->view->assign("enc",$enc);
 
 
