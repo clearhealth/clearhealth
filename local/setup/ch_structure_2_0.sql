@@ -1,8 +1,8 @@
 -- MySQL dump 10.10
 --
--- Host: localhost    Database: chtrunk
+-- Host: localhost    Database: clearhealth
 -- ------------------------------------------------------
--- Server version	5.0.22
+-- Server version	5.0.27-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -21,8 +21,8 @@
 
 DROP TABLE IF EXISTS `DailyNamed`;
 CREATE TABLE `DailyNamed` (
-  `id` int(11) NOT NULL
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  `id` int(11) NOT NULL default '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `account_note`
@@ -30,15 +30,17 @@ CREATE TABLE `DailyNamed` (
 
 DROP TABLE IF EXISTS `account_note`;
 CREATE TABLE `account_note` (
-  `account_note_id` int(11) NOT NULL default '0',
+  `account_note_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL default '0',
   `claim_id` varchar(100) NOT NULL default '',
   `user_id` int(11) NOT NULL default '0',
   `date_posted` datetime NOT NULL default '0000-00-00 00:00:00',
   `note` text NOT NULL,
   `note_type` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`account_note_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`account_note_id`),
+  KEY `patient_id` (`patient_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `address`
@@ -46,7 +48,7 @@ CREATE TABLE `account_note` (
 
 DROP TABLE IF EXISTS `address`;
 CREATE TABLE `address` (
-  `address_id` int(11) NOT NULL default '0',
+  `address_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL default '',
   `line1` varchar(255) NOT NULL default '',
   `line2` varchar(255) NOT NULL default '',
@@ -57,7 +59,7 @@ CREATE TABLE `address` (
   `postal_code` varchar(255) NOT NULL default '',
   `notes` text NOT NULL,
   PRIMARY KEY  (`address_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person. STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person. STARTEMPTY';
 
 --
 -- Table structure for table `adodbseq`
@@ -66,7 +68,7 @@ CREATE TABLE `address` (
 DROP TABLE IF EXISTS `adodbseq`;
 CREATE TABLE `adodbseq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
 
 --
 -- Table structure for table `altnotice`
@@ -74,7 +76,7 @@ CREATE TABLE `adodbseq` (
 
 DROP TABLE IF EXISTS `altnotice`;
 CREATE TABLE `altnotice` (
-  `altnotice_id` int(11) NOT NULL auto_increment,
+  `altnotice_id` int(11) NOT NULL,
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `due_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `completed_date` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -93,7 +95,7 @@ CREATE TABLE `altnotice` (
   KEY `owner_id` (`owner_id`),
   KEY `external_type` (`external_type`),
   KEY `external_id` (`external_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `appointment`
@@ -101,7 +103,8 @@ CREATE TABLE `altnotice` (
 
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE `appointment` (
-  `appointment_id` int(11) NOT NULL default '0',
+  `appointment_id` int(11) NOT NULL,
+  `arrived` tinyint(1) NOT NULL,
   `title` varchar(255) NOT NULL default '',
   `reason` int(11) NOT NULL default '0',
   `walkin` tinyint(1) NOT NULL default '0',
@@ -121,8 +124,12 @@ CREATE TABLE `appointment` (
   PRIMARY KEY  (`appointment_id`),
   KEY `event_group_id` (`event_group_id`),
   KEY `event_id` (`event_id`),
-  KEY `patient_id` (`patient_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `provider_id` (`provider_id`),
+  KEY `patient_id` (`patient_id`),
+  KEY `room_id` (`room_id`),
+  KEY `arrived` (`arrived`),
+  KEY `appointment_code` (`appointment_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `appointment_breakdown`
@@ -137,7 +144,18 @@ CREATE TABLE `appointment_breakdown` (
   PRIMARY KEY  (`appointment_breakdown_id`),
   KEY `occurence_breakdown_id` (`occurence_breakdown_id`,`person_id`),
   KEY `appointment_id` (`appointment_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `appointment_link`
+--
+
+DROP TABLE IF EXISTS `appointment_link`;
+CREATE TABLE `appointment_link` (
+  `oldId` int(11) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `appointment_rule`
@@ -151,7 +169,7 @@ CREATE TABLE `appointment_rule` (
   `label` varchar(255) NOT NULL default '',
   `data` longtext NOT NULL,
   PRIMARY KEY  (`appointment_rule_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `appointment_ruleset`
@@ -162,12 +180,12 @@ CREATE TABLE `appointment_ruleset` (
   `appointment_ruleset_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   `error_message` text NOT NULL,
-  `enabled` tinyint(4) NOT NULL default '1',
   `provider_id` int(11) NOT NULL default '0',
   `procedure_id` int(11) NOT NULL default '0',
   `room_id` int(11) NOT NULL default '0',
+  `enabled` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`appointment_ruleset_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `appointment_template`
@@ -178,7 +196,7 @@ CREATE TABLE `appointment_template` (
   `appointment_template_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`appointment_template_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `audit_log`
@@ -196,7 +214,7 @@ CREATE TABLE `audit_log` (
   PRIMARY KEY  (`audit_log_id`),
   KEY `ordo` (`ordo`),
   KEY `type` (`type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `audit_log_field`
@@ -211,7 +229,7 @@ CREATE TABLE `audit_log_field` (
   `new_value` text NOT NULL,
   PRIMARY KEY  (`audit_log_field_id`),
   UNIQUE KEY `audit_log_id` (`audit_log_id`,`field`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `building_address`
@@ -223,9 +241,19 @@ CREATE TABLE `building_address` (
   `address_id` int(11) NOT NULL default '0',
   `address_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`building_id`,`address_id`),
-  KEY `address_id` (`address_id`),
-  KEY `building_id` (`building_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying type. STARTEMPTY';
+  KEY `address_id` (`address_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links a building to a address specifying type. STARTEMPTY';
+
+--
+-- Table structure for table `building_link`
+--
+
+DROP TABLE IF EXISTS `building_link`;
+CREATE TABLE `building_link` (
+  `oldId` int(11) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `building_program_identifier`
@@ -238,7 +266,7 @@ CREATE TABLE `building_program_identifier` (
   `identifier` varchar(255) NOT NULL default '',
   `x12_sender_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`building_id`,`program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `buildings`
@@ -246,14 +274,16 @@ CREATE TABLE `building_program_identifier` (
 
 DROP TABLE IF EXISTS `buildings`;
 CREATE TABLE `buildings` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `description` text NOT NULL,
   `name` varchar(255) NOT NULL default '',
   `practice_id` int(11) NOT NULL default '0',
   `identifier` varchar(255) NOT NULL default '',
   `facility_code_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+  `phone_number` varchar(255) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `practice_id` (`practice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 --
 -- Table structure for table `category`
@@ -270,7 +300,7 @@ CREATE TABLE `category` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='STARTWITHDATA';
 
 --
 -- Table structure for table `category_to_document`
@@ -281,7 +311,7 @@ CREATE TABLE `category_to_document` (
   `category_id` int(11) NOT NULL default '0',
   `document_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`category_id`,`document_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 --
 -- Table structure for table `clearhealth_claim`
@@ -289,13 +319,13 @@ CREATE TABLE `category_to_document` (
 
 DROP TABLE IF EXISTS `clearhealth_claim`;
 CREATE TABLE `clearhealth_claim` (
-  `claim_id` int(11) NOT NULL default '0',
+  `claim_id` int(11) NOT NULL,
   `encounter_id` int(11) NOT NULL default '0',
   `identifier` varchar(255) NOT NULL default '',
   `total_billed` float(7,2) NOT NULL default '0.00',
   `total_paid` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`claim_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='STARTEMPTY';
 
 --
 -- Table structure for table `code_category`
@@ -307,7 +337,7 @@ CREATE TABLE `code_category` (
   `category_name` varchar(255) NOT NULL default '',
   `category_id` int(11) NOT NULL,
   PRIMARY KEY  (`code_category_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `code_to_category`
@@ -318,7 +348,7 @@ CREATE TABLE `code_to_category` (
   `code_category_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`code_category_id`,`code_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `codes`
@@ -326,7 +356,7 @@ CREATE TABLE `code_to_category` (
 
 DROP TABLE IF EXISTS `codes`;
 CREATE TABLE `codes` (
-  `code_id` int(11) NOT NULL auto_increment,
+  `code_id` int(11) NOT NULL,
   `code_text` varchar(255) default NULL,
   `code_text_short` varchar(24) default NULL,
   `code` varchar(10) default NULL,
@@ -340,7 +370,7 @@ CREATE TABLE `codes` (
   KEY `code_text` (`code_text`),
   KEY `code` (`code`),
   KEY `code_type` (`code_type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `coding_data`
@@ -348,7 +378,7 @@ CREATE TABLE `codes` (
 
 DROP TABLE IF EXISTS `coding_data`;
 CREATE TABLE `coding_data` (
-  `coding_data_id` int(11) NOT NULL default '0',
+  `coding_data_id` int(11) NOT NULL,
   `foreign_id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
@@ -357,8 +387,11 @@ CREATE TABLE `coding_data` (
   `fee` float(11,2) NOT NULL default '0.00',
   `primary_code` tinyint(4) NOT NULL default '0',
   `code_order` tinyint(4) NOT NULL default '0',
-  PRIMARY KEY  (`coding_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`coding_data_id`),
+  KEY `foreign_id` (`foreign_id`),
+  KEY `parent_id` (`parent_id`),
+  KEY `code_id` (`code_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `coding_data_dental`
@@ -370,7 +403,7 @@ CREATE TABLE `coding_data_dental` (
   `tooth` enum('N/A','All','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','All (Primary)','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T') NOT NULL default 'N/A',
   `toothside` enum('N/A','Front','Back','Top','Left','Right') NOT NULL default 'N/A',
   PRIMARY KEY  (`coding_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `coding_template`
@@ -380,12 +413,12 @@ DROP TABLE IF EXISTS `coding_template`;
 CREATE TABLE `coding_template` (
   `coding_template_id` int(11) NOT NULL default '0',
   `practice_id` int(11) NOT NULL default '0',
-  `reason_id` int(11) NOT NULL default '0',
+  `reason_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL default '',
   `coding_parent_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`coding_template_id`),
   KEY `practice_id` (`practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `company`
@@ -393,7 +426,7 @@ CREATE TABLE `coding_template` (
 
 DROP TABLE IF EXISTS `company`;
 CREATE TABLE `company` (
-  `company_id` int(11) NOT NULL default '0',
+  `company_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL default '',
   `description` text NOT NULL,
   `notes` text NOT NULL,
@@ -401,7 +434,7 @@ CREATE TABLE `company` (
   `url` varchar(255) NOT NULL default '',
   `is_historic` enum('no','yes') NOT NULL default 'no',
   PRIMARY KEY  (`company_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is linked in STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is linked in STARTEMPTY';
 
 --
 -- Table structure for table `company_address`
@@ -413,9 +446,8 @@ CREATE TABLE `company_address` (
   `address_id` int(11) NOT NULL default '0',
   `address_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`company_id`,`address_id`),
-  KEY `company_id` (`company_id`),
   KEY `address_id` (`address_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links a company to a address specifying the type STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links a company to a address specifying the type STARTEMPTY';
 
 --
 -- Table structure for table `company_company`
@@ -427,9 +459,8 @@ CREATE TABLE `company_company` (
   `related_company_id` int(11) NOT NULL default '0',
   `company_relation_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`company_id`,`related_company_id`),
-  KEY `company_id` (`company_id`),
   KEY `related_company_id` (`related_company_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Relates a company to another company STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Relates a company to another company STARTEMPTY';
 
 --
 -- Table structure for table `company_number`
@@ -442,7 +473,7 @@ CREATE TABLE `company_number` (
   PRIMARY KEY  (`company_id`,`number_id`),
   KEY `company_id` (`company_id`),
   KEY `number_id` (`number_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links between company and phone_numbers STARTEMPTY';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links between company and phone_numbers STARTEMPTY';
 
 --
 -- Table structure for table `company_type`
@@ -455,7 +486,20 @@ CREATE TABLE `company_type` (
   PRIMARY KEY  (`company_id`,`company_type`),
   KEY `company_id` (`company_id`),
   KEY `company_type` (`company_type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Link to specify company type';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Link to specify company type';
+
+--
+-- Table structure for table `countries`
+--
+
+DROP TABLE IF EXISTS `countries`;
+CREATE TABLE `countries` (
+  `countries_name` varchar(64) NOT NULL default '',
+  `countries_iso_code_2` char(2) NOT NULL default '',
+  `countries_iso_code_3` char(3) NOT NULL default '',
+  PRIMARY KEY  (`countries_iso_code_3`),
+  KEY `IDX_COUNTRIES_NAME` (`countries_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `cronable`
@@ -477,7 +521,7 @@ CREATE TABLE `cronable` (
   `arguments` text NOT NULL,
   `last_run` datetime default '0000-00-00 00:00:00',
   PRIMARY KEY  (`cronable_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `document`
@@ -485,7 +529,7 @@ CREATE TABLE `cronable` (
 
 DROP TABLE IF EXISTS `document`;
 CREATE TABLE `document` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL default '',
   `type` enum('file_url','blob','web_url') default NULL,
   `size` int(11) default NULL,
@@ -501,7 +545,7 @@ CREATE TABLE `document` (
   KEY `revision` (`revision`),
   KEY `foreign_id` (`foreign_id`),
   KEY `owner` (`owner`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `duplicate_queue`
@@ -514,7 +558,7 @@ CREATE TABLE `duplicate_queue` (
   `child_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`duplicate_queue_id`),
   UNIQUE KEY `child_id` (`child_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `eligibility_log`
@@ -522,12 +566,12 @@ CREATE TABLE `duplicate_queue` (
 
 DROP TABLE IF EXISTS `eligibility_log`;
 CREATE TABLE `eligibility_log` (
-  `eligibility_log_id` int(11) NOT NULL default '0',
+  `eligibility_log_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL default '0',
   `log_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `message` longtext NOT NULL,
   PRIMARY KEY  (`eligibility_log_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `encounter`
@@ -550,8 +594,10 @@ CREATE TABLE `encounter` (
   KEY `building_id` (`building_id`),
   KEY `treating_person_id` (`treating_person_id`),
   KEY `last_change_user_id` (`last_change_user_id`),
-  KEY `patient_id` (`patient_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `patient_id` (`patient_id`),
+  KEY `occurence_id` (`occurence_id`),
+  KEY `date_of_treatment` (`date_of_treatment`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `encounter_date`
@@ -559,13 +605,24 @@ CREATE TABLE `encounter` (
 
 DROP TABLE IF EXISTS `encounter_date`;
 CREATE TABLE `encounter_date` (
-  `encounter_date_id` int(11) NOT NULL default '0',
+  `encounter_date_id` int(11) NOT NULL,
   `encounter_id` int(11) NOT NULL default '0',
   `date_type` int(11) NOT NULL default '0',
   `date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`encounter_date_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `encounter_link`
+--
+
+DROP TABLE IF EXISTS `encounter_link`;
+CREATE TABLE `encounter_link` (
+  `oldId` int(11) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `encounter_person`
@@ -573,13 +630,13 @@ CREATE TABLE `encounter_date` (
 
 DROP TABLE IF EXISTS `encounter_person`;
 CREATE TABLE `encounter_person` (
-  `encounter_person_id` int(11) NOT NULL default '0',
+  `encounter_person_id` int(11) NOT NULL,
   `encounter_id` int(11) NOT NULL default '0',
   `person_type` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`encounter_person_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `encounter_value`
@@ -587,13 +644,13 @@ CREATE TABLE `encounter_person` (
 
 DROP TABLE IF EXISTS `encounter_value`;
 CREATE TABLE `encounter_value` (
-  `encounter_value_id` int(11) NOT NULL default '0',
+  `encounter_value_id` int(11) NOT NULL,
   `encounter_id` int(11) NOT NULL default '0',
   `value_type` int(11) NOT NULL default '0',
   `value` varchar(255) NOT NULL default '0',
   PRIMARY KEY  (`encounter_value_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `enumeration_definition`
@@ -607,7 +664,7 @@ CREATE TABLE `enumeration_definition` (
   `type` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`enumeration_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `enumeration_value`
@@ -617,16 +674,18 @@ DROP TABLE IF EXISTS `enumeration_value`;
 CREATE TABLE `enumeration_value` (
   `enumeration_value_id` int(11) NOT NULL default '0',
   `enumeration_id` int(11) NOT NULL default '0',
-  `key` int(11) NOT NULL default '0',
+  `key` varchar(255) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
   `sort` int(11) NOT NULL default '0',
   `extra1` varchar(255) NOT NULL default '',
   `extra2` varchar(255) NOT NULL default '',
   `status` int(1) NOT NULL default '1',
+  `depth` tinyint(4) NOT NULL,
+  `parent_id` int(11) NOT NULL,
   PRIMARY KEY  (`enumeration_value_id`),
   KEY `key` (`key`),
   KEY `enumeration_id` (`enumeration_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `enumeration_value_practice`
@@ -637,7 +696,7 @@ CREATE TABLE `enumeration_value_practice` (
   `enumeration_value_id` int(11) NOT NULL default '0',
   `practice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`enumeration_value_id`,`practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `eob_adjustment`
@@ -651,7 +710,7 @@ CREATE TABLE `eob_adjustment` (
   `adjustment_type` int(11) NOT NULL default '0',
   `value` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`eob_adjustment_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event`
@@ -659,14 +718,14 @@ CREATE TABLE `eob_adjustment` (
 
 DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
-  `event_id` int(11) NOT NULL auto_increment,
+  `event_id` int(11) NOT NULL,
   `start` datetime NOT NULL default '0000-00-00 00:00:00',
   `end` datetime NOT NULL default '0000-00-00 00:00:00',
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`event_id`),
   KEY `start` (`start`),
   KEY `end` (`end`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event_group`
@@ -674,15 +733,14 @@ CREATE TABLE `event` (
 
 DROP TABLE IF EXISTS `event_group`;
 CREATE TABLE `event_group` (
-  `event_group_id` int(11) NOT NULL auto_increment,
+  `event_group_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL default '',
   `room_id` int(11) NOT NULL default '0',
   `schedule_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`event_group_id`),
   KEY `room_id` (`room_id`),
   KEY `schedule_id` (`schedule_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `facility_codes`
@@ -690,11 +748,11 @@ CREATE TABLE `event_group` (
 
 DROP TABLE IF EXISTS `facility_codes`;
 CREATE TABLE `facility_codes` (
-  `facility_code_id` int(11) NOT NULL auto_increment,
+  `facility_code_id` int(11) NOT NULL,
   `code` varchar(5) NOT NULL default '',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`facility_code_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Stores x12 facility_code code/human name combos';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Stores x12 facility_code code/human name combos';
 
 --
 -- Table structure for table `fbaddress`
@@ -712,7 +770,7 @@ CREATE TABLE `fbaddress` (
   `state` varchar(5) NOT NULL default '0',
   `zip` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`address_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='An address that can be for a company or a person';
 
 --
 -- Table structure for table `fbclaim`
@@ -721,17 +779,17 @@ CREATE TABLE `fbaddress` (
 DROP TABLE IF EXISTS `fbclaim`;
 CREATE TABLE `fbclaim` (
   `claim_id` int(11) NOT NULL default '0',
-  `claim_identifier` varchar(255) NOT NULL default '',
+  `claim_identifier` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0?',
   `revision` int(11) NOT NULL default '0',
   `status` enum('new','pending','sent','archive','deleted') NOT NULL default 'new',
   `timestamp` timestamp NULL default '0000-00-00 00:00:00',
   `date_sent` datetime NOT NULL default '0000-00-00 00:00:00',
-  `format` varchar(255) NOT NULL default '',
+  `format` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0?',
   PRIMARY KEY  (`claim_id`),
   KEY `claim_identifier` (`claim_identifier`),
   KEY `status` (`status`),
   KEY `revision` (`revision`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fbclaimline`
@@ -752,7 +810,7 @@ CREATE TABLE `fbclaimline` (
   `index` int(11) NOT NULL default '0',
   PRIMARY KEY  (`claimline_id`),
   KEY `claim_id` (`claim_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fbcompany`
@@ -770,7 +828,7 @@ CREATE TABLE `fbcompany` (
   `phone_number` varchar(45) NOT NULL default '',
   PRIMARY KEY  (`company_id`),
   KEY `claim_id` (`claim_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is in linked tables';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Base Company record most of the data is in linked tables';
 
 --
 -- Table structure for table `fbdiagnoses`
@@ -783,7 +841,7 @@ CREATE TABLE `fbdiagnoses` (
   `diagnosis` varchar(15) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `claimline_id` (`claimline_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fblatest_revision`
@@ -795,7 +853,7 @@ CREATE TABLE `fblatest_revision` (
   `revision` int(11) NOT NULL default '0',
   PRIMARY KEY  (`claim_identifier`),
   KEY `revision` (`revision`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fbperson`
@@ -820,7 +878,7 @@ CREATE TABLE `fbperson` (
   `comment` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`person_id`),
   KEY `claim_id` (`claim_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='A person in the system';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A person in the system';
 
 --
 -- Table structure for table `fbpractice`
@@ -836,7 +894,7 @@ CREATE TABLE `fbpractice` (
   `provider_person_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`practice_id`),
   KEY `claim_id` (`claim_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fbqueue`
@@ -850,7 +908,7 @@ CREATE TABLE `fbqueue` (
   `num_items` int(11) NOT NULL default '0',
   `ids` mediumtext NOT NULL,
   PRIMARY KEY  (`queue_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule`
@@ -865,7 +923,7 @@ CREATE TABLE `fee_schedule` (
   `priority` int(11) NOT NULL default '2',
   PRIMARY KEY  (`fee_schedule_id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_data`
@@ -882,7 +940,7 @@ CREATE TABLE `fee_schedule_data` (
   PRIMARY KEY  (`code_id`,`revision_id`,`fee_schedule_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`),
   KEY `revision_id` (`revision_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_data_modifier`
@@ -897,7 +955,7 @@ CREATE TABLE `fee_schedule_data_modifier` (
   `fee` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`fsd_modifier_id`),
   UNIQUE KEY `fee_schedule_id` (`fee_schedule_id`,`code_id`,`modifier`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_discount`
@@ -907,11 +965,11 @@ DROP TABLE IF EXISTS `fee_schedule_discount`;
 CREATE TABLE `fee_schedule_discount` (
   `fee_schedule_discount_id` int(11) NOT NULL default '0',
   `practice_id` int(11) NOT NULL default '0',
+  `name` varchar(255) NOT NULL default '',
   `insurance_program_id` int(11) NOT NULL default '0',
   `type` enum('default','program') NOT NULL default 'default',
-  `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`fee_schedule_discount_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_discount_by_code`
@@ -924,7 +982,7 @@ CREATE TABLE `fee_schedule_discount_by_code` (
   `fee_schedule_discount_level_id` int(11) NOT NULL default '0',
   `code_pattern` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`fee_schedule_discount_by_code_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_discount_income`
@@ -938,7 +996,7 @@ CREATE TABLE `fee_schedule_discount_income` (
   `family_size` int(11) NOT NULL default '0',
   `income` float(9,2) NOT NULL default '0.00',
   PRIMARY KEY  (`fee_schedule_discount_income_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_discount_level`
@@ -949,10 +1007,10 @@ CREATE TABLE `fee_schedule_discount_level` (
   `fee_schedule_discount_level_id` int(11) NOT NULL default '0',
   `fee_schedule_discount_id` int(11) NOT NULL default '0',
   `discount` float(5,2) NOT NULL default '0.00',
-  `type` enum('percent','flat') NOT NULL default 'percent',
   `disp_order` int(11) NOT NULL default '0',
+  `type` enum('percent','flat') NOT NULL default 'percent',
   PRIMARY KEY  (`fee_schedule_discount_level_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `fee_schedule_revision`
@@ -966,7 +1024,19 @@ CREATE TABLE `fee_schedule_revision` (
   `name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`revision_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `financial_link`
+--
+
+DROP TABLE IF EXISTS `financial_link`;
+CREATE TABLE `financial_link` (
+  `oldId` int(11) NOT NULL,
+  `newPaymentId` int(11) NOT NULL,
+  `newChargeId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `folders`
@@ -974,13 +1044,13 @@ CREATE TABLE `fee_schedule_revision` (
 
 DROP TABLE IF EXISTS `folders`;
 CREATE TABLE `folders` (
-  `folder_id` int(10) unsigned NOT NULL auto_increment,
+  `folder_id` int(10) unsigned NOT NULL,
   `label` varchar(50) NOT NULL default '',
   `create_date` datetime default '0000-00-00 00:00:00',
   `modify_date` datetime default '0000-00-00 00:00:00',
   `webdavname` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`folder_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `form`
@@ -994,7 +1064,7 @@ CREATE TABLE `form` (
   `system_name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`form_id`),
   UNIQUE KEY `system_name` (`system_name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Contains the EMR extending forms STARTWITHDATA';
 
 --
 -- Table structure for table `form_data`
@@ -1002,12 +1072,16 @@ CREATE TABLE `form` (
 
 DROP TABLE IF EXISTS `form_data`;
 CREATE TABLE `form_data` (
-  `form_data_id` int(11) NOT NULL default '0',
+  `form_data_id` int(11) NOT NULL,
   `form_id` int(11) NOT NULL default '0',
   `external_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL,
   `last_edit` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`form_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links in the form data STARTWITHDATA';
+  PRIMARY KEY  (`form_data_id`),
+  KEY `form_id` (`form_id`),
+  KEY `external_id` (`external_id`),
+  KEY `encounter_id` (`encounter_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links in the form data STARTWITHDATA';
 
 --
 -- Table structure for table `form_rule`
@@ -1015,7 +1089,7 @@ CREATE TABLE `form_data` (
 
 DROP TABLE IF EXISTS `form_rule`;
 CREATE TABLE `form_rule` (
-  `form_rule_id` int(11) NOT NULL auto_increment,
+  `form_rule_id` int(11) NOT NULL,
   `field_name` varchar(100) NOT NULL default '',
   `rule_name` varchar(30) NOT NULL default '',
   `operator` char(3) NOT NULL default '',
@@ -1023,7 +1097,7 @@ CREATE TABLE `form_rule` (
   `value` varchar(30) NOT NULL default '',
   `message` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`form_rule_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `form_structure`
@@ -1031,12 +1105,12 @@ CREATE TABLE `form_rule` (
 
 DROP TABLE IF EXISTS `form_structure`;
 CREATE TABLE `form_structure` (
-  `form_structure_id` int(11) NOT NULL auto_increment,
+  `form_structure_id` int(11) NOT NULL,
   `form_id` int(11) NOT NULL default '0',
   `field_name` varchar(100) NOT NULL default '',
   `field_type` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`form_structure_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_acl`
@@ -1055,7 +1129,7 @@ CREATE TABLE `gacl_acl` (
   KEY `gacl_enabled_acl` (`enabled`),
   KEY `gacl_section_value_acl` (`section_value`),
   KEY `gacl_updated_date_acl` (`updated_date`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='ACL Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='ACL Table';
 
 --
 -- Table structure for table `gacl_acl_sections`
@@ -1071,7 +1145,7 @@ CREATE TABLE `gacl_acl_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_acl_sections` (`value`),
   KEY `gacl_hidden_acl_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_acl_seq`
@@ -1080,7 +1154,7 @@ CREATE TABLE `gacl_acl_sections` (
 DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aco`
@@ -1097,7 +1171,7 @@ CREATE TABLE `gacl_aco` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aco` (`section_value`,`value`),
   KEY `gacl_hidden_aco` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aco_map`
@@ -1109,7 +1183,7 @@ CREATE TABLE `gacl_aco_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aco_sections`
@@ -1125,7 +1199,7 @@ CREATE TABLE `gacl_aco_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aco_sections` (`value`),
   KEY `gacl_hidden_aco_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aco_sections_seq`
@@ -1134,7 +1208,7 @@ CREATE TABLE `gacl_aco_sections` (
 DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aco_seq`
@@ -1143,7 +1217,7 @@ CREATE TABLE `gacl_aco_sections_seq` (
 DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro`
@@ -1151,7 +1225,7 @@ CREATE TABLE `gacl_aco_seq` (
 
 DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `section_value` varchar(240) NOT NULL default '0',
   `value` varchar(240) NOT NULL default '',
   `order_value` int(11) NOT NULL default '0',
@@ -1160,7 +1234,7 @@ CREATE TABLE `gacl_aro` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aro` (`section_value`,`value`),
   KEY `gacl_hidden_aro` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_groups`
@@ -1178,7 +1252,7 @@ CREATE TABLE `gacl_aro_groups` (
   UNIQUE KEY `gacl_value_aro_groups` (`value`),
   KEY `gacl_parent_id_aro_groups` (`parent_id`),
   KEY `gacl_lft_rgt_aro_groups` (`lft`,`rgt`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_groups_id_seq`
@@ -1187,7 +1261,7 @@ CREATE TABLE `gacl_aro_groups` (
 DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_groups_map`
@@ -1198,7 +1272,7 @@ CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_map`
@@ -1210,7 +1284,7 @@ CREATE TABLE `gacl_aro_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_sections`
@@ -1226,7 +1300,7 @@ CREATE TABLE `gacl_aro_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aro_sections` (`value`),
   KEY `gacl_hidden_aro_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_sections_seq`
@@ -1235,7 +1309,7 @@ CREATE TABLE `gacl_aro_sections` (
 DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_aro_seq`
@@ -1244,7 +1318,7 @@ CREATE TABLE `gacl_aro_sections_seq` (
 DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo`
@@ -1261,7 +1335,7 @@ CREATE TABLE `gacl_axo` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_axo` (`section_value`,`value`),
   KEY `gacl_hidden_axo` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_groups`
@@ -1279,7 +1353,7 @@ CREATE TABLE `gacl_axo_groups` (
   UNIQUE KEY `gacl_value_axo_groups` (`value`),
   KEY `gacl_parent_id_axo_groups` (`parent_id`),
   KEY `gacl_lft_rgt_axo_groups` (`lft`,`rgt`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_groups_id_seq`
@@ -1288,7 +1362,7 @@ CREATE TABLE `gacl_axo_groups` (
 DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_groups_map`
@@ -1299,7 +1373,7 @@ CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_map`
@@ -1311,7 +1385,7 @@ CREATE TABLE `gacl_axo_map` (
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_sections`
@@ -1327,7 +1401,7 @@ CREATE TABLE `gacl_axo_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_axo_sections` (`value`),
   KEY `gacl_hidden_axo_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_sections_seq`
@@ -1336,7 +1410,7 @@ CREATE TABLE `gacl_axo_sections` (
 DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_axo_seq`
@@ -1345,7 +1419,7 @@ CREATE TABLE `gacl_axo_sections_seq` (
 DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_groups_aro_map`
@@ -1356,7 +1430,7 @@ CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`aro_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_groups_axo_map`
@@ -1367,7 +1441,7 @@ CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`axo_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `gacl_phpgacl`
@@ -1378,7 +1452,7 @@ CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `generic_notes`
@@ -1396,7 +1470,7 @@ CREATE TABLE `generic_notes` (
   PRIMARY KEY  (`generic_note_id`),
   KEY `parent_obj_id` (`parent_obj_id`),
   KEY `person_id` (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `group_occurence`
@@ -1409,7 +1483,7 @@ CREATE TABLE `group_occurence` (
   `patient_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_occurence_id`),
   UNIQUE KEY `occurence_id` (`occurence_id`,`patient_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `groups`
@@ -1420,7 +1494,7 @@ CREATE TABLE `groups` (
   `id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `hl7_message`
@@ -1428,15 +1502,12 @@ CREATE TABLE `groups` (
 
 DROP TABLE IF EXISTS `hl7_message`;
 CREATE TABLE `hl7_message` (
-  `hl7_message_id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL default '0',
   `control_id` varchar(50) NOT NULL default '',
   `message` longtext NOT NULL,
-  `type` int(11) NOT NULL default '0',
-  `processed` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`hl7_message_id`),
-  KEY `control_id` (`control_id`),
-  KEY `processed` (`processed`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`id`),
+  KEY `control_id` (`control_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `identifier`
@@ -1444,12 +1515,12 @@ CREATE TABLE `hl7_message` (
 
 DROP TABLE IF EXISTS `identifier`;
 CREATE TABLE `identifier` (
-  `identifier_id` int(11) NOT NULL default '0',
+  `identifier_id` int(11) NOT NULL,
   `person_id` int(11) NOT NULL default '0',
   `identifier` varchar(100) NOT NULL default '',
   `identifier_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`identifier_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `import_map`
@@ -1462,7 +1533,18 @@ CREATE TABLE `import_map` (
   `old_table_name` varchar(100) NOT NULL default '',
   `new_object_name` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`old_id`,`old_table_name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `ins_link`
+--
+
+DROP TABLE IF EXISTS `ins_link`;
+CREATE TABLE `ins_link` (
+  `oldId` varchar(50) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `insurance`
@@ -1474,7 +1556,7 @@ CREATE TABLE `insurance` (
   `fee_schedule_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`company_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `insurance_payergroup`
@@ -1482,11 +1564,11 @@ CREATE TABLE `insurance` (
 
 DROP TABLE IF EXISTS `insurance_payergroup`;
 CREATE TABLE `insurance_payergroup` (
-  `payer_group_id` int(11) NOT NULL,
-  `insurance_program_id` int(11) NOT NULL,
-  `order` int(11) NOT NULL,
+  `payer_group_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL default '0',
+  `order` int(11) NOT NULL default '0',
   KEY `payer_group_id` (`payer_group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `insurance_program`
@@ -1494,7 +1576,7 @@ CREATE TABLE `insurance_payergroup` (
 
 DROP TABLE IF EXISTS `insurance_program`;
 CREATE TABLE `insurance_program` (
-  `insurance_program_id` int(11) NOT NULL default '0',
+  `insurance_program_id` int(11) NOT NULL,
   `payer_type` int(11) NOT NULL default '0',
   `company_id` int(11) NOT NULL default '0',
   `name` varchar(100) NOT NULL default '',
@@ -1505,10 +1587,9 @@ CREATE TABLE `insurance_program` (
   `address_id` int(11) NOT NULL default '0',
   `funds_source` int(11) NOT NULL default '0',
   `program_type` int(11) NOT NULL default '0',
-  `payer_identifier` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `insured_relationship`
@@ -1516,7 +1597,7 @@ CREATE TABLE `insurance_program` (
 
 DROP TABLE IF EXISTS `insured_relationship`;
 CREATE TABLE `insured_relationship` (
-  `insured_relationship_id` int(11) NOT NULL default '0',
+  `insured_relationship_id` int(11) NOT NULL,
   `insurance_program_id` int(11) NOT NULL default '0',
   `person_id` int(11) NOT NULL default '0',
   `subscriber_id` int(11) NOT NULL default '0',
@@ -1532,9 +1613,8 @@ CREATE TABLE `insured_relationship` (
   `active` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`insured_relationship_id`),
   KEY `person_id` (`person_id`),
-  KEY `subscriber_id` (`subscriber_id`),
-  KEY `active` (`active`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `insurance_program_id` (`insurance_program_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `lab_note`
@@ -1546,7 +1626,7 @@ CREATE TABLE `lab_note` (
   `lab_test_id` int(11) NOT NULL default '0',
   `note` text NOT NULL,
   PRIMARY KEY  (`lab_note_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `lab_order`
@@ -1561,8 +1641,9 @@ CREATE TABLE `lab_order` (
   `ordering_provider` varchar(255) NOT NULL default '',
   `manual_service` tinyint(4) NOT NULL,
   `manual_order_date` date NOT NULL,
+  `external_id` int(11) NOT NULL,
   PRIMARY KEY  (`lab_order_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `lab_result`
@@ -1576,13 +1657,13 @@ CREATE TABLE `lab_result` (
   `value` varchar(255) NOT NULL default '',
   `units` varchar(255) NOT NULL default '',
   `reference_range` varchar(255) NOT NULL default '',
-  `abnormal_flag` char(2) NOT NULL default '',
+  `abnormal_flag` char(8) NOT NULL,
   `result_status` char(1) NOT NULL default '',
   `observation_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `producer_id` varchar(255) NOT NULL default '',
   `description` varchar(255) NOT NULL,
   PRIMARY KEY  (`lab_result_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `lab_test`
@@ -1603,7 +1684,22 @@ CREATE TABLE `lab_test` (
   `status` char(1) NOT NULL default '',
   `clia_disclosure` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`lab_test_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `link`
+--
+
+DROP TABLE IF EXISTS `link`;
+CREATE TABLE `link` (
+  `oldId` varchar(255) NOT NULL,
+  `kind` varchar(255) NOT NULL,
+  `newId` bigint(20) NOT NULL,
+  PRIMARY KEY  (`oldId`,`kind`),
+  KEY `newId` (`newId`),
+  KEY `oldId` (`oldId`),
+  KEY `kind` (`kind`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_bulk_quantity`
@@ -1620,7 +1716,7 @@ CREATE TABLE `meds_bulk_quantity` (
   `use_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`meds_bulk_quantity_id`),
   UNIQUE KEY `meds_inventory_item_id` (`meds_inventory_item_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_case`
@@ -1633,7 +1729,7 @@ CREATE TABLE `meds_case` (
   `case_count` int(255) default NULL,
   PRIMARY KEY  (`meds_case_id`),
   UNIQUE KEY `meds_inventory_item_id` (`meds_inventory_item_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_inventory_item`
@@ -1651,7 +1747,7 @@ CREATE TABLE `meds_inventory_item` (
   `min_order_qty` int(255) default NULL,
   `type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`meds_inventory_item_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_inventory_item_price`
@@ -1667,7 +1763,7 @@ CREATE TABLE `meds_inventory_item_price` (
   `aac` decimal(11,2) default NULL,
   `copay` decimal(11,2) default NULL,
   PRIMARY KEY  (`meds_inventory_item_price_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_inventory_item_status`
@@ -1681,7 +1777,7 @@ CREATE TABLE `meds_inventory_item_status` (
   `reorder_point` int(255) default NULL,
   PRIMARY KEY  (`meds_inventory_item_status_id`),
   UNIQUE KEY `meds_inventory_item_id` (`meds_inventory_item_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_item_to_location`
@@ -1693,7 +1789,7 @@ CREATE TABLE `meds_item_to_location` (
   `meds_inventory_item_id` int(11) NOT NULL default '0',
   `building_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`meds_item_to_location_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_item_to_program`
@@ -1705,7 +1801,7 @@ CREATE TABLE `meds_item_to_program` (
   `meds_inventory_item_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`meds_item_to_program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_program`
@@ -1713,8 +1809,8 @@ CREATE TABLE `meds_item_to_program` (
 
 DROP TABLE IF EXISTS `meds_program`;
 CREATE TABLE `meds_program` (
-  `meds_program_id` int(11) NOT NULL
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  `meds_program_id` int(11) NOT NULL default '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_unit_of_use`
@@ -1737,7 +1833,7 @@ CREATE TABLE `meds_unit_of_use` (
   `instructions` text,
   PRIMARY KEY  (`meds_unit_of_use_id`),
   UNIQUE KEY `meds_inventory_item_id` (`meds_inventory_item_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_unit_of_use_warning`
@@ -1749,7 +1845,7 @@ CREATE TABLE `meds_unit_of_use_warning` (
   `meds_unit_of_use_id` int(11) NOT NULL default '0',
   `warning` int(11) default NULL,
   PRIMARY KEY  (`meds_unit_of_use_warning_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `meds_user_to_program`
@@ -1757,10 +1853,10 @@ CREATE TABLE `meds_unit_of_use_warning` (
 
 DROP TABLE IF EXISTS `meds_user_to_program`;
 CREATE TABLE `meds_user_to_program` (
-  `user_id` int(11) NOT NULL,
-  `meds_program_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL default '0',
+  `meds_program_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`user_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `menu`
@@ -1768,7 +1864,7 @@ CREATE TABLE `meds_user_to_program` (
 
 DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
-  `menu_id` int(11) NOT NULL auto_increment,
+  `menu_id` int(11) NOT NULL,
   `site_section` varchar(50) NOT NULL default 'default',
   `parent` int(11) NOT NULL default '0',
   `dynamic_key` varchar(50) NOT NULL default '',
@@ -1778,7 +1874,7 @@ CREATE TABLE `menu` (
   `action` varchar(255) NOT NULL default '',
   `prefix` varchar(100) NOT NULL default 'main',
   PRIMARY KEY  (`menu_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `menu_form`
@@ -1794,7 +1890,7 @@ CREATE TABLE `menu_form` (
   PRIMARY KEY  (`menu_form_id`),
   KEY `menu_id` (`menu_id`),
   KEY `form_id` (`form_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `menu_report`
@@ -1810,7 +1906,7 @@ CREATE TABLE `menu_report` (
   PRIMARY KEY  (`menu_report_id`),
   KEY `menu_id` (`menu_id`),
   KEY `report_template_id` (`report_template_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `misc_charge`
@@ -1818,15 +1914,15 @@ CREATE TABLE `menu_report` (
 
 DROP TABLE IF EXISTS `misc_charge`;
 CREATE TABLE `misc_charge` (
-  `misc_charge_id` int(11) NOT NULL,
-  `encounter_id` int(11) NOT NULL,
-  `amount` float(7,2) NOT NULL,
-  `charge_date` datetime NOT NULL,
-  `title` varchar(50) NOT NULL,
+  `misc_charge_id` int(11) NOT NULL default '0',
+  `encounter_id` int(11) NOT NULL default '0',
+  `amount` float(7,2) NOT NULL default '0.00',
+  `charge_date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `title` varchar(50) NOT NULL default '',
   `note` text NOT NULL,
   PRIMARY KEY  (`misc_charge_id`),
   KEY `encounter_id` (`encounter_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `name_history`
@@ -1841,7 +1937,7 @@ CREATE TABLE `name_history` (
   `middle_name` varchar(50) NOT NULL default '',
   `update_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`name_history_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `note`
@@ -1849,7 +1945,7 @@ CREATE TABLE `name_history` (
 
 DROP TABLE IF EXISTS `note`;
 CREATE TABLE `note` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `foreign_id` int(11) NOT NULL default '0',
   `note` varchar(255) default NULL,
   `owner` int(11) default NULL,
@@ -1859,7 +1955,7 @@ CREATE TABLE `note` (
   KEY `foreign_id` (`owner`),
   KEY `foreign_id_2` (`foreign_id`),
   KEY `date` (`date`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `notes`
@@ -1874,7 +1970,7 @@ CREATE TABLE `notes` (
   `create_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`note_id`),
   KEY `revision_id` (`revision_id`,`user_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `number`
@@ -1882,13 +1978,13 @@ CREATE TABLE `notes` (
 
 DROP TABLE IF EXISTS `number`;
 CREATE TABLE `number` (
-  `number_id` int(11) NOT NULL default '0',
+  `number_id` int(11) NOT NULL,
   `number_type` int(11) NOT NULL default '0',
   `notes` tinytext NOT NULL,
   `number` varchar(100) NOT NULL default '',
   `active` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`number_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='A phone number';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A phone number';
 
 --
 -- Table structure for table `occurence_breakdown`
@@ -1904,7 +2000,7 @@ CREATE TABLE `occurence_breakdown` (
   `user_id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`occurence_breakdown_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `occurences`
@@ -1927,7 +2023,7 @@ CREATE TABLE `occurences` (
   `group_appointment` tinyint(4) NOT NULL default '0',
   `creator_id` int(11) default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `ordo_registry`
@@ -1939,8 +2035,22 @@ CREATE TABLE `ordo_registry` (
   `creator_id` int(11) NOT NULL default '0',
   `owner_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ordo_id`),
-  KEY `creator_id` (`creator_id`,`owner_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `creator_id` (`creator_id`,`owner_id`),
+  KEY `owner_id` (`owner_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `ownership`
+--
+
+DROP TABLE IF EXISTS `ownership`;
+CREATE TABLE `ownership` (
+  `id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `participation_program`
@@ -1948,13 +2058,15 @@ CREATE TABLE `ordo_registry` (
 
 DROP TABLE IF EXISTS `participation_program`;
 CREATE TABLE `participation_program` (
-  `participation_program_id` bigint(20) NOT NULL,
-  `class` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `participation_program_id` bigint(20) NOT NULL default '0',
+  `adhoc` tinyint(4) NOT NULL,
+  `class` varchar(255) NOT NULL default '',
+  `type` varchar(255) NOT NULL default '',
+  `name` varchar(255) NOT NULL default '',
+  `description` varchar(255) NOT NULL default '',
+  `form_id` int(11) NOT NULL,
   PRIMARY KEY  (`participation_program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `participation_program_basic`
@@ -1962,11 +2074,11 @@ CREATE TABLE `participation_program` (
 
 DROP TABLE IF EXISTS `participation_program_basic`;
 CREATE TABLE `participation_program_basic` (
-  `person_program_id` bigint(20) NOT NULL,
-  `federal_poverty_level` varchar(3) NOT NULL,
-  `eligibility` tinyint(4) NOT NULL,
+  `person_program_id` bigint(20) NOT NULL default '0',
+  `federal_poverty_level` char(3) NOT NULL default '',
+  `eligibility` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`person_program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `participation_program_clinic`
@@ -1974,10 +2086,12 @@ CREATE TABLE `participation_program_basic` (
 
 DROP TABLE IF EXISTS `participation_program_clinic`;
 CREATE TABLE `participation_program_clinic` (
-  `person_program_id` bigint(20) NOT NULL,
-  `eligibility` tinyint(4) NOT NULL,
+  `person_program_id` bigint(20) NOT NULL default '0',
+  `eligibility` tinyint(4) NOT NULL default '0',
+  `initial_date` date NOT NULL,
+  `recent_date` date NOT NULL,
   PRIMARY KEY  (`person_program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `patient`
@@ -1989,11 +2103,13 @@ CREATE TABLE `patient` (
   `is_default_provider_primary` int(11) NOT NULL default '0',
   `default_provider` int(11) NOT NULL default '0',
   `record_number` int(11) NOT NULL default '0',
-  `employer_name` varchar(255) NOT NULL default '',
+  `employer_name` varchar(255) NOT NULL default '' COMMENT '\0\0\0\0\0\0\0\0\0\0\0!\0\0Ã¯Â¿Â½',
   `confidentiality` int(11) NOT NULL default '0',
+  `specialNeedsNote` varchar(255) NOT NULL,
+  `specialNeedsTranslator` tinyint(4) NOT NULL,
   PRIMARY KEY  (`person_id`),
   KEY `record_number` (`record_number`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='An patient extends the person entity';
 
 --
 -- Table structure for table `patient_chronic_code`
@@ -2004,7 +2120,18 @@ CREATE TABLE `patient_chronic_code` (
   `patient_id` int(11) NOT NULL default '0',
   `chronic_care_code` int(11) NOT NULL default '0',
   PRIMARY KEY  (`patient_id`,`chronic_care_code`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `patient_link`
+--
+
+DROP TABLE IF EXISTS `patient_link`;
+CREATE TABLE `patient_link` (
+  `oldId` int(11) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `patient_note`
@@ -2012,15 +2139,16 @@ CREATE TABLE `patient_chronic_code` (
 
 DROP TABLE IF EXISTS `patient_note`;
 CREATE TABLE `patient_note` (
-  `patient_note_id` int(11) NOT NULL default '0',
+  `patient_note_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL default '0',
   `user_id` int(11) NOT NULL default '0',
   `priority` int(11) NOT NULL default '0',
   `note_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `note` text NOT NULL,
   `deprecated` tinyint(1) NOT NULL default '0',
+  `reason` tinyint(4) NOT NULL,
   PRIMARY KEY  (`patient_note_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `patient_payment_plan`
@@ -2037,7 +2165,7 @@ CREATE TABLE `patient_payment_plan` (
   `balance` float NOT NULL default '0',
   PRIMARY KEY  (`patient_payment_plan_id`),
   KEY `patient_id` (`patient_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `patient_payment_plan_payment`
@@ -2053,7 +2181,7 @@ CREATE TABLE `patient_payment_plan_payment` (
   `paid` enum('Yes','No') NOT NULL default 'No',
   PRIMARY KEY  (`patient_payment_plan_payment_id`),
   KEY `patient_payment_plan_id` (`patient_payment_plan_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `patient_statistics`
@@ -2071,34 +2199,8 @@ CREATE TABLE `patient_statistics` (
   `sign_in_date` date NOT NULL default '0000-00-00',
   `monthly_income` int(11) NOT NULL default '0',
   `family_size` int(11) NOT NULL default '0',
-  `is_bio_banking` tinyint(4) NOT NULL,
-  `bio_bank_lab_draw` varchar(255) NOT NULL,
   PRIMARY KEY  (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `patient_statistics_pcc`
---
-
-DROP TABLE IF EXISTS `patient_statistics_pcc`;
-CREATE TABLE `patient_statistics_pcc` (
-  `person_id` bigint(20) NOT NULL,
-  `household_status` tinyint(4) NOT NULL,
-  `english_proficiency` tinyint(4) NOT NULL,
-  `country_of_origin` tinyint(4) NOT NULL,
-  `religion` tinyint(4) NOT NULL,
-  `employment_status` tinyint(4) NOT NULL,
-  `occupation` tinyint(255) NOT NULL,
-  `education_level` tinyint(4) NOT NULL,
-  `us_veteran` tinyint(4) NOT NULL,
-  `medication_coverage` tinyint(4) NOT NULL,
-  `housing_type` tinyint(4) NOT NULL,
-  `number_of_adults` int(11) NOT NULL,
-  `number_of_children_19` int(11) NOT NULL,
-  `annual_household_income` int(11) NOT NULL,
-  `financially_responsible` varchar(255) NOT NULL,
-  PRIMARY KEY  (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `payer_group`
@@ -2106,11 +2208,11 @@ CREATE TABLE `patient_statistics_pcc` (
 
 DROP TABLE IF EXISTS `payer_group`;
 CREATE TABLE `payer_group` (
-  `payer_group_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `payer_group_id` int(11) NOT NULL default '0',
+  `name` varchar(255) NOT NULL default '',
   `description` text NOT NULL,
   PRIMARY KEY  (`payer_group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `payment`
@@ -2118,7 +2220,7 @@ CREATE TABLE `payer_group` (
 
 DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
-  `payment_id` int(11) NOT NULL default '0',
+  `payment_id` int(11) NOT NULL,
   `foreign_id` int(11) NOT NULL default '0',
   `encounter_id` int(11) NOT NULL default '0',
   `payment_type` int(11) NOT NULL default '0',
@@ -2131,8 +2233,9 @@ CREATE TABLE `payment` (
   `payment_date` date NOT NULL default '0000-00-00',
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`payment_id`),
-  KEY `foreign_id` (`foreign_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `foreign_id` (`foreign_id`),
+  KEY `encounter_id` (`encounter_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `payment_claimline`
@@ -2140,18 +2243,27 @@ CREATE TABLE `payment` (
 
 DROP TABLE IF EXISTS `payment_claimline`;
 CREATE TABLE `payment_claimline` (
-  `payment_claimline_id` int(11) NOT NULL default '0',
+  `payment_claimline_id` int(11) NOT NULL,
   `payment_id` int(11) NOT NULL default '0',
   `code_id` int(11) NOT NULL default '0',
-  `coding_data_id` int(11) NOT NULL default '0',
+  `coding_data_id` int(11) NOT NULL,
   `paid` float(7,2) NOT NULL default '0.00',
   `writeoff` float(7,2) NOT NULL default '0.00',
   `carry` float(7,2) NOT NULL default '0.00',
-  PRIMARY KEY  (`payment_claimline_id`),
-  KEY `payment_id` (`payment_id`),
-  KEY `code_id` (`code_id`),
-  KEY `coding_data_id` (`coding_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`payment_claimline_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `pccconversion`
+--
+
+DROP TABLE IF EXISTS `pccconversion`;
+CREATE TABLE `pccconversion` (
+  `type` varchar(255) NOT NULL default '',
+  `old` int(11) NOT NULL default '0',
+  `new` int(11) NOT NULL default '0',
+  KEY `type` (`type`,`old`,`new`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `person`
@@ -2159,7 +2271,7 @@ CREATE TABLE `payment_claimline` (
 
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
-  `person_id` int(11) NOT NULL default '0',
+  `person_id` int(11) NOT NULL,
   `salutation` varchar(20) NOT NULL default '',
   `last_name` varchar(100) NOT NULL default '',
   `first_name` varchar(100) NOT NULL default '',
@@ -2179,8 +2291,9 @@ CREATE TABLE `person` (
   `inactive` int(1) NOT NULL default '0',
   `primary_practice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`),
-  KEY `primary_practice_id` (`primary_practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='A person in the system';
+  KEY `primary_practice_id` (`primary_practice_id`),
+  KEY `person_id` (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A person in the system';
 
 --
 -- Table structure for table `person_address`
@@ -2192,9 +2305,8 @@ CREATE TABLE `person_address` (
   `address_id` int(11) NOT NULL default '0',
   `address_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`,`address_id`),
-  KEY `address_id` (`address_id`),
-  KEY `person_id` (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links a person to a address specifying the address type';
+  KEY `address_type` (`address_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links a person to a address specifying the address type';
 
 --
 -- Table structure for table `person_company`
@@ -2208,7 +2320,18 @@ CREATE TABLE `person_company` (
   PRIMARY KEY  (`person_id`,`company_id`),
   KEY `person_id` (`person_id`),
   KEY `company_id` (`company_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links a person to a company and optionaly specifies the lin';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links a person to a company and optionaly specifies the lin';
+
+--
+-- Table structure for table `person_link`
+--
+
+DROP TABLE IF EXISTS `person_link`;
+CREATE TABLE `person_link` (
+  `oldId` int(11) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `person_number`
@@ -2219,9 +2342,8 @@ CREATE TABLE `person_number` (
   `person_id` int(11) NOT NULL default '0',
   `number_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`,`number_id`),
-  KEY `person_id` (`person_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
 
 --
 -- Table structure for table `person_participation_program`
@@ -2229,17 +2351,17 @@ CREATE TABLE `person_number` (
 
 DROP TABLE IF EXISTS `person_participation_program`;
 CREATE TABLE `person_participation_program` (
-  `person_program_id` bigint(20) NOT NULL,
-  `participation_program_id` bigint(20) NOT NULL,
-  `person_id` bigint(20) NOT NULL,
-  `start` date NOT NULL,
-  `end` date NOT NULL,
-  `expires` tinyint(4) NOT NULL,
-  `active` tinyint(4) NOT NULL,
+  `person_program_id` bigint(20) NOT NULL default '0',
+  `participation_program_id` bigint(20) NOT NULL default '0',
+  `person_id` bigint(20) NOT NULL default '0',
+  `start` date NOT NULL default '0000-00-00',
+  `end` date NOT NULL default '0000-00-00',
+  `expires` tinyint(4) NOT NULL default '0',
+  `active` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`person_program_id`),
   UNIQUE KEY `person_id` (`person_id`,`participation_program_id`),
   KEY `participation_program_id` (`participation_program_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `person_person`
@@ -2247,7 +2369,7 @@ CREATE TABLE `person_participation_program` (
 
 DROP TABLE IF EXISTS `person_person`;
 CREATE TABLE `person_person` (
-  `person_person_id` int(11) NOT NULL default '0',
+  `person_person_id` int(11) NOT NULL,
   `person_id` int(11) NOT NULL default '0',
   `related_person_id` int(11) NOT NULL default '0',
   `relation_type` int(11) NOT NULL default '0',
@@ -2255,7 +2377,7 @@ CREATE TABLE `person_person` (
   `guarantor_priority` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_person_id`),
   UNIQUE KEY `person_id` (`person_id`,`related_person_id`,`relation_type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `person_type`
@@ -2268,7 +2390,7 @@ CREATE TABLE `person_type` (
   PRIMARY KEY  (`person_id`,`person_type`),
   KEY `person_id` (`person_id`),
   KEY `person_type` (`person_type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Link to specify person type';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Link to specify person type';
 
 --
 -- Table structure for table `practice_address`
@@ -2280,9 +2402,19 @@ CREATE TABLE `practice_address` (
   `address_id` int(11) NOT NULL default '0',
   `address_type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`practice_id`,`address_id`),
-  KEY `address_id` (`address_id`),
-  KEY `practice_id` (`practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
+  KEY `address_id` (`address_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links a practice to a address specifying the address type';
+
+--
+-- Table structure for table `practice_link`
+--
+
+DROP TABLE IF EXISTS `practice_link`;
+CREATE TABLE `practice_link` (
+  `oldId` char(100) NOT NULL,
+  `newId` int(11) NOT NULL,
+  PRIMARY KEY  (`oldId`,`newId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `practice_number`
@@ -2295,7 +2427,7 @@ CREATE TABLE `practice_number` (
   PRIMARY KEY  (`practice_id`,`number_id`),
   KEY `person_id` (`practice_id`),
   KEY `phone_id` (`number_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Links between people and phone_numbers';
 
 --
 -- Table structure for table `practice_setting`
@@ -2303,14 +2435,14 @@ CREATE TABLE `practice_number` (
 
 DROP TABLE IF EXISTS `practice_setting`;
 CREATE TABLE `practice_setting` (
-  `practice_setting_id` int(11) NOT NULL default '0',
+  `practice_setting_id` int(11) NOT NULL,
   `practice_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   `value` text NOT NULL,
   `serialized` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`practice_setting_id`),
   UNIQUE KEY `practice_id` (`practice_id`,`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `practices`
@@ -2318,12 +2450,12 @@ CREATE TABLE `practice_setting` (
 
 DROP TABLE IF EXISTS `practices`;
 CREATE TABLE `practices` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL default '',
   `website` varchar(255) NOT NULL default '',
   `identifier` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `preferences`
@@ -2340,7 +2472,7 @@ CREATE TABLE `preferences` (
   PRIMARY KEY  (`id`),
   KEY `parent` (`parent`),
   KEY `lft` (`lft`,`rght`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `provider`
@@ -2355,7 +2487,7 @@ CREATE TABLE `provider` (
   `bill_as` int(11) NOT NULL default '0',
   `report_as` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `provider_to_insurance`
@@ -2363,7 +2495,7 @@ CREATE TABLE `provider` (
 
 DROP TABLE IF EXISTS `provider_to_insurance`;
 CREATE TABLE `provider_to_insurance` (
-  `provider_to_insurance_id` int(11) NOT NULL default '0',
+  `provider_to_insurance_id` int(11) NOT NULL,
   `person_id` int(11) NOT NULL default '0',
   `insurance_program_id` int(11) NOT NULL default '0',
   `provider_number` varchar(100) NOT NULL default '',
@@ -2371,7 +2503,7 @@ CREATE TABLE `provider_to_insurance` (
   `group_number` varchar(100) NOT NULL default '',
   `building_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`provider_to_insurance_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `pull_list`
@@ -2382,7 +2514,7 @@ CREATE TABLE `pull_list` (
   `appointment_id` int(11) NOT NULL default '0',
   `pull_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`appointment_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `record_sequence`
@@ -2390,9 +2522,9 @@ CREATE TABLE `pull_list` (
 
 DROP TABLE IF EXISTS `record_sequence`;
 CREATE TABLE `record_sequence` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `recurrence`
@@ -2407,7 +2539,7 @@ CREATE TABLE `recurrence` (
   `end_time` time default NULL,
   `recurrence_pattern_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`recurrence_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `recurrence_pattern`
@@ -2423,7 +2555,7 @@ CREATE TABLE `recurrence_pattern` (
   `monthday` tinyint(2) default NULL,
   `week_of_month` enum('First','Second','Third','Fourth','Last') default NULL,
   PRIMARY KEY  (`recurrence_pattern_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refPracticeLocation`
@@ -2440,22 +2572,10 @@ CREATE TABLE `refPracticeLocation` (
   `zipcode` varchar(255) NOT NULL default '',
   `appointment_number` varchar(255) NOT NULL default '',
   `fax_number` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`refPracticeLocation_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `refProvider`
---
-
-DROP TABLE IF EXISTS `refProvider`;
-CREATE TABLE `refProvider` (
-  `refProvider_id` int(11) NOT NULL default '0',
-  `refPractice_id` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `phone` varchar(15) NOT NULL default '',
-  PRIMARY KEY  (`refProvider_id`),
+  `phone_number` varchar(255) NOT NULL,
+  PRIMARY KEY  (`refPracticeLocation_id`),
   KEY `refPractice_id` (`refPractice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refRequest`
@@ -2463,7 +2583,7 @@ CREATE TABLE `refProvider` (
 
 DROP TABLE IF EXISTS `refRequest`;
 CREATE TABLE `refRequest` (
-  `refRequest_id` int(10) unsigned NOT NULL auto_increment,
+  `refRequest_id` int(10) unsigned NOT NULL,
   `date` date NOT NULL default '0000-00-00',
   `eligibility` varchar(255) NOT NULL default '0',
   `eligible_thru` date NOT NULL default '0000-00-00',
@@ -2473,7 +2593,7 @@ CREATE TABLE `refRequest` (
   `refStatus` int(11) NOT NULL default '0',
   `reason` varchar(255) NOT NULL default '',
   `history` varchar(255) NOT NULL default '',
-  `notes` varchar(255) NOT NULL default '',
+  `notes` longtext NOT NULL,
   `translator` int(11) NOT NULL default '0',
   `transportation` int(11) NOT NULL default '0',
   `occurence_id` int(11) NOT NULL default '0',
@@ -2482,13 +2602,13 @@ CREATE TABLE `refRequest` (
   `patient_id` int(11) NOT NULL default '0',
   `visit_id` int(11) NOT NULL default '0',
   `initiator_id` int(11) NOT NULL default '0',
-  `building_id` bigint(20) NOT NULL,
-  `service` tinyint(4) NOT NULL,
+  `referral_service` tinyint(4) NOT NULL,
   PRIMARY KEY  (`refRequest_id`),
   KEY `patient_id` (`patient_id`),
   KEY `visit_id` (`visit_id`),
-  KEY `initiator_id` (`initiator_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `initiator_id` (`initiator_id`),
+  KEY `refprogram_id` (`refprogram_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refSpecialtyMap`
@@ -2496,12 +2616,12 @@ CREATE TABLE `refRequest` (
 
 DROP TABLE IF EXISTS `refSpecialtyMap`;
 CREATE TABLE `refSpecialtyMap` (
-  `refSpecialityMap_id` int(11) NOT NULL auto_increment,
+  `refSpecialityMap_id` int(11) NOT NULL,
   `external_type` varchar(255) NOT NULL default '',
   `external_id` int(11) NOT NULL default '0',
   `enumeration_value_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refSpecialityMap_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refappointment`
@@ -2509,15 +2629,14 @@ CREATE TABLE `refSpecialtyMap` (
 
 DROP TABLE IF EXISTS `refappointment`;
 CREATE TABLE `refappointment` (
-  `refappointment_id` int(11) NOT NULL auto_increment,
+  `refappointment_id` int(11) NOT NULL,
   `refrequest_id` int(11) NOT NULL default '0',
-  `date` date NOT NULL default '0000-00-00',
-  `time` varchar(255) NOT NULL default '',
+  `date` datetime NOT NULL default '0000-00-00 00:00:00',
   `refpractice_id` int(11) NOT NULL default '0',
   `reflocation_id` int(11) NOT NULL default '0',
   `refprovider_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refappointment_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refpatient_eligibility`
@@ -2525,13 +2644,13 @@ CREATE TABLE `refappointment` (
 
 DROP TABLE IF EXISTS `refpatient_eligibility`;
 CREATE TABLE `refpatient_eligibility` (
-  `refpatient_eligibility_id` int(11) NOT NULL auto_increment,
+  `refpatient_eligibility_id` int(11) NOT NULL,
   `eligibility` varchar(255) NOT NULL default '',
   `eligible_thru` date NOT NULL default '0000-00-00',
   `patient_id` int(11) NOT NULL default '0',
   `refprogram_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refpatient_eligibility_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refpractice`
@@ -2543,9 +2662,9 @@ CREATE TABLE `refpractice` (
   `name` varchar(255) NOT NULL default '',
   `assign_by` enum('Practice','Provider') NOT NULL default 'Practice',
   `default_num_of_slots` int(11) NOT NULL default '0',
-  `status` tinyint(4) NOT NULL,
+  `status` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`refPractice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refpractice_specialty`
@@ -2553,12 +2672,12 @@ CREATE TABLE `refpractice` (
 
 DROP TABLE IF EXISTS `refpractice_specialty`;
 CREATE TABLE `refpractice_specialty` (
-  `refpractice_specialty_id` int(11) NOT NULL auto_increment,
+  `refpractice_specialty_id` int(11) NOT NULL,
   `specialty` int(11) NOT NULL default '0',
   `form` varchar(255) NOT NULL default '0',
   `refpractice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refpractice_specialty_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refprogram`
@@ -2566,11 +2685,11 @@ CREATE TABLE `refpractice_specialty` (
 
 DROP TABLE IF EXISTS `refprogram`;
 CREATE TABLE `refprogram` (
-  `refprogram_id` int(11) NOT NULL auto_increment,
+  `refprogram_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL default '',
   `schema` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refprogram_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refprogram_member`
@@ -2578,13 +2697,15 @@ CREATE TABLE `refprogram` (
 
 DROP TABLE IF EXISTS `refprogram_member`;
 CREATE TABLE `refprogram_member` (
-  `refprogram_member_id` int(11) NOT NULL auto_increment,
+  `refprogram_member_id` int(11) NOT NULL,
   `refprogram_id` int(11) NOT NULL default '0',
   `external_id` int(11) NOT NULL default '0',
   `external_type` varchar(255) NOT NULL default '',
-  `inactive` tinyint(4) NOT NULL,
-  PRIMARY KEY  (`refprogram_member_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  `inactive` tinyint(4) NOT NULL default '0',
+  PRIMARY KEY  (`refprogram_member_id`),
+  KEY `external_id` (`external_id`),
+  KEY `refprogram_id` (`refprogram_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refprogram_member_slot`
@@ -2592,15 +2713,17 @@ CREATE TABLE `refprogram_member` (
 
 DROP TABLE IF EXISTS `refprogram_member_slot`;
 CREATE TABLE `refprogram_member_slot` (
-  `refprogram_member_slot_id` int(11) NOT NULL auto_increment,
+  `refprogram_member_slot_id` int(11) NOT NULL,
   `month` int(11) NOT NULL default '0',
   `year` int(11) NOT NULL default '0',
   `slots` int(11) NOT NULL default '0',
   `external_type` enum('Practice','Provider') NOT NULL default 'Practice',
   `external_id` int(11) NOT NULL default '0',
   `refprogram_member_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`refprogram_member_slot_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`refprogram_member_slot_id`),
+  KEY `external_id` (`external_id`),
+  KEY `refprogram_member_id` (`refprogram_member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refprovider`
@@ -2608,15 +2731,16 @@ CREATE TABLE `refprogram_member_slot` (
 
 DROP TABLE IF EXISTS `refprovider`;
 CREATE TABLE `refprovider` (
-  `refprovider_id` int(11) NOT NULL auto_increment,
+  `refprovider_id` int(11) NOT NULL,
   `prefix` varchar(255) NOT NULL default '',
   `first_name` varchar(255) NOT NULL default '',
   `middle_name` varchar(255) NOT NULL default '',
   `last_name` varchar(255) NOT NULL default '',
   `direct_line` varchar(255) NOT NULL default '',
   `refpractice_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`refprovider_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`refprovider_id`),
+  KEY `refpractice_id` (`refpractice_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refreferral_visit`
@@ -2624,10 +2748,10 @@ CREATE TABLE `refprovider` (
 
 DROP TABLE IF EXISTS `refreferral_visit`;
 CREATE TABLE `refreferral_visit` (
-  `refreferral_visit_id` int(11) NOT NULL auto_increment,
+  `refreferral_visit_id` int(11) NOT NULL,
   `refappointment_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`refreferral_visit_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `refuser`
@@ -2635,13 +2759,13 @@ CREATE TABLE `refreferral_visit` (
 
 DROP TABLE IF EXISTS `refuser`;
 CREATE TABLE `refuser` (
-  `refuser_id` int(11) NOT NULL auto_increment,
+  `refuser_id` int(11) NOT NULL,
   `external_user_id` int(11) NOT NULL default '0',
   `refusertype` int(11) NOT NULL default '0',
   `refprogram_id` int(11) NOT NULL default '0',
   `deleted` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`refuser_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `relationship`
@@ -2649,14 +2773,14 @@ CREATE TABLE `refuser` (
 
 DROP TABLE IF EXISTS `relationship`;
 CREATE TABLE `relationship` (
-  `relationship_id` int(11) NOT NULL auto_increment,
+  `relationship_id` int(11) NOT NULL,
   `parent_type` varchar(255) NOT NULL default '',
   `parent_id` int(11) NOT NULL default '0',
   `child_type` varchar(255) NOT NULL default '',
   `child_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`relationship_id`),
-  KEY `index` (`parent_type`,`parent_id`,`child_type`,`child_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `parent_type` (`parent_type`,`parent_id`,`child_type`,`child_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `report_snapshot`
@@ -2670,7 +2794,7 @@ CREATE TABLE `report_snapshot` (
   `snapshot_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `data` longtext NOT NULL,
   PRIMARY KEY  (`report_snapshot_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `report_templates`
@@ -2686,7 +2810,7 @@ CREATE TABLE `report_templates` (
   `custom_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`report_template_id`),
   KEY `report_id` (`report_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Report templates';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Report templates';
 
 --
 -- Table structure for table `reports`
@@ -2694,7 +2818,7 @@ CREATE TABLE `report_templates` (
 
 DROP TABLE IF EXISTS `reports`;
 CREATE TABLE `reports` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) NOT NULL,
   `dbase` varchar(255) NOT NULL default '',
   `user` varchar(255) NOT NULL default '',
   `label` varchar(255) NOT NULL default '',
@@ -2702,7 +2826,7 @@ CREATE TABLE `reports` (
   `description` mediumtext NOT NULL,
   `custom_id` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Report definitions TODO: change to Generic Seq';
 
 --
 -- Table structure for table `revisions`
@@ -2710,7 +2834,7 @@ CREATE TABLE `reports` (
 
 DROP TABLE IF EXISTS `revisions`;
 CREATE TABLE `revisions` (
-  `revision_id` int(10) unsigned NOT NULL auto_increment,
+  `revision_id` int(10) unsigned NOT NULL,
   `storable_id` int(10) unsigned NOT NULL default '0',
   `revision` int(10) unsigned NOT NULL default '0',
   `create_date` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -2720,7 +2844,7 @@ CREATE TABLE `revisions` (
   KEY `storable_id` (`storable_id`,`revision`),
   KEY `modify_date` (`create_date`),
   KEY `user_id` (`user_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `revisions_db`
@@ -2731,7 +2855,7 @@ CREATE TABLE `revisions_db` (
   `revision_id` int(10) unsigned NOT NULL default '0',
   `filedata` blob NOT NULL,
   PRIMARY KEY  (`revision_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `rooms`
@@ -2739,15 +2863,14 @@ CREATE TABLE `revisions_db` (
 
 DROP TABLE IF EXISTS `rooms`;
 CREATE TABLE `rooms` (
-  `id` int(11) NOT NULL default '0',
+  `id` int(11) NOT NULL,
   `description` text NOT NULL,
   `number_seats` int(11) NOT NULL default '0',
   `building_id` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL default '',
   `color` varchar(10) NOT NULL default '',
-  PRIMARY KEY  (`id`),
-  KEY `building_id` (`building_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `route_slip`
@@ -2759,7 +2882,7 @@ CREATE TABLE `route_slip` (
   `encounter_id` int(11) NOT NULL default '0',
   `report_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`route_slip_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `schedule`
@@ -2767,17 +2890,15 @@ CREATE TABLE `route_slip` (
 
 DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE `schedule` (
-  `schedule_id` int(10) unsigned NOT NULL auto_increment,
+  `schedule_id` int(10) unsigned NOT NULL,
   `title` varchar(150) default NULL,
   `description_long` text,
   `description_short` text,
   `schedule_code` varchar(255) default NULL,
   `provider_id` int(11) NOT NULL default '0',
-  `room_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`schedule_id`),
-  KEY `provider_id` (`provider_id`),
-  KEY `room_id` (`room_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  KEY `provider_id` (`provider_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `schedule_event`
@@ -2789,24 +2910,7 @@ CREATE TABLE `schedule_event` (
   `event_group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`event_id`),
   KEY `event_group_id` (`event_group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Table structure for table `schedules`
---
-
-DROP TABLE IF EXISTS `schedules`;
-CREATE TABLE `schedules` (
-  `id` int(11) NOT NULL default '0',
-  `schedule_code` varchar(255) NOT NULL default '',
-  `name` varchar(255) NOT NULL default '',
-  `description_long` text NOT NULL,
-  `description_short` text NOT NULL,
-  `practice_id` int(11) NOT NULL default '0',
-  `user_id` int(11) default NULL,
-  `room_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `secondary_practice`
@@ -2819,7 +2923,7 @@ CREATE TABLE `secondary_practice` (
   `practice_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`secondary_practice_id`),
   KEY `person_id` (`person_id`,`practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `self_mgmt_goals`
@@ -2828,12 +2932,13 @@ CREATE TABLE `secondary_practice` (
 DROP TABLE IF EXISTS `self_mgmt_goals`;
 CREATE TABLE `self_mgmt_goals` (
   `self_mgmt_id` bigint(20) NOT NULL,
+  `last_edit` timestamp NULL default NULL,
   `person_id` bigint(20) NOT NULL,
   `initiated` date NOT NULL,
   `completed` date NOT NULL,
   `type` tinyint(4) NOT NULL,
   PRIMARY KEY  (`self_mgmt_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `sequences`
@@ -2843,7 +2948,7 @@ DROP TABLE IF EXISTS `sequences`;
 CREATE TABLE `sequences` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `sequences_daily`
@@ -2851,9 +2956,9 @@ CREATE TABLE `sequences` (
 
 DROP TABLE IF EXISTS `sequences_daily`;
 CREATE TABLE `sequences_daily` (
-  `counter` int(11) NOT NULL,
-  `updated_on` date NOT NULL
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  `counter` int(11) NOT NULL default '0',
+  `updated_on` date NOT NULL default '0000-00-00'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `sequences_named`
@@ -2864,7 +2969,19 @@ CREATE TABLE `sequences_named` (
   `name` varchar(255) NOT NULL default '',
   `counter` int(11) NOT NULL default '0',
   PRIMARY KEY  (`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `splash`
+--
+
+DROP TABLE IF EXISTS `splash`;
+CREATE TABLE `splash` (
+  `splash_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `message` longtext NOT NULL,
+  PRIMARY KEY  (`splash_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `statement_history`
@@ -2880,7 +2997,7 @@ CREATE TABLE `statement_history` (
   `amount` float(7,2) NOT NULL default '0.00',
   `type` int(11) NOT NULL default '0',
   PRIMARY KEY  (`statement_history_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `statement_sequence`
@@ -2889,7 +3006,7 @@ CREATE TABLE `statement_history` (
 DROP TABLE IF EXISTS `statement_sequence`;
 CREATE TABLE `statement_sequence` (
   `id` int(11) NOT NULL default '0'
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `states`
@@ -2903,7 +3020,7 @@ CREATE TABLE `states` (
   PRIMARY KEY  (`zone_code`,`zone_name`),
   KEY `country` (`country`),
   KEY `zone_code` (`zone_code`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `storables`
@@ -2921,7 +3038,7 @@ CREATE TABLE `storables` (
   `webdavname` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`storable_id`),
   KEY `type` (`type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `storage_date`
@@ -2932,8 +3049,9 @@ CREATE TABLE `storage_date` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Generic way to store date values';
+  `array_index` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`foreign_key`,`value_key`,`array_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Generic way to store date values';
 
 --
 -- Table structure for table `storage_int`
@@ -2944,8 +3062,9 @@ CREATE TABLE `storage_int` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Generic way to store integer values (also boolean)';
+  `array_index` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`foreign_key`,`value_key`,`array_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Generic way to store integer values (also boolean)';
 
 --
 -- Table structure for table `storage_string`
@@ -2956,8 +3075,9 @@ CREATE TABLE `storage_string` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(50) NOT NULL default '',
   `value` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+  `array_index` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`foreign_key`,`value_key`,`array_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
 
 --
 -- Table structure for table `storage_text`
@@ -2968,8 +3088,9 @@ CREATE TABLE `storage_text` (
   `foreign_key` int(11) NOT NULL default '0',
   `value_key` varchar(255) NOT NULL default '',
   `value` longtext NOT NULL,
-  PRIMARY KEY  (`foreign_key`,`value_key`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
+  `array_index` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`foreign_key`,`value_key`,`array_index`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Generic way to string values';
 
 --
 -- Table structure for table `summary_columns`
@@ -2984,7 +3105,7 @@ CREATE TABLE `summary_columns` (
   `pretty_name` varchar(100) default NULL,
   `table_name` varchar(30) default NULL,
   UNIQUE KEY `idx_summary_columns` (`summary_column_id`,`widget_form_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `superbill`
@@ -2998,7 +3119,7 @@ CREATE TABLE `superbill` (
   `status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`superbill_id`),
   KEY `practice_id` (`practice_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `superbill_data`
@@ -3011,7 +3132,7 @@ CREATE TABLE `superbill_data` (
   `code_id` int(11) NOT NULL default '0',
   `status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`superbill_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `tags`
@@ -3019,11 +3140,11 @@ CREATE TABLE `superbill_data` (
 
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE `tags` (
-  `tag_id` int(10) unsigned NOT NULL auto_increment,
+  `tag_id` int(10) unsigned NOT NULL,
   `tag` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`tag_id`),
   UNIQUE KEY `tag` (`tag`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `tags_storables`
@@ -3034,7 +3155,7 @@ CREATE TABLE `tags_storables` (
   `tag_id` int(10) unsigned NOT NULL default '0',
   `storable_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`tag_id`,`storable_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `tree`
@@ -3042,7 +3163,7 @@ CREATE TABLE `tags_storables` (
 
 DROP TABLE IF EXISTS `tree`;
 CREATE TABLE `tree` (
-  `tree_id` int(10) unsigned NOT NULL auto_increment,
+  `tree_id` int(10) unsigned NOT NULL,
   `lft` int(10) unsigned NOT NULL default '0',
   `rght` int(10) unsigned NOT NULL default '0',
   `level` int(10) unsigned NOT NULL default '0',
@@ -3051,7 +3172,7 @@ CREATE TABLE `tree` (
   UNIQUE KEY `storable_id` (`tree_id`),
   KEY `lft` (`lft`,`rght`,`level`),
   KEY `node_type` (`node_type`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user`
@@ -3059,7 +3180,7 @@ CREATE TABLE `tree` (
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL default '0',
+  `user_id` int(11) NOT NULL,
   `username` varchar(55) NOT NULL default '',
   `password` varchar(255) NOT NULL default '',
   `nickname` varchar(255) NOT NULL default '',
@@ -3069,8 +3190,9 @@ CREATE TABLE `user` (
   `default_location_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `username` (`username`),
-  KEY `person_id` (`person_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='Users in the System';
+  KEY `person_id` (`person_id`),
+  KEY `default_location_id` (`default_location_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Users in the System';
 
 --
 -- Table structure for table `users_groups`
@@ -3085,7 +3207,7 @@ CREATE TABLE `users_groups` (
   `table` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `user_id` (`user_id`,`group_id`,`foreign_id`,`table`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `visit_queue`
@@ -3097,7 +3219,7 @@ CREATE TABLE `visit_queue` (
   `visit_queue_template_id` int(11) NOT NULL default '0',
   `provider_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`visit_queue_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `visit_queue_reason`
@@ -3105,12 +3227,12 @@ CREATE TABLE `visit_queue` (
 
 DROP TABLE IF EXISTS `visit_queue_reason`;
 CREATE TABLE `visit_queue_reason` (
-  `visit_queue_reason_id` int(11) NOT NULL auto_increment,
+  `visit_queue_reason_id` int(11) NOT NULL,
   `ordernum` int(11) NOT NULL default '0',
   `appt_length` time NOT NULL default '01:00:00',
   `reason` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`visit_queue_reason_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `visit_queue_template`
@@ -3118,13 +3240,13 @@ CREATE TABLE `visit_queue_reason` (
 
 DROP TABLE IF EXISTS `visit_queue_template`;
 CREATE TABLE `visit_queue_template` (
-  `visit_queue_template_id` int(11) NOT NULL auto_increment,
+  `visit_queue_template_id` int(11) NOT NULL,
   `number_of_appointments` int(11) NOT NULL default '0',
   `visit_queue_reason_id` int(11) NOT NULL default '0',
   `visit_queue_rule_id` int(11) NOT NULL default '0',
   `title` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`visit_queue_template_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `widget_form`
@@ -3137,8 +3259,10 @@ CREATE TABLE `widget_form` (
   `form_id` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '0',
   `controller_name` varchar(100) NOT NULL,
-  PRIMARY KEY  (`widget_form_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+  `show_on_medical_history` tinyint(1) NOT NULL,
+  PRIMARY KEY  (`widget_form_id`),
+  KEY `form_id` (`form_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `x12imported_data`
@@ -3151,7 +3275,7 @@ CREATE TABLE `x12imported_data` (
   `created_date` date NOT NULL default '0000-00-00',
   `filename` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`x12imported_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `x12transaction_data`
@@ -3167,7 +3291,7 @@ CREATE TABLE `x12transaction_data` (
   `total_charge` float(7,2) NOT NULL default '0.00',
   `patient_responsibility` float(7,2) NOT NULL default '0.00',
   PRIMARY KEY  (`transaction_data_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `x12transaction_history`
@@ -3179,12 +3303,11 @@ CREATE TABLE `x12transaction_history` (
   `source_id` int(11) NOT NULL default '0',
   `transaction_id` varchar(255) NOT NULL default '',
   `claim_id` varchar(255) NOT NULL default '',
-  `reference_id` varchar(100) NOT NULL default '',
   `applied_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `applied_by` int(11) NOT NULL default '0',
   `payment_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`history_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `zipcodes`
@@ -3201,7 +3324,7 @@ CREATE TABLE `zipcodes` (
   `dst` char(1) NOT NULL default '',
   `country` char(2) NOT NULL default '',
   PRIMARY KEY  (`zip`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -3212,3 +3335,4 @@ CREATE TABLE `zipcodes` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- Dump completed on 2007-08-09  2:52:30
