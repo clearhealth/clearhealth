@@ -73,7 +73,8 @@ class refSpecialtyMapper
 			if (!in_array($enumValue->key, $array)) {
 				continue;
 			}
-			$valueSQL[] = sprintf('"%s", "%d", "%d"',
+			$valueSQL[] = sprintf('("%s", "%s", "%d", "%d")',
+				$this->_db->nextId(),
 				$ordoName,
 				$ordo->get('id'),
 				$enumValue->enumeration_value_id);
@@ -82,7 +83,7 @@ class refSpecialtyMapper
 		$sql = '
 			INSERT INTO refSpecialtyMap 
 				(refSpecialityMap_id,external_type, external_id, enumeration_value_id) 
-			VALUES (' . $this->_db->nextId() . ',' . implode(', ', $valueSQL)  . ")";
+			VALUES ' . implode(', ', $valueSQL);
 		$this->_db->Execute($sql);
 	}
 }
