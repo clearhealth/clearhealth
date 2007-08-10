@@ -84,10 +84,10 @@ class C_Form extends Controller {
 			else {
 						$form_structure_id = 0;
 						
-						$structure=& Celini::newOrdo('FormStructure',$form_structure_id);
-						$structure->set('form_id', $this->form_id);
-						$structure->set ('form_structure_id', 0);
-						$structure->getFieldsList ($filename);
+//						$structure=& Celini::newOrdo('FormStructure',$form_structure_id);
+//						$structure->set('form_id', $this->form_id);
+//						$structure->set ('form_structure_id', 0);
+//						$structure->getFieldsList ($filename);
 			
 				$this->messages->addMessage('Form Uploaded Successfully');
 			}
@@ -190,21 +190,21 @@ class C_Form extends Controller {
 			}
 			$data->persist();
 			
-			$structure=& Celini::newOrdo('FormStructure');
-			$structure->set('form_id', $form_id);
-			$form_structure = $structure->build_form_structure_array ($form_data_id);
+//			$structure=& Celini::newOrdo('FormStructure');
+//			$structure->set('form_id', $form_id);
+//			$form_structure = $structure->build_form_structure_array ($form_data_id);
 			//print_r ($form_structure);
 			
 			$formRule = & ORDataObject::factory('FormRule');
 			
-			foreach ($form_structure as $field_name => $field_value) {
+			/*foreach ($form_structure as $field_name => $field_value) {
 				$messages = $formRule->checkFieldRule ($field_name, $field_value);
 				if (is_array($messages)){
 					foreach ($messages as $message) {
 						$this->messages->addMessage($message);
 					}
 				}
-			}
+			}*/
 			
 			$this->messages->addMessage('Form Updated');
 			$this->form_data_id = $data->get('id');
