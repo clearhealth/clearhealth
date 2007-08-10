@@ -1,4 +1,7 @@
 <div id="codingBlock">
+{if $ajaxSubmit && is_object($messages)}
+{$messages->render()}
+{/if}
 {head type="js"}
 var selectVisible=true;
 var superBillVisible=false;
@@ -41,10 +44,17 @@ function hidePopup() {
 function superbillPopup() {
         HTML_AJAX.call('coding','ajaxSuperbill',showPopup);
 }
+function deleteClaimline(codingDataId) {
+	if(confirm('Are you sure you want to delete this claimline?')) {
+          HTML_AJAX.call('coding','ajaxDeleteClaimline',null,codingDataId);
+	  formSubmit('ajaxCodingForm','codingBlock');
+	}
+}
 {/head}
 {if $ajaxSubmit}
 <form action="{$base_uri}index.php/Coding/update" id="ajaxCodingForm" method="post" autocomplete="off">
 <input type="hidden" name="process" value="true" />
+<input type="hidden" name="ajaxSubmit" value="1" />
 {else}
 {clni_form name="coding_form" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
 {/if}
@@ -163,17 +173,20 @@ function superbillPopup() {
 {if $encounter && $encounter->get('status') != 'closed'}
 <a href="{link action='delete_claimline' defaultArg=$code.coding_data_id}encounter_id={$foreign_id}&process=true" onclick="return confirmDeleteClaimLine(this);">X</a>&nbsp;
 {/if}
-{if $incodingtemplate}
+{if $incodingtemplate && !$ajaxSubmit}
 <a href="{link action='Edit' }template_id={$foreign_id}&delete_id={$code.coding_data_id}">X</a>&nbsp;
 {/if}
+{if $ajaxSubmit}
+<a href="javascript:deleteClaimline({$code.coding_data_id});">X</a>&nbsp;
+{/if}
 
-{$code.units} - <a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}">{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
+{$code.units} - {if !$ajaxSubmit}<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}">{/if}{$code.description}</a> {enum_lookup name="code_modifier" value=$code.modifier}
 {if $dentalpractice}
 Tooth: {$code.tooth} Side {$code.toothside}
 {/if}
 <br />
 {foreach from=$children item=child}
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}&icd_id={$child.code_id}">{$child.description}</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;{if !$ajaxSubmit}<a href="{$EDIT_LINK}coding_data_id={$code.coding_data_id}&icd_id={$child.code_id}">{/if}{$child.description}</a><br />
 {/foreach}<br />
 {/foreach}
 &nbsp;

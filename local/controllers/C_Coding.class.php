@@ -338,8 +338,14 @@ class C_Coding extends Controller {
 		if ($overlappingChanges) {
 			LockManager::prepareChangedAlert($changes,$this,$lockTimestamp);
 		}
+		if (isset($_POST['ajaxSubmit']) && $_POST['ajaxSubmit'] == true) {	
+		$this->view->assign("ajaxSubmit",true);
+		}
 		
 		//return $this->update_action($_POST['foreign_id']);
+	}
+	function ajaxDeleteClaimline($parent_id) {
+		$this->delete_claimline((int)$parent_id);
 	}
 	
 	function delete_claimline($parent_id) {	
@@ -544,8 +550,12 @@ class C_Coding extends Controller {
 		}
 		else {
 			$this->super = "";
-		}	
-		if (! isset($_POST['ajaxSubmit'])) {	
+		}
+			
+		if (isset($_POST['ajaxSubmit']) && $_POST['ajaxSubmit'] == true) {	
+		$this->view->assign("ajaxSubmit",true);
+		}
+		else {
 		$encounter =& Celini::newORDO('Encounter',$this->foreign_id);
 
 		// get the patients primary insured relationship
