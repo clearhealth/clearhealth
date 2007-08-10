@@ -355,8 +355,12 @@ class C_Referral extends Controller
 		}
 		
 		$this->assign_by_ref('person', $person);
+
+		$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
+
+
 		//appointment kept redirect to form
-		if ($request->get('refStatus') == 5 ) {
+		if ($request->get('refStatus') == 5 || $parProg->get('adhoc') == 1) {
 			return $this->actionVisit($request->get('refRequest_id'));
 		}
 		return $this->view->render('view.html');
@@ -491,7 +495,8 @@ class C_Referral extends Controller
 				$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
                 		if ($initiator->get('primary_practice_id')>0) {
                         		if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
-                                		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it.');
+					$prac = ORDataObject::factory('Practice',$initiator->get('primary_practice_id')); echo $prac;
+                                		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it. ' . $prac->get('name'));
 				$this->_state = false;
                         	return $this->fetch("main/general_message.html");
                      		}
@@ -582,7 +587,8 @@ class C_Referral extends Controller
 		$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
                 	if ($initiator->get('primary_practice_id')>0) {
                         	if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
-                               		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it.');
+					$prac = ORDataObject::factory('Practice',$initiator->get('primary_practice_id'));
+                                                $this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it. ' . $prac->get('name'));
                         	return $this->fetch("main/general_message.html");
                      		}
                 	}
