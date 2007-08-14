@@ -49,7 +49,9 @@ class C_SelfMgmtGoals extends Controller {
 		  $self_mgmt_id = (int)$array['self_mgmt_id'];
 		}
 		$smg = ORDataObject::factory('SelfMgmtGoals',$self_mgmt_id);
-		$smg->set('initiated',date('Y-m-d'));
+		if ($smg->get('initiated') == '') {
+			$smg->set('initiated',date('Y-m-d'));
+		}
 		$smg->populateArray($array);
 		
 		$smg->persist();
