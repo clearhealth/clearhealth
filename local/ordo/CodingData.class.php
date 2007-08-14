@@ -64,11 +64,10 @@ class CodingData extends ORDataObject {
 		// code definition lives. I am migrating this to not respect foriegn ids which are irrelevant
 
 		if ($this->get('id') == 0) {
-			$res = $this->_execute("select count(*) c from $this->_table where parent_id = ".(int)$this->get('parent_id'));
-
+			$sql = "select count(*) c from $this->_table where parent_id = ".(int)$this->get('parent_id') .  " and parent_id != 0";
+			$res = $this->_execute($sql);
 			if ($res && !$res->EOF) {
 				$this->set('code_order',($res->fields['c']+1));
-				//var_dump($this->get('code_order'));
 			}
 		}
 
