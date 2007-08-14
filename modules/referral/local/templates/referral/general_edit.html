@@ -74,11 +74,11 @@ var confirmBox = new clniConfirmBox();
 			<tr>
 				<td class="aRight">Requested Slot</td>
 				<td>
-					<select name="refRequest[refRequested_day]">
+					<select name="refRequest[refRequested_day]" {if $parProg->get('adhoc') eq 1} disabled="disabled" {/if}>
 						{html_options options=$refRequested_day selected=$request->get('refRequested_day')}
 					</select>
 					
-					<select name="refRequest[refRequested_time]">
+					<select name="refRequest[refRequested_time]" {if $parProg->get('adhoc') eq 1} disabled="disabled" {/if}>
 						{html_options options=$refRequested_time selected=$request->get('refRequested_time')}
 					</select>
 				</td>
