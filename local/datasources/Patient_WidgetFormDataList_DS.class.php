@@ -90,7 +90,7 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 		$this->_query['cols'] .= $this->case_sql;
 		$this->_labels = $labels;
 		
-	//	echo $this->preview()."<br>";
+//		echo "<!--" . $this->preview()."<br>-->";
 	}
 	
 	function _build_case_sql() {
@@ -113,9 +113,11 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 
 	}
 	function _enumVal($value) {
-		$em =& Celini::enumManagerInstance();
-		$val = $em->lookup('simpleToggle',$value);
-		return $val;
+
+		if ($value == 1) {
+			return "Yes";
+		}
+		return "No";
 	}
 }
 
