@@ -16,7 +16,9 @@ class C_ParticipationProgram extends C_CRUD {
 	function actionEdit($id) {
 		$id = (int)$id;
 		$parProg = ORDataObject::factory('ParticipationProgram',$id);
+		if ($id >0) {
 		$this->security->acl_qcheck('edit',$this->_me,'resources',$parProg->get('participation_program_id'),$this,false);
+		}
 		$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName);
