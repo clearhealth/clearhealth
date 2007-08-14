@@ -39,6 +39,7 @@ function smarty_function_input($params, &$smarty)
             case 'separator':
             case 'addempty':
             case 'store_id':
+            case 'disabled':
             case 'id':
                 $$_key = (string)$_val;
                 break;
@@ -94,7 +95,8 @@ function smarty_function_input($params, &$smarty)
                         $ret = "<input type='hidden' name=\"$name\" value=\"0\"><input type='checkbox' name=\"$name\" value=\"1\" id=\"$id\"$checked$extra>";
                 break;
                 case "string":
-                        $ret = "<input type='text' name=\"string[$name]\" value=\"$value\" id=\"$id\"$extra>";
+                        if ($disabled == "disabled") $disabled = ' disabled="disabled" ';
+                        $ret = "<input type='text' name=\"string[$name]\" value=\"$value\" id=\"$id\"$extra $disabled>";
                 break;
                 case "string-table":
                         $ret = "<input type='text' name=\"$name\" value=\"$value\" id=\"$id\"$extra>";
@@ -109,7 +111,7 @@ function smarty_function_input($params, &$smarty)
                        $ret = "<input type='submit' name=\"$name\" value=\"".$value."\" id=\"$id\"$extra>";
                 break;
                 case "date":
-                        $ret = smarty_function_clni_input_date(array('name'=>"date[$name]",'value'=>$value,'extra'=>$extra,'id'=>$id),$smarty);
+                        $ret = smarty_function_clni_input_date(array('name'=>"date[$name]",'value'=>$value,'extra'=>$extra,'id'=>$id,'disabled'=>$disabled),$smarty);
                 break;
                 case "date-table":
                         $ret = smarty_function_clni_input_date(array('name'=>$name,'value'=>$value,'extra'=>$extra,'id'=>$id),$smarty);
@@ -117,6 +119,7 @@ function smarty_function_input($params, &$smarty)
                 case "select":
                 case "select-table":
                 case "radio":
+                case "radio-fancy":
                 case "multiselect":
                         if (!is_array($options)) {
                                 $tmp = explode(',',$options);
@@ -154,6 +157,19 @@ function smarty_function_input($params, &$smarty)
                                                 $checked = "checked='checked'";
                                         }
                                         $ret .= "<input type='radio' name='string[$name]' value='$key' id='{$id}_{$key}' $checked><label for='{$id}_{$key}' class='inline'>$key</label>$sep";
+
+                                }
+                                $ret .= "</div>";
+                        }
+                        else if ($type == 'radio-fancy') {
+                                $ret = "<div>";
+                                foreach($options as $key => $val) {
+                                        $checked = '';
+                                        if ($val == $value) {
+                                                $checked = "checked='checked'";
+                                        }
+                                        if ($disabled == "disabled") $disabled = 'disabled="disabled"';
+                                        $ret .= "<input type='radio' name='string[$name]' value='$val' id='{$id}_{$val}' $checked $extra $disabled><label for='{$id}_{$key}' class='inline'>$key</label>$sep";
 
                                 }
                                 $ret .= "</div>";
