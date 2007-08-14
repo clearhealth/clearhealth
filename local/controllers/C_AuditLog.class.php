@@ -21,6 +21,7 @@ class C_AuditLog extends controller {
 		'insured_relationship' => 'person_id',
 		'lab_order'			=> 'patient_id',
 		'patient_chronic_code' => 'patient_id',
+		'patient' => 'person_id',
 		'patient_note'		 => 'patient_id',
 		'patient_payment_plan' => 'patient_id',
 		'patient_statistics'   => 'person_id',
@@ -47,6 +48,7 @@ class C_AuditLog extends controller {
 		'lab_order'			=> 'lab_order_id',
 		'patient_chronic_code' => 'chronic_care_code', // artificial
 		'patient_note'		 => 'patient_note_id',
+		'patient'		 => 'person_id',
 		'patient_payment_plan' => 'patient_payment_plan_id',
 		'patient_statistics'   => 'person_id',
 		'person_address'		=> 'address_id', // artificial
@@ -72,6 +74,7 @@ class C_AuditLog extends controller {
 		'lab_order' => 'LabOrder',
 		'patient_chronic_code' => 'PatientChronicCode',
 		'patient_note' => 'PatientNote',
+		'patient' => 'Patient',
 		'patient_payment_plan' => 'PatientPaymentPlan',
 		'patient_statistics' => 'PatientStatistics',
 		'person_address' => 'PersonAddress',
@@ -109,13 +112,13 @@ class C_AuditLog extends controller {
 			$query['union'][] = array(
 				'cols'	=> "audit_log.audit_log_id, audit_log.log_date, audit_log.ordo, "
 							. "COUNT(audit_log_field.audit_log_field_id) AS num_fields, "
-							. "CONCAT(person.first_name, ' ', person.last_name) AS name ",
+							. "CONCAT(person.first_name, ' ', person.last_name) AS name, audit_log.message ",
 							
 				'from'	=> "audit_log "
 							. "INNER JOIN $table ON "
 							. "	audit_log.ordo = '$ordo' AND "
 							. "	audit_log.ordo_id = {$table}.{$primary_key} "
-							. "INNER JOIN audit_log_field ON "
+							. "LEFT JOIN audit_log_field ON "
 							. "	audit_log_field.audit_log_id = audit_log.audit_log_id "
 							. "LEFT JOIN user ON user.user_id = audit_log.user_id "
 							. "LEFT JOIN person ON person.person_id = user.person_id ",
@@ -132,6 +135,7 @@ class C_AuditLog extends controller {
 			'name'		=> 'User',
 			'ordo'		=> 'Changed',
 			'num_fields' => 'Num. Changes',
+			'message' => 'Msg'
 		);
 		
 		// build the datasource from the query
@@ -139,7 +143,6 @@ class C_AuditLog extends controller {
 		$ds->setup($db, $query, $labels);
 		$ds->registerTemplate('log_date', "<a href='".Celini::link('view','AuditLog')."id={\$audit_log_id}'>{\$log_date}</a>");
 		$ds->addDefaultOrderRule('log_date', 'DESC');
-		
 		// build the grid from the datasource
 		$grid =& new cGrid($ds);
 		$this->assign_by_ref('grid',$grid);
