@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('datasources/CopySchedule_DS.class.php');
+$loader->requireOnce('controllers/C_Schedule.class.php');
 class C_Appointment extends Controller {
 
 	var $uiMode = 'normal';
@@ -835,7 +836,7 @@ fclose($fp);
 	}
 
         function ajaxReschedule($from_provider, $appointment_html, $copySchedule= false) {
-		Auth::canI('edit','schedule');
+		$this->security->acl_qcheck("edit",$this->_me,'resources',"schedule",new C_Schedule(),false);
 		$applist = "";
                 preg_match_all("/div class=\"eventBody element\" id=\"([0-9]+)\">/",$appointment_html,$appIds);
                 if(isset($appIds) && isset($appIds[1]) && count($appIds[1]) > 0) {
