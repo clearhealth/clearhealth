@@ -44,7 +44,7 @@ function smarty_function_clni_input_date($params, &$smarty)
     $id = false;
     $size = 10;
     $format = "m/d/Y";
-    $format = "Y-m-d";
+    //$format = "Y-m-d";
     $format_popup = DateObject::getFormat();
     $required = false;
     $time = false;
@@ -60,7 +60,7 @@ function smarty_function_clni_input_date($params, &$smarty)
             case 'value':
                 $$_key = (string)$_val;
                 break;
-
+            case 'disabled':
             case 'format':
                 $$_key = (string)$_val;
                 break;
@@ -117,7 +117,7 @@ function smarty_function_clni_input_date($params, &$smarty)
             $value = "";
     }
     if (!empty($value)) {
-           // $value = date($format,strtotime($value));
+            $value = date($format,strtotime($value));
     }
 
     if (!$id) {
@@ -130,12 +130,14 @@ function smarty_function_clni_input_date($params, &$smarty)
             $base_dir = "/";
     }
 
+
     $req = "clni_register_validation_rule('$id','date','alert');";
     if ($required) {
             $req .= "clni_register_validation_rule('$id','required','alert');";
     }
+    if ($disabled == "disabled") $disabled = ' disabled="disabled" ';
 
-    $_html_result = '<nobr class="jscal"><input name="' . $name . '" value="' .$value . '" size="' . $size . '" id="' . $id . '"' . $extra .
+    $_html_result = '<nobr class="jscal"><input name="' . $name . '" value="' .$value . '" size="' . $size . '" id="' . $id . '"' . $extra . $disabled .
     '><img id="' . $id . '_trigger" src="'.Celini::link('stock/set_time.gif', false, 'Images').'" style="cursor: pointer; vertical-align: top"></nobr>' . "\n";
     $_html_result .= 
     '<script type="text/javascript">Calendar.setup( {inputField:"'.$id.'", showsTime: '.($time ? 'true' : 'false').',ifFormat:"'.$format_popup.'",button:"'.$id.'_trigger" }); '.$req.'</script>';
