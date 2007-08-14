@@ -2,6 +2,7 @@
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('controllers/C_SecondaryPractice.class.php');
 $loader->requireOnce('ordo/Document.class.php');
+$loader->requireOnce('includes/clni/clniAudit.class.php');
 
 /**
  * Controller Clearhealth Patient actions
@@ -14,7 +15,15 @@ class C_Patient extends Controller {
 	var $insured_relationship_id = 0;
 	var $person_person_id = 0;
 	var $patient_statistics_id = 0;
-	
+
+	function ajaxAuditAccess($patientId) {
+		$patientId = (int)$patientId;
+		$pat = ORDataObject::factory('Patient',$patientId);
+		ClniAudit::logOrdo($pat,1,'Override Access');
+		$_SESSION['confidentiality'][$patientId] = true;
+
+	}
+
 	function ajaxEditAddress($addressId) {
 		return $this->actionEditAddress_edit($addressId);
 	}
