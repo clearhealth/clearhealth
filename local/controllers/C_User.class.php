@@ -80,7 +80,7 @@ class C_User extends Controller {
 		$em =& Celini::enumManagerInstance();
 		$templateRoles = $roles;
 		
-		if (isset($currentRoles[1]) && is_array($roles) && strlen($roles[$currentRoles[1]]) > 0) {
+		if (isset($currentRoles[1]) && is_array($roles) && isset($roles[$currentRoles[1]]) && strlen($roles[$currentRoles[1]]) > 0) {
 		
 		$permittedRoles = $em->enumArray(strtolower(preg_replace('/\ /','',$roles[$currentRoles[1]])) . '_permissions');
 		
