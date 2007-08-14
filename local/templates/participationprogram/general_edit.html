@@ -22,7 +22,7 @@
 <tr><td><label>Form Id:</label></td><td>{html_options name="ParticipationProgram[form_id]" options=$formList selected=$ordo->get('form_id') blank=true}</td></tr>
 <tr><td><label>Ad-hoc:</label></td><td>
 <input  type="hidden" name="ParticipationProgram[adhoc]" value='0'>
-<input type="checkbox" name="ParticipationProgram[adhoc]" value="1" {if $ordo->get('adhoc') eq 1}checked="checked"{/if}</td></tr>
+<input type="checkbox" name="ParticipationProgram[adhoc]" value="1" {if $ordo->get('adhoc') eq 1}checked="checked"{/if}></td></tr>
 <tr><td></td><td><input type='submit' value='Update'></td></tr>
 
 </table></form>
