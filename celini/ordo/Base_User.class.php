@@ -83,7 +83,6 @@ class Base_User extends ORDataObject {
 			{
 				$this->id = $this->get_id_from_userpass($username,$password);
 			}
-
 			if (is_numeric($this->id) && $this->id != 0) {
 				$this->populate();
 			}	
@@ -269,7 +268,7 @@ class Base_User extends ORDataObject {
 
 	function is_group_member($test_group = "usage") {
 		foreach($this->groups as $group) {
-			if ($group == $test_group) {
+			if (isset($group['name']) && $group['name'] == $test_group) {
 				return true;	
 			}	
 		}
