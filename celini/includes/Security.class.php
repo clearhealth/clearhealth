@@ -43,7 +43,6 @@ class Security extends gacl_api {
 		}
 		$return = Auth::canI($action, $resource);
 		//echo "actions:$action  users:" . $me->get_username() . "  $resource_section:$resource<br>";
-	
 		if ($me->is_group_member("superadmin")) {
 		 	$return  = true;
 		}
@@ -68,6 +67,15 @@ class Security extends gacl_api {
 			}
 		}
 		return false; 
+	}
+
+	function acl_check($actions,$what,$users,$who) {
+		$me =& $_SESSION['frame']['me'];	
+		if ($me->is_group_member("superadmin")) {
+                        $return  = true;
+                }
+
+		return parent::acl_check($actions, $what, $users, $who);
 	} 
 
 	/**
