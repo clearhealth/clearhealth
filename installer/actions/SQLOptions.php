@@ -51,14 +51,14 @@ class SQLOptions extends SQLFile {
 		}
 
 
-		$file_contents = file($file);
+		/*$file_contents = file($file);
 		$file_contents = join('', $file_contents);
 		if(!$this->splitMySqlFile($sql_commands[], $file_contents)){
 			$this->result = INSTALLER_ACTION_FAIL;
 			$this->result_message = "Error parsing file $file";
 			$this->loop = 2;
 			return $this->result;
-		}
+		}*/
 		
 		$db_con = mysql_connect($this->server.':'.$this->port, $this->username, $this->password);
 		if(!$db_con){
@@ -78,8 +78,8 @@ class SQLOptions extends SQLFile {
 					return $this->result;
 				}
 			}
-			$query_count = 0;
-			foreach($sql_commands as $sql_command_set){
+			$query_count = 1;
+			/*foreach($sql_commands as $sql_command_set){
 			if (!is_null($sql_command_set)) {
 				foreach($sql_command_set as $sql_statement){
 					if(mysql_query($sql_statement['query'], $db_con) === FALSE){
@@ -91,9 +91,21 @@ class SQLOptions extends SQLFile {
 					$query_count++;
 				}
 			}
-			}
+			}*/
 			$this->result = INSTALLER_ACTION_WARNING;
 			$this->result_message = "Loaded database file with $query_count queries";
+			$comm = "(".$this->mysql_path."/mysql -u" . $this->username .
+                         " --password='" . $this->password .
+                         "' " . $this->db_name . " < " .
+                        "$file) 3>&1 1>&2 2>&3";
+                        exec($comm,$output,$return);
+                        if ($return > 0) {
+                        $this->result_message = "Error running SQL query: <BR>\n".$comm. " " . print_r($output,true) . " Condition: $return <BR />\n";
+                        $this->result = INSTALLER_ACTION_FAIL;
+                        $this->loop = 2;
+                        return $this->result;
+                        }
+                        $this->query_count = 1;
 			$k = array_search($this->file,$this->file_list);
 			if (isset($this->file_list[$k]))
 				unset($this->file_list[$k]);
@@ -162,6 +174,12 @@ class SQLOptions extends SQLFile {
 			$this->result_message = "Could not determine database name, please provide a db_field or db_name parameter!";
 			return FALSE;
 		}
+		if(isset($this->params['mysql_path'])){
+                        $this->mysql_path = $engine->getField($this->params['mysql_path'])->value;
+                }else{
+                        $this->result_message = "No path to mysql supplied, please provide a path parameter!";
+                        return FALSE;
+                }
 
 		// Get file list
 		if(!isset($this->params['files']) || !is_array($this->params['files']) || count($this->params['files']) == 0){

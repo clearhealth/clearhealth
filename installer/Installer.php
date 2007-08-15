@@ -93,7 +93,6 @@ if(!file_exists($GLOBALS['INSTALLER']['CONFIG_FILE'])){
 	print("Installer Error: Cound not find config file at ".$GLOBALS['INSTALLER']['CONFIG_FILE']);
 	die();	
 }
-
 $GLOBALS['INSTALLER']['INSTALLER_CONFIG'] =& new InstallerConfig($GLOBALS['INSTALLER']['CONFIG_FILE']);
 if($GLOBALS['INSTALLER']['INSTALLER_CONFIG']->parse() === FALSE){
 	print("Installer Error: Error parsing config file {$GLOBALS['INSTALLER']['CONFIG_FILE']}<BR>\n");

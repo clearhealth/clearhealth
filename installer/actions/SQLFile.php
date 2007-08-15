@@ -16,6 +16,8 @@ class SQLFile extends BaseAction {
 	
 	var $db_name;
 	
+	var $mysql_path;
+	
 	var $file_list;
 	
 	var $loop;
@@ -72,7 +74,7 @@ class SQLFile extends BaseAction {
 			}
 			
 			$file_contents = file_get_contents($file);
-			$sql_commands[] = unserialize($file_contents);
+			//$sql_commands[] = unserialize($file_contents);
 		}
 	
 		$db_con = mysql_connect($this->server.':'.$this->port, $this->username, $this->password);
@@ -93,8 +95,19 @@ class SQLFile extends BaseAction {
 					return $this->result;
 				}
 			}
-			
-			$this->query_count = 0;
+			$comm = $this->mysql_path."/mysql -u" . $this->username .
+		         " --password='" . $this->password .
+		         "' " . $this->db_name . " < " .
+			"$file";
+			exec($comm,$output,$return);
+			if ($return > 0) {
+			$this->result_message = "Error running SQL query: <BR>\n".$comm." Condition: $return <BR />\n";
+			$this->result = INSTALLER_ACTION_FAIL;
+			$this->loop = 2;
+			return $this->result;
+			}
+			$this->query_count = 1;
+			/*
 			foreach($sql_commands as $sql_command_set){
 			if (!is_null($sql_command_set)) {
 				foreach($sql_command_set as $sql_statement){
@@ -109,7 +122,7 @@ class SQLFile extends BaseAction {
 					$this->query_count++;
 				}
 			}
-			}
+			}*/
 			$this->result = INSTALLER_ACTION_SUCCESS;
 			$this->result_message = "Loaded ".(count($this->file_list)+count($this->cache_file_list))." sql files with {$this->query_count} queries";
 			$this->loop = 3;
@@ -169,6 +182,12 @@ class SQLFile extends BaseAction {
 			$this->db_name = $this->params['db_name'];
 		}else{
 			$this->result_message = "Could not determine database name, please provide a db_field or db_name parameter!";
+			return FALSE;
+		}
+		if(isset($this->params['mysql_path'])){
+			$this->mysql_path = $engine->getField($this->params['mysql_path'])->value;
+		}else{
+			$this->result_message = "No path to mysql supplied, please provide a path parameter!";
 			return FALSE;
 		}
 

@@ -13,7 +13,7 @@
 <li><a href="http://www.clear-health.com">Support</a></li>
 <li><a href="http://www.clear-health.org/">ClearHealth</a></li>
 <li><a href="http://www.op-en.org/wiki/index.php/Main_Page">Documentation</a></li>
-<li><a href="http://uversainc.com/">Uversa</a></li>
+<li><a href="http://www.clear-health.com/">ClearHealth</a></li>
 </ul>
 </div>	
 <br />	
