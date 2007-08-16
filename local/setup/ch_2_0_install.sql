@@ -1770,6 +1770,25 @@ CREATE TABLE `form` (
 
 /*!40000 ALTER TABLE `form` DISABLE KEYS */;
 LOCK TABLES `form` WRITE;
+
+INSERT INTO `form` (`form_id`, `name`, `description`, `system_name`) VALUES (1, 'Physical Exam', 'Basic physical health assessment.', 'physical_exam'),
+(2, 'Subjective', 'Basic free text subjective assessment', 'subjective'),
+(3, 'Objective', 'Basic vitals and objective data collection', 'objective'),
+(4, 'Assessment', 'Basic free text assessment ', 'assessment'),
+(5, 'Plan', 'Combined display of encounter linked labs, referrals, and free text plan note', 'plan'),
+(6, 'Immunizations', 'Basic immunization record', 'immunizations'),
+(7, 'Social History', 'Simple history of drug/alcohol/smoking use', 'social_history'),
+(8, 'Family History Of Disease', 'Simple record of family history', 'family_history_of_disease'),
+(9, 'Previous Illness', 'Simple record of prior conditions and treatments', 'previous_illness'),
+(10, 'Allergies', 'Allergies', 'allergies'),
+(11, 'Simple Medications', 'Simple medications record', 'simple_meds'),
+(12, 'Chronic Care', 'Quicklist system form for Chronic Care list', 'problem_planned_care'),
+(13, 'Risk Factors', 'Quicklist system form for risk factors', 'risk_factors'),
+(14, 'Self Management Goals', 'System form for selfmgmt criticals display', 'self_management_goals'),
+(15, 'Referral Completion Form', 'Sample referral completion with labs and coding', 'referral_completion_form'),
+(16, 'Adhoc Referral Completion', 'Sample adhoc referral completion with labs and coding', 'adhoc_referral_completion');
+
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `form` ENABLE KEYS */;
 
