@@ -1,0 +1,66 @@
+<form action='{$base_uri}index.php/WidgetForm/Fillout/{$formId}' id="ajaxForm{$formId}" method="post">
+
+{if $open}
+<input type="button" onClick="formSubmit({$formId});" value="Update" />
+{/if}
+<input type="hidden" name="form_id" value="{$formId}" />
+<input type="hidden" name="process" value="true" />
+<input type="hidden" name="filloutType" value="encounter" />
+<table>
+<tr>
+	<td colspan="2" valign="top"><h3 style="margin-top:1px;">Comment</h3>
+		{input type="text" name="plan_comment" rows="3" cols="80"}</td>
+</tr>
+<tr>
+	<td valign="top">
+		<fieldset>
+		<legend>Diagnoses Codes (<a href="#editClaim">Add</a>)</legend>
+		{clni_grid datasource="Coding_List_DS" arg1=$encounterId arg2="1,2"}
+		</fieldset>
+	</td>
+	<td valign="top">
+		<fieldset><legend>Procedures(<a href="#editClaim">Add</a>)</legend>
+			{clni_grid datasource="Coding_List_DS" arg1=$encounterId arg2="3,4"}
+		</fieldset>
+	</td>
+</tr>
+
+<tr>
+	<td valign="top">
+		{clni_widget_form patientId=$patientId name="Custom Diagnoses"  externalId=$encounterId}
+	</td>
+	<td valign="top">
+		{clni_widget_form patientId=$patientId name="Edu/SNS/Custom Procedures"  externalId=$encounterId}
+	</td>
+
+</tr>
+
+
+<tr>
+	<td valign="top">
+		{clni_widget_form patientId=$patientId name="Medications"  externalId=$encounterId}
+	</td>
+	<td>
+		{clni_widget_form patientId=$patientId name="Immunizations"  externalId=$encounterId}
+	</td>
+</tr>
+<tr>
+	<td  valign="top">
+		<fieldset><legend>Referrals (<a href="{link action="add" controller="Referral" defaultArg=$encounterId}">Add</a>)</legend>
+		{clni_grid datasource="Person_ReferralList_DS" arg1=$patientId arg2=$encounterId}
+		</fieldset>
+	</td>
+
+</tr>
+
+<tr>
+	<td valign="top" colspan="2">
+		<fieldset><legend>Lab Orders (<a href="{link action="edit" controller="Labs" defaultArg="0"}externalId={$encounterId}">Add</a>)</legend>
+		{clni_grid datasource="Order_DS" arg1=$patientId arg2=$encounterId}
+		</fieldset>
+	</td>
+</tr>
+
+</table>
+
+</form>

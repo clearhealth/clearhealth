@@ -1,0 +1,34 @@
+<div id="postResults"></div>
+{clni_form}
+<input type="submit" value="Update" />
+<div style="clear: both;"></div>
+<br />
+<table>
+<tr>
+<td>
+<tr>
+<td><b>Previous Illness</b>:</td>
+<td>
+{input type="string" name="previous_illness_name"}
+</td>
+</tr>
+<tr>
+<td>
+<b>Status</b>:</td>
+<td>
+{input type="radio" name="previous_illness_status" value="open" options="Open" display="horizontal"}
+{input type="radio" name="previous_illness_status" value="closed" options="Closed" display="horizontal"}
+</td>
+</tr>
+<tr>
+<td><b>Year</b>:</td>
+<td>{input type="date" name="previous_illness_year"}</td>
+</tr>
+<tr>
+<td><b>Comment</b>:</td>
+<td>
+{input type="string" name="previous_illness_comment" size="40"}
+</td>
+</tr>
+</table>
+</form>

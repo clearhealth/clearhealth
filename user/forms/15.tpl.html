@@ -1,0 +1,113 @@
+<table>
+<tr>
+<td valign="top">
+<fieldset>
+<legend>Background Information</legend>
+{if $enc}
+<table>
+	<tr>
+	  <td>Date of Encounter:</td>
+	  <td>{$enc->get("date_of_treatment")}</td>
+	</tr>
+	<tr>
+	  <td>Encounter Location:</td>
+	  <td>{$enc->get("facility_name")}</td>
+	</tr>
+	<tr>
+	  <td>Reason:</td>
+	  <td>{$enc->get_encounter_reason_print()}</td>
+	</tr>
+	<tr>
+	  <td>Treating Provider:</td>
+	  <td>{$enc->get_treating_person_print()}</td>
+	</tr>
+	<tr>
+	  <td>Procedures:</td>
+	  <td>{$cpts}</td>
+	</tr>
+	<tr>
+	  <td>Diagnoses:</td>
+	  <td>{$icds}</td>
+	</tr>
+</table>
+{else}
+This referral is not associated with an encounter.
+{/if}
+</fieldset>
+</td>
+<td valign="top">
+<script>
+{literal}
+function formSubmit(formId,contentId) {
+     HTML_AJAX.formSubmit(formId, contentId);
+}
+</script>
+{/literal}
+<fieldset>
+<legend>Referral Visit Information</legend>
+<table>
+	<tr>
+	  <td>Referral Program:</td><td>{$parProg->get('name')}</td>
+	</tr>
+	<tr>
+	  <td>Specialty:</td><td>{$request->get('refSpecialty')}</td>
+	</tr>
+</table>
+<fieldset>
+	<legend>Appointment Details</legend>
+	{if $appointment}
+	{if $appointment->isPopulated() && $request->value('refStatus') == 'Requested'}
+	<div>
+		<strong>Note</strong>: This appointment has been cancelled and must be 
+		rescheduled.
+	</div>
+	
+	<hr style="border:0; border-top: 1px dashed #000;" />
+	{/if}
+	{if $appointment->isPopulated()}
+	<table>
+	<tr>
+	<td>Practice:</td><td> {$appointment->get('practice_name')}</td>
+	</tr>
+	<tr>
+	<td>Specialist:</td><td> {$appointment->get('provider_name')}</td>
+	</tr>
+	<tr>
+	<td>Time:</td><td> {$appointment->get('time')} {$appointment->get('date')}</td>
+	</tr>
+	<tr>
+	<td>Location:</td>
+	</tr>
+	<tr>
+	<td colspan="2">
+		{$appointment->get('location_data')|nl2br}
+	</td>
+	</tr>
+	</table>
+	{else}
+	<p>N/A</p>
+	{/if}
+	{else}
+	No appointment associated with this request
+	{/if}
+</fieldset>
+
+</fieldset>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<fieldset>
+<legend>Coding Data</legend>
+{$codingBlock}
+</fieldset>
+</td>
+</tr>
+<tr>
+<td>
+<fieldset><legend>Lab Orders (<a href="{link action="edit" controller="Labs" defaultArg="0"}externalId={$request->get('refRequest_id')}">Add</a>)</legend>
+                {clni_grid datasource="Order_DS" arg1=$patientId arg2=$request->get('refRequest_id')}
+                </fieldset>
+</td>
+</tr>
+</table>

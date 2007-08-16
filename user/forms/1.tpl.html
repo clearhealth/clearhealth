@@ -1,0 +1,45 @@
+{php}
+$names = array();
+$names[] = "General";
+$names[] = "HEENT";
+$names[] = "Oral";
+$names[] = "Neck_Thyroid";
+$names[] = "Heart";
+$names[] = "Chest_Lungs";
+$names[] = "Breast_Exam";
+$names[] = "Abdomen";
+$names[] = "GU";
+$names[] = "Back";
+$names[] = "MS_Extremeties";
+$names[] = "LEAP";
+$names[] = "Neuro";
+$names[] = "Skin";
+
+$this->assign("names_array",$names);
+
+{/php}
+<div id="postResults"></div>
+<form action='{$base_uri}index.php/WidgetForm/Fillout/{$formId}' id="ajaxForm{$formId}" method="post">
+{if $open}
+<input type="button" onClick="formSubmit({$formId});" value="Update" />
+{/if}
+<input type="hidden" name="form_id" value="{$formId}" />
+<input type="hidden" name="process" value="true" />
+<input type="hidden" name="filloutType" value="encounter" />
+			<div style="clear: both;"></div>
+                        <table class="grid">
+			<thead>
+				<tr><th></th><th>Condition</th><th>Comments</th></tr>
+			</thead>
+
+			<tbody>
+				{foreach from=$names_array item=name}
+	                        <tr class="alt"><td>{$name}</td>
+					<td>{input type="radio" name="phys_exam_`$name`" value="normal" options="Normal" display="horizontal"}<br>
+					{input type="radio" name="phys_exam_`$name`" value="abnormal" options="Abnormal" display="horizontal"}<br>
+					{input type="radio" name="phys_exam_`$name`" value="not_assessed" options="Not Assessed" display="horizontal"}</td>
+			<td>{input type="text" cols="30" rows="5" name="phys_exam_`$name`_note"}</td></tr>
+				{/foreach}
+			</tbody>
+                        </table>
+</form>

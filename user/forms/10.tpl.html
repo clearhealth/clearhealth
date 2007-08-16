@@ -1,0 +1,27 @@
+{clni_form}
+<table>
+<tr>
+<td>
+Allergy:<br>
+{input size="40" id="allergyText" name="allergy_name" type="string"}
+<select onChange="document.getElementById('allergyText').value = this.options[this.selectedIndex].label;"><option>--Select allergy--</option> {enum_options name="allergies"} </select>
+</td>
+</tr>
+<tr>
+<td>
+Date First Noted:<br>
+{input name="allergy_date" type="date"}
+</td>
+</tr>
+<tr>
+<td>
+Comments:<br>
+{input size="50" name="comment" type="string"}
+</td>
+</tr>
+<tr>
+<td>
+{submit}
+</td>
+</tr>
+</table>
