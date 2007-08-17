@@ -394,6 +394,7 @@ class Practice extends ORDataObject{
 	function get_billingAddress() {
 		$order = array("Billing","Main");
 		$addrs = $this->get('addresses');
+		if (count($addrs) == 0) {$addrs = array();}
 
 		$id = false;
 		foreach($order as $type) {
