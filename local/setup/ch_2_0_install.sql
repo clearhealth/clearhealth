@@ -6450,6 +6450,12 @@ CREATE TABLE `summary_columns` (
 
 /*!40000 ALTER TABLE `summary_columns` DISABLE KEYS */;
 LOCK TABLES `summary_columns` WRITE;
+
+INSERT INTO `summary_columns` (`widget_form_id`, `type`, `name`, `summary_column_id`, `pretty_name`, `table_name`) VALUES (1000087, NULL, 'allergy_name', 1, 'allergy', 'storage_string'),
+(1000094, NULL, 'chronic_care', 1, 'Condition', 'storage_string'),
+(1000101, NULL, 'medication_name', 1, 'Med', 'storage_string'),
+(1000101, NULL, 'medication_dose', 2, 'Dose', 'storage_string'),
+(1000118, NULL, 'risk', 1, 'Risk', 'storage_string');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `summary_columns` ENABLE KEYS */;
 
@@ -6718,6 +6724,20 @@ CREATE TABLE `widget_form` (
 
 /*!40000 ALTER TABLE `widget_form` DISABLE KEYS */;
 LOCK TABLES `widget_form` WRITE;
+INSERT INTO `widget_form` (`widget_form_id`, `name`, `form_id`, `type`, `controller_name`, `show_on_medical_history`) VALUES (1000003, 'Self Management Goals', 14, 4, 'SelfMgmtGoals', 1),
+(1000017, 'Physical Exams', 1, 5, '', 1),
+(1000024, 'Subjective', 2, 5, '', 1),
+(1000031, 'Objective', 3, 5, '', 1),
+(1000038, 'Assessment', 4, 5, '', 1),
+(1000045, 'Plan', 5, 5, '', 1),
+(1000052, 'Immunizations', 6, 6, '', 1),
+(1000066, 'Social History', 7, 6, '', 1),
+(1000073, 'Family History of Disease', 8, 6, '', 1),
+(1000080, 'Previous Illness', 9, 6, '', 1),
+(1000087, 'Allergies', 10, 2, '', 1),
+(1000094, 'Chronic Care', 12, 3, 'QuickList', 1),
+(1000101, 'Medications', 11, 2, '', 1),
+(1000118, 'Risks', 13, 3, '', 1);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `widget_form` ENABLE KEYS */;
 
