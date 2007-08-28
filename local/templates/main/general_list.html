@@ -166,7 +166,12 @@ function switchTimer(element) {
         {$messages->render()}
         {elseif is_array($messages)}
                 {foreach from=$messages item=message}
-                        {$message}<br>
+			{if is_array($message)}
+                        {$message.title} {$message.message}
+			{else}
+			{$message}
+			{/if}
+			<br>
                 {/foreach}
         {elseif strlen($messages) >0}
         {$messages}
