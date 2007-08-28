@@ -8,6 +8,7 @@ $loader->requireOnce('includes/transaction/TransactionManager.class.php');
 class C_Test extends Controller {
 
 	function actionScroll() {
+		exit;
 		$ajax =& Celini::ajaxInstance();
 		$ajax->jsLibraries[] = array('scriptaculous');
 		$ajax->jsLibraries[] = array('scrollbar','clniGrid');
@@ -22,6 +23,7 @@ class C_Test extends Controller {
 	}
 
 	function actionGrid() {
+		exit;
 		$ds =& new FeeSchedule_DS();
 		$grid =& new clniActiveGrid('testGrid',$ds);
 		$grid->gridWidth = "600px";
@@ -32,7 +34,7 @@ class C_Test extends Controller {
 	}
 
 	function actionRaw() {
-
+		exit;
 		$person =& Celini::newOrdo('Patient',1110);
 		var_dump($person->get('gender'));
 		$person->set('gender',new ClniValueRaw('gender + 1'));
@@ -41,6 +43,7 @@ class C_Test extends Controller {
 	}
 
 	function actionTrans() {
+		exit;
 		$tm = new TransactionManager();
 
 		$trans = $tm->createTransaction('Claim');
@@ -56,10 +59,12 @@ class C_Test extends Controller {
 	}
 
 	function actionRadio() {
+		exit;
 		return $this->view->render('radio.html');
 	}
 	
 	function actionRelationship(){
+		exit;
 		$practice=&Celini::newORDO('Practice',600001);
 		$room=& Celini::newORDO('Room',600010);
 		$practice->setParent($room);
@@ -73,6 +78,7 @@ class C_Test extends Controller {
 	}
 	
 	function actionTest(){
+		exit;
 		$prov=&Celini::newORDO('Provider',600011);
 		var_dump($prov->get('id'));
 		var_dump($prov->isPopulated());
