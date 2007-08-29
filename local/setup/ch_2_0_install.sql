@@ -378,7 +378,6 @@ CREATE TABLE `building_address` (
 -- Dumping data for table `building_address`
 --
 
-INSERT INTO `buildings` (`id`, `description`, `name`, `practice_id`, `identifier`, `facility_code_id`, `phone_number`) VALUES (900079, '', 'Primary Care', 900001, '', 0, '');
 
 /*!40000 ALTER TABLE `building_address` DISABLE KEYS */;
 LOCK TABLES `building_address` WRITE;
@@ -450,6 +449,7 @@ CREATE TABLE `buildings` (
 -- Dumping data for table `buildings`
 --
 
+INSERT INTO `buildings` (`id`, `description`, `name`, `practice_id`, `identifier`, `facility_code_id`, `phone_number`) VALUES (900079, '', 'Primary Care', 900001, '', 0, '');
 
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
 LOCK TABLES `buildings` WRITE;
