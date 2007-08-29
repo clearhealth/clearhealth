@@ -1,5 +1,7 @@
 The installation of clearhealth is now accomplished through a graphical installer.
 
+!!!DO NOT USE THE INSTALLER IF YOU HAVE AN EXISTING INSTALLATION, IT WILL ERASE/OVERWRITE YOUR DATA.!!!
+
 Untar the clearhealth tgz file into your web directory and rename it to "clearhealth". Then point your browser to the clearhealth directory. The installer will check your dependancies, what directory permissions need to be changed, create the configuration files and install the database.
 
 You will want to adjust permissions on the directories and create a blank config file with commands something like the following:
