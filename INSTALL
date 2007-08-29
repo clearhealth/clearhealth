@@ -2,14 +2,14 @@ The installation of clearhealth is now accomplished through a graphical installe
 
 Untar the clearhealth tgz file into your web directory and rename it to "clearhealth". Then point your browser to the clearhealth directory. The installer will check your dependancies, what directory permissions need to be changed, create the configuration files and install the database.
 
+You will want to adjust permissions on the directories and create a blank config file with commands something like the following:
+
+touch clearhealth/local/config.php
+chown apache:apache -R clearhealth/local/config.php clearhealth/tmp clearhealth/tmp/cache clearhealth/installer/tmp clearhealth/user
+
 Here are some links for more help!
 
 ClearHealth Project Homepage 	http://www.clear-health.org
-FreeB Homepage 			http://www.freeb.org
-
-Forums 				http://op-en.org/forum/
-Bug Reporting 			http://op-en.org/mantis/login_page.php
-Documentation 			http://op-en.org/wiki/index.php/Main_Page
-
+Forums 				http://www.clear-health.com/forum
 Commercial Support		http://www.clear-health.com
 
