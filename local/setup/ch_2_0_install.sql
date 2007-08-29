@@ -378,6 +378,7 @@ CREATE TABLE `building_address` (
 -- Dumping data for table `building_address`
 --
 
+INSERT INTO `buildings` (`id`, `description`, `name`, `practice_id`, `identifier`, `facility_code_id`, `phone_number`) VALUES (900079, '', 'Primary Care', 900001, '', 0, '');
 
 /*!40000 ALTER TABLE `building_address` DISABLE KEYS */;
 LOCK TABLES `building_address` WRITE;
@@ -5323,6 +5324,9 @@ CREATE TABLE `practice_setting` (
 -- Dumping data for table `practice_setting`
 --
 
+INSERT INTO `practice_setting` (`practice_setting_id`, `practice_id`, `name`, `value`, `serialized`) VALUES (900071, 900001, 'CalendarIncrement', '900', 0);
+INSERT INTO `practice_setting` (`practice_setting_id`, `practice_id`, `name`, `value`, `serialized`) VALUES (900075, 900001, 'FacilityType', '0', 0);
+
 
 /*!40000 ALTER TABLE `practice_setting` DISABLE KEYS */;
 LOCK TABLES `practice_setting` WRITE;
@@ -5346,6 +5350,7 @@ CREATE TABLE `practices` (
 -- Dumping data for table `practices`
 --
 
+INSERT INTO `practices` (`id`, `name`, `website`, `identifier`) VALUES (900001, 'Practice Name Here', '', '');
 
 /*!40000 ALTER TABLE `practices` DISABLE KEYS */;
 LOCK TABLES `practices` WRITE;
@@ -6030,7 +6035,7 @@ CREATE TABLE `rooms` (
 --
 -- Dumping data for table `rooms`
 --
-
+INSERT INTO `rooms` (`id`, `description`, `number_seats`, `building_id`, `name`, `color`) VALUES (900101, '', 100, 900079, 'TX', 'FFF8DC');
 
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
 LOCK TABLES `rooms` WRITE;
