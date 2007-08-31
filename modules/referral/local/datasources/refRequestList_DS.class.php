@@ -30,16 +30,20 @@ class refRequestList_DS extends Datasource_sql
 			array(
 				'cols' => 'refRequest_id,
 				           date_format(`date`, "%M %d, %Y") AS `formatted_date`,
+					   pprog.name as "program",
 					   refStatus,
 				           reason,
 				           refSpecialty,
 					   r.referral_service   
 					',
-				'from' => 'refRequest AS r',
+				'from' => 'refRequest AS r
+					   inner join participation_program pprog on pprog.participation_program_id = r.refProgram_id			
+					',
 				'where' => $where
 			),
 			array(
 				'formatted_date' => 'Referral Request',
+				'program' => 'Program',
 				'refStatus' => 'Status',
 				'reason' => 'Reason', 
 				'refSpecialty' => 'Specialty',
