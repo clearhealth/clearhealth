@@ -142,10 +142,14 @@ class C_Referral extends Controller
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
 		//if patient is eligible set request to request if current status is request/elig pending
-		if ($options->get('eligibility') == 1 && $request->get('refStatus') == 2) {
+		if ($options->get('eligibility') == 1 && $request->get('refStatus') == 2 && !$request->get('adhoc')) {
                        $request->set('refStatus', 1); //1 is requested
                        $request->persist();
                 }
+		elseif ($request->get('adhoc') == 1) {
+                       $request->set('refStatus',1); //1 is requested
+                       $request->persist();
+		}
                 $this->view->assign('options', $options);
                 $this->view->assign_by_ref('refProgram', $program);
                 $this->view->assign_by_ref('parProg', $parProg);
@@ -544,6 +548,35 @@ class C_Referral extends Controller
 		$this->_state =false;
 		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
 	}
+
+	function processChangeNoACLStatus_edit() {
+		$request =& Celini::newORDO('refRequest', $this->GET->getTyped('refRequest_id', 'int'));
+		$this->_request =& $request;
+		switch ($this->GET->get('refStatus')) {
+			//can't change elig pending, request, app pending
+			case 1:
+			case 2:
+			case 3:
+			///confirmed, kept, no-show initiator only
+			case 4:
+			//kept
+			case 5:
+			//no-show
+			case 6:
+			//returned
+			case 7:
+			  $request->set('refStatus', $this->GET->get('refStatus'));
+			  break;
+			
+		}
+		$request->persist();
+		//echo $request->get('refRequest_id'); 
+		$this->_request = $request;
+		
+		$this->_state = false;
+		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
+}
+
 	function processVisit() {
 		$requestId = (int)$_GET['refRequest_id'];
 		$request = ORDataObject::factory("refRequest",$requestId);
@@ -571,7 +604,7 @@ class C_Referral extends Controller
 			$request = ORDataObject::factory("refRequest",$requestId);
 		}
 		//set to appointment kept status
-		$request->set('refStatus',5);
+		//$request->set('refStatus',5);
 		$request->persist();
 		if (empty($formId)) {
 			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
@@ -677,7 +710,7 @@ class C_Referral extends Controller
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
 		//eligibility == 1 is eligible
-		if ($options->get('eligibility') == 1) {
+		if ($options->get('eligibility') == 1 ||$request->get('adhoc')) {
                 	$request->set('refStatus', 1); //1 is requested
                 	$request->persist();
 		}
