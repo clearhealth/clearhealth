@@ -146,7 +146,11 @@ class C_Referral extends Controller
                        $request->set('refStatus', 1); //1 is requested
                        $request->persist();
                 }
-		elseif ($request->get('adhoc') == 1) {
+		elseif (($options->get('eligibility') == 2 || $options->get('eligibility') == 3) && $request->get('refStatus') == 1 && !$parProg->get('adhoc')) {
+                       $request->set('refStatus', 2); //2 is elig pending
+                       $request->persist();
+		}
+		elseif ($parProg->get('adhoc') == 1) {
                        $request->set('refStatus',1); //1 is requested
                        $request->persist();
 		}
@@ -710,7 +714,7 @@ class C_Referral extends Controller
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
 		//eligibility == 1 is eligible
-		if ($options->get('eligibility') == 1 ||$request->get('adhoc')) {
+		if ($options->get('eligibility') == 1 || $request->get('adhoc')) {
                 	$request->set('refStatus', 1); //1 is requested
                 	$request->persist();
 		}
