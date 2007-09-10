@@ -22,6 +22,7 @@ $versions->collectData('db_server', 'Database Server', 'text', 'localhost');
 $versions->collectData('db_database', 'Database Name', 'text', 'clearhealth');
 $versions->collectData('db_port', 'Database Server Port', 'text', '3306');
 $versions->collectData('mysql_path', 'Path to Mysql (no trailing slash)', 'text', '/usr/bin');
+$versions->collectData('admin_password', 'Set new password for the admin account', 'text', 'admin');
 
 $version_1rc3 = new Version('2.0-PR1');
 $version_1rc3->addTest('PHPVersionOver', array('5.1.0'));
@@ -74,6 +75,17 @@ $version_1rc3->addAction('SQLOptions', array(
 	'files' => array(
 		$base_app_path.'/local/setup/code_packs' 
 	)));
+
+$version_1rc3->addAction('SetAdminPassword', array(
+	'username_field' => 'db_user',
+	'password_field' => 'db_password',
+	'server_field' => 'db_server',
+	'port_field' => 'db_port',
+	'admin_password' => 'admin_password',
+	'database_name' => 'db_database',
+	));
+
+
 
 $versions->add($version_1rc3);
 ?>
