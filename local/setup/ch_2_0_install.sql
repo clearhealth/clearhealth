@@ -3072,6 +3072,7 @@ CREATE TABLE `gacl_acl` (
 /*!40000 ALTER TABLE `gacl_acl` DISABLE KEYS */;
 LOCK TABLES `gacl_acl` WRITE;
 INSERT INTO `gacl_acl` VALUES (2,'system',1,1,'','',1187152896);
+INSERT INTO `gacl_acl` (`id`, `section_value`, `allow`, `enabled`, `return_value`, `note`, `updated_date`) VALUES (3, 'system', 1, 1, '', '', 1189553290);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_acl` ENABLE KEYS */;
 
@@ -3119,7 +3120,7 @@ CREATE TABLE `gacl_acl_seq` (
 
 /*!40000 ALTER TABLE `gacl_acl_seq` DISABLE KEYS */;
 LOCK TABLES `gacl_acl_seq` WRITE;
-INSERT INTO `gacl_acl_seq` VALUES (2);
+INSERT INTO `gacl_acl_seq` VALUES (3);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_acl_seq` ENABLE KEYS */;
 
@@ -3170,7 +3171,28 @@ CREATE TABLE `gacl_aco_map` (
 
 /*!40000 ALTER TABLE `gacl_aco_map` DISABLE KEYS */;
 LOCK TABLES `gacl_aco_map` WRITE;
-INSERT INTO `gacl_aco_map` VALUES (2,'actions','add'),(2,'actions','delete'),(2,'actions','delete_owner'),(2,'actions','double_book'),(2,'actions','edit'),(2,'actions','edit_owner'),(2,'actions','list'),(2,'actions','override'),(2,'actions','uploadFile'),(2,'actions','usage'),(2,'actions','view');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'add');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'list');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'override');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'view');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'add');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'delete');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'delete_owner');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'double_book');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'edit');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'edit_owner');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'list');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'override');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'uploadFile');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'usage');
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'view');
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_aco_map` ENABLE KEYS */;
 
@@ -3339,7 +3361,13 @@ CREATE TABLE `gacl_aro_groups_map` (
 
 /*!40000 ALTER TABLE `gacl_aro_groups_map` DISABLE KEYS */;
 LOCK TABLES `gacl_aro_groups_map` WRITE;
-INSERT INTO `gacl_aro_groups_map` VALUES (2,3);
+
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (2, 3);
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 6);
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 7);
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 8);
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 9);
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_aro_groups_map` ENABLE KEYS */;
 
@@ -3459,6 +3487,105 @@ CREATE TABLE `gacl_axo` (
 
 /*!40000 ALTER TABLE `gacl_axo` DISABLE KEYS */;
 LOCK TABLES `gacl_axo` WRITE;
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (2, 'resources', 'ie7', 10, 'Section - Ie7', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (3, 'resources', 'images', 10, 'Section - Images', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (4, 'resources', 'enumeration', 10, 'Section - Enumeration', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (5, 'resources', 'ajax', 10, 'Section - Ajax', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (6, 'resources', 'main', 10, 'Section - Main', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (7, 'resources', 'crud', 10, 'Section - CRUD', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (8, 'resources', 'pdf', 10, 'Section - PDF', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (9, 'resources', 'base_access', 10, 'Section - Base_Access', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (10, 'resources', 'default', 10, 'Section - Default', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (11, 'resources', 'print', 10, 'Section - Print', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (12, 'resources', 'css', 10, 'Section - Css', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (13, 'resources', 'minimal', 10, 'Section - Minimal', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (14, 'resources', 'cronable', 10, 'Section - Cronable', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (15, 'resources', 'user', 10, 'Section - User', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (16, 'resources', 'access', 10, 'Section - Access', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (17, 'resources', 'insurance', 10, 'Section - Insurance', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (18, 'resources', 'form', 10, 'Section - Form', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (19, 'resources', 'account', 10, 'Section - Account', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (20, 'resources', 'patientpaymentplan', 10, 'Section - PatientPaymentPlan', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (21, 'resources', 'payergroup', 10, 'Section - PayerGroup', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (22, 'resources', 'room', 10, 'Section - Room', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (23, 'resources', 'appointmenttemplate', 10, 'Section - AppointmentTemplate', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (24, 'resources', 'building', 10, 'Section - Building', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (25, 'resources', 'self_mgmt_goals', 10, 'Section - Self_Mgmt_Goals', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (26, 'resources', 'appointment', 10, 'Section - Appointment', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (27, 'resources', 'billing', 10, 'Section - Billing', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (28, 'resources', 'quicklist', 10, 'Section - QuickList', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (29, 'resources', 'medicalhistory', 10, 'Section - MedicalHistory', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (30, 'resources', 'thumbnail', 10, 'Section - Thumbnail', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (31, 'resources', 'selfmgmtgoals', 10, 'Section - SelfMgmtGoals', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (32, 'resources', 'participationprogram', 10, 'Section - ParticipationProgram', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (33, 'resources', 'coding', 10, 'Section - Coding', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (34, 'resources', 'docs', 10, 'Section - Docs', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (35, 'resources', 'patientmerge', 10, 'Section - PatientMerge', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (36, 'resources', 'masteraccounthistory', 10, 'Section - MasterAccountHistory', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (37, 'resources', 'eob', 10, 'Section - Eob', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (38, 'resources', 'report', 10, 'Section - Report', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (39, 'resources', 'preferences', 10, 'Section - Preferences', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (40, 'resources', 'myaccount', 10, 'Section - MyAccount', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (41, 'resources', 'patient', 10, 'Section - Patient', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (42, 'resources', 'codingtemplate', 10, 'Section - CodingTemplate', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (43, 'resources', 'patientstatistics', 10, 'Section - PatientStatistics', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (44, 'resources', 'appointmentruleset', 10, 'Section - AppointmentRuleset', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (45, 'resources', 'occurencebreakdown', 10, 'Section - OccurenceBreakdown', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (46, 'resources', 'clinicalsummary', 10, 'Section - ClinicalSummary', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (47, 'resources', 'formrule', 10, 'Section - FormRule', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (48, 'resources', 'superbill', 10, 'Section - Superbill', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (49, 'resources', 'duplicatefinder', 10, 'Section - DuplicateFinder', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (50, 'resources', 'patientfinder', 10, 'Section - PatientFinder', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (51, 'resources', 'admin', 10, 'Section - Admin', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (52, 'resources', 'feeschedulediscount', 10, 'Section - FeeScheduleDiscount', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (53, 'resources', 'patientdashboard', 10, 'Section - PatientDashboard', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (54, 'resources', 'secondarypractice', 10, 'Section - SecondaryPractice', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (55, 'resources', 'claimhistory', 10, 'Section - ClaimHistory', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (56, 'resources', 'personperson', 10, 'Section - PersonPerson', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (57, 'resources', 'codecategory', 10, 'Section - CodeCategory', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (58, 'resources', 'splash', 10, 'Section - Splash', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (59, 'resources', 'location', 10, 'Section - Location', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (60, 'resources', 'summaryreport', 10, 'Section - SummaryReport', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (61, 'resources', 'widgetform', 10, 'Section - WidgetForm', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (62, 'resources', 'visitqueue', 10, 'Section - VisitQueue', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (63, 'resources', 'medicaleligibility', 10, 'Section - MediCalEligibility', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (64, 'resources', 'document', 10, 'Section - Document', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (65, 'resources', 'criticalview', 10, 'Section - CriticalView', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (66, 'resources', 'schedule', 10, 'Section - Schedule', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (67, 'resources', 'practice', 10, 'Section - Practice', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (68, 'resources', 'feeschedule', 10, 'Section - FeeSchedule', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (69, 'resources', 'documentcategory', 10, 'Section - DocumentCategory', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (70, 'resources', 'tabstate', 10, 'Section - TabState', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (71, 'resources', 'auditlog', 10, 'Section - AuditLog', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (72, 'resources', 'encounter', 10, 'Section - Encounter', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (73, 'resources', 'test', 10, 'Section - Test', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (74, 'resources', 'claim', 10, 'Section - Claim', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (75, 'resources', 'queue', 10, 'Section - Queue', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (76, 'resources', 'freebgateway', 10, 'Section - FreeBGateway', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (77, 'resources', 'labimporter', 10, 'Section - LabImporter', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (78, 'resources', 'labs', 10, 'Section - Labs', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (79, 'resources', 'x12import', 10, 'Section - X12Import', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (80, 'resources', 'x12apply', 10, 'Section - X12Apply', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (81, 'resources', 'calendardisplay', 10, 'Section - CalendarDisplay', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (82, 'resources', 'calendarevent', 10, 'Section - CalendarEvent', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (83, 'resources', 'calendaroccurence', 10, 'Section - CalendarOccurence', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (84, 'resources', 'calendarajaxevent', 10, 'Section - CalendarAJAXEvent', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (85, 'resources', 'chllabtests', 10, 'Section - Chllabtests', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (86, 'resources', 'altnotice', 10, 'Section - Altnotice', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (87, 'resources', 'refpractice', 10, 'Section - Refpractice', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (88, 'resources', 'refappointment', 10, 'Section - Refappointment', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (89, 'resources', 'altnoticelist', 10, 'Section - Altnoticelist', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (90, 'resources', 'referralattachment', 10, 'Section - ReferralAttachment', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (91, 'resources', 'referral', 10, 'Section - Referral', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (92, 'resources', 'refvisit', 10, 'Section - Refvisit', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (93, 'resources', 'refprogram', 10, 'Section - Refprogram', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (94, 'resources', 'refpatienteligibility', 10, 'Section - Refpatienteligibility', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (95, 'resources', 'refpatient', 10, 'Section - Refpatient', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (96, 'resources', 'refreporting', 10, 'Section - Refreporting', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (97, 'resources', 'docsmartstorable', 10, 'Section - DocSmartStorable', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (98, 'resources', 'docsmartfolder', 10, 'Section - DocSmartFolder', 0);
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (99, 'resources', 'docsmart', 10, 'Section - DocSmart', 0);
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_axo` ENABLE KEYS */;
 
@@ -3551,6 +3678,94 @@ CREATE TABLE `gacl_axo_map` (
 
 /*!40000 ALTER TABLE `gacl_axo_map` DISABLE KEYS */;
 LOCK TABLES `gacl_axo_map` WRITE;
+
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'access');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'account');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'ajax');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'appointment');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'auditlog');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'base_access');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendarajaxevent');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendardisplay');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendarevent');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendaroccurence');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'chllabtests');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'claim');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'claimhistory');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'clinicalsummary');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'codecategory');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'coding');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'codingtemplate');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'criticalview');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'crud');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'css');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'default');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docs');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmart');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmartfolder');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmartstorable');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'document');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'documentcategory');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'duplicatefinder');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'encounter');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'eob');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'feeschedule');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'feeschedulediscount');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'form');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'formrule');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'freebgateway');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'ie7');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'images');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'insurance');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'labimporter');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'labs');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'location');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'main');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'masteraccounthistory');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'medicaleligibility');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'medicalhistory');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'minimal');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'myaccount');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'occurencebreakdown');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'participationprogram');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patient');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientdashboard');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientfinder');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientmerge');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientpaymentplan');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientstatistics');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'payergroup');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'pdf');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'personperson');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'practice');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'preferences');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'print');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'queue');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'quicklist');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refappointment');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'referral');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'referralattachment');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpatient');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpatienteligibility');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpractice');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refprogram');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refreporting');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refvisit');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'report');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'room');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'schedule');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'secondarypractice');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'selfmgmtgoals');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'self_mgmt_goals');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'splash');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'summaryreport');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'superbill');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'tabstate');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'test');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'thumbnail');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'visitqueue');
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'widgetform');
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_axo_map` ENABLE KEYS */;
 
@@ -3577,6 +3792,7 @@ CREATE TABLE `gacl_axo_sections` (
 
 /*!40000 ALTER TABLE `gacl_axo_sections` DISABLE KEYS */;
 LOCK TABLES `gacl_axo_sections` WRITE;
+INSERT INTO `gacl_axo_sections` (`id`, `value`, `order_value`, `name`, `hidden`) VALUES (2, 'resources', 10, 'Resources', 0);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_axo_sections` ENABLE KEYS */;
 
@@ -3597,7 +3813,7 @@ CREATE TABLE `gacl_axo_sections_seq` (
 
 /*!40000 ALTER TABLE `gacl_axo_sections_seq` DISABLE KEYS */;
 LOCK TABLES `gacl_axo_sections_seq` WRITE;
-INSERT INTO `gacl_axo_sections_seq` VALUES (1);
+INSERT INTO `gacl_axo_sections_seq` (`id`) VALUES (2);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_axo_sections_seq` ENABLE KEYS */;
 
@@ -3618,7 +3834,7 @@ CREATE TABLE `gacl_axo_seq` (
 
 /*!40000 ALTER TABLE `gacl_axo_seq` DISABLE KEYS */;
 LOCK TABLES `gacl_axo_seq` WRITE;
-INSERT INTO `gacl_axo_seq` VALUES (1);
+INSERT INTO `gacl_axo_seq` (`id`) VALUES (99);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `gacl_axo_seq` ENABLE KEYS */;
 
