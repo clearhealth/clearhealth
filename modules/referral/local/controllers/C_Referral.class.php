@@ -142,7 +142,7 @@ class C_Referral extends Controller
                 $GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
                 $options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
 		//if patient is eligible set request to request if current status is request/elig pending
-		if ($options->get('eligibility') == 1 && $request->get('refStatus') == 2 && !$request->get('adhoc')) {
+		if ($options->get('eligibility') == 1 && $request->get('refStatus') == 2 && !$parProg->get('adhoc')) {
                        $request->set('refStatus', 1); //1 is requested
                        $request->persist();
                 }
@@ -150,11 +150,8 @@ class C_Referral extends Controller
                        $request->set('refStatus', 2); //2 is elig pending
                        $request->persist();
 		}
-		elseif ($parProg->get('adhoc') == 1) {
-                       $request->set('refStatus',1); //1 is requested
-                       $request->persist();
-		}
-                $this->view->assign('options', $options);
+                
+		$this->view->assign('options', $options);
                 $this->view->assign_by_ref('refProgram', $program);
                 $this->view->assign_by_ref('parProg', $parProg);
                 $this->view->assign_by_ref('personParProgram', $ppp);
@@ -410,6 +407,11 @@ class C_Referral extends Controller
 			$ppp->set('person_id',$request->get('patient_id'));
 			$ppp->set('participation_program_id',$program->get('refprogram_id'));
 			$ppp->persist();
+                	$parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
+                	$optionsClassName = 'ParticipationProgram'. ucwords($parProg->get('class'));
+                	$GLOBALS['loader']->requireOnce('includes/ParticipationPrograms/'.$optionsClassName.".class.php");
+                	$options = ORDataObject::factory($optionsClassName, $ppp->get('person_program_id'));
+			$options->persist();
 		}
 		$this->assign("ppp",$ppp);
                 $parProg = ORDataObject::factory('ParticipationProgram',$ppp->get('participation_program_id')); 
@@ -458,7 +460,7 @@ class C_Referral extends Controller
 		$this->_request =& $request;
 		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
 		$this->sec_obj->acl_qcheck("edit",$this->_me,"",$pprog->get('participation_program_id'),$pprog,false);
-		$request->set('refStatus', $this->GET->get('refStatus'));
+		$request->set('refStatus', 1); //Requested
 		$request->persist();
 		$this->_state =false;
 		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
@@ -503,12 +505,13 @@ class C_Referral extends Controller
 				$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
                 		if ($initiator->get('primary_practice_id')>0) {
                         		if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
-					$prac = ORDataObject::factory('Practice',$initiator->get('primary_practice_id')); echo $prac;
-                                		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it. ' . $prac->get('name'));
-				$this->_state = false;
-                        	return $this->fetch("main/general_message.html");
-                     		}
+					$prac = ORDataObject::factory('Practice',$initiator->get('primary_practice_id')); 
+                               		$this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it. ' . $prac->get('name'));
+					$this->_state = false;
+                        		return $this->fetch("main/general_message.html");
+                     			}	
                 		}
+			  	$request->set('refStatus', $this->GET->get('refStatus'));
 			  }
 			//no-show
 			case 6:
@@ -576,7 +579,6 @@ class C_Referral extends Controller
 		$request->persist();
 		//echo $request->get('refRequest_id'); 
 		$this->_request = $request;
-		
 		$this->_state = false;
 		return $this->actionView($this->GET->getTyped('refRequest_id', 'int'));
 }
@@ -608,11 +610,14 @@ class C_Referral extends Controller
 			$request = ORDataObject::factory("refRequest",$requestId);
 		}
 		//set to appointment kept status
-		//$request->set('refStatus',5);
 		$request->persist();
 		if (empty($formId)) {
 			$parProg = ORDataObject::factory("ParticipationProgram",$request->get('refprogram_id'));
 			$formId = $parProg->get('form_id');
+		}
+		if ($parProg->get('adhoc') == 0) {
+			$request->set('refStatus',5);
+			$request->persist();
 		}
 		
 		return $this->actionFillout($formId,$requestId);
@@ -622,8 +627,9 @@ class C_Referral extends Controller
 		$requestId = (int)$requestId;
 		$request = ORDataObject::factory('refRequest',$requestId);
 		$initiator = ORDataObject::factory('Person',$request->get('initiator_id'));
-                	if ($initiator->get('primary_practice_id')>0) {
-                        	if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice']) {
+		$pprog = ORDataObject::factory('ParticipationProgram',$request->get('refprogram_id'));
+                	if ($initiator->get('primary_practice_id') > 0 ) {
+                        	if ($initiator->get('primary_practice_id') != $_SESSION['defaultpractice'] && !Auth::canI('edit',$pprog->get('participation_program_id'))) {
 					$prac = ORDataObject::factory('Practice',$initiator->get('primary_practice_id'));
                                                 $this->messages->addMessage('Your current practice selection must match the practice of this referral to edit it. ' . $prac->get('name'));
                         	return $this->fetch("main/general_message.html");
