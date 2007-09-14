@@ -50,7 +50,7 @@ class refRequestListByStatus_DS extends Datasource_sql
 		//TODO:this is where referral manager/multiple practice permission limit to query goes
 		//$whereSql .= ' AND c.clinic_id_string = ' . $db->quote($person->get('clinic_id_string'));
 		
-		$where .= " up.primary_practice_id IN (" . (int)$_SESSION['defaultpractice']  . ") OR up.primary_practice_id IS NULL ";
+		$where .= " pprog.adhoc = 0 and up.primary_practice_id IN (" . (int)$_SESSION['defaultpractice']  . ") OR up.primary_practice_id IS NULL ";
 
 		if (count($manprogs) > 0) {
 			$where .= " OR pprog.participation_program_id IN (" . implode ($manprogs) . ") ";
