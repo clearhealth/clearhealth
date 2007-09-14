@@ -42,7 +42,7 @@ class Security extends gacl_api {
 			$resource_section = "resources";
 		}
 		$return = Auth::canI($action, $resource);
-		//echo "actions:$action  users:" . $me->get_username() . "  $resource_section:$resource<br>";
+		//echo "actions:$action  users:" . $me->get_username() . "  $resource_section:$resource" . Auth::canI($action, $resource) .  "<br>";
 		if ($me->is_group_member("superadmin")) {
 		 	$return  = true;
 		}
@@ -68,14 +68,13 @@ class Security extends gacl_api {
 		}
 		return false; 
 	}
-
-	function acl_check($actions,$what,$users,$who) {
+	function acl_check($aco_section_value, $aco_value, $aro_section_value, $aro_value, $axo_section_value=NULL, $axo_value=NULL, $root_aro_group=NULL, $root_axo_group=NULL) {
 		$me =& $_SESSION['frame']['me'];	
 		if ($me->is_group_member("superadmin")) {
                         $return  = true;
                 }
 
-		return parent::acl_check($actions, $what, $users, $who);
+		return parent::acl_check($aco_section_value, $aco_value, $aro_section_value, $aro_value, $axo_section_value, $axo_value, $root_aro_group, $root_axo_group);
 	} 
 
 	/**
