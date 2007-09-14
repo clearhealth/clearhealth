@@ -3045,11 +3045,10 @@ LOCK TABLES `form_structure` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `form_structure` ENABLE KEYS */;
 
---
+-- 
 -- Table structure for table `gacl_acl`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_acl`;
 CREATE TABLE `gacl_acl` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default 'system',
@@ -3062,25 +3061,22 @@ CREATE TABLE `gacl_acl` (
   KEY `gacl_enabled_acl` (`enabled`),
   KEY `gacl_section_value_acl` (`section_value`),
   KEY `gacl_updated_date_acl` (`updated_date`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1 COMMENT='ACL Table';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='ACL Table';
 
---
+-- 
 -- Dumping data for table `gacl_acl`
---
+-- 
 
+INSERT INTO `gacl_acl` (`id`, `section_value`, `allow`, `enabled`, `return_value`, `note`, `updated_date`) VALUES (2, 'system', 1, 1, '', '', 1187152896),
+(3, 'system', 1, 1, '', '', 1189553290),
+(4, 'system', 1, 1, '', '', 1189727295);
 
-/*!40000 ALTER TABLE `gacl_acl` DISABLE KEYS */;
-LOCK TABLES `gacl_acl` WRITE;
-INSERT INTO `gacl_acl` VALUES (2,'system',1,1,'','',1187152896);
-INSERT INTO `gacl_acl` (`id`, `section_value`, `allow`, `enabled`, `return_value`, `note`, `updated_date`) VALUES (3, 'system', 1, 1, '', '', 1189553290);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_acl` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_acl_sections`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_acl_sections`;
 CREATE TABLE `gacl_acl_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3090,45 +3086,37 @@ CREATE TABLE `gacl_acl_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_acl_sections` (`value`),
   KEY `gacl_hidden_acl_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_acl_sections`
---
+-- 
 
+INSERT INTO `gacl_acl_sections` (`id`, `value`, `order_value`, `name`, `hidden`) VALUES (1, 'system', 0, 'System', 0);
 
-/*!40000 ALTER TABLE `gacl_acl_sections` DISABLE KEYS */;
-LOCK TABLES `gacl_acl_sections` WRITE;
-INSERT INTO `gacl_acl_sections` VALUES (1,'system',0,'System',0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_acl_sections` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_acl_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_acl_seq`
---
+-- 
 
+INSERT INTO `gacl_acl_seq` (`id`) VALUES (4);
 
-/*!40000 ALTER TABLE `gacl_acl_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_acl_seq` WRITE;
-INSERT INTO `gacl_acl_seq` VALUES (3);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_acl_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aco`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aco`;
 CREATE TABLE `gacl_aco` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -3139,68 +3127,75 @@ CREATE TABLE `gacl_aco` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aco` (`section_value`,`value`),
   KEY `gacl_hidden_aco` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aco`
---
+-- 
 
+INSERT INTO `gacl_aco` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (1, 'actions', 'view', 1, 'view', 0),
+(2, 'actions', 'edit', 2, 'edit', 0),
+(3, 'actions', 'add', 3, 'add', 0),
+(4, 'actions', 'delete', 4, 'delete', 0),
+(5, 'actions', 'usage', 5, 'usage', 0),
+(6, 'actions', 'uploadFile', 6, 'Upload A file', 0),
+(7, 'actions', 'delete_owner', 7, 'Delete Owner', 0),
+(8, 'actions', 'edit_owner', 8, 'Edit Owner', 0),
+(9, 'actions', 'double_book', 9, 'Double Book Appointment', 0),
+(10, 'actions', 'override', 10, 'override', 0),
+(11, 'actions', 'list', 11, 'list', 0);
 
-/*!40000 ALTER TABLE `gacl_aco` DISABLE KEYS */;
-LOCK TABLES `gacl_aco` WRITE;
-INSERT INTO `gacl_aco` VALUES (1,'actions','view',1,'view',0),(2,'actions','edit',2,'edit',0),(3,'actions','add',3,'add',0),(4,'actions','delete',4,'delete',0),(5,'actions','usage',5,'usage',0),(6,'actions','uploadFile',6,'Upload A file',0),(7,'actions','delete_owner',7,'Delete Owner',0),(8,'actions','edit_owner',8,'Edit Owner',0),(9,'actions','double_book',9,'Double Book Appointment',0),(10,'actions','override',10,'override',0),(11,'actions','list',11,'list',0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aco` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aco_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aco_map`;
 CREATE TABLE `gacl_aco_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aco_map`
---
+-- 
 
+INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'add'),
+(2, 'actions', 'delete'),
+(2, 'actions', 'delete_owner'),
+(2, 'actions', 'double_book'),
+(2, 'actions', 'edit'),
+(2, 'actions', 'edit_owner'),
+(2, 'actions', 'list'),
+(2, 'actions', 'override'),
+(2, 'actions', 'uploadFile'),
+(2, 'actions', 'usage'),
+(2, 'actions', 'view'),
+(3, 'actions', 'add'),
+(3, 'actions', 'delete'),
+(3, 'actions', 'delete_owner'),
+(3, 'actions', 'double_book'),
+(3, 'actions', 'edit'),
+(3, 'actions', 'edit_owner'),
+(3, 'actions', 'list'),
+(3, 'actions', 'override'),
+(3, 'actions', 'uploadFile'),
+(3, 'actions', 'usage'),
+(3, 'actions', 'view'),
+(4, 'actions', 'add'),
+(4, 'actions', 'edit'),
+(4, 'actions', 'list'),
+(4, 'actions', 'usage'),
+(4, 'actions', 'view');
 
-/*!40000 ALTER TABLE `gacl_aco_map` DISABLE KEYS */;
-LOCK TABLES `gacl_aco_map` WRITE;
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'add');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'delete');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'delete_owner');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'double_book');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'edit');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'edit_owner');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'list');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'override');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'uploadFile');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'usage');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'actions', 'view');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'add');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'delete');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'delete_owner');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'double_book');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'edit');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'edit_owner');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'list');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'override');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'uploadFile');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'usage');
-INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'actions', 'view');
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aco_map` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aco_sections`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections`;
 CREATE TABLE `gacl_aco_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3210,66 +3205,54 @@ CREATE TABLE `gacl_aco_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aco_sections` (`value`),
   KEY `gacl_hidden_aco_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aco_sections`
---
+-- 
 
+INSERT INTO `gacl_aco_sections` (`id`, `value`, `order_value`, `name`, `hidden`) VALUES (1, 'actions', 0, 'Actions', 0);
 
-/*!40000 ALTER TABLE `gacl_aco_sections` DISABLE KEYS */;
-LOCK TABLES `gacl_aco_sections` WRITE;
-INSERT INTO `gacl_aco_sections` VALUES (1,'actions',0,'Actions',0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aco_sections` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aco_sections_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aco_sections_seq`
---
+-- 
 
+INSERT INTO `gacl_aco_sections_seq` (`id`) VALUES (1);
 
-/*!40000 ALTER TABLE `gacl_aco_sections_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_aco_sections_seq` WRITE;
-INSERT INTO `gacl_aco_sections_seq` VALUES (1);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aco_sections_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aco_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aco_seq`
---
+-- 
 
+INSERT INTO `gacl_aco_seq` (`id`) VALUES (11);
 
-/*!40000 ALTER TABLE `gacl_aco_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_aco_seq` WRITE;
-INSERT INTO `gacl_aco_seq` VALUES (11);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aco_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
   `id` int(11) NOT NULL,
   `section_value` varchar(240) NOT NULL default '0',
@@ -3280,24 +3263,20 @@ CREATE TABLE `gacl_aro` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_aro` (`section_value`,`value`),
   KEY `gacl_hidden_aro` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro`
---
+-- 
 
+INSERT INTO `gacl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (1, 'users', 'admin', 1, 'admin', 0);
 
-/*!40000 ALTER TABLE `gacl_aro` DISABLE KEYS */;
-LOCK TABLES `gacl_aro` WRITE;
-INSERT INTO `gacl_aro` VALUES (1,'users','admin',1,'admin',0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_groups`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups`;
 CREATE TABLE `gacl_aro_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -3309,96 +3288,87 @@ CREATE TABLE `gacl_aro_groups` (
   UNIQUE KEY `gacl_value_aro_groups` (`value`),
   KEY `gacl_parent_id_aro_groups` (`parent_id`),
   KEY `gacl_lft_rgt_aro_groups` (`lft`,`rgt`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_groups`
---
+-- 
 
+INSERT INTO `gacl_aro_groups` (`id`, `parent_id`, `lft`, `rgt`, `name`, `value`) VALUES (2, 0, 1, 12, 'Roles', 'roles'),
+(3, 2, 2, 3, 'System Admin', 'superadmin'),
+(6, 2, 4, 5, 'Provider', 'role_provider'),
+(7, 2, 6, 7, 'Front Office', 'front_office'),
+(8, 2, 8, 9, 'Billing User', 'billing_user'),
+(9, 2, 10, 11, 'Staff', 'staff');
 
-/*!40000 ALTER TABLE `gacl_aro_groups` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_groups` WRITE;
-INSERT INTO `gacl_aro_groups` VALUES (2,0,1,12,'Roles','roles'),(3,2,2,3,'System Admin','superadmin'),(6,2,4,5,'Provider','role_provider'),(7,2,6,7,'Front Office','front_office'),(8,2,8,9,'Billing User','billing_user'),(9,2,10,11,'Staff','staff');
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_groups` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_groups_id_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_groups_id_seq`
---
+-- 
 
+INSERT INTO `gacl_aro_groups_id_seq` (`id`) VALUES (10);
 
-/*!40000 ALTER TABLE `gacl_aro_groups_id_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_groups_id_seq` WRITE;
-INSERT INTO `gacl_aro_groups_id_seq` VALUES (10);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_groups_id_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_groups_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_groups_map`;
 CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_groups_map`
---
+-- 
 
+INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (2, 3),
+(3, 6),
+(3, 7),
+(3, 8),
+(3, 9),
+(4, 6),
+(4, 7),
+(4, 8),
+(4, 9);
 
-/*!40000 ALTER TABLE `gacl_aro_groups_map` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_groups_map` WRITE;
+-- --------------------------------------------------------
 
-INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (2, 3);
-INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 6);
-INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 7);
-INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 8);
-INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 9);
-
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_groups_map` ENABLE KEYS */;
-
---
+-- 
 -- Table structure for table `gacl_aro_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_map`;
 CREATE TABLE `gacl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_map`
---
+-- 
 
+INSERT INTO `gacl_aro_map` (`acl_id`, `section_value`, `value`) VALUES (2, 'users', 'admin');
 
-/*!40000 ALTER TABLE `gacl_aro_map` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_map` WRITE;
-INSERT INTO `gacl_aro_map` VALUES (2,'users','admin');
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_map` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_sections`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections`;
 CREATE TABLE `gacl_aro_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3408,66 +3378,54 @@ CREATE TABLE `gacl_aro_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_aro_sections` (`value`),
   KEY `gacl_hidden_aro_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_sections`
---
+-- 
 
+INSERT INTO `gacl_aro_sections` (`id`, `value`, `order_value`, `name`, `hidden`) VALUES (1, 'users', 1, 'Users', 0);
 
-/*!40000 ALTER TABLE `gacl_aro_sections` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_sections` WRITE;
-INSERT INTO `gacl_aro_sections` VALUES (1,'users',1,'Users',0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_sections` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_sections_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_sections_seq`
---
+-- 
 
+INSERT INTO `gacl_aro_sections_seq` (`id`) VALUES (1);
 
-/*!40000 ALTER TABLE `gacl_aro_sections_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_sections_seq` WRITE;
-INSERT INTO `gacl_aro_sections_seq` VALUES (1);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_sections_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_aro_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_aro_seq`
---
+-- 
 
+INSERT INTO `gacl_aro_seq` (`id`) VALUES (1);
 
-/*!40000 ALTER TABLE `gacl_aro_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_aro_seq` WRITE;
-INSERT INTO `gacl_aro_seq` VALUES (1);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_aro_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_axo`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo`;
 CREATE TABLE `gacl_axo` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -3478,122 +3436,117 @@ CREATE TABLE `gacl_axo` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_section_value_value_axo` (`section_value`,`value`),
   KEY `gacl_hidden_axo` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo`
---
+-- 
 
+INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (2, 'resources', 'ie7', 10, 'Section - Ie7', 0),
+(3, 'resources', 'images', 10, 'Section - Images', 0),
+(4, 'resources', 'enumeration', 10, 'Section - Enumeration', 0),
+(5, 'resources', 'ajax', 10, 'Section - Ajax', 0),
+(6, 'resources', 'main', 10, 'Section - Main', 0),
+(7, 'resources', 'crud', 10, 'Section - CRUD', 0),
+(8, 'resources', 'pdf', 10, 'Section - PDF', 0),
+(9, 'resources', 'base_access', 10, 'Section - Base_Access', 0),
+(10, 'resources', 'default', 10, 'Section - Default', 0),
+(11, 'resources', 'print', 10, 'Section - Print', 0),
+(12, 'resources', 'css', 10, 'Section - Css', 0),
+(13, 'resources', 'minimal', 10, 'Section - Minimal', 0),
+(14, 'resources', 'cronable', 10, 'Section - Cronable', 0),
+(15, 'resources', 'user', 10, 'Section - User', 0),
+(16, 'resources', 'access', 10, 'Section - Access', 0),
+(17, 'resources', 'insurance', 10, 'Section - Insurance', 0),
+(18, 'resources', 'form', 10, 'Section - Form', 0),
+(19, 'resources', 'account', 10, 'Section - Account', 0),
+(20, 'resources', 'patientpaymentplan', 10, 'Section - PatientPaymentPlan', 0),
+(21, 'resources', 'payergroup', 10, 'Section - PayerGroup', 0),
+(22, 'resources', 'room', 10, 'Section - Room', 0),
+(23, 'resources', 'appointmenttemplate', 10, 'Section - AppointmentTemplate', 0),
+(24, 'resources', 'building', 10, 'Section - Building', 0),
+(25, 'resources', 'self_mgmt_goals', 10, 'Section - Self_Mgmt_Goals', 0),
+(26, 'resources', 'appointment', 10, 'Section - Appointment', 0),
+(27, 'resources', 'billing', 10, 'Section - Billing', 0),
+(28, 'resources', 'quicklist', 10, 'Section - QuickList', 0),
+(29, 'resources', 'medicalhistory', 10, 'Section - MedicalHistory', 0),
+(30, 'resources', 'thumbnail', 10, 'Section - Thumbnail', 0),
+(31, 'resources', 'selfmgmtgoals', 10, 'Section - SelfMgmtGoals', 0),
+(32, 'resources', 'participationprogram', 10, 'Section - ParticipationProgram', 0),
+(33, 'resources', 'coding', 10, 'Section - Coding', 0),
+(34, 'resources', 'docs', 10, 'Section - Docs', 0),
+(35, 'resources', 'patientmerge', 10, 'Section - PatientMerge', 0),
+(36, 'resources', 'masteraccounthistory', 10, 'Section - MasterAccountHistory', 0),
+(37, 'resources', 'eob', 10, 'Section - Eob', 0),
+(38, 'resources', 'report', 10, 'Section - Report', 0),
+(39, 'resources', 'preferences', 10, 'Section - Preferences', 0),
+(40, 'resources', 'myaccount', 10, 'Section - MyAccount', 0),
+(41, 'resources', 'patient', 10, 'Section - Patient', 0),
+(42, 'resources', 'codingtemplate', 10, 'Section - CodingTemplate', 0),
+(43, 'resources', 'patientstatistics', 10, 'Section - PatientStatistics', 0),
+(44, 'resources', 'appointmentruleset', 10, 'Section - AppointmentRuleset', 0),
+(45, 'resources', 'occurencebreakdown', 10, 'Section - OccurenceBreakdown', 0),
+(46, 'resources', 'clinicalsummary', 10, 'Section - ClinicalSummary', 0),
+(47, 'resources', 'formrule', 10, 'Section - FormRule', 0),
+(48, 'resources', 'superbill', 10, 'Section - Superbill', 0),
+(49, 'resources', 'duplicatefinder', 10, 'Section - DuplicateFinder', 0),
+(50, 'resources', 'patientfinder', 10, 'Section - PatientFinder', 0),
+(51, 'resources', 'admin', 10, 'Section - Admin', 0),
+(52, 'resources', 'feeschedulediscount', 10, 'Section - FeeScheduleDiscount', 0),
+(53, 'resources', 'patientdashboard', 10, 'Section - PatientDashboard', 0),
+(54, 'resources', 'secondarypractice', 10, 'Section - SecondaryPractice', 0),
+(55, 'resources', 'claimhistory', 10, 'Section - ClaimHistory', 0),
+(56, 'resources', 'personperson', 10, 'Section - PersonPerson', 0),
+(57, 'resources', 'codecategory', 10, 'Section - CodeCategory', 0),
+(58, 'resources', 'splash', 10, 'Section - Splash', 0),
+(59, 'resources', 'location', 10, 'Section - Location', 0),
+(60, 'resources', 'summaryreport', 10, 'Section - SummaryReport', 0),
+(61, 'resources', 'widgetform', 10, 'Section - WidgetForm', 0),
+(62, 'resources', 'visitqueue', 10, 'Section - VisitQueue', 0),
+(63, 'resources', 'medicaleligibility', 10, 'Section - MediCalEligibility', 0),
+(64, 'resources', 'document', 10, 'Section - Document', 0),
+(65, 'resources', 'criticalview', 10, 'Section - CriticalView', 0),
+(66, 'resources', 'schedule', 10, 'Section - Schedule', 0),
+(67, 'resources', 'practice', 10, 'Section - Practice', 0),
+(68, 'resources', 'feeschedule', 10, 'Section - FeeSchedule', 0),
+(69, 'resources', 'documentcategory', 10, 'Section - DocumentCategory', 0),
+(70, 'resources', 'tabstate', 10, 'Section - TabState', 0),
+(71, 'resources', 'auditlog', 10, 'Section - AuditLog', 0),
+(72, 'resources', 'encounter', 10, 'Section - Encounter', 0),
+(73, 'resources', 'test', 10, 'Section - Test', 0),
+(74, 'resources', 'claim', 10, 'Section - Claim', 0),
+(75, 'resources', 'queue', 10, 'Section - Queue', 0),
+(76, 'resources', 'freebgateway', 10, 'Section - FreeBGateway', 0),
+(77, 'resources', 'labimporter', 10, 'Section - LabImporter', 0),
+(78, 'resources', 'labs', 10, 'Section - Labs', 0),
+(79, 'resources', 'x12import', 10, 'Section - X12Import', 0),
+(80, 'resources', 'x12apply', 10, 'Section - X12Apply', 0),
+(81, 'resources', 'calendardisplay', 10, 'Section - CalendarDisplay', 0),
+(82, 'resources', 'calendarevent', 10, 'Section - CalendarEvent', 0),
+(83, 'resources', 'calendaroccurence', 10, 'Section - CalendarOccurence', 0),
+(84, 'resources', 'calendarajaxevent', 10, 'Section - CalendarAJAXEvent', 0),
+(85, 'resources', 'chllabtests', 10, 'Section - Chllabtests', 0),
+(86, 'resources', 'altnotice', 10, 'Section - Altnotice', 0),
+(87, 'resources', 'refpractice', 10, 'Section - Refpractice', 0),
+(88, 'resources', 'refappointment', 10, 'Section - Refappointment', 0),
+(89, 'resources', 'altnoticelist', 10, 'Section - Altnoticelist', 0),
+(90, 'resources', 'referralattachment', 10, 'Section - ReferralAttachment', 0),
+(91, 'resources', 'referral', 10, 'Section - Referral', 0),
+(92, 'resources', 'refvisit', 10, 'Section - Refvisit', 0),
+(93, 'resources', 'refprogram', 10, 'Section - Refprogram', 0),
+(94, 'resources', 'refpatienteligibility', 10, 'Section - Refpatienteligibility', 0),
+(95, 'resources', 'refpatient', 10, 'Section - Refpatient', 0),
+(96, 'resources', 'refreporting', 10, 'Section - Refreporting', 0),
+(97, 'resources', 'docsmartstorable', 10, 'Section - DocSmartStorable', 0),
+(98, 'resources', 'docsmartfolder', 10, 'Section - DocSmartFolder', 0),
+(99, 'resources', 'docsmart', 10, 'Section - DocSmart', 0);
 
-/*!40000 ALTER TABLE `gacl_axo` DISABLE KEYS */;
-LOCK TABLES `gacl_axo` WRITE;
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (2, 'resources', 'ie7', 10, 'Section - Ie7', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (3, 'resources', 'images', 10, 'Section - Images', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (4, 'resources', 'enumeration', 10, 'Section - Enumeration', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (5, 'resources', 'ajax', 10, 'Section - Ajax', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (6, 'resources', 'main', 10, 'Section - Main', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (7, 'resources', 'crud', 10, 'Section - CRUD', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (8, 'resources', 'pdf', 10, 'Section - PDF', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (9, 'resources', 'base_access', 10, 'Section - Base_Access', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (10, 'resources', 'default', 10, 'Section - Default', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (11, 'resources', 'print', 10, 'Section - Print', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (12, 'resources', 'css', 10, 'Section - Css', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (13, 'resources', 'minimal', 10, 'Section - Minimal', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (14, 'resources', 'cronable', 10, 'Section - Cronable', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (15, 'resources', 'user', 10, 'Section - User', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (16, 'resources', 'access', 10, 'Section - Access', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (17, 'resources', 'insurance', 10, 'Section - Insurance', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (18, 'resources', 'form', 10, 'Section - Form', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (19, 'resources', 'account', 10, 'Section - Account', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (20, 'resources', 'patientpaymentplan', 10, 'Section - PatientPaymentPlan', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (21, 'resources', 'payergroup', 10, 'Section - PayerGroup', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (22, 'resources', 'room', 10, 'Section - Room', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (23, 'resources', 'appointmenttemplate', 10, 'Section - AppointmentTemplate', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (24, 'resources', 'building', 10, 'Section - Building', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (25, 'resources', 'self_mgmt_goals', 10, 'Section - Self_Mgmt_Goals', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (26, 'resources', 'appointment', 10, 'Section - Appointment', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (27, 'resources', 'billing', 10, 'Section - Billing', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (28, 'resources', 'quicklist', 10, 'Section - QuickList', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (29, 'resources', 'medicalhistory', 10, 'Section - MedicalHistory', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (30, 'resources', 'thumbnail', 10, 'Section - Thumbnail', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (31, 'resources', 'selfmgmtgoals', 10, 'Section - SelfMgmtGoals', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (32, 'resources', 'participationprogram', 10, 'Section - ParticipationProgram', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (33, 'resources', 'coding', 10, 'Section - Coding', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (34, 'resources', 'docs', 10, 'Section - Docs', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (35, 'resources', 'patientmerge', 10, 'Section - PatientMerge', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (36, 'resources', 'masteraccounthistory', 10, 'Section - MasterAccountHistory', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (37, 'resources', 'eob', 10, 'Section - Eob', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (38, 'resources', 'report', 10, 'Section - Report', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (39, 'resources', 'preferences', 10, 'Section - Preferences', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (40, 'resources', 'myaccount', 10, 'Section - MyAccount', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (41, 'resources', 'patient', 10, 'Section - Patient', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (42, 'resources', 'codingtemplate', 10, 'Section - CodingTemplate', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (43, 'resources', 'patientstatistics', 10, 'Section - PatientStatistics', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (44, 'resources', 'appointmentruleset', 10, 'Section - AppointmentRuleset', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (45, 'resources', 'occurencebreakdown', 10, 'Section - OccurenceBreakdown', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (46, 'resources', 'clinicalsummary', 10, 'Section - ClinicalSummary', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (47, 'resources', 'formrule', 10, 'Section - FormRule', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (48, 'resources', 'superbill', 10, 'Section - Superbill', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (49, 'resources', 'duplicatefinder', 10, 'Section - DuplicateFinder', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (50, 'resources', 'patientfinder', 10, 'Section - PatientFinder', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (51, 'resources', 'admin', 10, 'Section - Admin', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (52, 'resources', 'feeschedulediscount', 10, 'Section - FeeScheduleDiscount', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (53, 'resources', 'patientdashboard', 10, 'Section - PatientDashboard', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (54, 'resources', 'secondarypractice', 10, 'Section - SecondaryPractice', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (55, 'resources', 'claimhistory', 10, 'Section - ClaimHistory', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (56, 'resources', 'personperson', 10, 'Section - PersonPerson', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (57, 'resources', 'codecategory', 10, 'Section - CodeCategory', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (58, 'resources', 'splash', 10, 'Section - Splash', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (59, 'resources', 'location', 10, 'Section - Location', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (60, 'resources', 'summaryreport', 10, 'Section - SummaryReport', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (61, 'resources', 'widgetform', 10, 'Section - WidgetForm', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (62, 'resources', 'visitqueue', 10, 'Section - VisitQueue', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (63, 'resources', 'medicaleligibility', 10, 'Section - MediCalEligibility', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (64, 'resources', 'document', 10, 'Section - Document', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (65, 'resources', 'criticalview', 10, 'Section - CriticalView', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (66, 'resources', 'schedule', 10, 'Section - Schedule', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (67, 'resources', 'practice', 10, 'Section - Practice', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (68, 'resources', 'feeschedule', 10, 'Section - FeeSchedule', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (69, 'resources', 'documentcategory', 10, 'Section - DocumentCategory', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (70, 'resources', 'tabstate', 10, 'Section - TabState', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (71, 'resources', 'auditlog', 10, 'Section - AuditLog', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (72, 'resources', 'encounter', 10, 'Section - Encounter', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (73, 'resources', 'test', 10, 'Section - Test', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (74, 'resources', 'claim', 10, 'Section - Claim', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (75, 'resources', 'queue', 10, 'Section - Queue', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (76, 'resources', 'freebgateway', 10, 'Section - FreeBGateway', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (77, 'resources', 'labimporter', 10, 'Section - LabImporter', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (78, 'resources', 'labs', 10, 'Section - Labs', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (79, 'resources', 'x12import', 10, 'Section - X12Import', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (80, 'resources', 'x12apply', 10, 'Section - X12Apply', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (81, 'resources', 'calendardisplay', 10, 'Section - CalendarDisplay', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (82, 'resources', 'calendarevent', 10, 'Section - CalendarEvent', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (83, 'resources', 'calendaroccurence', 10, 'Section - CalendarOccurence', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (84, 'resources', 'calendarajaxevent', 10, 'Section - CalendarAJAXEvent', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (85, 'resources', 'chllabtests', 10, 'Section - Chllabtests', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (86, 'resources', 'altnotice', 10, 'Section - Altnotice', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (87, 'resources', 'refpractice', 10, 'Section - Refpractice', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (88, 'resources', 'refappointment', 10, 'Section - Refappointment', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (89, 'resources', 'altnoticelist', 10, 'Section - Altnoticelist', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (90, 'resources', 'referralattachment', 10, 'Section - ReferralAttachment', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (91, 'resources', 'referral', 10, 'Section - Referral', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (92, 'resources', 'refvisit', 10, 'Section - Refvisit', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (93, 'resources', 'refprogram', 10, 'Section - Refprogram', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (94, 'resources', 'refpatienteligibility', 10, 'Section - Refpatienteligibility', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (95, 'resources', 'refpatient', 10, 'Section - Refpatient', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (96, 'resources', 'refreporting', 10, 'Section - Refreporting', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (97, 'resources', 'docsmartstorable', 10, 'Section - DocSmartStorable', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (98, 'resources', 'docsmartfolder', 10, 'Section - DocSmartFolder', 0);
-INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `hidden`) VALUES (99, 'resources', 'docsmart', 10, 'Section - DocSmart', 0);
+-- --------------------------------------------------------
 
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo` ENABLE KEYS */;
-
---
+-- 
 -- Table structure for table `gacl_axo_groups`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups`;
 CREATE TABLE `gacl_axo_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -3605,175 +3558,157 @@ CREATE TABLE `gacl_axo_groups` (
   UNIQUE KEY `gacl_value_axo_groups` (`value`),
   KEY `gacl_parent_id_axo_groups` (`parent_id`),
   KEY `gacl_lft_rgt_axo_groups` (`lft`,`rgt`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_groups`
---
+-- 
 
 
-/*!40000 ALTER TABLE `gacl_axo_groups` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_groups` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_groups` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_axo_groups_id_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_groups_id_seq`
---
+-- 
 
+INSERT INTO `gacl_axo_groups_id_seq` (`id`) VALUES (1);
 
-/*!40000 ALTER TABLE `gacl_axo_groups_id_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_groups_id_seq` WRITE;
-INSERT INTO `gacl_axo_groups_id_seq` VALUES (1);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_groups_id_seq` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_axo_groups_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_groups_map`;
 CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`acl_id`,`group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_groups_map`
---
+-- 
 
 
-/*!40000 ALTER TABLE `gacl_axo_groups_map` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_groups_map` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_groups_map` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_axo_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_map`;
 CREATE TABLE `gacl_axo_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`acl_id`,`section_value`,`value`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_map`
---
+-- 
 
+INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'access'),
+(3, 'resources', 'account'),
+(3, 'resources', 'ajax'),
+(3, 'resources', 'appointment'),
+(3, 'resources', 'auditlog'),
+(3, 'resources', 'base_access'),
+(3, 'resources', 'calendarajaxevent'),
+(3, 'resources', 'calendardisplay'),
+(3, 'resources', 'calendarevent'),
+(3, 'resources', 'calendaroccurence'),
+(3, 'resources', 'chllabtests'),
+(3, 'resources', 'claim'),
+(3, 'resources', 'claimhistory'),
+(3, 'resources', 'clinicalsummary'),
+(3, 'resources', 'codecategory'),
+(3, 'resources', 'coding'),
+(3, 'resources', 'codingtemplate'),
+(3, 'resources', 'criticalview'),
+(3, 'resources', 'crud'),
+(3, 'resources', 'css'),
+(3, 'resources', 'default'),
+(3, 'resources', 'docs'),
+(3, 'resources', 'docsmart'),
+(3, 'resources', 'docsmartfolder'),
+(3, 'resources', 'docsmartstorable'),
+(3, 'resources', 'document'),
+(3, 'resources', 'documentcategory'),
+(3, 'resources', 'duplicatefinder'),
+(3, 'resources', 'encounter'),
+(3, 'resources', 'eob'),
+(3, 'resources', 'feeschedule'),
+(3, 'resources', 'feeschedulediscount'),
+(3, 'resources', 'form'),
+(3, 'resources', 'formrule'),
+(3, 'resources', 'freebgateway'),
+(3, 'resources', 'ie7'),
+(3, 'resources', 'images'),
+(3, 'resources', 'insurance'),
+(3, 'resources', 'labimporter'),
+(3, 'resources', 'labs'),
+(3, 'resources', 'location'),
+(3, 'resources', 'main'),
+(3, 'resources', 'masteraccounthistory'),
+(3, 'resources', 'medicaleligibility'),
+(3, 'resources', 'medicalhistory'),
+(3, 'resources', 'minimal'),
+(3, 'resources', 'myaccount'),
+(3, 'resources', 'occurencebreakdown'),
+(3, 'resources', 'participationprogram'),
+(3, 'resources', 'patient'),
+(3, 'resources', 'patientdashboard'),
+(3, 'resources', 'patientfinder'),
+(3, 'resources', 'patientmerge'),
+(3, 'resources', 'patientpaymentplan'),
+(3, 'resources', 'patientstatistics'),
+(3, 'resources', 'payergroup'),
+(3, 'resources', 'pdf'),
+(3, 'resources', 'personperson'),
+(3, 'resources', 'practice'),
+(3, 'resources', 'preferences'),
+(3, 'resources', 'print'),
+(3, 'resources', 'queue'),
+(3, 'resources', 'quicklist'),
+(3, 'resources', 'refappointment'),
+(3, 'resources', 'referral'),
+(3, 'resources', 'referralattachment'),
+(3, 'resources', 'refpatient'),
+(3, 'resources', 'refpatienteligibility'),
+(3, 'resources', 'refpractice'),
+(3, 'resources', 'refprogram'),
+(3, 'resources', 'refreporting'),
+(3, 'resources', 'refvisit'),
+(3, 'resources', 'report'),
+(3, 'resources', 'room'),
+(3, 'resources', 'schedule'),
+(3, 'resources', 'secondarypractice'),
+(3, 'resources', 'selfmgmtgoals'),
+(3, 'resources', 'self_mgmt_goals'),
+(3, 'resources', 'splash'),
+(3, 'resources', 'summaryreport'),
+(3, 'resources', 'superbill'),
+(3, 'resources', 'tabstate'),
+(3, 'resources', 'test'),
+(3, 'resources', 'thumbnail'),
+(3, 'resources', 'visitqueue'),
+(3, 'resources', 'widgetform');
 
-/*!40000 ALTER TABLE `gacl_axo_map` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_map` WRITE;
+-- --------------------------------------------------------
 
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'access');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'account');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'ajax');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'appointment');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'auditlog');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'base_access');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendarajaxevent');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendardisplay');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendarevent');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'calendaroccurence');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'chllabtests');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'claim');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'claimhistory');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'clinicalsummary');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'codecategory');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'coding');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'codingtemplate');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'criticalview');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'crud');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'css');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'default');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docs');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmart');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmartfolder');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'docsmartstorable');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'document');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'documentcategory');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'duplicatefinder');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'encounter');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'eob');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'feeschedule');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'feeschedulediscount');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'form');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'formrule');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'freebgateway');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'ie7');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'images');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'insurance');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'labimporter');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'labs');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'location');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'main');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'masteraccounthistory');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'medicaleligibility');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'medicalhistory');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'minimal');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'myaccount');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'occurencebreakdown');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'participationprogram');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patient');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientdashboard');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientfinder');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientmerge');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientpaymentplan');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'patientstatistics');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'payergroup');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'pdf');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'personperson');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'practice');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'preferences');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'print');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'queue');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'quicklist');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refappointment');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'referral');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'referralattachment');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpatient');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpatienteligibility');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refpractice');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refprogram');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refreporting');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'refvisit');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'report');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'room');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'schedule');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'secondarypractice');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'selfmgmtgoals');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'self_mgmt_goals');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'splash');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'summaryreport');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'superbill');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'tabstate');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'test');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'thumbnail');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'visitqueue');
-INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'resources', 'widgetform');
-
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_map` ENABLE KEYS */;
-
---
+-- 
 -- Table structure for table `gacl_axo_sections`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections`;
 CREATE TABLE `gacl_axo_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3783,118 +3718,98 @@ CREATE TABLE `gacl_axo_sections` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `gacl_value_axo_sections` (`value`),
   KEY `gacl_hidden_axo_sections` (`hidden`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_sections`
---
+-- 
 
-
-/*!40000 ALTER TABLE `gacl_axo_sections` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_sections` WRITE;
 INSERT INTO `gacl_axo_sections` (`id`, `value`, `order_value`, `name`, `hidden`) VALUES (2, 'resources', 10, 'Resources', 0);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_sections` ENABLE KEYS */;
 
---
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `gacl_axo_sections_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_sections_seq`
---
+-- 
 
-
-/*!40000 ALTER TABLE `gacl_axo_sections_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_sections_seq` WRITE;
 INSERT INTO `gacl_axo_sections_seq` (`id`) VALUES (2);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_sections_seq` ENABLE KEYS */;
 
---
+-- --------------------------------------------------------
+ 
+-- 
 -- Table structure for table `gacl_axo_seq`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_axo_seq`
---
+-- 
 
-
-/*!40000 ALTER TABLE `gacl_axo_seq` DISABLE KEYS */;
-LOCK TABLES `gacl_axo_seq` WRITE;
 INSERT INTO `gacl_axo_seq` (`id`) VALUES (99);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_axo_seq` ENABLE KEYS */;
 
---
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `gacl_groups_aro_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_groups_aro_map`;
 CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`aro_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_groups_aro_map`
---
+-- 
 
+INSERT INTO `gacl_groups_aro_map` (`group_id`, `aro_id`) VALUES (3, 1);
 
-/*!40000 ALTER TABLE `gacl_groups_aro_map` DISABLE KEYS */;
-LOCK TABLES `gacl_groups_aro_map` WRITE;
-INSERT INTO `gacl_groups_aro_map` VALUES (3,1);
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_groups_aro_map` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_groups_axo_map`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_groups_axo_map`;
 CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`group_id`,`axo_id`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_groups_axo_map`
---
+-- 
 
 
-/*!40000 ALTER TABLE `gacl_groups_axo_map` DISABLE KEYS */;
-LOCK TABLES `gacl_groups_axo_map` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `gacl_groups_axo_map` ENABLE KEYS */;
+-- --------------------------------------------------------
 
---
+-- 
 -- Table structure for table `gacl_phpgacl`
---
+-- 
 
-DROP TABLE IF EXISTS `gacl_phpgacl`;
 CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
   PRIMARY KEY  (`name`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
---
+-- 
 -- Dumping data for table `gacl_phpgacl`
---
+-- 
 
 
 /*!40000 ALTER TABLE `gacl_phpgacl` DISABLE KEYS */;
