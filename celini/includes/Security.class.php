@@ -107,7 +107,7 @@ class Security extends gacl_api {
 		}
 		if (count($new) == 0) {
 			$new = array_flip($newGroups);
-			}
+		}
 		foreach($all as $id => $a)
 		{
 			if (isset($current[$id]) && !isset($new[$id])) {
