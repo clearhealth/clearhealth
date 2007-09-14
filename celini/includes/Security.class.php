@@ -71,7 +71,7 @@ class Security extends gacl_api {
 	function acl_check($aco_section_value, $aco_value, $aro_section_value, $aro_value, $axo_section_value=NULL, $axo_value=NULL, $root_aro_group=NULL, $root_axo_group=NULL) {
 		$me =& $_SESSION['frame']['me'];	
 		if ($me->is_group_member("superadmin")) {
-                        $return  = true;
+                        return  TRUE;
                 }
 
 		return parent::acl_check($aco_section_value, $aco_value, $aro_section_value, $aro_value, $axo_section_value, $axo_value, $root_aro_group, $root_axo_group);
