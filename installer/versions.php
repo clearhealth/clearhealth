@@ -24,7 +24,7 @@ $versions->collectData('db_port', 'Database Server Port', 'text', '3306');
 $versions->collectData('mysql_path', 'Path to Mysql (no trailing slash)', 'text', '/usr/bin');
 $versions->collectData('admin_password', 'Set new password for the admin account', 'text', 'admin');
 
-$version_1rc3 = new Version('2.0-PR1');
+$version_1rc3 = new Version('2.1');
 $version_1rc3->addTest('PHPVersionOver', array('5.1.0'));
 $version_1rc3->addTest('PHPMemory', array('64M'));
 $version_1rc3->addTest('PHPMagicQuotes', array('Off'));
@@ -48,7 +48,7 @@ $version_1rc3->addAction('SQLFile', array(
 	'db_field' => 'db_database',
 	'mysql_path' => 'mysql_path',
 	'cache_files' => array(
-		$base_app_path.'/local/setup/ch_2_0_install.sql'	
+		$base_app_path.'/local/setup/ch_2_1_install.sql'	
 	)));
 
 $version_1rc3->addAction('ReplaceString', array(
