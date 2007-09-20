@@ -4119,6 +4119,7 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `lab_result`;
+
 CREATE TABLE `lab_result` (
   `lab_result_id` int(11) NOT NULL default '0',
   `lab_test_id` int(11) NOT NULL default '0',
@@ -4131,8 +4132,10 @@ CREATE TABLE `lab_result` (
   `observation_time` datetime NOT NULL default '0000-00-00 00:00:00',
   `producer_id` varchar(255) NOT NULL default '',
   `description` varchar(255) NOT NULL,
+  `extra` varchar(255) NOT NULL,
   PRIMARY KEY  (`lab_result_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `lab_result`
