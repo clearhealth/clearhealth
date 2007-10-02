@@ -1181,7 +1181,6 @@ INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`)
 (101, 'report_time_period', 'Report Time Period', 'Default'),
 (102, 'risk_factors_quicklist', 'Risk Factors Quicklist', 'Default');
 INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`) VALUES 
-(103, 'payer_type', 'Payer Type', 'Default');
 
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `enumeration_definition` ENABLE KEYS */;
@@ -2320,16 +2319,6 @@ INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`
 (1000218, 102, '2', 'Blood Pressure', 2, '', '', 1, 0, 0),
 (1000211, 102, '1', 'Alcohol', 1, '', '', 1, 0, 0);
 INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`, `value`, `sort`, `extra1`, `extra2`, `status`) VALUES 
-(4001, 103, 1, 'medicare', 0, '', '', 1),
-(4002, 103, 2, 'champus', 2, '', '', 1),
-(4003, 103, 3, 'medical', 3, '', '', 1),
-(4004, 103, 4, 'private pay', 4, '', '', 1),
-(4005, 103, 5, 'feca', 5, '', '', 1),
-(4006, 103, 6, 'medicaid', 6, '', '', 1),
-(4007, 103, 7, 'champusva', 7, '', '', 1),
-(4008, 103, 8, 'otherhcfa', 8, '', '', 1),
-(4009, 103, 9, 'litigation', 9, '', '', 1),
-(4010, 103, 10, ' private insurance', 1, '', '', 1);
 
 
 UNLOCK TABLES;
