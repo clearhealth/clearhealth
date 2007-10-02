@@ -1106,7 +1106,7 @@ INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`)
 (20, 'group_list', 'File Groups', 'Default'),
 (21, 'identifier_type', 'Identifier Type', 'Default'),
 (22, 'income', 'Income', 'Default'),
-(23, 'language_old', 'Languages', 'Default'),
+(23, 'language', 'Languages', 'Default'),
 (24, 'marital_status', 'Marital Status', 'Default'),
 (25, 'migrant_status', 'Migrant Status', 'Default'),
 (26, 'number_type', 'Phone Number Type', 'Default'),
@@ -1180,6 +1180,9 @@ INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`)
 (100, 'clinicadmin_permissions', 'Clinic Admin Permissions', 'Default'),
 (101, 'report_time_period', 'Report Time Period', 'Default'),
 (102, 'risk_factors_quicklist', 'Risk Factors Quicklist', 'Default');
+INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`) VALUES 
+(103, 'payer_type', 'Payer Type', 'Default');
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `enumeration_definition` ENABLE KEYS */;
 
@@ -2316,6 +2319,17 @@ INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`
 (1000225, 102, '3', 'Cholesterol', 3, '', '', 1, 0, 0),
 (1000218, 102, '2', 'Blood Pressure', 2, '', '', 1, 0, 0),
 (1000211, 102, '1', 'Alcohol', 1, '', '', 1, 0, 0);
+INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`, `value`, `sort`, `extra1`, `extra2`, `status`) VALUES 
+(4001, 103, 1, 'medicare', 0, '', '', 1),
+(4002, 103, 2, 'champus', 2, '', '', 1),
+(4003, 103, 3, 'medical', 3, '', '', 1),
+(4004, 103, 4, 'private pay', 4, '', '', 1),
+(4005, 103, 5, 'feca', 5, '', '', 1),
+(4006, 103, 6, 'medicaid', 6, '', '', 1),
+(4007, 103, 7, 'champusva', 7, '', '', 1),
+(4008, 103, 8, 'otherhcfa', 8, '', '', 1),
+(4009, 103, 9, 'litigation', 9, '', '', 1),
+(4010, 103, 10, ' private insurance', 1, '', '', 1);
 
 
 UNLOCK TABLES;
@@ -2435,6 +2449,36 @@ CREATE TABLE `facility_codes` (
 
 /*!40000 ALTER TABLE `facility_codes` DISABLE KEYS */;
 LOCK TABLES `facility_codes` WRITE;
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (1, '11', 'Office');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (2, '12', 'Home');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (3, '21', 'Inpatient Hospital');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (4, '22', 'Outpatient Hospital');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (5, '23', 'Emergency Room - Hospital');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (6, '24', 'Ambulatory Surgical Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (7, '25', 'Birthing Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (8, '26', 'Military Treatment Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (9, '31', 'Skilled Nursing Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (10, '32', 'Nursing Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (11, '33', 'Custodial Care Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (12, '34', 'Hospice');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (13, '41', 'Ambulance - Land');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (14, '42', 'Ambulance - Air or Water');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (15, '51', 'Inpatient Psychiatric Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (16, '52', 'Psychiatric Facility Partial Hospitalization');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (17, '53', 'Community Mental Health Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (18, '54', 'Intermediate Care Facility/Mentally Retarded');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (19, '55', 'Residential Substance Abuse Treatment Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (20, '56', 'Psychiatric Residential Treatment Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (21, '50', 'Federally Qualified Health Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (22, '60', 'Mass Immunization Center');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (23, '61', 'Comprehensive Inpatient Rehabilitation Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (24, '62', 'Comprehensive Outpatient Rehabilitation Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (25, '65', 'End Stage Renal Disease Treatment Facility');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (26, '71', 'State or Local Public Health Clinic');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (27, '72', 'Rural Health Clinic');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (28, '81', 'Independent Laboratory');
+INSERT INTO `facility_codes` (`facility_code_id`, `code`, `name`) VALUES (29, '99', 'Other Unlisted Facility');
+
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `facility_codes` ENABLE KEYS */;
 
