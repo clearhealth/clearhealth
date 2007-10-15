@@ -99,6 +99,16 @@ class SQLFile extends BaseAction {
 		         " --password='" . $this->password .
 		         "' " . $this->db_name . " < " .
 			"$file";
+			
+			//if true NOT a *nix system, i.e. windows, mysql must be in system path
+                        if(!isset($_SERVER['PWD']) {
+                        // windows has different command structure needs
+                        $comm = "mysql -u" . $this->username .
+                         " -p" . $this->password .
+                         " " . $this->db_name . " < " .
+                        "$file";
+                        }
+
 			exec($comm,$output,$return);
 			if ($return > 0) {
 			$this->result_message = "Error running SQL query: <BR>\n".$comm." Condition: $return <BR />\n";
