@@ -1180,7 +1180,6 @@ INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`)
 (100, 'clinicadmin_permissions', 'Clinic Admin Permissions', 'Default'),
 (101, 'report_time_period', 'Report Time Period', 'Default'),
 (102, 'risk_factors_quicklist', 'Risk Factors Quicklist', 'Default');
-INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`) VALUES 
 
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `enumeration_definition` ENABLE KEYS */;
@@ -2318,7 +2317,6 @@ INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`
 (1000225, 102, '3', 'Cholesterol', 3, '', '', 1, 0, 0),
 (1000218, 102, '2', 'Blood Pressure', 2, '', '', 1, 0, 0),
 (1000211, 102, '1', 'Alcohol', 1, '', '', 1, 0, 0);
-INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`, `value`, `sort`, `extra1`, `extra2`, `status`) VALUES 
 
 
 UNLOCK TABLES;
@@ -2537,7 +2535,7 @@ CREATE TABLE `fbclaimline` (
   `claimline_id` int(11) NOT NULL default '0',
   `claim_id` int(11) NOT NULL default '0',
   `procedure` varchar(10) NOT NULL default '',
-  `modifier` varchar(4) NOT NULL default '',
+  `modifier` varchar(255) NOT NULL default '',
   `amount` float(11,2) NOT NULL default '0.00',
   `units` float(5,2) NOT NULL default '0.00',
   `comment` varchar(80) NOT NULL default '',

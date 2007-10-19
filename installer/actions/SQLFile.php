@@ -101,7 +101,8 @@ class SQLFile extends BaseAction {
 			"$file";
 			
 			//if true NOT a *nix system, i.e. windows, mysql must be in system path
-                        if(!isset($_SERVER['PWD']) {
+			
+                        if(strpos($_SERVER['SERVER_SOFTWARE'],'Unix') === false) {
                         // windows has different command structure needs
                         $comm = "mysql -u" . $this->username .
                          " -p" . $this->password .
