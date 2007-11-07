@@ -5611,6 +5611,7 @@ CREATE TABLE `record_sequence` (
 
 /*!40000 ALTER TABLE `record_sequence` DISABLE KEYS */;
 LOCK TABLES `record_sequence` WRITE;
+INSERT INTO `record_sequence` VALUES (1000);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `record_sequence` ENABLE KEYS */;
 
