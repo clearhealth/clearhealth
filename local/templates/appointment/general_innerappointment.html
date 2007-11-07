@@ -21,12 +21,18 @@
 {/if}
 		{if $ev_edit}
 			<a href="javascript:void(0);" onclick="editAppointment({$appointment->get('id')},'{$appointment->get('appointment_code')}');">edit</a>,
-			<!--<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>,--> {if $appointment->get('patient_id')}
+			<!--<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>,--> 
+			{if $appointment->get('patient_id')}
 			<a href="javascript:void(0);" onclick="NSAppointment({$appointment->get('id')});">ns</a>, 
 			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>
 			{if $appointment->get('group_appointment') == 0},
 				<a href="{link action="Edit" controller="Encounter" defaultArg="0"}appointment_id={$appointment->get('id')}&patient_id={$appointment->get('patient_id')}">enc</a>
+				{if $Celini->config_get("calendar:showPayLink")}
 				, <a href="javascript:paymentPopup({$appointment->get('id')},{$appointment->get('patient_id')});">pay</a>
+				{/if}
+				{if $Celini->config_get("calendar:showArrivalLink")},
+                                <a  style="{if $appointment->get('arrived') > 0}text-decoration:line-through;{/if}" href="javascript:void(0);" onclick="markArrived('{$appointment->get('appointment_id')}',1,this);">arr</a>
+				{/if}
 			{/if}
 		{/if}
 <br>
