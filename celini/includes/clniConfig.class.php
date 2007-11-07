@@ -56,5 +56,19 @@ class clniConfig
 	function set($key,$value) {
 		$this->_corral[$key] = $value;
 	}
+	
+	function cget($value,$default = false,$parent = NULL) {
+		if (is_null($parent)) $parent = $GLOBALS['config'];
+		$vars = split(':',$value);
+		if (count($vars) > 0 && !empty($vars[1])) {
+				$parent = $parent[$vars[0]];
+				array_shift($vars);
+				return clniConfig::cget(implode(":",$vars),$default,$parent);
+		}
+		elseif (isset($parent[$value])) {
+			return $parent[$value];
+		}
+		return $default;
+	}
 }
 ?>
