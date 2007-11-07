@@ -360,3 +360,9 @@ function toggleInfoBox(link,id) {
 		info.style.height = parent.parentNode.offsetHeight+'px';
 	}
 }
+function markArrived(appointmentId,value,link) {
+        HTML_AJAX.call('appointment','ajaxMarkArrived',null,appointmentId,value);
+        link.style.textDecoration = 'line-through';
+
+}
+
