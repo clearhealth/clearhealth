@@ -15,6 +15,14 @@ $GLOBALS['CeliniPageTypes'] = array(
 class Celini {
 
 	/**
+         * Passthrough to static config check method
+         *
+         **/
+        function config_get($value,$default = false, $parent = NULL) {
+                return clniConfig::cget($value,$default,$parent);
+        }
+
+	/**
 	 * Gets the full path to a template
 	 *
 	 * First checks if there is an app template
