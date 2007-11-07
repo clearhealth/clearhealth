@@ -959,6 +959,13 @@ fclose($fp);
 		}
 		return "There was an error performing the reschedule." . $appIds;
 	}
+	function ajaxMarkArrived($appId,$value) {
+                $appId = (int)$appId;
+                $app = ORDataObject::factory("Appointment",$appId);
+                $app->set("arrived",(int)$value);
+                $app->persist();
+                return true; 
+        }
 
 
 
