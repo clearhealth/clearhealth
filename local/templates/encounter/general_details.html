@@ -8,11 +8,21 @@
 					{html_options options=$userPractice->getBuildingList() selected=$encounter->get('building_id')}
 				</select>
 			</td>
-			<td><label>{l}Treating Provider{/l}:</label></td>
-			<td><select name="encounter[treating_person_id]">
+			<td><label><div class="tooltip" style="text-align:right;" onClick="document.getElementById('providerDisplay').style.display='block';document.getElementById('providerEdit').style.display='none';">{l}Treating Provider{/l}:
+			<div class="tooltipMessage">
+                                        Click provider name to change, click this label to cancel.
+                                </div></div></label>
+			</td>
+			<td>
+			    <div id="providerDisplay" style="cursor:pointer;" onClick="this.style.display='none';document.getElementById('providerEdit').style.display='block';">
+			  <a>{if strlen($provider->get('last_name')) > 1}{$provider->get('last_name')}, {$provider->get('first_name')}{else}No Provider{/if} </a>
+			    </div>
+			    <div id="providerEdit" style="display:none;">
+				<select name="encounter[treating_person_id]">
 					<option value='0'>No Provider</option>
 					{html_options options=$person->getPersonList('Provider',false) selected=$encounter->get('treating_person_id')}
 				</select>
+			    </div>
 			</td>
 		</tr>
 		<tr>

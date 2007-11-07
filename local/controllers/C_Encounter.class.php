@@ -45,7 +45,17 @@ class C_Encounter extends Controller {
 		$encounterId = $this->_existingEncounter($appointmentId);
 		$enc = Celini::newOrdo('Encounter',array($encounterId,$patientId));
 		if ($enc->get('encounter_id') == 0) {
-			$enc->set('occurence_id',$appointmentId);
+		$appointments = $enc->appointmentList();
+                $appointmentArray = array("" => " ");
+                foreach($appointments as $appointment) {
+                        $appointmentArray[$appointment['occurence_id']] = date("m/d/Y H:i",strtotime($appointment['appointment_start'])) . " " . $appointment['building_name'] . "->" . $appointment['room_name'] . " " . $appointment['provider_name'];
+                }
+                //if an appointment id is supplied the request is coming from the 
+                //calendar and so prepopulate the defaults
+                if ($appointmentId > 0) {
+                        $enc =& $this->_populateAppointmentDefaults($enc, $appointments, $appointmentId);
+                }
+
 			$enc->persist();
 			$encounterId = $enc->get('encounter_id');
 		}
@@ -133,6 +143,7 @@ class C_Encounter extends Controller {
 		
 		$appointment_id = $this->GET->getTyped('appointment_id', 'int');
 		$patient_id = $this->GET->getTyped('patient_id', 'int');
+		$person =& Celini::newORDO('Person');
 		
 		$manager =& EnumManager::getInstance();
 
@@ -164,7 +175,8 @@ class C_Encounter extends Controller {
 		if ($encounter->get('building_id')>0) {
 			$building = ORDataObject::factory("Building",$encounter->get('building_id'));
 			if ($building->get('practice_id') >0 && $building->get('practice_id') != $pid) {
-				$this->messages->addMessage('Your current practice selection must match the practice of this encounter in order to edit it.');
+				$practice = ORDataObject::factory('Practice',$building->get('practice_id'));
+				$this->messages->addMessage('Your current practice selection must match the practice of this encounter in order to edit it. That practice is: ' . $practice->get('name'));
 			return $this->fetch("main/general_message.html");
 			}	
 		}
@@ -191,8 +203,30 @@ class C_Encounter extends Controller {
 		//	$encounter_id = $this->get('encounter_id');
 		//}	
 		if($encounter_id == 0) {
-			$encounter->persist();
+			$pat = ORDataObject::factory('Patient',$encounter->get('patient_id'));
+			$pl = array_keys($person->getPersonList('Provider',false));
+			if (in_array($pat->get('default_provider'),$pl)) {
+				$encounter->set('treating_person_id',$pat->get('default_provider'));
+			}
+			else {
+				$encounter->set('treating_person_id',$pl[0]);
+			}
+
+			$bl = array_keys($userPractice->getBuildingList()); 
+			$rid = $userProfile->getDefaultLocationId();
+			$room = ORDataObject::factory('Room',$rid);
+			$building = ORDataObject::factory('Building',$room->get('building_id'));
+			if (in_array($building->get('id'),$bl)) {
+				$encounter->set('building_id',$building->get('id'));
+			}
+			else {
+				$encounter->set('building_id',$bl[0]);
+			}
 			$this->encounter_id = $encounter->get('id');
+			$erlist = array_keys($encounter->getEncounterReasonList());
+			$encounter->set('encounter_reason',$erlist[0]);
+			$encounter->persist();
+
 			// Find the encounter template, if set
 			$list =& $manager->enumList('encounter_reason');
 			$reason = false;
@@ -225,6 +259,7 @@ class C_Encounter extends Controller {
 					}
 				}
 				$this->messages->addMessage('Encounter Template Applied');
+			
 			}
 
 			// Default to default payer group
@@ -238,7 +273,6 @@ class C_Encounter extends Controller {
 			$encounter_id = $encounter->get('id');
 			$this->set('encounter_id',$encounter_id);
 		}
-		$person =& Celini::newORDO('Person');
 		$building =& Celini::newORDO('Building',$encounter->get('building_id'));
 		$practice =& Celini::newORDO('Practice',$building->get('practice_id'));
 		$encounterDate =& Celini::newORDO('EncounterDate',array($this->encounter_date_id,$encounter_id));
@@ -350,6 +384,8 @@ class C_Encounter extends Controller {
 		$this->assign_by_ref('encounterValueGrid',$encounterValueGrid);
 		$this->assign_by_ref('appointmentList',$appointments);
 		$this->assign_by_ref('appointmentArray',$appointmentArray);
+		$provider =& Celini::newOrdo('Provider',$encounter->get('treating_person_id'));
+		$this->assign_by_ref('provider',$provider);
 		
 		$this->assign('FORM_ACTION',Celini::link('edit',true,true,$encounter_id));
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
