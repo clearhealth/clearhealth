@@ -98,6 +98,7 @@ class Schedule extends CalendarSchedule{
 		}
 		$egs = $this->getChildren('EventGroup');
 		for($egs->rewind();$egs->valid();$egs->next()) {
+			$eg = $egs->current();
 			$eg->drop();
 		}
 		parent::drop();
