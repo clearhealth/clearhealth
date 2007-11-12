@@ -41,7 +41,8 @@ table.grid tr.total td {
 		{assign var=provider value=$row.provider}
 		{assign var=providerId value=$row.provider_id}
 		{assign var=intable value=0}
-		<h2>{$row.provider}</h2>
+		<h2>{$row.provider}</h2><table cellpadding=0 cellspacing=1 class="grid">
+	{assign var=categoryId value=""}
 	{/if}
 
 	{if $row.cat_id != $categoryId}
