@@ -65,7 +65,7 @@ class CalendarDescriptionMonth {
 	 * Move to the next Interval
 	 */
 	function next() {
-		$this->_current += $this->interval;
+		$this->_current = strtotime("+1 week", $this->_current);
 		if ($this->_current <= $this->end) {
 			$this->_object = new CalendarDescriptionWeek(array(date('Y', $this->_current), date('m', $this->_current), date('d', $this->_current)));
 			$this->_object->setParent($this);
