@@ -27,15 +27,15 @@
 	{if $nav.display_order > 0}
 	
 	<div class="section">
-	{if $nav.action}
-		{if $translate[$nav.prefix]}
-			<div class="topLevel"><a href="{$translate[$nav.prefix]}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
-		{else}
-			<div class="topLevel"><a href="{$NAV_ACTION}{$nav.prefix}/{$nav.action}">{$nav.title}</a></div>
-			{/if}
-	{else}
-		{$nav.title}
-	{/if}
+	{if $translate[$navc.prefix]}
+                                        <li><a href="{$translate[$navc.prefix]}{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+        {else}
+                                        {if $navc.prefix == 'RAW'}
+                                                <li><a href="{$navc.action}">{$navc.title}</a></li>
+                                        {else}
+                                                <li><a href="{$base_dir}index.php/{$navc.prefix}/{$navc.action}">{$navc.title}</a></li>
+                                        {/if}
+                                {/if}
 
 	{if $nav.children || $nav.reports || $nav.forms || $nav.arrays}
 	<ul class="quicknav">

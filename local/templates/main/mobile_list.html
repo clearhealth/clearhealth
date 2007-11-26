@@ -40,12 +40,12 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 {/if}
 {*<link href="{$base_dir}celini.css" rel="stylesheet" type="text/css">*}
 <link href="{$base_dir}js/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
-{*<link href="{$base_dir}clearhealth.css" rel="stylesheet" type="text/css">*}
-<link href="{$base_dir}suggest.css" rel="stylesheet" type="text/css">
-<link href="{$base_dir}mobile.css" rel="stylesheet" type="text/css">
+{*<link href="{$base_dir}css/clearhealth.css" rel="stylesheet" type="text/css">*}
+<link href="{$base_dir}css/suggest.css" rel="stylesheet" type="text/css">
+<link href="{$base_dir}css/mobile.css" rel="stylesheet" type="text/css">
 {if $extra_css}
 {foreach from=$extra_css item=css_file}
-<link href="{$base_dir}{$css_file}" rel="stylesheet" type="text/css" />
+<link href="{$base_dir}css{$css_file}" rel="stylesheet" type="text/css" />
 {/foreach}
 {/if}
 {if $menu_group === "default"}
@@ -68,16 +68,19 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 	<div id="sections">
 		<div class="section" id="username">User: {$me->get_username()}</div>
 		{if $sec_obj->check("usage","main_calendar")}
-		<a href="{$base_dir}index.php/main/calendar/default" {if $menu_group == "default"}class="selected"{/if}>Cal</a> 
+		<a {if $menu_group == "default"}class="selected"{/if} href="{$base_uri}index.php/main/calendarDisplay/day">Cal</a>
+
 		{/if}
 		{if $sec_obj->check("usage","main_patient")}
+		<a href="{if $selectedPatient}{$base_uri}index.php/main/PatientDashboard/view/{$selectedPatient->get('person_id')}
+{else}{$base_uri}index.php/main/PatientFinder/Find{/if}">Pnt</a>
 		<a href="{$patient_action}" {if $menu_group == "patient"}class="selected"{/if}>Pnt</a>
 		{/if}
 		{if $sec_obj->check("usage","main_billing")}
-		<a href="{$freeb2_dir}freeb2/Claim/list" {if $menu_group == "billing"}class="selected"{/if}>Bill</a>
+		<a {if $menu_group == "billing"}class="selected"{/if} href="{$base_dir}index.php/main/MasterAccountHistory/View">Bill</a>
 		{/if}
 		{if $sec_obj->check("usage","main_admin")}
-		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Adm</a>
+		<a href="{$base_dir}index.php/main/admin" {if $menu_group == "admin"}class="selected"{/if}>Admin</a>
 		{/if}
 
 		{if $menu_group == "patient"}
