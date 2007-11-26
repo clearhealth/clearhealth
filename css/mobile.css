@@ -444,5 +444,44 @@ html>body #calendarOverlay {
         height: 25px;
         */
 }
+.tabset {
+        margin: 2px;
+        margin-top: 0;
+        border: solid 1px black;
+}
+.tabset div.tab {
+        display: none;
+        padding: 3px;
+        padding-top: 5px;
+}
+.tabset div.tab.selected {
+        display: block;
+}
+.selector {
+        height: 17px;
+        line-height: 16px;
+        font-size: 14px;
+        margin-bottom: -1px;
+        margin-top: 5px;
+}
+.selector a {
+        display: block;
+        float: left;
+        margin-left: 4px;
+        background-color: #ddd;
+        border-bottom: solid 1px black;
+        padding-left: 2px;
+        padding-right: 2px;
+        cursor: pointer;
+}
+.selector a.selected {
+        background-color: #eee;
+        border: solid 1px black;
+        font-weight: bold;
+        border-bottom: solid 0px black;
+}
+.selector a:hover {
+        background-color: white;
+}
 
 
