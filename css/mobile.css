@@ -66,6 +66,80 @@ div.waitingActive {
 	font-weight: bold;
 }
 
+div#nav {
+ position: relative;
+ margin: 0px;
+ padding: 0px;
+}
+div#nav div.menuSection {
+ border: solid 1px #ccc;
+ position: relative;
+ left: 12px;
+ float: left;
+ margin: 0px;
+ margin-right: 12px;
+}
+div#nav div.topLevel {
+ font-weight: bold;
+}
+* html div#nav div ul {
+ width: 121px;
+}
+div#nav div ul {
+ position: absolute;
+ top: 14px;
+ left: -1px;
+ min-width: 121px;
+ margin: 0;
+ padding: 0;
+ border: solid 1px black;
+ background-color: #eee;
+ visibility: hidden;
+ text-align: left;
+ z-index:1000;
+}
+
+div#nav a {
+ cursor: pointer;
+ padding-left: 2px;
+ padding-right: 2px;
+}
+* html div#nav div ul {
+ width: 121px;
+}
+div#nav div ul {
+ position: absolute;
+ top: 14px;
+ left: -1px;
+ min-width: 121px;
+ margin: 0;
+ padding: 0;
+ border: solid 1px black;
+ background-color: #eee;
+ visibility: hidden;
+ text-align: left;
+ z-index:1000;
+}
+
+div#nav a {
+ cursor: pointer;
+ padding-left: 2px;
+ padding-right: 2px;
+}
+* html div#nav div ul li {
+ width: 120px;
+}
+div#nav div ul li{
+ display: block;
+ list-style-type: none;
+ margin: 0;
+ padding: 0;
+}
+div#nav a {
+ display: block;
+}
+
+
 /* Auto complete rules */
 .AutoCompleteBackground
 {
@@ -87,9 +161,23 @@ div.waitingActive {
 }
 
 /* Default Layout Rules */
-#header {
-	border-bottom: solid 1px gray;
+#selectedItem {
+ position: absolute;
+ left: 23em;
+ top: 1px;
+ font-size: 10pt;
+ z-index: 10;
+ border: solid 1px black;
+ padding: 2px;
+ background-color: white;
+ display: block;
+ float: left;
 }
+#selectedItem a {
+ font-size: 10pt;
+ font-weight: bold;
+}
+
 #nav {
 	font-size: 75%;
 	vertical-align: top;
@@ -110,9 +198,6 @@ table.grid { empty-cells: show;
 }
 #sections a {
 	font-size: 10px;
-}
-#header {
-	height: 13px;
 }
 #username {
 	float: right;
@@ -187,3 +272,177 @@ fieldset {
 	margin: 1px;
 	padding: 2px;
 }
+.schedule {
+        position: relative;
+        border: solid 1px black;
+        width: 100%;
+        top: 5px;
+}
+.schedule .header {
+        height: 21px;
+        padding: 2px;
+}
+.schedules div {
+        position: absolute;
+        width: 100%;
+        filter: alpha(Opacity=70);
+        -moz-opacity:.7;
+        opacity:.7;
+        z-index: 1;
+}
+.colItems {
+        position: absolute;
+        top: 30px;
+        margin-left: 4px;
+}
+.colItems div {
+        width: 100%;
+        height: 25px;
+}
+
+.innerColumn {
+        position: absolute;
+        top: 6px;
+        left: 3px;
+        display: none;
+}
+/* Hide this rule from IE6 */
+html>body .innerColumn {
+        top: 5px;
+        left: 1px;
+}
+.primaryColumn {
+        margin-left: 24px;
+        display: block;
+}
+.event-styling
+{
+        font-size:8pt;
+        padding-left: 6px;
+        -moz-border-radius-topleft: 10px;
+        -moz-border-radius-bottomleft: 10px;                                
+        padding-right: 6px;
+        -moz-border-radius-topright: 10px;                                  
+        -moz-border-radius-bottomright: 10px;                               
+        color: #000;
+    background-color: #999;
+    padding: 0;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+        border-color: #D33 !important;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+.event {
+        position: absolute;
+        background: #eee !important;
+        width: 200px;
+        z-index: 50;
+        font-family: Arial, Helvetica, sans-serif; font-size: 11px;
+        overflow: hidden;
+        border: solid 1px black;
+}
+
+.eventTitle {
+        font-size: 8pt;
+        padding: 1px;
+        padding-bottom: 0;
+        border-bottom: solid 1px black;
+        color: black;
+}
+
+.eventBody {
+        padding: 2px;
+        padding-top: 0;
+}
+.navback {
+        white-space: nowrap;
+        background: #aaa;
+}
+
+
+
+#calendarCanvas {
+        background-color: #FFFFFF; border: 2px #A1A5A9 solid;
+        position: relative;
+}
+.timeRow {
+        position: relative;
+        height: 25px;
+}
+.primaryBorder  {
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        border-top: 1px solid #A1A5A9;
+}
+.secondaryBorder{
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        border-top: 1px dashed #A1A5A9;
+}
+
+.timeRow {
+        position: relative;
+        height: 25px;
+}
+.timeLabel {
+        top: 0px;
+        border-right: 2px solid #A1A5A9;
+        height: 25px;
+        width: 50px;
+        vertical-align: top;
+        font-weight: bold;
+}
+
+.column {
+        margin-top: 1px;
+        position: absolute;
+        top:0;
+        overflow: hidden;
+        padding-left: 2px;
+        padding-right: 10px;
+}
+#calendarOverlay {
+        position: absolute;
+        left: 52px;
+        top: 1px;
+        clear: both;
+}
+/* IE6 Compat hack, ie6 starts the calendarOverlay 1 pixel off, its top should be 0 */
+html>body #calendarOverlay {
+        top: 0px;
+}
+#confidentialOverlay {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        background-color: #ddd;
+        z-index: 1000;
+}
+#confidentialOverlay div {
+        position: absolute;
+        top: 20%;
+        left: 30%;
+        width: 40%;
+        border: solid 1px black;
+        text-align: center;
+}
+/* Css for click to drag selecting */
+.scheduleTarget {
+        position: absolute;
+        z-index: 2;
+        /*
+        position: relative;
+        width: 25px;
+        height: 25px;
+        */
+}
+
+
