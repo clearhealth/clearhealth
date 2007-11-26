@@ -169,6 +169,7 @@ class C_PatientDashboard extends Controller {
 			$this->view->assign("pictureTag",$pictureTag);
 		}
 		}
+		$this->actionEMR_view($patient_id);
 		return $this->view->render("demo.html");
 	}
 
@@ -245,7 +246,7 @@ class C_PatientDashboard extends Controller {
 		$this->assign('FORM_FILLOUT_ACTION',Celini::link('fillout','Form'));
 		$this->assign('RETURN_TO',Celini::link(true,true,true,$p->get('id')));
 
-		return $this->view->render("emr.html");
+		//return $this->view->render("emr.html");
 	}
 	
 	
