@@ -216,26 +216,6 @@ LOCK TABLES `appointment_breakdown` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `appointment_breakdown` ENABLE KEYS */;
 
---
--- Table structure for table `appointment_link`
---
-
-DROP TABLE IF EXISTS `appointment_link`;
-CREATE TABLE `appointment_link` (
-  `oldId` int(11) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `appointment_link`
---
-
-
-/*!40000 ALTER TABLE `appointment_link` DISABLE KEYS */;
-LOCK TABLES `appointment_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `appointment_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `appointment_rule`
@@ -384,26 +364,6 @@ LOCK TABLES `building_address` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `building_address` ENABLE KEYS */;
 
---
--- Table structure for table `building_link`
---
-
-DROP TABLE IF EXISTS `building_link`;
-CREATE TABLE `building_link` (
-  `oldId` int(11) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `building_link`
---
-
-
-/*!40000 ALTER TABLE `building_link` DISABLE KEYS */;
-LOCK TABLES `building_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `building_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `building_program_identifier`
@@ -994,26 +954,6 @@ LOCK TABLES `encounter_date` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `encounter_date` ENABLE KEYS */;
 
---
--- Table structure for table `encounter_link`
---
-
-DROP TABLE IF EXISTS `encounter_link`;
-CREATE TABLE `encounter_link` (
-  `oldId` int(11) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `encounter_link`
---
-
-
-/*!40000 ALTER TABLE `encounter_link` DISABLE KEYS */;
-LOCK TABLES `encounter_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `encounter_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `encounter_person`
@@ -2912,28 +2852,6 @@ UNLOCK TABLES;
 /*!40000 ALTER TABLE `fee_schedule_revision` ENABLE KEYS */;
 
 --
--- Table structure for table `financial_link`
---
-
-DROP TABLE IF EXISTS `financial_link`;
-CREATE TABLE `financial_link` (
-  `oldId` int(11) NOT NULL,
-  `newPaymentId` int(11) NOT NULL,
-  `newChargeId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `financial_link`
---
-
-
-/*!40000 ALTER TABLE `financial_link` DISABLE KEYS */;
-LOCK TABLES `financial_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `financial_link` ENABLE KEYS */;
-
---
 -- Table structure for table `folders`
 --
 
@@ -3965,26 +3883,6 @@ LOCK TABLES `import_map` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `import_map` ENABLE KEYS */;
 
---
--- Table structure for table `ins_link`
---
-
-DROP TABLE IF EXISTS `ins_link`;
-CREATE TABLE `ins_link` (
-  `oldId` varchar(50) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ins_link`
---
-
-
-/*!40000 ALTER TABLE `ins_link` DISABLE KEYS */;
-LOCK TABLES `ins_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `ins_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `insurance`
@@ -4209,30 +4107,6 @@ LOCK TABLES `lab_test` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `lab_test` ENABLE KEYS */;
 
---
--- Table structure for table `link`
---
-
-DROP TABLE IF EXISTS `link`;
-CREATE TABLE `link` (
-  `oldId` varchar(255) NOT NULL,
-  `kind` varchar(255) NOT NULL,
-  `newId` bigint(20) NOT NULL,
-  PRIMARY KEY  (`oldId`,`kind`),
-  KEY `newId` (`newId`),
-  KEY `oldId` (`oldId`),
-  KEY `kind` (`kind`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `link`
---
-
-
-/*!40000 ALTER TABLE `link` DISABLE KEYS */;
-LOCK TABLES `link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `link` ENABLE KEYS */;
 
 --
 -- Table structure for table `meds_bulk_quantity`
@@ -4936,26 +4810,6 @@ LOCK TABLES `patient_chronic_code` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `patient_chronic_code` ENABLE KEYS */;
 
---
--- Table structure for table `patient_link`
---
-
-DROP TABLE IF EXISTS `patient_link`;
-CREATE TABLE `patient_link` (
-  `oldId` int(11) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `patient_link`
---
-
-
-/*!40000 ALTER TABLE `patient_link` DISABLE KEYS */;
-LOCK TABLES `patient_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `patient_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `patient_note`
@@ -5148,28 +5002,6 @@ UNLOCK TABLES;
 /*!40000 ALTER TABLE `payment_claimline` ENABLE KEYS */;
 
 --
--- Table structure for table `pccconversion`
---
-
-DROP TABLE IF EXISTS `pccconversion`;
-CREATE TABLE `pccconversion` (
-  `type` varchar(255) NOT NULL default '',
-  `old` int(11) NOT NULL default '0',
-  `new` int(11) NOT NULL default '0',
-  KEY `type` (`type`,`old`,`new`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `pccconversion`
---
-
-
-/*!40000 ALTER TABLE `pccconversion` DISABLE KEYS */;
-LOCK TABLES `pccconversion` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `pccconversion` ENABLE KEYS */;
-
---
 -- Table structure for table `person`
 --
 
@@ -5256,26 +5088,6 @@ LOCK TABLES `person_company` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `person_company` ENABLE KEYS */;
 
---
--- Table structure for table `person_link`
---
-
-DROP TABLE IF EXISTS `person_link`;
-CREATE TABLE `person_link` (
-  `oldId` int(11) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `person_link`
---
-
-
-/*!40000 ALTER TABLE `person_link` DISABLE KEYS */;
-LOCK TABLES `person_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `person_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `person_number`
@@ -5399,26 +5211,6 @@ LOCK TABLES `practice_address` WRITE;
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `practice_address` ENABLE KEYS */;
 
---
--- Table structure for table `practice_link`
---
-
-DROP TABLE IF EXISTS `practice_link`;
-CREATE TABLE `practice_link` (
-  `oldId` char(100) NOT NULL,
-  `newId` int(11) NOT NULL,
-  PRIMARY KEY  (`oldId`,`newId`)
-) ENGINE=INNODB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `practice_link`
---
-
-
-/*!40000 ALTER TABLE `practice_link` DISABLE KEYS */;
-LOCK TABLES `practice_link` WRITE;
-UNLOCK TABLES;
-/*!40000 ALTER TABLE `practice_link` ENABLE KEYS */;
 
 --
 -- Table structure for table `practice_number`
