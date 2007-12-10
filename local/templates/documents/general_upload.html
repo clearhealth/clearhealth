@@ -43,6 +43,11 @@
 		</td>
 	</tr>
 	{/if}
+	<tr>
+		<td><br/> OR <br/> <br/>
+		<a href="{link controller="WebCam" action="upload" defaultArg=$category_id}">Use Connected Camera</a>
+		</td>
+	</tr>
 </table>
 <input type="hidden" name="foreign_id" value="{$foreign_id}" />
 <input type="hidden" name="category_id" value="{$category_id}" />
