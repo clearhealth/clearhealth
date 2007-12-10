@@ -1,0 +1,139 @@
+
+ PDAview4phpRS --- verze: 1.3
+
+=====================================================================================
+ Urceno pro phpRS verze 2.5.0 a vyssi.
+ (http://www.supersvet.cz/phprs/)
+ phpRS - Copyright (c) 2001-2003 by Jiri Lukas (jirilukas@supersvet.cz)
+
+ PDAview4phpRS - by Jaroslav Mallat (jaroslav@mallat.cz) (http://hps.mallat.cz/)
+
+ This program is free software. - Toto je bezplatny a svobodny software.
+=====================================================================================
+
+ Ucel:
+~~~~~~
+ - zobrazit obsah webu beziciho v phpRS na PDA zarizenich
+ - tedy, zjednodusit formatovani, zobrazit obrazky pouze jako nahled ...
+ - konfigurovat pomoci pluginu v administraci phpRS
+
+
+ Novinky verze 1.3:
+~~~~~~~~~~~~~~~~~~~
+ - upraveno pro phpRS verze 2.5.0, tedy predevsim, funguje pri volbe register_globals = Off
+ - opravena chyba v javascriptu (aplikace stylu pro emulator)
+
+
+ Soubory:
+~~~~~~~~~
+ pdaview.sql      - soubor pro zalozeni a prevyplneni tabulky pro PDAview
+
+/pda
+ index.php        - vstupni stranka pro PDA
+ obr.gif          - obrazek, ktery je zobrazen pokud neni k dispozici nahled
+ pdaconf.php      - nacita konfiguraci z DB vytvorenou pomoci pluginu PDAconf
+ pdakat.php       - zobrazeni zvolene kategorie
+ pdasearch.php    - provadi vyhledavani
+ pdashowpage.php  - zobrazi strankovy alias
+ pdatop.php       - zobrazi X nejctenejsich clanku (X se nastavi v konfiguraci)
+ pdaview.php      - zobrazeni clanku
+ pie.css          - styl pro Pocket IE emulator
+ strom.gif        - odrazka pro zobrazeni kategorii
+
+/pda/emu          (pokud nechete pouzit emulator, tak tento adresar nepotrebujete)
+ index.html       - popis
+ pie.php          - vstupni stranka emulatoru
+ piebot.php       - spodni tlacitka emulatoru
+ pietop.php       - horejsek emulatoru
+ pie*.gif         - obrazky pro emulator
+ 
+/plugin/pdaconf
+ pdaconf.php      - vykonna cast pluginu
+ plugin.php       - instalacni soubor pluginu
+ rozcestnik.php   - soubor pro phpRS umoznujici funkci pluginu
+
+ INSTALACE:
+~~~~~~~~~~~
+ - nakopirujte soubory PDAview4phpRS do adresare pda v rootu Vaseho phpRS
+ - nakopirujte soubory konfiguracniho pluginu do adresare plugin/pdaconf/
+ - pomoci souboru pdaview.sql zalozte tabulku a prevyplnte vychozimi hodnotamy
+   (napr. v administracnim menu, v sekci "Zaloha DB" importujte SQLskript pdaview.sql)
+ - nainstalujte plugin (V administracnim menu, v sekci "Konfigurace" se jako
+   cesta k pluginu vyplni "plugin/pdaconf/plugin.php". Tim se v administracnim
+   menu prida nova polozka PDAview, pomoci ktere budete moci konfigurovat PDAview4phpRS.)
+ - tot vse, prohlednete konfiguraci (v administracnim menu, v sekci "PDAview"),
+   upravte hodnoty dle sveho a testujte na http://www.vas_server.cz/pda/
+   (teoreticky vzhled muzete videt pomoci emulatoru)
+   
+ Co tomu chybi
+~~~~~~~~~~~~~~
+ - hodne
+ - osetreni nekterych chyb
+ - pocitadlo, statistika
+ - lang
+ - no a jiste mnoho dalsiho
+
+
+ Historie
+~~~~~~~~~
+verze 1.2
+ - upraveno pro phpRS verze 2.3.5 (predevsim zobrazeni kategorii)
+   (funguje ale stale i ve verzi 2.2.0)
+ - doplneno pdatop.php (zobrazi X nejctenejsich clanku)
+ - rozsirena moznost konfigurace (hlavicka, telo ..)
+ - doplnen emulator PDA, tedy mate moznost videt, jak to asi dopadne v opravdovem PDA
+
+verze 1.0
+ - prvni funkcni kousek
+
+beta 0.6
+ opraveno:
+ - chyba v konfiguracnim pluginu (nezapisovalo se do DB ano/ne horni menu)
+
+beta 0.5
+ doplneno:
+ - konfigurace jako pulgin pro phpRS
+ - vetsi konfigurovatelnost hlavicka, paticka ..
+ zmeneno:
+ - konfiguracni soubor (jiz neni konfiguracni, ale nacita konfiguraci z DB)
+ 
+beta 0.4.1
+ opraveno:
+ - opet chybny HTML vystup (hlavicka, tedy na vsech strankach)
+
+beta 0.4
+ opraveno:
+ - chybny HTML vystup (hlavicka, tedy na vsech strankach)
+ 
+beta 0.3
+ opraveno:
+ - chyba v PDAshowpage (neexistence linku)
+ 
+beta 0.2
+ opraveno:
+ - zobrazeni souvisejicich clanku (nezarazene, tedy skupina 0) 
+ - spravne zobrazeni poctu clanku v jejich vypisu
+ doplneno:
+ - pdashowpage (stejna funkce jako showpage v phpRS)
+ - hledani (pouze jednoduche hledani vyrazu bez omezeni na autora ...)
+ zmeneno:
+ - konfiguracni soubor
+
+beta 0.1
+ - prvni nastrel
+
+
+=====================================================================================
+
+ Podekovani:
+~~~~~~~~~~~~
+ Panu Jirimu Lukasovi, za vytvoreni uzasneho phpRS. Dekuji.
+
+
+ Prosim
+~~~~~~~
+ Netlucte me za kod, kritiku snesu (bude opravnena). 
+ Vas nazor me zajima, piste na jaroslav@mallat.cz.
+ Dik.
+=====================================================================================
+
