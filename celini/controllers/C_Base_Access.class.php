@@ -54,6 +54,7 @@ class C_Base_Access extends Controller {
 		if ($status) {
 			if (	isset($GLOBALS['config']['maintenanceMode']) &&
 				$GLOBALS['config']['maintenanceMode'] === 'splash' &&
+	!isset($_SESSION['clicked_through_splash']) &&
 				!$_SESSION['clicked_through_splash'] == true) {
 				
 				header ("Location: ".Celini::link('splash','Access'));
