@@ -9,6 +9,8 @@ You will want to adjust permissions on the directories and create a blank config
 touch clearhealth/local/config.php
 chown apache:apache -R clearhealth/local/config.php clearhealth/tmp clearhealth/tmp/cache clearhealth/installer/tmp clearhealth/user
 
+It has been reported that problems can arise while trying to run the installer on systems running any of a variety anti-virus software. Please disable or adjust your anti-virus settings prior to installation or check our forums for more information.
+
 Here are some links for more help!
 
 ClearHealth Project Homepage 	http://www.clear-health.org
