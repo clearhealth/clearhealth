@@ -55,6 +55,11 @@ class ClearhealthAJAX {
 		$coding=&new C_Coding();
 		$this->server->registerClass($coding,'coding');
 	}
+	function initmedication(){
+		$GLOBALS['loader']->requireOnce('controllers/C_Medication.class.php');
+		$medication=&new C_Medication();
+		$this->server->registerClass($medication,'medication');
+	}
 	function initWidgetForm(){
 		$GLOBALS['loader']->requireOnce('controllers/C_WidgetForm.class.php');
 		$wf=&new C_WidgetForm();

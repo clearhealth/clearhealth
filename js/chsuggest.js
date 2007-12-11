@@ -52,3 +52,13 @@ function diagnosisSuggest(id,valueId,callback,pre) {
 }
 diagnosisSuggest.prototype = {
 }
+
+function medicationSuggest(id,valueId) {
+	this.suggest = new clniSuggest('{$drug}: {$strength} {$package} {$dose}  {$ndc}',id,valueId,'Medication','medication_search');
+        this.suggest.allowBreaks = false;
+
+	// style the box so you know its special
+	document.getElementById(id).style.border = 'solid 1px blue';
+}
+medicationSuggest.prototype = {
+}

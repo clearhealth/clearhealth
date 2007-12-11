@@ -93,13 +93,11 @@ clniSuggest.prototype = {
 		var re = new RegExp('('+this._searchString+')', 'i');
 		for(var i=0; i<result.length; i++){
 			var item = document.createElement("div");
-
 			var data = result[i];
 			item.data = data;
 			item.index = i;
-
+			
 			item.value = this.rowTemplate.replace(/{\$([a-zA-Z0-9_]+)}/g,function(s,result) {return data[result]; } );
-
 			if (this.highlight) {
 				item.innerHTML = item.value.replace(re,"<SPAN CLASS='SuggestMatchingText'>$1</SPAN>");
 			}
@@ -189,17 +187,23 @@ clniSuggest.prototype = {
 
 		var update = false;
 		var hi = this._highlightIndex;
+		//up key
 		if (evt.keyCode == 38) {
 			if (this._highlightIndex > 0) {
 				update = true;
 				this._highlightIndex--;
 			}
 		}
+		// down key
 		if (evt.keyCode == 40) {
 			if (this._highlightIndex < this._length) {
 				update = true;
 				this._highlightIndex++;
 			}
+		}
+		// enter key
+		if (evt.keyCode == 13) {
+			this._onSelect(HTML_AJAX_Util.eventTarget(evt));
 		}
 
 		if (update) {
