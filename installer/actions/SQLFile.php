@@ -98,11 +98,10 @@ class SQLFile extends BaseAction {
 			$comm = $this->mysql_path."/mysql -u" . $this->username .
 		         " --password='" . $this->password .
 		         "' " . $this->db_name . " < " .
-			"$file";
+			"$file"; 
 			
 			//if true NOT a *nix system, i.e. windows, mysql must be in system path
-			
-                        if(strpos($_SERVER['SERVER_SOFTWARE'],'Unix') === false) {
+                        if(strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'unix') === false && strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'linux') === false) {
                         // windows has different command structure needs
                         $comm = "mysql -u" . $this->username .
                          " -p" . $this->password .
