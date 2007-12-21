@@ -2998,6 +2998,7 @@ UNLOCK TABLES;
 -- Table structure for table `gacl_acl`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl`;
 CREATE TABLE `gacl_acl` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default 'system',
@@ -3024,6 +3025,7 @@ INSERT INTO `gacl_acl` (`id`, `section_value`, `allow`, `enabled`, `return_value
 -- Table structure for table `gacl_acl_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl_sections`;
 CREATE TABLE `gacl_acl_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3047,6 +3049,7 @@ INSERT INTO `gacl_acl_sections` (`id`, `value`, `order_value`, `name`, `hidden`)
 -- Table structure for table `gacl_acl_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_acl_seq`;
 CREATE TABLE `gacl_acl_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3064,6 +3067,7 @@ INSERT INTO `gacl_acl_seq` (`id`) VALUES (3);
 -- Table structure for table `gacl_aco`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco`;
 CREATE TABLE `gacl_aco` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -3098,6 +3102,7 @@ INSERT INTO `gacl_aco` (`id`, `section_value`, `value`, `order_value`, `name`, `
 -- Table structure for table `gacl_aco_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_map`;
 CREATE TABLE `gacl_aco_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -3127,6 +3132,7 @@ INSERT INTO `gacl_aco_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'acti
 -- Table structure for table `gacl_aco_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_sections`;
 CREATE TABLE `gacl_aco_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3150,6 +3156,7 @@ INSERT INTO `gacl_aco_sections` (`id`, `value`, `order_value`, `name`, `hidden`)
 -- Table structure for table `gacl_aco_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_sections_seq`;
 CREATE TABLE `gacl_aco_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3167,6 +3174,7 @@ INSERT INTO `gacl_aco_sections_seq` (`id`) VALUES (1);
 -- Table structure for table `gacl_aco_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aco_seq`;
 CREATE TABLE `gacl_aco_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3184,6 +3192,7 @@ INSERT INTO `gacl_aco_seq` (`id`) VALUES (11);
 -- Table structure for table `gacl_aro`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro`;
 CREATE TABLE `gacl_aro` (
   `id` int(11) NOT NULL,
   `section_value` varchar(240) NOT NULL default '0',
@@ -3208,6 +3217,7 @@ INSERT INTO `gacl_aro` (`id`, `section_value`, `value`, `order_value`, `name`, `
 -- Table structure for table `gacl_aro_groups`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups`;
 CREATE TABLE `gacl_aro_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -3238,6 +3248,7 @@ INSERT INTO `gacl_aro_groups` (`id`, `parent_id`, `lft`, `rgt`, `name`, `value`)
 -- Table structure for table `gacl_aro_groups_id_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups_id_seq`;
 CREATE TABLE `gacl_aro_groups_id_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3255,6 +3266,7 @@ INSERT INTO `gacl_aro_groups_id_seq` (`id`) VALUES (10);
 -- Table structure for table `gacl_aro_groups_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_groups_map`;
 CREATE TABLE `gacl_aro_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -3276,6 +3288,7 @@ INSERT INTO `gacl_aro_groups_map` (`acl_id`, `group_id`) VALUES (3, 9);
 -- Table structure for table `gacl_aro_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_map`;
 CREATE TABLE `gacl_aro_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -3294,6 +3307,7 @@ CREATE TABLE `gacl_aro_map` (
 -- Table structure for table `gacl_aro_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_sections`;
 CREATE TABLE `gacl_aro_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3317,6 +3331,7 @@ INSERT INTO `gacl_aro_sections` (`id`, `value`, `order_value`, `name`, `hidden`)
 -- Table structure for table `gacl_aro_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_sections_seq`;
 CREATE TABLE `gacl_aro_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3334,6 +3349,7 @@ INSERT INTO `gacl_aro_sections_seq` (`id`) VALUES (1);
 -- Table structure for table `gacl_aro_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_aro_seq`;
 CREATE TABLE `gacl_aro_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3351,6 +3367,7 @@ INSERT INTO `gacl_aro_seq` (`id`) VALUES (1);
 -- Table structure for table `gacl_axo`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo`;
 CREATE TABLE `gacl_axo` (
   `id` int(11) NOT NULL default '0',
   `section_value` varchar(240) NOT NULL default '0',
@@ -3476,6 +3493,7 @@ INSERT INTO `gacl_axo` (`id`, `section_value`, `value`, `order_value`, `name`, `
 -- Table structure for table `gacl_axo_groups`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups`;
 CREATE TABLE `gacl_axo_groups` (
   `id` int(11) NOT NULL default '0',
   `parent_id` int(11) NOT NULL default '0',
@@ -3500,6 +3518,7 @@ CREATE TABLE `gacl_axo_groups` (
 -- Table structure for table `gacl_axo_groups_id_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups_id_seq`;
 CREATE TABLE `gacl_axo_groups_id_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3517,6 +3536,7 @@ INSERT INTO `gacl_axo_groups_id_seq` (`id`) VALUES (1);
 -- Table structure for table `gacl_axo_groups_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_groups_map`;
 CREATE TABLE `gacl_axo_groups_map` (
   `acl_id` int(11) NOT NULL default '0',
   `group_id` int(11) NOT NULL default '0',
@@ -3534,6 +3554,7 @@ CREATE TABLE `gacl_axo_groups_map` (
 -- Table structure for table `gacl_axo_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_map`;
 CREATE TABLE `gacl_axo_map` (
   `acl_id` int(11) NOT NULL default '0',
   `section_value` varchar(230) NOT NULL default '0',
@@ -3641,6 +3662,7 @@ INSERT INTO `gacl_axo_map` (`acl_id`, `section_value`, `value`) VALUES (3, 'reso
 -- Table structure for table `gacl_axo_sections`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_sections`;
 CREATE TABLE `gacl_axo_sections` (
   `id` int(11) NOT NULL default '0',
   `value` varchar(230) NOT NULL default '',
@@ -3664,6 +3686,7 @@ INSERT INTO `gacl_axo_sections` (`id`, `value`, `order_value`, `name`, `hidden`)
 -- Table structure for table `gacl_axo_sections_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_sections_seq`;
 CREATE TABLE `gacl_axo_sections_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3681,6 +3704,7 @@ INSERT INTO `gacl_axo_sections_seq` (`id`) VALUES (2);
 -- Table structure for table `gacl_axo_seq`
 -- 
 
+DROP TABLE IF EXISTS `gacl_axo_seq`;
 CREATE TABLE `gacl_axo_seq` (
   `id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -3698,6 +3722,7 @@ INSERT INTO `gacl_axo_seq` (`id`) VALUES (104);
 -- Table structure for table `gacl_groups_aro_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_groups_aro_map`;
 CREATE TABLE `gacl_groups_aro_map` (
   `group_id` int(11) NOT NULL default '0',
   `aro_id` int(11) NOT NULL default '0',
@@ -3716,6 +3741,7 @@ INSERT INTO `gacl_groups_aro_map` (`group_id`, `aro_id`) VALUES (3, 1);
 -- Table structure for table `gacl_groups_axo_map`
 -- 
 
+DROP TABLE IF EXISTS `gacl_groups_axo_map`;
 CREATE TABLE `gacl_groups_axo_map` (
   `group_id` int(11) NOT NULL default '0',
   `axo_id` int(11) NOT NULL default '0',
@@ -3733,6 +3759,7 @@ CREATE TABLE `gacl_groups_axo_map` (
 -- Table structure for table `gacl_phpgacl`
 -- 
 
+DROP TABLE IF EXISTS `gacl_phpgacl`;
 CREATE TABLE `gacl_phpgacl` (
   `name` varchar(230) NOT NULL default '',
   `value` varchar(230) NOT NULL default '',
