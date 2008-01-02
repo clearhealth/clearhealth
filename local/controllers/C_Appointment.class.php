@@ -397,7 +397,7 @@ class C_Appointment extends Controller {
 
 		// get upcoming appointments
 		$start = date('Y-m-d H:i:s',strtotime($pullDate.' 01:01:01'));
-		$end = date('Y-m-d H:i:s',strtotime(date('Y-m-d',strtotime($pullDate,'+1 day')).' 23:59:59'));
+		$end = date('Y-m-d H:i:s',strtotime(date('Y-m-d',strtotime($pullDate . ' +1 day')).' 23:59:59'));
 
 		$format = TimestampObject::getFormat();
 		$sql = array();
