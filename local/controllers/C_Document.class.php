@@ -99,7 +99,7 @@ class C_Document extends Controller {
 			$activity = $this->viewCategory_action($project_id,$category_id);
 		}
 
-		if ($this->security->acl_qcheck('uploadFile',false,false,false)) {
+		if ($this->security->acl_qcheck('uploadFile',$this->_me,"","document")) {
 			$category_name = $this->tree->get_node_name($category_id);
 			$this->assign("category_id", $category_id);
 			$this->assign("category_name", $category_name);
