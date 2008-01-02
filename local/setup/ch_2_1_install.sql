@@ -440,6 +440,7 @@ CREATE TABLE `category` (
 
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
 LOCK TABLES `category` WRITE;
+INSERT INTO `category` VALUES (1, 'Clearhealth', 'Clearhealth', 0, 1, 1);
 UNLOCK TABLES;
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 
