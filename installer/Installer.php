@@ -95,7 +95,7 @@ if(!file_exists($GLOBALS['INSTALLER']['CONFIG_FILE'])){
 }
 $GLOBALS['INSTALLER']['INSTALLER_CONFIG'] =& new InstallerConfig($GLOBALS['INSTALLER']['CONFIG_FILE']);
 if($GLOBALS['INSTALLER']['INSTALLER_CONFIG']->parse() === FALSE){
-	print("Installer Error: Error parsing config file {$GLOBALS['INSTALLER']['CONFIG_FILE']}<BR>\n");
+	print("Installer Error: No starting/empty configuration file found at: '{$GLOBALS['INSTALLER']['CONFIG_FILE']}'. Please create one. Try 'touch {$GLOBALS['INSTALLER']['CONFIG_FILE']}' followed by 'chown apache:apache {$GLOBALS['INSTALLER']['CONFIG_FILE']} or 'chmod 777 {$GLOBALS['INSTALLER']['CONFIG_FILE']}'. <BR>\n");
 	print($GLOBALS['INSTALLER']['INSTALLER_CONFIG']->getErrorsHTML());
 	die();
 }

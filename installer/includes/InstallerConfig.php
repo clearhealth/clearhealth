@@ -96,7 +96,7 @@ class InstallerConfig{
 				if(is_dir($writable_dir) && is_writable($writable_dir)){
 					$this->settings['WRITABLE_DIR'] = $writable_dir;
 				}else{
-					$this->errors[] = "writable_dir $writable_dir is not writable!";
+					$this->errors[] = "Installer Error: The file or directory: '$writable_dir' is not writable and needs to be. Try 'chown apache:apache $writable_dir' or 'chmod 777 $writable_dir'. <br />";
 				}	
 			}else{
 				$this->errors[] = "writable_dir not defined in config file!";
