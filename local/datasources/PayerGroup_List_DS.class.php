@@ -16,7 +16,7 @@ class PayerGroup_List_DS extends Datasource_sql
 					'payer_group AS pg
 					LEFT JOIN insurance_payergroup AS ipg USING(payer_group_id)
 					LEFT JOIN insurance_program  AS ip USING(insurance_program_id)
-					LEFT JOIN company AS co USING(company_id) order by pg.name,ipg.order',
+					LEFT JOIN company AS co USING(company_id) ',
 				'orderby' => 'ipg.order ASC,pg.name ASC'
 			),
 			array(
