@@ -230,13 +230,15 @@ class C_Main extends C_PageType {
 			
 			$report['ds']->_type = $to;
 		}
-
 		$toReplace = array(':', '/', ' ');
-		$filename = str_replace($toReplace, '_', $r->get('label'));
-		if ($name != 'default') {
-			$filename .= '-' . str_replace($toReplace, '_', $name);
-		}
-		$this->_sendGridToBrowser($report['grid'], $filename, $to);
+                $filename = str_replace($toReplace, '_', $r->get('label'));
+                if ($name != 'default') {
+                        $filename .= '-' . str_replace($toReplace, '_', $name);
+                }
+                if (isset($report['flags']) && array_search('stripHTML',$report['flags']) !== false){
+                $to = "Stripped" . strtoupper($to);
+                }
+                $this->_sendGridToBrowser($report['grid'], $filename, $to);
 	}
 	
 	
@@ -248,11 +250,9 @@ class C_Main extends C_PageType {
 	 * @param string
 	 */
 	function _sendGridToBrowser(&$grid, $filename, $filetype) {
-		$mimeType = $this->_checkMimeType($filetype);
-		
+		$mimeType = $this->_checkMimeType($grid->_datasource->_type);
 		$rendererName = 'Grid_Renderer_' . $filetype;
 
-		// big hack
 		$f = $filetype.'Renderer';
 		if (isset($grid->_datasource->$f)) {
 			$c = $grid->_datasource->$f;
@@ -261,12 +261,11 @@ class C_Main extends C_PageType {
 		}
 		else {
 			$grid->set_renderer(new $rendererName());
-		}
-		$grid->setOutputType($filetype);
-		
-		$this->_sendFileDownloadHeaders($mimeType, $filename. '.' . $filetype);
-		echo $grid->render(false);
-		exit;
+		}	
+		$grid->setOutputType($grid->_datasource->_type);
+                $this->_sendFileDownloadHeaders($mimeType, $filename. '.' . $grid->_datasource->_type);
+                echo $grid->render(false);
+                exit;
 	}
 	
 	/**
@@ -281,7 +280,7 @@ class C_Main extends C_PageType {
 	 * @return string
 	 */
 	function _checkMimeType($to) {
-		static $mimeTypes = array('csv' => 'text/csv');
+		static $mimeTypes = array('csv' => 'text/csv','StrippedCSV' => 'text/csv');
 		if (!isset($mimeTypes[$to])) {
 			die('Unrecognized export type: ' . htmlspecialchars($to));
 		}
