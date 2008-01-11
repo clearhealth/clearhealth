@@ -407,7 +407,20 @@ echo "<pre>".print_r($this->variable_type,true)."</pre>";
 */
 		foreach($this->variables as $key => $var)
 		{
-			if ($this->variable_type[$key][0] == 'date') {
+                       if ($this->variable_type[$key][0] == 'datetime') {
+				if (preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}/',$this->values[$var])) {
+					$varValue = $this->values[$var];
+	                    // quick hack to remove double slash on blank date
+					if ($varValue == '//') {
+						$varValue = '';
+					}
+				}
+				// Not a real date
+				else {
+					$varValue = $this->values[$var];
+				}
+			}
+			elseif ($this->variable_type[$key][0] == 'date' ) {
 				if ($d =& DateObject::create($this->values[$var]) !== false) {
 					$varValue = $d->toUSA();
 					// quick hack to remove double slash on a blank date

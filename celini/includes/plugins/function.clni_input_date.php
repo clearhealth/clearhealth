@@ -44,11 +44,9 @@ function smarty_function_clni_input_date($params, &$smarty)
     $id = false;
     $size = 10;
     $format = "m/d/Y";
-    //$format = "Y-m-d";
     $format_popup = DateObject::getFormat();
     $required = false;
     $time = false;
-    
     $extra = "";
 
     foreach($params as $_key => $_val) {
@@ -92,8 +90,9 @@ function smarty_function_clni_input_date($params, &$smarty)
                 break;
 
 			case 'time':
-                    if ($_val === "true") {
-                            $_val = true;
+                    if ($_val == "true" || $_val == true) {
+                        $_val = true;
+                        $format = "Y-m-d H:i:s";
                     }
                     if ($_val === "false") {
                             $_val = false;

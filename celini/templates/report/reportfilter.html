@@ -25,6 +25,14 @@
 					{clni_input_date name="rf[$n]" value=$var.value}
 				{/if}
 			{/if}
+			{if $var.type[0] == "datetime"}
+                                {if $READONLY}
+                                        {$var.value}
+                                {else}
+                                        {assign var=n value=$var.name}
+                                        {clni_input_date name="rf[$n]" value=$var.value time=true size="15" format_popup="%Y-%m-%d %H:%M"}
+                                {/if}
+                        {/if}
 			{if $var.type[0] == "enum"}
 				{if $READONLY}
 					{enum_lookup name=$var.type[1] value=$var.value}
