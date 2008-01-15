@@ -1,0 +1,35 @@
+<pageprint>
+	<snapshot>
+		<minWidth>640</minWidth>
+		<maxWidth>1024</maxWidth>
+
+		<minHeight>480</minHeight>
+		<maxHeight>768</maxHeight>
+
+		<smallWidth>80</smallWidth>
+		<smallHeight>60</smallHeight>
+
+		<mediumWidth>160</mediumWidth>
+		<mediumHeight>120</mediumHeight>
+
+		<medium2Width>320</medium2Width>
+		<medium2Height>240</medium2Height>
+
+		<largeWidth>640</largeWidth>
+		<largeHeight>480</largeHeight>
+
+		<outputFullSnap>0</outputFullSnap>
+
+	</snapshot>
+
+	<print>
+		<shrinkToFit>0</shrinkToFit>
+
+		<marginTop>0.5</marginTop>
+		<marginBottom>0.5</marginBottom>
+		<marginLeft>0.5</marginLeft>
+		<marginRight>0.5</marginRight>
+
+		<paperType>Letter</paperType>
+	</print>
+</pageprint>

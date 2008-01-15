@@ -1,0 +1,6 @@
+#!/bin/bash
+/sbin/pidof Xvfb > /dev/null
+if [ $? -ne 0 ]; then
+  echo PagePrint Xvfb not running.  Starting now.
+  /usr/local/pageprint/scripts/runXvfb
+fi

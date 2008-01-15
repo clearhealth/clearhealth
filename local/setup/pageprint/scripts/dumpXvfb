@@ -1,0 +1,4 @@
+#!/bin/bash
+export DISPLAY=:10
+xwd -frame -root -out xvfb.xwd
+convert xvfb.xwd xvfb.jpg

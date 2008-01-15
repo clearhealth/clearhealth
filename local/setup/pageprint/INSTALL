@@ -1,0 +1,23 @@
+To Compile you need:
+
+Mozilla-devel
+Gtk+2-devel
+Glib2-devel
+libxml2-devel
+
+
+To run you'll want xvfb install and running
+The scripts directory has some scripts for starting xvfb and taking screenshots of it
+
+You can configure things by copying PagePrint.xml to /etc/PagePrint.xml and editing the file
+
+If your making webpage snapshots make sure your making a big enough xvfb.  If you try to take a 1024x768 shot on 800x600 Xvfb you'll get odd results.
+
+To install just cd to src, run make then make install
+
+The packaging sucks at the moment but it will get better
+
+Requirements:
+PHP 4.3.9+ (Used in the PagePrint wrapper)
+Gecko (tested against Mozilla-1.7.13)
+Xvfb (by default we use display :10, look in scripts/runXvfb)
