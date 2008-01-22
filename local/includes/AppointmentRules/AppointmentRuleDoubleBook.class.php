@@ -32,6 +32,7 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 		$roomId = $this->appointment->get('room_id');
 		foreach($appointments as $appointment) {
 			if ($roomId == $appointment['room_id'] && ($roomCount[$appointment['room_id']] + 1) > $appointment['roomMax']) {
+				if ($appointment['appointment_code'] == "CAN") continue;
 				$room = $appointment['room'];
 				$messages[] = $this->appointmentSummary($appointment);
 			}
@@ -47,6 +48,7 @@ class AppointmentRuleDoubleBook extends AppointmentRule {
 		$providerId = $this->appointment->get('provider_id');
 		if ($providerId > 0) {
 			foreach($appointments as $appointment) {
+				if ($appointment['appointment_code'] == "CAN") continue;
 				if ($providerId == $appointment['provider_id']) {
 					$provider = $appointment['providerName'];
 					$messages[] = $this->appointmentSummary($appointment);
