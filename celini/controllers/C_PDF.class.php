@@ -39,9 +39,6 @@ class C_PDF extends C_PageType {
 	}
 
 	function buildPagePrintCmd($html_file,$tmp_file) {
-		putenv('LD_LIBRARY_PATH=/usr/lib64/mozilla-seamonkey-1.0.9/');
-		putenv('DISPLAY=:10');
-		putenv('HOME=/tmp');
 		$print = '';
 		if(isset($_GET['printer'])) {
 			$config =& Celini::configInstance();
@@ -92,18 +89,13 @@ class C_PDF extends C_PageType {
 
 		switch($GLOBALS['config']['pdfGenerator']) {
 			case "pageprint":
-				$fname = tempnam("/tmp","html-"); 
+				$fname = tempnam("/tmp","html-");
 				$fp = fopen($fname,'w');
 				fwrite($fp,$html);
 				fclose($fp);
-
 				$desc_array = array(0=>array("pipe","r"),1=>array("pipe","r"),2=>array("file","/tmp/pperror.txt","a"));
-
 				$cmd = $this->buildPagePrintCmd($fname,$tmp_filename);
-				/*$output = exec($cmd,$retvar);
-				var_dump($retvar);
-				var_dump($output);
-				*/
+
 		$fp = fsockopen('localhost',23451, $errno, $errstr, 30);
                 if (!$fp) {
                         // handle error
@@ -114,14 +106,19 @@ class C_PDF extends C_PageType {
                         $status = '';
                         while (!feof($fp)) {
                                 $line = fgets($fp, 1024);
-                               $status .= $line;
-                               if (trim($line) == 'GOODBYE') {
-                                       break;
-                               }
+				$status .= $line;
+				if (trim($line) == 'GOODBYE') {
+					break;
+				}
                         }
                         fclose($fp);
+     //                  echo $status;
                 }
-                       echo $status;
+	//	exit;
+				
+
+
+
 				break;
 			default:
 				$cmd = $this->buildHtmldocCmd($fancy,$tmp_filename);
