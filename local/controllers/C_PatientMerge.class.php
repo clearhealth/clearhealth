@@ -95,6 +95,13 @@ class C_PatientMerge extends controller {
 
 		// labs
 		$moved['lab results'] = $this->updateId('lab_order','patient_id',$dq->get('parent_id'),$dq->get('child_id'));
+		
+		// documents
+		$moved['documents'] = $this->updateId('document','foreign_id',$dq->get('parent_id'),$dq->get('child_id'));
+		
+		// referrals
+		$moved['referrals'] = $this->updateId('refRequest','patient_id',$dq->get('parent_id'),$dq->get('child_id'));
+
 
 		$this->mergeComplete = true;
 
