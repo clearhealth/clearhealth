@@ -28,6 +28,7 @@ class Appointment extends ORDataObject {
 	var $appointment_code	= ''; // NS/CAN/???
 	var $event_group_id	= '';
 	var $breakdowns = false;
+	var $arrived = '';
 	/**#@-*/
 
 	var $_date		= '';
