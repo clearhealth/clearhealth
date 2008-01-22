@@ -23,6 +23,7 @@ class Lab_DS extends Datasource_sql
 			'ordering_provider'=>'Ordering Provider',
 			'report_time'=>'Date',
 			'num_tests'=>'# Tests',
+			'summary'=>'Summary',
 			'lab_order_id'=>false
 		);
 		$where = '';
@@ -46,6 +47,7 @@ class Lab_DS extends Datasource_sql
 						l.ordering_provider,
 						date_format(min(t.report_time),'$format') report_time,
 						count(t.lab_test_id) num_tests,
+						group_concat(t.component_code) as summary,
 						l.lab_order_id
 						",
 				'from'    => "lab_order l 
@@ -58,7 +60,7 @@ class Lab_DS extends Datasource_sql
 			),
 			$labels);
 		$this->orderHints['report_time'] = 't.report_time';
-		$this->addDefaultOrderRule('report_time','ASC',false);
+		$this->addDefaultOrderRule('report_time','DESC',false);
 		$this->registerTemplate('lab_order_id','<a href="'.Celini::link('view','Labs').'id={$lab_order_id}">View</a>');
 		//echo $this->preview();
 	}
