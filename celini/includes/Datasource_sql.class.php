@@ -28,7 +28,7 @@ class Datasource_sql extends Datasource{
 	 * @param	array	$query
 	 * @param	array	$labels	array('colname' => 'label')
 	 */
-	function setup(&$db,$query,$labels) {
+	function setup(&$db,$query,$labels=array()) {
 		if (!is_array($query)) {
 			trigger_error('query must be an array',E_USER_ERROR);
 		}
