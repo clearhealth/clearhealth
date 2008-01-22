@@ -192,6 +192,9 @@ class Document extends ORDataObject{
 			$d->url = $url;
 		  	$d->size = filesize($filename);
 		  	$d->type = $d->type_array['file_url'];
+			if  (preg_match("/^([0-9]+)_/",basename($filename),$patient_match)) { 
+				$d->foreign_id = $patient_match[1];
+			}	
 		  	$d->persist();
 		  	$d->populate();	
 		}
