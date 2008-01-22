@@ -48,7 +48,7 @@ table.grid tr.test td {
 				</thead>
 				<tbody>
 					{foreach from=$results[$test_id] item=result name=result}
-					<tr {if $smarty.foreach.result.iteration % 2 == 1}{if $highlightAbnormal && $result.abnormal_flag ne ''}class="altHighlight"{else}class="alt"{/if}{/if}>
+					<tr {if $smarty.foreach.result.iteration % 2 == 1}{if $highlightAbnormal && $result.abnormal_flag ne ''}class="altHighlight"{else}class="alt"{/if}{else}{if $highlightAbnormal && $result.abnormal_flag ne ''}class="altHighlight"{/if}{/if}>
 						<td>{$result.identifier}</td>
 						<td>{$result.description}</td>
 						<td>{$result.value}</td>
