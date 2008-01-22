@@ -146,19 +146,19 @@ class C_Main extends C_PageType {
 	 * @param	string
 	 * @param	string
 	 */
-	function export_grid_action($to, $dsName, $external_id) {
+	function export_grid_action($to, $dsName, $gridName, $external_id) {
 		$mimeType = $this->_checkMimeType($to);
 		
 		include_once CELINI_ROOT . '/includes/DatasourceFileLoader.class.php';
 		$loader =& new DatasourceFileLoader();
 		$loader->load($dsName);
 		$ds =& new $dsName($external_id);
+		$ds->_type = 'csv';
 		
 		include_once CELINI_ROOT . '/includes/Grid.class.php';
 		$grid =& new cGrid($ds);
 		$grid->pageSize = 65000;
 		$grid->name = $this->GET->get('gridName');
-
 		$this->_sendGridToBrowser($grid, $dsName . '-' . date("dmYHis"), $to);
 	}
 	
@@ -170,7 +170,7 @@ class C_Main extends C_PageType {
 	 *    datasource and grid portion of report generation out of 
 	 *    {@link Controller::report_action_view()} and into it's own object.
 	 */
-	function actionExport_report_view($to, $external_id, $name) {
+	function export_report_action($to, $external_id, $name) {
 		$mimeType = $this->_checkMimeType($to);
 		
 		$GLOBALS['loader']->requireOnce("includes/ReportFilter.class.php");
@@ -195,6 +195,7 @@ class C_Main extends C_PageType {
 				$key = array_shift($flags);
 				$report['flags'] = $flags;
 			}
+			
 			$report['filter'] =& new ReportFilter($query);
 
 			$report['ds'] =& $report['filter']->getDatasource();
@@ -242,11 +243,13 @@ class C_Main extends C_PageType {
 			
 			$report['ds']->_type = $to;
 		}
-
 		$toReplace = array(':', '/', ' ');
 		$filename = str_replace($toReplace, '_', $r->get('label'));
 		if ($name != 'default') {
 			$filename .= '-' . str_replace($toReplace, '_', $name);
+		}
+		if (isset($report['flags']) && array_search('stripHTML',$report['flags']) !== false){
+		$to = "Stripped" . strtoupper($to);
 		}
 		$this->_sendGridToBrowser($report['grid'], $filename, $to);
 	}
@@ -260,11 +263,9 @@ class C_Main extends C_PageType {
 	 * @param string
 	 */
 	function _sendGridToBrowser(&$grid, $filename, $filetype) {
-		$mimeType = $this->_checkMimeType($filetype);
-		
+		$mimeType = $this->_checkMimeType($grid->_datasource->_type);
 		$rendererName = 'Grid_Renderer_' . $filetype;
 
-		// big hack
 		$f = $filetype.'Renderer';
 		if (isset($grid->_datasource->$f)) {
 			$c = $grid->_datasource->$f;
@@ -274,9 +275,8 @@ class C_Main extends C_PageType {
 		else {
 			$grid->set_renderer(new $rendererName());
 		}
-		$grid->setOutputType($filetype);
-		
-		$this->_sendFileDownloadHeaders($mimeType, $filename. '.' . $filetype);
+		$grid->setOutputType($grid->_datasource->_type);
+		$this->_sendFileDownloadHeaders($mimeType, $filename. '.'.$grid->_datasource->_type);
 		echo $grid->render(false);
 		exit;
 	}
@@ -293,7 +293,7 @@ class C_Main extends C_PageType {
 	 * @return string
 	 */
 	function _checkMimeType($to) {
-		static $mimeTypes = array('csv' => 'text/csv');
+		static $mimeTypes = array('csv' => 'text/csv','StrippedCSV' => 'text/csv','html' => 'text/csv');
 		if (!isset($mimeTypes[$to])) {
 			die('Unrecognized export type: ' . htmlspecialchars($to));
 		}
