@@ -12,6 +12,7 @@ class C_Labs extends Controller {
 		$this->view->assign_by_ref('grid',$grid);
 		return $this->view->render('list.html');
 	}
+
 	function actionOrderList() {
 		$patientId = 0;
 		if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
@@ -43,6 +44,32 @@ class C_Labs extends Controller {
 		$this->assign('notes',$notes);
 
 		return $this->view->render('view.html');
+	}
+	function actionViewByDay($date='') {
+		if ($date == '') $date = date('Y-m-d');
+		$patientId = 0;
+                if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
+		$sql = "select lo.lab_order_id, MIN(lt.report_time) as time from lab_order lo inner join lab_test lt on lt.lab_order_id =lo.lab_order_id where patient_id = " . (int)$patientId . " group by lo.lab_order_id order by time DESC";
+		$db = Celini::dbInstance();
+		$labOrderIds = $db->getAll($sql);
+		$labs = array();
+		foreach ($labOrderIds as $labOrderId) {
+
+		$orderId = $labOrderId['lab_order_id'];
+
+		$order = $this->_getOrder($orderId);
+		$tests = $this->_getTests($orderId);
+		$results = $this->_getResults($orderId);
+		$notes = $this->_getNotes($orderId);
+		$labs[] = array('order'=>$order,'tests'=>$tests,'results'=>$results, 'notes'=>$notes);
+		}		
+		//var_dump($results);
+		$config =& Celini::ConfigInstance();
+		$settings = $config->get("labs");
+		$this->assign('highlightAbnormal',$settings['highlightAbnormal']);
+		$this->assign('labs',$labs);
+
+		return $this->view->render('viewByDay.html');
 	}
 	function _getTests($orderId) {
 		$ta = array();
@@ -86,7 +113,11 @@ class C_Labs extends Controller {
 	function _getOrder($orderId) {
 		$db =& new clniDb();
 		$order = '';
-		$sql = "select * from lab_order where lab_order_id = $orderId";
+		$sql = "select lo.*,concat(per.first_name, ' ', per.last_name, ' MRN: ', pat.record_number) as patient_info, MIN(lt.report_time) as report_time from lab_order lo 
+		inner join lab_test lt on lt.lab_order_id = lo.lab_order_id
+		inner join person per on per.person_id = lo.patient_id
+		left join patient pat on pat.person_id = per.person_id
+		where lo.lab_order_id = $orderId group by lab_order_id";
                 $r = $db->execute($sql);
                 if($r && !$r->EOF) {
                         $order = $r->fields;
