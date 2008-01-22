@@ -1,0 +1,101 @@
+{literal}
+<style>
+table.grid tr.test td {
+	background-color: #ced0fa;
+}
+</style>
+{/literal}
+{foreach from=$labs item=lab}
+{assign var=order value=$lab.order}
+{assign var=tests value=$lab.tests}
+{assign var=results value=$lab.results}
+{assign var=notes value=$lab.notes}
+<input type="hidden" value="{$order.lab_order_id}" id="labOrderId">
+{foreach from=$tests item=test key=test_id name=testloop}
+{if $smarty.foreach.testloop.first}
+<input type="hidden" value="{$test.lab_test_id}" id="labTestId">
+
+{/if}
+<fieldset>
+<legend>Lab Test Group</legend>
+<table class="grid">
+	<thead>
+	<tr>
+		<th>Patient</th>
+		<th>Type</th>
+		<th>Status</th>
+		<th>Ordering Provider</th>
+		<th>Date</th>
+		<th># Tests</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr class="test">
+		<td>{$order.patient_info}</td>
+		<td>{$order.type}</td>
+		<td>{$order.status}</td>
+		<td>{$order.ordering_provider}</td>
+		<td>{$order.report_time}</td>
+		<td>{$tests|@count}</td>
+	</tr>
+	</table>
+<fieldset {if !$smarty.foreach.testloop.last}style="margin-bottom: 5em;"{/if}>
+<legend>Result Group for {$test.service}</legend>
+<table class="grid">
+	<thead>
+	<tr>
+		<th>Order #</th>
+		<th>Specimen Time</th>
+		<th>Service</th>
+		<th>Component Code</th>
+		<th>Status</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr class="test">
+		<td>{$test.order_num}</td>
+		<td>{$test.specimen_received_time}</td>
+		<td>{$test.service}</td>
+		<td>{$test.component_code}</td>
+		<td>{$test.status}</td>
+	</tr>
+	</tbody>
+</table>
+<div style="margin-left: 20px; ">
+			<table class="grid">
+				<thead>
+				<tr>
+					<th>Identifier</th>
+					<th>Description</th>
+					<th>Value</th>
+					<th>Units</th>
+					<th>Reference Range</th>
+					<th>Abnormal</th>
+					<th>Status</th>
+				</tr>
+				</thead>
+				<tbody>
+					{foreach from=$results[$test_id] item=result name=result}
+					<tr {if $smarty.foreach.result.iteration % 2 == 1}{if $highlightAbnormal && $result.abnormal_flag ne ''}class="altHighlight"{else}class="alt"{/if}{else}{if $highlightAbnormal && $result.abnormal_flag ne ''}class="altHighlight"{/if}{/if}>
+						<td>{$result.identifier}</td>
+						<td>{$result.description}</td>
+						<td>{$result.value}</td>
+						<td>{$result.units}</td>
+						<td>{$result.reference_range}</td>
+						<td>{$result.abnormal_flag}</td>
+						<td>{$result.result_status}{if $result.result_status eq '' && $editMode}<a href="javascript:deleteResult({$result.lab_result_id});">clear</a>{/if}</td>
+					</tr>
+					{foreachelse}
+					<tr><td colspan="7">No result rows</td></tr>
+					{/foreach}
+				</tbody>
+			</table>
+			{if $notes[$test_id]}
+			<div><b>Notes:</b></div>
+			<pre>{$notes[$test_id].note}</pre>
+			{/if}
+		</div>
+</fieldset>
+{/foreach}
+</fieldset>
+{/foreach}
