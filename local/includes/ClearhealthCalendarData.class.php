@@ -162,7 +162,7 @@ class ClearhealthCalendarData {
 		// Add building criteria
 		$string = array();
 		$profile =& Celini::getCurrentUserProfile();
-		if(count($filters['building']->getValue()) == 0 && !is_null($profile->getDefaultLocationId())) {
+		if(count($filters['building']->getValue()) == 0 && !is_null($profile->getDefaultLocationId()) && !isset($_GET['changepractice'])) {
 			// We've just entered the calendar, so set the default building
 			$room =& Celini::newORDO('Room',$profile->getDefaultLocationId());
 			$filters['building']->setValue(array($room->get('building_id')));
@@ -182,6 +182,7 @@ class ClearhealthCalendarData {
 			}
 			$criteriaArray[] = '('.implode(' OR ',$string).')';
 		}
+		//print_r($filters);
 
 		// hide canceled appointments
 		$config = Celini::configInstance();
@@ -656,6 +657,7 @@ class ClearhealthCalendarData {
 				
 				INNER JOIN rooms r ON r.id=eg.room_id
 				INNER JOIN buildings b ON r.building_id=b.id
+				LEFT JOIN appointment a on a.room_id=r.id
 			WHERE 
 				s.provider_id = 0 and
 				b.practice_id = $practice_id $where
