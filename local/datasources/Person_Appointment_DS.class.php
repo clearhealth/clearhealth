@@ -64,12 +64,17 @@ class Person_Appointment_DS extends Datasource_sql {
 			),
 		$this->_labels);
 		$this->registerFilter('reason',array(&$this,'reasonFilter'));
+		$this->registerFilter('start',array(&$this,'startFilter'),false, "html");
 		$this->registerTemplate('start','<a href="'.Celini::link('day','CalendarDisplay').'date={$isoday}&Filter[building][]={$building_id}">{$start}</a>');
 
 		$enum =& ORDataObject::factory('Enumeration');
 		$this->reasonLookup = $enum->get_enum_list('appointment_reasons');
 
 	}
+
+	function startFilter($value,$rowValues) {
+               return "<a href=" . Celini::link('day','CalendarDisplay') . "date="  . $rowValues['isoday']  . "&Filter[building][]=" . $rowValues['building_id'] . ">" . $value . "</a>";
+       }
 
 	function prepare() {
 		settype($this->user_id,'int');
