@@ -7,6 +7,9 @@ function timeToSeconds(time) {
 function secondsToTime(seconds) {
 	var h = Math.floor(seconds/(60*60));
 	var m = Math.floor( (seconds%(60*60))/60);
+	if (m == 0) {
+                m = '00';
+        }
 	return h+':'+m;
 }
 function updateAp(select,id) {
