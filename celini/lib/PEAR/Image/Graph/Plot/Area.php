@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Area.php,v 1.13 2005/11/27 22:21:17 nosey Exp $
+ * @version    CVS: $Id: Area.php,v 1.14 2006/04/14 18:14:11 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -47,7 +47,7 @@ require_once 'Image/Graph/Plot.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
 class Image_Graph_Plot_Area extends Image_Graph_Plot
@@ -181,9 +181,9 @@ class Image_Graph_Plot_Area extends Image_Graph_Plot
             $this->_canvas->polygon(array('connect' => true, 'map_vertices' => true));
         }
         unset($keys);
-        $this->_drawMarker();
         $this->_clip(false);
-                
+
+        $this->_drawMarker();                
         $this->_canvas->endGroup();
 
         return true;

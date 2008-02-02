@@ -23,7 +23,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Graph.php,v 1.58 2005/11/27 18:48:05 nosey Exp $
+ * @version    CVS: $Id: Graph.php,v 1.60 2006/05/30 20:39:35 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -60,7 +60,7 @@ require_once 'Image/Graph/Constants.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
 class Image_Graph extends Image_Graph_Element
@@ -754,7 +754,11 @@ class Image_Graph extends Image_Graph_Element
      * store the output (this file must be in DOCUMENT_ROOT scope), 'urlpath' The URL that the
      * 'filepath' corresponds to (i.e. filepath + filename must be reachable from a browser using
      * urlpath + filename) 
-     *
+     * 
+     * 'output' = 'none' Forces the graph to be drawn, but no output is sent to
+     * the browser. This allows working with an existing canvas after graphs has
+     * been drawn
+     * 
      * @param mixed $param The output parameters to pass to the canvas
      * @return bool Was the output 'good' (true) or 'bad' (false).
      */
@@ -765,7 +769,7 @@ class Image_Graph extends Image_Graph_Element
             return $result;
         }
         return $this->_done($param);
-    }
+    }   
 
     /**
      * Outputs this graph using the canvas.
@@ -834,17 +838,19 @@ class Image_Graph extends Image_Graph_Element
                 array('color' => 'red')
             );
         }
-               
-		if (isset($param['filename'])) {
-            if ((isset($param['tohtml'])) && ($param['tohtml'])) {
-                return $this->_canvas->toHtml($param);
-            }
-            else {
-                return $this->_canvas->save($param);
-            }
-		} else {
-			return $this->_canvas->show($param);
-		}
+
+        if ((!isset($param['output'])) || ($param['output'] !== 'none')) {               
+    		if (isset($param['filename'])) {
+                if ((isset($param['tohtml'])) && ($param['tohtml'])) {
+                    return $this->_canvas->toHtml($param);
+                }
+                else {
+                    return $this->_canvas->save($param);
+                }
+    		} else {
+    			return $this->_canvas->show($param);
+    		}
+        }
     }
 }
 

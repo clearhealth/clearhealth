@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Bar.php,v 1.14 2005/11/27 22:21:16 nosey Exp $
+ * @version    CVS: $Id: Bar.php,v 1.15 2006/04/14 18:14:11 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -42,7 +42,7 @@ require_once 'Image/Graph/Plot.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
 class Image_Graph_Plot_Bar extends Image_Graph_Plot
@@ -293,11 +293,9 @@ class Image_Graph_Plot_Bar extends Image_Graph_Plot
             $number ++;
         }
         unset($keys);
-
-        $this->_drawMarker();
-
         $this->_clip(false);        
         
+        $this->_drawMarker();
         $this->_canvas->endGroup();        
 
         return true;

@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Sequential.php,v 1.7 2005/08/24 20:35:58 nosey Exp $
+ * @version    CVS: $Id: Sequential.php,v 1.8 2006/05/14 08:22:22 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -47,7 +47,7 @@ require_once 'Image/Graph/Dataset/Trivial.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
 class Image_Graph_Dataset_Sequential extends Image_Graph_Dataset_Trivial
@@ -75,7 +75,7 @@ class Image_Graph_Dataset_Sequential extends Image_Graph_Dataset_Trivial
      */
     function addPoint($y, $ID = false)
     {
-        parent::addPoint($this->count(), $y);
+        parent::addPoint($this->count(), $y, $ID);
     }
 
     /**

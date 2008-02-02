@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Pie.php,v 1.19 2005/11/27 22:21:16 nosey Exp $
+ * @version    CVS: $Id: Pie.php,v 1.20 2006/03/06 22:05:22 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -42,7 +42,7 @@ require_once 'Image/Graph/Plot.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
 class Image_Graph_Plot_Pie extends Image_Graph_Plot
@@ -499,7 +499,6 @@ class Image_Graph_Plot_Pie extends Image_Graph_Plot
         if (is_array($this->_dataset)) {
             
             $this->_canvas->startGroup(get_class($this) . '_' . $this->_title);
-            $this->_clip(true);
             
             $totals = $this->_getTotals();
             $totals['CENTER_X'] = (int) (($this->_left + $this->_right) / 2);
@@ -613,7 +612,6 @@ class Image_Graph_Plot_Pie extends Image_Graph_Plot
                 }
             }
             unset($keys);
-            $this->_clip(false);
             $this->_canvas->endGroup();
         }
     }

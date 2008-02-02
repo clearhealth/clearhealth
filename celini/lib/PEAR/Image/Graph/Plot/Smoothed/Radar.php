@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Radar.php,v 1.10 2005/11/27 22:21:17 nosey Exp $
+ * @version    CVS: $Id: Radar.php,v 1.11 2006/04/14 18:14:11 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  * @since      File available since Release 0.3.0dev2
  */
@@ -43,7 +43,7 @@ require_once 'Image/Graph/Plot/Smoothed/Bezier.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  * @since      Class available since Release 0.3.0dev2
  */
@@ -131,8 +131,9 @@ class Image_Graph_Plot_Smoothed_Radar extends Image_Graph_Plot_Smoothed_Bezier
             }
             unset($keys);
         }
-        $this->_drawMarker();
         $this->_clip(false);
+
+        $this->_drawMarker();
         $this->_canvas->endGroup($this->_title);
         return parent::_done();
     }

@@ -24,7 +24,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Axis.php,v 1.35 2006/02/28 22:48:07 nosey Exp $
+ * @version    CVS: $Id: Axis.php,v 1.36 2006/03/15 19:57:04 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
  
@@ -42,7 +42,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  */
  class Image_Graph_Axis extends Image_Graph_Plotarea_Element
@@ -1164,7 +1164,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                             if ($labelInside) {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_top - 3 - $offset,
+                                    $this->_top - 4 - $offset,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_BOTTOM | IMAGE_GRAPH_ALIGN_CENTER_X,
                                     $font
@@ -1172,9 +1172,9 @@ require_once 'Image/Graph/Plotarea/Element.php';
                             } else {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_top + 6 + $offset + $font['size'] * (substr_count($labelText, "\n") + 1),                                                                   
+                                    $this->_top + 4 + $offset,                                                                   
                                     $labelText,
-                                    IMAGE_GRAPH_ALIGN_BOTTOM | IMAGE_GRAPH_ALIGN_CENTER_X,
+                                    IMAGE_GRAPH_ALIGN_TOP | IMAGE_GRAPH_ALIGN_CENTER_X,
                                     $font
                                 );
                             }
@@ -1182,7 +1182,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                         else {                        
                             if ($labelInside) {
                                 $this->write(
-                                    $this->_right + 3 + $offset,
+                                    $this->_right + 4 + $offset,
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_LEFT,
@@ -1190,7 +1190,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                                 );
                             } else {
                                 $this->write(
-                                    $this->_right - 3 - $offset,
+                                    $this->_right - 4 - $offset,
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_RIGHT,
@@ -1203,15 +1203,15 @@ require_once 'Image/Graph/Plotarea/Element.php';
                             if ($labelInside) {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_bottom + 6 + $offset + $font['size'] * (substr_count($labelText, "\n") + 1),
+                                    $this->_bottom + 4 + $offset,
                                     $labelText,
-                                    IMAGE_GRAPH_ALIGN_BOTTOM | IMAGE_GRAPH_ALIGN_CENTER_X,
+                                    IMAGE_GRAPH_ALIGN_TOP | IMAGE_GRAPH_ALIGN_CENTER_X,
                                     $font
                                 );
                             } else {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_bottom - 3 - $offset,                                                                   
+                                    $this->_bottom - 4 - $offset,                                                                   
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_BOTTOM | IMAGE_GRAPH_ALIGN_CENTER_X,
                                     $font
@@ -1221,7 +1221,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                         else {
                             if ($labelInside) {
                                 $this->write(
-                                    $this->_left - 3 - $offset,
+                                    $this->_left - 4 - $offset,
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_RIGHT,
@@ -1229,7 +1229,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                                 );
                             } else {
                                 $this->write(
-                                    $this->_left + 3 + $offset,
+                                    $this->_left + 4 + $offset,
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_LEFT,
@@ -1241,7 +1241,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                         if ($this->_transpose) {
                             if ($labelInside) {
                                 $this->write(
-                                    $this->_right + 3 + $offset,
+                                    $this->_right + 4 + $offset,
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_LEFT,
@@ -1249,7 +1249,7 @@ require_once 'Image/Graph/Plotarea/Element.php';
                                 );
                             } else {
                                 $this->write(
-                                    $this->_right - 3 - $offset,                                                                   
+                                    $this->_right - 4 - $offset,                                                                   
                                     $labelPosition,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_Y | IMAGE_GRAPH_ALIGN_RIGHT,
@@ -1261,17 +1261,17 @@ require_once 'Image/Graph/Plotarea/Element.php';
                             if ($labelInside === true) {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_top - 3 - $offset,
+                                    $this->_top - 4 - $offset,
                                     $labelText,
                                     IMAGE_GRAPH_ALIGN_CENTER_X | IMAGE_GRAPH_ALIGN_BOTTOM,
                                     $font
                                 );
-                            } else {                                
+                            } else {
                                 $this->write(
                                     $labelPosition,
-                                    $this->_top + 6 + $offset + $font['size'] * (substr_count($labelText, "\n") + 1),
+                                    $this->_top + 4 + $offset,
                                     $labelText,
-                                    IMAGE_GRAPH_ALIGN_CENTER_X | IMAGE_GRAPH_ALIGN_BOTTOM,
+                                    IMAGE_GRAPH_ALIGN_CENTER_X | IMAGE_GRAPH_ALIGN_TOP,
                                     $font
                                 );
                             }

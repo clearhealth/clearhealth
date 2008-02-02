@@ -24,14 +24,14 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Grid.php,v 1.8 2005/02/21 20:49:47 nosey Exp $
+ * @version    CVS: $Id: Grid.php,v 1.10 2006/04/11 08:07:51 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
 /**
- * Include file Image/Graph/Element.php
+ * Include file Image/Graph/Plotarea/Element.php
  */
-require_once 'Image/Graph/Element.php';
+require_once 'Image/Graph/Plotarea/Element.php';
 
 /**
  * A grid displayed on the plotarea.
@@ -52,7 +52,7 @@ require_once 'Image/Graph/Element.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  * @abstract
  */
@@ -72,6 +72,20 @@ class Image_Graph_Grid extends Image_Graph_Plotarea_Element
      * @access private
      */
     var $_secondaryAxis = null;
+    
+    /**
+     * The starting point of the grid
+     * @var mixed
+     * @access private
+     */
+    var $_gridStart = '#min#';
+    
+    /**
+     * The ending point of the grid
+     * @var mixed
+     * @access private
+     */
+    var $_gridEnd = '#max#';
 
     /**
      * Set the primary axis: the grid should 'refer' to
@@ -111,7 +125,7 @@ class Image_Graph_Grid extends Image_Graph_Plotarea_Element
             }
             $secondaryAxisPoints[] = $firstValue;
         } else {
-            $secondaryAxisPoints = array ('#min#', '#max#');
+            $secondaryAxisPoints = array ($this->_gridStart, $this->_gridEnd);
         }
         return $secondaryAxisPoints;
     }
@@ -169,7 +183,21 @@ class Image_Graph_Grid extends Image_Graph_Plotarea_Element
         );
         parent::_updateCoords();
     }
-
+    
+    /**
+     * Sets the starting and ending points of the grid,
+     * these defaults to 'min' and 'max' which signals that the grid should
+     * span the entire the perpendicular axis
+     * @param mixed $start The starting value, use 'min' to start and "beginning"  of the perpendicular axis
+     * @param mixed $end The starting value, use 'min' to start and "end" of the perpendicular axis
+     */
+    function setAxisPoints($start = 'min', $end = 'max')
+    {
+        // no check for 'max' since it would make no sense
+        $this->_gridStart = ($start === 'min' ? '#min#' : $start);
+        // same - no check for 'min' 
+        $this->_gridEnd = ($end === 'max' ? '#max#' : $end);
+    }
 }
 
 ?>

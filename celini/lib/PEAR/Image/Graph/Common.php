@@ -23,7 +23,7 @@
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    CVS: $Id: Common.php,v 1.16 2006/02/28 22:48:07 nosey Exp $
+ * @version    CVS: $Id: Common.php,v 1.17 2006/03/22 22:03:42 nosey Exp $
  * @link       http://pear.php.net/package/Image_Graph
  */
 
@@ -65,7 +65,7 @@ require_once 'Image/Canvas.php';
  * @author     Jesper Veggerby <pear.nosey@veggerby.dk>
  * @copyright  Copyright (C) 2003, 2004 Jesper Veggerby Hansen
  * @license    http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
- * @version    Release: 0.7.2
+ * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Image_Graph
  * @abstract
  */
@@ -124,8 +124,9 @@ class Image_Graph_Common
             $keys = array_keys($this->_elements);
             foreach ($keys as $key) {
                 if (is_object($this->_elements[$key])) {
-                    $this->_elements[$key]->_setParent($this);
-                    $result = $this->_elements[$key]->_reset();
+                    $this_ =& $this;
+                    $this->_elements[$key]->_setParent($this_);
+                    $result =& $this->_elements[$key]->_reset();
                     if (PEAR::isError($result)) {
                         return $result;
                     }
