@@ -159,6 +159,9 @@ class cGrid {
 	function set_datasource(&$source) {
 		$this->_datasource =& $source;
 	}
+	function get_datasource() {
+		return  $this->_datasource;
+	}
 
 	function setPageSize($pageSize) {
 		$this->pageSize = $pageSize;

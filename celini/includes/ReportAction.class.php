@@ -8,6 +8,7 @@ $loader->requireOnce('includes/Datasource_array.class.php');
  */
 class ReportAction {
 	var $controller;
+	var $reports;
 
 	function action($report_id,$template_id) {
 		$filteredGet =& Celini::filteredGet();
@@ -187,6 +188,7 @@ class ReportAction {
 			$reports[$key]['ds']->_type = 'html';
 		}
 		$view->assign_by_ref("reports",$reports);
+		$this->reports = $reports;
 
 		if ($this->controller->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) {
 			if (isset($view->rs)) {

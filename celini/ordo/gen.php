@@ -3,8 +3,8 @@ require_once dirname(__FILE__) . "/../bootstrap.php";
 require_once CELINI_ROOT."/controllers/Controller.class.php";
 require_once CELINI_ROOT."/ordo/ORDataObject.class.php";
 
-$package = "com.uversainc.celini";
-$author = "Uversa Inc.";
+$package = "com.clearhealth";
+$author = "ClearHealth Inc.";
 $table = $argv[1];
 
 
