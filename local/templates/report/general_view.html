@@ -1,0 +1,65 @@
+{if $report->get('show_sequence')}
+<div style="text-align: right;">
+	<div style="float: right; padding: 2px; border: solid 1px black; font-weight: bold;">Report #{$report_sequence}</div>
+	<br style="clear: both";
+</div>
+{/if}
+<table width="100%"  border="0" cellspacing="0" cellpadding="8">
+<tr>
+	<td>
+		<div style="float:left">
+		<h2 style="margin-top: 0; padding-top: 0;">Report: {$report->get_label()}{if $template_name !== "Default Template"} - {$template_name}{/if}</h2>
+		{if $snapshotDate}<h4>Viewing a Snapshot: {$snapshotDate} (filtering report will return you to live data)</h4>{/if}
+	</div>
+		
+		<div style="float:right">
+		{if $report->get('snapshot_style') == 2}
+		<a href='{$REPORT_ACTION}&snapshot=true'>Re-Run Report Making a Snapshot</a> &nbsp; 
+		{/if}
+		{if $PRINT_ACTION || $PDF_ACTION}
+			<a target='print' href="{$PRINT_ACTION}">Print View</a>&nbsp;|&nbsp;
+			<a target='print' href="{$PRINTALL_ACTION}">Print View (Long)</a>&nbsp;|&nbsp;
+			<a target='print' href="{$PDF_ACTION}">PDF View</a>
+			{if $PRINTER_ACTION}
+			<a target='_blank' href="{$PRINTER_ACTION}">Send To Printer</a>
+			{/if}
+		{/if}
+		</div>
+		<div style='clear: both'></div>
+		{if $report->get_description()}
+		<p>{$report->get_description()}</p>
+		{/if}
+	</td>
+</tr>
+{foreach from=$reports item=report}
+<tr><td>
+	{if $report.title}<h3>{$report.title|make_label}</h3>{/if}
+	{if !$report.flags || !in_array('hideFilter',$report.flags)}
+		{$report.filter->render()}
+	{/if}
+</td></tr>
+<tr>
+	<td>
+		{if $report.flags && in_array('noPager',$report.flags)}
+			{$report.grid->setPageSize(false)}
+		{/if}
+		{if $report.flags && in_array('infoBox',$report.flags)}
+			{assign var=tmp value=$report.ds->toArray()}
+			{assign var=cols value=$report.ds->getColumnLabels()}
+			<table class="grid">
+			{foreach from=$tmp[0] item=val key=key}
+			<tr><th><label>{$cols[$key]}</label></th><td>{$val}</td></tr>
+			{/foreach}
+			</table>
+		{else}
+			{$report.grid->render()}
+			{if $report.grid->empty}
+			<p>Report Section Contains no data.</p>
+			{/if}
+		{/if}
+
+	</td>
+</tr>
+{/foreach}
+
+</table>

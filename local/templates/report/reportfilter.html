@@ -1,0 +1,113 @@
+<form name="report" method="post" action="{$TOP_ACTION}">
+		{if !$READONLY}
+		<fieldset class="radio">
+		<h3>Filter Report</h3>
+		{else}
+		<h3>Filter Values</h3>
+		{/if}
+<table {if $READONLY}cellspacing=0 cellpadding=2 border=1{/if}>
+	<tr>
+		<td>
+		{foreach from=$vars item=var name=vars}
+		<div style="float:left; margin:3px 5px;">{$var.name|replace:"_":" "|capitalize:true}: 
+			{if $var.type[0] == "string"}
+				{if $READONLY}
+					{$var.value}
+				{else}
+					<input style="" type="text" name="rf[{$var.name}]" width=15" value="{$var.value}">
+				{/if}
+			{/if}
+			{if $var.type[0] == "date"}
+				{if $READONLY}
+					{$var.value}
+				{else}
+					{assign var=n value=$var.name}
+					{clni_input_date name="rf[$n]" value=$var.value}
+				{/if}
+			{/if}
+			{if $var.type[0] == "datetime"}
+                                {if $READONLY}
+                                        {$var.value}
+                                {else}
+                                        {assign var=n value=$var.name}
+                                        {clni_input_date name="rf[$n]" value=$var.value time=true size="15" format_popup="%Y-%m-%d %H:%M"}
+                                {/if}
+                        {/if}
+			{if $var.type[0] == "enum"}
+				{if $READONLY}
+					{enum_lookup name=$var.type[1] value=$var.value}
+				{else}
+				<select  style="vertical-align:text-top;" name="rf[{$var.name}]" id="filter_select_{$var.name}">
+					<option></option>
+					{enum_options name=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multienum"}
+				{if $READONLY}
+					{enum_lookup name=$var.type[1] value=$var.value }
+				{else}
+				<select   style="vertical-align:text-top;" multiple="multiple" size="10" name="rf[{$var.name}][]" id="filter_select_{$var.name}">
+					<option></option>
+					{enum_options name=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multienuml"}
+				{if $READONLY}
+					{$var.value }
+				{else}
+				<select   style="vertical-align:text-top;" multiple="multiple" size="10" name="rf[{$var.name}][]" id="filter_select_{$var.name}">
+					<option></option>
+					{html_options selected=$var.value options=$em->enumArray($var.type[1],"value","value")}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "query"}
+				{if $READONLY}
+					{query_options query=$var.type[1] selected=$var.value lookup=1}
+				{else}
+				<select name="rf[{$var.name}]" id="filter_select_{$var.name}">
+					<option></option>
+					{query_options query=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "multiquery"}
+				{if $READONLY}
+					{query_options query=$var.type[1] selected=$var.value lookup=1}
+				{else}
+				<select style="vertical-align:text-top;" name="rf[{$var.name}][]" multiple="multiple" id="filter_select_{$var.name}" size="10">
+					<option></option>
+					{query_options query=$var.type[1] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+			{if $var.type[0] == "sqlenum"}
+				{if $READONLY}
+					{sqlenum_lookup table=$var.type[1] column=$var.type[2] selected=$var.value lookup=1}
+				{else}
+				<select name="rf[{$var.name}]" id="filter_select_{$var.name}">
+					<option></option>
+					{sqlenum_lookup table=$var.type[1] column=$var.type[2] selected=$var.value}
+				</select>
+				{/if}
+			{/if}
+		</div>
+		{/foreach}
+		</td>
+	</tr>
+	{if !$READONLY}
+	<tr>
+		<td colspan="{$vars.total}">
+			<input type="submit" value="Filter Report">
+		</td>
+	</tr>
+	{/if}
+</table>
+<input type="hidden" name="id" value="{$id}">
+<input type="hidden" name="process" value="{$PROCESS}">
+		{if !$READONLY}
+		</fieldset>
+		{/if}
+</form>
