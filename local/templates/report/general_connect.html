@@ -4,16 +4,17 @@
 	var menu_id = false;
 	var report_template_id = false;
 
-	var mr = new MenuReport();
+	var mr = new menureport();
+	mr.Sync();
 
-	var r = new Report();
+	var r = new report();
 
 	function updateTemplate(reportSelect) {
 		var report_id = reportSelect.value;
 
 		var template_select = document.getElementById('template');
 
-		var templates = r.getTemplateList(report_id,true);
+		var templates = r.gettemplatelist(report_id,true);
 
 		template_select.options[0].value=0;
 		template_select.options[0].text=" ";
@@ -46,7 +47,7 @@
 	}
 
 	function updateMenuItems() {
-		var items = mr.getMenuList(menu_id,true);
+		var items = mr.getmenulist(menu_id,true);
 
 		if (items.length == 0) {
 			document.getElementById("updateContent").innerHTML = "No reports for this section";
@@ -67,62 +68,63 @@
 	}
 
 	function addMenuEntry() {
-		mr.addMenuEntry(menu_id,report_template_id,document.getElementById('title').value);
+		mr.addmenuentry(menu_id,report_template_id,document.getElementById('title').value);
 		updateMenuItems();
 	}
 
 	function updateMenuEntry(id,el) {
-		mr.updateMenuEntry(id,el.value);
+		mr.updatemenuentry(id,el.value);
 	}
 
 	function deleteMenuEntry(id,name) {
 		if (confirm('Delete Menu Entry: '+name)) {
-			mr.deleteMenuEntry(id);
+			mr.deletemenuentry(id);
 			updateMenuItems();
 		}
 	}
 </script>
 {/literal}
 <form name="report" id="h3sForm" method="post" action="{$FORM_ACTION}" enctype="multipart/form-data" onSubmit="return false;">
-		<fieldset class="radio" style="vertical-align:top">
-			<legend>{l}Select Menu Section{/l}</legend>
-			<div style="float:left">
-			{foreach from=$sections item=menu key=menu_id}
+	<fieldset>
+		<fieldset class="radio">
+			<legend>Select Menu Section</legend>
+			{foreach from=$menu->toDisplayArray() item=menu key=menu_id}
 				{if strstr($menu_id,'ss-')}
-				</div><div style="float:left; padding: 3px;">
+					{if $notfirst}<br>{/if}
+					{assign var=notfirst value=1}
 					<b>{$menu}</b><br>
 				{else}
 				<input onclick="setId(this)" type="radio" name="menu_id" value="{$menu_id}" id="r{$menu_id}"><label class="cb" for="r{$menu_id}">{$menu}</label><br>
 				{/if}
 			{/foreach}
-			</div>
 		</fieldset>
 
 		<fieldset class="radio" id="update" style="display:none">
-			<legend>{l}Update Menu Entry{/l}</legend>
+			<legend>Update Menu Entry</legend>
 			<div id="updateContent">
 			</div>
 		</fieldset>
 
 		<fieldset class="radio" id="add" style="display:none">
-			<legend>{l}Add new Report{/l}</legend>
+			<legend>Add new Report</legend>
 
-			<label class="cb">{l}Select Report and Template{/l}</label>
+			<label class="cb">Select Report and Template</label>
 			<select name="report" onChange="updateTemplate(this)">
 				{html_options options=$report->getReportList()}
 			</select>
 
 			<select name="report_template_id" id="template" onChange="setId(this)">
-				<option>{l}Select a Report{/l}</option>
+				<option>Select a Report</option>
 			</select>
 
 			<div id="newitem" style="display:none">
 				<table>
 					<tr>
-						<td><label>{l}Title{/l}: </label></td><td><input id="title" name="title" type="text" width="20"></td>
+						<td><label>Title: </label></td><td><input id="title" name="title" type="text" width="20"></td>
 						<td><input type="submit" value="Add Menu Entry" onClick="addMenuEntry()"></td>
 					</tr>
 				</table>
 			</div>
 		</fieldset>
+	</fieldset>
 </form>
