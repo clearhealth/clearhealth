@@ -67,7 +67,12 @@ class Report extends ORDataObject {
 			$this->populate();
 		}
 	}
-
+	function get_report_id() {
+		return $this->id;
+	}
+	function set_report_id($report_id) {
+		$this->id = (int)$report_id;
+	}
 	function setupBySystemName($name) {
 		$name = $this->dbHelper->quote($name);
 		$sql = "select foreign_key from storage_string where value_key = 'system_report' and value = $name";
@@ -247,7 +252,13 @@ class Report extends ORDataObject {
 		}
 		return $ret;
 	}
-
+	
+	function getDefaultTemplateId() {
+		$tl = $this->getTemplateList();
+		$tlka = array_keys($tl);
+		return $tlka[0];
+	}
+	
 	/**
 	* Run the query query to get report labels from the query
 	*/

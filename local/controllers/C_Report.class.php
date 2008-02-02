@@ -11,6 +11,8 @@ $loader->requireOnce("includes/Pager.class.php");
 $loader->requireOnce("includes/ReportFilter.class.php");
 $loader->requireOnce("includes/Grid.class.php");
 $loader->requireOnce("includes/Datasource_sql.class.php");
+$loader->requireOnce("ordo/GraphDefinition.class.php");
+$loader->requireOnce("controllers/C_Graph.class.php");
 
 
 /**
@@ -110,8 +112,9 @@ class C_Report extends Controller {
 		$this->assign("template_add",Celini::link("add_template")."report_id=$id");
 		$this->assign("templates",$r->get_templates());
 		$this->assign("DOWNLOAD_ACTION",Celini::link('download_template',true,true,$id));
-	
-	
+		$cg = new C_Graph();	
+		$graphHtml = $cg->actionShowGraphDefinitions($r->get('report_id'));
+		$this->assign('visualizations',$graphHtml);
 		return $this->view->render('edit_report.html');	
 	}
 

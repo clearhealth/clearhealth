@@ -373,7 +373,7 @@ class Person extends ORDataObject {
 		} else {
 			$sqlPersonTypes[] = $sqlPersonTypeCol . ' = '.(int)array_search($type,$types);
 		}
-		if ($type == 'Provider') {
+		if ($type === 'Provider') {
 			$em =& Celini::enumManagerInstance();
 			$typeList =& $em->enumList('person_type');
 			for ($typeList->rewind(); $typeList->valid(); $typeList->next()) {

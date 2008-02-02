@@ -146,9 +146,9 @@ class ClearhealthCalendarData {
 			$time= $filters['endtime']->getValue();
 			$time = date('H:i:s',mktime($time['ap']=='AM' ? ($time['hour']=='12' ? '00' : $time['hour']) : $time['hour']+12,$time['minute'],$time['second']));
 			if($forevent == false) {
-				$criteriaArray[] = "event.start <= ".$db->quote($filters['end']->getValue().' '.$time);
+				$criteriaArray[] = "event.end <= ".$db->quote($filters['end']->getValue().' '.$time);
 			} else {
-				$criteriaArray[] = "aevent.start <= ".$db->quote($filters['end']->getValue().' '.$time);
+				$criteriaArray[] = "aevent.end <= ".$db->quote($filters['end']->getValue().' '.$time);
 			}
 		}
 		if(isset($filters['user']) && count($filters['user']->getValue()) > 0) {
