@@ -1078,7 +1078,7 @@ INSERT INTO `enumeration_definition` (`enumeration_id`, `name`, `title`, `type`)
 (56, 'months_of_year', 'Months of Year', 'Default'),
 (57, 'recurrence_pattern_type', 'Recurrence Pattern Type', 'Default'),
 (59, 'confidentiality_levels', 'Confidentiality Levels', 'Default'),
-(60, 'billing_mode', 'Billing Mode', 'Mappedvalue'),
+(60, 'billing_mode', 'Billing Mode', 'MappedValue'),
 (61, 'account_note_type', 'Account Note Type', 'Default'),
 (62, 'eob_adjustment_type', 'Eob Adjustment Type', 'MappedValue'),
 (63, 'value_type', 'Value Type', 'Default'),
