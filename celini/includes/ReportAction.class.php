@@ -109,7 +109,7 @@ class ReportAction {
 		}
 		foreach($queries as $key => $query) {
 			$query = $this->_parseSqlGenerators($query);
-			
+			$flags = array();	
 			if (strstr($key,',')) {
 				$flags = explode(',',$key);
 				$key = array_shift($flags);
@@ -124,7 +124,12 @@ class ReportAction {
 			}
 			else {
 				//var_dump('live data');
-				$reports[$key]['ds'] =& $reports[$key]['filter']->getDatasource();
+				if (in_array('skipDefaultRun',$flags)) {
+					$reports[$key]['ds'] =& new Datasource();
+				}
+				else {
+					$reports[$key]['ds'] =& $reports[$key]['filter']->getDatasource();
+				}
 			}
 			foreach($reports[$key]['filter']->dsFilters as $k => $val) {
 				if (strstr($val[0],'&')) {
