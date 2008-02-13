@@ -486,12 +486,10 @@ class M_Patient extends Manager {
 		// build a new view template for displaying the data
 		$person = $_POST['person'] ;
 		$last_name = $person['last_name'] ;
-		//$last_name = $db->quote("$last_name") ;
 		$first_name = $person['first_name'] ;
-		//$first_name = $db->quote("$first_name") ;
 		$first_initial = substr($first_name,0,1) ;
 		$gender = $person['gender'] ; // 1=Male,2=Female
-		$dob = $person['date_of_birth'] ;
+		$dob = $db->quote($person['date_of_birth']) ;
 		
 		$duplicates = Array() ;
 		
@@ -510,15 +508,15 @@ class M_Patient extends Manager {
 			WHERE 
 				(
 					(
-						last_name like '$last_name' OR 
-						last_name like '$last_name%'
+						last_name like ". $db->quote($last_name) . " OR 
+						last_name like " . $db->quote($last_name.'%') . "
 					)
 					AND 
 					(
-						first_name like '$first_name' OR 
-						first_name like '$first_name%' OR 
-						(SUBSTRING(first_name,1,1) like '$first_initial' AND gender='$gender') OR 
-						date_of_birth='$dob'
+						first_name like " . $db->quote($first_name) . " OR 
+						first_name like ". $db->quote($first_name.'%') . "  OR 
+						(SUBSTRING(first_name,1,1) like " .$db->quote($first_initial) . " AND gender=$gender) OR 
+						date_of_birth=$dob
 					)
 				)
 			ORDER BY 
