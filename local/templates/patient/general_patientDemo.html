@@ -20,9 +20,11 @@
 	</script>
 	{/literal}
 {head type="js"}
+{literal}
 function startDuplicate(URL) {
 	var subWin = window.open(URL, 'dupeWindow','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=400');
 }
+{/literal}
 {/head}
 
 	<div class="tab{if $Celini->isTabSelected('CPatientTabSet0/details')} selected{/if}" tabKey="CPatientTabSet0/details" title="{if $detail_section_title}{$detail_section_title}{else}{l}Individual Details{/l}{/if}">
