@@ -225,7 +225,7 @@ class Report extends ORDataObject {
 	*/
 	function getReportList() {
 		$res = $this->_execute("select id, label from $this->_prefix$this->_table order by label");
-		$ret = array(" ");
+		$ret = array();
 		while(!$res->EOF) {
 			$ret[$res->fields['id']] = $res->fields['label'];
 			$res->moveNext();
