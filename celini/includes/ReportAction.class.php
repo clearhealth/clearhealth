@@ -2,6 +2,7 @@
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('includes/ReportFilter.class.php');
 $loader->requireOnce('includes/Datasource_array.class.php');
+$loader->requireOnce('controllers/C_Graph.class.php');
 
 /**
  * Class that handles building and displaying a report for the base controller
@@ -192,8 +193,11 @@ class ReportAction {
 			$reports[$key]['grid']->setExtraURI('&name=' . $reports[$key]['grid']->name);
 			$reports[$key]['ds']->_type = 'html';
 		}
-		$view->assign_by_ref("reports",$reports);
+		$view->assign_by_ref("reports",array_values($reports));
 		$this->reports = $reports;
+		$cg = new C_Graph();
+		$visualizations = $cg->reportGraphs($this,$r);
+		$view->assign("visualizations",$visualizations);
 
 		if ($this->controller->GET->get('snapshot') == 'true' || $r->get('snapshot_style') == 1) {
 			if (isset($view->rs)) {
