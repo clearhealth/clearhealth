@@ -13,7 +13,7 @@ class GraphDefinition extends ORDataObject {
 	 * Fields of table: graph_definition mapped to class members
 	 */
 	var $graph_definition_id		= '';
-	var $report_id		= '';
+	var $external_id		= '';
 	var $width		= 350;
 	var $height		= 200;
 	var $font_size		= 8;
@@ -99,6 +99,12 @@ class GraphDefinition extends ORDataObject {
 		$this->querylinks = $qlinks;
 		}
 	}
+	function get_querylinks() {
+		if ($this->_inPersist) {
+			return implode(':',$this->querylinks);
+		}
+		return $this->querylinks; 
+	} 
 
 	function getGraphsByReportId($reportId) {
 		$labels = array(
@@ -112,7 +118,7 @@ class GraphDefinition extends ORDataObject {
 		$query = array(
 			'cols' => "*",
 			'from' => "graph_definition ",
-			'where' => 'report_id = ' . (int)$reportId,
+			'where' => 'external_id = ' . (int)$reportId,
 			);
 		$db = Celini::dBInstance();
                 // build the datasource from the query
@@ -125,7 +131,7 @@ class GraphDefinition extends ORDataObject {
 	function getAllGraphDefsForReport($reportId) {
 		$gDefs = array();
 		$db = Celini::DbInstance();
-		$sql = "select * from graph_definition gd where report_id = " . (int)$reportId;
+		$sql = "select * from graph_definition gd where external_id = " . (int)$reportId;
 		$arr = $db->getAll($sql);
 		foreach ($arr as $gdrow) {
 			$gd = new GraphDefinition();
