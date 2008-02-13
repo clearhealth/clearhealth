@@ -12,6 +12,7 @@ class C_WidgetForm extends C_CRUD {
 	var $_ordoName = "WidgetForm";
 	var $form_data_id = 0;
 	var $formId = 0;
+	var $reportId = 0;
 	var $widget_form_id = '';
 	var $column_id = '';
 	var $controller_name = '';
@@ -234,6 +235,9 @@ class C_WidgetForm extends C_CRUD {
 		$form = ORDataObject::factory("Form"); 
 		$formList = $form->simpleFormList();
 		$this->assign("formList",$formList);
+		$report = ORDataObject::factory("Report"); 
+		$reportList = $report->getReportList();
+		$this->assign("reportList",$reportList);
                 $this->assign("EDIT_ACTION", Celini::managerLink($id));
                 $this->view->assign_by_ref('ordo', $ordo);
 

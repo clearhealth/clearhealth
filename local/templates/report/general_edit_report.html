@@ -98,7 +98,7 @@ function deleteTemplate(button,template_id) {
 <iframe name="preview" style="width:100%;height:575px;">
 </iframe>
 </fieldset>
-		<fieldset class="radio" style="width:50%;">
+		<fieldset class="radio" style="width:50%; height:600px;">
 		<legend>Report Definition</legend>
 <table>
 	<tr>
@@ -185,11 +185,11 @@ function deleteTemplate(button,template_id) {
 		<input type="button" OnClick="addTemplate({$template.report_id});" value="Add a new Template" >
 		<input type="submit" name="submit" value="Update Templates">
 	</fieldset>
-	{$visualizations}
 	{/if}
 <input type="hidden" name="id" value="{$report->get_id()}">
 <input type="hidden" name="process" value="{$PROCESS}">
 </form>
+	{$visualizations}
 </td></tr>
 </table>
 {clni_register_validation id="custom_id" rules="required|alphanum" message="Custom ID must be alphanumeric and contain no spaces."}

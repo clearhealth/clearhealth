@@ -9,14 +9,10 @@ class C_Graph extends Controller {
         function __contructor() {
 
         }
-
-	function actionTestGraph() {
-		$r = ORDataObject::factory('Report',36073312);
-		$ra = new ReportAction();
+	function &reportGraphs($ra,$report) {
 		$ra->controller = new Controller();	
-		$ra->action($r->get('report_id'),$r->get('default_template_id'));
 		$reports = $ra->reports;
-		$gDefs = GraphDefinition::getAllGraphDefsForReport($r->get('report_id'));
+		$gDefs = GraphDefinition::getAllGraphDefsForReport($report->get('report_id'));
 		$cachePath = APP_ROOT . "/tmp/pic_cache/";
 		$graphImgs = array();
 		foreach($gDefs as $gDef) {
@@ -33,8 +29,7 @@ class C_Graph extends Controller {
                 	$gDef->writeGraph($filename);
 			$graphImgs[] = basename($filename);
 		}
-		$this->view->assign('graphImgs',$graphImgs);
-		return $this->view->render('view.html');	
+		return $graphImgs;
 	}
 	function actionImage($imgname) {
 		$cachePath = APP_ROOT . "/tmp/pic_cache/";
@@ -51,7 +46,19 @@ class C_Graph extends Controller {
 	function actionShowGraphDefinitions($externalId) { 
 		$graphGrid = GraphDefinition::getGraphsByReportId((int)$externalId);
 		$this->view->assign('graphGrid',$graphGrid);
+		$this->view->assign('externalId',(int)$externalId);
 		return $this->view->render('graphDefinitions.html');
+	}
+	function actionAdd($externalId) {
+		return $this->actionShowGraphDefinitions((int)$externalId);
+	}
+	function processAdd($externalId) {
+		$gd = ORDataObject::factory('GraphDefinition');
+		$externalId = (int)$externalId;
+		$gdData = $_POST['graphDefinition'];
+		$gd->populateArray($gdData);
+		$gd->set('externalId',$externalId);
+		$gd->persist();
 	}
 }
 

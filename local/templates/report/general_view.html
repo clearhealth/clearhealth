@@ -1,3 +1,4 @@
+{if !$reports.0.flags || !in_array('hideGrid',$reports.0.flags)}
 {if $report->get('show_sequence')}
 <div style="text-align: right;">
 	<div style="float: right; padding: 2px; border: solid 1px black; font-weight: bold;">Report #{$report_sequence}</div>
@@ -31,13 +32,17 @@
 		{/if}
 	</td>
 </tr>
+{/if}
 {foreach from=$reports item=report}
 <tr><td>
+	{if !$report.flags || !in_array('hideGrid',$report.flags)}
 	{if $report.title}<h3>{$report.title|make_label}</h3>{/if}
+	{/if}
 	{if !$report.flags || !in_array('hideFilter',$report.flags)}
 		{$report.filter->render()}
 	{/if}
 </td></tr>
+	{if !$report.flags || !in_array('hideGrid',$report.flags)}
 <tr>
 	<td>
 		{if $report.flags && in_array('noPager',$report.flags)}
@@ -60,6 +65,25 @@
 
 	</td>
 </tr>
+{/if}
 {/foreach}
+<tr>
+		<td>
+	{if !$report.flags || !in_array('hideFilter',$report.flags)}
+	<h3>Visualizations</h3>
+	{/if}
+	{if !$report.flags || !in_array('hideGraphs',$report.flags)}
+		{$report.filter->render()}
+			{if $visualizations}
+			{foreach from=$visualizations item=img}
+			<img src="{link controller="Graph" action="image" defaultArg=$img}">
+			<br />
+			{foreachelse}
+			No visualizations to display.
+			{/foreach}
+			{/if}
+	{/if}
+		</td>
+</tr>
 
 </table>

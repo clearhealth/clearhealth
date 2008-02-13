@@ -41,7 +41,8 @@ function addWidgetField() {
 <input type='hidden' name="WidgetForm[widget_form_id]" value="{$ordo->get('widget_form_id')}">
 <table>
 <tr><td>Name:</td><td><input type='text' id='WidgetForm__name' name='WidgetForm[name]' value="{$ordo->get('name')}"></td></tr>
-<tr><td>Form ID:</td><td>{html_options name="WidgetForm[form_id]" options=$formList selected=$ordo->get('form_id')}</td></tr>
+<tr><td>Form:</td><td>{html_options name="WidgetForm[form_id]" options=$formList selected=$ordo->get('form_id') blank="true"}</td></tr>
+<tr><td>Report:</td><td>{html_options name="WidgetForm[report_id]" options=$reportList selected=$ordo->get('report_id') blank="true"}</td></tr>
 <tr><td>Type:</td><td>{html_options name="WidgetForm[type]" options=$em->enumArray('widget_type') selected=$ordo->get('type')}</td></tr>
 <tr><td colspan="2">Show on Medical History: &nbsp;{input type="checkbox-table" name="WidgetForm[show_on_medical_history]" value=$ordo->get('show_on_medical_history')}</td></tr>
 </table>
