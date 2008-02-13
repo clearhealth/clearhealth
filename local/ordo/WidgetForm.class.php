@@ -13,6 +13,7 @@ class WidgetForm extends ORDataObject {
 	var $widget_form_id		= '';
 	var $name = '';
 	var $form_id		= '';
+	var $report_id		= '';
 	var $type		= '';
 	var $show_on_medical_history	= '';
 	var $controller_name = '';
