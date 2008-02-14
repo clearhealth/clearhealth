@@ -82,6 +82,7 @@ class C_WidgetForm extends C_CRUD {
 		$wfds->rewind();
 		$widgets = array();
 		$return_link = '';
+		$wfDataGrid = '';
 		if (!$this->GET->exists("returnTo")) {
 			$return_link = $_SERVER['REQUEST_URI'];
 		}
@@ -94,13 +95,26 @@ class C_WidgetForm extends C_CRUD {
 			// 4 is straight controller
 			if ($row['type'] == 4 || $row['type'] == 8) {
 				$dsName = "WidgetForm_" . $row['controller_name'] . "_DS";
-				$GLOBALS['loader']->requireOnce('datasources/' . $dsName . ".class.php");
+				if ($GLOBALS['loader']->includeOnce('datasources/' . $dsName . ".class.php")) {
 				$wflist_ds = new $dsName($patient_id,$row['widget_form_id']);
+				$wfDataGrid =& new sGrid($wflist_ds);
+				}
+				elseif ($GLOBALS['loader']->includeOnce('controllers/C_' . $row['controller_name'] . ".class.php")) {
+					//load controller as wfDataGrid object
+					$controller = 'C_' . $row['controller_name'];
+					$wfDataGrid = new $controller;
+					$wfDataGrid->reportId = $row['report_id'];
+					$wfDataGrid->formId = $row['form_id'];
+				}
+				else {
+					$this->messages->addMessage('Controller not found.');
+					$wfDataGrid = new sGrid(new Datasource());
+				}
 			}
 			else {
                         $wflist_ds = new Patient_WidgetFormCriticalList_DS($patient_id, $row['form_id'],$row['widget_form_id'],$encounterId); 
-			}
 			$wfDataGrid =& new sGrid($wflist_ds);
+			}
 			$wfDataGrid->name = "wfDataGrid" . $row['widget_form_id'];
 
 			//make rows have an edit link
@@ -128,6 +142,8 @@ class C_WidgetForm extends C_CRUD {
 			$widget = array();
 			$widget["name"] = $row['name'];
                         $widget["grid"] = $wfDataGrid->render();
+			$widget["width"] = $wfDataGrid->getWidth();
+			$widget["height"] = $wfDataGrid->getHeight();
                         
 			if ($row["controller_name"] != '') {
 				$widget["form_edit_link"] = Celini::link('edit', $row['controller_name'], true, $patient_id). "&widgetFormId=".$row['widget_form_id']."&returnTo=" . $return_link;

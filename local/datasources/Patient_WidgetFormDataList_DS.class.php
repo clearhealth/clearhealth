@@ -57,15 +57,14 @@ class Patient_WidgetFormDataList_DS extends Datasource_sql  {
 		
 		$db = Celini::dbInstance();
 		
-		$sql = "select DISTINCT value_key, 'storage_int' as source  from storage_int si LEFT JOIN form_data fd ON si.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' 
+		$sql = "select DISTINCT value_key, 'storage_int' as source  from storage_int si LEFT JOIN form_data fd ON si.foreign_key = fd.form_data_id and fd.form_id = " . (int)$form_id . " where fd.form_data_id IS NOT NULL
 				UNION
-				select DISTINCT value_key, 'storage_date' as source from storage_date sd LEFT JOIN form_data fd ON sd.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "'
+				select DISTINCT value_key, 'storage_date' as source from storage_date sd LEFT JOIN form_data fd ON sd.foreign_key = fd.form_data_id and fd.form_id = " . (int)$form_id . " where fd.form_data_id IS NOT NULL
 				UNION
-				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "'
+				select DISTINCT value_key, 'storage_string' as source from storage_string ss LEFT JOIN form_data fd ON ss.foreign_key = fd.form_data_id and fd.form_id = " . (int)$form_id . " where fd.form_data_id IS NOT NULL
 				UNION
-				select DISTINCT value_key, 'storage_text' as source from storage_text st LEFT JOIN form_data fd ON st.foreign_key = fd.form_data_id LEFT JOIN form f using (form_id) where  f.form_id = '" . $form_id . "' order by value_key";
+				select DISTINCT value_key, 'storage_text' as source from storage_text st LEFT JOIN form_data fd ON st.foreign_key = fd.form_data_id and fd.form_id = " . (int)$form_id . " where fd.form_data_id IS NOT NULL";
 //echo $sql ."<br>";
-
 		$res = $db->query($sql);
 		$fields = array();
 		$labels = array("last_edit" => "Last Edit");
