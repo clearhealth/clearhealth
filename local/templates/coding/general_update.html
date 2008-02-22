@@ -3,6 +3,7 @@
 {$messages->render()}
 {/if}
 {head type="js"}
+{literal}
 var selectVisible=true;
 var superBillVisible=false;
 function toggleSelects() {
@@ -50,6 +51,7 @@ function deleteClaimline(codingDataId) {
 	  formSubmit('ajaxCodingForm','codingBlock');
 	}
 }
+{/literal}
 {/head}
 {if $ajaxSubmit}
 <form action="{$base_uri}index.php/Coding/update" id="ajaxCodingForm" method="post" autocomplete="off">
