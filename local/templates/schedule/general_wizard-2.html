@@ -1,4 +1,5 @@
 {head type="js"}
+{literal}
 function providerChanged(select) {
 	if (!$('name').changed) { 
 		$('name').value = select.options[select.selectedIndex].text + "'s Schedule";
@@ -9,6 +10,7 @@ function roomChanged(select) {
 		$('group').value = select.options[select.selectedIndex].text;
 	}
 }
+{/literal}
 {/head}
 {include file="schedule/general_wizard_header.html"}
 <h2>Select a Provider and Room</h2>

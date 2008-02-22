@@ -1,8 +1,10 @@
 {head type="js"}
+{literal}
 function deletePayer(id) {
 	document.getElementById('removePayer').value=id;
 	document.getElementById('pgForm').submit();
 }
+{/literal}
 {/head}
 {clni_form id="pgForm action=$FORM_ACTION process=$PROCESS}
 <h3>Edit Payer Group <i>{$payerGroup->get('name')}</i></h3>

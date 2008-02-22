@@ -1,4 +1,5 @@
 {head type="js"}
+{literal}
 function removeCode(id,cell) {
 	var row = clniUtil.findParentOfTagName(cell,'tr');
 	var controller = new Controller({dispatchAction: function(result){}});
@@ -38,7 +39,7 @@ function updateTable(result) {
 		new Effect.Highlight('diagnosisList');
 	}
 }
-
+{/literal}
 {/head}
 
 <table>

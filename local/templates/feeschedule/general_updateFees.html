@@ -1,4 +1,5 @@
 {head type="css"}
+{literal}
 #editor {
 	width: 500px;
 	padding: 5px;
@@ -10,8 +11,10 @@
 	top: 0;
 	border-left: dotted 1px black;
 }
+{/literal}
 {/head}
 {head type="js"}
+{literal}
 function submitEdit(form) {
 	HTML_AJAX.formSubmit(form,'editor');
 }
@@ -21,6 +24,7 @@ function selectCode(code) {
 function selectSuperbill(url) {
 	HTML_AJAX.replace('sbContent',url+'superbill_id='+$('sbSelector').value);
 }
+{/literal}
 {/head}
 <h2>Fee Schedule: {$fs->get('label')}</h2>
 <p id="totals">{$fs->numCodesWithFees()} codes have fees, {$fs->numCodesNotDefaultFee()} codes have a non default fee</p>

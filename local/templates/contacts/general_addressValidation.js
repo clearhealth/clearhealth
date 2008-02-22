@@ -6,6 +6,7 @@
 {/if}
 {/if}
 {head type="js"}
+{literal}
 	var addressElements = [];
 	Behavior.register('#address',function(element) 
 		{
@@ -81,4 +82,5 @@
 			name.value = select.options[select.selectedIndex].text;
 		}
 	}
+{/literal}
 {/head}

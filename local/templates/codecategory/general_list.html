@@ -2,6 +2,7 @@
 var DELETE_ACTION = '{link controller="CodeCategory" action="delete"}';
 {/dynhead}
 {head type="js"}
+{literal}
 function deleteCodeCategory(link,id) {
 	var row = link.parentNode.parentNode;
 	if (confirm('Delete Category: '+row.cells[2].firstChild.innerHTML)) {
@@ -9,6 +10,7 @@ function deleteCodeCategory(link,id) {
 		new Effect.Fade(row);
 	}
 }
+{/literal}
 {/head}
 
 {$grid->render()}

@@ -1,4 +1,5 @@
 {head type="js"}
+{literal}
 function checkMediCalElig(action) {
 	$('eligButton').disabled = true;
 	$('eligButton').innerHTML = 'Checking eligibility with Medi-Cal please wait ...';
@@ -8,6 +9,7 @@ function checkMediCalElig(action) {
 		$('eligibilityCanvas').innerHTML = result;
 	} );
 }
+{/literal}
 {/head}
 <fieldset>
 	<legend>Insurance Eligibility</legend>

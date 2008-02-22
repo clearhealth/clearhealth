@@ -1,4 +1,5 @@
 {head type="js"}
+{literal}
 Behavior.register('#wizardForm',
 	function(element) {
 		$u.registerEvent(element,'submit',function(e) {
@@ -14,6 +15,7 @@ function switchForm(showid,hideid) {
 	document.getElementById(showid).style.display='block';
 	document.getElementById(hideid).style.display='none';
 }
+{/literal}
 {/head}
 {include file="schedule/general_wizard_header.html"}
 
