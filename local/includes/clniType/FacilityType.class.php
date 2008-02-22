@@ -4,7 +4,7 @@
  *
  * This api is still a work in progress
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class clniTypeFacilityType {

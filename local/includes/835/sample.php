@@ -2,7 +2,7 @@
 /**
  * Example of using the parser on 2 sample files
  *
- * @package	com.uversainc.x12
+ * @package	com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 

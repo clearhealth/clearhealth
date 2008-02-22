@@ -2,7 +2,7 @@
 /**
  * Util functions that can be used for debugging etc
  *
- * @package	com.uversainc.x12
+ * @package	com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 

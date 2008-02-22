@@ -3,7 +3,7 @@
  * Parser that parses tokenized x12 file using a map defining the elements and there relationships
  * Produces an object tree
  *
- * @package	com.uversainc.x12
+ * @package	com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -22,7 +22,7 @@ define('X12_MAP_PARSER_STORE_FIELD_DATA',3);
  * Parser that parses tokenized x12 file using a map defining the elements and there relationships
  * Produces an object tree
  *
- * @package	com.uversainc.x12
+ * @package	com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class X12MapParser {

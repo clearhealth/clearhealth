@@ -3,7 +3,7 @@
 /**
  * Configuration tied to a clearhealth practice
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  * @todo	figure out a decent external format for schema information and write a class to load it
  */

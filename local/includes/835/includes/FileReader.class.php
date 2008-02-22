@@ -2,7 +2,7 @@
 /**
  * Supplies a basic api to read the contents of a file
  *
- * @package com.uversainc.x12
+ * @package com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  * @todo	Create a base reader class to define the api when other reader types are added
  */

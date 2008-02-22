@@ -1,6 +1,6 @@
 <?php
 /**
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  */
  
 /**##@+
@@ -13,7 +13,7 @@ $loader->requireOnce('includes/UserProfile.class.php');
 /**
  * Provides Clearhealth specific authorization
  *
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  */
 class Auth extends AbstractAuth
 {
