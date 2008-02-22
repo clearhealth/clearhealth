@@ -1,4 +1,5 @@
 {head type="css"}
+{literal}
 #editor {
 	position: relative;
 	
@@ -42,6 +43,7 @@
 #details div {
 	display:none;
 }
+{/literal}
 {/head}
 {dynhead type="js"}
 var CONTENT_URL = '{$contentUrl}';
@@ -49,6 +51,7 @@ var deleteAction = '{link controller="AppointmentRuleset" action="deleteRule"}';
 {/dynhead}
 
 {head type="js"}
+{literal}
 function selectTab(section) {
 	HTML_AJAX.replace('tabreplaceable',CONTENT_URL+section);
 	showTab(section);
@@ -95,6 +98,7 @@ function deleteRule(link,id) {
 		link.parentNode.parentNode.removeChild(link.parentNode);
 	}
 }
+{/literal}
 {/head}
 
 <h2 id="rulesetName">Rule: {$ar->get('name')}</h2>

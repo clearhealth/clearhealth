@@ -2,6 +2,7 @@
 var deleteAction = "{link controller="AppointmentRuleset" action="deleteRuleset"}";
 {/dynhead}
 {head type="js"}
+{literal}
 function deleteRuleset(link,id) {
 	var label = link.parentNode.parentNode.cells[2].getElementsByTagName('a')[0].innerHTML;
 	if (confirm('Delete rule: '+label)) {
@@ -9,5 +10,6 @@ function deleteRuleset(link,id) {
 		link.parentNode.parentNode.parentNode.removeChild(link.parentNode.parentNode);
 	}
 }
+{/literal}
 {/head}
 {$grid->render()}
