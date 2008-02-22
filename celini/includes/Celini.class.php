@@ -617,7 +617,6 @@ class Celini {
 	function redirect($controller, $action, $queryParameters = array()) {
 		$queryString = '';
 		if (count($queryParameters) > 0) {
-			$GLOBALS['loader']->requireOnce('lib/PHP_Compat/Compat/Function/http_build_query.php');
 			$queryString = http_build_query($queryParameters);
 		}
 		Celini::redirectURL(Celini::link($action, $controller).$queryString);
