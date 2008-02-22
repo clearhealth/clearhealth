@@ -7,7 +7,7 @@
  * Any of these methods can be used as static or traditional object methods.
  *
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.alerts
+ * @package com.clear-health.alerts
  */
 class altPostOffice
 {

@@ -7,7 +7,7 @@
  * in the future and exist independent of the referral module.
  *
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.alerts
+ * @package com.clear-health.alerts
  */
 class altNotice extends ORDataObject
 {
