@@ -1480,5 +1480,56 @@ class ORDataObject {
 	function getAuditMessage() {
 		return $this->_auditMessage;
 	}
+
+public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
+	if ($xml === null) {
+		$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$rootNodeName />");
+	}
+	// loop through the data passed in.
+
+	foreach($data as $key => $value) {
+	// no numeric keys in our xml please!
+	if (is_numeric($key))	{
+	// make string key...
+		//$key = "unknownNode_". (string) $key;
+		$key = "array";
+	}
+	// replace anything not alpha numeric
+	$key = preg_replace('/[^a-z_0-9]/i', '', $key);
+
+	// if there is another array found recrusively call this function
+	if (strpos($key,'_') === 0
+		|| strpos($key,'audit') === 0 
+		|| strpos($key,'inPersist') === 0 
+		|| strpos($key,'table') === 0 
+		|| $key == "meta" 
+		|| $key == "metaHints" 
+		|| $key == "db" 
+		|| $key == "valuePlaceholders" 
+		|| $key == "metadata") {
+
+	}
+	else {
+
+	if (is_array($value) || is_object($value)) {
+		$node = $xml->addChild($key);
+		// recrusive call.
+		ORDataObject::toXml($value, $rootNodeName, $node);
+	}
+	else {
+		// add single node.
+		if (is_resource($value)) {
+			$value = "resource";
+		}
+		$value = htmlentities($value);
+		$xml->addChild($key,$value);
+	}
+	}
+	}
+	// pass back as string. or simple xml object if you want!
+	$xmlstr = $xml->asXML();
+	return preg_replace('/<\?.*\?>/','',$xmlstr);
+
+}
 } // end of ORDataObject
 ?>
