@@ -1,6 +1,6 @@
 <?php
 /**
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  */
 
 /**

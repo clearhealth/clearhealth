@@ -1,6 +1,6 @@
 <?php
 /**
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 $loader->requireOnce('includes/LockManager.class.php');
 $loader->requireOnce('includes/QuickSave.class.php');

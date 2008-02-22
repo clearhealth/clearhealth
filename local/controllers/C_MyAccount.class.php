@@ -2,7 +2,7 @@
 
 /**
  * Controller to hold stuff that a user can edit on there account
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class C_MyAccount extends Controller {
 
