@@ -2,7 +2,7 @@
 /**
  * Base objects used in generated object tree
  *
- * @package	com.uversainc.x12
+ * @package	com.clear-health.x12
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 

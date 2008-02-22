@@ -3,7 +3,7 @@
 /**
  * A 'browser' for a given block of an X12 document
  *
- * @package com.uversainc.x12
+ * @package com.clear-health.x12
  */
 class X12BlockBrowser
 {

@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: x12transaction_data
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class X12TransactionData extends ORDataObject {

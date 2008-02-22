@@ -3,7 +3,7 @@ $loader->requireOnce('includes/X12TokenIterator.class.php');
 /**
  * Tokenizer for X12 data, implements an SPL iterator interface
  *
- * @package com.uversainc.x12
+ * @package com.clear-health.x12
  * @author Joshua Eichorn <jeichorn@mail.com>
  */
 class X12Tokenizer {
