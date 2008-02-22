@@ -20,6 +20,7 @@ class C_XML extends C_Main
 	 * @return string
 	 */
 	function display($display = '') {
+		header('Content-type: text/xml');
 		$return = parent::display($display);
 		if ($this->GET->exists('embedded')) {
 			$return = preg_replace('/<([\/]?)(html|head|body)([^>]*)>/', '', $return);
