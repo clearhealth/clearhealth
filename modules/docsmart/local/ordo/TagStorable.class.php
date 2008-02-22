@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: tags_storables
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo Since this only exists as a sub-part of the Storable, it should be renamed to StorableTag
  *     or it should be moved to a completely generic Tag ordo with an external_type and external_id.

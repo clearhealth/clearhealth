@@ -7,7 +7,7 @@ $loader->requireOnce('/datasources/Tree_DS.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: folders
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo prefix with DocSmart
  */

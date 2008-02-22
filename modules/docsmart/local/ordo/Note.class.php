@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: notes
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo prefix with DocSmart
  */

@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: folders
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo Change "webdavname" to something like "label" as it isn't WebDAV specific.
  * @todo prefix with DocSmart

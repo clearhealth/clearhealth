@@ -4,7 +4,7 @@ $loader->requireOnce('/datasources/Revisions_DS.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: storables
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo Change "webdavname" to something like "label" as it isn't WebDAV specific.
  * @todo prefix with DocSmart

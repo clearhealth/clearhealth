@@ -3,7 +3,7 @@ $loader->requireOnce('/datasources/Revisions_DS.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: revisions
  *
- * @package com.uversainc.docsmart
+ * @package com.clear-health.docsmart
  *
  * @todo prefix with DocSmart
  */
