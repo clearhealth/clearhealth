@@ -3,7 +3,7 @@
 /**
  * Controller for {@link Occurence} ORDO
  *
- * @package com.uversa.calendar
+ * @package com.clear-health.calendar
  */
 class C_CalendarOccurence extends Controller
 {
