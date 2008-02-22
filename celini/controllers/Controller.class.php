@@ -2,7 +2,7 @@
 /**
 * Base page controller
 *
-* @package	com.uversainc.celini
+* @package	com.clear-health.celini
 */
 
 /**

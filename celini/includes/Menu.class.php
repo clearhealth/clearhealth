@@ -5,7 +5,7 @@
 * Note: in the source database you need a base entry with an id of 1 and an empty string for its site_section
 *
 * @author	Joshua Eichorn	<jeichorn@mail.com>
-* @package	com.uversainc.celini
+* @package	com.clear-health.celini
 */
 class Menu
 {

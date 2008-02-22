@@ -2,7 +2,7 @@
 $GLOBALS['loader']->requireOnce('/includes/EnumManager.class.php');
 /**
  * Smarty plugin
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @subpackage smarty_plugins
  */
 

@@ -4,7 +4,7 @@
  *
  * Methods that must be implemented in subclasses are located at the bottom and marked
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  *
  * @todo The order rules are getting complex enough that they should be stored
  *    in their own object and allow that object to handle the interactions.

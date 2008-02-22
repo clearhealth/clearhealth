@@ -5,7 +5,7 @@
  *
  * @author	Joshua Eichorn	<jeichorn@mail.com>
  * @author  Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class Messages
 {

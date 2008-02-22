@@ -11,7 +11,7 @@ $loader->requireOnce("/includes/EnumType/Default.class.php");
  * var_dump($manager->enumArray('test'));
  * </code>
  * @author	Joshua Eichorn <josh@mail.com>
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class EnumManager {
 

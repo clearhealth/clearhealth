@@ -3,7 +3,7 @@
  * Manager loading controller files
  *
  * @author	Joshua Eichorn <jeichorn@mail.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class ControllerFileLoader extends FileLoader {
 

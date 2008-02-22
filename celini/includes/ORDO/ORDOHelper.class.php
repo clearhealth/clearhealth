@@ -7,7 +7,7 @@
  *
  * @author  Travis Swicegood <tswicegood@uversainc.com>
  * @author Joshua Eichorn <jeichorn@mail.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class ORDOHelper
 {

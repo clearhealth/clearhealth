@@ -17,7 +17,7 @@ $loader->requireOnce('includes/acl/Auth.class.php');
  * {@link Celini::getCurrentUserProfile()}.
  *
  * @see Celini::getCurrentUserProfile()
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @abstract
  */
 class AbstractUserProfile

@@ -4,7 +4,7 @@
  *
  * This mainly exists to gives us an extension point for custom types
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class EnumValue {
 

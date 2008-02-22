@@ -4,7 +4,7 @@
  *
  * Use celini::trailInstance() to get the default instance to work with
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author Joshua Eichorn <jeichorn@mail.com>
  */
 class clniTrail {

@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: audit_log
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class AuditLog extends ORDataObject {

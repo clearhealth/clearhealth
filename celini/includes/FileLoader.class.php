@@ -1,6 +1,6 @@
 <?php
 /**
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 
 require_once dirname(__FILE__) . '/FileFinder.class.php';

@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: user
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ define('DEFAULT_USER_ID',0);
 /**
  * Object Relational Persistence Mapping Class for table: user
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class Base_User extends ORDataObject {
 

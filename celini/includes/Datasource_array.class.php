@@ -1,6 +1,6 @@
 <?php
 /**
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
  
 /**
@@ -10,7 +10,7 @@ $loader->requireOnce("includes/Datasource.class.php");
 
 /**
  * Datasource that can be used with a cGrid, just a wrapper around an array
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class Datasource_array extends Datasource {
 	var $_limit = false;

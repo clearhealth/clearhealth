@@ -2,7 +2,7 @@
 /**
  * Renderer for an active grid
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author Joshua Eichorn <jeichorn@mail.com>
  */
 class clniActiveGrid {

@@ -2,7 +2,7 @@
 // $Id: function.formatPhoneNumber.php 1019 2006-02-09 21:08:43Z cpowers $
 /**
  * Smarty plugin
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @subpackage smarty_plugins
  * @author Travis Swicegood <tswicegood@uversainc.com>
  */

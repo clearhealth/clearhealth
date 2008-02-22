@@ -7,7 +7,7 @@ $loader->requireOnce('/includes/clniMapper.class.php');
  *
  * {@link clniMapper} for the syntax to use for action and process methods
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class Manager {

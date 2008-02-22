@@ -1,6 +1,6 @@
 <?php
 /**
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
  
 /**
@@ -10,7 +10,7 @@ $loader->requireOnce("includes/Datasource.class.php");
 
 /**
  * Sql version of a datasource
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class Datasource_sql extends Datasource{
 	var $_db;

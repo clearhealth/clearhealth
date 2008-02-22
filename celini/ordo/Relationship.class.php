@@ -5,7 +5,7 @@ $loader->requireOnce('ordo/RelationshipORDO.abstract.php');
  * Provides a default ORDO for creating relationship tables
  *
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class Relationship extends RelationshipORDO
 {

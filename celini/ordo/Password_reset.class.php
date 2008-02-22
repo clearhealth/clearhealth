@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: password_reset
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: password_reset
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class Password_reset extends ORDataObject {
 

@@ -3,7 +3,7 @@
  * Manager loading clniType classes
  *
  * @author	Joshua Eichorn <jeichorn@mail.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class TypeFileLoader extends FileLoader {
 

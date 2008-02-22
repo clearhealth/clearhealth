@@ -21,7 +21,7 @@
  *
  * Note that only the new style syntax is supported in this class.  Only syntax variation support is done in the calling class.
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  * @todo	pull role list form gacl
  * @todo	is it worth adding a file cache for these, if so should we just use serialize and a factory?

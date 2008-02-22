@@ -9,7 +9,7 @@ $GLOBALS['loader']->requireOnce("/includes/EnumValue.class.php");
  * This is just the standardized api, actual work is done in an EnumerationType class
  *
  * @author	Joshua Eichorn <jeichorn@mail.com>
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class EnumList {
 	

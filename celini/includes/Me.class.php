@@ -5,7 +5,7 @@ ORDataObject::factory_include('User');
 /**
 *	Me class serves as repository for runtime persistent across requests information about the requester
 *	Houses information used to lookup roles, username, id, interfacable objects
-*	@package com.uversainc.celini
+*	@package com.clear-health.celini
 */
 
 class Me {

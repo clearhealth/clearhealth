@@ -1,6 +1,6 @@
 <?php
 /**
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
  
 /**
@@ -9,7 +9,7 @@
  *
  * Mainly lookup tables
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class MimeLookup {
 

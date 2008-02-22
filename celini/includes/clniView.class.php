@@ -5,7 +5,7 @@ $loader->requireOnce('/lib/PEAR/Cache/Lite.php');
 /**
  * Class that extends smarty and allows us to add custom functionality to it
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class clniView extends intSmarty {

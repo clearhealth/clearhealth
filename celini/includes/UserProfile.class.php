@@ -8,7 +8,7 @@ $loader->requireOnce('includes/AbstractUserProfile.abstract.php');
  * This allows an application or module to override Celini's default UserProfile actions by
  * providing their own UserProfile.
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class UserProfile extends AbstractUserProfile
 {

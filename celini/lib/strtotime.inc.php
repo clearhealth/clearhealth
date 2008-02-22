@@ -2,7 +2,7 @@
 /**
  * Celini implementation of strtotime that supports dates before 1970 and after 2038
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 
 /**

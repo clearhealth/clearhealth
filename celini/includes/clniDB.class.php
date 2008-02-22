@@ -2,7 +2,7 @@
 /**
  * Celini DB Helper
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class clniDB {

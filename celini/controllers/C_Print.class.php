@@ -6,7 +6,7 @@ $loader->requireOnce('controllers/C_PageType.abstract.php');
  * print.css file.
  *
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class C_Print extends C_PageType
 {

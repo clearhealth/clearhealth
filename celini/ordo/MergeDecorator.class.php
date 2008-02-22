@@ -2,13 +2,13 @@
 /**
  * ORDO class that has decoration code for merging objects
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 
 /**
  * Object Relational Persistence Mapping Class that merges multiple ORs into 1 base object
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class MergeDecorator extends ORDataObject {
 

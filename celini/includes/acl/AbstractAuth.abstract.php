@@ -3,7 +3,7 @@
 /**
  * Handles authorization requests from within the application
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @abstract
  */
 class AbstractAuth

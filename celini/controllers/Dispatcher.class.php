@@ -4,7 +4,7 @@ $loader->requireOnce('/controllers/Controller.class.php');
 /**
  * Handles dispatching events to controllers
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class Dispatcher {
 	var $stringOutput = true;

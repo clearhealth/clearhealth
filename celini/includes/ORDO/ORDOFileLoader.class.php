@@ -6,7 +6,7 @@ $loader->requireOnce('/includes/ORDO/ORDOHelper.class.php');
  * Manage loading ORDO files
  *
  * @author	Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class ORDOFileLoader extends FileLoader 
 {

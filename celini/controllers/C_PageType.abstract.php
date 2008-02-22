@@ -8,7 +8,7 @@ $loader->requireOnce('includes/clni/clniHTMLHead.class.php');
  *
  * @see C_Main, C_Print, Controller
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @abstract
  */
 class C_PageType extends Controller

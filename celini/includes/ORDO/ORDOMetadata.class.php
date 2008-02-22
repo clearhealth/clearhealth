@@ -11,7 +11,7 @@ $loader->requireOnce('includes/EnforceType.class.php');
  *
  * Mainly type information about fields
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author Joshua Eichorn <jeichorn@mail.com>
  */
 class ORDOMetadata {
@@ -338,7 +338,7 @@ class ORDOMetadata {
 /**
  * Provides information about a specific field, mainly exists for documentation purposes, but utililty methods may be added if needed
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author Joshua Eichorn <jeichorn@mail.com>
  */
 class ORDOMetadataField {

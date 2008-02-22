@@ -1,6 +1,6 @@
 <?php
 /**
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 
 require_once CELINI_ROOT . '/includes/FileLoader.class.php';

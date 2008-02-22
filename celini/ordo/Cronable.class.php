@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: cronable
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  */
 
 $loader->requireOnce('ordo/ORDataObject.class.php');
@@ -10,7 +10,7 @@ $loader->requireOnce('ordo/ORDataObject.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: cronable
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  */
 class Cronable extends ORDataObject {
 	

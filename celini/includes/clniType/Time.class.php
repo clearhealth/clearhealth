@@ -5,7 +5,7 @@
  *
  * This api is still a work in progress
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Gordon Forsythe <gforsythe@uversainc.com>
  */
 class clniTypeTime {

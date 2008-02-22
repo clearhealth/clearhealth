@@ -2,7 +2,7 @@
 /**
  * Access point for all AJAX requests using HTML_AJAX
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  *
  */

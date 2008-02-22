@@ -3,7 +3,7 @@
 * A pager, handles needed math, building limit clauses and rendering
 *
 * @author	Joshua Eichorn	<jeichorn@mail.com>
-* @package	com.uversainc.celini
+* @package	com.clear-health.celini
 */
 class Pager
 {

@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: enumeration_value
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: enumeration_value
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class EnumerationValue extends ORDataObject {
 

@@ -2,7 +2,7 @@
  * A DHTML pop-up generator designed to be used as a confirmation box for links
  *
  * @author Travis Swicegood <tswicegood@uversainc.com>
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @subpackage javascript
  *
  */
