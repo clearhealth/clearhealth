@@ -20,7 +20,18 @@ class C_Images extends Controller {
 	function _imgPath() {
 		$finder =& new FileFinder();
 		$finder->initCeliniPaths();
-		$imgPath = $finder->find(str_replace('Images','images',$_SERVER['PATH_INFO']));
+		$fileName = str_replace('Images','images',$_SERVER['PATH_INFO']);
+		$imgPath = '';
+		if (strtolower(substr($fileName,-3)) === "pdf") {
+			$fileName = basename($fileName);
+			$finder->addPath(APP_ROOT . '/user/report_templates');
+			$finder->addPath(APP_ROOT . '/user/form_templates');
+			$imgPath = $finder->find(str_replace('images/','',$fileName));
+			
+		}
+		else {
+			$imgPath = $finder->find(str_replace('Images','images',$fileName));
+		}
 		return $imgPath;
 	}
 
