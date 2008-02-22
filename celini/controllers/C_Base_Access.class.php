@@ -18,6 +18,18 @@ class C_Base_Access extends Controller {
 			Celini::redirectDefaultLocation();
 		}
 		else {
+			if (!isset($_SERVER['PHP_AUTH_USER'])) {
+    				header('WWW-Authenticate: Basic realm="Unauthorize Access Prohibited"');
+    				header('HTTP/1.0 401 Unauthorized');
+				return $this->view->render('denied.html');
+    				exit;
+			}
+			elseif (isset($_SERVER['PHP_AUTH_USER']) && strlen($_SERVER['PHP_AUTH_USER']) > 0) {
+				$_POST['process'] = "true";
+				$_POST['username'] = $_SERVER['PHP_AUTH_USER'];
+				$_POST['password'] = $_SERVER['PHP_AUTH_PW'];
+				$this->login_action_process();
+			}
 			header("Location: ".Celini::link('login','access','main'));
 		}
 		exit;
@@ -112,7 +124,7 @@ class C_Base_Access extends Controller {
 		}
 	}
 
-	function forgot_action_process() {
+				function forgot_action_process() {
 
 		ORDataObject::factory_include('User');
 		$user =& User::fromUsername($_POST['username']);
