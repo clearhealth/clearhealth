@@ -4,7 +4,7 @@ $loader->requireOnce('includes/Datasource_sql.class.php');
 /**
  * Displays generic notes based on parent object and type
  *
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  */
 class Person_GenericNotes_DS extends Datasource_sql {
 	/**

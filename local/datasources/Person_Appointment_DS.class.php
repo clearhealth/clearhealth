@@ -6,7 +6,7 @@ $loader->requireOnce('/includes/Datasource_sql.class.php');
 /**
  * Datasource for handling appointments
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class Person_Appointment_DS extends Datasource_sql {

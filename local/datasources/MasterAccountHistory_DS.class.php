@@ -1,6 +1,6 @@
 <?php
 /**
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  */
 
 /**

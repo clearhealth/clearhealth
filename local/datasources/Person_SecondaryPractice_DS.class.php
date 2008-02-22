@@ -6,7 +6,7 @@ $loader->requireOnce('/includes/Datasource_sql.class.php');
 /**
  * Datasource for handling secondary practice info
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class Person_SecondaryPractice_DS extends Datasource_sql {
 	/**
