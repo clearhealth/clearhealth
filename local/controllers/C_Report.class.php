@@ -158,9 +158,10 @@ class C_Report extends Controller {
 			foreach ($report->newTemplates as $key => $val) {
 				$newId = (int)$val['id'];
 				if (isset($_FILES['new_template_file']['tmp_name'][$key])) {
+				$ext = "html";
 					move_uploaded_file(
 						$_FILES['new_template_file']['tmp_name'][$key],
-						realpath(APP_ROOT . '/user/report_templates/') . '/' . $newId . '.tpl.html'
+						realpath(APP_ROOT . '/user/report_templates/') . '/' . $newId . '.tpl.'.$ext
 					);
 				}
 			}
@@ -175,8 +176,19 @@ class C_Report extends Controller {
 				{
 					if (isset($_FILES['template']['tmp_name'][$key]['file']))
 					{
+					$file_command = Celini::config_get("document_manager:file_command_path");
+                        		$cmd_args = "-i ".escapeshellarg($_FILES['template']['tmp_name'][$key]['file']);
+
+                        		$command = $file_command." ".$cmd_args;
+                        		$mimetype = exec($command);
+                        		$mime_array = split(":", $mimetype);
+					$ext = "html";
+					if (is_array($mime_array) && count($mime_array) > 1) {
+                        			$mimetype = $mime_array[1];
+						if (stripos($mimetype,"pdf") !== false) $ext = "pdf";
+					}
 						move_uploaded_file($_FILES['template']['tmp_name'][$key]['file'],
-							realpath(APP_ROOT."/user/report_templates/")."/".(int)$key.".tpl.html");
+							realpath(APP_ROOT."/user/report_templates/")."/".(int)$key.".tpl.".$ext);
 					}
 				}
 			}
@@ -196,13 +208,20 @@ class C_Report extends Controller {
 	*/
 	function actionDownload_template_edit($report_id=0,$template_id=0) {
 		if (is_numeric($template_id)) {
-			$file = realpath(APP_ROOT."/user/report_templates/")."/".(int)$template_id.".tpl.html";
-			if (file_exists($file)) {
+			$path = realpath(APP_ROOT."/user/report_templates/")."/";
+			if (file_exists($path.(int)$template_id.".tpl.html")) {
 				header("Content-type: text/html");
 				header('Content-Disposition: attachment; filename="'.$template_id.'.tpl.html"');
-				readfile($file);
+				readfile($path.(int)$template_id.".tpl.html");
 				exit;
 			}
+			elseif (file_exists($path.(int)$template_id.".tpl.pdf")) {
+				header("Content-type: application/binary");
+				header('Content-Disposition: attachment; filename="'.$template_id.'.tpl.pdf"');
+				readfile($path.(int)$template_id.".tpl.pdf");
+				exit;
+			}
+
 			else {
 				// generate a default template
 				$r = Celini::newOrdo('Report',$report_id);
