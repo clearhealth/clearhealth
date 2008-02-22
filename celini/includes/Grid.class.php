@@ -424,6 +424,12 @@ class sGrid extends cGrid {
                         $this->hideExportLink = $this->_datasource->hideExportLink;
                 }
         }
+	function getWidth() {
+
+	}
+	function getHeight() {
+
+	}
 
 }
 
