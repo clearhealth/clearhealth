@@ -180,7 +180,7 @@ class Document extends ORDataObject{
 			}
 		}
 		else {
-			$file_command = $GLOBALS['config']['document']['file_command_path'] ;
+			$file_command = Celini::config_get('document_manager:file_command_path');
 			$cmd_args = "-i ".escapeshellarg($new_path.$fname);
 		  		
 		  	$command = $file_command." ".$cmd_args;
