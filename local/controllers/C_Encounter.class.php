@@ -36,6 +36,19 @@ class C_Encounter extends Controller {
 		
 		return $this->actionEdit();
 	}
+	function actionEditEncounterValue($encounterValueId,$valueType,$value) {
+			$encounerValueId = (int)$encounterValueId;
+			$encounerId = (int)$encounterId;
+			$valueType=(int)$valueType;
+			$this->encounter_value_id = $encounterValueId;
+			$this->encounter_id = $encounterId;
+                        $encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$this->encounter_id));
+                        $encounterValue->set('value_type',$value_type);
+                        $encounterValue->set('value',$value);
+                        $encounterValue->persist();
+                        $this->encounter_value_id = $encounterValue->get('id');
+			return $this->actionEdit();
+	}
 
 	function ajaxEditPayment($appointmentId, $patientId) {
 		$appointmentId = (int)$appointmentId;
