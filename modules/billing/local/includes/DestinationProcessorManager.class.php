@@ -9,7 +9,7 @@ $loader->requireOnce('includes/DestinationProcessor.abstract.php');
 /**
  * The manager class for all of the various {@link DestinationProcessor}s.
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class DestinationProcessorManager 
 {

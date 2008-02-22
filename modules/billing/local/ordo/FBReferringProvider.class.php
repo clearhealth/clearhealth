@@ -2,7 +2,7 @@
 /**
  * ORDO that makes a person a referring provider
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 
 $loader->requireOnce('ordo/FBPerson.class.php');
@@ -10,7 +10,7 @@ $loader->requireOnce('ordo/FBPerson.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class FBReferringProvider extends FBPerson {
 

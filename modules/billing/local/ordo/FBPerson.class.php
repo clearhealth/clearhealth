@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -16,7 +16,7 @@ $loader->requireOnce('includes/Datasource_sql.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class FBPerson extends MergeDecorator {
 

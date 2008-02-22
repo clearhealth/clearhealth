@@ -5,7 +5,7 @@
  * Will just load all the classes for a system directory and a user directory to get the list
  * When a file is included it can register the name of hte processor and the class
  *
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  * @abstract
  */
 class DestinationProcessor 

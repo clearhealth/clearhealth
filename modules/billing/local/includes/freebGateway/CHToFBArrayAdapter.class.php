@@ -8,7 +8,7 @@
  * {@link ClearhealthToFreebGateway}.
  *
  * @see ClearhealthToFreebGateway, adapted()
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  * @subpackage modules.freeb2
  * @author Travis Swicegood <tswicegood@uversainc.com>
  */

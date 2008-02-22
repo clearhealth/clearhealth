@@ -2,7 +2,7 @@
 /**
  * ORDO that makes a company a practice
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 
 $loader->requireOnce('ordo/FBCompany.class.php');
@@ -10,7 +10,7 @@ $loader->requireOnce('ordo/FBCompany.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: Person
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class FBPractice extends FBCompany {
 

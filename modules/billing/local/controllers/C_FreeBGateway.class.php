@@ -27,7 +27,7 @@ unset($ordoClassDirectory);
 * through the use of associated arrays instead of specific function arguments.
 * Please review the function documentation closely.
 * 
-* @package com.uversainc.freeb2
+* @package com.clear-health.freeb2
 */
 
 class C_FreeBGateway extends Controller {

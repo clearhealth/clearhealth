@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: claim
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @subpackage	billing
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
@@ -16,7 +16,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: claim
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class FBClaim extends ORDataObject {
 

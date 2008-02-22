@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: address
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: address
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class FBAddress extends ORDataObject {
 

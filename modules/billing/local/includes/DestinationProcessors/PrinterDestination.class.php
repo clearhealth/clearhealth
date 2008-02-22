@@ -6,7 +6,7 @@ $loader->requireOnce('includes/DestinationProcessor.abstract.php');
  * The abstract for handling LPR printer destination processing.
  *
  * @abstract
- * @package com.uversainc.celini
+ * @package com.clear-health.celini
  */
 class PrinterDestinationProcessor extends DestinationProcessor
 {

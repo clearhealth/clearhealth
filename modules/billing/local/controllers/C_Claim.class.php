@@ -5,7 +5,7 @@ $loader->requireOnce('controllers/C_FreeBGateway.class.php');
 /**
  * Controller for editing/adding claims
  *
- * @package	com.uversainc.freeb2
+ * @package	com.clear-health.freeb2
  */
 class C_Claim extends Controller {
 
