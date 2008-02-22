@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: Patient
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ $loader->requireOnce('ordo/MergeDecorator.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: Patient
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @todo: add release_of_information_code
  */
 class Patient extends MergeDecorator {

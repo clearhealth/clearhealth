@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: self_mgmt_goals
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class SelfMgmtGoals extends ORDataObject {

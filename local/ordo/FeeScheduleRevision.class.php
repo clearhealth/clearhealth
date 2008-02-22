@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: fee_schedule_revision
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: fee_schedule_revision
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class FeeScheduleRevision extends ORDataObject {
 

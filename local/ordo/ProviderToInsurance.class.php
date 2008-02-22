@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: provider_to_insurance
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ $loader->requireOnce('ordo/ORDataObject.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: provider_to_insurance
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class ProviderToInsurance extends ORDataObject {
 

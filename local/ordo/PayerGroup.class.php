@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: payer_group
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Uversa Inc.
  */
 class PayerGroup extends ORDataObject {

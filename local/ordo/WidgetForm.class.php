@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: widget_form
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class WidgetForm extends ORDataObject {

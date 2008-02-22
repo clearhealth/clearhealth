@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: form_data
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Marek Handze <marek@rise.pl>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: form_structure
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class FormStructure extends ORDataObject {
 

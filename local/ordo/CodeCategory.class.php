@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: code_category
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class CodeCategory extends ORDataObject {

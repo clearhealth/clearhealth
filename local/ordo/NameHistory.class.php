@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: name_history
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ $loader->requireOnce('includes/Datasource_sql.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: name_history
  *
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  */
 class NameHistory extends ORDataObject {
 

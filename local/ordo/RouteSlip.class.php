@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: route_slip
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: route_slip
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  */
 class RouteSlip extends ORDataObject {
 

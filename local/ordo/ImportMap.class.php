@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: import_map
  *
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: import_map
  *
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  */
 class ImportMap extends ORDataObject {
 

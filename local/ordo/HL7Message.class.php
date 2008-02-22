@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: hl7_message
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class HL7Message extends ORDataObject {

@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: insurance_program
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: insurance_program
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class InsuranceProgram extends ORDataObject {
 

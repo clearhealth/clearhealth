@@ -2,7 +2,7 @@
 /**
  * Stub for generic user implementation
  *
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  * @author  Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -11,7 +11,7 @@ $loader->requireOnce('ordo/Base_User.class.php');
 /**
  * Stub user class
  *
- * @package com.uversainc.clearhealth
+ * @package com.clear-health.clearhealth
  */
 class User extends Base_User {
    

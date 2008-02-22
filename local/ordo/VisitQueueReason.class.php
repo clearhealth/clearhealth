@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: visit_queue_reason
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class VisitQueueReason extends ORDataObject {

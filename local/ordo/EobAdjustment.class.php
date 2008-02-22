@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: eob_adjustment
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class EobAdjustment extends ORDataObject {

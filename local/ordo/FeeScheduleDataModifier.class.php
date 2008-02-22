@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: fee_schedule_data_modifiers
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class FeeScheduleDataModifier extends ORDataObject {

@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: group_occurence
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: group_occurence
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class GroupOccurence extends ORDataObject {
 

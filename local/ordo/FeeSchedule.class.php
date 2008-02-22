@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: fee_schedule
  *
- * @package	com.uversainc.clearheath
+ * @package	com.clear-health.clearheath
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -15,7 +15,7 @@ $loader->requireOnce('includes/Datasource_sql.class.php');
 /**
  * Object Relational Persistence Mapping Class for table: fee_schedule
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class FeeSchedule extends ORDataObject {
 

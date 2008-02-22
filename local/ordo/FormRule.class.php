@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: form_rule
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Marek Handze <marek@rise.pl>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: form_rule
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  */
 class FormRule extends ORDataObject {
 

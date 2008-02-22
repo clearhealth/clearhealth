@@ -2,7 +2,7 @@
 /**
  * This file contains {@link FacilityCode}
  *
- * @package  com.uversainc.clearhealth
+ * @package  com.clear-health.clearhealth
  * @author   Travis Swicegood <tswicegood@uversainc.com>
  */
  

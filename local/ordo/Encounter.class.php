@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: encounter
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 

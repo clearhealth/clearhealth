@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: building_program_identifier
  *
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
@@ -10,7 +10,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: building_program_identifier
  *
- * @package	com.uversainc.freestand
+ * @package	com.clear-health.freestand
  */
 class BuildingProgramIdentifier extends ORDataObject {
 

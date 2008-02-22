@@ -2,14 +2,14 @@
 /**
  * Object Relational Persistence Mapping Class for table: encounter_dates
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
 /**
  * Object Relational Persistence Mapping Class for table: encounter_date
  *
- * @package	com.uversainc.clearhealth
+ * @package	com.clear-health.clearhealth
  */
 class EncounterDate extends ORDataObject {
 

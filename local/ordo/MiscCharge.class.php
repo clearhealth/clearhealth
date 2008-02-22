@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: misc_charge
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class MiscCharge extends ORDataObject {

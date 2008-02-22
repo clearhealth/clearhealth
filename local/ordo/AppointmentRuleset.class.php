@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: appointment_ruleset
  *
- * @package	com.uversainc.celini
+ * @package	com.clear-health.celini
  * @author	Uversa Inc.
  */
 class AppointmentRuleset extends ORDataObject {
