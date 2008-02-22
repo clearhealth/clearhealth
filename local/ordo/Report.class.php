@@ -4,10 +4,6 @@ $loader->requireOnce('ordo/ORDataObject.class.php');
 $loader->requireOnce('includes/Table.class.php');
 $loader->requireOnce('includes/ReportFilter.class.php');
 
-/**
-* Compat functions
-*/
-$loader->requireOnce('lib/PHP_Compat/Compat/Function/file_put_contents.php');
 
 
 /**
