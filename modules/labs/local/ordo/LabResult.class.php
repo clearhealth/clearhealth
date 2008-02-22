@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: lab_result
  *
- * @package	com.uversainc.Celini
+ * @package	com.clear-health.Celini
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 class LabResult extends ORDataObject {
