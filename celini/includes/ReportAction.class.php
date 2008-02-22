@@ -10,6 +10,7 @@ $loader->requireOnce('controllers/C_Graph.class.php');
 class ReportAction {
 	var $controller;
 	var $reports;
+	var $fetch = true;
 
 	function action($report_id,$template_id) {
 		$filteredGet =& Celini::filteredGet();
@@ -42,7 +43,13 @@ class ReportAction {
 				$template = APP_ROOT."/user/system_templates/{$templates[$template_id]['system_template_id']}.tpl.html";
 			}
 			else {
+				if (file_exists(APP_ROOT."/user/report_templates/$template_id.tpl.html")) {
 				$template = APP_ROOT."/user/report_templates/$template_id.tpl.html";
+				}
+				elseif(file_exists(APP_ROOT."/user/report_templates/$template_id.tpl.pdf")) {
+				$template = APP_ROOT."/user/report_templates/$template_id.tpl.pdf";
+
+				}
 			}
 			//one last sanity check..
 			if (!file_exists($template)) {
@@ -230,17 +237,27 @@ class ReportAction {
 
 		if ($template === "default") {
 			if ($sr_template) {
+				$return = '';
+				if ($this->fetch) {
 				$return = $view->render($sr_template);
+				}
 				if ($queries !== array('default' => "select 'No Query Found' error")) {
 					$view->path = 'report';
+					if ($this->fetch) {
 					$return .= $view->render('embeddedView.html');
+					}
 				}
 				return $return;
 			}
 
 			else {
 				$view->path = 'report';
+				if ($this->fetch) {
 				return $view->render("view.html");
+				}
+				else {
+				return true;
+				}
 			}
 		} else {
 			foreach(array_keys($reports) as $key) {
@@ -256,8 +273,36 @@ class ReportAction {
 			$em = EnumManager::getInstance();
 			$view->assign_by_ref('em',$em);
 
-			return $view->fetch($template);
+			if ($this->fetch) {
+			if (stripos($template,"pdf") === false) {
+				return $view->fetch($template);
+			}
+			//template is PDF
+			else {
+				$header = 
+'<?xml version="1.0" encoding="UTF-8"?><?xfa generator="XFA2_4" APIVersion="2.6.7116.0"?>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/" timeStamp="2008-01-16T02:06:28Z" uuid="6aee0086-4ab9-40a0-8119-5a0f3d39220a">
+<xfa:datasets xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">
+<xfa:data>
+<form1>';
+$str = '';
+	foreach($this->reports as $report) {
+		$data = $report['ds']->toArray();
+		$str = ORDataObject::toXML($data,$report['grid']->name);
+	}
+$str .= 
+'</form1>
+</xfa:data>
+</xfa:datasets>
+<pdf href="'. $this->controller->view->_tpl_vars['base_uri'] ."index.php/Images/".basename($template).'" xmlns="http://ns.adobe.com/xdp/pdf/" />
+</xdp:xdp>';
+                //header("Content-type: application/vnd.adobe.xfdf");
+                echo $header.$str;exit;
+
+			}
+			}
 		}
+			return true;
 
 	}
 	
