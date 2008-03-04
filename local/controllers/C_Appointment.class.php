@@ -84,7 +84,7 @@ class C_Appointment extends Controller {
 		$person =& Celini::newORDO('Person');
 		$users_array = array();
 		$users_array[0]=$person->getPersonList(0);
-		$users_array[2]=$person->getPersonList(2);
+		$users_array[2]=$provider->getProviderList('Provider');
 		$users_array[3]=$person->getPersonList(3);
 		$users_array[4]=$person->getPersonList(4);
 		$users_array[5]=$person->getPersonList(5);
@@ -690,6 +690,12 @@ class C_Appointment extends Controller {
 		}
 		return array(0,$appointment->get('provider_id'),$oldappointmentid > 0 ? $appointment->get('event_id') : 0,$out,$appointment->get('id'));
 	}
+
+	//used for debugging
+
+	/*function actionCheckRulesTest() {
+		return $this->check_rules(array('patient_id'=>34656707));
+	}*/
 
 	/**
 	 * This is where we'll be doing all the checks
