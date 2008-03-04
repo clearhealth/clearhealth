@@ -83,6 +83,16 @@ class C_AppointmentRuleset extends Controller {
 
 		return $this->view->render('provider.html');
 	}
+	function actionInsurance() {
+		$this->_setupRule();
+
+		$program =& ORDataObject::factory('InsuranceProgram');
+		$this->view->assign('programs',$program->valueList('programs'));
+
+
+		return $this->view->render('insurance.html');
+	}
+
 
 	function actionLocation() {
 		$this->_setupRule();
