@@ -4,7 +4,7 @@ $loader->requireOnce('includes/ParticipationProgramAbstract.class.php');
  * Object Relational Persistence Mapping Class for table: participation_program_basic
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class ParticipationProgramClinic extends ParticipationProgramAbstract {
 
