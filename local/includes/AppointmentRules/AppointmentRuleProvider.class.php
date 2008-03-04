@@ -1,6 +1,6 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
-class AppointmentRuleProvider extends AppointmentRule {
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.class.php');
+class AppointmentRuleProvider extends AppointmentRuleAbstract {
 
 	function isApplicable() {
 		if ($this->excludeCheck()) {

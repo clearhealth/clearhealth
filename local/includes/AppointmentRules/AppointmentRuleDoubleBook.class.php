@@ -1,7 +1,7 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.class.php');
 $loader->requireOnce('includes/ClearhealthCalendarData.class.php');
-class AppointmentRuleDoubleBook extends AppointmentRule {
+class AppointmentRuleDoubleBook extends AppointmentRuleAbstract {
 
 	function isApplicable() {
 		return true;

@@ -1,13 +1,14 @@
 <?php
-class AppointmentRule {
+class AppointmentRuleAbstract {
 
 	var $ruleData = false;
 	var $appointment = false;
 	var $errorMessage = false;
 	var $applicableMessage = false;
 	var $label = false;
+	var $_validator;
 
-	function AppointmentRule($label,$data) {
+	function AppointmentRuleAbstract($label,$data) {
 		$this->label = $label;
 		$this->ruleData = $data;
 	}

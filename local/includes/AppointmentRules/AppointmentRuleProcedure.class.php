@@ -1,6 +1,6 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
-class AppointmentRuleProcedure extends AppointmentRule {
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.class.php')
+class AppointmentRuleProcedure extends AppointmentRuleAbstract {
 
 	function isApplicable() {
 		switch($this->ruleData->rule_type) {

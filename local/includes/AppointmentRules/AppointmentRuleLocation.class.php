@@ -1,6 +1,6 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
-class AppointmentRuleLocation extends AppointmentRule {
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.class.php');
+class AppointmentRuleLocation extends AppointmentRuleAbstract {
 
 	function isApplicable() {
 		$roomId = $this->appointment->get('room_id');

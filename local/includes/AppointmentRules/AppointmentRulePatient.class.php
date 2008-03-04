@@ -1,5 +1,5 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.php');
 class AppointmentRulePatient extends AppointmentRule {
 
 	function isApplicable() {

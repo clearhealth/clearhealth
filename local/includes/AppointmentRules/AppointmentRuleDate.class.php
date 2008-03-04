@@ -1,6 +1,6 @@
 <?php
-$loader->requireOnce('includes/AppointmentRules/AppointmentRule.abstract.php');
-class AppointmentRuleDate extends AppointmentRule {
+$loader->requireOnce('includes/AppointmentRules/AppointmentRuleAbstract.class.php');
+class AppointmentRuleDate extends AppointmentRuleAbstract {
 
 	var $days = array(7=>'Sn',1=>'M',2=>'T',3=>'W',4=>'Th',5=>'F',6=>'St');
 

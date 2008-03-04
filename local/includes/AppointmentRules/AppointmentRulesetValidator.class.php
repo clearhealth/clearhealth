@@ -1,11 +1,14 @@
 <?php
-class AppointmentRuleset {
+class AppointmentRulesetValidator {
 	var $rulesetId = false;
 	var $rules = array();
 	var $messages = array();
 	var $errorMessage;
+	var $status;
+	var $any;
+	var $statuses = array();
 
-	function AppointmentRuleset($appointmentRulesetId) {
+	function AppointmentRulesetValidator($appointmentRulesetId) {
 		$this->rulesetId = EnforceType::int($appointmentRulesetId);
 
 		$this->_populate();
@@ -13,29 +16,46 @@ class AppointmentRuleset {
 
 	function isValid($appointment) {
 		//var_dump($this->errorMessage);
-		$status = true;
+		$this->status = true;
 		foreach($this->rules as $rule) {
+			
 			$rule->setAppointment($appointment);
+			$rule->_validator = &$this;
 			if ($rule->isApplicable()) {
 				//var_dump('Applicable: '.$rule->label);
 				$s = $rule->isValid();
-				if (!$s) {
-					$status = false;
+				if (!$s ) {
+					$this->status = false;
+					$this->statuses[] = 0;
 					//var_dump('not valid - '.$rule->label.': '.$rule->getMessage());
 					$this->messages[] = $rule->getMessage();
 				}
 				else {
+					$this->statuses[] = true;
 					//var_dump($rule->getApplicableMessage());
 					$this->messages[] = $rule->getApplicableMessage();
 				}
 			}
 			else {
+				$this->statuses[] = true;
 				//var_dump('Not Applicable: '.$rule->label);
 				//$this->messages[] = 'Not Applicable: '.$rule->label; // enable for debug
-				return true; // disable for debug
+				//return true; // disable for debug
 			}
 		}
-		return $status;
+		if ($this->any == false) {
+		// all rules must be false to return false
+		foreach ($this->statuses as $status) {
+			if ($status == true) {return true; }
+		}
+		return false;
+		}
+		
+		$return = true;
+		foreach ($this->statuses as $status) {
+			if ($status == false) $return = false;
+		}
+		return $return;
 	}
 
 	function getMessage() {
@@ -50,8 +70,14 @@ class AppointmentRuleset {
 
 	function _populate() {
 		$db = new clniDb();
-		$sql = "select error_message from appointment_ruleset where appointment_ruleset_id = ".$this->rulesetId;
-		$this->errorMessage = $db->getOne($sql);
+		$sql = "select * from appointment_ruleset where appointment_ruleset_id = ".$this->rulesetId;
+		$res= $db->execute($sql);
+		while ($res && !$res->EOF) {
+			$this->any = $res->fields['any'];
+			$this->errorMessage = $res->fields['error_message'];
+			$res->MoveNext();
+		}
+
 
 		$sql = "select * from appointment_rule where appointment_ruleset_id = ".$this->rulesetId;
 		$res = $db->execute($sql);
