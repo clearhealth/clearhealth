@@ -5,6 +5,10 @@
 	<input type="radio" value="1" name="appointmentruleset[enabled]" id="aren" {if $ar->get('enabled')}CHECKED{/if}><label for="aren">Enabled</label>
 	<input type="radio" value="0" name="appointmentruleset[enabled]" id="ardis" {if $ar->get('enabled') == 0}CHECKED{/if}><label for="ardis">Disabled</label>
 </p>
+<p>
+	<input type="radio" value="1" name="appointmentruleset[any]" id="arany" {if $ar->get('any')}CHECKED{/if}><label for="arany">Any</label>
+	<input type="radio" value="0" name="appointmentruleset[any]" id="arall" {if $ar->get('any') == 0}CHECKED{/if}><label for="arall">All</label>
+</p>
 
 <p><label>Message to display when a rule fails:</label><br>
 <textarea rows=5 cols=50 name="appointmentruleset[error_message]">{$ar->get('error_message')}</textarea>
@@ -48,6 +52,13 @@
 	<ul>
 	{foreach from=$ar->rulesList('location') item=rule key=key}
 		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('location',{$key})">{$rule}</a></li>
+	{/foreach}
+	</ul>
+	</li>
+	<li>Insurance<br>
+	<ul>
+	{foreach from=$ar->rulesList('insurance') item=rule key=key}
+		<li><a href="#" onclick="deleteRule(this,{$key})">X</a> - <a href="#" onclick="selectRule('insurance',{$key})">{$rule}</a></li>
 	{/foreach}
 	</ul>
 	</li>
