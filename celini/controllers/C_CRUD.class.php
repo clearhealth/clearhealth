@@ -3,7 +3,7 @@
 * Generic CRUD controller
 *
 * @package	com.clear-health.celini
-* @author	Uversa Inc.
+* @author	ClearHealth Inc.
 *
 * Extends {@link Controller} see that for additional implementation and guideline details
 * 
