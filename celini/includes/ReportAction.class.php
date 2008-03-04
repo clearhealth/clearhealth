@@ -52,7 +52,7 @@ class ReportAction {
 				}
 			}
 			//one last sanity check..
-			if (!file_exists($template)) {
+			if (!isset($template) || !file_exists($template)) {
 				$template = "default";
 			}
 		}
@@ -296,7 +296,7 @@ $str .=
 </xfa:datasets>
 <pdf href="'. $this->controller->view->_tpl_vars['base_uri'] ."index.php/Images/".basename($template).'" xmlns="http://ns.adobe.com/xdp/pdf/" />
 </xdp:xdp>';
-                //header("Content-type: application/vnd.adobe.xfdf");
+                header("Content-type: application/vnd.adobe.xfdf");
                 echo $header.$str;exit;
 
 			}
