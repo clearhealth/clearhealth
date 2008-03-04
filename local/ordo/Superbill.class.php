@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: superbill
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class Superbill extends ORDataObject {
 

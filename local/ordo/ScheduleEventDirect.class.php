@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: schedule_event
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class ScheduleEventDirect extends ORDataObject {
 

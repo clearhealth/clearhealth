@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: person_type
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class PersonType extends ORDataObject {
 

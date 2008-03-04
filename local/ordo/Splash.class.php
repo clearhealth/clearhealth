@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: splash
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class Splash extends ORDataObject {
 

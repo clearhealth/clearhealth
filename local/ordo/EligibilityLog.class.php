@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: eligibility_log
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class EligibilityLog extends ORDataObject {
 

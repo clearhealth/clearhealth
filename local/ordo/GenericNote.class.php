@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: generic_notes
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class GenericNote extends ORDataObject {
 

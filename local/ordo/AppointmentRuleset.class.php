@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: appointment_ruleset
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class AppointmentRuleset extends ORDataObject {
 
@@ -14,8 +14,10 @@ class AppointmentRuleset extends ORDataObject {
 	var $name			= '';
 	var $error_message		= '';
 	var $enabled			= 1;
+	var $any			= 1;
 	var $provider_id		= '';
 	var $procedure_id		= '';
+	var $insurance_program_id	= '';
 	var $room_id			= '';
 	/**#@-*/
 

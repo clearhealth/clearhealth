@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: duplicate_queue
  *
  * @package	com.clear-health.clearhealth
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class DuplicateQueue extends ORDataObject {
 

@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: patient_payment_plan
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class PatientPaymentPlan extends ORDataObject {
 
