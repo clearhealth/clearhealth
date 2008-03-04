@@ -189,6 +189,17 @@ class Report extends ORDataObject {
 		parent::persist();
 		$this->template = false;
 	}
+	/**
+         * Getter for the full form path
+         */
+        function get_file_path() {
+                $forms_dir = realpath(Celini::config_get('user_reports_dir'));
+                $filename = $forms_dir.$this->get('id').".tpl.";
+                if (file_exists($filename."pdf")) {
+                        return  $filename."pdf";
+                }
+                return $filename."html";
+        }
 
 
 	/**

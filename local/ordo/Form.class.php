@@ -119,10 +119,13 @@ class Form extends ORDataObject {
 	/**
 	 * Getter for the full form path
 	 */
-	function get_file_path() {
-		$config =& Celini::ConfigInstance();
-		$forms_dir = $config->get('user_forms_dir',APP_ROOT."/user/form/");
-		return $forms_dir.$this->get('id').".tpl.html";
+	function get_file_path($ext = '') {
+		$forms_dir = realpath(Celini::config_get('user_forms_dir'));
+		$filename = $forms_dir."/".$this->get('id').".tpl.";
+		if ($ext === "pdf" || file_exists($filename."pdf")) {
+			return  $filename."pdf";
+		}
+		return $filename."html";
 	}
 
 	/**#@-*/
