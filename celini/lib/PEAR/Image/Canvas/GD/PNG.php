@@ -116,7 +116,7 @@ class Image_Canvas_GD_PNG extends Image_Canvas_GD
     function save($param = false)
     {
         parent::save($param);
-        ImagePNG($this->_canvas, $param['filename']);
+        @ImagePNG($this->_canvas, $param['filename']);
         ImageDestroy($this->_canvas);
     }
 
