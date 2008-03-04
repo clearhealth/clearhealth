@@ -1,0 +1,25 @@
+{if $rule->get('id') == 0}
+<h3>Add a new Insurance Rule</h3>
+{/if}
+
+<input type="hidden" name="appointmentruleset[appointment_rule_id]" value="{$rule->get('id')}">
+<input type="hidden" name="appointmentruleset[tab]" value='insurance'>
+<input type="hidden" name="appointmentruleset[type]" value='insurance'>
+
+<p>Label: <input name="appointmentruleset[label]" id="rulelabel" value="{$rule->get('label')}"></p>
+{if !isset($data->rule_type)}
+{php} $this->_tpl_vars['data']->rule_type = 'include'; {/php}
+{/if}
+<fieldset>
+	<legend>Rule Type</legend>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="include" {if $data->rule_type == 'include'}CHECKED{/if}>Limit other rules</label>
+	<label><input type="radio" name="appointmentruleset[data][rule_type]" value="exclude" {if $data->rule_type == 'exclude'}CHECKED{/if}>Exclude from other rules</label>
+</fieldset>
+
+<div >
+	<div id="details">
+		Program: <select name="appointmentruleset[data][insurance_program_id]">
+			{html_options options=$programs selected=$data->insurance_program_id}
+		</select>
+	</div>
+</div>
