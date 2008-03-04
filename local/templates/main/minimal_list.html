@@ -4,7 +4,9 @@
 	{include file="main/general_confidentiality.html"}	
 
 	<div id="body">
+	{if is_object($messages)}
 	{$messages->render()}
+	{/if}
 	{$display}
 	</div>
 </body>
