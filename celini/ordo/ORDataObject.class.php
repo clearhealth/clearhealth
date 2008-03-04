@@ -1498,7 +1498,7 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 	$key = preg_replace('/[^a-z_0-9]/i', '', $key);
 
 	// if there is another array found recrusively call this function
-	if (strpos($key,'_') === 0
+	if (strpos($key,'_') === 0 
 		|| strpos($key,'audit') === 0 
 		|| strpos($key,'inPersist') === 0 
 		|| strpos($key,'table') === 0 
@@ -1506,6 +1506,10 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 		|| $key == "metaHints" 
 		|| $key == "db" 
 		|| $key == "valuePlaceholders" 
+		|| $key == "storage_metadata" 
+		|| $key == "dbHelper" 
+		|| $key == "helper" 
+		|| $key == "enumTable" 
 		|| $key == "metadata") {
 
 	}
