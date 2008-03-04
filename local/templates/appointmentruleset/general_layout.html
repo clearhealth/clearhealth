@@ -23,13 +23,14 @@
 }
 #editor #tabcontent {
 	position: absolute;
-	width: 600px;
-	height: 400px;
+	width: auto;
+	min-width:800px;
+	height: auto;
 	border: solid 1px black;
 	left: 105px;
 	top: 0px;
 	background-color: white;
-	padding: 3px;
+	padding: 3px 3px 3px 10px;
 }
 #tabnav .selected {
 	font-weight: bold;
@@ -119,6 +120,7 @@ function deleteRule(link,id) {
 	<div id="tabpatient"	><a href="#patient"   onclick="selectTab('patient')">Patient</a></div>
 	<div id="tabprovider"	><a href="#provider"  onclick="selectTab('provider')">Provider</a></div>
 	<div id="tablocation"	><a href="#location"  onclick="selectTab('location')">Location</a></div>
+	<div id="tablocation"	><a href="#insurance"  onclick="selectTab('insurance')">Insurance</a></div>
 </div>
 
 </div>
