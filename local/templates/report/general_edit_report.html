@@ -93,11 +93,6 @@ function deleteTemplate(button,template_id) {
 	  {*{if $report->get('id') > 0}
 		<h3>Report Details for <i>{$report->get_label()}</i></h3>
 		{/if}*}
-<fieldset style="float:right;width:46%; height:600px;" class="radio">
-<legend>Preview</legend>
-<iframe name="preview" style="width:100%;height:575px;">
-</iframe>
-</fieldset>
 		<fieldset class="radio" style="width:50%; height:600px;">
 		<legend>Report Definition</legend>
 <table>
@@ -153,6 +148,7 @@ function deleteTemplate(button,template_id) {
 	</tr>
 </table>
 	</fieldset>
+
 	{if $report->id > 0}
 	<fieldset class="radio" style="width:50%;">
 		<legend>Report Templates</legend>
@@ -192,4 +188,9 @@ function deleteTemplate(button,template_id) {
 	{$visualizations}
 </td></tr>
 </table>
+<fieldset style="float:left;width:100%; height:600px;" class="radio">
+<legend>Preview</legend>
+<iframe name="preview" style="width:100%;height:575px;">
+</iframe>
+</fieldset>
 {clni_register_validation id="custom_id" rules="required|alphanum" message="Custom ID must be alphanumeric and contain no spaces."}
