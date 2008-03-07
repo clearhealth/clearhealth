@@ -694,7 +694,7 @@ class C_Appointment extends Controller {
 	//used for debugging
 
 	/*function actionCheckRulesTest() {
-		return $this->check_rules(array('patient_id'=>34656707));
+		return $this->check_rules(array('patient_id'=>));
 	}*/
 
 	/**
@@ -971,6 +971,13 @@ fclose($fp);
                 $app->set("arrived",(int)$value);
                 $app->persist();
                 return true; 
+        }
+	function ajaxSetFlags($appId,$value) {
+                $appId = (int)$appId;
+                $app = ORDataObject::factory("Appointment",$appId);
+                $app->set("appointment_code",$value);
+                $app->persist();
+                return true;
         }
 
 
