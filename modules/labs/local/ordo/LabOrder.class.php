@@ -3,7 +3,7 @@
  * Object Relational Persistence Mapping Class for table: lab_order
  *
  * @package	com.clear-health.celini
- * @author	Uversa Inc.
+ * @author	ClearHealth Inc.
  */
 class LabOrder extends ORDataObject {
 
