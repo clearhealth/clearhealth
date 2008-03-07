@@ -222,6 +222,7 @@ class C_Form extends Controller {
 			$this->assign_by_ref('form',$form);
 			$this->assign_by_ref('data',$data);
 		}
+		$reportData = array();
 		if ($reportId > 0) {
 			$ra = new ReportAction();
                 	$ra->controller = new Controller();
@@ -229,14 +230,14 @@ class C_Form extends Controller {
                 	//0 is to use default template id
                 	$ra->action($reportId, 0);
 			foreach ($ra->reports as $report_name => $report) {
-				$data->$report_name = $report['ds']->toArray();
+				$reportData[$report_name] = $report['ds']->toArray();
 			}
 		}
 
 		$filename = $form->get('file_path');
                 if (substr($filename,-3) === "pdf") {
                 header("Content-type: application/vnd.adobe.xfdf");
-                $this->_makeFormXml($data,$form->get('system_name'),$form->get('file_path'));
+                $this->_makeFormXml($data,$form->get('system_name'),$form->get('file_path'),$reportData);
                 }
 		return $this->view->render("fillout.html");
 }
@@ -263,7 +264,7 @@ class C_Form extends Controller {
 		return $this->view->render("fillout.html");
 	}
 
-	function _makeFormXml($data=array(),$name="",$filename="") {
+	function _makeFormXml($data=array(),$name="",$filename="",$reportData=NULL) {
 		$header =
 '<?xml version="1.0" encoding="UTF-8"?><?xfa generator="XFA2_4" APIVersion="2.6.7116.0"?>
 <xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/" timeStamp="2008-01-16T02:06:28Z" uuid="6aee0086-4ab9-40a0-8119-5a0f3d39220a">
@@ -272,6 +273,11 @@ class C_Form extends Controller {
 <form1>';
 $str = '';
                 $str = ORDataObject::toXML($data,$name);
+		if ($reportData !== NULL) {
+			foreach ($reportData as $reportName => $report) {
+                		$str .= ORDataObject::toXML($report,$reportName);
+			}
+		}
 $str .=
 '</form1>
 </xfa:data>
