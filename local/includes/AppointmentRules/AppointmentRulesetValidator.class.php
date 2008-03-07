@@ -46,7 +46,7 @@ class AppointmentRulesetValidator {
 		if ($this->any == false) {
 		// all rules must be false to return false
 		foreach ($this->statuses as $status) {
-			if ($status == true) {return true; }
+			if ($status == true) { return true;}
 		}
 		return false;
 		}

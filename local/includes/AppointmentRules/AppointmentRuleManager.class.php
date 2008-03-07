@@ -18,7 +18,7 @@ class AppointmentRuleManager {
 				$this->messages[] = $ruleset->getMessage();
 				$overrides[] = $ruleset->canOverride();
 			}
-			$this->messages[] = $ruleset->getMessage(); // enable for debug
+			//$this->messages[] = $ruleset->getMessage(); // enable for debug
 		}
 		if(in_array(false,$overrides)) {
 			$this->override = false;

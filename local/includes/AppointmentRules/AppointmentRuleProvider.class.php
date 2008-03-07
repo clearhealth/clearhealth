@@ -4,7 +4,7 @@ class AppointmentRuleProvider extends AppointmentRuleAbstract {
 
 	function isApplicable() {
 		if ($this->excludeCheck()) {
-			return false;
+			return true;
 		}
 		switch($this->ruleData->provider_type) {
 			case 'single':
@@ -27,6 +27,12 @@ class AppointmentRuleProvider extends AppointmentRuleAbstract {
 	}
 
 	function isValid() {
+		if ($this->excludeCheck()) {
+			$em =& Celini::enumManagerInstance()
+;
+                        $this->errorMessage = 'Provider has a type of <i>'.$em->lookup('person_type',$this->ruleData->provider_type_id).'</i>';
+			return false;
+		}
 		return true;
 	}
 

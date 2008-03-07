@@ -13,7 +13,7 @@ class AppointmentRuleLocation extends AppointmentRuleAbstract {
 				}
 				break;
 			case 'building':
-				$room =& Celini::newOrdo('room',$roomId);
+				$room =& Celini::newOrdo('Room',$roomId);
 				if ($this->ruleData->building_id == $room->get('building_id')) {
 					return true;
 				}

@@ -20,6 +20,7 @@ class AppointmentRuleInsurance extends AppointmentRuleAbstract {
 				return false;
 			}
 		}
+		return true;
 	}
 
 }
