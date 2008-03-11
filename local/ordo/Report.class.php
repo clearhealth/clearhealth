@@ -192,9 +192,11 @@ class Report extends ORDataObject {
 	/**
          * Getter for the full form path
          */
-        function get_file_path() {
+        function get_file_path($templateId = '') {
+		$curTemplateId = $this->get('id');
+		if ((int)$templateId > 0) $curTemplateId = (int)$templateId;
                 $forms_dir = realpath(Celini::config_get('user_reports_dir'));
-                $filename = $forms_dir.$this->get('id').".tpl.";
+                $filename = $forms_dir."/".$curTemplateId.".tpl.";
                 if (file_exists($filename."pdf")) {
                         return  $filename."pdf";
                 }
@@ -318,6 +320,10 @@ class Report extends ORDataObject {
 			$res = $this->dbHelper->execute("select * from report_templates where report_id = {$qId} order by report_template_id");
 			$this->templates = array();
 			while($res && !$res->EOF) {
+				$res->fields['pdf'] = false;
+				if (substr($this->get_file_path($res->fields['report_template_id']),-3) === "pdf") {
+					$res->fields['pdf'] = true;
+				}
 				$this->templates[$res->fields['report_template_id']] = $res->fields;
 				$res->moveNext();
 			}
