@@ -26,6 +26,16 @@ class clniAudit {
 			$f->persist();
 		}
 	}
+	function logAccessAttempt($username, $status) {
+
+                $a =& Celini::newOrdo('AuditLog');
+                $a->set('type',5); //access type
+                $a->set('ordo',$username); 
+                $a->set('log_date',date('Y-m-d H:i:s'));
+                $a->set('message', "Access attempt for " . $username . (($status === false) ? " failed" : " succeeded"));
+                $a->persist();
+
+	}
 
 	/** 
 	 * Create an audit log entry for an ordo, storing changes
