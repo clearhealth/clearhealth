@@ -15,6 +15,7 @@ $loader->requireOnce('includes/ORDO/ORDOFactory.class.php');
 $loader->requireOnce('includes/ORDO/ORDOMetadata.class.php');
 $loader->requireOnce('includes/ORDO/ORDOFinder.class.php');
 $loader->requireOnce('includes/ORDO/RelationshipFinder.class.php');
+$loader->requireOnce('ordo/Document.class.php');
 
 /**
  * class ORDataObject
@@ -1513,8 +1514,15 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 		|| $key == "metadata") {
 
 	}
+	elseif (strtolower($key) == "patientpicture") {
+		$d = Document::FirstDocumentByCategoryName((int)$value,"Picture");
+		$node = $xml->addChild($key,base64_encode(file_get_contents(Celini::config_get('document_manager:repository') . $value."/". $d->get('name'))));
+		//$node = $xml->addChild($key, base64_encode(file_get_contents('/tmp/homer.gif')));
+		//$node->addAttribute("xmlns:xfa","http://www.xfa.org/schema/xfa-data/1.0/");
+		//$node->addAttribute("contentType","image/jpg");
+		//$node->addAttribute("href",htmlentities($value));
+	}
 	else {
-
 	if (is_array($value) || is_object($value)) {
 		$node = $xml->addChild($key);
 		// recrusive call.
@@ -1532,6 +1540,10 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 	}
 	// pass back as string. or simple xml object if you want!
 	$xmlstr = $xml->asXML();
+	/*$xmlstr .= <<<EOF
+<logo xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">Qk1uAQAAAAAAAD4AAAAoAAAAJgAAACYAAAABAAEAAAAAADABAADYDgAA2A4AAAIAAAAAAAAAAAAAAP///wD//////AAAAP/////8AAAA//////wAAAD//////AAAAP/////8AAAA//////wAAAD8AAAA/AAAAP38AH78AAAA/fAAHvwAAAD9wAAG/AAAAP2AAAb8AAAA/QAAAvwAAAD9AAAC/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD9AAAC/AAAAP0AAAL8AAAA/YAABvwAAAD9wAAG/AAAAP3gAA78AAAA/fAAHvwAAAD9/AB+/AAAAPwAAAD8AAAA//////wAAAD//////AAAAP/////8AAAA//////wAAAD//////AAAAP/////8AAAA</logo>
+EOF;*/
+
 	return preg_replace('/<\?.*\?>/','',$xmlstr);
 
 }
