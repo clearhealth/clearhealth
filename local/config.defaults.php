@@ -107,6 +107,8 @@ $config['menu']['attachArrays'] = true;
 $config['document_manager']['documents_on_tree'] = true;
 $config['document_manager']['category_view'] = false;
 $config['document_manager']['type_type'] = false;
+$config['document_manager']['file_command_path'] = '/usr/bin/file';
+
 
 // Show extra acl and db debugging info
 $config['debug'] = false;
