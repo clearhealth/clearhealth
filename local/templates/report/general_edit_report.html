@@ -174,7 +174,9 @@ function deleteTemplate(button,template_id) {
 				<td><input type="file" name="template[{$template.report_template_id}][file]" size="20"></td>
 				<td><a OnClick="deleteTemplate(this,{$template.report_template_id}); return false;" href="#">Delete</a></td>
 				{/if}
-				<td><a href="{link controller="Report" action="report" defaultArg=$template.report_id pageType="minimal"}report_template_id={$template.report_template_id}" target="preview">Load</a></td>
+				<td>
+				{if $template.pdf}<a href="{link controller="Report" action="report" defaultArg=$template.report_id pageType="minimal"}report_template_id={$template.report_template_id}&binaryHeader=true" target="preview">XML</a> /{/if}
+				<a href="{link controller="Report" action="report" defaultArg=$template.report_id pageType="minimal"}report_template_id={$template.report_template_id}" target="preview">Load</a></td>
 			</tr>
 			{/foreach}
 		</table>
