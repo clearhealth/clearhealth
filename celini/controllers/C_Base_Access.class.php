@@ -2,6 +2,7 @@
 
 $loader->requireOnce("ordo/ORDataObject.class.php");
 $loader->requireOnce("includes/Email.class.php");
+$loader->requireOnce("includes/clni/clniAudit.class.php");
 
 /**
 *	Controller class the handles the default case of access that leads to login
@@ -28,7 +29,7 @@ class C_Base_Access extends Controller {
 				$_POST['process'] = "true";
 				$_POST['username'] = $_SERVER['PHP_AUTH_USER'];
 				$_POST['password'] = $_SERVER['PHP_AUTH_PW'];
-				$this->login_action_process();
+				$this->login_action_process($_SERVER['REQUEST_URI']);
 			}
 			header("Location: ".Celini::link('login','access','main'));
 		}
@@ -55,7 +56,7 @@ class C_Base_Access extends Controller {
 		return $this->view->render('denied.html');	
 	}
 	
-	function login_action_process() {
+	function login_action_process($redirect = '') {
 		if ($_POST['process'] !== "true") {
 			return;
 		}
@@ -64,18 +65,23 @@ class C_Base_Access extends Controller {
 			$status = $this->login($_POST['username'],$_POST['password']);
 		}
 		if ($status) {
+                	ClniAudit::logAccessAttempt($_POST['username'],true);
 			if (	isset($GLOBALS['config']['maintenanceMode']) &&
 				$GLOBALS['config']['maintenanceMode'] === 'splash' &&
 	!isset($_SESSION['clicked_through_splash']) &&
-				!$_SESSION['clicked_through_splash'] == true) {
+				!$_SESSION['clicked_through_splash'] == true 
+				&& !isset($_GET['nosplash'])) {
 				
 				header ("Location: ".Celini::link('splash','Access'));
 				exit;
 			}
-			header ("Location: ".Celini::link('default','Access'));
+			if ($redirect == '') { Celini::link('default','Access'); }
+			header ("Location: ". $redirect);
+			
 			exit;
 		}
 		else {
+                	ClniAudit::logAccessAttempt($_POST['username'],false);
 			$this->messages->addMessage("The information supplied could not be used to lookup a user, please try again.");
 			if (!isset($_POST['username'])) $_POST['username'] = "";
 			$this->assign("username",$_POST['username']);
