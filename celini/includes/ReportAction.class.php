@@ -296,7 +296,13 @@ $str .=
 </xfa:datasets>
 <pdf href="'. $this->controller->view->_tpl_vars['base_uri'] ."index.php/Images/".basename($template).'" xmlns="http://ns.adobe.com/xdp/pdf/" />
 </xdp:xdp>';
+		if (isset($_GET['binaryHeader']) && $_GET['binaryHeader'] == true) {
+			header("Content-type: application/binary");
+                	header('Content-Disposition: attachment; filename="sample.xml"');
+		}
+		else {
                 header("Content-type: application/vnd.adobe.xfdf");
+		}
                 echo $header.$str;exit;
 
 			}
