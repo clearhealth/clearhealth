@@ -48,7 +48,7 @@ $version_1rc3->addAction('SQLFile', array(
 	'db_field' => 'db_database',
 	'mysql_path' => 'mysql_path',
 	'cache_files' => array(
-		$base_app_path.'/local/setup/ch_2_1_install.sql'	
+		$base_app_path.'/local/setup/ch_2_2_install.sql'	
 	)));
 
 $version_1rc3->addAction('ReplaceString', array(
