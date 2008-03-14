@@ -25,7 +25,7 @@ $versions->collectData('mysql_path', 'Path to Mysql (no trailing slash)', 'text'
 $versions->collectData('admin_password', 'Set new password for the admin account', 'text', 'admin');
 
 $version_1rc3 = new Version('2.1');
-$version_1rc3->addTest('PHPVersionOver', array('5.1.0'));
+$version_1rc3->addTest('PHPVersionOver', array('5.1.6'));
 $version_1rc3->addTest('PHPMemory', array('64M'));
 $version_1rc3->addTest('PHPMagicQuotes', array('Off'));
 $version_1rc3->addTest('PHPRegisterGlobals', array('Off'));
