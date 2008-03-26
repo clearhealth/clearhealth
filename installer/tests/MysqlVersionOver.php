@@ -84,7 +84,7 @@ class MysqlVersionOver extends BaseTest{
 			return $this->result;
 		}
 
-		@$db_con = mysql_connect($this->server.':'.$this->port, $this->username, $this->password);
+		$db_con = mysql_connect($this->server.':'.$this->port, $this->username, $this->password);
 		if(!$db_con){
 			@$this->result_message = "Could not connect to mysql server ".$this->server.':'.$this->port." with username $this->username: ".mysql_error($db_con);
 			$this->result = INSTALLER_TEST_FAIL;
