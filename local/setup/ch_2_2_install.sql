@@ -6826,44 +6826,34 @@ SQL Changes from 2.1 to 2.2
 ALTER TABLE `appointment_ruleset` ADD COLUMN `any` tinyint(4) NOT NULL;
 ALTER TABLE `coding_data` CHANGE COLUMN `modifier` `modifier` int(11) NOT NULL default '0';
 ALTER TABLE `fbclaimline` CHANGE COLUMN `modifier` `modifier` varchar(4) NOT NULL default '';
-ALTER TABLE `gacl_acl_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_aco_sections_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_aco_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_aro_groups_id_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_aro_sections_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_aro_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_axo_groups_id_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_axo_sections_seq` DROP PRIMARY KEY;
-ALTER TABLE `gacl_axo_seq` DROP PRIMARY KEY;
-ALTER TABLE `hl7_message` DROP COLUMN `hl7_message_id`;
-ALTER TABLE `hl7_message` DROP COLUMN `type`;
-ALTER TABLE `hl7_message` DROP COLUMN `processed`;
 ALTER TABLE `hl7_message` ADD COLUMN `id` int(11) NOT NULL default '0';
-ALTER TABLE `hl7_message` DROP PRIMARY KEY;
-ALTER TABLE `hl7_message` ADD PRIMARY KEY (`id`);
-ALTER TABLE `hl7_message` DROP INDEX ;
 ALTER TABLE `lab_note` ADD INDEX `lab_test_id` (`lab_test_id`);
 ALTER TABLE `lab_order` ADD INDEX `external_id` (`external_id`);
 ALTER TABLE `lab_order` ADD INDEX `patient_id` (`patient_id`);
-ALTER TABLE `lab_result` DROP COLUMN `extra`;
 ALTER TABLE `lab_result` ADD INDEX `description` (`description`);
 ALTER TABLE `lab_result` ADD INDEX `lab_test_id` (`lab_test_id`);
 ALTER TABLE `lab_test` ADD INDEX `lab_order_id` (`lab_order_id`);
+
 ALTER TABLE `storage_int` ADD `array_index` TINYINT NOT NULL ;
-ALTER TABLE `storage_int` DROP PRIMARY KEY ,
-ALTER TABLE `storage_date` ADD `array_index` TINYINT NOT NULL ;
-ALTER TABLE `storage_date` DROP PRIMARY KEY ,
-ALTER TABLE `storage_string` ADD `array_index` TINYINT NOT NULL ;
-ALTER TABLE `storage_string` DROP PRIMARY KEY ,
-ALTER TABLE `storage_text` ADD `array_index` TINYINT NOT NULL ;
-ALTER TABLE `storage_text` DROP PRIMARY KEY ,
-ALTER TABLE `storage_date` ADD INDEX `value_key` (`value_key`);
-ALTER TABLE `storage_date` ADD INDEX `foreign_key` (`foreign_key`);
-ALTER TABLE `storage_int` ADD INDEX `value_key` (`value_key`);
+ALTER TABLE `storage_int` DROP PRIMARY KEY ;
+ALTER TABLE `storage_int` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
 ALTER TABLE `storage_int` ADD INDEX `foreign_key` (`foreign_key`);
-ALTER TABLE `storage_string` ADD INDEX `value_key` (`value_key`);
-ALTER TABLE `storage_text` ADD INDEX `value_key` (`value_key`);
-ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
+
+ALTER TABLE `storage_date` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_date` DROP PRIMARY KEY ;
+ALTER TABLE `storage_date` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
+ALTER TABLE `storage_date` ADD INDEX `foreign_key` (`foreign_key`);
+
+ALTER TABLE `storage_string` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_string` DROP PRIMARY KEY ;
+ALTER TABLE `storage_string` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
+ALTER TABLE `storage_string` ADD INDEX `foreign_key` (`foreign_key`);
+
+ALTER TABLE `storage_text` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_text` DROP PRIMARY KEY ;
+ALTER TABLE `storage_text` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
+ALTER TABLE `storage_text` ADD INDEX `foreign_key` (`foreign_key`);
+
 ALTER TABLE `widget_form` ADD COLUMN `report_id` int(11) NOT NULL;
 ALTER TABLE `widget_form` ADD INDEX `report_id` (`report_id`);
 ALTER TABLE `encounter_value` ADD INDEX ( `value_type` );
