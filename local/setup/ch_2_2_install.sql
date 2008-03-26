@@ -6834,22 +6834,18 @@ ALTER TABLE `lab_result` ADD INDEX `description` (`description`);
 ALTER TABLE `lab_result` ADD INDEX `lab_test_id` (`lab_test_id`);
 ALTER TABLE `lab_test` ADD INDEX `lab_order_id` (`lab_order_id`);
 
-ALTER TABLE `storage_int` ADD `array_index` TINYINT NOT NULL ;
 ALTER TABLE `storage_int` DROP PRIMARY KEY ;
 ALTER TABLE `storage_int` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
 ALTER TABLE `storage_int` ADD INDEX `foreign_key` (`foreign_key`);
 
-ALTER TABLE `storage_date` ADD `array_index` TINYINT NOT NULL ;
 ALTER TABLE `storage_date` DROP PRIMARY KEY ;
 ALTER TABLE `storage_date` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
 ALTER TABLE `storage_date` ADD INDEX `foreign_key` (`foreign_key`);
 
-ALTER TABLE `storage_string` ADD `array_index` TINYINT NOT NULL ;
 ALTER TABLE `storage_string` DROP PRIMARY KEY ;
 ALTER TABLE `storage_string` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
 ALTER TABLE `storage_string` ADD INDEX `foreign_key` (`foreign_key`);
 
-ALTER TABLE `storage_text` ADD `array_index` TINYINT NOT NULL ;
 ALTER TABLE `storage_text` DROP PRIMARY KEY ;
 ALTER TABLE `storage_text` ADD PRIMARY KEY ( `foreign_key` , `value_key` , `array_index` );
 ALTER TABLE `storage_text` ADD INDEX `foreign_key` (`foreign_key`);
@@ -6875,5 +6871,10 @@ CREATE TABLE `graph_definition` (
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 
 
-
+/*** Depending on your upgrade path you may need these...
+ALTER TABLE `storage_int` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_date` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_string` ADD `array_index` TINYINT NOT NULL ;
+ALTER TABLE `storage_text` ADD `array_index` TINYINT NOT NULL ;
+***/
 
