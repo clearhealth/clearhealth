@@ -96,7 +96,7 @@ class SQLFile extends BaseAction {
 				}
 			}
 			$comm = $this->mysql_path."/mysql -u" . $this->username .
-		         " --password='" . $this->password .
+		         " -f --password='" . $this->password .
 		         "' " . $this->db_name . " < " .
 			"$file"; 
 			
@@ -104,7 +104,7 @@ class SQLFile extends BaseAction {
                         if(strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'unix') === false && strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'linux') === false) {
                         // windows has different command structure needs
                         $comm = "mysql -u" . $this->username .
-                         " -p" . $this->password .
+                         " -f -p" . $this->password .
                          " " . $this->db_name . " < " .
                         "$file";
                         }
