@@ -34,6 +34,7 @@ class C_Base_Access extends Controller {
 			header("Location: ".Celini::link('login','access','main'));
 		}
 		exit;
+
 		//return $this->login_action();
 	}
 	
@@ -75,7 +76,8 @@ class C_Base_Access extends Controller {
 				header ("Location: ".Celini::link('splash','Access'));
 				exit;
 			}
-			if ($redirect == '') { Celini::link('default','Access'); }
+			if ($redirect == '') { $redirect = Celini::link('default','Access'); }
+		
 			header ("Location: ". $redirect);
 			
 			exit;
