@@ -95,7 +95,7 @@ class SQLOptions extends SQLFile {
 			$this->result = INSTALLER_ACTION_WARNING;
 			$this->result_message = "Loaded database file with $query_count queries";
 			$comm = "(".$this->mysql_path."/mysql -u" . $this->username .
-                         " --password='" . $this->password .
+                         " -f --password='" . $this->password .
                          "' " . $this->db_name . " < " .
                         "$file) 3>&1 1>&2 2>&3";
                         exec($comm,$output,$return);
