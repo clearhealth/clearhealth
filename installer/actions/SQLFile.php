@@ -105,6 +105,8 @@ class SQLFile extends BaseAction {
 			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'linux') === false
 			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'centos') === false
 			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'redhat') === false
+			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'ubuntu') === false
+			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'suse') === false
 			&& strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'rhel') === false
 
 ) {
