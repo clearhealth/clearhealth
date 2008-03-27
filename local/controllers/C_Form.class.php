@@ -289,7 +289,7 @@ $str .=
 
 	function processFillout_edit($form_id = 0, $form_data_id = 0) {
 			$data =& ORDataObject::factory('FormData',$form_data_id);
-			if (isset($_POST) && strtolower($_POST['form_type']) === 'pdf') {
+			if (isset($_POST) && isset($_POST['form_type']) && strtolower($_POST['form_type']) === 'pdf') {
                         $int = array();
                         $string = array();
                         $date = array();
