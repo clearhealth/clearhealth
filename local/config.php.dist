@@ -9,7 +9,8 @@
 $config['app_name'] = "clearhealth";
 
 // where forms are uploaded too
-$config['user_forms_dir'] = APP_ROOT."/user/forms/";
+$config['user_forms_dir'] = APP_ROOT."/user/form_templates/";
+$config['user_reports_dir'] = APP_ROOT."/user/report_templates/";
 
 // where documents are uploaded too
 $config['document_manager']['repository'] = APP_ROOT."/user/documents/";
