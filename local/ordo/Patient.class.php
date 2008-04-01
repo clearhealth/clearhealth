@@ -414,6 +414,19 @@ class Patient extends MergeDecorator {
 		$patient =& Celini::newOrdo('Patient',$id);
 		return $patient->value('name').' #'.$patient->value('record_number');
 	}
+	function get_patientPictureUrl($patientId = "") {
+		if ($patientId == "") $patientId = $this->get('person_id');
+		$d = Document::FirstDocumentByCategoryName($patientId,"Picture");
+                if (is_object($d)) {
+                        $pictureTag = Celini::link("thumb","Thumbnail") . 'src=/' . $patientId . "/" . $d->get("name") . '&w=100';
+                        return $pictureTag;
+                }
+		else {
+                        $pictureTag = Celini::link("thumb","Thumbnail") . 'src=/blank_person.png&w=100';
+			return $pictureTag;
+
+		}
+	}
 
 }
 ?>
