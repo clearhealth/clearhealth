@@ -2,8 +2,11 @@
 $loader->requireOnce('datasources/Tree_DS.class.php');
 
 class StorableNodes_DS extends Tree_DS {
+
+	var $patientId = null;
 	
-	function StorableNodes_DS($parentId, $level = 1, $revisionId = null, $orderBy = null) {
+	function StorableNodes_DS($parentId, $level = 1, $revisionId = null, $orderBy = null, $patientId = null) {
+		$this->patientId = $patientId;
 		parent::Tree_DS($parentId, $level, $level + 1, $orderBy);
 	}
 	
@@ -32,9 +35,12 @@ class StorableNodes_DS extends Tree_DS {
 	}	
 	
 	function getWhere($parentId, $level) {
+		$patientId = (int)$this->patientId;
 		return parent::getWhere($parentId, $level) . " AND " .
 		$this->_table . ".node_type LIKE 'storable' AND
-		r.revision_id=storables.last_revision_id";
+		r.revision_id=storables.last_revision_id AND
+		storables.patient_id = $patientId
+		";
 	}
 
 	function getLabels() {

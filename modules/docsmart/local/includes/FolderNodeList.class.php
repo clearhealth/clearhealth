@@ -1,4 +1,4 @@
-<?
+<?php
 
 $loader->requireOnce('/includes/ORDOList.class.php');
 

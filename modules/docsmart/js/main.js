@@ -1,5 +1,5 @@
 var DocSmart = {
-	refreshTarget: 'content',
+	refreshTarget: 'dsContent',
 	uploadTargetName: 'uploadTarget',
 	uploadCompleteCallback: 'new Effect.Fade("uploadStatus", {})'
 }
@@ -103,4 +103,9 @@ function doRemoveStorables(form) {
 		new Effect.Fade(e);
 	}	
 	return false;	
+}
+
+function doBulkPrint(button,url) {
+	document.getElementById('downloadTarget').src = url+Form.serialize(button.form);
+	return false;
 }

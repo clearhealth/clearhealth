@@ -22,6 +22,7 @@ class Storable extends ORDataObject {
 	var $create_date = '';
 	var $last_revision_id = 0;
 	var $webdavname = '';
+	var $patient_id		= 0;
 	/**#@-*/
 
 

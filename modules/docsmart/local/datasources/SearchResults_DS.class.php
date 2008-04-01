@@ -5,8 +5,10 @@ $loader->requireOnce('/datasources/Tree_DS.class.php');
  *
  */
 class SearchResults_DS extends Datasource_sql {
+	var $patientId = null;
 	
-	function SearchResults_DS($query = '') {
+	function SearchResults_DS($query = '',$patientId = null) {
+		$this->patientId = $patientId;
 		$where = array();
 		$db = Celini::dbInstance();
 		$query = trim($query);
@@ -20,10 +22,14 @@ class SearchResults_DS extends Datasource_sql {
 			'where' => $this->getWhere($query),
 			'orderby' => $this->getOrderBy(),
 			'groupby' => $this->getGroupBy());
-		$this->setup(Celini::dbInstance(), $queryData, false);	
+		$this->setup(Celini::dbInstance(), $queryData, 	$this->getLabels());
 
+	}
 
-	}	
+        function getLabels() {
+		return false;
+	}
+
 
 	function getCols() {
 		return "*";

@@ -1,4 +1,4 @@
-<?
+<?php
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('datasources/Tree_DS.class.php');
 $loader->requireOnce('datasources/FoldersSearch_DS.class.php');
@@ -19,7 +19,7 @@ $loader->requireOnce('includes/storage/StorageManager.class.php');
  *     should be on their own controller.
  */
 class C_DocSmartStorable extends C_DocSmart {
-	
+
 	/**
 	 * Default action
 	 *
@@ -46,6 +46,15 @@ class C_DocSmartStorable extends C_DocSmart {
 		$parent = $node->getParentNode();
 		$storable =& Celini::newOrdo('Storable', $node->node_id);
 		$revisionCurrent = $storable->getCurrentRevision();
+
+		// verify that were viewing a storable from the current user
+		$patientId = (int)$this->get('patient_id','c_patient');
+		if ($storable->get('patient_id') != $patientId) {
+                        $this->messages->addMessage(
+                                'Different Patient Selected',
+                                'You can only view patient documents of the currently selected patient');
+                        Celini::redirect('PatientFinder', 'default');
+		}
 		
 		if(isset($revisionId)) {
 			$revision =& Celini::newOrdo('Revision', $revisionId);
@@ -145,7 +154,9 @@ class C_DocSmartStorable extends C_DocSmart {
 				'filename' => $_FILES['storable']['name']['filename'],
 				'storage_type' => $_POST['storable']['storage_type'],
 				'webdavname' => $_POST['storable']['webdavname'],
-				'mimetype' => Viewer::mimeContentType($_FILES['storable']['name']['filename']) ));	
+				'mimetype' => Viewer::mimeContentType($_FILES['storable']['name']['filename']),
+				'patient_id' => $this->patientId
+			));
 		$storable->persist();
 	
 		// save revision to the revisions table
@@ -283,7 +294,7 @@ class C_DocSmartStorable extends C_DocSmart {
 	function actionAddTag() {
 		$storable =& Celini::newOrdo('Storable');
 		$storable->setTag($_POST['tag']);
-		$tags = new CloudTags_DS($_POST['tag']['storable_id']);
+		$tags = new CloudTags_DS($_POST['tag']['storable_id'],$this->patientId);
 		$this->view->assign('tags', $tags->toArray());		
 		return $this->view->render('tags_list.html');
 	}
@@ -294,7 +305,7 @@ class C_DocSmartStorable extends C_DocSmart {
 	 * @return rendered template
 	 */
 	function actionCloudTags() {
-		$tags = new CloudTags_DS();
+		$tags = new CloudTags_DS(null,$this->patientId);
 		$this->view->assign('tags', $tags->toArray());		
 		return $this->view->render('cloud_tags.html');
 	}	
@@ -310,10 +321,16 @@ class C_DocSmartStorable extends C_DocSmart {
 	function actionRemoveTags() {
 		$tag =& Celini::newOrdo('TagStorable');
 		$tag->bulkDrop(@$_POST['tagList'], $_POST['storableId']);
-		$tags = new CloudTags_DS($_POST['storableId']);
+		$tags = new CloudTags_DS($_POST['storableId'],$this->patientId);
 		$this->view->assign('tags', $tags->toArray());				
 		return $this->view->render('tags_list.html');
 	}		
+
+	function actionListTags() {
+		$tags = new Tags_DS(null,$this->patientId);
+		$this->view->assign('tags', $tags->toArray());		
+		return $this->view->render('tags_ul.html');
+	}
 
 	function actionChangeStorageType($storbleId, $storageType) {
 		$storable =& Celini::newOrdo('Storable', $storbleId);
@@ -325,8 +342,8 @@ class C_DocSmartStorable extends C_DocSmart {
 	
 	function actionSearch() {
 		$folders = new FoldersSearch_DS($_POST['query']);
-		$storables = new StorablesSearch_DS($_POST['query']);
-		$tags = new TagsSearch_DS($_POST['query']);
+		$storables = new StorablesSearch_DS($_POST['query'],$this->patientId);
+		$tags = new TagsSearch_DS($_POST['query'],$this->patientId);
 		$this->view->assign('nodes', array_merge($folders->toArray(), $storables->toArray()));
 		$this->view->assign('tags', $tags->toArray());
 		return $this->view->render('search_results.html');

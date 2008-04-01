@@ -1,8 +1,11 @@
-<?
+<?php
 $loader->requireOnce('includes/Grid.class.php');
 $loader->requireOnce('datasources/FolderNodes_DS.class.php');
 $loader->requireOnce('datasources/StorableNodes_DS.class.php');
+$loader->requireOnce('datasources/TagsSearch_DS.class.php');
 $loader->requireOnce('includes/DocSmartTreeRenderer.class.php');
+$loader->requireOnce('includes/storage/FileStorageFS.class.php');
+$loader->requireOnce('lib/PdfMerge.class.php');
 /**
  * Storable management controller
  *
@@ -10,6 +13,7 @@ $loader->requireOnce('includes/DocSmartTreeRenderer.class.php');
 class C_DocSmart extends Controller {
 	
 	var $folder = null;
+	var $patientId = false;
 	
 	function C_DocSmart() {
 		parent::Controller();
@@ -29,8 +33,18 @@ class C_DocSmart extends Controller {
 		
 		$head =& Celini::HTMLHeadInstance();
 		$head->addExternalCss('yahoo/folders');
-		$head->addExternalCss('grid');
-		$head->addExternalCss('screen');
+		$head->addExternalCss('docsmart');
+
+		$this->patientId = $this->get('patient_id','c_patient');
+
+                // if there is no user lets goto the patient search page
+                if (!$this->patientId) {
+                        $this->messages->addMessage(
+                                'No Patient Selected',
+                                'Please select a patient before attempting to view patient documents.');
+                        Celini::redirect('PatientFinder', 'default');
+                }
+
 	}
 	
 	/**
@@ -98,6 +112,14 @@ class C_DocSmart extends Controller {
 	 */
 	function actionView() {
 		$this->view->assign('treeView', $this->actionViewTree());
+
+		$dispatcher =& new Dispatcher();
+		$action =& new DispatcherAction();
+		$action->controller = 'DocSmartStorable';
+		$action->action = 'listtags';
+		$action->wrapper = false;
+		$this->view->assign('tagView', $dispatcher->dispatch($action));
+
 		return $this->view->render('default.html');
 	}
 	/**
@@ -155,6 +177,7 @@ class C_DocSmart extends Controller {
 		$action =& new DispatcherAction();
 		$action->controller = 'DocSmartStorable';
 		$action->action = 'add';
+		$action->wrapper = false;
 		$this->view->assign('storableForm', $dispatcher->dispatch($action));
 		
 		// get parent node of the current selected folder
@@ -167,23 +190,72 @@ class C_DocSmart extends Controller {
 		$this->view->assign('tree', $tree->toArray());
 		
 		// get storables from the sopecified folder
-		$storableList = new StorableNodes_DS($this->folder['tree_id'], $this->folder['level']);
+		$storableList = new StorableNodes_DS($this->folder['tree_id'], $this->folder['level'],null,null,$this->patientId);
 	
 		$this->view->assign_by_ref('storableListGrid',C_DocSmart::getStorablesGrid($storableList));
 		$this->view->assign('storableList', $storableList->toArray());
 
 		return $this->view->render('folder.html');		
 	}
+
+	function actionViewTag($tag) {
+		$this->view->assign('tag',$tag);
+
+		// get storables from the sopecified folder
+		$storableList = new TagsSearch_DS($tag, $this->patientId);
+	
+		$this->view->assign_by_ref('storableListGrid',C_DocSmart::getStorablesGrid($storableList));
+		$this->view->assign('storableList', $storableList->toArray());
+
+		return $this->view->render('tag.html');		
+	}
+
 	
 	function getStorablesGrid($storableList) {
 		$storableListGrid =& new cGrid($storableList);
 		$storableListGrid->orderLinks = false;
 		$storableListGrid->setLabel('delete','<input type="checkbox" id="bulkChecker" onclick=\'changeSatatus($("bulkDelete").getElementsByTagName("input"), this)\'>');				
-		$storableListGrid->registerTemplate('filename', '<a href=\'javascript:void(0)\' onclick="HTML_AJAX.replace(\'content\', \''.Celini::link('default','DocSmartStorable',false).'tree_id={$tree_id}\');">{$filename}</a>');
+		$storableListGrid->registerTemplate('filename', '<a href=\'javascript:void(0)\' onclick="HTML_AJAX.replace(\'dsContent\', \''.Celini::link('default','DocSmartStorable',false).'tree_id={$tree_id}\');">{$filename}</a>');
 		$storableListGrid->registerTemplate('delete', '<input type="checkbox" name="storables[]" value="{$tree_id}">');
 		return $storableListGrid;
 	}
 
+
+	function actionMerge() {
+		if (!isset($_GET["storables"])) {
+			exit;
+		}
+		if (count($_GET["storables"]) < 1) {
+			exit;
+		}
+
+		$files = array();
+		$filenames = array();
+		$titles = array();
+
+		// this code is doing a lot more queries then really needed
+		foreach($_GET["storables"] as $id) {
+			$node =& Celini::newOrdo('TreeNode', $id);
+			$storable =& Celini::newOrdo('Storable',$node->get('node_id'));
+
+			// were only handling FS storage at the moment, we would need to 
+			// create tmp files for db or something
+			if ($storable->get('storage_type') == 'FS') {
+				$files[$node->get('node_id')] = FileStorageFS::getFileName($storable->get('last_revision_id'));
+				$filesnames[$node->get('node_id')] = $storable->get('filename');
+				$titles[$node->get('node_id')] = $storable->get('filename').
+					"  Created on: ".$storable->get('create_date');
+			}
+		}
+
+		$fileName = 'FilesToPrint-'.date('m/d/Y').".pdf";
+		header('Content-type: application/pdf');
+		header('Content-Disposition: attachment; filename="'.$fileName.'"');
+
+		$merge = new PDFMerge();
+		$merge->merge($files,$filesnames,$titles);
+		exit();
+	}
 }
 
 ?>

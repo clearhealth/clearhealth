@@ -63,7 +63,7 @@ class C_DocSmartFolder extends Controller
 			$_SESSION['flash']['notice'] = "Folder has been saved successfully.";
 		}
 		
-		Celini::redirectURL(Celini::link('DocSmart', 'default', 'main'));
+		Celini::redirectURL(Celini::link('default','DocSmart', 'main'));
 	}
 	
 	
@@ -77,7 +77,7 @@ class C_DocSmartFolder extends Controller
 		if($node->delete(true)) {
 			$_SESSION['flash']['notice'] = 'Folder has been deleted successfully';
 		}	
-		Celini::redirect('DocSmart' ,'default');
+		Celini::redirect('default', 'DocSmart');
 	}
 }
 

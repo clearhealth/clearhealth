@@ -18,7 +18,7 @@
 				{if $node.href === false}
 					var dataHref = '';
 				{elseif $node.href == ''}
-					var dataHref = "javascript:HTML_AJAX.replace('content','{link action="openfolder" controller="DocSmart" defaultArg=$node.tree_id pageType=""}')";
+					var dataHref = "javascript:HTML_AJAX.replace('dsContent','{link action="openfolder" controller="DocSmart" defaultArg=$node.tree_id pageType=""}')";
 				{else}
 					// using supplied
 					var dataHref = "{$node.href}";
@@ -35,7 +35,7 @@
 				{if $node.href === false}
 					var dataHref = '';
 				{elseif $node.href == ''}
-					var dataHref = "javascript:HTML_AJAX.replace('content','{link action="openfolder" controller="DocSmart" defaultArg=$node.tree_id pageType=""}')";
+					var dataHref = "javascript:HTML_AJAX.replace('dsContent','{link action="openfolder" controller="DocSmart" defaultArg=$node.tree_id pageType=""}')";
 				{else}
 					var dataHref = {$node.href};
 				{/if}

@@ -1,4 +1,4 @@
-<?
+<?php
 
 $loader->requireOnce('/includes/viewer/Viewer.class.php');
 $loader->requireOnce('/includes/viewer/FileDownloader.class.php');

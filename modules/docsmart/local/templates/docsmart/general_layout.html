@@ -1,5 +1,6 @@
-	<div id="header">
-		<form action="{link action="search" controller="DocSmartStorable" pageType=""}" method="post" id="searchForm" onsubmit="return !HTML_AJAX.formSubmit(this,'content')">
+<div id="dsBody">
+	<div id="dsHeader">
+		<form action="{link action="search" controller="DocSmartStorable" pageType=""}" method="post" id="searchForm" onsubmit="return !HTML_AJAX.formSubmit(this,'dsContent')">
 			<fieldset>
 				<legend>Search form</legend>
 				<label for="query">Search:</label> <input type="text" id="query" name="query" value="" /><br />
@@ -10,19 +11,22 @@
 	</div>
 
 	<iframe name="uploadTarget" id="uploadTarget"></iframe>	
+	<iframe name="downloadTarget" id="downloadTarget" src="{link action="merge" controller="DocSmart" pageType=""}"></iframe>	
 	
-	<hr />
 	<div id="treeMenu">
-		<h2>Structure</h2>
+		<h2>Folders</h2>
 		{$treeView}
 	<br />
-	<a href="javascript:void(0);" onclick="HTML_AJAX.replace('content','{link action="addfolder" controller="DocSmart" pageType=""}');">Add New Folder</a>		
+	<a href="javascript:void(0);" onclick="HTML_AJAX.replace('dsContent','{link action="addfolder" controller="DocSmart" pageType=""}');">Add New Folder</a>		
+	<div id="dsTags">
+		<h2>Tags</h2>
+		{$tagView}
+	</div>
 	</div>
 
-	<div id="content">
+	<div id="dsContent">
 		{include file='docsmart/general_flash.html'}
 		{$content_for_layout}
 	</div>	
 
-<hr />	
-
+</div>

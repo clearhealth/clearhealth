@@ -2,7 +2,7 @@
 {foreach from=$nodes item=node}
 /
 	{foreach from=$node.path item=pathElement name="path"}
-		<a href="javascript:HTML_AJAX.replace('content','{link action="openfolder" controller="DocSmart" defaultArg=$pathElement.tree_id pageType=""}')">
+		<a href="javascript:HTML_AJAX.replace('dsContent','{link action="openfolder" controller="DocSmart" defaultArg=$pathElement.tree_id pageType=""}')">
 		{if $node.node_type ne "storable" && $smarty.foreach.path.last}
 			<b>{$pathElement.folder.label}</b>
 		{else}	
@@ -11,7 +11,7 @@
 		</a>{if !$smarty.foreach.path.last}/{/if}
 	{/foreach}
 	{if $node.node_type eq "storable"}
-		/<a href="javascript:HTML_AJAX.replace('content','{link action="default" controller="DocSmartStorable" pageType=""}tree_id={$node.tree_id}')"><b>{$node.name}</b></a>
+		/<a href="javascript:HTML_AJAX.replace('dsContent','{link action="default" controller="DocSmartStorable" pageType=""}tree_id={$node.tree_id}')"><b>{$node.name}</b></a>
 	{/if}
 <br />
 <br />

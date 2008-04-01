@@ -5,8 +5,8 @@ $loader->requireOnce('/datasources/NodeSearchResults_DS.class.php');
 class TagsSearch_DS extends NodeSearchResults_DS {
 
 	function getCols() {
-		return parent::getCols()
-			.",storables.filename as name";
+		return  parent::getCols() .
+			", storables.filename as name";
 	}				
 	
 	function getFrom() {
@@ -17,13 +17,22 @@ class TagsSearch_DS extends NodeSearchResults_DS {
 	}	
 	
 	function getWhere($query) {
-		return 'tree.node_type=\'storable\' AND tags.tag like '.$query;		
+		return 'tree.node_type=\'storable\' AND tags.tag like '.$query.
+			' and storables.patient_id = '.(int)$this->patientId;		
 	}	
 
 	function getGroupBy() {
 		return 'tree.tree_id';		
 	}	
 	
+	 function getLabels() {
+		return array(
+			'test' => '',
+			'delete' => '',
+			'name' => "Filename",
+		);
+	}
+
 }
 
 ?>

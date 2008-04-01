@@ -9,7 +9,7 @@ class NodeSearchResults_DS extends SearchResults_DS {
 	}			
 	
 	function getCols() {
-		return "tree.*";
+		return "tree.* ";
 	}
 	
 	function toArray($assoc_key = false, $assoc_val = false) {
