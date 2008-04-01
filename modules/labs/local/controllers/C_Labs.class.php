@@ -3,8 +3,8 @@ $loader->requireOnce('datasources/Lab_DS.class.php');
 $loader->requireOnce('datasources/Order_DS.class.php');
 class C_Labs extends Controller {
 
-	function actionList() {
-		$patientId = 0;
+	function actionList($patientId = 0) {
+		$patientId = (int)$patientId;
 		if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
 		$ds =& new Lab_DS($patientId);
 		$grid =& new cGrid($ds);
@@ -13,8 +13,8 @@ class C_Labs extends Controller {
 		return $this->view->render('list.html');
 	}
 
-	function actionOrderList() {
-		$patientId = 0;
+	function actionOrderList($patientId = 0) {
+		$patientId = (int)$patientId;
 		if ($this->get('patient_id','c_patient') > 0) $patientId = $this->get('patient_id','c_patient');
 		$ds =& new Order_DS($patientId);
 		$grid =& new cGrid($ds);
