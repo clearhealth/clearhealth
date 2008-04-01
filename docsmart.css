@@ -1,0 +1,95 @@
+/* wrapper */
+#dsBody {
+	position: relative;
+}
+/* common styles */
+
+p.notice {
+	background-color: #E3FFD1;
+	border: 1px solid #060;
+	padding: 1em;
+	margin-bottom: 1em;
+}
+
+p.error {
+	border-left: 5px solid #e33;
+	font: 11px 'Lucida Grande', Geneva, Verdana, Arial, Helvetica, sans-serif;
+	background: #eee;
+	padding: 5px;
+	margin: 0px;
+}
+
+/* header styles */
+#dsHeader { margin: 0px; padding: 0px 10px; width: 100%; position: relative; }
+#searchForm { position: absolute; top: 2px; right: 20px; width: 320px; }
+#searchForm legend { display: none; }
+#searchForm fieldset { border: none; }
+#searchForm label { font-weight: bold; }
+
+/* tree menu styles */
+
+#treeMenu { position: absolute; top: 40px; left: 10px; width: 250px; clear: both; }
+
+#treeMenu #search { display: none; }
+#treeMenu #dsContents { display: block; }
+#treeMenu #tree { padding: 0px 15px; }
+#treeMenu h2 { display: block; background-color: #999; padding: 5px 10px; color: #FFF; }
+
+/* main content style */
+#dsContent { padding: 10px 300px; }
+#dsContent p { clear: left; margin: 10px 0px; text-indent: 10px; }
+#dsContent br { }
+
+#dsContent div.media { float: left; padding: 5px; margin: 5px 5px; border: 1px solid; width: 200px;}
+#dsContent div.media p { width: 100%; text-align: center; }
+
+#progressBar { margin: 5px 21px; height: 10px; }
+
+#comments { clear: both; }
+
+#comments div.header { background: #ccc; text-align: right; padding: 5px 5px; border: #bbb 1px solid; }
+
+#commentForm { width: 250px; float: right; margin: 5px 0px; }
+#commentForm fieldset { border: #ddd 1px solid; }
+#commentForm legend { border: #ddd 1px solid; padding: 3px 10px; font-weight: bold; }
+#commentForm label { font-weight: bold; }
+#commentForm input, #commentForm textarea  { margin: 2px 0px 5px 0px; width: 225px; }
+#commentForm textarea { height: 70px; }
+
+#comments div.comment { clear: both; }
+#comments div.comment div.person { background: #eee; border: #ccc 1px solid; padding: 5px 5px; }
+#comments div.comment div.date { background: #eee; border: #ccc 1px solid; padding: 5px 5px; }
+#comments div.comment div.body { background: #fff; border: #ccc 1px solid; padding: 5px 5px; }
+#comments div.comment div.body h4 { font-size: 12px; font-weight: bold; display: inline; }
+
+#uploadTarget { display: none;} 
+#downloadTarget { display:none;}
+#uploadProgressBar { background: url(../images/progress-bar.gif) repeat-x; height: 18px; }
+
+#tabContent {
+	padding-top: 10px;
+}
+
+tr.revisionRow:hover {
+	background-color: #FFC;
+}
+
+tr.revisionRow {
+	cursor: pointer;	
+}
+
+#cloudTags { 
+	padding: 5px; 
+}
+
+#cloudTags span { 
+	cursor: pointer; 
+	cursor: hand;
+	text-decoration: underline;
+}
+
+.tag1 { font-size: 10px; }
+.tag2 { font-size: 12px; }
+.tag3 { font-size: 14px; }
+.tag4 { font-size: 16px; }
+.tag5 { font-size: 18px; }
