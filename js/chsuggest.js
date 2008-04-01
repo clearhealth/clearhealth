@@ -8,6 +8,16 @@ function patientSuggest(id,valueId) {
 }
 patientSuggest.prototype = {
 }
+function patientVistaFinder(id,valueId) {
+	this.suggest = new clniVistaFinder('{$name} #{$pubpid} ({$DOB})',id,valueId,'VistaPatientFinder','ajaxFind');
+	this.id = id;
+	this.suggest.allowBreaks = false;
+
+	// style the box so you know its special
+	document.getElementById(id).style.border = 'solid 1px blue';
+}
+patientVistaFinder.prototype = {
+}
 
 function personSuggest(id,valueId) {
 	this.suggest = new clniSuggest('{$name} #{$pubpid} ({$DOB})',id,valueId,'PatientFinder','SmartSearch');
