@@ -5,7 +5,7 @@
 $ajax =& Celini::ajaxInstance();
 $ajax->jsLibraries[] = 'calendar';
 $ajax->jsLibraries[] = 'clniUtil';
-$ajax->jsLibraries[] = array('suggest','chsuggest');
+$ajax->jsLibraries[] = array('suggest','chsuggest','chvistafinder');
 $ajax->jsLibraries[] = 'chBehaviors';
 $ajax->jsLibraries[] = 'zipcode';
 // Add application-specific js libraries
@@ -14,6 +14,7 @@ $ajaxServer->registerJSLibrary('chBehaviors', 'behavior.js', realpath(dirname(__
 $ajaxServer->registerJSLibrary('zipcode', 'zipcode.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('quicksave', 'quicksave.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('conflicts', 'conflicts.js', realpath(dirname(__FILE__) . '/..') . '/js/');
+$ajaxServer->registerJSLibrary('chvistafinder', 'vistafinder.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 $ajaxServer->registerJSLibrary('ui', 'ui.js', realpath(dirname(__FILE__) . '/..') . '/js/');
 
 // todo: where should this setting end up, does it really make sense to have it user configurable
