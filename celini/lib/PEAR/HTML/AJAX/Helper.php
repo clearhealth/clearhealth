@@ -39,6 +39,11 @@ class HTML_AJAX_Helper
 	 * Remote class stubs to include
 	 */
 	var $stubs = array();
+	
+	/**
+     	*  Combine jsLibraries into a single require and remove duplicates
+     	*/
+    	var $combineJsIncludes = true;
 
 	/**
 	 * Include all needed libraries, stubs, and set defaultServer
@@ -48,19 +53,27 @@ class HTML_AJAX_Helper
 	function setupAJAX() 
 	{
 		$libs = array(0=>array());
+		$combinedLibs = array();
 		foreach($this->jsLibraries as $library) {
 			if (is_array($library)) {
 				$libs[] = implode(',',$library);
+				$combinedLibs = array_merge($combinedLibs,$library);
 			}
 			else {
 				$libs[0][] = $library;
+				$combinedLibs[] = $library;
 			}
 		}
 		$libs[0] = implode(',',$libs[0]);
-
 		$ret = '';
+		if ($combineJsIncludes == true) {
+			$list = implode(',',array_unique($combinedLibs));
+			$ret .= "<script type='text/javascript' src='{$this->serverUrl}?client={$list}'></script>\n";
+		}
+		else {
 		foreach($libs as $list) {
 			$ret .= "<script type='text/javascript' src='{$this->serverUrl}?client={$list}'></script>\n";
+		}
 		}
 
 		if (count($this->stubs) > 0) {

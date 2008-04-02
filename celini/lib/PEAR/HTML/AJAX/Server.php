@@ -437,6 +437,7 @@ class HTML_AJAX_Server
     {
         if (file_exists($file)) {
             readfile($file);
+	    echo "\n";
         } else {
             $file = addslashes($file);
             echo "alert('Unable to find javascript file: $file');";
