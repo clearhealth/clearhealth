@@ -1,15 +1,19 @@
+<div style="width:300px;height:175px;">
+	<fieldset style="height:175px;"><Legend>Patient Details</legend>
+	<div id="patientInformationBlock"></div>
+	</fieldset>
+<br />
 <div>
-	<div id="patientInformationBlock" style="float:left;"></div>
-<div style="float:right;">
 All Patients: <br />
 <div class="SuggestInput">
 {clni_img name="stock/stock_person-10.png"}
-<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="">
+<input type="hidden" name="Appointment[patient_id]" id="aePatientId" value="0">
 <input type="text" autocomplete="off" name="Appointment[patient_name]"
- id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}" style="width:350px;">
+ id="aePatientName" value="{if $patient_id > 0 && $patient && $patient->get('id') > 0}{$patient->value('patient')}{/if}" style="width:275px;">
 </div>
-<br />
-<select id="searchResults" multiple="multiple" size="10" style="margin-left:15px; width:350px;"
+<!--<input type="button" onClick="ps.suggest.suggest();" value="Search"/>
+<br />-->
+<select id="searchResults" style="font-size:6pt;" size="10" style="width:300px;"
 <option>No Patients Found</option>
 </select>
                 {literal}
@@ -17,7 +21,6 @@ All Patients: <br />
                         var ps = new patientVistaFinder('aePatientName','aePatientId');
                 </script>
                 {/literal}
-
 </div>
 </div>
 
