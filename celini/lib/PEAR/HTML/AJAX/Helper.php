@@ -66,7 +66,7 @@ class HTML_AJAX_Helper
 		}
 		$libs[0] = implode(',',$libs[0]);
 		$ret = '';
-		if ($combineJsIncludes == true) {
+		if ($this->combineJsIncludes == true) {
 			$list = implode(',',array_unique($combinedLibs));
 			$ret .= "<script type='text/javascript' src='{$this->serverUrl}?client={$list}'></script>\n";
 		}
