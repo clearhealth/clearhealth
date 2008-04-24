@@ -226,7 +226,8 @@ class Controller {
 	function dispatch($action,$args,$mode = 'action') {
 		if ($this->exists($action,$mode)) {
 			$method = $this->_methodName($mode,$action);
-			return call_user_func_array(array(&$this,$method),$args);
+			$output= call_user_func_array(array(&$this,$method),$args);
+			return $output;
 		}
 	}
 

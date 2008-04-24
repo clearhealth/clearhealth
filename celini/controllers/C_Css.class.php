@@ -36,6 +36,12 @@ class C_Css extends Controller {
 		$etag = md5($etag);		
 
 		if (!$this->_compareETags($etag)) {
+			foreach($cssFiles as $cssFile) {
+				$fsize += mb_strlen("/*** " .  basename($cssFile) . " ***/\n",'8bit');
+				$fsize += mb_strlen("\n",'8bit');
+				
+			
+			}
 			header('Content-type: text/css; charset=UTF-8',true);
 			header('Content-Length: '.$fsize);
 			foreach ($cssFiles as $cssFile) {
