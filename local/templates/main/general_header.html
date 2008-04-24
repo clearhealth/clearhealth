@@ -44,15 +44,6 @@ if (d.getTimezoneOffset() != serverTimeOffset) {
 {if !$noOverlib}
 {popup_init src="`$base_dir`js/overlib.js"}
 {/if}
-<link href="{$base_dir}index.php/css/celini.css" rel="stylesheet" type="text/css">
-<link href="{$base_dir}index.php/css/cal/calendar-blue2.css" rel="stylesheet" type="text/css">
-<link href="{$base_dir}index.php/css/clearhealth.css" rel="stylesheet" type="text/css">
-<link href="{$base_dir}index.php/css/main_menu.css" rel="stylesheet" type="text/css">
-{*<link href="{$base_dir}suggest.css" rel="stylesheet" type="text/css">*}
-{if $extra_css}
-{foreach from=$extra_css item=css_file}
-<link href="{$base_dir}index.php/css/{$css_file}" rel="stylesheet" type="text/css" />
-{/foreach}
-{/if}
+<link href="{$base_dir}index.php/css/celini.css,/css/calendar-blue2.css,/css/clearhealth.css,/css/main_menu.css{foreach from=$extra_css item=css_file},/css/{$css_file}{/foreach}" rel="stylesheet" type="text/css">
 <title>ClearHealth : {$section_name}{if $menu_current.title} : {$menu_current.title}{/if}</title>
 {$HTMLHead->render()}
