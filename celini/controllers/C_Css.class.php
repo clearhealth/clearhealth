@@ -9,26 +9,40 @@ class C_Css extends Controller {
 		if (strstr($_SERVER['PATH_INFO'],'..')) {
 			return false;
 		}
-		$finder =& new FileFinder();
-		$finder->initCeliniPaths();
-		$cssFile = $finder->find($_SERVER['PATH_INFO']);
-		if($cssFile && file_exists("$cssFile")) {
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	function dispatch($action,$args,$method = 'action') {
 		$finder =& new FileFinder();
 		$finder->initCeliniPaths();
-		$cssFile = $finder->find($_SERVER['PATH_INFO']);
-		
-		$etag = md5($cssFile.filemtime($cssFile));
+		$etag = "";
+		$cssUrls = explode(',',$_SERVER['PATH_INFO']);
+		$cssFiles = array();
+		$fsize = 0;	
+		foreach($cssUrls as $cssUrl) {
+			$finder =& new FileFinder();
+			$finder->initCeliniPaths();
+			$cssFile = $finder->find($cssUrl);
+			if($cssFile && substr($cssFile,'-4') === ".css" && file_exists("$cssFile")) {
+				$etag .= $cssFile.filemtime($cssFile);
+				$fsize += filesize($cssFile);
+				$cssFiles[] = $cssFile;
+			}
+			else {
+				echo "File Not Found: " .  $cssUrl;
+				return false;
+			}
+		}
+		$etag = md5($etag);		
 
 		if (!$this->_compareETags($etag)) {
 			header('Content-type: text/css; charset=UTF-8',true);
-			header('Content-Length: '.filesize($cssFile));
-			readfile($cssFile);
+			header('Content-Length: '.$fsize);
+			foreach ($cssFiles as $cssFile) {
+				echo "/*** " .  basename($cssFile) . " ***/\n";
+				readfile($cssFile);
+				echo "\n";
+			}
 		}
 		exit;
 	}
