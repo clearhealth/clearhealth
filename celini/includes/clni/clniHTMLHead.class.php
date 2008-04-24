@@ -9,6 +9,7 @@ class clniHTMLHead {
 	var $elements = array();
 
 	var $_css = array();
+	var $_externalCSS = array();
 	var $_js = array();
 
 	/**
@@ -38,8 +39,9 @@ class clniHTMLHead {
 	 */
 	function addExternalCss($name) {
 		if(empty($name)) return;
-		$url = Celini::link($name . '.css', 'css',false,false);
-		$this->addElement('<link  href="' . $url . '" rel="stylesheet" type="text/css" />', '_css'. $name);
+		if (substr($name,5) !== "/css/") $name = "/css/" . $name;
+		if (substr($name,-4) !== ".css") $name .= ".css";
+		$this->_externalCSS[] = $name;
 	}
 
 	/**
@@ -92,6 +94,10 @@ class clniHTMLHead {
 	 * Render the elements out as a string
 	 */
 	function render() {
+		if (count($this->_externalCSS) > 0) {
+			$this->_externalCSS = array_unique($this->_externalCSS);
+			$this->elements['externalCss'] = '<link href="' . Celini::getBaseDir() ."index.php". implode(',',$this->_externalCSS) . '" rel="stylesheet" type="text/css" />';
+		}
 		if (count($this->_css) > 0) {
 			$this->elements['inlineCss'] = '<style type="text/css">' . implode("\n",$this->_css) . '</style>';
 		}
