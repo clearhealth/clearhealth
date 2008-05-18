@@ -103,7 +103,12 @@ function switchTimer(element) {
 {/literal}
 <div id="header">
 
-<div class="logo"><b>ClearHealth</b></div>
+<div class="logo"><b>ClearHealth</b>
+{if $me->get_username()}
+                        <div id="username">Logged in As: {$me->get_username()}</div>
+                {/if}
+</div>
+</div>
 <div style="clear: both;"></div>
                 {if $menu_group == "patient"}
                         {if $selectedPatient}
