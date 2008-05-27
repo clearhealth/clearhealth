@@ -408,6 +408,13 @@ class Controller {
 			$controller = strtolower(get_class($this));
 		}
 		else {
+			$c = '';
+			//see if controller actually exists, if so call get method on named controller so that it can be overwritten otherwise just look for the value in the SESSION
+			if (Celini::checkController(substr($controller,2)) && $GLOBALS['loader']->includeOnce('/controllers/' . $controller . '.class.php') && $c = new $controller ) {
+				if (method_exists($c,"get")) {
+					return $c->get($name);
+				}
+			}
 			$controller = strtolower($controller);	
 		}
 		if (isset($_SESSION[$GLOBALS['config']['app_name']]['controller_vars'][$controller][$name])) {
