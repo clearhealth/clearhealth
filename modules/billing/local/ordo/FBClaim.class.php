@@ -33,6 +33,9 @@ class FBClaim extends ORDataObject {
 	var $audit_number 	= 0;
 	var $comment 		= '';
 	var $claim_mode 	= "P";
+	var $amount_total = '';
+	var $amount_paid = '';
+	var $net_amount_total = '';
 	/**#@-*/
 
 	var $_key = 'claim_id';
@@ -53,7 +56,8 @@ class FBClaim extends ORDataObject {
 			"medicaid_resubmission_code" => "",
 			"original_reference_number" =>"", 
 			"prior_authorization_number" => "",
-			'claim_type' => 'medical'
+			'claim_type' => 'medical',
+			"attachment_control_number" => ""
 		)
 	);
 
