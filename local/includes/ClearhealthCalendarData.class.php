@@ -509,7 +509,8 @@ class ClearhealthCalendarData {
 				LEFT JOIN user bkdnu ON(bkdnpr.person_id=bkdnu.person_id)
 			WHERE
 				((event.end > $s and event.end <= $e) or
-				(event.start >= $s and event.start < $e))
+				(event.start >= $s and event.start < $e) or
+				(event.start <= $s and event.end >= $e))
 				$hideCan
 			GROUP BY
 				a.appointment_id
@@ -660,7 +661,7 @@ class ClearhealthCalendarData {
 				LEFT JOIN appointment a on a.room_id=r.id
 			WHERE 
 				s.provider_id = 0 and
-				b.practice_id = $practice_id $where
+				b.practice_id = $practice_id $where 
 			 ";
 		return $db->getAssoc($sql);
 	}
