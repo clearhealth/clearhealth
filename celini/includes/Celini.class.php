@@ -284,6 +284,20 @@ class Celini {
 		}
 		return htmlspecialchars($base_dir);
 	}
+	
+	/** 
+	 * Get the current base_uri
+	 */
+	function getBaseURI() {
+		return $GLOBALS['base_uri'];
+	}
+
+	/**
+	* Get billing variation template dir
+	*/
+	function getVariationsDir() {
+		return APP_ROOT . "/modules/billing/local/templates/variations/";
+	}
 
 	/**
 	 * Raise an error
