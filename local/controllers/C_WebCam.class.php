@@ -66,6 +66,9 @@ class C_WebCam extends Controller {
                 $d = new Document();
 		$file['path'] = $file['path'] . $patientId . "/";
 		$d->set('foreign_id',$patientId);
+		if (!file_exists($file['path'])) {
+			mkdir($file['path']);
+		}
 		ImageJPEG($img,$file['path'].$patientId."_".$file['name']);
 		
                 $d->url = "file://" .$file['path'].$patientId."_".$file['name'];
@@ -85,5 +88,34 @@ class C_WebCam extends Controller {
     		//ImageJPEG( $img );
     		//imagedestroy( $img );        
 	}
+
+//reference function for batch import
+/*	function actionBatch() {
+		 $this->_config = $GLOBALS['config']['document_manager'];
+		$dir = opendir($this->_config['repository']);
+                        //read each entry in the directory
+		$loop = 0;
+                        while (($file = readdir($dir)) !== false) {
+				if ($file == '.' || $file == '..' || !is_file($this->_config['repository'].$file)) continue;
+				echo "file: " . $file . "<br/>";
+                                //concat the filename and path
+                                $file = $this->_config['repository'] .$file;
+                                $file_info = array();
+                                //if the filename is a file get its info and put into a tmp array
+                                if (is_file($file) && strpos(basename($file),".") !== 0) {
+					preg_match("/^([0-9]+)_/",basename($file),$patient_match);
+        				$patientId = $patient_match[1];        
+					@mkdir($this->_config['repository'].$patientId,0700);
+                        		rename($file,$this->_config['repository'].$patientId."/".basename($file)); 
+                                        $d = Document::document_factory_url("file://" . $this->_config['repository'].$patientId."/".basename($file));
+
+		$sql = "REPLACE INTO category_to_document set category_id = '79183606', document_id = '" . $d->get_id() . "'";
+                $d->_db->Execute($sql);
+		echo $d->toString();
+		echo "loop:" . $loop . "<br/>";
+		$loop++;
+		}
+                }
+	}*/
 }
 ?>
