@@ -170,7 +170,7 @@ class C_Main extends C_PageType {
 	 *    datasource and grid portion of report generation out of 
 	 *    {@link Controller::report_action_view()} and into it's own object.
 	 */
-	function export_report_view($to, $external_id, $name) {
+	function actionExport_report_view($to, $external_id, $name) {
 		$mimeType = $this->_checkMimeType($to);
 		
 		$GLOBALS['loader']->requireOnce("includes/ReportFilter.class.php");
@@ -293,7 +293,7 @@ class C_Main extends C_PageType {
 	 * @return string
 	 */
 	function _checkMimeType($to) {
-		static $mimeTypes = array('csv' => 'text/csv','StrippedCSV' => 'text/csv','html' => 'text/csv');
+		$mimeTypes = array('csv' => 'text/csv','StrippedCSV' => 'text/csv','html' => 'text/csv');
 		if (!isset($mimeTypes[$to])) {
 			die('Unrecognized export type: ' . htmlspecialchars($to));
 		}
