@@ -2,6 +2,7 @@
 
 $loader->requireOnce('includes/ElectronicClaimRenderer.class.php');
 $loader->requireOnce('includes/DestinationProcessorManager.class.php');
+$loader->requireOnce("includes/HCFAClaimlinePager.class.php");			
 
 /**
  * Load all FB* class files
@@ -37,6 +38,7 @@ class C_FreeBGateway extends Controller {
 	var $total_x12_segments = 0;
 	var $hl_count = 0;
 	var $x12_id = 0;
+	var $hcfaVars = array();
 
 	var $current_revision = false;
 	
@@ -306,8 +308,8 @@ class C_FreeBGateway extends Controller {
 	}
 
 	function claimResult($batch,$format,$package = "txt", $destination = "browser") {
-		if (!preg_match("/^(hcfa|x12)_.*/", $format, $matches)) {
-			$this->last_error = array("2000","Claim variation/format must begin with x12_ or hcfa_.");
+		if (!preg_match("/^(hcfa|x12|ub|cms)_.*/", $format, $matches)) {
+			$this->last_error = array("2000","Claim variation/format must begin with x12_ or hcfa_ or ub_ or cms_.");
 			return false;
 		}
 
@@ -328,7 +330,6 @@ class C_FreeBGateway extends Controller {
 		$first_claim_id = key($batch);
 		$c =& ORDataObject::factory('FBClaim',$first_claim_id); 
 		//The first claims id is the batch id...
-
 		$dpm =& Celini::dpmInstance();
 		$processor =& $dpm->processorInstance($destination);
 		$processor->processPackage($claimresult, $c, $format);
@@ -390,38 +391,57 @@ class C_FreeBGateway extends Controller {
 		$claimresult = "";
 		$claimlines = $c->childEntities("FBClaimline");
 		
-		$format_type = "hcfa";//when adding new paper types put a regexp to 
-					//discover the type here...
-		if ($format_type === "hcfa") {//add new sections for other paper types
-			global $loader;
-			$loader->requireOnce("includes/HCFAClaimlinePager.class.php");			
-			//add new page control character
-			$hcfa_pager = new HCFAClaimlinePager($claimlines);
-			$this->assign("total_pages",$hcfa_pager->get_total_pages());
-			while ($hcfa_page = $hcfa_pager->next()) {
-				$this->assign("current_page",$hcfa_pager->get_current_page());
-				if (!$hcfa_pager->EOF) {
-					$this->assign("claim_continues",1);
-				}
-				else {
-					$this->assign("claim_continues",0);
-				}
-				$this->assign("diagnoses",$hcfa_pager->get_diagnoses());
-				for($i=0;$i<count($hcfa_page);$i++) {
-					$hcfa_page[$i]->set("diagnosis_pointer",$hcfa_pager->get_diagnosis_pointer($hcfa_page[$i]));
-				}
-				$this->assign_by_ref("claim_lines", $hcfa_page);
-				$claimresult .= $this->fetch(Celini::getTemplatePath("/variations/" . preg_replace("/[^A-Za-z0-9_]/","",$format) . "/" . preg_replace("/[^A-Za-z0-9_]/","",$format) ."_header.html"));
-			}			
-			$claimresult = $this->_postfilter_margin($claimresult);
-		}//end hcfa-only section...
+		//add new page control character
+		$hcfa_pager = new HCFAClaimlinePager($claimlines);
+		$this->assign("total_pages",$hcfa_pager->get_total_pages());
+		while ($hcfa_page = $hcfa_pager->next()) {
+			$this->assign("current_page",$hcfa_pager->get_current_page());
+			if (!$hcfa_pager->EOF) {
+				$this->assign("claim_continues",1);
+			}
+			else {
+				$this->assign("claim_continues",0);
+			}
+			$this->assign("diagnoses",$hcfa_pager->get_diagnoses());
+			for($i=0;$i<count($hcfa_page);$i++) {
+				$hcfa_page[$i]->set("diagnosis_pointer",$hcfa_pager->get_diagnosis_pointer($hcfa_page[$i]));
+			}
+			$this->assign("claim_lines", $hcfa_page);
+			$tmpVar = $this->view->_tpl_vars;
+			unset($tmpVar['SCRIPT_NAME']);
+			unset($tmpVar['lang']);
+			unset($tmpVar['PROCESS']);
+			unset($tmpVar['HEADER']);
+			unset($tmpVar['FOOTER']);
+			unset($tmpVar['CONTROLLER']);
+			unset($tmpVar['CONTROLLER_THIS']);
+			unset($tmpVar['sec_obj']);
+			unset($tmpVar['base_dir']);
+			unset($tmpVar['base_uri']);
+			unset($tmpVar['entry_file']);
+			unset($tmpVar['emr_dir']);
+			unset($tmpVar['group_appointments']);
+			unset($tmpVar['APP_ROOT']);
+			unset($tmpVar['CELINI_ROOT']);
+			unset($tmpVar['GET']);
+			unset($tmpVar['Celini']);
+			unset($tmpVar['FORM_ACTION']);
+			unset($tmpVar['messages']);
+			unset($tmpVar['me']);
+			$this->hcfaVars[] = $tmpVar;
+			//$claimresult .= $this->fetch(Celini::getTemplatePath("/variations/" . preg_replace("/[^A-Za-z0-9_]/","",$format) . "/" . preg_replace("/[^A-Za-z0-9_]/","",$format) ."_header.html"));
+		}			
+		//$claimresult = $this->_postfilter_margin($claimresult);
 
-		//well thats one hcfa... lets add it to the pile of hcfas
-		$all_claimresults = $all_claimresults . $claimresult; 
+	//well thats one hcfa... lets add it to the pile of hcfas
+	//$all_claimresults = $all_claimresults . $claimresult; 
 		
-		}//end of the main claim loop... 
-		return $all_claimresults;	
+	}//end of the main claim loop...
+	$ret = ORDataObject::toXml($this->hcfaVars,'hcfa');
+	return $ret;
+	//return $all_claimresults;	
 	}
+
 
 	function electronicClaimResult($batch,$format) {
 		$renderer =& new ElectronicClaimRenderer($batch, $format);
@@ -446,7 +466,12 @@ class C_FreeBGateway extends Controller {
 		
 		if ($handle = opendir(Celini::getTemplatePath("/variations"))) {
 			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(Celini::getTemplatePath("/variations/" . $file)) && file_exists(Celini::getTemplatePath("/variations/" . $file) . "/" . $file . "_header.html")) {
+				if ($file != "." && $file != ".." && is_dir(Celini::getTemplatePath("/variations/" . $file)) 
+				&& (file_exists(Celini::getTemplatePath("/variations/" . $file) . "/" . $file . "_header.html")
+				||
+				(file_exists(Celini::getTemplatePath("/variations/" . $file) . "/" . $file .".pdf"))
+
+				) ){
 					$variations[basename($file)] = basename($file);	
 				}
 			}
