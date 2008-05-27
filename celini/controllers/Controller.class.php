@@ -143,7 +143,9 @@ class Controller {
 			if (!isset($_SERVER['HTTPS']) && !$forcehttps) {
 				$proto= "http://";
 			}
-			$this->view->assign('base_uri',$proto.$_SERVER['SERVER_NAME'].$base_dir);
+			$base_uri = $proto.$_SERVER['SERVER_NAME'].$base_dir;
+			$GLOBALS['base_uri'] = $base_uri;
+			$this->view->assign('base_uri',$base_uri);
 		}
 		$this->assign('entry_file',$GLOBALS['config']['entry_file']);
 		if (isset($GLOBALS['config']['autoAcl'])) {
