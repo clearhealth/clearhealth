@@ -84,7 +84,7 @@ class C_Appointment extends Controller {
 		$person =& Celini::newORDO('Person');
 		$users_array = array();
 		$users_array[0]=$person->getPersonList(0);
-		$users_array[2]=$provider->getProviderList('Provider');
+		$users_array[2]=$person->getPersonList('Provider');
 		$users_array[3]=$person->getPersonList(3);
 		$users_array[4]=$person->getPersonList(4);
 		$users_array[5]=$person->getPersonList(5);
@@ -496,7 +496,7 @@ class C_Appointment extends Controller {
 			$patient_id = (int)$post['patient_id'];
 		}
 		$head =& Celini::HTMLHeadInstance();
-		$head->addExternalCss('calendar','calendar');
+		$head->addExternalCss('calendar');
 		$head->addExternalCss('suggest');
 		if(!is_null($this->appointment)) {
 			return $this->appointment;
@@ -559,8 +559,7 @@ class C_Appointment extends Controller {
 			if(!empty($search['schedule_code'])) {
 				$where[] = " event_group.title =" .$db->quote($search['schedule_code']);
 			}
-			
-			$where[] = " event.start BETWEEN ".$db->quote($search['from'])." AND ".$db->quote($search['to']) ;
+			$where[] = " event.start BETWEEN ".$db->quote(date('Y-m-d',strtotime($search['from'])))." AND ".$db->quote(date('Y-m-d',strtotime($search['to'])));
 			$where[] = " event.event_id NOT IN(SELECT event_id FROM schedule_event)";
 			$apts = '';
 			$res =& $appointment->search('WHERE '.implode(' AND ',$where));
