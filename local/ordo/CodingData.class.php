@@ -10,7 +10,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: coding_data
  *
- * @package	com.clear-health.clearhealth
+ * @package	com.uversainc.clearhealth
  */
 class CodingData extends ORDataObject {
 
@@ -64,10 +64,11 @@ class CodingData extends ORDataObject {
 		// code definition lives. I am migrating this to not respect foriegn ids which are irrelevant
 
 		if ($this->get('id') == 0) {
-			$sql = "select count(*) c from $this->_table where parent_id = ".(int)$this->get('parent_id') .  " and parent_id != 0";
-			$res = $this->_execute($sql);
+			$res = $this->_execute("select count(*) c from $this->_table where parent_id = ".(int)$this->get('parent_id'));
+
 			if ($res && !$res->EOF) {
 				$this->set('code_order',($res->fields['c']+1));
+				//var_dump($this->get('code_order'));
 			}
 		}
 
@@ -205,21 +206,27 @@ class CodingData extends ORDataObject {
 		$foreign_id = intval($foreign_id);
 		$sql = "
 		SELECT
-			cd.coding_data_id, cd.foreign_id, cd.parent_id, cd.code_id, 
-			cd.modifier, cd.units, CONCAT(c.code, ' : ', c.code_text) AS description, c.code, fbcl.amount AS fee,
-			cdd.tooth, cdd.toothside
-		FROM
-			encounter AS e
-			LEFT JOIN clearhealth_claim AS cc USING(encounter_id)
-			LEFT JOIN fbclaim AS fbc ON(fbc.claim_identifier=cc.identifier)
-			LEFT JOIN fbclaimline fbcl ON(fbcl.claim_id=fbc.claim_id)
-			LEFT JOIN codes AS c ON (c.code = fbcl.`procedure`)
-			LEFT JOIN coding_data cd ON(cd.code_id=c.code_id AND cd.foreign_id='$foreign_id')
-			LEFT JOIN coding_data_dental AS cdd ON cd.coding_data_id=cdd.coding_data_id
-		WHERE
-			cc.claim_id='$claim_id'
-			AND e.encounter_id='$foreign_id'
-			AND parent_id = 0
+                        CASE WHEN cd.coding_data_id IS NULL THEN fbcl.claimline_id ELSE cd.coding_data_id END AS coding_data_id, 
+			cd.foreign_id, cd.parent_id, cd.code_id,
+       			CASE WHEN cd.modifier IS NULL THEN fbcl.modifier ELSE cd.modifier END AS modifier, 
+			CASE WHEN cd.units IS NULL THEN fbcl.units ELSE cd.units END AS units, 
+			CASE WHEN c.code IS NULL THEN fbcl.procedure ELSE CONCAT(c.code, ' : ', c.code_text) END AS description, 
+CASE WHEN c.code IS NULL THEN fbcl.procedure ELSE c.code END AS code,c.code, 
+fbcl.amount AS fee,
+                        cdd.tooth, cdd.toothside
+                FROM
+                        encounter AS e
+                        LEFT JOIN clearhealth_claim AS cc on cc.encounter_id = e.encounter_id
+                        LEFT JOIN fbclaim AS fbc ON(fbc.claim_identifier=cc.identifier)
+                        LEFT JOIN fbclaimline fbcl ON(fbcl.claim_id=fbc.claim_id)
+                        LEFT JOIN codes AS c ON (c.code = fbcl.procedure)
+                        LEFT JOIN coding_data cd ON(cd.code_id=c.code_id AND cd.foreign_id='$foreign_id')
+                        LEFT JOIN coding_data_dental AS cdd ON cd.coding_data_id=cdd.coding_data_id
+                WHERE
+                        cc.claim_id='$claim_id'
+                        AND e.encounter_id='$foreign_id'
+                        AND (cd.parent_id = 0 OR cd.parent_id IS NULL)
+
 		GROUP BY
 			cd.coding_data_id
 		ORDER BY
