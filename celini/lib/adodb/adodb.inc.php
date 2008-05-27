@@ -2537,7 +2537,11 @@
 	 */
 	function &GetArray($nRows = -1) 
 	{
-	global $ADODB_EXTENSION; if ($ADODB_EXTENSION) return adodb_getall($this,$nRows);
+	global $ADODB_EXTENSION; 
+	if ($ADODB_EXTENSION) {
+		$ret = adodb_getall($this,$nRows);
+		return $ret;
+	}
 		
 		$results = array();
 		$cnt = 0;
