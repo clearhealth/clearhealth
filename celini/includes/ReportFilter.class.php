@@ -33,7 +33,7 @@ class ReportFilter
 			$vars = array_flip(array_flip($match[1]));
 			foreach($vars as $var){
 				list($variable,$controller)=explode(':',$var);
-				$query=str_replace("<<[$var]>>",$this->controller->get($variable,$controller),$query);
+				$query=str_replace("<<[$var]>>",(string)$this->controller->get($variable,$controller),$query);
 			}
 		}
 		$this->extractVars($query);
