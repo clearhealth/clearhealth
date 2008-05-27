@@ -157,9 +157,10 @@ class RelationshipFinder extends ORDOFinder
 	}
 
 	function _buildCriteriaForParent($ordo) {
-		$db =& new clniDB();
+		$db = Celini::dbInstance();
 		$selector = 'child_id';
 		$criteria[] = 'parent_type = ' . $db->quote($ordo->name());
+		
 		if($ordo->get('id') > 0){
 			$criteria[] = 'parent_id = ' . $db->quote($ordo->get('id'));
 		}
@@ -167,12 +168,19 @@ class RelationshipFinder extends ORDOFinder
 		if($this->_relatedType->get('id') > 0){
 			$criteria[] = 'child_id = '.$db->quote($this->_relatedType->get('id'));
 		}
+		$sql = "SELECT $selector from relationship WHERE ". implode(' AND ', $criteria);
+		$res = $db->execute($sql);
+		$childItems = array();
+		while ($res && !$res->EOF) {
+			$childItems[] = $res->fields[$selector];
+			$res->MoveNext();
+		}
 		$key = $this->_relatedType->tableName().'.id';
 		if(!empty($this->_relatedType->_key)){
 			$key = $this->_relatedType->tableName().'.'.$this->_relatedType->_key;
 		}
 		
-		$return = "$key IN ( SELECT $selector from relationship WHERE ". implode(' AND ', $criteria)." )";
+		$return = "$key IN ( '" . implode("','",$childItems) . "' )";
 		return $this->_extraCriteria[] = $return;
 	}
 
