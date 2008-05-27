@@ -26,6 +26,7 @@ class C_Images extends Controller {
 			$fileName = basename($fileName);
 			$finder->addPath(APP_ROOT . '/user/report_templates');
 			$finder->addPath(APP_ROOT . '/user/form_templates');
+			$finder->addPath(Celini::getVariationsDir() . substr(basename($fileName),0,-4));
 			$imgPath = $finder->find(str_replace('images/','',$fileName));
 			header( "Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
 			header( "Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . " GMT" );
