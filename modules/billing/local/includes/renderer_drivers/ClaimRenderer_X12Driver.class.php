@@ -21,7 +21,7 @@ class ClaimRenderer_X12Driver extends ClaimRenderer_AbstractDriver
 			return false;
 		}
 		
-		// $all_claimresults = "There are ".count($batch)." claims in this batch"; //For testing... 
+		// $all_claimresults = "There are ".count($batch)." claims in this batch"; //For testing...
 		$all_claimresults = '';
 		//printf('<pre>%s</pre>', var_export($this->_batch , true));
 		if (count($this->_batch) > 0) {
@@ -30,8 +30,9 @@ class ClaimRenderer_X12Driver extends ClaimRenderer_AbstractDriver
 					continue;
 				}
 				
-				$c =& Celini::newORDO('FBClaim', $claim_id);
+				$c = Celini::newORDO('FBClaim', $claim_id);
 				$all_claimresults .= $this->_renderClaimBlock($c);
+				unset($c);
 			}
 		}
 		else {
@@ -79,6 +80,22 @@ class ClaimRenderer_X12Driver extends ClaimRenderer_AbstractDriver
 		$claimresult = $this->_view->fetch($this->_determineTemplateName());
 		$total_x12_segments = $this->_helper->postfilterSegmentCount($claimresult);
 		$claimresult = $this->_helper->postfilterSEReplacement($total_x12_segments, $claimresult);//calculate the SE field
+		unset($claim);
+		unset($this->view->_tpl_vars['claim']);
+		unset($this->view->_tpl_vars['practice']);
+		unset($this->view->_tpl_vars['payer']);
+		unset($this->view->_tpl_vars['payers']);
+		unset($this->view->_tpl_vars['patient']);
+		unset($this->view->_tpl_vars['provider']);
+		unset($this->view->_tpl_vars['referring_provider']);
+		unset($this->view->_tpl_vars['supervising_provider']);
+		unset($this->view->_tpl_vars['subscriber']);
+		unset($this->view->_tpl_vars['subscribers']);
+		unset($this->view->_tpl_vars['responsible_party']);
+		unset($this->view->_tpl_vars['treating_facility']);
+		unset($this->view->_tpl_vars['clearing_house']);
+		unset($this->view->_tpl_vars['claim_lines']);
+		unset($this->view->_tpl_vars['billing_facility']);
 		return $claimresult;
 	}
 	

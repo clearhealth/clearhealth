@@ -17,6 +17,7 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 	}
 	
 	function render() {
+		ini_set("memory_limit","1024M");
 		if (!$this->_hasCorrectStatus()) {
 			return false;
 		}
@@ -73,6 +74,7 @@ class ClaimRenderer_NestedDriver extends ClaimRenderer_AbstractDriver
 			$providerView->assign('hl_count', $hl_count);
 			$providerView->assign_by_ref('practice', $this->_claim->childEntity('FBPractice'));
 			$providerView->assign_by_ref('treating_facility', $this->_claim->childEntity('FBTreatingFacility'));
+			$providerView->assign_by_ref('billing_facility', $this->_claim->childEntity('FBBillingFacility'));
 			$providerView->assign_by_ref("billing_contact", $this->_claim->childEntity("FBBillingContact"));
 			$providerView->assign_by_ref('provider', $this->_claim->childEntity('FBProvider'));
 			$returnString .= $providerView->fetch($this->_determineTemplateName('x12_2000A'));

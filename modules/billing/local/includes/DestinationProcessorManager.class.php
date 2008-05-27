@@ -74,7 +74,7 @@ class DestinationProcessorManager
 	 * @see init()
 	 */
 	function loadSystemProcessors() {
-		$collecter =& new clniFileCollector();
+		$collecter =& new clniFilePatternCollector('/.*[dD]estination.*php$/');
 		$config =& Celini::configInstance();
 		$mpaths = $config->get('module_paths');
 		$collecter->collect($mpaths['billing'].'/local/includes/DestinationProcessors');
@@ -88,7 +88,7 @@ class DestinationProcessorManager
 	 * @see init()
 	 */
 	function loadUserProcessors() {
-		$collecter =& new clniFileCollector();
+		$collecter =& new clniFilePatternCollector('/.*[dD]estination.*.php$/');
 		$collecter->collect(APP_ROOT.DIRECTORY_SEPARATOR.'user/DestinationProcessors');
 	}
 	
@@ -108,7 +108,6 @@ class DestinationProcessorManager
 		if (isset($GLOBALS['config']['clearinghouse'])) {
 			$ret['clearinghouse'] = 'ClearingHouse';
 		}
-
 		return array_merge(array_flip($this->processors_list), $ret);
 	}
 
