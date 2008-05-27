@@ -220,4 +220,26 @@ class M_User extends M_Patient {
 		
 	}
 }
-?>
+
+/** DO NOT UNCOMMENT EXCEPT TO BULK UPDATE USERS
+//helper code to reset user group assignment on permission upgrade
+if (isset($_GET['batchUsers'])) {
+// ["default_location_id"]=>  string(4) "1628" ["nickname"]=>  string(5) "NUQUI" ["color"]=>  string(7) "#E9967A" ["user_id"]=>  string(5) "64762" ["username"]=>  string(6) "jnuqui" ["groups"]=>  array(1) { [0]=>  string(1) "3" }
+
+	$sql = "select user_id,username from user";
+	$db = Celini::dbInstance();
+	$res = $db->execute($sql);
+	$muser = new M_User();
+	while ($res && !$res->EOF) {
+		$_POST = array();
+		$_POST['user'] = array();
+		$_POST['user']['username'] = $res->fields['username'];
+		$_POST['user']['user_id'] = $res->fields['user_id'];
+		$_POST['user']['groups'] = array("3");
+		echo "updating user: " . $res->fields['username'] . "<br />";
+		$muser->process_user_update($res->fields['person_id'],$_POST['user']);
+		$res->MoveNext();
+	}
+}
+***/
+?> 
