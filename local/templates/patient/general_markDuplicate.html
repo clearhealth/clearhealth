@@ -1,8 +1,10 @@
 {head type="js"}
+{literal}
 function selectParent(id) {
 	$('parent').value = id;
 	$('mark').submit();
 }
+{/literal}
 {/head}
 
 <h2>{$patient->value('name')} #{$patient->value('record_number')} is a duplicate of:</h2>
