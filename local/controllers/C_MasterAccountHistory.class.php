@@ -120,9 +120,9 @@ class C_MasterAccountHistory extends Controller {
 			SUM(ifnull(pcl.writeoff, 0)) total_writeoff,
 			group_concat(DISTINCT c.code) codes 
 			FROM clearhealth_claim chc 
-			LEFT JOIN payment AS pa ON(pa.foreign_id = chc.claim_id) 
-			LEFT JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id) 
-			LEFT JOIN codes c USING(code_id)
+			INNER JOIN payment AS pa ON(pa.foreign_id = chc.claim_id) 
+			INNER JOIN payment_claimline AS pcl ON(pcl.payment_id = pa.payment_id) 
+			INNER JOIN codes c USING(code_id)
 			GROUP BY chc.claim_id
 		) w ON(w.claim_id = chc.claim_id)  
 		';
