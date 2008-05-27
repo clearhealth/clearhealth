@@ -197,7 +197,7 @@ Calendar.setup( {
 
 			<div class="schedules">
 				{foreach from=$col.schedules item="schedule"}
-				<div schedule_event_id="{$schedule.schedule_event_id}" style="top: {$dayIterator->timestampToPosition($schedule.start)}px; height: {$dayIterator->timeDifferenceToHeight($schedule.start,$schedule.end)}px;background: #{$col.color}; ">{$schedule.display}&nbsp;</div>
+				<div schedule_event_id="{$schedule.schedule_event_id}" style="top: {$dayIterator->timestampToPosition($schedule.start)}px; height: {$dayIterator->timeDifferenceToHeight($schedule.start,$schedule.end)}px;background-color: #{$col.color}; ">{$schedule.display}&nbsp;</div>
 				{/foreach}
 			</div>
 		</div>
