@@ -80,6 +80,7 @@ class X12TransactionBuilder {
 					$this->ct->payer->set('contactInfoType',$element->fields['CommNumQual']->value);
 					break;
 				default:
+					echo "unknown element";exit;
 					var_dump($element);
 					die();
 					break;
@@ -107,6 +108,7 @@ class X12TransactionBuilder {
 					$this->ct->payee->set('identifierType',$element->fields['ReferenceIdentQual']->value);
 					break;
 				default:
+					echo "unknown element";
 					var_dump($element);
 					die();
 					break;
@@ -149,6 +151,7 @@ class X12TransactionBuilder {
 				break;
 			case 'DTM':
 				$this->ct->summary->set('productionDate',$element->fields['Date']->value);
+				
 				break;
 			case 'SE':
 				$this->transactions[] = $this->ct;
@@ -158,6 +161,7 @@ class X12TransactionBuilder {
 				// Provider Level Adjustment
 				break;
 			default:
+				echo "unknown element";
 				var_dump($element);
 				die();
 				break;
@@ -238,6 +242,7 @@ class X12TransactionBuilder {
 					$this->ct->details[$this->claimIndex]->lines[$line]->remarks[$lq]->set('amount',$element->fields['IndustryCode']->value);
 					break;
 			default:
+				echo "unknown element";
 				var_dump($element);
 				die();
 				break;
@@ -304,15 +309,18 @@ class X12TransactionBuilder {
 					// Medicare stuff, no clue if we actuall care
 					break;
 				case 'DTM':
-					if ($this->pcpDtm++ == 0) {
+					if ($element->fields['DateTimeQualifier']->value == 50 || $this->pcpDtm++ == 0) {
 						$this->ct->details[$this->claimIndex]->set('claimDate',$element->fields['Date']->value);
 					}
 					else {
-						var_dump($element);
-						die();
+						//probably DTM 232 or 233 which are claim period start/end and not used here
 					}
 					break;
+				case 'AMT':
+						//Institutional AMT, not currently used
+					break;
 				default:
+					echo "unknown element";
 					var_dump($element);
 					die();
 					break;

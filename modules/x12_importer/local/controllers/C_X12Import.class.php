@@ -75,10 +75,8 @@ class C_X12Import extends Controller {
 			$this->messages->addMessage('X12 Parsing Failed', 'There was a problem loading the file you selected');
 			Celini::redirect('X12Import', 'list');
 		}
-
 		$builder = new X12TransactionBuilder();
 		$builder->build($this->_parseFile($x12ImportedData));
-
 		$_SESSION['X12Import']['transactions'][1] = serialize($builder->transactions);
 		$this->view->assign('numTrans',count($builder->transactions));
 

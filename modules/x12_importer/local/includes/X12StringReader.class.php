@@ -13,7 +13,12 @@ class X12StringReader {
 	}
 
 	function readContents() {
-		return $this->string;
+		//strip weird line endings
+		$string = str_replace("\x0D\x0A","",$this->string);
+		$string = preg_replace("/\r\n/","",$string);
+		//add line endings
+		$string = preg_replace('/~/',"~\r\n",$string);
+		return $string;
 	}
 }
 ?>
