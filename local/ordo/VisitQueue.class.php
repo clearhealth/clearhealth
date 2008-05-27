@@ -77,7 +77,7 @@ class VisitQueue extends ORDataObject {
 	}
 	
 	function &getTemplate() {
-		if(!is_null($this->_template)) return $this->_template;
+		//if(!is_null($this->_template)) return $this->_template;
 		$temp =& Celini::newORDO('VisitQueueTemplate',$this->get('visit_queue_template_id'));
 		$this->_template =& $temp;
 		return $temp;
@@ -141,9 +141,10 @@ class VisitQueue extends ORDataObject {
 	}
 	
 	function set_patient_id($id){
-		if($this->get('id') < 1) $this->persist();
+		if($this->get('id') < 1) { $this->persist();}
 		$p =& $this->getChild('Patient');
 		if($id !== $p->get('id')) {
+			
 			$p =& Celini::newORDO('Patient',$id);
 			$this->removeRelationship('Patient');
 			$this->setChild($p);
