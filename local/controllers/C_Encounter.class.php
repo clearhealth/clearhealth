@@ -110,6 +110,19 @@ class C_Encounter extends Controller {
 		$this->messages->AddMessage("Misc Charge added");	
 		return $this->ajaxEditPayment($appointmentId,$patientId);	
 	}
+	function actionEditEncounterValue($encounterValueId,$encounterId, $valueType,$value) {
+                        $encounerValueId = (int)$encounterValueId;
+                        $encounerId = (int)$encounterId;
+                        $valueType=(int)$valueType;
+                        $this->encounter_value_id = $encounterValueId;
+                        $this->encounter_id = $encounterId;
+                        $encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$this->encounter_id));
+                        $encounterValue->set('value_type',$valueType);
+                        $encounterValue->set('value',$value);
+                        $encounterValue->persist();
+                        $this->encounter_value_id = $encounterValue->get('id');
+                        return $this->actionEdit();
+        }
 
 	function _existingEncounter($appointment_id) {
 		$encounter_id = 0;
