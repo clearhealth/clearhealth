@@ -918,7 +918,7 @@ class ORDataObject {
 		// correct form.
 		$date =& $this->$key->getDate();
 		if ($this->_inPersist || $this->_dbFormat) {
-			return $date->toISO();
+			return $this->$key->toISO();
 		}
 		else {
 			return $date->toString();
@@ -1489,6 +1489,10 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 	// loop through the data passed in.
 
 	foreach($data as $key => $value) {
+		if (is_object($data) && method_exists($data, "get_".$key)) {
+			//$value = call_user_method("get",$data,$key);
+			$value = $data->get($key);
+		}
 	// no numeric keys in our xml please!
 	if (is_numeric($key))	{
 	// make string key...
@@ -1507,12 +1511,22 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 		|| $key == "metaHints" 
 		|| $key == "db" 
 		|| $key == "valuePlaceholders" 
-		|| $key == "storage_metadata" 
 		|| $key == "dbHelper" 
 		|| $key == "helper" 
 		|| $key == "enumTable" 
+		|| $key == "celini" 
 		|| $key == "metadata") {
 
+	}
+	elseif ($key == "storage_metadata") {
+		// recrusive call.
+		foreach ($value as $storarr => $stortype) {
+			foreach ($stortype as $storname => $storval) {
+				//$value = call_user_method("get",$data,$storname);
+				$value = $data->get($storname);
+				$xml->addChild($storname,$value);
+			}
+		}
 	}
 	elseif (strtolower($key) == "patientpicture") {
 		$d = Document::FirstDocumentByCategoryName((int)$value,"Picture");
