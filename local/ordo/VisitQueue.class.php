@@ -77,7 +77,6 @@ class VisitQueue extends ORDataObject {
 	}
 	
 	function &getTemplate() {
-		//if(!is_null($this->_template)) return $this->_template;
 		$temp =& Celini::newORDO('VisitQueueTemplate',$this->get('visit_queue_template_id'));
 		$this->_template =& $temp;
 		return $temp;
