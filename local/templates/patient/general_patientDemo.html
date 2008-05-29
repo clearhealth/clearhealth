@@ -101,15 +101,26 @@ function startDuplicate(URL) {
 				</td>
 			</tr>
 			<tr>
-				<td>
-					<label>{l}Default Provider{/l}:</label>
-				</td>
-				<td>
-					<select name="person[default_provider]" id="default_provider">
-						<option>No Provider</option>
-						{html_options options=$providers_array selected=$person->get('default_provider')}
-					</select>&nbsp;&nbsp;
-				</td>
+				<tr>
+                                <td><label><div class="tooltip" style="text-alig
+n:right;" onClick="document.getElementById('providerDisplay').style.display='blo
+ck';document.getElementById('providerEdit').style.display='none';">{l}Default Provider{/l}:
+                        <div class="tooltipMessage">
+                                        Click provider name to change, click thi
+s label to cancel.
+                                </div></div></label>
+                        </td>
+                        <td>
+                            <div id="providerDisplay" style="cursor:pointer;" onClick="this.style.display='none';document.getElementById('providerEdit').style.display='block';">
+                          <a>{if strlen($provider->get('last_name')) > 1}{$provider->get('last_name')}, {$provider->get('first_name')}{else}No Provider{/if} </a>
+                            </div>
+                            <div id="providerEdit" style="display:none;">
+                                <select name="person[default_provider]">
+                                        <option value='0'>No Provider</option>
+                                        {html_options options=$provider->getPersonList('Provider',false) selected=$person->get('default_provider')}
+                                </select>
+                            </div>
+                        </td>
 				<td colspan="2">
 					{l}Active{/l}:&nbsp;
 					<input name="person[inactive]" type="radio" value="0" {if $person->get('inactive') == 0}checked="checked"{/if} />{l}Yes{/l}
