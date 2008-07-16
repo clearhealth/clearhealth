@@ -157,9 +157,16 @@ var transClaims = {$transClaims};
 		var lines = result.data.lines;
 		for(var i = 0; i < lines.length; i++) {
 			var code = lines[i].code;
-			if (rows[code]) {
+			//Some payers only accept a 2 digit specialty code (such as for FQHC's), however when they send an 835 they pad it back out to 5 digits with zeros. altCode trys to match on that if a regular match fails.
+			var altCode =  lines[i].code.substr(lines[i].code.length-2);
+			if (rows[code] != undefined) {
 				tbody.rows[rows[code]].cells[4].getElementsByTagName('input')[0].value = lines[i].amount;
 				updateRow(tbody.rows[rows[code]].cells[4].getElementsByTagName('input')[0]);
+			}
+			else if (rows[altCode] != undefined) {
+				tbody.rows[rows[altCode]].cells[4].getElementsByTagName('input')[0].value = lines[i].amount;
+				updateRow(tbody.rows[rows[altCode]].cells[4].getElementsByTagName('input')[0]);
+
 			}
 		}
 		

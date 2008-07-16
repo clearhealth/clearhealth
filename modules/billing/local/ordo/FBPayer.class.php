@@ -17,7 +17,7 @@ class FBPayer extends FBCompany {
 
 
 	var $type = "FBPayer";
-	var $identifier_type = "46";	
+	var $identifier_type = "46";
 	/**
 	 * Metadata for storage variables
 	 *
@@ -31,7 +31,6 @@ class FBPayer extends FBCompany {
 		'string' => array(
 			"responsibility" => "P", 
 			"claim_filing_code" => "10",
-			'program_name' => '',
 			'payer_type' => 'private'
 		)
 	);

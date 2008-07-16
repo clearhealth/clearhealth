@@ -112,11 +112,11 @@ class HL7LabParser {
 		$tmp = explode('^',$row[4]);
 		$this->r['request'][$p][$i]['service'] = $tmp[0].' '.$tmp[1];
 		$this->r['request'][$p][$i]['observationDateTime'] = $row[7];
-		$this->r['request'][$p][$i]['specimenReceivedDateTime'] = $row[14];
+		$this->r['request'][$p][$i]['specimenReceivedDateTime'] = date('Y-m-d H:i:s',strtotime($row[14]));
 		$this->r['request'][$p][$i]['orderingProvider'] = $this->cleanString($row[16]);
 		$this->r['request'][$p][$i]['componentCode'] = $this->cleanString($row[20]);
 		$this->r['request'][$p][$i]['disclosureInfoCLIA'] = $this->cleanString($row[21]);
-		$this->r['request'][$p][$i]['reportDateTime'] = $row[22];
+		$this->r['request'][$p][$i]['reportDateTime'] = date('Y-m-d H:i:s',strtotime($row[22]));
 		$this->r['request'][$p][$i]['resultStatus'] = $row[25]; // C - Correction, F - Final, P - Preliminary, X - Canceled
 
 		$this->currentRequest = $i;
@@ -137,7 +137,7 @@ class HL7LabParser {
 		$this->r['observation'][$p][$r][$i]['referenceRanges'] = $this->cleanString($row[7]);
 		$this->r['observation'][$p][$r][$i]['abnormalFlags'] = $row[8]; // lookup table is on page 17
 		$this->r['observation'][$p][$r][$i]['resultStatus'] = $row[11]; // C - Correction, F - Final, P - Preliminary, X - Canceled
-		$this->r['observation'][$p][$r][$i]['observationDateTime'] = $row[14];
+		$this->r['observation'][$p][$r][$i]['observationDateTime'] = date('Y-m-d H:i:s',strtotime($row[14]));
 		$this->r['observation'][$p][$r][$i]['producersID'] = $this->cleanString($row[15]);
 		$this->r['observation'][$p][$r][$i]['description'] = $tmp[1];
 	}

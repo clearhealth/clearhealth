@@ -280,7 +280,7 @@ class FBClaim extends ORDataObject {
 							$where .= " c.claim_id in (".implode(',',$fval).") and ";
 						break;
 					case 'program':
-						$where .= " ss.value like " . $this->_quote("%".$fval."%") . " and ";
+						$where .= " pa.program_name  like " . $this->_quote("%".$fval."%") . " and ";
 						break;
 
 					default:
@@ -307,7 +307,7 @@ class FBClaim extends ORDataObject {
 						c.claim_identifier, 
 						c.revision, 
 						c.status,
-						ss.value as program_name,
+						pa.program_name,
 		 				case when c.date_sent != '0000-00-00 00:00:00' then DATE_FORMAT(c.date_sent,'%m/%d/%Y') else DATE_FORMAT(c.timestamp,'%m/%d/%Y') end as timestamp,
 						sum(cl.amount) as amount, 
 						concat_ws(', ',p.last_name,p.first_name) as patient_name,  

@@ -20,13 +20,9 @@ class C_X12Apply extends controller {
 		$ajax =& Celini::ajaxInstance();
 		$ajax->stubs[] = 'Controller';
 		$ajax->jsLibraries[] = array('scriptaculous');
-
 		$this->view->assign('transactions',$this->actionTransactions());
 		$this->view->assign('PROCESS_ACTION',Celini::link('ProcessEOB','X12Apply',false));
 		$this->view->assign('currentTransactions',$session->get('X12Import:currentTransaction',0));
-
-		
-
 		$helper =& Celini::ajaxInstance();
 		$this->view->assign('data',$helper->jsonEncode($data));
 
@@ -49,8 +45,6 @@ class C_X12Apply extends controller {
 		}
 		$this->view->assign('transClaims',$helper->jsonEncode($transClaims));
 		$this->view->assign('currentClaim',$session->get('X12Import:currentClaim',$firstClaim));
-
-
 		$transactions = $this->_getTransactionGroup($sourceId);
 		$transaction = $transactions[$session->get('X12Import:currentTransaction',0)];
 

@@ -22,7 +22,6 @@ class C_LabImporter extends controller {
 		$parser->parse();
 
 		$r = $parser->getResults();
-		//print_r($r);exit;
 		$em =& Celini::enumManagerInstance();
 
 		$patientToOrderMap = array();
@@ -39,8 +38,7 @@ class C_LabImporter extends controller {
 			$order->set('status',$r['order']['status']);
 			$order->set('ordering_provider',$r['order']['orderingProvider']);
 
-			//var_dump($order->toArray());
-			$order->persist();
+			//$order->persist();
 
 			$patientToOrderMap[$key] = $order->get('id');
 
@@ -51,7 +49,6 @@ class C_LabImporter extends controller {
 		foreach($r['request'] as $patient => $tmp) {
 
 			foreach($tmp as $index => $request) {
-
 				$t =& Celini::newOrdo('LabTest');
 				$t->set('lab_order_id',			$patientToOrderMap[$patient]);
 				$t->set('order_num',			$request['placerOrderNum']);
@@ -64,8 +61,7 @@ class C_LabImporter extends controller {
 				$t->set('component_code',		$request['componentCode']);
 				$t->set('status',			$request['resultStatus']);
 				$t->set('clia_disclosure',		$request['disclosureInfoCLIA']);
-				$t->persist();
-				//var_dump($t->toArray());
+				//$t->persist();
 
 				$tId = $t->get('id');
 
@@ -82,16 +78,14 @@ class C_LabImporter extends controller {
 					$lr->set('observation_time',	$ob['observationDateTime']);
 					$lr->set('producer_id',		$ob['producersID']);
 					$lr->set('description',		$ob['description']);	
-					$lr->persist();
-					//var_dump($lr->toArray());
+					//$lr->persist();
 				}
 
 				if (isset($r['note'][$patient][$index])) {
 					$n =& Celini::newOrdo('LabNote');
 					$n->set('lab_test_id',$tId);
 					$n->set('note',$r['note'][$patient][$index]);
-					//var_dump($n->toArray());
-					$n->persist();
+					//$n->persist();
 				}
 			}
 		}
@@ -105,7 +99,7 @@ class C_LabImporter extends controller {
 		
 		while ($res && !$res->EOF) {
 			$sql = "update hl7_message  set processed = 1  where control_id = '" . $res->fields['control_id']."'";
-			$db->execute($sql);
+			//$db->execute($sql);
 			$this->_parse($res->fields['message']);
 			$res->MoveNext();
 		}
@@ -120,7 +114,7 @@ class C_LabImporter extends controller {
 	 */
 	function _matchPatient($options) {
 		$db =& new clniDb();
-		var_dump($options);	
+		
 		if (isset($options['record_number'])) {
 			$sql = "select person_id from patient pa where record_number = " . $db->quote($options['record_number']);
 			unset($options['record_number']);
@@ -145,34 +139,6 @@ class C_LabImporter extends controller {
 		}
 		return 0;
 	}
-
-	function actionTest() {
-		exit;
-		$this->_run_retrieval();
-	}
-	function actionMirthTest() {
-		exit;
-		$ch = curl_init("https://63.251.220.105:9443");
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		ob_start();
-		curl_exec($ch);
-		curl_close($ch);
-		$xml = ob_get_contents();
-		ob_end_clean();
-		$labarray = new SimpleXMLElement($xml);
-		foreach($labarray as $result) {
-			//echo $result->hl7;
-			$this->_parse($result->hl7);
-
-		}
-		exit;
-		
-		//$f = fopen("https://63.251.220.105:9443","r");
-		//echo file_get_contents($f);
-		return "";
-	}
 	
 	function _run_retrieval() {
 	
@@ -180,14 +146,13 @@ class C_LabImporter extends controller {
 		$labConf = $config->get("labs");
     	$wsdl_name = preg_replace("/^(.*\/|.*\\/)/","",$labConf['wsdl']);
     	$wsdl_file = "";
-	$wsdl_name = "ResultsService.wsdl";
 
     	if (file_exists(APP_ROOT . "/tmp/" . $wsdl_name)) {
    			$wsdl_file = APP_ROOT . "/tmp/" . $wsdl_name;
     	}
     	else {
     		$wsdlxml = file_get_contents($labConf['wsdl']);
-    		$wsdl_file = APP_ROOT . "/tmp/ResultsService.wsdl";
+    		$wsdl_file = APP_ROOT . "/tmp/" . $wsdl_name;
     		$f = fopen($wsdl_file,"w");
     		fwrite($f, $wsdlxml);	
     	}
@@ -198,21 +163,17 @@ class C_LabImporter extends controller {
 		
 		$client = $wsdl->getProxy();
 
-		//$client->__options['user'] = "Mendocinotest";
-		//$client->__options['pass'] = "customer1";
-		$client->__options['user'] = "pcctest";
-		$client->__options['pass'] = "customer1";
-
+		$client->__options['user'] = $labConf['user'];
+		$client->__options['pass'] = $labConf['pass'];
 		$client->__options['timeout'] = 15;
-                                                                               
+
 		$dateMaker = new SOAP_Type_dateTime();
                                                                                
 		$labResults = array();
 		
-		//$startDate =  date("m/d/Y h:i A",strtotime("today"));
-		//$endDate =  date("m/d/Y h:i A",strtotime("tomorrow"));
-		$startDate =  date("m/d/Y h:i A",strtotime("2005-01-01"));
-		$endDate =  date("m/d/Y h:i A",strtotime("2007-12-31"));
+		
+		$startDate =  date("m/d/Y h:i A",strtotime(date("Y-m-d") . " -1 day"));
+		$endDate =  date("m/d/Y h:i A",strtotime(date("Y-m-d") . " 23:59:59"));
 		//echo "startDate: " . $startDate . " endDate" . $endDate . "<br>"; 
 		$params = array (
                 "endDate" => $endDate,
@@ -220,21 +181,19 @@ class C_LabImporter extends controller {
                 "maxMessages" => null,
                 //"providerAccountIds" => array("2920"),
                 "providerAccountIds" => null,
-                "retrieveFinalsOnly" => false,
-                "retrieveObseleteResults" => true,
+                "retrieveFinalsOnly" => true,
+                "retrieveObseleteResults" => false,
                 "startDate" => $startDate,
                 //"startDate" => ''                                               
         );
 		
 		//@ sign because PEAR::SOAP does not run well under E_ALL
 		$results = $client->getHL7Results($params);
-	//var_dump($results);	
 		$this->_loadMessages($results, $client);
-		//echo "results: " . $results->isMore .  "<br>";
 		$i = 1;
 		
 		while ($results->isMore == true && $i--) {
-		echo "looping" . $results->requestId . "<br>";
+			//echo "looping" . $results->requestId . "<br>";
         	$params = array("requestId" => strval($results->requestId));
         	@$results = $client->getMoreHL7Results($results->requestId);
         	//var_dump($results->HL7Messages);
@@ -262,7 +221,7 @@ class C_LabImporter extends controller {
 			if ($hl7ordo->isPopulated()) {continue;}
 			$hl7ordo->set("control_id", $matches[1][0]);
 			$hl7ordo->set("message", $labHL7);
-			$hl7ordo->persist();
+			//$hl7ordo->persist();
 		}
 		}
 		if (count($acks) > 0) {

@@ -27,6 +27,7 @@ class FBCompany extends MergeDecorator {
 	var $identifier_type = "24"; //24 is EIN, 34 is SSN, XX is National Provider Pin
 	var $type		= '';
 	var $name		= '';
+	var $program_name	= '';
 	var $phone_number  = '';
 
 	var $_lookup = false;
@@ -67,7 +68,7 @@ class FBCompany extends MergeDecorator {
 			$this->helper->populateStorageValues($this);
 			$this->_populateAddress();
 		}
-		
+	
 		if (is_numeric($index)) {
 			$this->set('index',$index);
 		}
