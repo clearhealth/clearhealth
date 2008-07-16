@@ -304,10 +304,11 @@ class Celini {
 	 */
 	function raiseError($message,$type = E_USER_ERROR) {
 		if (!function_exists('xdebug_enable')) {
-			echo "<pre>";
-			var_dump(debug_backtrace());
-			echo "</pre>";
+			//echo "<pre>";
+			//var_dump(debug_backtrace());
+			//echo "</pre>";
 		}
+		debug_print_backtrace();
 		trigger_error($message,$type);
 	}
 
