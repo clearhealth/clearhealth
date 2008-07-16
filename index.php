@@ -1,4 +1,13 @@
 <?php
+/*function calcTS() {
+	list($usec, $sec) = explode(" ", microtime());
+        $ts = ((float)$usec + (float)$sec);
+	if (!isset($GLOBALS['gts'])) $GLOBALS['gts'] = $ts;
+	return $ts-$GLOBALS['gts'];
+}
+calcTS();
+
+*/
 if (file_exists('cellini')) {
 	require_once "cellini/bootstrap.php";
 }
@@ -101,4 +110,5 @@ $d->check_input();
 
 $d->trail_build($args);
 echo $d->act($args);
+//echo "<!--ts: " .calcTS() . "-->";
 ?>
