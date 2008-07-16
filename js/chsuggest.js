@@ -72,3 +72,13 @@ function medicationSuggest(id,valueId) {
 }
 medicationSuggest.prototype = {
 }
+
+function problemListSuggest(id,valueId) {
+        this.suggest = new clniSuggest('{$sctid}: {$description}',id,valueId,'VistaProblemList','problem_list_search');
+        this.suggest.allowBreaks = false;
+
+        // style the box so you know its special
+        document.getElementById(id).style.border = 'solid 1px blue';
+}
+problemListSuggest.prototype = {
+}
