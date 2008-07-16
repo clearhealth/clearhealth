@@ -84,7 +84,9 @@ class C_MasterAccountHistory extends Controller {
 		$sql['cols'] = "
 			SUM(sums.billed) billed,
 			SUM(sums.paid) paid,
-			SUM(sums.billed)-SUM(sums.paid)-SUM(w.total_writeoff) balance,
+			SUM(if (ISNULL(sums.billed),0,sums.billed))
+			-SUM(if (ISNULL(sums.paid),0,sums.paid)) 
+			-SUM(if (ISNULL(w.total_writeoff),0,w.total_writeoff)) as balance,
 			SUM(w.total_writeoff) writeoff
 			";
 
@@ -129,7 +131,6 @@ class C_MasterAccountHistory extends Controller {
 
 		$totalDs = new Datasource_sql();
 		$totalDs->setup(Celini::dbInstance(),$sql,false);
-
 
 		$totalGrid =& new cGrid($totalDs);
 		$totalGrid->orderLinks = false;

@@ -60,6 +60,11 @@ class ClearhealthAJAX {
 		$medication=&new C_Medication();
 		$this->server->registerClass($medication,'medication');
 	}
+	function initvistaproblemlist(){
+                $GLOBALS['loader']->requireOnce('controllers/C_VistaProblemList.class.php');
+                $problemList=&new C_VistaProblemList();
+                $this->server->registerClass($problemList,'vistaproblemlist');
+        }
 	function initWidgetForm(){
 		$GLOBALS['loader']->requireOnce('controllers/C_WidgetForm.class.php');
 		$wf=&new C_WidgetForm();

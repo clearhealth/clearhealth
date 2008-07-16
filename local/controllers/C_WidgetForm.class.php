@@ -141,7 +141,8 @@ class C_WidgetForm extends C_CRUD {
 			$tmpar = array();
 			$widget = array();
 			$widget["name"] = $row['name'];
-                        $widget["grid"] = $wfDataGrid->render();
+                        //$widget["grid"] = $wfDataGrid->render();
+			$widget["grid"] = $wfDataGrid->render($patient_id, $row['widget_form_id']);
 			$widget["width"] = $wfDataGrid->getWidth();
 			$widget["height"] = $wfDataGrid->getHeight();
                         

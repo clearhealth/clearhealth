@@ -2,7 +2,7 @@
 /**
  * Object Relational Persistence Mapping Class for table: coding_data
  *
- * @package	com.clear-health.clearhealth
+ * @package	com.uversainc.clearhealth
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 

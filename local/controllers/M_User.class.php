@@ -118,7 +118,6 @@ class M_User extends M_Patient {
 				$groups = $data['groups'];
 				unset($data['groups']);
 			}
-			
 			// Run through all the types setting the appropriate GACL.
 			if (count($types) > 0) {
 				$type = array_shift($types);
@@ -135,7 +134,7 @@ class M_User extends M_Patient {
 					foreach($groups as $id) {
 						$u->groups[$id] = array('id'=>$id);
 					}
-					foreach($flat_groups as $id => $name) {
+					/*foreach($flat_groups as $id => $name) {
 						$data = $this->controller->security->get_group_data($id);
 						if ($data[2] == $group) {
 							$gid = $data[0];
@@ -143,7 +142,7 @@ class M_User extends M_Patient {
 							// move persist outside this loop for efficiency
 							break;
 						}
-					}
+					}*/
 				}
 			}
 			$u->persist();

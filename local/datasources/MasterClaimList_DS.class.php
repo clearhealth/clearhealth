@@ -44,11 +44,13 @@ class MasterClaimList_DS extends Datasource_sql
 						case 'payer':
 							$insuranceProgram =& Celini::newORDO('InsuranceProgram', $fval);
 							$qInsuranceName = $db->quote($insuranceProgram->get('insurance_company_name'));
+							$qProgramName = $db->quote($insuranceProgram->get('name'));
 							$whereSql[] = '
 								(
 									pa.payer_id =  ' . (int)$fval . ' OR 
 									(
 										fbco.name = ' . $qInsuranceName . ' AND
+										fbco.program_name = ' . $qProgramName . ' AND
 										fbco.type = "FBPayer"
 									)
 										
@@ -102,7 +104,7 @@ class MasterClaimList_DS extends Datasource_sql
 					DATE_FORMAT(e.date_of_treatment,"' . $dateFormat . '") AS date_of_treatment, 
 					chc.total_billed,
 					chc.total_paid,
-					fbco.name AS "current_payer",
+					concat(fbco.name,"->",fbco.program_name) AS "current_payer",
 					b.name facility,
 					CONCAT_WS(",",pro.last_name,pro.first_name) AS provider,
 					(chc.total_billed - chc.total_paid - wo.total_writeoff) AS balance, 

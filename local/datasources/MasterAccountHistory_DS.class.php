@@ -178,7 +178,10 @@ class MasterAccountHistory_DS extends Datasource {
 		
 		$ds =& new Datasource_sql();
 		$ds->registerFilter('payer_id',array(&$payment,'lookupPayer'));
-
+		$payerSql = "";
+		if (isset($this->filters['payer']) && $this->filters['payer'] >  0) {
+			$payerSql = " AND payer_id = " . (int)$this->filters['payer'];
+		}
 		$dateFormat = DateObject::getFormat();
 		$ds->setup($payment->_db,array(
 				'cols' 	=> '
@@ -206,7 +209,8 @@ class MasterAccountHistory_DS extends Datasource {
 						e.patient_id = ' . $patient_id . ' OR
 						e2.patient_id = ' . $patient_id . '
 					) AND
-					chc.claim_id = ' . $claim_id
+					chc.claim_id = ' . $claim_id  
+					.$payerSql
 			),
 			array(
 				'payment_type' => 'Type',
@@ -216,7 +220,7 @@ class MasterAccountHistory_DS extends Datasource {
 				'payer_id' => 'Payer'
 			)
 		);
-		//echo $ds->preview();
+		//echo $ds->preview();exit;
 		$ds->registerFilter('payment_type',array(&$payment,'lookupPaymentType'));
 		return $ds;
 	}
