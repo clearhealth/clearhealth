@@ -627,6 +627,8 @@ class ClearhealthToFreebGateway
 				$data = $this->_cleanDataArray($originalData['company']);
 				//$data['identifier'] = $data['payer_identifier'];
 				$data['index'] = $index;
+				$em =& Celini::enumManagerInstance();
+				$data['claim_filing_code'] = $em->lookup('PayerType',$payer->get('program_type'),'extra1'); 
 				$data['program_name'] = $originalData['program_name'];
 				$this->_freeb2->registerData($this->_claim_identifier,'Payer',$data, $index);
 				if ($clearingHouseData === false) {
