@@ -89,6 +89,7 @@ class C_VisitQueue extends Controller
 			$queue =& Celini::newORDO('VisitQueue');
 			$this->queue =& $queue;
 			$queue->populateArray($qarray);
+			//echo $queue->get("visit_queue_template_id");
 		}
 		$template =& $queue->getTemplate();
 		$provider =& $queue->getProvider();
