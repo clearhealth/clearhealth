@@ -13,6 +13,11 @@ class ClearhealthAJAX {
 		$pf =& new C_PatientFinder();
 		$this->server->registerClass($pf,'PatientFinder',array('SmartSearch'));
 	}
+	function initVistaPatientFinder() {
+		$GLOBALS['loader']->requireOnce('controllers/C_VistaPatientFinder.class.php');
+		$vpf =& new C_VistaPatientFinder();
+		$this->server->registerClass($vpf,'VistaPatientFinder');
+	}
 	
 	function initzipcode(){
 		$GLOBALS['loader']->requireOnce('includes/zipserver.php');
