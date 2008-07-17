@@ -130,4 +130,11 @@ $config['locale']['time_format']      = "%H:%i";
 $config['locale']['timestamp_format'] = sprintf("%s %s",
 	$config['locale']['date_format'],
 	$config['locale']['time_format']);
+
+################################################################################
+## HealthCloud
+################################################################################
+$config['healthcloud'] = array();
+$config['healthcloud']['servicesUrl'] = "https://openid.clear-health.com/hcapi";
+
 ?>
