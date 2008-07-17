@@ -192,6 +192,7 @@ class C_Patient extends Controller {
 		$this->view->assign_by_ref('practice',$practice);
 		$this->view->assign("providers_array",$this->utility_array($user->users_factory("provider"),"id","username"));
 		$this->view->assign_by_ref('person',$person);
+		$this->view->assign_by_ref('provider',ORDataObject::factory('Person',$person->get('default_provider')));
 		$this->view->assign_by_ref('building',$building);
 		$this->view->assign_by_ref('encounter',$encounter);
 		$this->view->assign_by_ref('number',$number);
