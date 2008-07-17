@@ -6,6 +6,9 @@ class AppointmentRuleProvider extends AppointmentRuleAbstract {
 		if ($this->excludeCheck()) {
 			return true;
 		}
+		/*if (!isset($this->ruleData->provider_type)) {
+			$this->ruleData->provider_type = "single";
+		}*/
 		switch($this->ruleData->provider_type) {
 			case 'single':
 				if ($this->appointment->get('provider_id') == $this->ruleData->provider_id) {

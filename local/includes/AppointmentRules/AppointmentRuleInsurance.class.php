@@ -14,7 +14,7 @@ class AppointmentRuleInsurance extends AppointmentRuleAbstract {
 		$patientId = $this->appointment->get('patient_id');
 		$irArray = InsuredRelationship::fromPersonId($patientId);
 		foreach($irArray as $ir) {
-			if ($ir->get('insurance_program_id') > 0 && $ir->get('insurance_program_id') == $this->ruleData->insurance_program_id) {
+			if ($ir->get('insurance_program_id') > 0 && $ir->get('insurance_program_id') == $this->ruleData->insurance_program_id && ($ir->get('program_order') == 0 || $ir->get('program_order')== 1)) {
 				$ip = ORDataObject::factory('InsuranceProgram',$this->ruleData->insurance_program_id);
 				$this->errorMessage = 'Insurance Program: ' . $ip->get('name');
 				return false;
