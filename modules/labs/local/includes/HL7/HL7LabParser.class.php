@@ -1,4 +1,4 @@
-<?
+<?php
 class HL7LabParser {
 	var $content;
 	var $tokens;
