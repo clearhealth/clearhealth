@@ -36,19 +36,6 @@ class C_Encounter extends Controller {
 		
 		return $this->actionEdit();
 	}
-	function actionEditEncounterValue($encounterValueId,$valueType,$value) {
-			$encounerValueId = (int)$encounterValueId;
-			$encounerId = (int)$encounterId;
-			$valueType=(int)$valueType;
-			$this->encounter_value_id = $encounterValueId;
-			$this->encounter_id = $encounterId;
-                        $encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$this->encounter_id));
-                        $encounterValue->set('value_type',$value_type);
-                        $encounterValue->set('value',$value);
-                        $encounterValue->persist();
-                        $this->encounter_value_id = $encounterValue->get('id');
-			return $this->actionEdit();
-	}
 
 	function ajaxEditPayment($appointmentId, $patientId) {
 		$appointmentId = (int)$appointmentId;
@@ -111,17 +98,23 @@ class C_Encounter extends Controller {
 		return $this->ajaxEditPayment($appointmentId,$patientId);	
 	}
 	function actionEditEncounterValue($encounterValueId,$encounterId, $valueType,$value) {
-                        $encounerValueId = (int)$encounterValueId;
-                        $encounerId = (int)$encounterId;
+                        $encounterValueId = (int)$encounterValueId;
+                        $encoutnerId = (int)$encounterId;
                         $valueType=(int)$valueType;
                         $this->encounter_value_id = $encounterValueId;
+                        if (!(int)$encounterId > 0) {
+                                $enc = ORDataObject::factory("Encounter");
+                                $enc->set('occurence_id',(int)$_GET['appointment_id']);
+                                $enc->persist();
+                                $encounterId = $enc->get('encounter_id');
+                        }
                         $this->encounter_id = $encounterId;
-                        $encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$this->encounter_id));
+                        $encounterValue =& Celini::newORDO('EncounterValue',array($this->encounter_value_id,$encounterId));
                         $encounterValue->set('value_type',$valueType);
                         $encounterValue->set('value',$value);
                         $encounterValue->persist();
                         $this->encounter_value_id = $encounterValue->get('id');
-                        return $this->actionEdit();
+                        return $this->actionEdit($encounterId);
         }
 
 	function _existingEncounter($appointment_id) {
