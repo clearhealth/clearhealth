@@ -1354,24 +1354,26 @@ INSERT INTO `enumeration_value` (`enumeration_value_id`, `enumeration_id`, `key`
 (300649, 35, '25', 'MS', 24, '', '', 1, 0, 0),
 (300650, 19, '2', 'Family Patient Statement', 1, '/Patient/familyStatement', '', 1, 0, 0),
 (300651, 19, '3', 'Pull List', 2, '/Appointment/pullList', '', 1, 0, 0),
+(300659, 35, '35', 'NC', 25'', '', 1, 0, 0),
 (300659, 35, '35', 'ND', 26, '', '', 1, 0, 0),
-(300660, 35, '36', 'OH', 27, '', '', 1, 0, 0),
-(300661, 35, '37', 'OK', 28, '', '', 1, 0, 0),
-(300662, 35, '38', 'OR', 29, '', '', 1, 0, 0),
-(300663, 35, '39', 'PA', 30, '', '', 1, 0, 0),
-(300664, 35, '40', 'RI', 31, '', '', 1, 0, 0),
-(300665, 35, '41', 'SC', 32, '', '', 1, 0, 0),
-(300666, 35, '42', 'SD', 33, '', '', 1, 0, 0),
-(300667, 35, '43', 'TN', 34, '', '', 1, 0, 0),
-(300668, 35, '44', 'TX', 35, '', '', 1, 0, 0),
-(300669, 35, '45', 'UT', 36, '', '', 1, 0, 0),
-(300670, 35, '46', 'VT', 37, '', '', 1, 0, 0),
-(300671, 35, '47', 'VA', 38, '', '', 1, 0, 0),
-(300672, 35, '48', 'WA', 39, '', '', 1, 0, 0),
-(300673, 35, '49', 'WV', 40, '', '', 1, 0, 0),
-(300674, 35, '50', 'WI', 41, '', '', 1, 0, 0),
-(300675, 35, '51', 'WY', 42, '', '', 1, 0, 0),
-(300676, 35, '52', 'PR', 43, '', '', 1, 0, 0),
+(300680, 35, '53', 'NY', 27, '', '', 1, 0, 0),
+(300660, 35, '36', 'OH', 28, '', '', 1, 0, 0),
+(300661, 35, '37', 'OK', 29, '', '', 1, 0, 0),
+(300662, 35, '38', 'OR', 30, '', '', 1, 0, 0),
+(300663, 35, '39', 'PA', 31, '', '', 1, 0, 0),
+(300664, 35, '40', 'RI', 32, '', '', 1, 0, 0),
+(300665, 35, '41', 'SC', 33, '', '', 1, 0, 0),
+(300666, 35, '42', 'SD', 34, '', '', 1, 0, 0),
+(300667, 35, '43', 'TN', 35, '', '', 1, 0, 0),
+(300668, 35, '44', 'TX', 36, '', '', 1, 0, 0),
+(300669, 35, '45', 'UT', 37, '', '', 1, 0, 0),
+(300670, 35, '46', 'VT', 38, '', '', 1, 0, 0),
+(300671, 35, '47', 'VA', 39, '', '', 1, 0, 0),
+(300672, 35, '48', 'WA', 40, '', '', 1, 0, 0),
+(300673, 35, '49', 'WV', 41, '', '', 1, 0, 0),
+(300674, 35, '50', 'WI', 42, '', '', 1, 0, 0),
+(300675, 35, '51', 'WY', 43, '', '', 1, 0, 0),
+(300676, 35, '52', 'PR', 44, '', '', 1, 0, 0),
 (300678, 36, '1', 'Spouse', 0, '', '', 1, 0, 0),
 (300679, 36, '2', 'Parent', 0, '', '', 1, 0, 0),
 (300747, 19, '4', 'Route Slip', 3, '/Encounter/routeSlip', '', 1, 0, 0),
@@ -4935,6 +4937,8 @@ CREATE TABLE `patient_statistics` (
   `sign_in_date` date NOT NULL default '0000-00-00',
   `monthly_income` int(11) NOT NULL default '0',
   `family_size` int(11) NOT NULL default '0',
+  `education_level` int(11) NOT NULL default '0',
+  `employment_status` int(11) NOT NULL default '0',
   PRIMARY KEY  (`person_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 
@@ -6825,7 +6829,6 @@ SQL Changes from 2.1 to 2.2
 
 ALTER TABLE `appointment_ruleset` ADD COLUMN `any` tinyint(4) NOT NULL;
 ALTER TABLE `coding_data` CHANGE COLUMN `modifier` `modifier` int(11) NOT NULL default '0';
-ALTER TABLE `fbclaimline` CHANGE COLUMN `modifier` `modifier` varchar(4) NOT NULL default '';
 ALTER TABLE `hl7_message` ADD COLUMN `id` int(11) NOT NULL default '0';
 ALTER TABLE `lab_note` ADD INDEX `lab_test_id` (`lab_test_id`);
 ALTER TABLE `lab_order` ADD INDEX `external_id` (`external_id`);
@@ -6882,4 +6885,29 @@ ALTER TABLE `storage_text` ADD `array_index` TINYINT NOT NULL ;
 SQL Changes from 2.2 to 2.3
 ***/
 ALTER TABLE `storables` ADD `patient_id` INT NOT NULL AFTER `storable_id` ;
+ALTER TABLE `rooms` ADD `routing_station` INT NOT NULL ,
+ADD INDEX ( routing_station );
+CREATE TABLE IF NOT EXISTS `routing` (
+  `person_id` int(11) NOT NULL,
+  `station_id` int(11) NOT NULL,
+  `appointment_id` INT NOT NULL ,	
+  `provider_id` INT NOT NULL ,	
+  `room_id` INT NOT NULL ,	
+  `from_station_id` int(11) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY  (`person_id`),
+  KEY `station_id` (`station_id`,`from_station_id`,`timestamp`)
+) ENGINE=INNODB DEFAULT CHARSET=latin1;
+ALTER TABLE `provider` ADD `routing_station` INT NOT NULL ,
+ADD INDEX ( routing_station );
+CREATE TABLE IF NOT EXISTS `routing_archive` (
+  `person_id` int(11) NOT NULL,
+  `station_id` int(11) NOT NULL,
+  `appointment_id` INT NOT NULL ,	
+  `provider_id` INT NOT NULL ,	
+  `room_id` INT NOT NULL ,	
+  `from_station_id` int(11) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY  (`person_id`)
+);
 
