@@ -32,7 +32,7 @@ class C_Medication extends Controller {
                 $res = $db->GetAll($sql);
 		$string  = 'This drug interacts with one or more of the following:<br />';
 		foreach ($res as $row) {
-			$string .= $row['drug2'] . "<br />";
+			$string .= $row['drug2'] . ": " . $row['severity'] .  " <br />";
 
 		}
 		return $string;	
