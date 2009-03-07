@@ -168,6 +168,8 @@ st.executeSelectedItems = function(items) {
 function editAppointment(id,type,patient_id,provider_id, start_time, end_time){
 	if(type == 'ADM') {
 		currentlyEditingMeeting = type+id;
+	} else if(type == 'STAT') {
+		currentlyEditing = type+id;
 	} else {
 		currentlyEditing = id;
 	}
@@ -368,6 +370,11 @@ function toggleInfoBox(link,id) {
 }
 function markArrived(appointmentId,value,link) {
         HTML_AJAX.call('appointment','ajaxMarkArrived',null,appointmentId,value);
+        link.style.textDecoration = 'line-through';
+
+}
+function setFlags(appointmentId,value,link) {
+        HTML_AJAX.call('appointment','ajaxSetFlags',null,appointmentId,value);
         link.style.textDecoration = 'line-through';
 
 }
