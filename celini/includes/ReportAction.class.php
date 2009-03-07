@@ -123,6 +123,7 @@ class ReportAction {
 				$key = array_shift($flags);
 				$reports[$key]['flags'] = $flags;
 			}
+			$reports[$key]['hcserver'] = $r->get('hcserver');
 			$reports[$key]['filter'] =& new ReportFilter($query);
 			$reports[$key]['filter']->setAction($view->_tpl_vars['REPORT_ACTION']);
 
@@ -187,6 +188,9 @@ class ReportAction {
 				$pageSize = $this->controller->GET->get('pageSize');
 			}
 			//echo $reports[$key]['ds']->preview(). "<br>";
+			if (strlen($reports[$key]['hcserver']) > 0) {
+				$reports[$key]['ds']->setHCServer($reports[$key]['hcserver']);
+			}
 			$reports[$key]['grid'] =& new cGrid($reports[$key]['ds']);
 			$reports[$key]['grid']->pageSize = $pageSize;
 			$reports[$key]['grid']->name = $key;
@@ -288,7 +292,7 @@ class ReportAction {
 $str = '';
 	foreach($this->reports as $report) {
 		$data = $report['ds']->toArray();
-		$str = ORDataObject::toXML($data,$report['grid']->name);
+		$str .= ORDataObject::toXML($data,$report['grid']->name);
 	}
 $str .= 
 '</form1>

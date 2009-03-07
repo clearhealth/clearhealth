@@ -321,5 +321,18 @@ class Datasource_sql extends Datasource{
 		}
 		return $sql;
 	}
+
+	function setHCServer($dsn) {
+		if (!strlen($dsn) > 0) {
+			return;
+		}
+		$db = NewADOConnection($dsn);
+		if (!$db) {
+        		echo $db->errorMsg();
+        		exit;
+		}
+		$db->SetFetchMode(ADODB_FETCH_ASSOC);
+		$this->_db =& $db;
+	}
 }
 ?>
