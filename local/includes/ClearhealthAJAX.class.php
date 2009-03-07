@@ -124,5 +124,15 @@ class ClearhealthAJAX {
 		$fe = new FeeEstimator();
 		$this->server->registerClass($fe,'FeeEstimator',array('standardFeeForCode','standardFeeForCodeId'));
 	}
+	function initCRouting() {
+                $GLOBALS['loader']->requireOnce('controllers/C_Routing.class.php');
+                $cr=&new C_Routing();
+                $this->server->registerClass($cr,'CRouting');
+        }
+	function initCUser() {
+                $GLOBALS['loader']->requireOnce('controllers/C_User.class.php');
+                $cu=new C_User();
+                $this->server->registerClass($cu,'cuser');
+        }
 }
 ?>
