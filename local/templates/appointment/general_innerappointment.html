@@ -34,7 +34,8 @@
 				, <a href="javascript:paymentPopup({$appointment->get('id')},{$appointment->get('patient_id')});">pay</a>
 				{/if}
 				{if $Celini->config_get("calendar:showArrivalLink")},
-                                <a  style="{if $appointment->get('arrived') > 0}text-decoration:line-through;{/if}" href="javascript:void(0);" onclick="markArrived('{$appointment->get('appointment_id')}',1,this);">arr</a>
+<a style="{if $appointment->get('arrived') > 0}text-decoration:line-through;{/if}" href="javascript:void(0);" onclick="HTML_AJAX.call('crouting','ajaxStationFromAppointment',null,{$appointment->get("appointment_id")});this.style.textDecoration = 'line-through';">arr</a>
+{/if}
 				{/if}
 			{/if}
 		{/if}
