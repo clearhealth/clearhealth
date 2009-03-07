@@ -132,6 +132,7 @@ class CodingData extends ORDataObject {
 		
 		$parent_id = intval($parent_id);
 		$foreign_id = intval($foreign_id);
+		if ($parent_id == 0 && $foreign_id == 0) return array();
 		$where = $foreign_id > 0 ? "foreign_id = {$foreign_id}" : "parent_id = {$parent_id}";
 		$sql = "
 			SELECT
