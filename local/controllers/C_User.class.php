@@ -98,7 +98,7 @@ class C_User extends Controller {
 		$picker =& new colorPickerSelect('pastels','user[color]','','#'.$user->get('color'));
 		$picker->id = 'colorPicker';
 		$this->view->assign_by_ref('colorpicker',$picker);
-		if ($person->get('type') == 2) {
+		if ($person->get('type') == 2 || $person->get('type') == 3) {
 			$provider =& Celini::newORDO('Provider',$person_id);
 			$this->view->assign_by_ref('provider',$provider);
 
@@ -179,6 +179,17 @@ class C_User extends Controller {
 		}
 		$user->set('password',$_POST['password']['password']);
 		$user->persist();
+	}
+
+	function ajaxConfirmPassword($personId,$password) {
+		$db = Celini::dbInstance();
+		$sql = "select * from user where password = " . $db->quote($password) . " and person_id = " . (int)$personId;
+		$res = $db->query($sql);
+		file_put_contents('/tmp/ptest',$personId.$password);	
+		if ($res && !$res->EOF) {
+			return true;
+		}
+		return false;
 	}
 }
 ?>
