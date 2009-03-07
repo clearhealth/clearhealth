@@ -56,6 +56,10 @@ class Menu
 		if (isset($GLOBALS['config']['db_name'])) {
 			$this->_appDb = '`'.$GLOBALS['config']['db_name'] . '`.';
 		}
+		/*if (!isset($GLOBALS['memcache'])) {
+		$memcache = memcache_connect('localhost', 11211) or die ("Could not connect");
+		$GLOBALS['memcache'] = $memcache;
+		}*/
 	}
 
 	/**
@@ -94,6 +98,22 @@ class Menu
 	* @access private
 	*/
 	function _createArray() {
+		/*$db = Celini::dbInstance();
+                $currAction = Celini::link(true,true,false,false,false,false);
+                $currAction = strtolower(substr($currAction,1,strlen($currAction)-2));
+                $currController = array_shift(explode("/",$currAction));
+
+                //if (($serString = apc_fetch(session_id() . "menu")) !== false) {
+                if (($menuCached = $GLOBALS['memcache']->get(session_id() . "menu")) !== false) {
+                        $sql = "select site_section from menu where action like '" . mysql_real_escape_string($currController) . "/%'";
+                        $newSection = $db->getOne($sql);
+                        if (isset($_SESSION['Menu']['currentSection']) && $_SESSION['Menu']['currentSection'] == $newSection) {
+                                $this->currentSection = $newSection;
+                                $this->_menu_array =  $menuCached;
+                                return;
+                        }
+                }*/
+
 		$currInfo = false;
 		$currAction = Celini::link(true,true,false,false,false,false);
 		$currAction = strtolower(substr($currAction,1,strlen($currAction)-2));
@@ -259,6 +279,9 @@ class Menu
 			$this->currentAction = $currInfo;
 			$this->currentSection = $currInfo['site_section'];
 		}
+		//apc_store(session_id() . "menu",serialize($this->_menu_array));
+		//$GLOBALS['memcache']->set(session_id() . "menu", $this->_menu_array, false, 120);
+		//echo(apc_fetch(session_id() . "menu"));exit;
 	}
 
 	/**
