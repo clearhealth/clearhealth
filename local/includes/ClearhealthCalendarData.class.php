@@ -648,7 +648,7 @@ class ClearhealthCalendarData {
 		
 		$sql = "
 			SELECT 
-				r.id room_id,
+				DISTINCT(r.id) room_id,
 				r.id id
 			FROM 
 				`event` AS aevent
