@@ -286,8 +286,8 @@ class cGrid {
 	/**
 	 * Register a filter for a column
 	 */
-	function registerFilter($column,$callback) {
-		$this->_datasource->registerFilter($column,$callback);
+	function registerFilter($column,$callback,$extra=false) {
+		$this->_datasource->registerFilter($column,$callback,$extra);
 	}
 
 	/**
