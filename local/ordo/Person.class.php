@@ -639,6 +639,13 @@ class Person extends ORDataObject {
 			$pat =& Celini::newORDO('Patient',$this->get('id'));
 }
 		$queues =& $pat->getParents('VisitQueue');
+/*		while ($queues->valid()) {
+			$queue = $queues->current();
+			print_r($queue->toString());
+			//echo "queue: " .$queue->get('title');
+			$queues->next();
+		}
+		exit;	*/
 		return $queues;
 	}
 	
