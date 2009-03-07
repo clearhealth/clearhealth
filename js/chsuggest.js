@@ -64,13 +64,33 @@ diagnosisSuggest.prototype = {
 }
 
 function medicationSuggest(id,valueId) {
-	this.suggest = new clniSuggest('{$drug}: {$strength} {$package} {$dose}  {$ndc}',id,valueId,'Medication','medication_search');
+        this.suggest = new clniSuggest('{$ndc}: {$tradename} {$strength} {$unit} {$packsize}{$packtype} ',id,valueId,'CHMED','ajaxBaseMed24');
         this.suggest.allowBreaks = false;
-
-	// style the box so you know its special
-	document.getElementById(id).style.border = 'solid 1px blue';
+        this.suggest.onSelect = populateForm;
+        // style the box so you know its special
+        document.getElementById(id).style.border = 'solid 1px blue';
 }
 medicationSuggest.prototype = {
+}
+
+function drugnameSuggest(id,valueId) {
+        this.suggest = new clniSuggest('{$fda_drugname}/{$tradename}',id,valueId,'CHMED','ajaxDrugName24');
+        this.suggest.allowBreaks = false;
+        this.suggest.onSelect = populateForm;
+        // style the box so you know its special
+        document.getElementById(id).style.border = 'solid 1px blue';
+}
+drugnameSuggest.prototype = {
+}
+
+function allergySuggest(id,valueId) {
+        this.suggest = new clniSuggest('{$name}',id,valueId,'CHMED','ajaxAllergy');
+        this.suggest.allowBreaks = false;
+        this.suggest.onSelect = populateAllergyForm;
+        // style the box so you know its special
+        document.getElementById(id).style.border = 'solid 1px blue';
+}
+allergySuggest.prototype = {
 }
 
 function problemListSuggest(id,valueId) {
