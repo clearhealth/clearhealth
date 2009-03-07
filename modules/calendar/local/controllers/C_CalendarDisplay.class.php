@@ -87,6 +87,7 @@ class C_CalendarDisplay extends Controller {
 
 		$cd =& new CalendarDescription('day');
 		$cd->eventRenderer =& $this->eventRender;
+		//echo "<!--aaa" . calcTS() . "-->";
 
 		$config =& Celini::configInstance();
 
@@ -132,6 +133,7 @@ class C_CalendarDisplay extends Controller {
 		$this->view->assign('timerow',
 			$this->view->fetch('display/general_daytimerow.html',$cache_id)
 		);
+		//echo "<!--bbb" . calcTS() . "-->";
 
 		// Cache all the header stuff from the day template
 		$headhtml = $this->view->fetch('display/cache_dynhead.html',$cache_id);
@@ -139,6 +141,7 @@ class C_CalendarDisplay extends Controller {
 		$this->view->assign('rescheduleFlag',$config->get('showRescheduleLink'));
 		$this->view->caching = false;
 		$ret = $this->view->render('day.html',$cache_id);
+		//echo "<!--ccc" . calcTS() . "-->";
 		return $ret;
 
 //		$te = _ts();
