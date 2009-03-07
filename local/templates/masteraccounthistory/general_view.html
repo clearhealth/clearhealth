@@ -6,6 +6,7 @@
 {/literal}
 {/head}
 {head type="js"}
+{literal}
 var remote = new Controller( {
 	dispatchAction: function(result) {
 		$('claimDetails').innerHTML = result;
@@ -25,6 +26,7 @@ function selectClaim(link,personId,claimId) {
 	$u.addClass(tr,'highlight');
 
 }
+{/literal}
 {/head}
 {include file="masteraccounthistory/general_chunkFilters.html"}
 
