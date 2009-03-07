@@ -69,7 +69,7 @@
 {/foreach}
 <tr>
 		<td>
-	{if !$report.flags || !in_array('hideFilter',$report.flags)}
+	{if !$report.flags || !(in_array('hideFilter',$report.flags) || in_array('hideGraphs',$report.flags))}
 	<h3>Visualizations</h3>
 	{/if}
 	{if !$report.flags || !in_array('hideGraphs',$report.flags)}
