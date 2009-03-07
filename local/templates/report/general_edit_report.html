@@ -134,6 +134,11 @@ function deleteTemplate(button,template_id) {
 	</tr>
 	{/if}
 	<tr>
+		<td><label>{l}HealthCloud Power Reporting Server{/l}:</label></td>
+		<td><input type="text" value='{$report->get('hcserver')}' name="hcserver">
+		</td>
+	</tr>
+	<tr>
 		<td><label>{l}Query{/l}:</label></td>
 		<td><textarea name="query" rows="10" cols="80" wrap="virtual">{$report->get('query')}</textarea></td>
 	</tr>
