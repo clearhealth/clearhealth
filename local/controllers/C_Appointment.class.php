@@ -311,6 +311,13 @@ class C_Appointment extends Controller {
 		return array($id,'<strong>CANCELLED</strong>');
 	}
 	
+	function ajax_confirm($id) {
+		$apt =& Celini::newORDO('Appointment',$id);
+		$apt->set('appointment_code','CFM');
+		$apt->persist();
+		return array($id,'<strong>CONFIRMED</strong>');
+	}
+	
 	function ajax_ns($id) {
 		$apt =& Celini::newORDO('Appointment',$id);
 		$apt->set('appointment_code','NS');
