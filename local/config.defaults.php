@@ -10,7 +10,7 @@ $config['maintenanceMode'] = false;
 ################################################################################
 
 //Require https, i.e. force https links even if not detected
-$config['forceHTTPS'] = false;
+$config['forceHTTPS'] = true;
 
 // default starting location /index.php/calendar/day
 $config['default_controller'] = "CalendarDisplay";
@@ -20,7 +20,7 @@ $config['CalendarDynamicTimes'] = false;
 ################################################################################
 ## Client Side Caching Options
 ################################################################################
-$config['cacheHeadersEnabled'] = false;
+$config['cacheHeadersEnabled'] = true;
 // caching notes: using caching will speed up a production site substantially, however it can make development confusing.
 $config['cacheHeadersDuration'] = 24 * 3600; // default caching for 24 hours
 $config['cacheHeadersImgMaxAge'] = 24 * 3600; // default caching for 24 hours
@@ -79,6 +79,7 @@ $config['labs']['highlightAbnormal'] = true;
 ## Printer options for billing prints offset left X chars
 ################################################################################
 $config['printMargin'] = 3;
+//for pageprint
 
 ################################################################################
 ## Patient Picture Options, just create a document category called Picture
@@ -105,6 +106,7 @@ $config['menu']['attachArrays'] = true;
 
 // document management
 $config['document_manager']['documents_on_tree'] = true;
+$config['document_manager']['file_command_path'] = '/usr/bin/file';
 $config['document_manager']['category_view'] = false;
 $config['document_manager']['type_type'] = false;
 $config['document_manager']['file_command_path'] = '/usr/bin/file';
@@ -130,6 +132,13 @@ $config['locale']['time_format']      = "%H:%i";
 $config['locale']['timestamp_format'] = sprintf("%s %s",
 	$config['locale']['date_format'],
 	$config['locale']['time_format']);
+
+################################################################################
+## Arrival Features
+################################################################################
+$config['arrival'] = array();
+$config['arrival']['patientNoteReason'] = 'Pager Number';
+=======
 
 ################################################################################
 ## HealthCloud
