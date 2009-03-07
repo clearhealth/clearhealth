@@ -20,6 +20,7 @@ class Report extends ORDataObject {
 	var $templates = false;
 	var $newTemplates = false;
 	var $deletedTemplates = false;
+	var $hcserver = '';
 
 	var $storage_metadata =  array('int' => array('show_sequence'=>0,'snapshot_style'=>0), 'date' => array(), 'string' => array('system_report'=>''), 'text' => array());
 	var $_table = "reports";
