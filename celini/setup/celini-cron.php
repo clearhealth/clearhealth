@@ -22,7 +22,7 @@
 */
 
 set_time_limit(0);
-ini_set("memory_limit", "128M");
+ini_set("memory_limit", "256M");
 ini_set("register_globals","Off");
 ini_set("magic_quotes","Off");
 
@@ -30,7 +30,7 @@ ini_set("magic_quotes","Off");
 //reference the directory without a trailing slash, example:
 //		/var/www/html/clearhealth
 $application_list = array (
-			"/var/www/clearhealth"
+			"/var/www/html"
 ); 
 $GLOBAL['QUERY_STRING'] = "";
 if (isset($_SERVER['HTTP_HOST'])) {
@@ -58,7 +58,6 @@ else {
 
 // Keep celini from unsetting the db data in config
 $GLOBALS['no_bootstrap_unsets'] = true;
-
 foreach($application_list as $application) {
 	$found = require_once ($application . "/celini/bootstrap.php");
 	if ($found) {
