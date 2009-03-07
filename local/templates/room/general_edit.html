@@ -36,6 +36,14 @@ selected=$room->get('building_id')}
 	<td>{$colorpicker->render()}</td>
 </tr>
 <tr>
+        <td style="text-align:right">
+                <span class="tooltip">{l}Routing Station{/l}:
+                        <div class="tooltipMessage">{l}If you are using the arrival and routing features this is the default station that this room routes to. If not selected no 'arr' link will be shown for this rooms appointments.{/l}</div>
+                </span>
+        </td>
+        <td><select name="routing_station">{enum_options name="routing_stations" selected=$room->get('routing_station')}</select></td>
+</tr>
+<tr>
 	<td></td>
 	{if empty($room->id) }
 	<td><input type="submit" value="Save" /></td>
