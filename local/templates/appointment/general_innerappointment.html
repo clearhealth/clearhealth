@@ -13,7 +13,9 @@
 		<small><b>{if $appointment->get('appointment_code') != 'NS'}{$appointment->value('appointment_code')}
 		{else}{l}No-Show #{/l}
 		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
-		{if $appointment->hasEncounter()}Has Encounter{/if}</b></small></div>
+		{if $appointment->hasEncounter()}Has Encounter
+		{elseif $appointment->get('appointment_code') eq 'CFM' }Confirmed{/if}
+</b></small></div>
 		{$appointment->get('title')}<br>
 
 {if $appointment->get('patient_id')}
@@ -24,7 +26,8 @@
 			<!--<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>,--> 
 			{if $appointment->get('patient_id')}
 			<a href="javascript:void(0);" onclick="NSAppointment({$appointment->get('id')});">ns</a>, 
-			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>
+			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>,
+			<a href="javascript:void(0);" onclick="confirmAppointment({$appointment->get('id')});">cfm</a>
 			{if $appointment->get('group_appointment') == 0},
 				<a href="{link action="Edit" controller="Encounter" defaultArg="0"}appointment_id={$appointment->get('id')}&patient_id={$appointment->get('patient_id')}">enc</a>
 				{if $Celini->config_get("calendar:showPayLink")}
