@@ -103,9 +103,9 @@ function switchTimer(element) {
 {/literal}
 <div id="header">
 
-<div class="logo"><b>ClearHealth</b>
+<div class="logo">ClearHealth 2.3
 {if $me->get_username()}
-                        <div id="username">Logged in As: {$me->get_username()}</div>
+                        <div id="username">Logged in As: {$me->get_username()} <a href="{link action="default" controller="LoginRefresh" pageType="minimal"}" target="_NEW">Stay Logged In</a></div>
                 {/if}
 </div>
 <div style="clear: both;"></div>
