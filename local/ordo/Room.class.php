@@ -12,6 +12,7 @@ class Room extends ORDataObject{
 	var $building		= '';
 	var $name		= '';
 	var $color		= '';
+	var $routing_station	= '';
 	
 	var $_table 		= 'rooms';
 	var $_internalName	= 'Room';
