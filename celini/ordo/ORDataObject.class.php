@@ -1530,6 +1530,7 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 	}
 	elseif (strtolower($key) == "patientpicture") {
 		$d = Document::FirstDocumentByCategoryName((int)$value,"Picture");
+		if (!is_object($d)) continue;
 		$node = $xml->addChild($key,base64_encode(file_get_contents(Celini::config_get('document_manager:repository') . $value."/". $d->get('name'))));
 		//$node = $xml->addChild($key, base64_encode(file_get_contents('/tmp/homer.gif')));
 		//$node->addAttribute("xmlns:xfa","http://www.xfa.org/schema/xfa-data/1.0/");
