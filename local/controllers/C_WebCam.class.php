@@ -88,8 +88,6 @@ class C_WebCam extends Controller {
     		//ImageJPEG( $img );
     		//imagedestroy( $img );        
 	}
-
-//reference function for batch import
 /*	function actionBatch() {
 		 $this->_config = $GLOBALS['config']['document_manager'];
 		$dir = opendir($this->_config['repository']);
