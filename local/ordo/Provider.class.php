@@ -28,6 +28,8 @@ class Provider extends MergeDecorator {
 	var $dea_number			= '';
 	var $bill_as			= '';
 	var $report_as			= '';
+	var $routing_station		= '';
+	
 	/**#@-*/
 	var $_table = 'provider';
 	var $_internalName='Provider';
