@@ -1,3 +1,4 @@
+<script type='text/javascript' src='{$REMOTE_ACTION}client'></script>
 {literal}
 <script type="text/javascript">
 	var menu_id = false;
@@ -47,6 +48,7 @@
 
 	function updateMenuItems() {
 		var items = mr.getMenuList(menu_id,true);
+
 		if (items.length == 0) {
 			document.getElementById("updateContent").innerHTML = "No reports for this section";
 		} 
@@ -62,7 +64,6 @@
 		}
 
 		document.getElementById('add').style.display = 'block';
-		//document.getElementById('report').updateTemplate(menu_id);
 		document.getElementById('update').style.display = 'block';
 	}
 
@@ -109,7 +110,6 @@
 
 			<label class="cb">Select Report and Template</label>
 			<select name="report" onChange="updateTemplate(this)">
-				<option></option>
 				{html_options options=$report->getReportList()}
 			</select>
 
