@@ -74,12 +74,12 @@ class Practice extends ORDataObject{
 		$this->main_address =& new PracticeAddress();
 		$tlist = array_flip($this->main_address->getTypeList());
 		if(isset($tlist['Main'])) {
-			$this->main_address->set('type', $tlist["Main"]);
+			$this->main_address->set('address_type', $tlist["Main"]);
 		}
 
 		$this->secondary_address =& new PracticeAddress();
 		if(isset($tlist['Secondary'])) {
-			$this->secondary_address->set('type', $tlist["Secondary"]);
+			$this->secondary_address->set('address_type', $tlist["Secondary"]);
 		}
 
 
