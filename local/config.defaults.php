@@ -138,7 +138,6 @@ $config['locale']['timestamp_format'] = sprintf("%s %s",
 ################################################################################
 $config['arrival'] = array();
 $config['arrival']['patientNoteReason'] = 'Pager Number';
-=======
 
 ################################################################################
 ## HealthCloud
