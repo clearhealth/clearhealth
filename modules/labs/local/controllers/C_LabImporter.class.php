@@ -38,7 +38,7 @@ class C_LabImporter extends controller {
 			$order->set('status',$r['order']['status']);
 			$order->set('ordering_provider',$r['order']['orderingProvider']);
 
-			//$order->persist();
+			$order->persist();
 
 			$patientToOrderMap[$key] = $order->get('id');
 
@@ -61,7 +61,7 @@ class C_LabImporter extends controller {
 				$t->set('component_code',		$request['componentCode']);
 				$t->set('status',			$request['resultStatus']);
 				$t->set('clia_disclosure',		$request['disclosureInfoCLIA']);
-				//$t->persist();
+				$t->persist();
 
 				$tId = $t->get('id');
 
@@ -78,14 +78,14 @@ class C_LabImporter extends controller {
 					$lr->set('observation_time',	$ob['observationDateTime']);
 					$lr->set('producer_id',		$ob['producersID']);
 					$lr->set('description',		$ob['description']);	
-					//$lr->persist();
+					$lr->persist();
 				}
 
 				if (isset($r['note'][$patient][$index])) {
 					$n =& Celini::newOrdo('LabNote');
 					$n->set('lab_test_id',$tId);
 					$n->set('note',$r['note'][$patient][$index]);
-					//$n->persist();
+					$n->persist();
 				}
 			}
 		}
