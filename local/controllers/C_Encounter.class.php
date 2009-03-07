@@ -1,5 +1,6 @@
 <?php
 $loader->requireOnce('controllers/C_Coding.class.php');
+$loader->requireOnce('includes/ReportAction.class.php');
 $loader->requireOnce('controllers/C_FreeBGateway.class.php');
 $loader->requireOnce('ordo/Practice.class.php');
 $loader->requireOnce('includes/freebGateway/CHToFBArrayAdapter.class.php');
@@ -183,7 +184,6 @@ class C_Encounter extends Controller {
 		if ($patient_id > 0) {
 			$this->set('patient_id',$patient_id,'c_patient');
 		}
-
 		$this->set('encounter_id',$encounter_id);
 		$encounter =& Celini::newORDO('Encounter',array($encounter_id,$this->get('patient_id', 'c_patient')));
 		
@@ -691,9 +691,10 @@ class C_Encounter extends Controller {
 			if ($relationships == null) { 
 				$this->messages->addMessage("This Patient has no Insurance Information, please add insurance information and try again <br>");
 				return;
-			}else{	
+			}else{
 				$encounter->set('status', 'closed');
 				$encounter->persist();
+				//$this->_postHL7($encounter->get('encounter_id'));
 				$this->_generateClaim($encounter);
 			}
 		}
@@ -705,6 +706,7 @@ class C_Encounter extends Controller {
 			$encounter->set('status', 'closed');
 			$encounter->persist();
 			if($billtype == 'close') {
+				//$this->_postHL7($encounter->get('encounter_id'));
 				$this->_generateClaim($encounter);
 			} else {
 				$this->_handleRebill($encounter);
@@ -913,6 +915,21 @@ class C_Encounter extends Controller {
 		$eid = Enforcetype::int($this->POST->get('encounter_id'));
 		$e =& Celini::newOrdo('Encounter',$eid);
 		$e->drop();
+	}
+
+	function _postHL7($encounter_id) {
+		$_GET['encounter_id'] = $encounter_id;
+	
+		$hl7 = $this->actionReport_view(Celini::config_get('mirth:encounterReportId'),Celini::config_get('mirth:encounterTemplateId'));
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL,Celini::config_get('mirth:postUrl'));
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, base64_encode($hl7));
+		
+		$result = curl_exec ($ch);
+		curl_close ($ch);
+		return true;
 	}
 
 }
