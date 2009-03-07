@@ -122,7 +122,6 @@ class C_Document extends Controller {
 		
 		if ($_POST['process'] != "true")
 			return;
-			
 		if (is_numeric($_POST['category_id'])) {	
 			$category_id = $_POST['category_id'];
 		}
@@ -187,6 +186,75 @@ class C_Document extends Controller {
 		//$this->_state = false;
 		$_POST['process'] = "";
 		//return $this->view->render("upload.html");
+	}
+	function actionUploadXML($patientId) {
+		$category_id = 1;
+		if (is_numeric($_REQUEST['category_id'])) {	
+			$category_id = (int)$_POST['category_id'];
+		}
+		if (is_numeric($_POST['foreign_id'])) {
+			$project_id = (int)$_POST['foreign_id'];
+		}
+		$error = "";
+		$success = array();
+		foreach ($_FILES as $file) {
+		  $fname = $file['name'];
+		  if ($file['error'] > 0 || empty($file['name']) || $file['size'] == 0) {
+		  	$fname = $file['name'];
+		  	if (empty($fname)) {
+		  		$fname = htmlentities("<empty>");
+		  	}
+		  	$error = "Error number: " . $file['error'] . " occured while uploading file named: " . $fname . "\n";
+		  	if ($file['size'] == 0) {
+		  		$error .= "The system does not permit uploading files of with size 0.\n";
+		  	}
+		  	
+		  }
+		  else {
+		  	
+		  	if (!file_exists($this->file_path)) {
+		  		if (!mkdir($this->file_path,0700)) {
+		  			$error .= "The system was unable to create the directory for this upload, '" . $this->file_path . "'.\n";
+		  		}
+		  	}
+		  	
+		  	$fname = preg_replace("/[^a-zA-Z0-9_.]/","_",$fname);
+		  	if (file_exists($this->file_path.$file['name'])) {
+		  		$success['msg'] .= "File with same name already exists at location: " . $this->file_path . ". ";
+		  		$fname = basename($this->_rename_file($this->file_path.$file['name']));
+		  		$file['name'] = $fname;
+		  		$success['msg'] .= "Current file name was changed to " . $fname . ". ";	
+		  	}
+		  	if (move_uploaded_file($file['tmp_name'],$this->file_path.$file['name'])) {
+		  		$success['msg'] .= "File " . $file['name'] . " successfully stored. ";
+		  		$d = new Document();
+		  		$d->url = "file://" .$this->file_path.$file['name'];
+		  		$d->mimetype = $file['type'];
+		  		$d->size = $file['size'];
+				if (isset($d->type_array['file_url'])){
+					$d->type = $d->type_array['file_url'];
+				}
+		  		$d->set_foreign_id($project_id);
+				$d->populate_array($_POST);
+		  		$d->persist();
+		  		$d->populate();
+		  		$this->assign("file",$d);
+		  		
+		  		if (is_numeric($d->get_id()) && is_numeric($category_id)) {
+		  		  $sql = "REPLACE INTO category_to_document set category_id = '" . $category_id . "', document_id = '" . $d->get_id() . "'";
+		  		  $d->_db->Execute($sql);
+		  		}
+				$success['documentId'] = $d->get('id');
+		  	}
+		  	else {
+				$error .="The file could not be succesfully stored, this error is usually related to permissions problems on the storage system.";
+		  	}
+		  }
+		}
+		if (count($success) > 0) {
+		return ORDataObject::toXml($success);
+		}
+		return ORDataObject::toXml(array("error" => $error));
 	}
 	
 	function note_action_process($project_id) {
