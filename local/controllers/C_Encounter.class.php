@@ -165,7 +165,6 @@ class C_Encounter extends Controller {
 		$person =& Celini::newORDO('Person');
 		
 		$manager =& EnumManager::getInstance();
-
 		$ajax =& Celini::AJAXInstance();
 		$ajax->stubs[] = 'Encounter';
 		// check if an encounter_id already exists for this appointment
@@ -241,11 +240,11 @@ class C_Encounter extends Controller {
 			else {
 				$encounter->set('building_id',$bl[0]);
 			}
-			$this->encounter_id = $encounter->get('id');
 			$erlist = array_keys($encounter->getEncounterReasonList());
 			$encounter->set('encounter_reason',$erlist[0]);
 			$encounter->persist();
 
+			$this->encounter_id = $encounter->get('id');
 			// Find the encounter template, if set
 			$list =& $manager->enumList('encounter_reason');
 			$reason = false;
