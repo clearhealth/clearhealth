@@ -114,7 +114,6 @@ class C_LabImporter extends controller {
 	 */
 	function _matchPatient($options) {
 		$db =& new clniDb();
-		
 		if (isset($options['record_number'])) {
 			$sql = "select person_id from patient pa where record_number = " . $db->quote($options['record_number']);
 			unset($options['record_number']);
@@ -138,6 +137,116 @@ class C_LabImporter extends controller {
 			return $res->fields['person_id'];
 		}
 		return 0;
+	}
+
+	function actionTest() {
+		exit;
+		$this->_run_retrieval();
+	}
+	function actionMirthTest() {
+		exit;
+		$ch = curl_init("");
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		ob_start();
+		curl_exec($ch);
+		curl_close($ch);
+		$xml = ob_get_contents();
+		ob_end_clean();
+		$labarray = new SimpleXMLElement($xml);
+		foreach($labarray as $result) {
+			//echo $result->hl7;
+			$this->_parse($result->hl7);
+
+		}
+		exit;
+		
+		//$f = fopen("https://","r");
+		//echo file_get_contents($f);
+		return "";
+	}
+
+	function actionSqlResults() {
+		set_time_limit(0);
+		$db = mysql_connect('','','');
+		mysql_select_db("");
+		if (mysql_error()) {
+		   printf("Can't connect to MySQL Server. Errorcode: %s\n", mysqli_connect_error());
+		      exit;
+		} 
+		$sql = "select msg.*,p.*,r.*,rc.*, lta.Alias, lta.Group
+		from MESSAGE msg inner join REPORT r on r.ID = msg.REPORT_FKID 
+		LEFT JOIN Lab_Test_Alias lta on lta.TestId = rc.OBSRVSHORT and msg.SENDINGAPP = lta.System
+		inner join REPORT_CONTENTS rc on rc.REPORT_FKID = r.ID inner join PATIENT p on p.ID = r.PATIENT_FKID where LABID IS NOT NULL and msg.DATECREATED >= " . date('YmdHis',strtotime('now - 15 minutes')) . " and msg.DATECREATED <= " .date('YmdHis',strtotime('now - 5 minutes')) . "  and msg.SENDINGAPP='LABNET' group by rc.id order by r.ID";
+		//echo $sql;exit;
+		if ($res = mysql_query($sql,$db)) {
+			$db2 = new clniDB();
+			$controlId = '';
+			$current_msgid = 0;
+			$lo  = '';
+			$lt = '';
+			$counter = 0;
+			while ($row = mysql_fetch_assoc($res)) {
+				echo "row<br/>";
+				//var_dump($row);continue; $row['REPORT_FKID'];
+				$counter++;
+				$controlId = $row['REPORT_FKID'] . $row['MSGTIMESTAMP'];
+				echo "control:" . $controlId . "<br />";
+				if ($current_msgid != $controlId) {
+				$sql2 = "select * from lab_order lo where reference_id = '" . $controlId . "'";
+				$res2 = $db2->execute($sql2);
+				if ($res2 && !$res2->EOF) {continue;}
+				else {
+				  $current_msgid = $controlId;
+				  $pId = $this->_matchPatient(array("record_number" => $row['LABID']));
+				  echo "new lab for $pId <br>";
+				  $lo = '';
+				  $lt = '';
+				  if ($pId > 0) {
+				  $lo = ORDataObject::factory('LabOrder');
+				  $lt = ORDataObject::factory('LabTest');
+				  $lo->set('patient_id',$pId);
+				  $lo->set('status','F');
+				  $lo->set('ordering_provider',$row['ORDPROVID'] . " " . $row['ORDPROVFIRST'] . " " . $row['ORDPROVLAST']);
+				  $lo->persist();
+				  $lt = ORDataObject::factory('LabTest');
+				  $lt->set('order_num',$row['PLACERORDNUM']);
+				  $lt->set('status','F');
+				  $lt->set('report_time',date('Y-m-d H:i:s',strtotime($row['MSGTIMESTAMP'])));
+				  $lt->set('specimen_received_time',date('Y-m-d H:i:s',strtotime($row['OBSTIMESTAMP'])));
+				  $lt->set('report_time',date('Y-m-d H:i:s',strtotime($row['OBSTIMESTAMP'])));
+				  $lt->set('observation_time',date('Y-m-d H:i:s',strtotime($row['OBSTIMESTAMP'])));
+				  $lt->set('component_code',$row['USIDLONG']);
+				  $lt->set('clia_disclosure',$row['SENDINGAPP']);
+				  $lt->set('lab_order_id',$lo->get('lab_order_id'));
+				  $lt->persist();
+				  }
+				}
+				}
+				echo "curmsg: " . $current_msgid . " control: " . $controlId . "dt: " . $this->_makeSqlTime($row['MSGTIMESTAMP']) . " obst: " . $this->_makeSqlTime($row['OBSTIMESTAMP']) . "<br>";
+				if ($current_msgid == $controlId && is_object($lo)) {
+				  echo "new result on: $controlId <br>";
+				  $lr = ORDataObject::factory('LabResult');
+				  $lr->set('description',$row['OBSRVSHORT']);
+				  $lr->set('extra',$row['Group']);
+				  if (!empty($row['alias'])) $lr->set('description',$row['alias']);
+				  $lr->set('identifier','Internal Lab');
+				  $lr->set('reference_range',$row['REFRANGE']);
+				  $lr->set('abnormal_flag',$row['ABNORMFLAGS']);
+				  $lr->set('observation_time',$row['OBSTIMESTAMP']);
+				  $lr->set('units',$row['UNITS']);
+				  $lr->set('value',$row['OBSRVVALUE']);
+				  $lr->set('result_status','F');
+				  $lr->set("lab_test_id",$lt->get("lab_test_id"));
+				  $lr->persist();
+				  $lr = '';
+				}
+				flush();
+			}
+		}
+
+
 	}
 	
 	function _run_retrieval() {
@@ -234,6 +343,14 @@ class C_LabImporter extends controller {
 		$this->_run_retrieval();
 		$this->_parseMessages();	
 	}
+	function _makeSqlTime($time) {
+		$time = substr_replace($time,'-',4);
+		$time = substr_replace($time,'-',7);
+		$time = substr_replace($time,' ',11);
+		$time = substr_replace($time,':',13);
+		return $time;
+	}
+
 }
 
 ?>
