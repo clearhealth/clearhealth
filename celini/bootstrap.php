@@ -85,7 +85,7 @@ $finder->initCeliniPaths('/local');
 $GLOBALS['loader'] = new FileLoader($finder);
 
 // Load and initialize Security object
-$loader->requireOnce('includes/Security.class.php');
+$GLOBALS['loader']->requireOnce('includes/Security.class.php');
 $security = new Security($gacl_options);
                                                                                 
 //Setup global config options, unset db setting for security
