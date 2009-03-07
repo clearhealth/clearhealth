@@ -22,8 +22,10 @@ class AppointmentRuleFutureAppointments extends AppointmentRuleAbstract {
 			INNER JOIN event ev on ev.event_id = ap.event_id
 		WHERE
 			ev.start > now() 
-			and ev.end < (now() + INTERVAL 1 YEAR) 
-			and ap.patient_id = $patient_id
+                        /* and ev.end < (now() + INTERVAL 1 YEAR) */
+                        and ap.patient_id = $patient_id
+                        order by ev.start ASC
+                        limit 5
 		";
 		$res = $db->execute($sql);
 		$appMsgs = array();
@@ -34,7 +36,7 @@ class AppointmentRuleFutureAppointments extends AppointmentRuleAbstract {
 			$valid = false;
 		} 
 		if ($valid == false) {	
-			$this->errorMessage = "<b>This patient has " .count($appMsgs). " future appointments.<br>" .implode(",",$appMsgs);
+			$this->errorMessage = "<b>This patient has " .count($appMsgs). " future appointments. Showing first five.<br>" .implode(",",$appMsgs);
 		}
 		return $valid;
 	}
