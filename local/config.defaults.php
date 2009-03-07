@@ -55,17 +55,17 @@ $config['calendar']['ajax_handler'] = 'CalendarAJAXHandler';
 $config['calendar']['data_handler'] = 'ClearhealthCalendarData';
 
 $config['showCalendarWeekViewLinks'] = true;
-$config['hideCanceledAppointment'] = false;
-$config['showRescheduleLink'] = false;
-$config['calendar']['showArrivalLink'] = false;
-$config['calendar']['showPayLink'] = false;
+$config['hideCanceledAppointment'] = true;
+$config['showRescheduleLink'] = true;
+$config['calendar']['showArrivalLink'] = true;
+$config['calendar']['showPayLink'] = true;
 
 ################################################################################
 # Billing Options
 ################################################################################
-$config['billing']['multipleByUnits'] = false;
+$config['billing']['multipleByUnits'] = true;
 
-$config['displayInsuranceElegibility'] = false;
+$config['displayInsuranceElegibility'] = true;
 $config['generatePendingClaimsOnly'] = false;
 
 ################################################################################
@@ -73,7 +73,7 @@ $config['generatePendingClaimsOnly'] = false;
 ################################################################################
 $config['labs'] = array();
 //This feature is experimental, do not use.
-$config['labs']['highlightAbnormal'] = false;
+$config['labs']['highlightAbnormal'] = true;
 
 ################################################################################
 ## Printer options for billing prints offset left X chars
