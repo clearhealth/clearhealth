@@ -99,10 +99,20 @@ clniSuggest.prototype = {
 			
 			item.value = this.rowTemplate.replace(/{\$([a-zA-Z0-9_]+)}/g,function(s,result) {return data[result]; } );
 			if (this.highlight) {
+				if (item.value.charAt(0) == '*') {
+				item.innerHTML = "<SPAN CLASS='SuggestMatchingText'>" + item.value + "</SPAN>";
+				}
+				else {
 				item.innerHTML = item.value.replace(re,"<SPAN CLASS='SuggestMatchingText'>$1</SPAN>");
+				}
 			}
 			else {
+				if (item.value.charAt(0) == '*') {
+				item.innerHTML = "<SPAN CLASS='SuggestMatchingText'>" + item.value + "</SPAN>";
+				}
+				else {
 				item.innerHTML = item.value;
+				}
 			}
 
 			HTML_AJAX_Util.registerEvent(item,'mousedown',function(e) { self._onSelect(HTML_AJAX_Util.eventTarget(e)) });
