@@ -135,9 +135,5 @@ $d->check_input();
 $d->trail_build($args);
 //echo strlen($d->act($args));
 echo $d->act($args);
-<<<<<<< .mine
-//echo calcTS();
-=======
 //echo "<!--ts: " .calcTS() . "-->";
->>>>>>> .r5300
 ?>
