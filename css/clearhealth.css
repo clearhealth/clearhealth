@@ -478,10 +478,12 @@ html>body #calendarOverlay {
 .schedules div {
 	position: absolute;
 	width: 100%;
-	filter: alpha(Opacity=70);
-	-moz-opacity:.7;
-	opacity:.7;
+	background-image: url('/images/lines.png');
+	#filter: alpha(Opacity=70);
+	#-moz-opacity:.7;
+	#opacity:.7;
 	z-index: 1;
+	margin-top: -2px;
 }
 
 .colItems {
