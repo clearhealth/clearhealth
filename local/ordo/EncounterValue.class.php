@@ -81,11 +81,11 @@ class EncounterValue extends ORDataObject {
 
 		$ds =& new Datasource_sql();
 		$ds->setup($this->_db,array(
-				'cols' 	=> "encounter_value_id, `value`, value_type",
+				'cols' 	=> "encounter_value_id, `value`, value_type, last_edit",
 				'from' 	=> "$this->_table ",
 				'where' => " encounter_id = $encounter_id"
 			),
-			array('value' => 'Value','value_type' => 'Title')
+			array('value' => 'Value','value_type' => 'Title','last_edit' => 'Last Edit')
 		);
 
 		$ds->registerFilter('value_type',array(&$this,'lookupValueType'));
