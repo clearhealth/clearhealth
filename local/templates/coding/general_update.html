@@ -51,6 +51,17 @@ function deleteClaimline(codingDataId) {
 	  formSubmit('ajaxCodingForm','codingBlock');
 	}
 }
+
+// prevents empty cptlist
+function check_cptlist() {
+    cptlist = document.getElementById('cptlist');
+
+    if (cptlist.childNodes.length == 1) {
+        alert('You must have at least one procedure code to add/edit this claimsline');
+        return false; 
+    } else return true;
+}
+
 {/literal}
 {/head}
 {if $ajaxSubmit}
@@ -150,7 +161,7 @@ function deleteClaimline(codingDataId) {
 		{/if}
 		{else}
 		{if $editcodingdata}
-			<input type="submit" name="updateCode[{$editcodingdata}]" value="Edit Claim Line">
+            <input type="submit" name="updateCode[{$editcodingdata}]" value="Edit Claim Line" onclick="return check_cptlist();">
 		{else}
 			<input type="submit" name="saveCode" value="Add Claim Line">
 		{/if}

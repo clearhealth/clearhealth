@@ -8,7 +8,7 @@
 	</div>
 
 	<div id="footer">
-		Copyright <a href="http://www.clear-health.com">ClearHealth Inc.</a> 2003-2007<br />
+		Copyright <a href="http://www.clear-health.com">ClearHealth Inc.</a> 2003-2009<br />
 	</div>
 </body>
 </html>
