@@ -125,6 +125,14 @@ class C_Labs extends Controller {
 		return $order;
 	}
 	function actionEdit_edit($labOrderId=0) {
+        // prevent Adding an Order without selecting first a pacient
+        if ( $this->get('patient_id', 'c_patient') <= 0) {
+            $this->messages->addMessage(
+                                'No Patient Selected',
+                                'Please select a patient before attempting to add an order');
+            Celini::redirect('PatientFinder', 'List');
+        }
+
 		$labOrderId = (int)$labOrderId;
 		$externalId = $this->GET->get('externalId','int');
 		if ($externalId > 0) {
