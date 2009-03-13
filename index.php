@@ -12,6 +12,14 @@ ini_set('session.save_path', $session_save_path);
 }
 calcTS();*/
 
+/**
+* Check for SSL connection to webserver
+*/
+if ( !isset($_SERVER['HTTPS']) || ($_SERVER['HTTPS'] != 'on') ) {
+    echo "index.php: HTTPS not in use. The script cannot continue. <br>";
+    die();
+}
+
 if (file_exists('cellini')) {
 	require_once "cellini/bootstrap.php";
 }

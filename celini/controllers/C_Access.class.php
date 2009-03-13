@@ -6,7 +6,7 @@
  * @author	Joshua Eichorn <jeichorn@mail.com>
  */
 
-$loader->requireOnce('controllers/C_Base_Access.class.php'_;
+$loader->requireOnce('controllers/C_Base_Access.class.php');
 
 /**
  * This is just a stub class that extends the base Access controller. 
