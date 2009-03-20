@@ -5,11 +5,11 @@ $password = "";
 $report_id = "";
 $report_template_id = "";
 
-$cciGetWorkList_id = "";
-$cciGetWorkList_templ_id = "";
+$wsGetTransList_id = "";
+$wsGetTransList_templ_id = "";
 
-$ws_get_worklist_id = "";
-$ws_get_worklist_templ_id = "";
+$ws_get_tranlist_id = "";
+$ws_get_tranlist_templ_id = "";
 
 $ws_get_patient2_id = "";
 $ws_get_patient2_templ_id = "";
@@ -44,11 +44,11 @@ function Ws_get_patient($last, $passkey) {
 }
 
 
-function Ws_get_worklist( $passkey ) {
+function Ws_get_tranlist( $passkey ) {
 	
 	global $password;
-	global $ws_get_worklist_id;
-	global $ws_get_worklist_templ_id;
+	global $ws_get_tranlist_id;
+	global $ws_get_tranlist_templ_id;
 
     if ($passkey !== $password) return array("access not permitted");
 	// $_REQUEST['rf'] = array("start" => $startDate, "end" => $endDate, "room" => $roomId);
@@ -57,7 +57,7 @@ function Ws_get_worklist( $passkey ) {
 	$GLOBALS['loader']->requireOnce('includes/ReportAction.class.php');
         $action =& new ReportAction();
         $action->controller = new Controller();
-        $action->action( $ws_get_worklist_id, $ws_get_worklist_templ_id );
+        $action->action( $ws_get_tranlist_id, $ws_get_tranlist_templ_id );
 
 	$ret = $action->controller->view->_tpl_vars['reports']['default']['grid']->_datasource->toArray();
 	//var_dump(array2xml($ret));exit;
@@ -101,12 +101,12 @@ if (strtolower($_SERVER['PATH_INFO']) == "/ws_get_patient") {
 }
 
 // 
-// ws_get_worklist
+// ws_get_tranlist
 //
-else if (strtolower($_SERVER['PATH_INFO']) == "/ws_get_worklist") {
+else if (strtolower($_SERVER['PATH_INFO']) == "/ws_get_tranlist") {
 	if (	isset( $_GET['passkey'] )) {
 			
-			$array = Ws_get_worklist( $_GET['passkey'] );
+			$array = Ws_get_tranlist( $_GET['passkey'] );
 			
 			if (isset($array[0])) { echo $array[0];exit;}
 			else {echo "No results";exit;}
