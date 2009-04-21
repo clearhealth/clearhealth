@@ -24,10 +24,15 @@ function smarty_make_timestamp($string)
         $string = "now";
     }
     
-    if (is_numeric($string) && $string >= 0 && $string <= 86400) {
-    	return $string + strtotime("1970-01-01");
+    if (is_numeric($string)){
+	if ($string >= 0 && $string <= 86400) {
+		return $string + strtotime("1970-01-01");
+	}
+	else {
+		return (int)$string;
+	}
     }
-    
+  
     $time = Celini_strtotime($string);
     if (is_numeric($time) && $time != -1) {
        return $time;	
