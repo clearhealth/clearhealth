@@ -108,8 +108,8 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 				fsdl.*
 			FROM 
 				{$table} AS fsdl
-				INNER JOIN fee_schedule_discount_by_code AS fsdc USING(fee_schedule_discount_level_id)
-				INNER JOIN fee_schedule_discount AS fsd USING(fee_schedule_discount_id)
+				INNER JOIN fee_schedule_discount_by_code AS fsdc on fsdc.fee_schedule_discount_level_id = fsdl.fee_schedule_discount_level_id
+				INNER JOIN fee_schedule_discount AS fsd on fsd.fee_schedule_discount_id = fsdc.fee_schedule_discount_id
 			WHERE
 				fsdc.code_pattern = {$qCodePattern} AND
 				fsd.practice_id = {$qPracticeId}";
@@ -127,8 +127,8 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 				fsdl.*
 			FROM 
 				{$table} AS fsdl
-				INNER JOIN fee_schedule_discount_by_code AS fsdc USING(fee_schedule_discount_level_id)
-				INNER JOIN fee_schedule_discount AS fsd USING(fee_schedule_discount_id)
+				INNER JOIN fee_schedule_discount_by_code AS fsdc on fsdc.fee_schedule_discount_level_id = fsdl.fee_schedule_discount_level_id
+				INNER JOIN fee_schedule_discount AS fsd on fsd.fee_schedule_discount_id = fsdl.fee_schedule_discount_id
 			WHERE
 				{$qCodePattern} LIKE fsdc.code_pattern AND
 				fsd.practice_id = {$qPracticeId}";
