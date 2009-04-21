@@ -5,6 +5,7 @@ $loader->requireOnce('ordo/Address.class.php');
 class PracticeAddress extends Address {
 	var $_relation = "practice_address";
 	var $_fkey = "practice_id";
+	var $address_type = "";
 
 	function setup($id = 0,$parent = false, $type = "practice") {
 		//var_dump("new PersonAddress",get_class($this));
