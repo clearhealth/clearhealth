@@ -121,6 +121,12 @@ class Appointment extends ORDataObject {
 		$this->populateEvent();
 		return $this->_event->get('end');
 	}
+	function get_arrived() {
+		return $this->arrived;
+	}
+	function set_arrived($value) {
+		$this->arrived = (int)$value;
+	}
 
 	/**
 	 * Map start_time from the event
