@@ -41,17 +41,17 @@
 	}
 
 	function addMenuEntry() {
-		mf.addmenuentry(menu_id,form_id,document.getElementById('title').value);
+		mf.addMenuEntry(menu_id,form_id,document.getElementById('title').value);
 		updateMenuItems();
 	}
 
 	function updateMenuEntry(id,el) {
-		mf.updatemenuentry(id,el.value);
+		mf.updateMenuEntry(id,el.value);
 	}
 
 	function deleteMenuEntry(id,name) {
 		if (confirm('Delete Menu Entry: '+name)) {
-			mf.deletemenuentry(id);
+			mf.deleteMenuEntry(id);
 			updateMenuItems();
 		}
 	}
