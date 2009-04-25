@@ -20,7 +20,7 @@ function smarty_modifier_make_age($dob)
        if(strpos($dob,'-')){//SQL format
                list($year,$month,$day) = split("-",$dob);
        }else{//pretty print format
-               list($day,$month,$year) = split("/",$dob);
+               list($month,$day,$year) = split("/",$dob);
        }
 	$year=intval($year);	
 	$month=intval($month);	
