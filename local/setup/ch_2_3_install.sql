@@ -6049,6 +6049,7 @@ CREATE TABLE `schedule` (
   `description_short` text,
   `schedule_code` varchar(255) default NULL,
   `provider_id` int(11) NOT NULL default '0',
+  `room_id` int(11) NOT NULL,	
   PRIMARY KEY  (`schedule_id`),
   KEY `provider_id` (`provider_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
