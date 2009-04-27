@@ -20,7 +20,7 @@ class PHPMemory extends BaseTest{
 	function perform(){	
 	
 		if($this->return_bytes($this->params[0]) < $this->return_bytes(ini_get('memory_limit'))){
-			$this->result_message = "PHP Memory {$this->params[0]} or greater is required, you are running ".ini_get('memory_limit');
+			$this->result_message = "PHP Memory greater than {$this->params[0]} is required, you are running ".ini_get('memory_limit');
 			$this->result = INSTALLER_TEST_SUCCESS;
 			return $this->result;
 		}else{
