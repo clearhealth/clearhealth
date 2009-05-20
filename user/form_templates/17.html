@@ -97,7 +97,7 @@ function loadLabel(has_xml_label, pkey) {
 }
 
 function loadLabelWindow(pkey) {
-		window.open('https://clearhealth.ccihsv.com/hcapi/index.php/CHMED/BaseMed24Label?pkey=' + pkey + '&format=html', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
+		window.open('/hcapi/index.php/CHMED/BaseMed24Label?pkey=' + pkey + '&format=html', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
 }
 
 function loadInteractions(interactions) {
@@ -114,7 +114,7 @@ function loadInteractions(interactions) {
 }
 function printPrescription() {
 	if (formDataId > 0) {
-		window.open('https://clearhealth.ccihsv.com/index.php/minimal/Report/report/88321329?report_template_id=88354805&form_data_id='+formDataId, '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
+		window.open('/index.php/minimal/Report/report/88321329?report_template_id=88354805&form_data_id='+formDataId, '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
 		return true;
 	}
 	alert('Medication must be saved before printing.');
@@ -126,7 +126,7 @@ function faxPrescription() {
 			alert('Medication must be saved and signed before faxing.');
 			return false;
 		}
-		window.open('https://clearhealth.ccihsv.com/index.php/minimal/Report/report/88343728?report_template_id=88343737&pageSize=100', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
+		window.open('/index.php/minimal/Report/report/88343728?report_template_id=88343737&pageSize=100', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
 		return true;
 	}
 	alert('Medication must be saved and signed before faxing.');
@@ -198,7 +198,7 @@ function setInactive() {
 
 function reauthorizePrescription() {
 	if (!confirm('Are you sure you want to mark this prescription inactive and generate a new prescription with this information?')) return false;
-		reauthWindow = window.open('https://clearhealth.ccihsv.com/index.php/main/Form/fillout/88229111?form_id=0&form_data_id=0&returnTo=/index.php/main/PatientDashboard/view?id=76221897', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
+		reauthWindow = window.open('/index.php/main/Form/fillout/88229111?form_id=0&form_data_id=0&returnTo=/index.php/main/PatientDashboard/view?id=76221897', '', 'toolbar=1,scrollbars=1,location=1,statusbar=0,menubar=0,resizable=0');
 		reauthWindow.addEventListener("DOMContentLoaded", 
 function () {
 	reauthWindow.document.getElementById('description').value = document.getElementById('description').value;

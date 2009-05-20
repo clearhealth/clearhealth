@@ -102,6 +102,7 @@ class TransactionEstimateClaim {
 				$code['fee'] = $code['fee'] * $code['units'];
 			}
 			$this->fees[$code['coding_data_id']]['code'] = $code['code'];
+			$this->fees[$code['coding_data_id']]['description'] = $code['description'];
 			$this->fees[$code['coding_data_id']]['fee']  = number_format($code['fee'],2);
 			$this->fees[$code['coding_data_id']]['coding_data_id'] = $code['coding_data_id'];
 			$total += $code['fee'];

@@ -37,7 +37,11 @@
 		</table>
 	</td>
 	<td>
+	{if strlen($pictureTag) > 0 }
 	{$pictureTag}
+	{else}
+	<a href="{link controller="WebCam" action="upload"}categoryId={php}echo Celini::config_get("PatientPicture:categoryId");{/php}" target="_NEW">Add Patient Picture</a>
+	{/if}
 	</td>
 
 <td align="right">

@@ -44,6 +44,7 @@ class C_Superbill extends Controller {
 		$this->view->assign('FORM_ACTION',Celini::link('edit',true,false)."superbill_id=$id");
 
 		$ds =& new Superbill_DS($id, 'procedure');
+		$ds->clearAll();
 		$ds->registerTemplate('code','<a href="#remove" onclick="removeCode({$code_id},this)">{$code}</a>');
 		$grid =& new cGrid($ds);
 		$grid->orderLinks = false;
@@ -52,6 +53,7 @@ class C_Superbill extends Controller {
 
 
 		$ds =& new Superbill_DS($id, 'diagnosis');
+		$ds->clearAll();
 		$ds->registerTemplate('code','<a href="#remove" onclick="removeCode({$code_id},this)">{$code}</a>');
 		$grid =& new cGrid($ds);
 		$grid->orderLinks = false;

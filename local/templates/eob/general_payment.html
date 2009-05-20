@@ -20,6 +20,7 @@
 <input type="hidden" id="claimId" value="{$claim->get('id')}">
 <input type="hidden" id="rebillAction" value="{$REBILL_ACTION}">
 <input type="hidden" id="billnextAction" value="{$BILLNEXT_ACTION}">
+<input type="hidden" id="collectionsAction" value="{$COLLECTION_ACTION}">
 
 <h3 style="margin: 0px; padding:0px;">Payment History</h3>
 {$paymentGrid->render()}
@@ -157,6 +158,7 @@
 			{assign var=nextpayer value=$encounter->get('next_payer')}
 			<button onclick="return rebillNextPayer()" id="rebillnext">Rebill To Next Payer ({$nextpayer->value('fullname')})</button>
 			{/if}
+			<button onclick="return rebillCollections()" id="collections">Collections</button>
 		</td>
 	</tr>
 </tbody>

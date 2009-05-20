@@ -58,7 +58,7 @@ discountLevelEditor.prototype = {
 						}
 					}
 					row.appendChild(newTd);
-					newTd.innerHTML = newTd.innerHTML.replace(/\]\[([0-9])\]/g, "][" + (i + (cols - 1)) + "]");
+					newTd.innerHTML = newTd.innerHTML.replace(/\]\[0\]/g, "][" + (i + (cols - 2)) + "]");
 				}
 			}
 		}

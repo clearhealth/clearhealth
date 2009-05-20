@@ -34,7 +34,7 @@ class Encounter_PayerGroup_DS extends Datasource_sql
 
 	}
 	
-	function _pgLink($value) {
+	function _pgLink($value,$row) {
 		if(!isset($this->_usedPayerGroups[$value])) {
 			$pg =& Celini::newORDO('PayerGroup',$value);
 			$this->_usedPayerGroups[$value] = true;

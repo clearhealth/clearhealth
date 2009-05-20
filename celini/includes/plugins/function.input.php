@@ -41,6 +41,7 @@ function smarty_function_input($params, &$smarty)
             case 'store_id':
             case 'disabled':
             case 'id':
+
                 $$_key = (string)$_val;
                 break;
 
@@ -54,7 +55,7 @@ function smarty_function_input($params, &$smarty)
 
             default:
                 if(!is_array($_val)) {
-                    $extra .= ' '.$_key.'="'.smarty_function_escape_special_chars($_val).'"';
+                    $extra .= ' '.$_key.'="'.$_val.'"';
                 } else {
                     $smarty->trigger_error("input: extra attribute '$_key' cannot be an array", E_USER_NOTICE);
                 }
@@ -156,7 +157,7 @@ function smarty_function_input($params, &$smarty)
                                         if ($key == $value) {
                                                 $checked = "checked='checked'";
                                         }
-                                        $ret .= "<input type='radio' name='string[$name]' value='$key' id='{$id}_{$key}' $checked><label for='{$id}_{$key}' class='inline'>$key</label>$sep";
+                                        $ret .= "<input type='radio' name='string[$name]' value='$key' id='{$id}_{$key}' $checked $extra><label for='{$id}_{$key}' class='inline'>$key</label>$sep";
 
                                 }
                                 $ret .= "</div>";

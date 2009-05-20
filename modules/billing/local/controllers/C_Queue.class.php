@@ -215,7 +215,21 @@ class C_Queue extends controller {
 		$ids = $this->_getQueueMembers($queueId);
 		$this->_setupEob($ids);
 	}
-
+	function actionEobBatch($claimIds) {
+		$ids = split(',',$claimIds);
+		//var_dump($ids);
+		$sql = "select claim_id from fbclaim c1 where c1.claim_identifier IN ('" . implode("','",$ids) . "') and c1.claim_id = (select max(c2.claim_id) from fbclaim c2 where c2.claim_identifier = c1.claim_identifier)";
+		$db = Celini::dbInstance();
+		//echo $sql;
+		$res = $db->execute($sql);
+		$claims = Array();
+		while ($res && !$res->EOF) {
+			$claims[] = $res->fields['claim_id'];
+			$res->moveNext();
+		}
+		$this->_setupEob($claims);
+	}
+	
 	function _setupEob($ids) {
 		// we have a list of claim ids, were going to make an object tree 
 		$GLOBALS['loader']->requireOnce('includes/X12Transaction.class.php');

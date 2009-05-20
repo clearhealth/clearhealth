@@ -138,6 +138,10 @@ class C_Labs extends Controller {
 		if ($externalId > 0) {
 			$this->set("externalId",$externalId);
 		}
+		$encounterId = $this->GET->get('encounterId','int');
+		if ($encounterId > 0) {
+			$this->set("encounterId",$encounterId);
+		}
 		$order= ORDataObject::factory("LabOrder",$labOrderId);
 		$em =& Celini::enumManagerInstance();
                 $this->view->assign('em',$em);	
@@ -180,6 +184,10 @@ class C_Labs extends Controller {
 		if ($this->get('externalId') > 0) {
 			$order->set('external_id',$this->get('externalId'));
 			$this->set('externalId',0);
+		}
+		if ($this->get('encounterId') > 0) {
+			$order->set('encounter_id',$this->get('encounterId'));
+			$this->set('encounterId',0);
 		}
 		$order->persist();
 		$this->messages->addMessage("Order added successfully");

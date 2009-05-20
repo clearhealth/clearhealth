@@ -1537,6 +1537,30 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 		//$node->addAttribute("contentType","image/jpg");
 		//$node->addAttribute("href",htmlentities($value));
 	}
+	elseif (strtolower($key) == "estimatedencounterfee") {
+		$total = 0;
+		$fees = array();
+		if (!(int)$value > 0) continue;
+		$GLOBALS['loader']->requireOnce('controllers/C_Coding.class.php');
+		$ccd = new C_Coding();
+		$ccd->_CalculateEncounterFees((int)$value,true); //second argument is to show descriptions and codes instead of just codes
+		if (isset($ccd->_feeDiscountDS) && is_object($ccd->_feeDiscountDS)) {
+			$fees = $ccd->_feeDiscountDS->toArray();
+			$total = $fees[count($fees)-1]['fee'];
+		}
+		elseif (isset($ccd->_feeDS) && is_object($ccd->_feeDS)) {
+			$fees = $ccd->_feeDS->toArray();
+			$total = $fees[count($fees)-1]['fee'];
+		}
+		
+		$node = $xml->addChild($key,$total);
+		foreach ($fees as $feeRow) {
+			if (isset($feeRow['code']) && $feeRow['code'] == "<b>Total</b>") continue;
+			$node = $xml->addChild('feeRow');
+			$node->addChild('description',$feeRow['description']);
+			$node->addChild('fee',$feeRow['fee']);
+		}
+	}
 	else {
 	if (is_array($value) || is_object($value)) {
 		$node = $xml->addChild($key);

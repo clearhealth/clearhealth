@@ -152,6 +152,28 @@
 		
 		return false;
 	}
+	function rebillCollections() {
+		var cb = function(result) {
+			var eob = $('eob');
+			if (!eob) {
+				var eob = $('eobInner');
+			}
+			eob.innerHTML = result;
+			new Effect.Highlight(eob);
+		}
+		
+		$('submit').disabled = true;
+		$('rebill').disabled = true;
+		$('collections').disabled = true;
+		if(document.getElementById('rebillcollections')) {
+			$('rebillnext').disabled = true;
+		}
+		$('rebill').innerHTML = 'Processing Please Wait ...';
+		alert($('collectionsAction').value);
+		HTML_AJAX.post($('collectionsAction').value,{process:'true',claim_id:$('claimId').value},cb);
+		
+		return false;
+	}
 
 	function rebillNextPayer() {
 		var cb = function(result) {

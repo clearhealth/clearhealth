@@ -23,6 +23,7 @@ class C_Eob extends Controller {
 
 		$claim =& Celini::newOrdo('ClearhealthClaim',$claim_id);
 		$this->view->assign('BILLNEXT_ACTION',Celini::link('RebillNextPayer','Eob',false));
+		$this->view->assign('COLLECTION_ACTION',Celini::link('Collections','Eob',false));
 		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
 		$patient =& Celini::newOrdo('Patient',$encounter->get('patient_id'));
 		$paymentplan =& Celini::newORDO('PatientPaymentPlan');
@@ -259,6 +260,50 @@ class C_Eob extends Controller {
 		$gateway->send('rebill');
 
 		$this->messages->addMessage('Claim Rebilled to Self Pay');
+		$this->claimId = $claimId;
+	}
+	function actionCollections_edit() {
+		$this->view->assign('ajax',true);
+		return $this->actionPayment_edit($this->claimId);
+	}
+	function processCollections_edit() {
+		$claimId = $this->POST->getTyped('claim_id','int');
+		$claim =& Celini::newOrdo('ClearhealthClaim',$claimId);
+		$encounter =& Celini::newOrdo('Encounter',$claim->get('encounter_id'));
+		if($encounter->get('current_payer') == 105731) {
+			// We're already billed to self-pay!
+			$this->messages->addMessage('Currently billed to Collections');
+			$this->claimId = $claimId;
+			return;
+		}
+		$ir =& Celini::newOrdo('InsuredRelationship');
+		$list = $ir->getProgramList($encounter->get('patient_id'));
+		$id = array_search('System->Collection',$list);
+		if ($id == false) {
+			$ir->set('person_id',$encounter->get('patient_id'));
+			$ir->set('program_order',count($list));
+			$ir->set('subscriber_id',$encounter->get('patient_id'));
+			$ir->set('subscriber_to_patient_relationship',1);
+
+			$sql = "select insurance_program_id from insurance_program ip inner join company c using(company_id) 
+					where c.name = 'System' and ip.name = 'Collections'";
+			$db = new clniDb();
+			$id = $db->getOne($sql);
+			if ($id == false) {
+				$this->messages->addMessage("Payer - System->Collections not found, can't rebill");
+				return;
+			}
+			$ir->set('insurance_program_id',$id);
+			$ir->persist();
+		}
+		$encounter->set('current_payer',$id);
+		$encounter->persist();
+
+		$GLOBALS['loader']->requireOnce('includes/freebGateway/ClearhealthToFreebGateway.class.php');
+		$gateway =& new ClearhealthToFreebGateway($this,$encounter);
+		$gateway->send('rebill');
+
+		$this->messages->addMessage('Claim Rebilled to Collections');
 		$this->claimId = $claimId;
 	}
 

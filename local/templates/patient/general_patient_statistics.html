@@ -2,62 +2,47 @@
 		<input type="hidden" value="{$patientStatistics->get('id')}" name="patientStatistics[patient_statistics_id]">
 		<table>
 			<tr>
-				<td><label>{l}Ethnicity{/l}:</label></td>
+				<td><label style="width:200px;">{l}Ethnicity{/l}:</label></td>
 				<td>{html_options name="patientStatistics[ethnicity]" options=$patientStatistics->getEthnicityList() selected=$patientStatistics->get('ethnicity') blank=""}</td>
-				<td><label>{l}Race{/l}:</label></td>
+				<td><label style="width:200px;">{l}Race{/l}:</label></td>
 				<td>{html_options name="patientStatistics[race]" options=$patientStatistics->getRaceList() selected=$patientStatistics->get('race') blank=""}</td>
 				
 			</tr>
 			<tr>
 				<td><label>{l}Language{/l}:</label></td>
 				<td>{html_options name="patientStatistics[language]" options=$patientStatistics->getLanguageList() selected=$patientStatistics->get('language') blank=""}</td>
-				<td><label>{l}Migrant Status{/l}:</label></td>
-				<td>{html_options name="patientStatistics[migrant_status]" options=$patientStatistics->getMigrantStatusList() selected=$patientStatistics->get('migrant_status') blank=""}</td>
-				<td><label></label></td>
-				<td></td>
+				<td><label>{l}Income{/l}:</label></td>
+				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income') blank=""}</td>
 			</tr>
 			<tr>
 
 				<td><label>{l}Monthly Income{/l}:</label></td>
 				<td><input name="patientStatistics[monthly_income]" id="ps_monthly_income" value="{$patientStatistics->get('monthly_income')}" size=8 maxlength=8></td>
-				<td><label>{l}Income{/l}:</label></td>
-				<td>{html_options name="patientStatistics[income]" options=$patientStatistics->getIncomeList() selected=$patientStatistics->get('income') blank=""}</td>
-			</tr>
-			<tr>
 				<td><label>{l}Family Size{/l}:</label></td>
 				<td><input name="patientStatistics[family_size]" id="ps_family_size" value="{$patientStatistics->get('family_size')}" size=3 maxlength=3></td>
-
-				<td><label>Number of Adults: </label></td>
-				<td><input size=4></td>
 			</tr>
 			<tr>
 				<td><label>{l}Date of First Encounter:{/l}</label></td>
 				<td>{$encounter->getFirstDate($person->get('id'))}</td>
 
-				<td><label>{l}Sign in Date{/l}: </label></td>
+				<td><label>{l}Consent Signed Date{/l}: </label></td>
 				<td>{clni_input_date name="patientStatistics[sign_in_date]" value=$patientStatistics->get('sign_in_date')}</td>
 			</tr>
 			<tr>
-				<td><label>{l}Registration Location{/l}: </label></td>
+				<td><label>Employment Status: </label></td>
 				<td>
+                                {input type="select-table" name="patientStatistics[employment_status]" enumeration="employment_status" value=$patientStatistics->get('employment_status')}
+                                </td>
+				<td><label>Occupation: </label></td>
+                                <td>{input type="string-table" name="patientStatistics[occupation]" value=$patientStatistics->get('occupation')}</td>
+			</tr>
+			<tr>
+				<td><label>{l}Registration Location{/l}: </label></td>
+				<td colspan="2">
 				    <select name="patientStatistics[registration_location]">
 					    {html_options options=$building->getBuildingList() selected=$patientStatistics->get('registration_location')}
 				    </select>
 				</td>
-			</tr>
-			<tr>
-				<td><label>Employment Status: </label></td>
-				<td><select><option></option><option>Status 1</option></select></td>
-
-				<td><label>Occupation: </label></td>
-				<td><input></td>
-			</tr>
-			<tr>
-				<td><label>Education Level: </label></td>
-				<td><select><option></option><option>Level 1</option></select></td>
-
-				<td><label>US Veteran: </label></td>
-				<td><select><option></option><option>Yes</option></select></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Save"></td>

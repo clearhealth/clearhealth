@@ -88,6 +88,7 @@ $config['PatientPicture'] = array();
 $config['PatientPicture']['enabled'] = true;
 //width in px, automatically calculates ratioed height
 $config['PatientPicture']['thumbWidth'] = 150; 
+$config['PatientPicture']['categoryId'] = ;  //enter category id for Picture cat
 
 
 ################################################################################

@@ -64,11 +64,11 @@ diagnosisSuggest.prototype = {
 }
 
 function medicationSuggest(id,valueId) {
-        this.suggest = new clniSuggest('{$ndc}: {$tradename} {$strength} {$unit} {$packsize}{$packtype} ',id,valueId,'CHMED','ajaxBaseMed24');
+	this.suggest = new clniSuggest('{$ndc}: {$tradename} {$strength}{$unit} {$packsize}{$packtype} ',id,valueId,'CHMED','ajaxBaseMed24');
         this.suggest.allowBreaks = false;
-        this.suggest.onSelect = populateForm;
-        // style the box so you know its special
-        document.getElementById(id).style.border = 'solid 1px blue';
+	this.suggest.onSelect = populateForm;
+	// style the box so you know its special
+	document.getElementById(id).style.border = 'solid 1px blue';
 }
 medicationSuggest.prototype = {
 }

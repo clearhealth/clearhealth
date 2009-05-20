@@ -31,9 +31,8 @@ class C_MedicalHistory extends Controller {
 		while(($row = $wfds->get()) && $wfds->valid()) {
 			// Setup form data block 
 			$wflist_ds = '';
-			if ($row['type'] == 4) {
-                                $dsName = "MedHist_" . $row['controller_name'] . "_DS";
-                                $GLOBALS['loader']->requireOnce('datasources/' . $dsName . ".class.php");
+			$dsName = "MedHist_" . $row['controller_name'] . "_DS";
+			if ($row['type'] == 4 && $GLOBALS['loader']->includeOnce('datasources/' . $dsName . ".class.php")) {
                                 $wflist_ds = new $dsName($personId);
                         }
 			else {

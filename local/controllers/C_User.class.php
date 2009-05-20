@@ -181,6 +181,24 @@ class C_User extends Controller {
 		$user->persist();
 	}
 
+	function actionImport() {
+		exit;
+		$f = fopen('/tmp/','r');
+		while ($line = fgetcsv($f)) {
+			$per = ORDataObject::factory('Person');
+			$per->set('first_name',$line[0]);
+			$per->set('middle_name',$line[1]);
+			$per->set('last_name',trim($line[2]. ' ' . $line[3]));
+			$per->set('identifier',$line[7]);
+			$per->persist();
+			$user = ORDataObject::factory('User');
+			$user->set('username',$line[4]);
+			$user->set('password',$line[5]);
+			$user->set('person_id',$per->get('person_id'));
+			$user->persist();
+		}
+	}
+
 	function ajaxConfirmPassword($personId,$password) {
 		$db = Celini::dbInstance();
 		$sql = "select * from user where password = " . $db->quote($password) . " and person_id = " . (int)$personId;

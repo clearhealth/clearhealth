@@ -12,6 +12,8 @@ class C_Coding extends Controller {
 	var $parent_id = 0;
 	var $coding_data_id = 0;
 	var $superbill = 1;
+	var $_feeDS;
+	var $_discountFeeDS;
 	
 	function C_Coding($template_mod = "general") {
 		parent::Controller();
@@ -21,7 +23,7 @@ class C_Coding extends Controller {
 		$this->superbill = $session->get('Superbill:id');
 	}
 
-	function _CalculateEncounterFees($encounterId) {
+	function _CalculateEncounterFees($encounterId, $showDesc = false) {
 		$manager = new TransactionManager();
 		$trans = $manager->createTransaction('EstimateClaim');
 		$trans->setEncounterId($encounterId);
@@ -32,13 +34,19 @@ class C_Coding extends Controller {
 		$fees = $manager->processTransaction($trans);
 
 		$ds = new Datasource_array();
-		$ds->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+		if ($showDesc) {
+			$ds->setup(array('description'=>'Desc','fee'=>'Fee'),$fees);
+		}
+		else {
+			$ds->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+		}
+
 		if ($ds->numRows() > 0 && $encounterId > 0) {
 			$grid =& new cGrid($ds);
 			$grid->indexCol = false;
+			$this->_feeDS = $ds;
 			$this->view->assign_by_ref('feeGrid',$grid);
 		}
-
 		$practiceId = $_SESSION['defaultpractice'];
 
 		$practiceConfig =& Celini::configInstance('Practice');
@@ -75,9 +83,15 @@ class C_Coding extends Controller {
 			if ($trans !== false) {
 				$newFees = $manager->processTransaction($trans);
 				$ds2 =& new Datasource_array();
-				$ds2->setup(array('code' => 'Code', 'fee' => 'Fee'), $newFees);
+				if ($showDesc) {
+					$ds2->setup(array('description' => 'Desc', 'fee' => 'Fee'), $newFees);
+				}
+				else {
+					$ds2->setup(array('code' => 'Code', 'fee' => 'Fee'), $newFees);
+				}
 				$grid2 =& new cGrid($ds2);
 				$grid2->indexCol = false;
+				$this->_discountFeeDS = $ds2;
 				$this->view->assign_by_ref('discountGrid', $grid2);
 			}
 			
@@ -95,10 +109,16 @@ class C_Coding extends Controller {
 				$trans->setDiscount($fsdLevel->value('discount'));
 				$fees = $manager->processTransaction($trans);
 				$ds2 = new Datasource_array();
-				$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+				if ($showDesc) {
+					$ds2->setup(array('description'=>'Desc','fee'=>'Fee'),$fees);
+				}
+				else {
+					$ds2->setup(array('code'=>'Code','fee'=>'Fee'),$fees);
+				}
 	
 				$grid2 =& new cGrid($ds2);
 				$grid2->indexCol = false;
+				$this->_discountFeeDS = $ds2;
 				$this->view->assign_by_ref('discountGrid',$grid2);
 				$this->view->assign('discountRate',$fsdLevel->value('discount'));
 			}

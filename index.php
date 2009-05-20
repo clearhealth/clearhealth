@@ -1,9 +1,4 @@
 <?php
-/*$session_save_path = "tcp://localhost:11211?persistent=1&weight=2&timeout=2&retry_interval=10,  ,tcp://localhost:11211  ";
-ini_set('session.save_handler', 'memcache');
-ini_set('session.save_path', $session_save_path);
-*/
-
 /*function calcTS() {
         list($usec, $sec) = explode(" ", microtime());
         $ts = ((float)$usec + (float)$sec);
@@ -15,10 +10,10 @@ calcTS();*/
 /**
 * Check for SSL connection to webserver
 */
-if ( !isset($_SERVER['HTTPS']) || ($_SERVER['HTTPS'] != 'on') ) {
+/*if ( !isset($_SERVER['HTTPS']) || ($_SERVER['HTTPS'] != 'on') ) {
     echo "index.php: HTTPS not in use. The script cannot continue. <br>";
     die();
-}
+}*/
 
 if (file_exists('cellini')) {
 	require_once "cellini/bootstrap.php";
@@ -26,27 +21,6 @@ if (file_exists('cellini')) {
 else {
 	require_once "celini/bootstrap.php";
 }
-/*if (isset($_GET['tester'])) {
-	$_SESSION['tester'] = true;
-}
-if (!isset($_SESSION['tester'])) {
-?>
-<p>
-Regular Internal & External ClearHealth Users Please Select This Link to Access the System:
-<a href="https://clearhealth.ccihsv.com?tester">https://clearhealth.ccihsv.com?tester</a>
-</p>
-<p>
-If you are experiencing a problem with the link above and belong to a scheduling department please access ClearHealth using this link:
-<a href="https://192.168.11.51?tester">http://192.168.11.51?tester</a>
-</p>
-<p>
-If you are experiencing a problem with the link above and belong to any other department please use this link:
-<a href="http://192.168.11.52?tester">http://192.168.11.52?tester</a>
-</p>
-<?php
-exit;
-}
-*/
 if (file_exists(CELINI_ROOT."/controllers/Dispatcher.class.php")) {
 	$loader->requireOnce('controllers/Dispatcher.class.php');
 }
@@ -141,7 +115,7 @@ else {
 $d->check_input();
 
 $d->trail_build($args);
-//echo strlen($d->act($args));
+//echo mb_strlen($d->act($args));
 echo $d->act($args);
 //echo "<!--ts: " .calcTS() . "-->";
 ?>

@@ -308,7 +308,7 @@ class Celini {
 			//var_dump(debug_backtrace());
 			//echo "</pre>";
 		}
-		debug_print_backtrace();
+		//debug_print_backtrace();
 		trigger_error($message,$type);
 	}
 

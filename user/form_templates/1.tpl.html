@@ -20,9 +20,7 @@ $this->assign("names_array",$names);
 {/php}
 <div id="postResults"></div>
 <form action='{$base_uri}index.php/WidgetForm/Fillout/{$formId}' id="ajaxForm{$formId}" method="post">
-{if $open}
 <input type="button" onClick="formSubmit({$formId});" value="Update" />
-{/if}
 <input type="hidden" name="form_id" value="{$formId}" />
 <input type="hidden" name="process" value="true" />
 <input type="hidden" name="filloutType" value="encounter" />

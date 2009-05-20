@@ -26,6 +26,8 @@ class PatientStatistics extends ORDataObject {
 	var $sign_in_date	= '';
 	var $monthly_income	= '';
 	var $family_size	= '';
+	var $occupation		= '';
+	var $employment_status	= '';
 	/**#@-*/
 
 	/**#@+

@@ -70,7 +70,7 @@ just entered. Please check the following list of existing patient records to see
 {else}
 <div id="patientGeneralEditMessages"></div>
 {clni_form id="patientGeneralEditForm" action=$FORM_ACTION autocomplete="off" process=$PROCESS}
-<div id="popup_dialog" style="width:600px;height:400px;"></div>
+<div id="popup_dialog" style="width:600px;height:600px;"></div>
 <input type="hidden" name="lockTimestamp" value="{$lockTimestamp}">
 
 {if !$person->isPopulated()}

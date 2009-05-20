@@ -3,7 +3,7 @@
 Behavior.register('#wizardForm',
 	function(element) {
 		$u.registerEvent(element,'submit',function(e) {
-			if(clni_validate(element) {
+			if(clni_validate(element)) {
 			var message = new clniPopup('<h1>Creating Schedule Please Wait</h1>',false);
 			message.modal = true;
 			message.display();
