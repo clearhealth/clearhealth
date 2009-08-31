@@ -180,10 +180,9 @@ class C_User extends Controller {
 		$user->set('password',$_POST['password']['password']);
 		$user->persist();
 	}
-
 	function actionImport() {
 		exit;
-		$f = fopen('/tmp/','r');
+		$f = fopen('/tmp/tc-user-template.csv','r');
 		while ($line = fgetcsv($f)) {
 			$per = ORDataObject::factory('Person');
 			$per->set('first_name',$line[0]);
@@ -198,6 +197,26 @@ class C_User extends Controller {
 			$user->persist();
 		}
 	}
+	function actionImportPatients() {
+		exit;
+                $f = fopen('/root/pat2.csv','r');
+                while ($line = fgetcsv($f)) {
+                        $per = ORDataObject::factory('Person');
+                        $per->set('first_name',$line[0]);
+                        $per->set('middle_name',$line[1]);
+                        $per->set('last_name',trim($line[2]. ' ' . $line[3]));
+			echo $per->toString();exit;
+			unset ($per);
+                        //$per->set('identifier',$line[7]);
+			/*
+                        //$per->persist();
+                        $user = ORDataObject::factory('User');
+                        $user->set('username',$line[4]);
+                        $user->set('password',$line[5]);
+                        $user->set('person_id',$per->get('person_id'));
+                        $user->persist();*/
+                }
+        }
 
 	function ajaxConfirmPassword($personId,$password) {
 		$db = Celini::dbInstance();

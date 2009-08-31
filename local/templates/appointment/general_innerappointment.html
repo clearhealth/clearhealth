@@ -13,7 +13,8 @@
 		<small><b>{if $appointment->get('appointment_code') != 'NS'}{$appointment->value('appointment_code')}
 		{else}{l}No-Show #{/l}
 		{if $noshows > 10}10+{else}{$noshows+1}{/if}{/if}
-		{if $appointment->hasEncounter()}Has Encounter
+		{if $appointment->get('appointment_code') eq 'COM' }Complete
+		{elseif $appointment->hasEncounter()}Has Encounter
 		{elseif $appointment->get('appointment_code') eq 'CFM' }Confirmed{/if}
 </b></small></div>
 		{$appointment->get('title')}<br>
@@ -24,6 +25,9 @@
 		{if $ev_edit}
 			<a href="javascript:void(0);" onclick="editAppointment({$appointment->get('id')},'{$appointment->get('appointment_code')}');">edit</a>,
 			<!--<a href="javascript:void(0);" onclick="deleteAppointment({$appointment->get('id')});">del</a>,--> 
+			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>,
+			<a href="javascript:void(0);" onclick="confirmAppointment({$appointment->get('id')});">cfm</a>,
+			<a href="javascript:void(0);" onclick="completeAppointment({$appointment->get('id')});">com</a>,
 			{if $appointment->get('patient_id')}
 			<a href="javascript:void(0);" onclick="NSAppointment({$appointment->get('id')});">ns</a>, 
 			<a href="javascript:void(0);" onclick="cancelAppointment({$appointment->get('id')});">can</a>,

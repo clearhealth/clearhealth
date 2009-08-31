@@ -11,7 +11,7 @@
 <td>{input type="string"  id="labOrderNumber"}</td>
 <td>{input type="date" name="labSpecimenDate" id="labSpecimenDate"}</td>
 <td>{$order->get('manual_service_label')}</td>
-<td>{html_options name="test['specimen_site']" options=$em->enumArray('body_site')}</td>
+<td>{html_options id='labSpecimenSite' name="test['specimen_site']" options=$em->enumArray('body_site')}</td>
 </tr>
 </table>
 <input type="hidden" value="{$order->get('manual_service_label')}" id="labManualService">

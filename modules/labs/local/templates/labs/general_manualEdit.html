@@ -23,6 +23,7 @@ function saveResultHeader(){
   var labProviderBox = document.getElementById('labProvider');
   hash['clia_disclosure'] = labProviderBox.options[labProviderBox.selectedIndex].label;
   hash['specimen_received_time'] = document.getElementById('labSpecimenDate').value;
+  hash['specimen_site'] = document.getElementById('labSpecimenSite').options[document.getElementById('labSpecimenSite').selectedIndex].label;
   hash['report_time'] = document.getElementById('labSpecimenDate').value;
   hash['manual_order_date'] = document.getElementById('labOrderDate').value;
   HTML_AJAX.call('Labs','ajaxEditTest',updateView,hash);
@@ -49,6 +50,7 @@ function confirmResults(labOrderId) {
   }
   HTML_AJAX.call('Labs','ajaxConfirmResults',updateView,labOrderId);
   document.getElementById('confirmButton').style.display = 'none';
+  document.getElementById('providerChooserSelect').style.display = 'none';
   if(document.getElementById('addResultRowFieldset')) {
 	document.getElementById('addResultRowFieldset').style.display = 'none';
   }
@@ -75,12 +77,20 @@ function updateView(result) {
 </script>
 {/literal}
 <div id='popup_dialog'></div>
+{if $returnTo}
+<a href="{$returnTo}">Back</a>
+{/if}
 <fieldset>
                 <legend>Manual Lab Addition</legend>
                 <table class="grid">
                 <tr><th>Ordering Provider</th><th>Order Date</th><th>Service</th></tr>
 <tr>
-<td>{input type="string" name="orderingProvider" id="labOrderingProvider" value=$order->get("ordering_provider")}</td>
+<td>{input type="string" name="orderingProvider" id="labOrderingProvider" value=$order->get("ordering_provider")}
+
+{if !$order->get('lab_order_id') >0}
+{html_options id='providerChooserSelect' name="providerChooser" options=$providers blank="true" onChange="document.getElementById('labOrderingProvider').value = this.options[this.selectedIndex].value + '^' + this.options[this.selectedIndex].text;"}
+{/if}
+</td>
 <td>{input type="date" name="orderDate" id="labOrderDate" value=$order->get("manual_order_date")}</td>
 <td>
 {html_options name="test['service']" id="labService" options=$em->enumArray('lab_manual_service_list')}

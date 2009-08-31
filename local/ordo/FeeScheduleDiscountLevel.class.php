@@ -79,8 +79,11 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 		$income = EnforceType::int($income);
 		$size = EnforceType::int($size);
 		$programId = EnforceType::int($programId);
+		$programSql = " d.insurance_program_id = " . $programId ." ";
+		if ($programId == 0) {
+			$programSql = " l.type == 'default' ";
+		}
 		$table = $this->tableName();
-
 
 		$sql = "
 			select l.* 
@@ -92,7 +95,7 @@ class FeeScheduleDiscountLevel extends ORDataObject {
 				i.family_size = $size and
 				i.income >= $income and
 				d.practice_id = $practiceId AND
-				d.insurance_program_id = $programId
+				(d.insurance_program_id = {$programId} OR d.type = 'default')
 			order by i.income asc
 			";
 		$res = $this->dbHelper->execute($sql);

@@ -22,6 +22,7 @@ class LabTest extends ORDataObject {
 	var $component_code		= '';
 	var $status		= '';
 	var $clia_disclosure		= '';
+	var $specimen_site	=	'';
 	/**#@-*/
 
 

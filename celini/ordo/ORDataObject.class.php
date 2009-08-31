@@ -1482,9 +1482,14 @@ class ORDataObject {
 		return $this->_auditMessage;
 	}
 
-public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
+public static function toXml($data, $rootNodeName = 'data', $xml=null,$dataGroup=null)	{
 	if ($xml === null) {
-		$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$rootNodeName />");
+		$rootNodeXml = "<$rootNodeName";
+		if ($dataGroup == true) {
+		$rootNodeXml .= " xfa:dataNode='dataGroup'";
+		}
+		$rootNodeXml .= "/>";
+		$xml = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?>" . $rootNodeXml);
 	}
 	// loop through the data passed in.
 
@@ -1544,8 +1549,8 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 		$GLOBALS['loader']->requireOnce('controllers/C_Coding.class.php');
 		$ccd = new C_Coding();
 		$ccd->_CalculateEncounterFees((int)$value,true); //second argument is to show descriptions and codes instead of just codes
-		if (isset($ccd->_feeDiscountDS) && is_object($ccd->_feeDiscountDS)) {
-			$fees = $ccd->_feeDiscountDS->toArray();
+		if (isset($ccd->_discountFeeDS) && is_object($ccd->_discountFeeDS)) {
+			$fees = $ccd->_discountFeeDS->toArray();
 			$total = $fees[count($fees)-1]['fee'];
 		}
 		elseif (isset($ccd->_feeDS) && is_object($ccd->_feeDS)) {
@@ -1573,7 +1578,7 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 			$value = "resource";
 		}
 		$value = htmlentities($value);
-		$xml->addChild($key,$value);
+		$node = $xml->addChild($key,$value);
 	}
 	}
 	}
@@ -1582,7 +1587,7 @@ public static function toXml($data, $rootNodeName = 'data', $xml=null)	{
 	/*$xmlstr .= <<<EOF
 <logo xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">Qk1uAQAAAAAAAD4AAAAoAAAAJgAAACYAAAABAAEAAAAAADABAADYDgAA2A4AAAIAAAAAAAAAAAAAAP///wD//////AAAAP/////8AAAA//////wAAAD//////AAAAP/////8AAAA//////wAAAD8AAAA/AAAAP38AH78AAAA/fAAHvwAAAD9wAAG/AAAAP2AAAb8AAAA/QAAAvwAAAD9AAAC/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD8AAAA/AAAAPwAAAD9AAAC/AAAAP0AAAL8AAAA/YAABvwAAAD9wAAG/AAAAP3gAA78AAAA/fAAHvwAAAD9/AB+/AAAAPwAAAD8AAAA//////wAAAD//////AAAAP/////8AAAA//////wAAAD//////AAAAP/////8AAAA</logo>
 EOF;*/
-
+	$xmlstr = preg_replace('/dataNode=/','xfa:dataNode=',$xmlstr);
 	return preg_replace('/<\?.*\?>/','',$xmlstr);
 
 }

@@ -143,11 +143,16 @@ class C_Labs extends Controller {
 			$this->set("encounterId",$encounterId);
 		}
 		$order= ORDataObject::factory("LabOrder",$labOrderId);
+		$provider = ORDataObject::factory("Provider");
+		$this->view->assign('providers',$provider->valueList('fullName',true));
 		$em =& Celini::enumManagerInstance();
                 $this->view->assign('em',$em);	
                 $this->view->assign('labBlock',$this->_generateEditView($labOrderId));	
 		$this->assign('patientId',$this->get('patient_id', 'c_patient'));
 		$this->assign("order",$order);
+		if (isset($_GET['returnTo'])) {
+			$this->view->assign("returnTo",$_GET['returnTo']);
+		}
 		return $this->view->render("manualEdit.html");
 	}
 	function _generateEditView($labOrderId) {

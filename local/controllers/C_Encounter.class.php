@@ -555,7 +555,7 @@ class C_Encounter extends Controller {
 		//var_dump($_POST);exit;
 		$newReason = '';
 		if (isset($_POST['encounter']['encounter_reason'])) $newReason =  $_POST['encounter']['encounter_reason'];
-		if($encounter->get('reason') != $newReason) {
+		if(isset($_POST['encounter']['encounter_reason']) && $encounter->get('encounter_reason') != $newReason) {
 			$changedreason = true;
 		}
 		if (isset($_POST['encounter'])) { $encounter->populate_array($_POST['encounter']); }

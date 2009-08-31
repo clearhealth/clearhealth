@@ -310,7 +310,12 @@ class C_Appointment extends Controller {
 		$apt->persist();
 		return array($id,'<strong>CANCELLED</strong>');
 	}
-	
+	function ajax_complete($id) {
+                $apt =& Celini::newORDO('Appointment',$id);
+                $apt->set('appointment_code','COM');
+                $apt->persist();
+                return array($id,'<strong>COMPLETE</strong>');
+        }	
 	function ajax_confirm($id) {
 		$apt =& Celini::newORDO('Appointment',$id);
 		$apt->set('appointment_code','CFM');
@@ -975,6 +980,7 @@ fclose($fp);
                 $appId = (int)$appId;
                 $app = ORDataObject::factory("Appointment",$appId);
                 $app->set("arrived",(int)$value);
+		//trigger_error("appvalue: ". $app->get('arrived'));
                 $app->persist();
                 return true; 
         }

@@ -3982,6 +3982,7 @@ CREATE TABLE `insurance_program` (
   `address_id` int(11) NOT NULL default '0',
   `funds_source` int(11) NOT NULL default '0',
   `program_type` int(11) NOT NULL default '0',
+  `payer_identifier` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`insurance_program_id`),
   KEY `fee_schedule_id` (`fee_schedule_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
@@ -4131,6 +4132,7 @@ CREATE TABLE `lab_test` (
   `component_code` varchar(255) NOT NULL default '',
   `status` char(1) NOT NULL default '',
   `clia_disclosure` varchar(255) NOT NULL default '',
+  `specimen_site` varchar(255) NOT NULL default ''
   PRIMARY KEY  (`lab_test_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=latin1;
 

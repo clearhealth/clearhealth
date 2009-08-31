@@ -133,5 +133,13 @@ class MenuForm extends ORDataObject {
 	{
 		$this->title = $title;
 	}
+	function ajaxMethods() {
+                return array(
+                        'getFormList',
+                        'addMenuEntry',
+                        'updateMenuEntry',
+                        'deleteMenuEntry',
+                );
+        }
 } 
 ?>

@@ -21,9 +21,13 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 	function processClaim() {
 		$fees = parent::processClaim();
 		$total = 0;
+		$counter = 0;
 		foreach($fees as $key => $row) {
-			if ($this->discount['type'] == 'flat') {
+			if ($this->discount['type'] == 'flat' && $counter == 0) {
 				$dfee = $this->discount['discount'];
+			}
+			else if ($this->discount['type'] == 'flat') {
+				$dfee = 0;
 			}
 			else {
 				$dfee = $row['fee']*(1- ($this->discount['discount'] / 100));
@@ -38,6 +42,7 @@ class TransactionEstimateDiscountedClaim extends TransactionEstimateClaim {
 					$total += $dfee;
 				}
 			}
+			$counter++;
 		}
 		// we retotal fee here in the hope to avoid rounding errors
 		if (!$this->resultsInMap) {

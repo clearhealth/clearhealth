@@ -10,10 +10,10 @@ calcTS();*/
 /**
 * Check for SSL connection to webserver
 */
-/*if ( !isset($_SERVER['HTTPS']) || ($_SERVER['HTTPS'] != 'on') ) {
-    echo "index.php: HTTPS not in use. The script cannot continue. <br>";
+if ( !isset($_SERVER['HTTPS']) || ($_SERVER['HTTPS'] != 'on') ) {
+    echo "index.php: HTTPS (SSL) not in use, do use ClearHealth over an unsecured connection. Try this link: <a href='https://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] ."'>https://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] ."</a><br>";
     die();
-}*/
+}
 
 if (file_exists('cellini')) {
 	require_once "cellini/bootstrap.php";

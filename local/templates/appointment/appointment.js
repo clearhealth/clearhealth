@@ -197,7 +197,10 @@ function cancelAppointment(id) {
 	HTML_AJAX.call('appointment','ajax_cancel',updateAppointmentcb,id);
 }
 function confirmAppointment(id) {
-	HTML_AJAX.call('appointment','ajax_confirm',updateAppointmentcb,id);
+        HTML_AJAX.call('appointment','ajax_confirm',updateAppointmentcb,id);
+}
+function completeAppointment(id) {
+        HTML_AJAX.call('appointment','ajax_complete',updateAppointmentcb,id);
 }
 function NSAppointment(id) {
 	HTML_AJAX.call('appointment','ajax_ns',updateAppointmentcb,id);

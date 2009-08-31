@@ -60,11 +60,6 @@ class ClearhealthAJAX {
 		$coding=&new C_Coding();
 		$this->server->registerClass($coding,'coding');
 	}
-	function initmedication(){
-		$GLOBALS['loader']->requireOnce('controllers/C_Medication.class.php');
-		$medication=&new C_Medication();
-		$this->server->registerClass($medication,'medication');
-	}
 	function initvistaproblemlist(){
                 $GLOBALS['loader']->requireOnce('controllers/C_VistaProblemList.class.php');
                 $problemList=&new C_VistaProblemList();
@@ -90,7 +85,7 @@ class ClearhealthAJAX {
 	function initMenuForm(){
 		$GLOBALS['loader']->requireOnce("ordo/MenuForm.class.php");
 		$form=&new MenuForm();
-		$this->server->registerClass($form,'MenuForm',array('getformlist','addmenuentry','updatemenuentry','deletemenuentry'));
+		$this->server->registerClass($form,'MenuForm',$form->ajaxMethods());
 	}
 
 	function initForm(){

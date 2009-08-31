@@ -292,7 +292,7 @@ class ReportAction {
 $str = '';
 	foreach($this->reports as $report) {
 		$data = $report['ds']->toArray();
-		$str .= ORDataObject::toXML($data,$report['grid']->name);
+		$str .= ORDataObject::toXML($data,$report['grid']->name,null,true);
 	}
 $str .= 
 '</form1>

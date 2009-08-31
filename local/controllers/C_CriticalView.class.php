@@ -36,7 +36,7 @@ class C_CriticalView extends Controller {
 		$adds = $p->get_addresses();
 		if (count($adds) > 0) {	
 		foreach ($adds as $add) {
-			if ($add['type'] == 'Home') {
+			if ($add['type'] == 'Billing') {
 				$this->assign("address",$add);
 				break;
 			}
