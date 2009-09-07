@@ -163,7 +163,7 @@ function check_cptlist() {
 		{if $editcodingdata}
             <input type="submit" name="updateCode[{$editcodingdata}]" value="Edit Claim Line" onclick="return check_cptlist();">
 		{else}
-			<input type="submit" name="saveCode" value="Add Claim Line">
+			<input type="submit" name="saveCode" onClick="addCPTCode();addICDCode();" value="Add Claim Line">
 		{/if}
 		{/if}
   		</td>
