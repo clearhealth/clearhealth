@@ -6927,3 +6927,4 @@ CREATE TABLE IF NOT EXISTS `routing_archive` (
 
 ALTER TABLE `fbcompany` ADD `program_name` VARCHAR( 255 ) NOT NULL;
 ALTER TABLE `schedule` ADD `room_id` INT NOT NULL;
+INSERT INTO PAYER_GROUP VALUES (1,"Default");
