@@ -1,8 +1,0 @@
-{if is_object($messages)}
-        {$messages->render()}
-{/if}
-{if $success}
-Click <a href="javascript:addNoteComplete();">here</a> to close.{$ordo->get('generic_note_id')}
-<input type="hidden" id="smgGenericNoteIdSaved" value="{$ordo->get('generic_note_id')}">
-{/if}
-

@@ -1,5 +1,0 @@
-By default this new rule is off.
-You can enable it in the appointment rule admin.
-
-To override, however, you must add a resource like the double book one 
-using the value 12347 and add it to the appointment rules axo group.

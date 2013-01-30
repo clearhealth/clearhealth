@@ -1,8 +1,0 @@
-<fieldset>
-<legend>{l}Guarantees{/l}</legend>
-{foreach from=$guarantees item=guarantee}
-<a href="{link action=history controller=account defaultArg=$guarantee->get('id')}">{$guarantee->get('last_name')}, {$guarantee->get('first_name')}</a><br />
-{foreachelse}
-{l}No Guarantees{/l}
-{/foreach}
-</fieldset>

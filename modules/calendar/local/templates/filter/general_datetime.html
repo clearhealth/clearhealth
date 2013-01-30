@@ -1,4 +1,0 @@
-<div id="filter_{$name}">
-{if $params.datetemplate != ''}{assign var=template value=$params.datetemplate}{else}{assign var=template value="%Y-%m-%d %H:%i"}{/if}
-{$label}:&nbsp;{clni_input_date name="Filter[$name]" value=$value time='true' format_popup="$template" size="17"}
-</div>

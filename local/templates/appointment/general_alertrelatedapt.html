@@ -1,9 +1,0 @@
-<div {if $relatedConf == 1}style='border:solid 2px red;'{/if}>
-{if $relatedConf == 1}<strong>{l}CONFIDENTIAL{/l}</strong><br />{/if}
-<fieldset><legend>{l}Related Patient Appointment{/l}</legend>
-<strong>{l}Patient:{/l}</strong> {$related->value('name')}<br />
-<strong>{l}Appointment Start:{/l}</strong> {$relapt.start}<br />
-<strong>{l}Appointment End:{/l}</strong> {$relapt.end}<br />
-
-</fieldset>
-</div>

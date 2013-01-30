@@ -1,9 +1,0 @@
-#!/bin/bash
-if [ -e "install.sql" ]; then
-	rm install.sql
-fi
-
-for i in $(find ./sqltmp -name "*.sql");
-	do cat $i >> install.sql;
-done
-

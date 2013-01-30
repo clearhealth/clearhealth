@@ -1,5 +1,0 @@
-<?
-
-$GLOBALS['baseadr'] = '/clearhealth/';
-
-?>

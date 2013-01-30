@@ -1,9 +1,0 @@
-{* Loop 1000B - Receiver Name *}
-NM1*												{*Receiver name loop*}
-40*													{*Identifier code. Must be 40, which means Receiver*}
-2*													{*Qualifier for NM103.  2=Non-Person entity*}
-{$payer->value('name')|upper}*						{*Organization name or individual last name*}
-****
-{$payer->get('identifier_type')|upper}*				{*Qualifier for NM109.  Always use 46 (ETIN)*}
-{$practice->get("receiver_id")|upper}~				{*Identification Code*}
-

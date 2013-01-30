@@ -1,3 +1,0 @@
-{foreach from=$tags item=tag}
-	{if $tag.visible == 1}<div id="tag{$tag.tag_id}"><input type="checkbox" name="tagList[]" value="{$tag.tag_id}" />{$tag.tag}</div>{/if}
-{/foreach}

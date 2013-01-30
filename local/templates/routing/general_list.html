@@ -1,8 +1,0 @@
-<h3>Active Stations</h3>
-<ul>
-{foreach from=$stations item=station}
-<li><a href="{$base_dir}index.php/main/Routing/showStation/{$station.extra1}">{$station.value}</a></li>
-{foreachelse}
-No stations are currently setup, you must edit your systems "Routing Stations" enumeration to setup your stations.
-{/foreach}
-</ul>

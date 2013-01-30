@@ -1,7 +1,0 @@
-{$revisionListGrid->render()}
-<br />
-<br />
-Change storage type for this storable to:<br />
-<input type="radio" name="storable[storage_type]" id="storageTypeFS" onclick="HTML_AJAX.replace('switchStorageStatus','{$base_dir}/index.php/DocSmartStorable/changestoragetype/{$storable->storable_id}/FS')" {if $storable->storage_type eq 'FS'}checked{/if}> <label for="storageTypeFS">Filesystem</label><br />
-<input type="radio" name="storable[storage_type]" id="storageTypeDB"  onclick="HTML_AJAX.replace('switchStorageStatus','{$base_dir}/index.php/DocSmartStorable/changestoragetype/{$storable->storable_id}/DB')" {if $storable->storage_type eq 'DB'}checked{/if}> <label for="storageTypeDB">Database</label><br />
-<div id="switchStorageStatus"></div>

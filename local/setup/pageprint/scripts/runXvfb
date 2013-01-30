@@ -1,2 +1,0 @@
-#!/bin/bash
-Xvfb :10 -screen 0 800x600x16 &

@@ -1,1 +1,0 @@
-ALTER TABLE `payment` ADD `title` VARCHAR( 255 ) NOT NULL 

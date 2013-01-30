@@ -1,9 +1,0 @@
-<a name="appointmentBlock" ></a>
-	<fieldset class="radio" id="Appointments">
-		<legend>{l}Appointments{/l} {clni_section_links name="appointments"}</legend>
-		{$appointmentGrid->render()}
-		{if $appointmentGrid->empty}
-		<p>{l}Patient has no Future appoinments{/l}</p>
-		{/if}
-		<p><a href="{$APPOINTMENT_ACTION}">{l}Add Appointment{/l}</a></p>
-	</fieldset>

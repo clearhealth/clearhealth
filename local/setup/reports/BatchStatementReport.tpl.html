@@ -1,8 +1,0 @@
-{assign var=patients value=$patients_ds->toArray()}
-{assign var=start value=1}
-<a href="{link action='BatchStatement' controller='Patient' pageType='PDF'}patients={foreach from=$patients item=patient key=statement_num}{if $statement_num > 0 && ($statement_num + 1) mod 50 == 0}-{$patient.person_id}" target="statements">Print {$start} - {$statement_num+1}</a><br />
-{assign var=start value=$statement_num+2}
-<a href="{link action='BatchStatement' controller='Patient' pageType='PDF'}patients={else}{if $statement_num != 0 && $statement_num >= $start}-{/if}{$patient.person_id}{/if}{foreachelse}
-No patients with remaining balance.
-{/foreach}{if $statement_num && ($statement_num + 1) mod 50 != 0}" target="statements">Print {$start} - {$statement_num}</a>{/if}
-

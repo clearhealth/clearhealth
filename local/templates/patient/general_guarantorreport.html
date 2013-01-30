@@ -1,9 +1,0 @@
-{if $withbalance}
-<a href="{link}report_id={$GET->getTyped('report_id','int')}">{l}Show All Guarantors{/l}</a>
-{else}
-<a href="{link}report_id={$GET->getTyped('report_id','int')}&withbalance=1">{l}Show Only Guarantors With Balance{/l}</a>
-{/if}
-{$grid->render()}
-{if $grid->empty}
-	<p>{l}No Guarantors Found{/l}</p>
-{/if}
