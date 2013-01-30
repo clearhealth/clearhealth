@@ -1,0 +1,702 @@
+<style>
+div.dhtmlxToolbar_ClearSilver#claimsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemPressed {
+	background-color: #D3E2E5;
+	border-bottom: #D3E2E5 1px solid;
+}
+div.dhtmlxToolbar_ClearSilver#claimsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem td.dhtmlxToolbarTEXT span {
+	margin-left: -10px;
+	margin-right: 10px;
+}       
+div.gridbox table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+.dijitDialogCloseIcon {
+	display: none;
+}
+div.gridbox table.obj tr.rowselected td, div.gridbox table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected {
+	background-color: #ccc;
+}
+</style>
+<div id="claimsToolbarId" style="width:100%;position:relative;"></div>
+<div id="claimsLayoutId" style="width:100%;height:445px;position:relative;"></div>
+<div id="claimsLeftPaneId" style="width:100%;">
+	<div><?=$this->formSelect('claimSelectId',null,array('id'=>'claimSelectId','style'=>'width:150px;'),$this->options)?></div>
+	<div style="margin-top:20px;"><span id="claimsCtrId">0</span> <?=__('claims in queue')?></div>
+	<div style="margin-top:5px;">Dated <span id="claimsDateRangeId"><?=date('m/d/Y',strtotime('-1 month'))?>-<?=date('m/d/Y',strtotime('-1 month'))?></span></div>
+	<div style="margin-top:5px;">Totalling, $<span id="claimsTotalId">0.00</span></div>
+	<div style="margin-top:100px;"><?=$this->formButton('transmitPrintId',__('Transmit/Print'),array('id'=>'transmitPrintId','onClick'=>'claimsTransmit()'))?></div>
+	<div style="margin-top:5px;"><?=$this->formButton('clearQueueId',__('Clear Queue'),array('id'=>'clearQueueId','onClick'=>'globalClaimsQueue = {};claimsCalculate();'))?></div>
+</div>
+<div id="closeVisitDivId" style="display:none;">
+	<?=$this->formTextarea('closeVisitReportId','',array('id'=>'closeVisitReportId','readonly'=>'readonly','style'=>'width:485px;height:220px;'))?>
+	<?=$this->formButton('cancelId',__('Cancel'),array('onClick'=>'claimsCancelCloseVisit()','style'=>'margin-top:5px;'))?>
+</div>
+<div id="inquiryDivId" style="display:none;">
+	<?=$this->formTextarea('inquiryReportId','',array('id'=>'inquiryReportId','readonly'=>'readonly','style'=>'width:785px;height:350px;'))?>
+</div>
+<script>
+var globalClaimsQueue = {};
+var closeVisitIds = [];
+var winCloseVisit = null;
+var dialog = null;
+var tref = null;
+
+var winInquiry = null;
+
+function claimsTransmit() {
+	var claimSelect = dojo.byId("claimSelectId");
+	var type = ""
+	if (claimSelect.selectedIndex >= 0) type = claimSelect.options[claimSelect.selectedIndex].value;
+	var claimIds = [];
+	for (var i in globalClaimsQueue) claimIds.push(i);
+	if (claimIds.length <= 0) {
+		alert("<?=__('No items in the queue')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/set-session-batch-ids",
+		handleAs: "json",
+		content: {
+			"ids": claimIds.join(","),
+		},
+		load: function(data) {
+			window.open("<?=$this->baseUrl?>/claims.raw/process-claims?type="+type,"claims");
+			globalClaimsQueue = {};
+			claimsCalculate();
+			claimsGridReload();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+var claimsLayout = new dhtmlXLayoutObject("claimsLayoutId", "2U");
+claimsLayout.setEffect("collapse",true);
+claimsLayout.cells("a").hideHeader();
+claimsLayout.cells("a").setWidth("250");
+claimsLayout.cells("b").hideHeader();
+claimsLayout.cells("a").attachObject("claimsLeftPaneId");
+
+var claimsGrid = claimsLayout.cells("b").attachGrid();
+claimsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexClaimSubRowGrid = 0;
+var indexClaimDOS = 1;
+var indexClaimPatient = 2;
+var indexClaimTotal = 3;
+var indexClaimBilled = 4;
+var indexClaimPaidWO= 5;
+var indexClaimBalance = 6;
+var indexClaimPayer = 7;
+var indexClaimFacility = 8;
+var indexClaimStatus = 9;
+claimsGrid.setHeader(",<?=__('DOS')?>,<?=__('Patient')?>,<?=__('Total')?>,<?=__('Billed')?>,<?=__('Paid/WO')?>,<?=__('Balance')?>,<?=__('Payer')?>,<?=__('Facility')?>,<?=__('Status')?>");
+claimsGrid.setInitWidths("20,80,*,80,80,80,80,*,*,60");
+claimsGrid.setColTypes("sub_row_grid,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+claimsGrid.enableMultiselect(true);
+claimsGrid.setSkin("xp");
+claimsGrid.enableDynamicLoading(true);
+claimsGrid.init();
+dhtmlxEvent(claimsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+claimsGrid.attachEvent("onRowsLoaded",function(min,max,ids){
+	var color = "";
+	var rowId = null;
+	for (var i = 0; i <= ids.length; i++) {
+		rowId = claimsGrid.getRowId(ids[i]);
+		color = this.getUserData(rowId,"color");
+		if (color.length > 0) this.setRowColor(rowId,color);
+	}
+});
+claimsGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
+	claimsToolbar.enableItem("makePayment");
+	mainController.setActiveVisit(rowId);
+	mainController.setActivePatient(claimsGrid.getUserData(rowId,"pid"));
+});
+claimsGrid.attachEvent("onRowDblClicked",function(rowId,cellIndex){
+	var params = ["visitId="+rowId];
+	globalCreateWindow("winClaimsId",params,"<?=$this->baseUrl?>/visit-select.raw/claim","<?=__('Claims')?>",850,700);
+});
+claimsGrid.attachEvent("onSubGridCreated",function(subgrid,rowId,rowIndex,content){
+	subgrid.setHeader("<?=__('Date')?>,<?=__('Total')?>,<?=__('Paid')?>,<?=__('Payer')?>,<?=__('Status')?>");
+	subgrid.setInitWidths("120,100,100,*,80");
+	subgrid.setColTypes("ro,ro,ro,ro,ro");
+	subgrid.init();
+	subgrid.objBox.style.position = "relative";
+	subgrid.load(content,function(){
+		// workaround on height
+		claimsGrid.toggleSubRow(claimsGrid.cells(rowId,0).cell.firstChild);
+		claimsGrid.toggleSubRow(claimsGrid.cells(rowId,0).cell.firstChild);
+		var color = "";
+		subgrid.forEachRow(function(rowId){
+			color = this.getUserData(rowId,"color");
+			if (color.length <= 0) return;
+			subgrid.setRowColor(rowId,color);
+		});
+	},"json");
+	subgrid.attachEvent("onSubRowOpen",function(cell,expanded){
+		this.adjustHeightSubRow(cell);
+		return;
+		// workaround on top
+		claimsGrid.toggleSubRow(subgrid.cells(rowId,0).cell.firstChild);
+		claimsGrid.toggleSubRow(subgrid.cells(rowId,0).cell.firstChild);
+	});
+	return false;  // block default behavior
+});
+
+/* === MENU === */
+var claimsMenu = new dhtmlXMenuObject(null,"standard");
+claimsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+claimsMenu.renderAsContextMenu();
+claimsMenu.setOpenMode("web");
+claimsMenu.attachEvent("onClick",function(menuItemId,type){
+	switch(menuItemId) {
+		case "selectAll":
+			claimsGrid.selectAll();
+			break;
+		case "batchOpen":
+			claimsBatchVisits("open");
+			break;
+		case "batchClose":
+			claimsBatchVisits("closed");
+			break;
+		case "addToQueue":
+			claimsAddToQueue();
+			break;
+		case "patientDetails":
+			onToolbarClick("tbSelectPatient");
+			break;
+		case "checkRules":
+			claimsCheckRules();
+			break;
+		case "claimInquiry":
+			claimsInquiry();
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+});
+claimsMenu.loadXML("<?=$this->baseUrl?>/claims.raw/get-context-menu",function(){});
+claimsMenu.attachEvent("onContextMenu",function(id){
+	claimsMenu.forEachItem(function(id){
+		claimsMenu.hideItem(id);
+	});
+	claimsMenu.showItem("selectAll");
+	var rowId = claimsGrid.getSelectedRowId();
+	if (rowId != null) {
+		claimsMenu.forEachItem(function(id){
+			claimsMenu.showItem(id);
+		});
+	}
+});
+
+claimsGrid.hdr.id = claimsGrid.uid();
+claimsMenu.addContextZone(claimsGrid.hdr.id);
+claimsGrid.enableContextMenu(claimsMenu);
+
+function claimsCheckRules(visitId,callback) {
+	if (!visitId) {
+		var rowId = claimsGrid.getSelectedRowId();
+		if (!rowId) {
+			alert("<?=__('No item selected')?>");
+			return;
+		}
+		var ids = rowId.split(",");
+		visitId = ids[0];
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/check-rules",
+		handleAs: "json",
+		content: {
+			"visitId": visitId,
+		},
+		load: function(data) {
+			if (typeof callback == "function") {
+				callback(data);
+				return;
+			}
+			var msg = "OK";
+			if (data.event) {
+				msg = data.displayEvent + ": " + data.message;
+			}
+			alert(msg);
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function confirmDialog(title,question,callbackFn,callbackOnLoaded) {
+	dialog = new dijit.Dialog({id:claimsGrid.uid(),title:title});
+	dialog._onKey = function(){};
+	var callback = function(mouseEvent) {
+		dialog.hide();
+		dialog.destroyRecursive();
+		var srcEl = mouseEvent.srcElement?mouseEvent.srcElement:mouseEvent.target; //IE or Firefox
+		if (srcEl.id.substr(0,3) == "ok_") {
+			callbackFn(true);
+		}
+		else {
+			callbackFn(false);
+		}
+	};
+	var div = document.createElement("DIV");
+	div.innerHTML = question;
+	var cancel = new dijit.form.Button({label:"OK",id:"ok_"+claimsGrid.uid(),onClick:callback});
+	var ok = new dijit.form.Button({label:"Cancel",id:"cancel_"+claimsGrid.uid(),onClick:callback});
+
+	dialog.containerNode.appendChild(div);
+	dialog.containerNode.appendChild(ok.domNode);
+	dialog.containerNode.appendChild(cancel.domNode);
+	dialog.show();
+	callbackOnLoaded();
+}
+
+function claimsCancelCloseVisit() {
+	closeVisitIds = [];
+	if (winCloseVisit) winCloseVisit.hide();
+}
+
+function claimsCloseVisit(offset,callback) {
+	if (tref) {
+		clearTimeout(tref);
+		tref = null;
+	}
+	if (!offset) offset = 1;
+	var offsetIndex = offset - 1;
+	if (offset > closeVisitIds.length || !closeVisitIds[offsetIndex]) {
+		if (typeof callback == "function") callback();
+		claimsCancelCloseVisit();
+		return;
+	}
+	var closeVisitReport = dojo.byId("closeVisitReportId");
+	var value = closeVisitReport.value + "";
+	if (value.length > 0) value = "\n" + value;
+	closeVisitReport.value = "Closing " + (offset) + " of " + closeVisitIds.length + value;
+
+	var visitId = closeVisitIds[offsetIndex];
+	offset++;
+	claimsCheckRules(visitId,function(rule){
+		if (rule.event) {
+			var msg = rule.displayEvent + ": " + rule.message;
+			if (rule.event == "<?=ClaimRule::EVENT_WARNING?>") {
+				confirmDialog("Confirm Close Visit",msg,function(ok){
+					if (tref) {
+						clearTimeout(tref);
+						tref = null;
+					}
+					if (ok) {
+						claimsProcessCloseVisit(visitId,offset,callback);
+					}
+					else {
+						claimsCloseVisit(offset,callback);
+					}
+				},function(){
+					tref = setTimeout(function(){
+						claimsProcessCloseVisit(visitId,offset,callback);
+						if (dialog) {
+							dialog.hide();
+							dialog.destroyRecursive();
+						}
+					},5000);
+				});
+			}
+			else if (rule.event == "<?=ClaimRule::EVENT_BLOCK?>") {
+				alert(msg);
+				claimsCloseVisit(offset,callback);
+			}
+			return;
+		}
+		claimsProcessCloseVisit(visitId,offset,callback);
+	});
+}
+
+function claimsProcessCloseVisit(visitId,offset,callback) {
+	if (closeVisitIds.length <= 0) return;
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-close-visit",
+		handleAs: "json",
+		content: {
+			"visitId": visitId,
+		},
+		load: function(data) {
+			claimsCloseVisit(offset++,callback);
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function claimsBatchVisits(type) {
+	var rowId = claimsGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No item selected')?>");
+		return;
+	}
+	if (!type || (type != "open" && type != "closed")) type = "open";
+	var ids = rowId.split(",");
+	for (var i in ids) {
+		if (claimsGrid.cells(ids[i],indexClaimStatus).getValue() == type) {
+			alert("Selected claims contains "+type+" status");
+			return;
+		}
+	}
+
+	if (ids.length <= 0) {
+		alert("<?=__('No item selected')?>");
+		return;
+	}
+	if (!confirm("Are you sure you want to "+type+" selected items?")) return;
+	if (type == "closed") {
+		closeVisitIds = ids;
+		if (!winCloseVisit) {
+			winCloseVisit = globalCreateWindow("windowCloseVisitId",[],"","<?=__('Close Visit')?>",500,300,{"attachURL":false});
+			winCloseVisit.attachObject("closeVisitDivId");
+			winCloseVisit.button("park").hide();
+			winCloseVisit.button("minmax1").hide();
+			winCloseVisit.button("minmax2").hide();
+			winCloseVisit.button("close").hide();
+		}
+		winCloseVisit.show();
+		dojo.byId("closeVisitReportId").value = "";
+		claimsCloseVisit(1,claimsGridReload);
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/set-batch-visits",
+		handleAs: "json",
+		content: {
+			"type": type,
+			"ids": rowId,
+		},
+		load: function(data) {
+			claimsGridReload();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function claimsAddToQueue() {
+	var rowId = claimsGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No item selected')?>");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var claimStat = claimsGrid.cells(rowIds[i],indexClaimStatus).getValue();
+		if (claimStat != "closed") {
+			alert("Only closed visits are allowed to be added to queue");
+			return;
+		}
+	}
+	var recalc = false;
+	for (var i = 0; i < rowIds.length; i++) {
+		var id = rowIds[i];
+		if (globalClaimsQueue[id]) continue;
+		var value = claimsGrid.cells(id,indexClaimStatus).getValue();
+		var total = claimsGrid.cells(id,indexClaimTotal).getValue() + "";
+		var billed = claimsGrid.cells(id,indexClaimBilled).getValue() + "";
+		var paidWO = claimsGrid.cells(id,indexClaimPaidWO).getValue() + "";
+		var balance = claimsGrid.cells(id,indexClaimBalance).getValue() + "";
+		globalClaimsQueue[id] = {
+			"total": total.substr(1),
+			"billed": billed.substr(1),
+			"paidWO": paidWO.substr(1),
+			"balance": balance.substr(1),
+		};
+		recalc = true;
+	}
+	if (recalc) claimsCalculate();
+}
+
+function claimsInquiry() {
+	var rowId = claimsGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No item selected')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/inquire",
+		handleAs: "json",
+		content: {
+			"ids": rowId,
+		},
+		load: function(data) {
+			var report = [];
+			var val = "";
+			for (var visitId in data) {
+				val = "";
+				if (claimsGrid.doesRowExist(visitId)) {
+					val += claimsGrid.cells(visitId,indexClaimDOS).getValue();
+					val += " - "+claimsGrid.cells(visitId,indexClaimPatient).getValue();
+				}
+				val += ": "+data[visitId];
+				report.push(val);
+			}
+			dojo.byId("inquiryReportId").value = report.join("\n");
+			if (!winInquiry) {
+				winInquiry = globalCreateWindow("windowInquiryId",[],"","<?=__('Claim Inquiry')?>",800,400,{"attachURL":false});
+				winInquiry.attachObject("inquiryDivId");
+				winInquiry.attachEvent("onClose",function(){
+					winInquiry.hide();
+					return false;
+				});
+			}
+			winInquiry.show();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function claimsCalculate() {
+	var claimsCtr = 0;
+	var claimsTotal = 0;
+	for (var i in globalClaimsQueue) {
+		claimsCtr++;
+		claimsTotal += parseFloat(globalClaimsQueue[i]["billed"]);
+	}
+	dojo.byId("claimsCtrId").innerHTML = claimsCtr;
+	var value = boxDOSStart.getValue();
+	var dateRange = value.getFullYear()+"/"+(value.getMonth()+1)+"/"+value.getDate();
+	value = boxDOSEnd.getValue();
+	dateRange += " - "+value.getFullYear()+"/"+(value.getMonth()+1)+"/"+value.getDate();
+	dojo.byId("claimsDateRangeId").innerHTML = dateRange;
+	dojo.byId("claimsTotalId").innerHTML = claimsTotal.toFixed(2);
+}
+
+function claimsGridReload() {
+	claimsGrid.forEachRow(function(rowId){
+		claimsGrid.collapseSubRow(claimsGrid.cells(rowId,0).cell);
+	});
+	claimsGrid.clearAll();
+	claimsGrid.load("<?=$this->baseUrl?>/claims.raw/list",claimsGridOnLoaded,"json");
+}
+claimsGridReload();
+
+function claimsGridOnLoaded() {
+	claimsToolbar.disableItem("makePayment");
+	var color = "";
+	claimsGrid.forEachRow(function(rowId){
+		color = this.getUserData(rowId,"color");
+		if (color.length > 0) this.setRowColor(rowId,color);
+	});
+	//claimsCalculate();
+}
+
+var claimsToolbar = new dhtmlXToolbarObject("claimsToolbarId","ClearSilver");
+claimsToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function claimsToolbarOnClicked(id) {
+	switch (id) {
+		case "advancedFilters":
+			openAdvancedFiltersWindow();
+			break;
+		case "makePayment":
+			claimsMakePayment();
+			break;
+	}
+}
+claimsToolbar.attachEvent("onClick",claimsToolbarOnClicked);
+claimsToolbar.attachEvent("onEnter",function(id,value){
+});
+
+function claimsMakePayment() {
+	var ids = claimsGrid.getSelectedRowId();
+	if (!ids) {
+		alert("No selected claim");
+		return;
+	}
+	var type = "open";
+	var rowIds = ids.split(",");
+	for (var i in rowIds) {
+		if (claimsGrid.cells(rowIds[i],indexClaimStatus).getValue() == type) {
+			alert("Selected claims contains "+type+" status");
+			return;
+		}
+	}
+
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/set-session-ids",
+		handleAs: "json",
+		content: {
+			"ids": ids,
+		},
+		load: function(data) {
+			openMakePaymentWindow();
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function claimsBuildQuery(params) {
+	var query = [];
+	if (params) {
+		for (var i in params) {
+			query.push(i+"="+params[i]);
+		}
+	}
+	return query;
+}
+
+function openMakePaymentWindow() {
+	var url = "<?=$this->baseUrl?>/claims.raw/make-payment";
+	winMakePayment = globalCreateWindow("windowClaimsMakePaymentId",[],url,"<?=__('Record Payment')?>",800,800,{attachURL:false,setModal:false});
+	paymentAccordion = winMakePayment.attachAccordion();
+	paymentAccordion.skin = "dhx_blue";
+	paymentAccordion.setIconsPath("<?=$this->baseUrl?>/img/");
+	paymentAccordion.addItem("paymentInfo","<?=__('Payment Information')?>");
+	paymentAccordion.addItem("electronicEOB","<?=__('Electronic EOB')?>");
+	paymentAccordion.attachEvent("onBeforeActive",function(itemId){
+		return true;
+	});
+	paymentAccordion.attachEvent("onActive",function(itemId){
+		var query = claimsBuildQuery(params);
+		switch (itemId) {
+			case "paymentInfo":
+				openAccordion(itemId+"ContainerId",paymentAccordion,itemId,url);
+				break;
+			case "electronicEOB":
+				openAccordion(itemId+"ContainerId",paymentAccordion,itemId,"<?=$this->baseUrl?>/claims.raw/electronic-eob");
+				break;
+		}
+	});
+
+	openDefaultAccordion();
+}
+
+function openDefaultAccordion() {
+	var url = "<?=$this->baseUrl?>/claims.raw/make-payment";
+	var def = "paymentInfo";
+	paymentAccordion.cells(def).open();
+	openAccordion(def+"ContainerId",paymentAccordion,def,url);
+}
+
+function claimsDateFilterOnChanged(value,uid) {
+	var filters = {};
+	filters["filters["+uid+"]"] = value.getFullYear()+"-"+(value.getMonth()+1)+"-"+value.getDate();
+	claimsSetFilters(filters);
+}
+
+var ctr = 1;
+var params = {
+	"uid": "DOSStart",
+	"name": "DOSStart",
+	"id": "DOSStart",
+	"onChange": "claimsDateFilterOnChanged",
+	"style": "width:80px;",
+	"value": "<?=$this->filters['DOSStart']?>",
+};
+claimsToolbar.addDatePicker(params,"DOSStart",ctr++,"<?=__('DOS Start')?>","dhtmlxcalendar_icon.gif","dhtmlxcalendar_icon.gif");
+claimsToolbar.addSeparator("sep"+ctr,ctr++);
+
+params = {
+	"uid": "DOSEnd",
+	"name": "DOSEnd",
+	"id": "DOSEnd",
+	"onChange": "claimsDateFilterOnChanged",
+	"style": "width:80px;",
+	"value": "<?=$this->filters['DOSEnd']?>",
+};
+claimsToolbar.addDatePicker(params,"DOSEnd",ctr++,"<?=__('DOS End')?>","dhtmlxcalendar_icon.gif","dhtmlxcalendar_icon.gif");
+claimsToolbar.addSeparator("sep"+ctr,ctr++);
+claimsToolbar.addButton("advancedFilters",ctr++,"<?=__('Advanced Filters')?>","filter.png","filter.png");
+claimsToolbar.addSeparator("sep"+ctr,ctr++);
+claimsToolbar.addButton("makePayment",ctr++,"<?=__('Record Payment')?>","icon_title2.gif","icon_title2.gif");
+claimsToolbar.disableItem("makePayment");
+
+function claimsFilterExec(filters) {
+	claimsSetFilters(filters);
+}
+
+function claimsSetFilters(filters,callback) {
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/set-filters",
+		handleAs: "json",
+		content: filters,
+		load: function(data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+			else {
+				claimsGridReload();
+			}
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function openAdvancedFiltersWindow() {
+	var url = "<?=$this->baseUrl?>/claims.raw/advanced-filters";
+	winAdvancedFilters = globalCreateWindow("windowClaimsAdvancedFiltersId",[],url,"<?=__('Advanced Filters')?>",800,500,{attachURL:false,setModal:false});
+	advanceFiltersAccordion = winAdvancedFilters.attachAccordion();
+	advanceFiltersAccordion.skin = "dhx_blue";
+	advanceFiltersAccordion.setIconsPath("<?=$this->baseUrl?>/img/");
+	advanceFiltersAccordion.addItem("filters","<?=__('Filters')?>");
+	advanceFiltersAccordion.addItem("batchHistory","<?=__('Batch History')?>");
+	advanceFiltersAccordion.attachEvent("onBeforeActive",function(itemId){
+		return true;
+	});
+	advanceFiltersAccordion.attachEvent("onActive",function(itemId){
+		var query = claimsBuildQuery(params);
+		switch (itemId) {
+			case "filters":
+				openAccordion(itemId+"ContainerId",advanceFiltersAccordion,itemId,url);
+				break;
+			case "batchHistory":
+				openAccordion(itemId+"ContainerId",advanceFiltersAccordion,itemId,"<?=$this->baseUrl?>/claims.raw/batch-history");
+				break;
+		}
+	});
+
+	var def = "filters";
+	advanceFiltersAccordion.cells(def).open();
+	openAccordion(def+"ContainerId",advanceFiltersAccordion,def,url);
+}
+
+function openAccordion(divId,accordion,cellId,url) {
+	var newDiv = document.createElement("div");
+	newDiv.setAttribute("id",divId);
+	dojo.setInnerHTML(newDiv,"<img src=\"<?=$this->baseUrl?>/img/loading.gif\" alt=\"Loading...\" style=\"margin:10px;\" />");
+	accordion.cells(cellId).attachObject(newDiv);
+	dojo.xhrGet({
+		url: url,
+		handleAs: "text",
+		load: function(data,ioArgs) {
+			dojo.setInnerHTML(newDiv,data);
+			accordion.cells(cellId).attachObject(newDiv);
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+</script>

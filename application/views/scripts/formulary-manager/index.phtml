@@ -1,0 +1,240 @@
+<style>
+body {
+	margin:0;
+	padding:0;
+}
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+div.gridbox#fmListGridContainer table.obj tr.rowselected td {
+	background-color: #ccc;
+}
+</style>
+
+<div id="fmLayout" style="position:relative;width:100%;height:500px;">
+	<div id="fmLeftPane">
+		<div id="fmLeftToolbar"></div>
+		<div id="fmListGridContainer" style="position:relative;width:100%;height:300px;"></div>
+	</div>
+
+	<div id="fmRightPane" style="width:100%;height:100%;margin:0px;overflow:auto"></div>
+</div>
+
+<script>
+
+//Layouts
+var fmLayout = new dhtmlXLayoutObject("fmLayout","2E");
+fmLayout.setImagePath("<?=$this->baseUrl?>/img/");
+var leftPaneHeight = fmLayout.cells("a").getHeight() * 0.50;
+fmLayout.cells("a").setHeight(leftPaneHeight);
+fmLayout.cells("a").setText('<?=__("Default Formulary: ")?>');
+fmLayout.cells("b").setText('<?=__("Formulary Settings")?>');
+fmLayout.cells("b").hideHeader();
+fmLayout.cells("a").attachObject("fmLeftPane");
+fmLayout.cells("b").attachObject("fmRightPane");
+fmLayout.setEffect('collapse',true);
+fmLayout.setEffect("resize", true);
+
+function updateDefaultLabel() {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/formulary-manager.raw/get-default",
+		handleAs: "json",
+		load: function (data) {
+			fmLayout.cells("a").setText('<?=__("Default Formulary: ")?>'+data.msg);
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+updateDefaultLabel();
+
+function fmHideNecessaryToolbars() {
+	fmLeftToolbar.disableItem("tbEnableFormulary");
+	fmLeftToolbar.hideItem("tbEnableFormulary");
+	fmLeftToolbar.disableItem("tbDisableFormulary");
+	fmLeftToolbar.hideItem("tbDisableFormulary");
+	fmLeftToolbar.disableItem("tbDeleteFormulary");
+	fmLeftToolbar.hideItem("tbDeleteFormulary");
+	fmLeftToolbar.disableItem("tbDefaultFormulary");
+	fmLeftToolbar.hideItem("tbDefaultFormulary");
+}
+
+// Left Pane Toolbar
+var fmLeftToolbar = new dhtmlXToolbarObject("fmLeftToolbar","ClearSilver");
+fmLeftToolbar.loadXML("<?=$this->baseUrl?>/formulary-manager.raw/toolbar",fmOnToolbarLoaded);
+function fmOnToolbarLoaded() {
+	fmHideNecessaryToolbars();
+}
+fmLeftToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+fmLeftToolbar.attachEvent("onClick",onToolbarClicked);
+function onToolbarClicked(id) {
+	switch(id) {
+		case "tbNewFormulary":
+			var name = window.prompt("Please enter formulary name.");
+			if (name == null || name.length == 0) {
+				return;
+			}
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/formulary-manager.raw/process-add",
+				content: {
+					name: name,
+				},
+				handleAs: "json",
+				load: function (response) {
+					if (response.code != "200") {
+						alert(response.msg);
+						return;
+					}
+					reloadListGrid();
+				},
+				error: function (error) {
+					console.error ('Error: ', error);
+				}
+			});
+			break;
+		case "tbEnableFormulary":
+			alterFormulary("active");
+			break;
+		case "tbDisableFormulary":
+			alterFormulary("inactive");
+			break;
+		case "tbDeleteFormulary":
+			alterFormulary("delete");
+			break;
+		case "tbDefaultFormulary":
+			alterFormulary("default");
+			updateDefaultLabel();
+			break;
+		case "tbRefreshFormulary":
+			reloadListGrid();
+			break;
+		default:
+			alert('<?=__("Invalid event: ")?>'+id);
+	}
+}
+
+function alterFormulary(evt,id) {
+	if (id == undefined) {
+		id = fmListGrid.getSelectedRowId();
+	}
+	if (evt == undefined) {
+		evt = "";
+	}
+	switch (evt) {
+		case "active":
+		case "inactive":
+		case "delete":
+		case "default":
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/formulary-manager.raw/process-"+evt,
+				content: {
+					id: id,
+				},
+				handleAs: "json",
+				load: function (response) {
+					if (response.code != "200") {
+						alert(response.msg);
+						return;
+					}
+					reloadListGrid();
+				},
+				error: function (error) {
+					console.error ('Error: ', error);
+				}
+			});
+			break;
+		default:
+			break;
+	}
+}
+
+// Left Pane Grid
+var fmListGrid =  new dhtmlXGridObject("fmListGridContainer");
+fmListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+fmListGrid.setHeader(",");
+fmListGrid.setNoHeader(true);
+fmListGrid.setColTypes("ed,ro");
+fmListGrid.setSkin("xp");
+fmListGrid.setInitWidths("*,0");
+fmListGrid.init();
+fmListGrid.load("<?=$this->baseUrl?>/formulary-manager.raw/list",null,"json");
+
+var indexFMName = 0;
+var indexFMActiveDefault = 1;
+
+function reloadListGrid() {
+	fmListGrid.clearAll();
+	fmListGrid.load('<?=$this->baseUrl?>/formulary-manager.raw/list',fmHideNecessaryToolbars,"json");
+	fmLeftToolbar.disableItem("tbDisableFormulary");
+	fmLeftToolbar.disableItem("tbDeleteFormulary");
+}
+
+function reloadRightPane(id) {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/formulary-manager.raw/edit?id=" + id,
+		handleAs: "text",
+		load: function (data) {
+			dojo.setInnerHTML(dojo.byId("fmRightPane"),data);
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+fmListGrid.attachEvent("onRowSelect",onRowSelected);
+function onRowSelected(rowId,cellIndex) {
+	fmHideNecessaryToolbars();
+	var activeDef = fmListGrid.cells(rowId,indexFMActiveDefault).getValue();
+	var x = activeDef.split(':'); // active:default
+	if (x[0] == '1') { // active/enable
+		if (x[1] != '1') { // not default
+			fmLeftToolbar.enableItem("tbDisableFormulary");
+			fmLeftToolbar.showItem("tbDisableFormulary");
+		}
+	}
+	else { // inactive/disable
+		fmLeftToolbar.enableItem("tbEnableFormulary");
+		fmLeftToolbar.showItem("tbEnableFormulary");
+	}
+
+	if (x[1] != '1') {
+		fmLeftToolbar.enableItem("tbDefaultFormulary");
+		fmLeftToolbar.showItem("tbDefaultFormulary");
+		fmLeftToolbar.enableItem("tbDeleteFormulary");
+		fmLeftToolbar.showItem("tbDeleteFormulary");
+	}
+
+	reloadRightPane(rowId);
+}
+
+function fmListGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	switch (stage) {
+		case 2:
+			if (newValue != oldValue) {
+				dojo.xhrPost({
+					url: "<?=$this->baseUrl?>/formulary-manager.raw/process-change-name",
+					handleAs: "json",
+					content: {
+						oldName: rowId,
+						newName: newValue,
+					},
+					load: function (data) {
+						reloadListGrid();
+						dojo.setInnerHTML(dojo.byId("fmRightPane"),"");
+					},
+					error: function (error) {
+						alert(error);
+						console.error ('Error: ', error);
+					}
+				});
+			}
+			break;
+	}
+	return true;
+}
+fmListGrid.attachEvent("onEditCell",fmListGridOnEditCell);
+</script>

@@ -1,0 +1,187 @@
+<div style="width:100%;">
+	<div style="float:left;width:280px;">
+		<fieldset><legend><?=__('Company Details')?></legend>
+		<?if ($this->message) :?>
+		<div style="background-color:PaleGreen; width:100%;">
+			<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+				<?=$error?>
+			<?}?>
+		</div>
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->name->renderLabel()?>
+			<?$this->form->name->setAttrib('size',35)?>
+			<?=$this->form->nameInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->payerIdentifier->renderLabel()?>
+			<?$this->form->payerIdentifier->setAttrib('size',35)?>
+			<?=$this->form->payerIdentifierInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->payerType->renderLabel()?>
+			<?=$this->formSelect('program[payerType]',$this->form->payerType->getValue(),array('id'=>'program-payerType','style'=>'width:250px;'),$this->payerTypes);?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->programType->renderLabel()?>
+			<?=$this->formSelect('program[programType]',$this->form->programType->getValue(),array('id'=>'program-programType','style'=>'width:250px;'),$this->programTypes);?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->fundsSource->renderLabel()?>
+			<?=$this->formSelect('program[fundsSource]',$this->form->fundsSource->getValue(),array('id'=>'program-fundsSource','style'=>'width:250px;'),$this->fundsSources);?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->feeScheduleId->renderLabel()?>
+			<?=$this->formTextarea('feeScheduleDisplayId',$this->feeScheduleDisplay,array('id'=>'feeScheduleDisplayId','style'=>'height:40px;width:250px;border:0px;','readonly'=>'readonly'));?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="program-x12SenderId" class="optional"><?=__('E-Billing Sender ID')?></label></dt>
+			<?$this->form->x12SenderId->setAttrib('size',35)?>
+			<?=$this->form->x12SenderIdInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="program-x12ReceiverId" class="optional"><?=__('E-Billing Receiver ID')?></label></dt>
+			<?$this->form->x12ReceiverId->setAttrib('size',35)?>
+			<?=$this->form->x12ReceiverIdInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="program-x12Version" class="optional"><?=__('E-Billing Version')?></label></dt>
+			<?$this->form->x12Version->setAttrib('size',35)?>
+			<?=$this->form->x12VersionInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->addressId->renderLabel()?>
+			<?=$this->formSelect('program[addressId]',$this->form->addressId->getValue(),array('id'=>'program-addressId','style'=>'width:250px;'),$this->addresses);?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->formHidden('id',$this->form->insuranceProgramId->getValue())?>
+			<?=$this->form->companyIdInput('FormHidden')?>
+			<?=$this->form->insuranceProgramIdInput('FormHidden')?>
+			<?=$this->form->okInput()?>
+			<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('winEditProgramId').close()"/>
+		</div>
+		<?=$this->form->renderClose()?>
+		</fieldset>
+	</div>
+
+	<div style="float:left;width:480px;margin-left:10px;">
+		<fieldset><legend><?=__('Building Program Identifier')?> (<a href="javascript:pBIAdd()" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div id="pBIGridId" style="height:410px;"></div>
+		</fieldset>
+	</div>
+</div>
+
+<script>
+function postSubmiteditprogram(data) {
+	insuranceGridReload();
+	dhxWins.window("winEditProgramId").close();
+	return false;
+}
+
+var pBIColFields = new Array();
+// Phone field names, in order based on pBIGrid.setHeader
+pBIColFields.push("building_id");
+pBIColFields.push("identifier");
+pBIColFields.push("x12_sender_id");
+
+var pBIGrid = new dhtmlXGridObject("pBIGridId");
+pBIGrid.setImagePath("<?=$this->baseUrl?>/img/");
+pBIGrid.setHeader("<?=__('Building')?>,<?=__('Identifier')?>,<?=__('E-Billing Sender ID')?>");
+pBIGrid.setInitWidths("150,150,150");
+pBIGrid.setColTypes("coro,ed,ed");
+pBIGrid.setSkin("xp");
+pBIGrid.init();
+function pBIGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case 0: // building
+				for (var i in pBIBuildings) {
+					var building = pBIBuildings[i];
+					if (building.name == newValue) {
+						newValue = building.id;
+						break;
+					}
+				}
+				break;
+		}
+		companySingleUpdate(rowId,pBIColFields[cellIndex],newValue,"programIdentifier","<?=$this->form->insuranceProgramId->getValue()?>",function(data){
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			if (cellIndex == 0) pBIGridReload();
+			else pBIGrid.cells(rowId,cellIndex).setValue(data);
+		});
+	}
+	return true;
+}
+pBIGrid.attachEvent("onEditCell",pBIGridOnCellEdited);
+
+var pBIBuildings = new Array();
+<?foreach ($this->buildings as $id=>$name):?>
+pBIBuildings[pBIBuildings.length] = {id:"<?=$id?>",name:"<?=$name?>"};
+pBIGrid.getCombo(0).put("<?=$name?>","<?=$name?>");
+<?endforeach;?>
+
+function pBIGridReload() {
+	pBIGrid.clearAll();
+	pBIGrid.load("<?=$this->baseUrl?>/insurance-manager.raw/list-program-identifiers?programId=<?=$this->form->insuranceProgramId->getValue()?>","json");
+}
+pBIGridReload();
+
+function pBIRemove(id) {
+	companyRemove(id,"programIdentifier","<?=$this->form->insuranceProgramId->getValue()?>",pBIGridReload);
+}
+
+function pBIAdd() {
+	if (pBIGrid.doesRowExist(0)) {
+		pBIGrid.selectRow(pBIGrid.getRowIndex(0),true);
+	}
+	else {
+		companySingleUpdate(0,pBIColFields[1],"blank","programIdentifier","<?=$this->form->insuranceProgramId->getValue()?>",pBIGridReload);
+	}
+}
+
+function pBIMenuOnClicked(menuItemId,type) {
+	var rowCol = type.split("_");
+	switch (menuItemId) {
+		case "delete":
+			pBIRemove(rowCol[0]);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>");
+	}
+}
+
+var pBIMenu = new dhtmlXMenuObject(null,"standard");
+pBIMenu.setImagePath("<?=$this->baseUrl?>/img/");
+pBIMenu.renderAsContextMenu();
+pBIMenu.setOpenMode("web");
+pBIMenu.attachEvent("onClick",pBIMenuOnClicked);
+function pBIMenuOnLoaded() {
+	pBIMenu.forEachItem(function(itemId) { pBIMenu.hideItem(itemId); });
+	pBIMenu.showItem("delete");
+}
+pBIMenu.loadXML("<?=$this->baseUrl?>/insurance-manager.raw/get-menu",pBIMenuOnLoaded);
+
+pBIGrid.enableContextMenu(pBIMenu);
+dhtmlxEvent(pBIGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+</script>

@@ -1,0 +1,189 @@
+<div id="educationContainer" style="width:100%;height:100%;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="education-section"><?=__("Patient Education Section")?></label></dt>
+			<div id="educationSectionListContainer" style="float:left;width:250px;height:100px;"></div><br />
+			<input type="button" value="<?=__('Other Education Topic...')?>" style="float:right;" onClick="openEducationLookupWindow()" />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="education-section"><?=__("Section Name")?></label></dt>
+			<div id="educationSectionNameListContainer" style="float:left;width:480px;height:120px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div id="educationListContainer" style="float:left;width:740px;height:150px"></div>
+	</div>
+</div>
+
+<script>
+function openEducationLookupWindow() {
+	var params = new Array();
+	params.push("section=<?=$this->othersId?>");
+	params.push("callback=educationAddOthers");
+	globalCreateWindow("winLookupEducationId",params,"<?=$this->baseUrl?>/educations.raw/lookup","<?=__('Other Education Topics')?>",400,400);
+}
+
+function educationAddOthers(code,data) {
+	if (educationListGrid.doesRowExist(code)) {
+		alert("<?=__('Selected topic already exists')?>");
+		return;
+	}
+	educationListGrid.addRow(code,","+data);
+	educationSave(code);
+}
+
+var educationSectionListGrid = new dhtmlXGridObject('educationSectionListContainer');
+educationSectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+educationSectionListGrid.setHeader("");
+educationSectionListGrid.setNoHeader(true);
+educationSectionListGrid.setInitWidths("*");
+educationSectionListGrid.setSkin("xp");
+educationSectionListGrid.init();
+//educationSectionListGrid.load("<?=$this->baseUrl?>/educations.raw/list","json");
+educationSectionListGrid.attachEvent("onRowSelect",educationSectionListOnRowSelected);
+<?foreach ($this->sections as $key=>$value):?>
+educationSectionListGrid.addRow("<?=$key?>","");
+educationSectionListGrid.cells("<?=$key?>",0).setValue("<?=$value?>");
+<?endforeach;?>
+
+function educationSectionListOnRowSelected(rowId,cellIndex) {
+	educationSectionNameListGrid.clearAll();
+	educationSectionNameListGrid.load("<?=$this->baseUrl?>/educations.raw/list-section?section="+rowId,educationOnSectionNameLoaded,"json");
+}
+
+function educationOnSectionNameLoaded() {
+	educationListGrid.forEachRow(function(rowId){ if (educationSectionNameListGrid.doesRowExist(rowId)){ educationSectionNameListGrid.cells(rowId,0).setChecked(true);} });
+}
+
+var educationSectionNameListGrid = new dhtmlXGridObject("educationSectionNameListContainer");
+educationSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+educationSectionNameListGrid.setHeader(",,,");
+educationSectionNameListGrid.setNoHeader(true);
+educationSectionNameListGrid.setInitWidths("20,*,120,0");
+educationSectionNameListGrid.setColTypes("ch,ro,ro,ro");
+educationSectionNameListGrid.setSkin("xp");
+educationSectionNameListGrid.init();
+educationSectionNameListGrid.attachEvent("onCheck",educationSectionNameOnChecked);
+
+function educationSectionNameOnChecked(rowId,cellIndex,state) {
+	if (state) { // add to education list
+		educationListGrid.addRow(rowId,",,,");
+		educationListGrid.cells(rowId,1).setValue(educationSectionNameListGrid.cells(rowId,3).getValue());
+		educationSave(rowId,function(data){
+			var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+			educationListGrid.cells(rowId,cellIndex).setValue(value);
+		});
+	}
+	else { // remove from education list
+		educationRemoveSelected(rowId);
+	}
+}
+
+var educationListGrid = new dhtmlXGridObject("educationListContainer");
+educationListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+educationListGrid.setHeader("<?=__('Level of Understanding')?>,<?=__('Selected Patient Educations')?>");
+educationListGrid.setInitWidths("*,*");
+educationListGrid.setColTypes("coro,ro");
+educationListGrid.setSkin("xp");
+educationListGrid.init();
+function educationListGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		educationSave(rowId,function(data){
+			var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+			educationListGrid.cells(rowId,cellIndex).setValue(value);
+		});
+	}
+	return true;
+}
+educationListGrid.attachEvent("onEditCell",educationListGridOnEditCell);
+function educationListGridReload() {
+	educationListGrid.clearAll();
+	educationListGrid.load("<?=$this->baseUrl?>/educations.raw/list-patient-educations?patientId="+mainController.getActivePatient(),null,"json");
+}
+educationListGridReload();
+
+educationListGrid.getCombo(0).put("","");
+<?foreach ($this->levels as $key=>$value):?>
+educationListGrid.getCombo(0).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+var educationListMenu = new dhtmlXMenuObject(null,"standard");
+educationListMenu.setImagePath("<?=$this->baseUrl?>/img/");
+educationListMenu.renderAsContextMenu();
+educationListMenu.setOpenMode("web");
+educationListMenu.loadXML("<?=$this->baseUrl?>/immunizations.raw/immunization-context-menu");
+educationListMenu.attachEvent("onClick",educationListMenuOnClicked);
+function educationListMenuOnClicked(id) {
+	switch (id) {
+		case "remove":
+			educationRemoveSelected();
+			break;
+	}
+}
+educationListGrid.enableContextMenu(educationListMenu);
+dhtmlxEvent(educationListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function educationRemoveSelected(rowId) {
+	if (!rowId) {
+		rowId = educationListGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/educations.raw/process-delete-education",
+		handleAs: "json",
+		content: {
+			"code": rowId,
+		},
+		load: function (data) {
+			educationListGridReload();
+			if (educationSectionNameListGrid.doesRowExist(rowId)) {
+				educationSectionNameListGrid.cells(rowId,0).setChecked(false);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function educationSave(rowId,callback) {
+	if (rowId == undefined) {
+		rowId = educationListGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		return;
+	}
+	var arr = [];
+	arr.push("'education[code]': '"+rowId+"'");
+	arr.push("'education[patientId]': '"+mainController.getActivePatient()+"'");
+	arr.push("'education[level]': '"+educationListGrid.cells(rowId,0).getValue()+"'");
+	arr.push("'education[education]': '"+educationListGrid.cells(rowId,1).getValue()+"'");
+
+	eval("var educationContent = {"+arr.join(",")+"}");
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/educations.raw/process-edit-education",
+		handleAs: "json",
+		content: educationContent,
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+				return;
+			}
+			educationListGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+</script>

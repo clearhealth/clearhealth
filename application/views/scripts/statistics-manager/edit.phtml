@@ -1,0 +1,107 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 25em;
+}
+</style>
+<div style="width:100%;">
+	<?=$this->form->renderOpen()?>
+	<fieldset><legend><?($this->form->patientStatisticsDefinitionId->getValue() > 0)?__('Edit'):__('Add')?> <?=__('Statistics')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->name->renderLabel()?>
+		<?=$this->form->nameInput()?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->type->renderLabel()?>
+		<?=$this->form->typeInput('FormSelect',array('onChange'=>'statsTypeOnChanged(this.value)','options'=>$this->types))?>
+	</div>
+	<div id="typeEnumId" style="display:none;">
+		<br style="clear:left"/>
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->value->renderLabel()?>
+			<?=$this->form->valueInput()?>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<input type="checkbox" name="<?=$this->form->active->getFullyQualifiedName()?>" id="<?=$this->form->active->getId()?>" value="<?=$this->form->active->getValue()?>" <?=($this->form->active->getValue())?'checked="checked"':''?> /> <?=__('Active')?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->patientStatisticsDefinitionIdInput('FormHidden')?>
+		<?=$this->form->guidInput('FormHidden')?>
+		<?=$this->form->okInput()?>
+	</div>
+	</fieldset>
+	<?=$this->form->renderClose()?>
+</div>
+
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	var active = dojo.byId("<?=$this->form->active->getId()?>");
+	active.value = 0;
+	if (!valueChanged) {
+		fencb.valueNode.value = "<?=$this->form->value->getValue()?>";
+	}
+	if (active.checked) {
+		active.value = 1;
+	}
+	return true;
+}
+function postSubmit<?=$this->form->getId()?>(data) {
+	var jsonData = dojo.fromJson(data);
+	if (jsonData.error) {
+		alert(jsonData.error);
+	}
+	else if (window.statsMgrGridFillRow) {
+		window.statsMgrGridFillRow({"rows":[jsonData]});
+		dhxWins.window("<?=$this->form->getWindow()?>").close();
+	}
+	return false;
+}
+
+function statsTypeOnChanged(value) {
+	var typeEnum = dojo.byId("typeEnumId");
+	typeEnum.style.display = "none";
+	switch (value) {
+		case "<?=PatientStatisticsDefinition::TYPE_ENUM?>":
+			typeEnum.style.display = "";
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_INPUT?>":
+		case "<?=PatientStatisticsDefinition::TYPE_CHECKBOX?>":
+		default:
+			break;
+	}
+}
+
+var fencb = dijit.byId("<?=$this->form->value->getId()?>");
+if (fencb != undefined) { 
+	fencb.destroyRecursive();
+	fencb = null;
+}
+var fenac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/enumerations-manager.raw/auto-complete-enum",requestMethod:"get"},"statsEnumNameAutoComplete");
+fencb = new dijit.form.FilteringSelect({name:"<?=$this->form->value->getFullyQualifiedName()?>",autocomplete:true,store:fenac},"<?=$this->form->value->getId()?>");
+fencb.validate = function() {
+	return true;
+};
+
+var valueChanged = false;
+dojo.connect(fencb,"onChange","statsEnumGetDetails");
+function statsEnumGetDetails(args) {
+	if (args === undefined) return;
+	valueChanged = true;
+	fencb.setValue(args);
+}
+fencb.setDisplayedValue("<?=$this->ORM->displayedValue?>");
+fencb.valueNode.value = "<?=$this->form->value->getValue()?>";
+fencb.domNode.style.width = "25em";
+
+var statsType = dojo.byId("<?=$this->form->type->getId()?>");
+if (statsType != null) {
+	statsTypeOnChanged(statsType.options[statsType.selectedIndex].value);
+}
+</script>

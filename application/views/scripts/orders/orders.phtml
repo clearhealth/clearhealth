@@ -1,0 +1,98 @@
+<div>
+	<div style="width:20%;float:left;">
+	<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+	<div id="active_orders_container" style="width:100%;height:150px;"></div>
+                                <script>
+                                        aoGrid = new dhtmlXGridObject('active_orders_container');
+                                        aoGrid.setImagePath("../img/");
+					aoGrid.setHeader('Filter');
+                                        aoGrid.setInitWidths("*");
+                                        //alGrid.setColAlign("left");
+                                        aoGrid.setColTypes("ro");
+                                        aoGrid.setSkin("xp");
+                                        var testdata=[
+                                                ['Active Orders (includes Pending & Recent Activity) - ALLSERVICES'],
+						['Current Orders (Active & Pending status only)'],
+						['Expiring Orders'],
+						['Unsigned Orders'],
+						['Recently Expired Orders']
+                                        ]
+
+                                        aoGrid.init();
+                                        aoGrid.parse(testdata,"jsarray");
+                                </script>
+	<div id="write_orders_container" style="width:100%;height:400px;"></div>
+                                <script>
+                                        woGrid = new dhtmlXGridObject('write_orders_container');
+                                        woGrid.setImagePath("../img/");
+					woGrid.setHeader('Write Orders');
+                                        woGrid.setInitWidths("*");
+                                        //alGrid.setColAlign("left");
+                                        woGrid.setColTypes("ro");
+                                        woGrid.setSkin("xp");
+                                        var testdata=[
+                                                ['Cardiology'],
+                                                ['Gastroenterology'],
+                                                ['Hematology/Oncology'],
+                                                ['Infectious Disease'],
+                                                ['Nephrology'],
+                                                ['Ob/Gyn/Womens Health'],
+                                                ['Orthopedics'],
+                                                ['Pediatrics'],
+                                                ['Pulmonary'],
+                                                ['Psychiatry'],
+                                                ['General Surgery'],
+                                                ['Nursing Orders'],
+                                                ['Consults/Procedures'],
+                                                ['Diet Orders'],
+                                                ['Laboratory Test Menu'],
+                                                ['Orders By Specialty'],
+                                                ['Meds, Inpatient'],
+                                                ['IV Fluids'],
+                                                ['Imaging'],
+                                                ['Admission Orders']
+                                        ]
+
+                                        woGrid.init();
+                                        woGrid.parse(testdata,"jsarray");
+                                </script>
+	</div>
+	</div>
+	
+	<div style="float:left;width:79.5%;">
+	<div style="padding-left:5px;padding-top:4px;">
+	<div style="float:right;padding-top:2px;padding-bottom:4px;">
+	<input type="button" value="View as Tree">
+	<input type="button" value="Expand Tree" disabled="disabled">
+	<input type="button" value="Collapse Tree" disabled="disabled">
+	</div>
+	<style>
+                        .even{
+                        background-color: white;
+                        }
+                        .uneven{
+                        background-color: ghostwhite;
+                        }
+                </style>
+	<div id="orders_container" style="width:100%;height:518px;"></div>
+                                <script>
+                                        oGrid = new dhtmlXGridObject('orders_container');
+                                        oGrid.setImagePath("../img/");
+					oGrid.setHeader('Service,Status,Order,Start/Stop');
+                                        oGrid.setInitWidths("75,75,*,175");
+                                        //alGrid.setColAlign("left");
+                                        oGrid.setColTypes("ro");
+                                        oGrid.setSkin("xp");
+                                        var testdata=[
+						['Home Med','Active','Home Medications Erythromicin 50 MG Oral Tablet<br />Take 1 Tablet By Mouth Every Day. Aug 4, 2008 [note]','Start: 08/04/2008 4:30 Stop: (Not Specified)']
+                                        ]
+                                        oGrid.enableAlterCss("even","uneven");
+
+                                        oGrid.init();
+                                        oGrid.parse(testdata,"jsarray");
+                                </script>
+	</div>
+	</div>
+	</div>
+</div>
+

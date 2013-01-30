@@ -1,0 +1,222 @@
+body{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	margin: 2px;
+	padding: 0px;
+	color:#000000;
+	background:#ffffff;
+}
+
+#logoDiv {
+	margin: 0px 0px 0px 0px;
+	padding:0px;
+	width: 100%;
+	height: 50px;
+	background-color: lightGreen;
+	vertical-align:top;
+}
+#logoDiv h1 {
+	margin: 0px;
+	margin-right: 10px;
+	padding:0px;
+	padding-top: 15px;
+	text-align:right;
+}
+
+table{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+a:link, a:visited{
+	font: 11px Tahoma, Arial, Helvetica, sans-serif;
+	color:#0379A1;
+	text-decoration: underline;
+}
+
+a:active{
+	font: 11px Tahoma, Arial, Helvetica, sans-serif;
+	color:#0482AD;
+	text-decoration: underline;
+}
+
+a:hover{
+	text-decoration: none;
+}
+
+h1{
+	font: bold 20px/21px Arial, Tahoma;
+	margin: 18px 0px 0 0;
+	color: #525252;
+}
+
+h2{
+	font: bold 16px/17px Arial, Tahoma;
+	margin: 18px 0px 0 0;
+	color: #525252;
+}
+h3.notavailable{
+	font: bold 16px/16px Arial, Helvetica, sans-serif;
+	color: #0482AD;
+}
+
+
+ul{	
+	color: #000000;
+	font: 14px/16px Arial, Tahoma, Helvetica, sans-serif;
+}
+
+li a:link, li a:active{
+  	font: bold 13px/18px Arial, Tahoma, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+li a:visited{
+  	font: bold 13px/18px Arial, Tahoma, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #2d88a2;
+}
+
+li a:hover{
+  	font: bold 13px/18px Arial, Tahoma, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #8a8a8a;
+}
+
+xmp{
+	color:green;
+	font-size:12px;
+	margin:0px;
+	font-family: "Courier New";
+	background-color:#e6e6fa;
+	padding:2px
+}
+
+.sample_close{
+	width: 14px;
+	height: 14px;
+	float: right;
+	margin-right: 4px;
+}
+
+table.sample_header{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	width: 100%;
+	height: 24px;
+	background: #9BD7EB;
+	border 0;
+	margin-bottom: 10px;
+}
+
+table.sample_footer{
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	width: 100%;
+	height: 24px;
+	background: #F4F4F4;
+	border 0;
+	margin-top:15px;
+}
+
+.sample_code{
+    background: url(bg_code.gif) top right no-repeat #EEEEEE;
+    padding: 5px 5px 5px 20px;
+    margin: 20px 0 20px 0;
+    border-left: 0px solid #E0E0E0;
+}
+
+
+/*colorizer*/
+.hl-default {
+    color: Black;
+}
+.hl-code {
+    color: Gray;
+}
+.hl-brackets {
+    color: Olive;
+}
+.hl-comment {
+    color: Orange;
+}
+.hl-quotes {
+    color: Darkred;
+}
+.hl-string {
+    color: Red;
+}
+
+.hl-identifier {
+    color: Blue;
+}
+
+.hl-identifier a{
+    	    font-family: "Courier New";
+	    font-size: 11px;
+	    color: Blue;
+	    text-decoration: underline;
+}
+
+.hl-builtin {
+    color: Teal;
+}
+.hl-reserved {
+    color: Green;
+}
+.hl-inlinedoc {
+    color: Blue;
+}
+.hl-var {
+    color: Darkblue;
+}
+.hl-url {
+    color: Blue;
+}
+.hl-special {
+    color: Navy;
+}
+.hl-number {
+    color: Maroon;
+}
+.hl-inlinetags {
+    color: Blue;
+}
+.hl-main {
+    background: transparent;
+}
+.hl-gutter {
+    background-color: #999999;
+    color: White
+}
+.hl-table {
+    font-family: "Courier New";
+    font-size: 12px;
+    border: solid 1px Lightgrey;
+}
+.sampledescblock{
+	margin: 2px 0px 5px 50px;
+	color:gray;
+	font-size:12px;
+	width:500px;
+}
+.formRow {
+	float: left;
+	margin: 0;
+	margin-left: 2px;
+	padding: 0;
+	padding-left:2px;
+}
+
+.formRow label {
+	display: block;
+	margin: 0;
+	padding:0;
+	padding-left:4px;
+	#background-color: lightGray;
+}
+
+.formRowDivider {
+	clear: left;
+	line-height: 4em;
+	}

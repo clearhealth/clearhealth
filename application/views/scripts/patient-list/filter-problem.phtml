@@ -1,0 +1,74 @@
+<div style="margin-top:5px;">
+	<div id="filterProblemGridId" style="width:auto;height:300px;"></div>
+	<div style="float:left;">
+		<?=$this->formButton('add',__('Add'),array('onClick'=>'filterProblemAdd()'))?>
+		<?=$this->formButton('remove',__('Remove'),array('onClick'=>'filterProblemRemove()'))?>
+	</div>
+	<div style="float:right;">
+		<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterProblemApply()','id'=>'applyFilters','disable'=>'disable'))?>
+	</div>
+</div>
+<script>
+var filterProblemGrid = new dhtmlXGridObject("filterProblemGridId");
+filterProblemGrid.enableMultiselect(true);
+filterProblemGrid.setImagePath("<?=$this->baseUrl?>/img/");
+filterProblemGrid.setHeader("<?=__('Problem')?>");
+filterProblemGrid.setInitWidths("*");
+filterProblemGrid.setColTypes("ro");
+filterProblemGrid.setSkin("xp");
+filterProblemGrid.init();
+filterProblemGrid.load("<?=$this->baseUrl?>/patient-list.raw/list-filter-problem",function(){
+	if (filterProblemGrid.getRowsNum() == 0) {
+		filterProblemAdd();
+	}
+},"json");
+
+function selectedFilterProblem(code,description) {
+	if (filterProblemGrid.doesRowExist(code)) {
+		winLookupProblem.close();
+		alert("Problem "+description+" already exists.");
+		return;
+	}
+	dojo.byId("applyFilters").disabled = false;
+	filterProblemGrid.addRow(code,description);
+}
+
+function filterProblemAdd() {
+	var url = "<?=$this->baseUrl?>/diagnosis.raw/lookup?jsCallback=selectedFilterProblem";
+	winLookupProblem = globalCreateWindow("windowDiagnosisLookupId",[],url,"<?=__('Problem Lookup')?>",400,350);
+}
+
+function filterProblemRemove() {
+	var rowId = filterProblemGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var id = rowIds[i];
+		if (filterProblemGrid.doesRowExist(id)) filterProblemGrid.deleteRow(id);
+	}
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterProblemApply() {
+	var content = {};
+	filterProblemGrid.forEachRow(function(rowId){
+		content["filters["+rowId+"]"] = this.cells(rowId,0).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-list.raw/process-filter-problem",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

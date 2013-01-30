@@ -1,0 +1,20 @@
+<<?="?"?>xml version="1.0" encoding="UTF-8"<?="?"?>>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/">
+<xfa:datasets xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">
+<xfa:data>
+<book>
+<ISBN>15536455</ISBN>
+<title>Introduction to XML</title>
+<author>
+<firstname>Charles</firstname>
+<lastname>Porter</lastname>
+</author>
+</book>
+</xfa:data>
+</xfa:datasets>
+<pdf xmlns="http://ns.adobe.com/xdp/pdf/">
+<document>
+<chunk><?=$this->pdfBase64?></chunk>
+</document>
+</pdf>
+</xdp:xdp>

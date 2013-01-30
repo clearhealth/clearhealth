@@ -1,0 +1,55 @@
+<fieldset><legend><?=$this->person->displayName?></legend>
+	<div id="unallocatedGridId" style="width:auto;height:150px;"></div>
+	<div style="margin-top:5px;"><?=$this->formButton('delete',__('Delete'),array('onClick'=>'deleteUnallocated()'))?></div>
+</fieldset>
+<script>
+function deleteUnallocated() {
+	var rowId = unallocatedGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No item selected");
+		return;
+	}
+	if (!confirm("You are about to delete selected payment. This action is irreversible, continue?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/claims.raw/process-delete-unallocated-funds",
+		handleAs: "json",
+		content: {
+			"paymentId": rowId,
+		},
+		load: function (data) {
+			if (data === false) {
+				alert("<?=__('Failed to delete selected payment, please try again.')?>");
+			}
+			else {
+				unallocatedGridReload();
+				// reload claims
+				if (window.claimPaymentNext && typeof window.claimPaymentNext == "function") {
+					var visit = listVisits[currTransIndex];
+					visit.unallocatedFunds = data;
+					dojo.byId("unallocatedFundsId").value = parseFloat(visit.unallocatedFunds).toFixed(2);
+					//currClaimId--;
+					//window.claimPaymentNext();
+				}
+			}
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var unallocatedGrid = new dhtmlXGridObject("unallocatedGridId");
+unallocatedGrid.setImagePath("<?=$this->baseUrl?>/img/");
+unallocatedGrid.setHeader("<?=__('Date')?>,<?=__('Type')?>,<?=__('Amount')?>,<?=__('Title')?>");
+unallocatedGrid.setColTypes("ro,ro,ro,ro");
+unallocatedGrid.setInitWidths("75,90,100,100");
+unallocatedGrid.setSkin("xp");
+unallocatedGrid.init();
+function unallocatedGridReload() {
+	unallocatedGrid.clearAll();
+	unallocatedGrid.load("<?=$this->baseUrl?>/claims.raw/list-unallocated-funds?full=1&personId=<?=$this->person->personId?>",function(){
+},"json"); 
+}
+unallocatedGridReload();
+</script>

@@ -1,0 +1,174 @@
+<style>
+div.gridbox_xp table.obj td {
+    border-bottom: thin dashed;border-right:none;
+}
+</style>
+
+<div id="cnmLayout" style="position:absolute;width:100%;height:440px;overflow:auto;"></div>
+<div id="cnmTopContainer">
+	<div id="cnmTopToolbar"></div>
+	<div id="cnmTemplateContainer" style="float:left;width:100%;height:250px"></div>
+</div>
+<div id="cnmBottomContainer">
+	<div id="cnmDefinitionContainer" style="float:left;width:70%;height:135px"></div>
+	<div id="cnmButtonsContainer" style="float:left;margin:10px;">
+		<input type="button" id="add-new-definition" value="<?=__('Add New')?>" disabled="disabled" onClick="openWindowDefinition()" /><br />
+		<input type="button" id="remove-definition" value="<?=__('Remove')?>" disabled="disabled" onClick="deleteDefinition()" />
+	</div>
+</div>
+
+<script>
+//Layouts
+var cnmLayout = new dhtmlXLayoutObject("cnmLayout", "2E");
+cnmLayout.setImagePath("<?=$this->baseUrl?>/img/");
+cnmLayout.cells("a").setText('<?=__("Templates");?>');
+cnmLayout.cells("b").setHeight(cnmLayout.cells("a").getHeight() / 1.5);
+cnmLayout.cells("b").setText('<?=__("Definition")?>');
+cnmLayout.cells("a").hideHeader();
+cnmLayout.cells("a").attachObject("cnmTopContainer");
+cnmLayout.cells("b").hideHeader();
+cnmLayout.cells("b").attachObject("cnmBottomContainer");
+cnmLayout.setEffect('collapse',true);
+cnmLayout.setEffect("resize", true);
+
+var cnmDefinitionGrid = new dhtmlXGridObject("cnmDefinitionContainer");
+cnmDefinitionGrid.setImagePath("<?=$this->baseUrl?>/img/");
+cnmDefinitionGrid.setHeader('<?=__('Definitions')?>');
+cnmDefinitionGrid.setInitWidths("*");
+cnmDefinitionGrid.setColTypes("ro");
+cnmDefinitionGrid.setSkin("xp");
+cnmDefinitionGrid.init();
+cnmDefinitionGrid.attachEvent('onRowSelect',onDefinitionRowSelected);
+cnmDefinitionGrid.attachEvent('onRowDblClicked',onDefinitionRowDblClicked);
+
+function onDefinitionRowSelected(rowId,cellIndex) {
+	dojo.byId('remove-definition').disabled = 0;
+}
+
+function onDefinitionRowDblClicked(rowId,colIndex) {
+	openWindowDefinition(rowId);
+}
+
+function cnmToggleButtons(disabled) {
+	dojo.byId('add-new-definition').disabled = disabled;
+	dojo.byId('remove-definition').disabled = disabled;
+}
+
+var cnmTemplateGrid = new dhtmlXGridObject('cnmTemplateContainer');
+cnmTemplateGrid.setImagePath("<?=$this->baseUrl?>/img/");
+cnmTemplateGrid.setHeader('<?=__('Templates')?>');
+cnmTemplateGrid.setInitWidths("*");
+cnmTemplateGrid.setColTypes("ro");
+cnmTemplateGrid.setSkin("xp");
+cnmTemplateGrid.attachEvent('onRowSelect',onTemplateRowSelected);
+cnmTemplateGrid.attachEvent('onRowDblClicked',onTemplateRowDblClicked);
+cnmTemplateGrid.init();
+cnmTemplateGrid.load('<?=$this->baseUrl?>/clinical-notes-manager.raw/templates.json',"json");
+
+function onTemplateRowSelected(rowId,cellIndex) {
+	dojo.byId('add-new-definition').disabled = 0;
+	dojo.byId('remove-definition').disabled = 1;
+	cnmTopToolbar.enableItem('delete');
+	cnmDefinitionGrid.clearAll();
+	cnmDefinitionGrid.load('<?=$this->baseUrl?>/clinical-notes-manager.raw/definitions.json?clinicalNoteTemplateId='+rowId,"json");
+	//redrawDefinition("edit",rowId);
+}
+
+function onTemplateRowDblClicked(rowId,colIndex) {
+	openWindowTemplate(rowId);
+}
+
+function openWindowTemplate(templateId) {
+	if (templateId == undefined) {
+		templateId = 0;
+	}
+	var url = "<?=$this->baseUrl?>/clinical-notes-manager.raw/edit-template?clinicalNoteTemplateId="+templateId;
+	winCNMT = globalCreateWindow("windowEditTemplateId",[],url,"<?=__('Edit Template')?>",550,375);
+}
+
+function openWindowDefinition(definitionId) {
+	if (definitionId == undefined) {
+		definitionId = 0;
+	}
+	var url = "<?=$this->baseUrl?>/clinical-notes-manager.raw/edit-definition?clinicalNoteDefinitionId="+definitionId+"&clinicalNoteTemplateId="+cnmTemplateGrid.getSelectedRowId();
+	winCNMD = globalCreateWindow("windowEditDefinitionId",[],url,"<?=__('Edit Definition')?>",550,475);
+}
+
+// LEFT PANE SECTION
+var cnmTopToolbar = new dhtmlXToolbarObject("cnmTopToolbar","ClearSilver");
+cnmTopToolbar.loadXML("<?=$this->baseUrl?>/clinical-notes-manager.raw/left-toolbar.xml");
+cnmTopToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+cnmTopToolbar.attachEvent("onClick", function(id){
+	switch (id) {
+		case 'add':
+			openWindowTemplate();
+			break;
+		case 'delete':
+			deleteTemplate();
+			break;
+	}
+});
+
+function deleteTemplate() {
+	var rowId = cnmTemplateGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert('<?=__('No template selected.')?>');
+		return;
+	}
+	var msg = "Deleting note template "+rowId+"\n\nAre you sure you want to continue?";
+	if (!confirm(msg)) {
+		return;
+	}
+
+	dojo.xhrPost( {
+		url: "<?=$this->baseUrl?>/clinical-notes-manager.raw/delete-template",
+		handleAs: "json",
+		content: {
+			clinicalNoteTemplateId: rowId,
+		},
+		load: function(data) {
+			if (data.code == '200') {
+				cnmTemplateGrid.clearAll();
+				cnmTemplateGrid.load('<?=$this->baseUrl?>/clinical-notes-manager.raw/templates.json',"json");
+				cnmDefinitionGrid.clearAll();
+			}
+		},
+		error: function(response, ioArgs) {
+			alert("ERROR: " + response.responseText);
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function deleteDefinition() {
+	var rowId = cnmDefinitionGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert('<?=__('No definition selected.')?>');
+		return;
+	}
+	var msg = "Deleting note definition "+rowId+"\n\nAre you sure you want to continue?";
+	if (!confirm(msg)) {
+		return;
+	}
+
+	dojo.xhrPost( {
+		url: "<?=$this->baseUrl?>/clinical-notes-manager.raw/delete-definition",
+		handleAs: "json",
+		content: {
+			clinicalNoteDefinitionId: rowId,
+		},
+		load: function(data) {
+			if (data.code == '200') {
+				onTemplateRowSelected(cnmTemplateGrid.getSelectedRowId(),cnmTemplateGrid.getSelectedCellIndex());
+			}
+		},
+		error: function(response, ioArgs) {
+			alert("ERROR: " + response.responseText);
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+</script>

@@ -1,0 +1,283 @@
+
+<div id="visitTypeContainer" style="width:100%;height:100%;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="visitType-visit-type"><?=__("Type of Visit")?></label></dt>
+			<div id="vtVisitTypeListContainer" style="float:left;width:240px;height:140px;"></div>
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="visitType-section-name"><?=__("Section Name")?></label></dt>
+			<div id="vtSectionNameListContainer" style="float:left;width:240px;height:140px;"></div>
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="visitType-modifiers"><?=__("Modifiers")?></label></dt>
+			<div id="vtModifiersListContainer" style="float:left;width:240px;height:140px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="visitType-providers"><?=__("Available Providers")?></label></dt>
+			<div id="vtProvidersListContainer" style="float:left;width:300px;height:140px;"></div>
+		</div>
+		<div style="float:left;margin:30px 0 0 10px;">
+			<input type="button" value="<?=__('Add')?>" style="width:120px;" onClick="addToCurrentProviderList()" /><br />
+			<input type="button" value="<?=__('Remove')?>" style="width:120px;" onClick="removeFromCurrentProviderList()" /><br /><br />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><div style="float:left;"><label for="visitType-current-providers"><?=__("Current Providers")?></label></div><div style="float:right;"><input id="providerPrimaryId" type="checkbox" onClick="setPrimaryProvider(this.checked)" disabled="disabled" /> <?=__('Primary')?></div></dt>
+			<div id="vtCurrentProvidersListContainer" style="clear:both;float:left;width:300px;height:140px;"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+var vtVisitTypeListGrid = new dhtmlXGridObject("vtVisitTypeListContainer");
+vtVisitTypeListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vtVisitTypeListGrid.setHeader("");
+vtVisitTypeListGrid.setNoHeader(true);
+vtVisitTypeListGrid.setInitWidths("*");
+vtVisitTypeListGrid.setSkin("xp");
+vtVisitTypeListGrid.init();
+vtVisitTypeListGrid.load("<?=$this->baseUrl?>/visit-details.raw/visit-type.json","json");
+vtVisitTypeListGrid.attachEvent("onRowSelect",vtVisitTypeListOnRowSelected);
+function vtVisitTypeListOnRowSelected(rowId,cellIndex) {
+	vtSectionNameListGrid.clearAll();
+	vtSectionNameListGrid.load("<?=$this->baseUrl?>/visit-details.raw/visit-section.json?visitType="+rowId,vtSectionNameListGridOnLoaded,"json");
+}
+
+function vtSectionNameListGridOnLoaded() {
+	vtModifiersListGrid.clearAll();
+	if (vtSectionNameListGrid.getRowsNum() > 0) {
+		var modifiers = vtSectionNameListGrid.getUserData(vtSectionNameListGrid.getRowId(0),"modifiers");
+		if (typeof modifiers != "object") return;
+		for (var i in modifiers) {
+			vtModifiersListGrid.addRow(i,"");
+			vtModifiersListGrid.cells(i,0).setValue(modifiers[i]);
+		}
+	}
+}
+
+var vtSectionNameListGrid = new dhtmlXGridObject("vtSectionNameListContainer");
+vtSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vtSectionNameListGrid.setHeader(",,");
+vtSectionNameListGrid.setNoHeader(true);
+vtSectionNameListGrid.setInitWidths("20,*,0");
+vtSectionNameListGrid.setColTypes("ch,ro,ro");
+vtSectionNameListGrid.setColAlign("right,left,left");
+vtSectionNameListGrid.setSkin("xp");
+vtSectionNameListGrid.init();
+vtSectionNameListGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	if (state) {
+		visitTypesAdd(rowId);
+	}
+});
+
+function visitTypesAdd(rowId) {
+	if (!confirm("Codes to be added: "+vtSectionNameListGrid.cells(rowId,2).getValue()+"\n<?=__('Are you sure you want to continue?')?>")) {
+		vtSectionNameListGrid.cells(rowId,0).setChecked(false);
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-details.raw/process-add-visit-types",
+		handleAs: "json",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"visitId": mainController.getActiveVisit(),
+			"id": rowId,
+		},
+		load: function (data) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else if (data == true) {
+				//alert("<?=__('Record/s successfully added')?>");
+			}
+			else {
+				alert("<?=__('Failed to add')?>");
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var vtModifiersListGrid = new dhtmlXGridObject("vtModifiersListContainer");
+vtModifiersListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vtModifiersListGrid.setHeader("");
+vtModifiersListGrid.setNoHeader(true);
+vtModifiersListGrid.setInitWidths("*");
+vtModifiersListGrid.setSkin("xp");
+vtModifiersListGrid.init();
+vtModifiersListGrid.load("<?=$this->baseUrl?>/visit-details.raw/visit-modifiers.json","json");
+
+function addToCurrentProviderList() {
+	var rowId = vtProvidersListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-details.raw/process-add-visit-type-providers",
+		handleAs: "json",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"visitId": mainController.getActiveVisit(),
+			"ids": rowId,
+			"primary": currentPrimaryProviderRowId,
+		},
+		load: function (data) {
+			vtCurrentProvidersListGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function removeFromCurrentProviderList() {
+	var rowId = vtCurrentProvidersListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	if (!confirm("Are you sure you want to remove selected providers?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-details.raw/process-delete-visit-type-providers",
+		handleAs: "json",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"visitId": mainController.getActiveVisit(),
+			"ids": rowId,
+		},
+		load: function (data) {
+			vtCurrentProvidersListGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	dojo.byId("providerPrimaryId").disabled = true;
+}
+
+function setPrimaryProvider(checked) {
+	var rowId = vtCurrentProvidersListGrid.getSelectedRowId();
+	if (rowId == null) {
+		return;
+	}
+	rowId = rowId.split(",");
+	rowId = rowId[0];
+	var isPrimary = (checked)?1:0;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-details.raw/process-set-visit-type-primary-provider",
+		handleAs: "json",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"visitId": mainController.getActiveVisit(),
+			"id": rowId,
+			"isPrimary": isPrimary,
+		},
+		load: function (data) {
+			vtCurrentProvidersListGridReload(false);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var vtProvidersListGrid = new dhtmlXGridObject("vtProvidersListContainer");
+vtProvidersListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vtProvidersListGrid.setHeader("");
+vtProvidersListGrid.setNoHeader(true);
+vtProvidersListGrid.setInitWidths("*");
+vtProvidersListGrid.setSkin("xp");
+vtProvidersListGrid.enableMultiselect(true);
+vtProvidersListGrid.init();
+function vtProvidersListGridReload() {
+	vtProvidersListGrid.clearAll();
+	vtProvidersListGrid.load("<?=$this->baseUrl?>/visit-details.raw/providers.json",function(){
+		vtProvidersListGrid.forEachRow(function(rowId){
+			if (vtCurrentProvidersListGrid.doesRowExist(rowId)) {
+				vtProvidersListGrid.deleteRow(rowId);
+			}
+		});
+	},"json");
+}
+
+var vtCurrentProvidersListGrid = new dhtmlXGridObject("vtCurrentProvidersListContainer");
+vtCurrentProvidersListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vtCurrentProvidersListGrid.setHeader(",");
+vtCurrentProvidersListGrid.setNoHeader(true);
+vtCurrentProvidersListGrid.setInitWidths("*,60");
+vtCurrentProvidersListGrid.setColTypes("ro,ro");
+vtCurrentProvidersListGrid.setSkin("xp");
+vtCurrentProvidersListGrid.enableMultiselect(true);
+
+function vtCurrentProvidersListGridOnRowSelected(rowId,cellIndex) {
+	var disabled = false;
+	if (rowId != vtCurrentProvidersListGrid.getSelectedRowId()) disabled = true;
+	dojo.byId("providerPrimaryId").disabled = disabled;
+	var checked = false;
+	if (vtCurrentProvidersListGrid.cells(rowId,1).getValue() == "<?=__('Primary')?>") {
+		checked = true;
+	}
+	dojo.byId("providerPrimaryId").checked = checked;
+}
+vtCurrentProvidersListGrid.attachEvent("onRowSelect",vtCurrentProvidersListGridOnRowSelected);
+vtCurrentProvidersListGrid.init();
+
+var currentPrimaryProviderRowId = null;
+function vtCurrentProvidersListGridOnLoaded(reload) {
+	currentPrimaryProviderRowId = null;
+	vtCurrentProvidersListGrid.forEachRow(function(rowId){
+		if (vtCurrentProvidersListGrid.cells(rowId,1) == "<?=__('Primary')?>") {
+			currentPrimaryProviderRowId = rowId;
+		}
+	});
+	dojo.byId("providerPrimaryId").disabled = true;
+	if (typeof reload == "undefined" || reload) vtProvidersListGridReload();
+}
+function vtCurrentProvidersListGridReload(reload) {
+	vtCurrentProvidersListGrid.clearAll();
+	vtCurrentProvidersListGrid.load("<?=$this->baseUrl?>/visit-details.raw/list-patient-visit-types?patientId="+mainController.getActivePatient()+"&visitId="+mainController.getActiveVisit(),function(){
+		vtCurrentProvidersListGridOnLoaded(reload);
+	},"json");
+}
+vtCurrentProvidersListGridReload();
+
+function saveVisitTypes() {
+	var arrVisitTypes = new Array();
+	arrVisitTypes.push("'patientId': '"+mainController.getActivePatient()+"'");
+	var isPrimary = null;
+	vtCurrentProvidersListGrid.forEachRow(function(rowId) {
+		isPrimary = 0;
+		if (vtCurrentProvidersListGrid.cells(rowId,1).getValue() == "<?=__('Primary')?>") {
+			isPrimary = 1;
+		}
+		arrVisitTypes.push("'visitTypes["+rowId+"][isPrimary]':'"+isPrimary+"'");
+	});
+
+	var jsCode = "var visitTypesContent = {"+arrVisitTypes.join(",")+"}";
+	eval(jsCode);
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-details.raw/process-patient-visit-types",
+		handleAs: "json",
+		content: visitTypesContent,
+		load: function (data) {
+			alert(data.msg);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>

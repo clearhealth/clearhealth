@@ -1,0 +1,74 @@
+<div style="margin-top:5px;">
+	<div id="filterAllergiesGridId" style="width:auto;height:300px;"></div>
+	<div style="float:left;">
+		<?=$this->formButton('add',__('Add'),array('onClick'=>'filterAllergiesAdd()'))?>
+		<?=$this->formButton('remove',__('Remove'),array('onClick'=>'filterAllergiesRemove()'))?>
+	</div>
+	<div style="float:right;">
+		<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterAllergiesApply()','id'=>'applyFilters','disable'=>'disable'))?>
+	</div>
+</div>
+<script>
+var filterAllergiesGrid = new dhtmlXGridObject("filterAllergiesGridId");
+filterAllergiesGrid.enableMultiselect(true);
+filterAllergiesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+filterAllergiesGrid.setHeader("<?=__('Allergies')?>");
+filterAllergiesGrid.setInitWidths("*");
+filterAllergiesGrid.setColTypes("ro");
+filterAllergiesGrid.setSkin("xp");
+filterAllergiesGrid.init();
+filterAllergiesGrid.load("<?=$this->baseUrl?>/patient-reminders.raw/list-filter-allergies",function(){
+	if (filterAllergiesGrid.getRowsNum() == 0) {
+		filterAllergiesAdd();
+	}
+},"json");
+
+function selectedFilterAllergies(data) {
+	if (filterAllergiesGrid.doesRowExist(data)) {
+		winLookupAllergies.close();
+		alert("Allergies "+data+" already exists.");
+		return;
+	}
+	dojo.byId("applyFilters").disabled = false;
+	filterAllergiesGrid.addRow(data,data);
+}
+
+function filterAllergiesAdd() {
+	var params = ["callback=selectedFilterAllergies"];
+	winLookupAllergies = globalCreateWindow("winLookupAllergiesId",params,"<?=$this->baseUrl?>/allergies.raw/lookup","<?=__('Lookup Allergy/ADR')?>",400,400);
+}
+
+function filterAllergiesRemove() {
+	var rowId = filterAllergiesGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var id = rowIds[i];
+		if (filterAllergiesGrid.doesRowExist(id)) filterAllergiesGrid.deleteRow(id);
+	}
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterAllergiesApply() {
+	var content = {};
+	filterAllergiesGrid.forEachRow(function(rowId){
+		content["filters["+rowId+"]"] = this.cells(rowId,0).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-reminders.raw/process-filter-allergies",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

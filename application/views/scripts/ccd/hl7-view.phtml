@@ -1,0 +1,74 @@
+<div style="width:auto;" id="hl7ViewDivId">
+<form name="hl7FormId" id="hl7FormId" method="post" enctype="multipart/form-data">
+	<div style="width:100%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+		<div class="formRow" style="padding-top:8px;">
+			<input type="radio" name="type" id="type" value="CCD" checked="checked" style="width:20px;" /> HL7 CCD <input type="radio" name="type" id="type" value="CCR" style="width:20px;" /> ASTM CCR &nbsp; &nbsp; 
+			<input type="file" name="uploadFile"/>
+			<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressKey'))?>
+			<?=$this->formButton('ok',__('Upload'),array('id'=>'encrypt','onClick'=>'processUploadFile(this.name);'))?>
+		</div>
+	</div>
+	<div style="width:280px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+		<strong><?=__('Progress')?>:</strong>
+		<div style="width:280px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+			<div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+		</div>
+	</div>
+</form>
+</div>
+<iframe id="iframeCCDViewId" style="width:780px;height:500px;margin:5px;border:none;background-color:#fff;"></iframe>
+<script>
+function processUploadFile(action) {
+	uploadStarted = true;
+	var fileUploadForm = dojo.byId("fileUploadFormId");
+	fileUploadForm.style.display = "none";
+	var fileUploadProgress = dojo.byId("fileUploadProgressId");
+	fileUploadProgress.style.display = "";
+	var uploadProgressBar = dojo.byId("uploadProgressBarId");
+	uploadProgressBar.style.width = "0%";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/ccd.raw/process-hl7-view",
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "hl7FormId",
+		load: function(data) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else if (data.filename) {
+				dojo.byId("iframeCCDViewId").setAttribute("src","<?=$this->baseUrl?>/ccd.raw/view-uploaded-hl7?file="+data.filename+"&type="+data.type);
+			}
+			uploadStarted = false;
+			//dojo.byId("hl7FormId").reset();
+			clearTimeout(progressTimer);
+			fileUploadProgress.style.display = "none";
+			fileUploadForm.style.display = "";
+			uploadProgressBar.style.width = "0%";
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+	processProgressBar();
+}
+
+function processProgressBar(progressKey) {
+	if (!uploadStarted) return;
+	if (progressKey == undefined) {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/ccd.raw/view-upload-progress?uploadKey=" + progressKey,
+		handleAs: "json",
+		load: function (data) {
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout("processProgressBar('"+progressKey+"')", 1000);
+		}, 
+		error: function (er) {
+			alert("err: " + er.responseText)
+		}
+	});
+}
+</script>

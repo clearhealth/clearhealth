@@ -1,0 +1,11 @@
+<div id="appointmentHistoryGridId" style="width:auto;height:350px;"></div>
+<script>
+var appointmentHistoryGrid = new dhtmlXGridObject("appointmentHistoryGridId");
+appointmentHistoryGrid.setImagePath("<?=$this->baseUrl?>/img/");
+appointmentHistoryGrid.setHeader("<?=__('Date')?>,<?=__('Time')?>,<?=__('Provider')?>,<?=__('Title')?>,<?=__('Room')?>,<?=__('Reason')?>,<?=__('Code')?>,<?=__('Station ID')?>");
+appointmentHistoryGrid.setInitWidths("80,120,*,*,*,*,60,60");
+appointmentHistoryGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro");
+appointmentHistoryGrid.setSkin("xp");
+appointmentHistoryGrid.init();
+appointmentHistoryGrid.load("<?=$this->baseUrl?>/appointment.raw/list-history?personId=<?=$this->personId?>","json");
+</script>

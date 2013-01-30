@@ -1,0 +1,719 @@
+<div style="float:left;width:35%;">
+	<fieldset><legend><?=__('Transactions')?></legend>
+		<label><b><?=__('# in Queue')?></b></label>: <label id="queueId"></label>
+		<br /><br />
+		<div id="checkDivId"><input type="radio" name="sourceOfFundsId" id="sourceOfFundsId1" value="checkFundsId" checked="checked" onClick="sourceOfFundsOnChanged(this.id);" />
+		$<?=$this->formText('checkFundsId',0,array('id'=>'checkFundsId','style'=>'width:60px;','onChange'=>'dojo.byId("sourceOfFundsId1").checked = true;'))?>
+		<?=$this->formHidden('checkFundsIdHidden',0)?>
+		Chk#: <?=$this->formText('checkNoId','',array('id'=>'checkNoId','style'=>'width:60px;','onChange'=>'dojo.byId("sourceOfFundsId1").checked = true;'))?>
+		<?=$this->formHidden('checkSelectedIndexId',0)?>
+		<?=$this->formButton('checkSaveId',__('Save'),array('id'=>'checkSaveId','style'=>'width:50px;','onClick'=>'prcessSaveCheck()'))?>
+		<br />
+		<?=$this->formSelect('checkNosId','',array('id'=>'checkNosId','style'=>'margin-left:20px;width:150px;','onChange'=>'checkNosOnChanged(this)'))?></div>
+		<br />
+		<div id="unallocatedDivId"><label><input type="radio" name="sourceOfFundsId" id="sourceOfFundsId2" value="unallocatedFundsId" onClick="sourceOfFundsOnChanged(this.id);" /> <b><?=__('Unallocated Funds')?></b></label>: $<input type="text" name="unallocatedFundsId" id="unallocatedFundsId" value="0.00" readonly="readonly" style="width:100px;border:0;" /></div>
+		<br />
+		<label><b><?=__('Current Transaction')?></b></label>: <label id="transId"></label>
+		<br />
+		<label><b><?=__('ID')?></b></label>: <label id="idId"></label>
+		<br />
+		<label><b><?=__('DOS')?></b></label>: <label id="dosId"></label>
+		<br />
+		<label><b><?=__('Claim Date')?></b></label>: <label id="claimDateId"></label>
+		<br />
+		<label><b><?=__('Patient')?></b></label>: <label id="patientId"></label>
+		<br />
+		<label><b><?=__('Payer')?></b></label>: <label id="payerId"></label>
+		<br />
+		<label><b><?=__('Facility')?></b></label>: <label id="facilityId"></label>
+		<br /><br />
+		<?=$this->formButton('nextClaimId',__('Next Claim'),array('id'=>'nextClaimId','onClick'=>'claimPaymentNext()','disabled'=>'disabled'))?>
+	</fieldset>
+</div>
+<div style="float:left;width:65%;">
+	<fieldset><legend><?=__('Payment History')?></legend>
+		<div id="historyGridId" style="width:auto;height:200px;"></div>
+	</fieldset>
+</div>
+<br style="clear:both;"/>
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__('Make Payment')?></legend>
+	<div id="paymentNoCodesId"><?=__('There are no codes to add payments on for this claim.')?></div>
+	<div id="paymentContainerId" style="display:none;">
+		<div id="paymentGridId" style="width:auto;height:130px;"></div>
+		<br style="clear:left;" />
+		<div id="adjustmentGridId" style="width:auto;height:100px;"></div>
+		<br style="clear:left;" />
+		<div style="float:left;">
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->paymentDate->renderLabel()?>
+					<?=$this->form->paymentDateInput('FormDateText')?>
+				</div>
+			</div>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->payerId->renderLabel()?>
+					<?=$this->form->payerIdInput('FormSelect',array('options'=>$this->payers,'style'=>'width:200px;'))?>
+				</div>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->title->renderLabel()?>
+					<?=$this->form->titleInput('FormText',array('style'=>'width:200px;'))?>
+				</div>
+			</div>
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<div class="formRow" style="padding-top:4px;">
+				<dt><label for="noteId" class="optional">Note</label></dt>
+				<?=$this->formTextarea('noteId','',array('id'=>'noteId','style'=>'width:200px;height:50px;'))?>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<br style="clear:left;" />
+		<div style="float:left;">
+			<?=$this->formButton('recordPaymentId',__('Record Payment'),array('onClick'=>'paymentRecordPayment()'))?>
+			<?=$this->formButton('rebillToPayer',__('Rebill to:'),array('onClick'=>'paymentRecordPayment(paymentRebillTo)'))?> <?=$this->formSelect('activePayersId',array(),array('id'=>'activePayersId','style'=>'width:200px;'))?>
+			<?=$this->formButton('sendToCollections',__('Send to Collections'),array('onClick'=>'paymentRecordPayment(paymentSendTo,"Collections")'))?>
+			<?=$this->formButton('sendToPatientResponsibility',__('Send to Patient Responsibility'),array('onClick'=>'paymentRecordPayment(paymentSendTo,"Patient Responsibility")'))?>
+		</div>
+	</div>
+</fieldset>
+<?=$this->form->renderClose()?>
+<script>
+var unallocatedMenu = new dhtmlXMenuObject(null,"standard");
+unallocatedMenu.setImagePath("<?=$this->baseUrl?>/img/");
+unallocatedMenu.renderAsContextMenu();
+unallocatedMenu.setOpenMode("web");
+unallocatedMenu.loadXMLString("<menu id=\"0\"><item text=\"Delete\" img=\"\" id=\"delete\"/></menu>",function(){})
+unallocatedMenu.attachEvent("onClick",function(id){
+	if (id == "delete") {
+		var visit = listVisits[currTransIndex];
+		globalCreateWindow("winUnallocatedId",["personId="+visit.personId],"<?=$this->baseUrl?>/claims.raw/unallocated-funds","<?=__('Unallocated Funds')?>",400,250);
+	}
+});
+unallocatedMenu.attachEvent("onContextMenu",function(id){
+	var unallocatedFunds = parseFloat(dojo.byId("unallocatedFundsId").value);
+	if (isNaN(unallocatedFunds) || unallocatedFunds <= 0) unallocatedMenu.hideItem("delete");
+	else unallocatedMenu.showItem("delete");
+});
+unallocatedMenu.addContextZone("unallocatedFundsId");
+
+var currTransIndex = 0;
+var currClaimId = 0;
+var listVisits = [];
+<?foreach($this->data['claimIds'] as $visitId=>$values):?>
+listVisits.push({
+	"personId":"<?=(int)$values['personId']?>",
+	"visitId":"<?=(int)$visitId?>",
+	"unallocatedFunds":"<?=(float)$values['unallocatedFunds']?>",
+	"claimIds":[<?=implode(',',$values['claimIds'])?>],
+	"payerIds":[<?=implode(',',$values['payerIds'])?>],
+});
+<?endforeach;?>
+
+function prcessSaveCheck() {
+	var amount = parseFloat(dojo.byId("checkFundsId").value);
+	var msg = "";
+	if (isNaN(amount)) amount = 0;
+	if (amount <= 0) msg = "<?=__('Invalid amount')?>";
+	var chkNo = dojo.byId("checkNoId").value;
+	if (chkNo.length <= 0) msg = "<?=__('Check number is empty')?>";
+	if (msg.length > 0) {
+		alert(msg);
+		return;
+	}
+	var visit = listVisits[currTransIndex];
+	var payerId = (visit.payerIds[currClaimId])?visit.payerIds[currClaimId]:0;
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-save-check",
+		handleAs: "json",
+		content: {
+			"payment[amount]": amount,
+			"payment[refNum]": chkNo,
+			"payment[payerId]": payerId,
+		},
+		load: function(data) {
+			dojo.byId("checkNoId").value = "";
+			if (typeof callback == "function") {
+				callback(params);
+				claimPaymentNext();
+			}
+			else {
+				var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+				claimPaymentLoadClaims(claimId);
+			}
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function checkNosOnChanged(obj) {
+	var hasChanges = false;
+	for (var i in paymentGrid.rowsAr) {
+		if (!(paymentGrid.rowsAr[i] && paymentGrid.rowsAr[i].idd)) continue;
+		var rowId = paymentGrid.rowsAr[i].idd;
+		if (paymentGrid.cells(rowId,indexPaid).getValue() != paymentGrid.getUserData(rowId,"paid") || paymentGrid.cells(rowId,indexWriteOff).getValue() != paymentGrid.getUserData(rowId,"writeOff")) {
+			hasChanges = true;
+			break;
+		}
+	}
+	var checkSelectedIndex = dojo.byId("checkSelectedIndexId");
+	if (hasChanges && !confirm("Changing check# will reset all the changes on paid and writeoffs, continue?")) {
+		obj.selectedIndex = checkSelectedIndex.value;
+		return;
+	}
+	checkSelectedIndex.value = obj.selectedIndex;
+
+	paymentGrid.forEachRow(function(rowId){
+		this.cells(rowId,indexPaid).setValue(this.getUserData(rowId,"paid"));
+		this.cells(rowId,indexWriteOff).setValue(this.getUserData(rowId,"writeOff"));
+		this.cells(rowId,indexBalance).setValue(this.getUserData(rowId,"balance"));
+	});
+
+	dojo.byId("sourceOfFundsId1").checked = true;
+	dojo.byId("checkNoId").value = obj.options[obj.selectedIndex].text;
+	var funds = parseFloat(obj.options[obj.selectedIndex].label);
+	if (isNaN(funds)) funds = 0;
+	var amount = funds.toFixed(2);
+	dojo.byId("checkFundsId").value = amount;
+	dojo.byId("checkFundsIdHidden").value = amount;
+}
+
+function sourceOfFundsOnChanged(id) {
+	// check for changes
+	var hasChanges = false;
+	for (var i in paymentGrid.rowsAr) {
+		if (!(paymentGrid.rowsAr[i] && paymentGrid.rowsAr[i].idd)) continue;
+		var rowId = paymentGrid.rowsAr[i].idd;
+		if (paymentGrid.cells(rowId,indexPaid).getValue() != paymentGrid.getUserData(rowId,"paid") || paymentGrid.cells(rowId,indexWriteOff).getValue() != paymentGrid.getUserData(rowId,"writeOff")) {
+			hasChanges = true;
+			break;
+		}
+	}
+
+	var sourceOfFunds = dojo.byId("sourceOfFundsId1");
+	var payerId = <?=$this->payerSelf?>;
+	if (id == "sourceOfFundsId1") {
+		sourceOfFunds = dojo.byId("sourceOfFundsId2");
+		var visit = listVisits[currTransIndex];
+		payerId = (visit.payerIds[currClaimId])?visit.payerIds[currClaimId]:0;
+	}
+
+	if (hasChanges && !confirm("Switching between source of funds will reset all the changes on paid and writeoffs, continue?")) {
+		sourceOfFunds.checked = true;
+		return;
+	}
+	var payerSelect = dojo.byId("<?=$this->form->payerId->getId()?>");
+	for (var i = 0; i < payerSelect.length; i++) {
+		if (payerSelect.options[i].value == payerId) {
+			payerSelect.selectedIndex = i;
+			break;
+		}
+	}
+
+	var objFund = dojo.byId(sourceOfFunds.value);
+	var funds = parseFloat(objFund.value);
+	if (isNaN(funds)) funds = 0;
+	paymentGrid.forEachRow(function(rowId){
+		var paid = parseFloat(this.cells(rowId,indexPaid).getValue());
+		if (isNaN(paid)) paid = 0;
+		var paid2 = parseFloat(this.getUserData(rowId,"paid"));
+		if (isNaN(paid2)) paid2 = 0;
+		funds += (paid - paid2);
+		this.cells(rowId,indexPaid).setValue(this.getUserData(rowId,"paid"));
+		this.cells(rowId,indexWriteOff).setValue(this.getUserData(rowId,"writeOff"));
+		this.cells(rowId,indexBalance).setValue(this.getUserData(rowId,"balance"));
+	});
+	objFund.value = funds.toFixed(2);
+}
+
+function claimPaymentNext() {
+	var visit = listVisits[currTransIndex];
+	if ((currClaimId + 1) >= visit.claimIds.length) {
+		currTransIndex++;
+		if (currTransIndex >= listVisits.length) currTransIndex = 0;
+		claimPaymentLoadVisit(listVisits[currTransIndex].visitId);
+	}
+	else {
+		currClaimId++;
+		var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+		claimPaymentLoadClaims(claimId);
+		historyGridReload(visit.visitId,claimId);
+	}
+}
+
+function claimPaymentClear() {
+	dojo.byId("checkFundsId").value = 0;
+	dojo.byId("checkNoId").value = "";
+	dojo.byId("transId").innerHTML = (currTransIndex + 1) + "/" + listVisits.length;
+	dojo.byId("idId").innerHTML = "";
+	dojo.byId("dosId").innerHTML = "";
+	dojo.byId("claimDateId").innerHTML = "";
+	dojo.byId("patientId").innerHTML = "";
+	dojo.byId("facilityId").innerHTML = "";
+	dojo.byId("payerId").innerHTML = "";
+
+	dojo.byId("unallocatedFundsId").value = "0.00";
+	historyGrid.clearAll();
+	paymentGrid.clearAll();
+
+	dojo.byId("paymentNoCodesId").style.display = "";
+	dojo.byId("paymentContainerId").style.display = "none";
+}
+
+function claimPaymentLoadVisit(visitId) {
+	claimPaymentClear();
+	if (!visitId) visitId = (listVisits[currTransIndex])?listVisits[currTransIndex].visitId:0;
+
+	dojo.byId("paymentNoCodesId").style.display = "";
+	dojo.byId("paymentContainerId").style.display = "none";
+
+	var visit = listVisits[currTransIndex];
+	currClaimId = 0;
+
+	dojo.byId("unallocatedFundsId").value = parseFloat(visit.unallocatedFunds).toFixed(2);
+	historyGrid.clearAll();
+	paymentGrid.clearAll();
+	var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+	historyGridReload(visitId,claimId);
+
+	if (visit.claimIds.length > 0) {
+		dojo.byId("paymentNoCodesId").style.display = "none";
+		dojo.byId("paymentContainerId").style.display = "";
+		if (visit.claimIds[currClaimId]) {
+			claimPaymentLoadClaims(visit.claimIds[currClaimId]);
+		}
+	}
+}
+
+function claimPaymentLoadClaims(claimId) {
+	dojo.xhrGet({
+		url: globalBaseUrl + "/claims.raw/get-claim-details",
+		handleAs: "json",
+		content: {
+			"claimId": claimId,
+		},
+		load: function(data) {
+			paymentGridReload(data.claimId);
+			dojo.byId("idId").innerHTML = data.claimId;
+			dojo.byId("dosId").innerHTML = data.dos;
+			dojo.byId("claimDateId").innerHTML = data.dateBilled;
+			dojo.byId("patientId").innerHTML = data.patient;
+			dojo.byId("facilityId").innerHTML = data.facility;
+
+			dojo.byId("<?=$this->form->getId()?>").reset();
+			dojo.byId("<?=$this->form->paymentDate->getId()?>").value = "<?=date('Y-m-d')?>";
+			var payerSelect = dojo.byId("<?=$this->form->payerId->getId()?>");
+			var payer = "";
+			for (var i = 0; i < payerSelect.length; i++) {
+				if (payerSelect.options[i].value == data.payerId) {
+					payerSelect.selectedIndex = i;
+					payer = payerSelect.options[i].text;
+					break;
+				}
+			}
+			dojo.byId("payerId").innerHTML = payer;
+
+			var newOption = null;
+			var rebillToSelect = dojo.byId("activePayersId");
+			rebillToSelect.options.length = 0;
+			var hasMatch = false;
+			for (var i in data.listPayers) {
+				if (i == data.payerId || hasMatch) {
+					hasMatch = !hasMatch;
+					newOption = new Option(data.listPayers[i],i,true);
+				}
+				else {
+					newOption = new Option(data.listPayers[i],i);
+				}
+				rebillToSelect.options[rebillToSelect.options.length] = newOption;
+			}
+
+			var checkNosSelect = dojo.byId("checkNosId");
+			checkNosSelect.options.length = 0;
+			for (var i in data.checkNos) {
+				var chk = data.checkNos[i];
+				var opt = new Option(chk.checkNo,i);
+				opt.label = chk.unallocated;
+				checkNosSelect.options[checkNosSelect.options.length] = opt;
+			}
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function paymentRecordPayment(callback,params) {
+	var visit = listVisits[currTransIndex];
+
+	var paymentDate = dojo.byId("<?=$this->form->paymentDate->getId()?>").value;
+	var payerSelect = dojo.byId("<?=$this->form->payerId->getId()?>");
+	var payerId = "";
+	if (payerSelect.selectedIndex >= 0) {
+		payerId = payerSelect.options[payerSelect.selectedIndex].value;
+	}
+	var title = dojo.byId("<?=$this->form->title->getId()?>").value;
+
+	var sourceOfFunds = "";
+	var checkNo = "";
+	var sourceOfFundsEl = document.getElementsByName("sourceOfFundsId");
+	for(var i = 0; i < sourceOfFundsEl.length; i++) {
+		if (!sourceOfFundsEl[i].checked) continue;
+		sourceOfFunds = sourceOfFundsEl[i].value;
+		if (sourceOfFunds == "checkFundsId") {
+			var checkNosSelect = dojo.byId("checkNosId");
+			var selectedIndex = checkNosSelect.selectedIndex;
+			if (selectedIndex > 0) {
+				checkNo = checkNosSelect.options[selectedIndex].text;
+			}
+		}
+		break;
+	}
+
+	var contents = {
+		"visitId": visit.visitId,
+		"payment[claimId]": visit.claimIds[currClaimId],
+		"payment[visitId]": visit.visitId,
+		"payment[personId]": visit.personId,
+		"payment[paymentDate]": paymentDate,
+		"payment[payerId]": payerId,
+		"payment[title]": title,
+		"note": dojo.byId("noteId").value,
+		"sourceOfFunds": sourceOfFunds,
+		"checkNo": checkNo,
+	};
+	var amount = 0;
+	var currentAmount = 0;
+	var diff = 0;
+	var valid = false;
+	for (var a in paymentGrid.rowsAr) {
+		if (!(paymentGrid.rowsAr[a] && paymentGrid.rowsAr[a].idd)) {
+			continue;
+		}
+		var rowId = paymentGrid.rowsAr[a].idd;
+
+		var paid = parseFloat(paymentGrid.cells(rowId,indexPaid).getValue());
+		if (isNaN(paid) || paid < 0) break;
+		var writeoff = parseFloat(paymentGrid.cells(rowId,indexWriteOff).getValue());
+		if (isNaN(writeoff) || writeoff < 0) break;
+
+		currentAmount = parseFloat(paymentGrid.getUserData(rowId,"paid"));
+		if (isNaN(currentAmount)) currentAmount = 0;
+		diff = parseFloat(paid - currentAmount);
+		if (diff > 0) {
+			contents["paid["+rowId+"]"] = diff;
+			valid = true;
+		}
+
+		currentAmount = parseFloat(paymentGrid.getUserData(rowId,"writeOff"));
+		if (isNaN(currentAmount)) currentAmount = 0;
+		diff = parseFloat(writeoff - currentAmount);
+		if (diff > 0) {
+			contents["writeOff["+rowId+"]"] = diff;
+			valid = true;
+		}
+	}
+	if (!valid) {
+		if (typeof callback == "function") {
+			callback(params);
+		}
+		else {
+			alert("No changes on Payment Amount");
+		}
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-payments",
+		handleAs: "json",
+		content: contents,
+		load: function(data) {
+			dojo.byId("unallocatedFundsId").value = data;
+			visit.unallocatedFunds = data;
+			if (typeof callback == "function") {
+				callback(params);
+				claimPaymentNext();
+			}
+			else {
+				var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+				claimPaymentLoadClaims(claimId);
+				historyGridReload(visit.visitId,claimId);
+			}
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function paymentRebillTo() {
+	var visit = listVisits[currTransIndex];
+	var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+	var rebillToSelect = dojo.byId("activePayersId");
+	var payerId = rebillToSelect.selectedIndex;
+	if (payerId < 0) {
+		alert("Invalid payer selected");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-payment-rebill-to",
+		handleAs: "json",
+		content: {
+			"claimId": claimId,
+			"payerId": rebillToSelect.options[payerId].value,
+		},
+		load: function(data) {
+			if (!data) {
+				alert("Failed sending to payer "+rebillToSelect.options[payerId].text);
+				return;
+			}
+			claimPaymentNext();
+			if (claimsGridReload) claimsGridReload();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function paymentSendTo(insurance) {
+	var visit = listVisits[currTransIndex];
+	var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-payment-send-to",
+		handleAs: "json",
+		content: {
+			"claimId": claimId,
+			"insurance": insurance,
+		},
+		load: function(data) {
+			if (!data) {
+				alert("Failed sending to payer "+insurance);
+				return;
+			}
+			claimPaymentNext();
+			if (claimsGridReload) claimsGridReload();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+var historyGrid = new dhtmlXGridObject("historyGridId");
+historyGrid.setImagePath("<?=$this->baseUrl?>/img/");
+historyGrid.setHeader("<?=__('Date')?>,<?=__('Type')?>,<?=__('Amount')?>,<?=__('Writeoff')?>,<?=__('Payer')?>,<?=__('Notes')?>,<?=__('S')?>");
+historyGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
+historyGrid.setInitWidths("75,80,60,60,*,*,20");
+historyGrid.setSkin("xp");
+historyGrid.init();
+function historyGridReload(visitId,claimId) {
+	historyGrid.clearAll(); 
+	historyGrid.load("<?=$this->baseUrl?>/claims.raw/list-payment-history?visitId="+visitId+"&claimId="+claimId,function(){
+	},"json"); 
+}
+
+var paymentGrid = new dhtmlXGridObject("paymentGridId");
+paymentGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexCode = 0;
+var indexAmountBilled = 1;
+var indexPaid = 2;
+var indexWriteOff = 3;
+var indexBalance = 4;
+paymentGrid.setHeader("<?=__('Code')?>,<?=__('Amount Billed')?>,<?=__('Paid')?>,<?=__('WriteOff')?>,<?=__('Balance')?>");
+paymentGrid.setColTypes("ro,ro,ed,ed,ro");
+paymentGrid.setInitWidths("*,100,100,100,100");
+paymentGrid.setSkin("xp");
+paymentGrid.enableAutoHeight(true,130);
+paymentGrid.init();
+
+function paymentGridReload(claimId) {
+	paymentGrid.clearAll(); 
+	paymentGrid.load("<?=$this->baseUrl?>/claims.raw/list-claim-lines?claimId="+claimId,function(){
+		var hasRow = false;
+		var totalBalance = 0;
+		var procedureCodes = [];
+		var comboApplied = adjustmentGrid.getCombo(0);
+		comboApplied.clear();
+		paymentGrid.forEachRow(function(rowId){
+			var code = this.cells(rowId,indexCode).getValue() + "";
+			var tmp = code.split(" ");
+			comboApplied.put(rowId,tmp[0]);
+			hasRow = true;
+			var balance = parseFloat(this.cells(rowId,indexBalance).getValue());
+			if (isNaN(balance)) return;
+			totalBalance += balance;
+			this.setUserData(rowId,"paid",this.cells(rowId,indexPaid).getValue());
+			this.setUserData(rowId,"writeOff",this.cells(rowId,indexWriteOff).getValue());
+			this.setUserData(rowId,"balance",this.cells(rowId,indexBalance).getValue());
+		});
+		adjustmentGridReload(claimId);
+		dojo.byId("checkFundsId").value = totalBalance.toFixed(2);
+		if (hasRow) {
+			dojo.byId("paymentNoCodesId").style.display = "none";
+			dojo.byId("paymentContainerId").style.display = "";
+		}
+		else {
+			dojo.byId("paymentNoCodesId").style.display = "";
+			dojo.byId("paymentContainerId").style.display = "none";
+		}
+	},"json"); 
+}
+
+paymentGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	var funds = 0;
+	var objFunds = null;
+	var objVal = null;
+	var sourceOfFunds = document.getElementsByName("sourceOfFundsId");
+	var value = "";
+	for(var i = 0; i < sourceOfFunds.length; i++) {
+		if (!sourceOfFunds[i].checked) continue;
+		value = sourceOfFunds[i].value;
+		objFunds = dojo.byId(value);
+		var objVal = dojo.byId(value+"Hidden");
+		if (objVal && objVal.value != objFunds.value) { // amount was changed, reset to original
+			objFunds.value = objVal.value;
+		}
+		funds = parseFloat(objFunds.value);
+		break;
+	}
+	if (isNaN(funds)) funds = 0;
+	var balance = parseFloat(paymentGrid.cells(rowId,indexBalance).getValue());
+	if (isNaN(balance)) balance = 0;
+	if (cellIndex == indexPaid && (funds <= 0)) {
+		return false;
+	}
+	if (stage == 2 && newValue != oldValue) {
+		var amount = parseFloat(newValue);
+		if (isNaN(amount)) return false;
+		var val = parseFloat(oldValue);
+		if (isNaN(val)) val = 0;
+		diff = parseFloat(amount - val);
+		funds -= diff;
+		balance -= diff;
+
+		// if column is paid or writeoff, amount must be greater than old value
+		switch (cellIndex) {
+			case indexPaid:
+				if (funds < 0 || balance < 0) return false;
+				var paid = parseFloat(paymentGrid.getUserData(rowId,"paid"));
+				if (isNaN(paid)) paid = 0;
+				if (amount < paid) return false;
+				break;
+			case indexWriteOff:
+				if (balance < 0) return false;
+				var writeOff = parseFloat(paymentGrid.getUserData(rowId,"writeOff"));
+				if (isNaN(writeOff)) writeOff = 0;
+				if (amount < writeOff) return false;
+				break;
+		}
+		if (cellIndex != indexWriteOff) {
+			objFunds.value = funds.toFixed(2);
+			if (objVal) objVal.value = objFunds.value;
+		}
+		paymentGrid.cells(rowId,indexBalance).setValue(balance.toFixed(2));
+	}
+	return true;
+});
+
+var adjustmentGrid = new dhtmlXGridObject("adjustmentGridId");
+adjustmentGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexAppliedTo = 0;
+var indexType = 1;
+var indexValue = 2;
+adjustmentGrid.setHeader("<?=__('Applied To')?>,<?=__('Type')?>,<?=__('Value')?>");
+adjustmentGrid.setColTypes("coro,coro,ed");
+adjustmentGrid.setInitWidths("*,*,*");
+adjustmentGrid.setSkin("xp");
+adjustmentGrid.enableAutoHeight(true,100);
+adjustmentGrid.init();
+var comboType = adjustmentGrid.getCombo(1);
+<?$eobs = array(); foreach(Enumeration::getEnumArray('Eob Adjustment Types') as $key=>$value) $eobs[$key] = $value;
+ksort($eobs,SORT_NUMERIC);
+foreach($eobs as $key=>$value):?>
+comboType.put("<?=$key?>",(<r><![CDATA[<?=$key?>: <?=$value?>]]></r>).toString());
+<?endforeach;?>
+
+adjustmentGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		adjustmentSave(rowId,cellIndex);
+	}
+	return true;
+});
+
+function adjustmentGridReload(claimId) {
+	adjustmentGrid.clearAll(); 
+	adjustmentGrid.load("<?=$this->baseUrl?>/claims.raw/list-adjustments?claimId="+claimId,function(){
+		adjustmentGrid.addRow("trailingId","");
+	},"json"); 
+}
+
+function adjustmentSave(rowId,cellIndex) {
+	var id = rowId;
+	if (id == "trailingId") id = 0;
+	var paymentId = 0;
+	var sourceOfFundsEl = document.getElementsByName("sourceOfFundsId");
+	for(var i = 0; i < sourceOfFundsEl.length; i++) {
+		if (!sourceOfFundsEl[i].checked) continue;
+		if (sourceOfFundsEl[i].value == "checkFundsId") {
+			var checkNosSelect = dojo.byId("checkNosId");
+			var selectedIndex = checkNosSelect.selectedIndex;
+			if (selectedIndex >= 0) {
+				paymentId = checkNosSelect.options[selectedIndex].value;
+			}
+		}
+		break;
+	}
+	var visit = listVisits[currTransIndex];
+	var claimId = (visit.claimIds[currClaimId])?visit.claimIds[currClaimId]:0;
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/process-save-adjustment",
+		handleAs: "json",
+		content: {
+			"adj[eobAdjustmentId]": id,
+			"adj[claimId]": claimId,
+			"adj[paymentId]": paymentId,
+			"adj[claimLineId]": adjustmentGrid.cells(rowId,indexAppliedTo).getValue(),
+			"adj[type]": adjustmentGrid.cells(rowId,indexType).getValue(),
+			"adj[value]": adjustmentGrid.cells(rowId,indexValue).getValue(),
+		},
+		load: function(data) {
+			if (!data.id) {
+				alert("<?=__('Failed to save')?>");
+				return;
+			}
+			if (data.id && rowId == "trailingId") {
+				adjustmentGrid.setRowId(adjustmentGrid.getRowIndex("trailingId"),data.id);
+				adjustmentGrid.addRow("trailingId","");
+			}
+			adjustmentGrid.renderRowData(data);
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+dojo.byId("queueId").innerHTML = listVisits.length;
+
+if (listVisits[currTransIndex]) {
+	dojo.byId("nextClaimId").disabled = false;
+	claimPaymentLoadVisit();
+}
+</script>

@@ -1,0 +1,154 @@
+<script>
+
+function updateMenuType(val) {
+	dojo.style("typeFreeForm", "display", "none");
+	dojo.style("typeReport", "display", "none");
+	dojo.style("typeForm", "display", "none");
+	switch (val) {
+		case 'freeform':
+			dojo.style("typeFreeForm", "display", "inline");
+			break;
+		case 'report':
+			dojo.style("typeReport", "display", "inline");
+			break;
+		case 'form':
+			dojo.style("typeForm", "display", "inline");
+			break;
+		case 'submenu':
+			break;
+	}
+}
+
+function submitmenuitemForm() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/menu-manager.raw/edit-process",
+		form: 'menuitem',
+		content: {
+		},
+		handleAs: "json",
+		load: function(objResponse, ioArgs) {
+			dhxWins.window("windowEditORMObjectId").close();
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+</script>
+<div style="float:left;width:100%;">
+	<?if ($this->message) :?>
+	<div style="background-color:PaleGreen; width:100%;">
+    	<?=$this->message?>
+	</div>
+	<?endif;?>
+	<?=$this->form->renderOpen()?>
+	<fieldset>
+		<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+			<?=$error?>
+			<?}?>
+		</div>
+
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->type->renderLabel()?>
+			<?foreach ($this->types as $v):
+				$checked = '';
+				if ($v == $this->form->type->getValue()) {
+					$checked = 'checked="checked"';
+				}
+			?>
+			<input type="radio" id="menuItem-type" name="menuItem[type]" <?=$checked?> value="<?=$v?>" onclick="updateMenuType(this.value);" /> <?=$v?>
+			<?endforeach?>
+		</div>
+
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<div id="typeFreeForm">
+				<?=$this->form->action->renderLabel()?>
+				<input type="text" name="typefreeform" id="typefreeform" value="<?=($this->form->type->getValue()=='freeform')?$this->data['typeValue']:''?>" />
+			</div>
+
+			<div id="typeReport">
+				<?=$this->form->action->renderLabel()?>
+				<select id="typereport" name="typereport">
+				<?foreach ($this->data['report'] as $reportId => $reports):?>
+					<optgroup label="<?=$reports['label']?>">
+					<?foreach ($reports['items'] as $report):
+						$selected = '';
+						if ($this->form->type->getValue() == 'report' && $report['report_template_id'] == $this->form->action->getValue()) {
+							$selected = 'selected="selected"';
+						}
+					?>
+					<option value="<?=$report['id'].'-'.$report['report_template_id']?>" <?=$selected?>><?=$report['name']?></option>
+					<?endforeach?>
+					</optgroup>
+				<?endforeach?>
+				</select>
+			</div>
+
+			<div id="typeForm">
+				<?=$this->form->action->renderLabel()?>
+				<select id="typeform" name="typeform">
+				<?foreach ($this->data['form'] as $form):
+					$selected = '';
+					if ($this->form->type->getValue() == 'form' && $form['form_id'] == $this->form->action->getValue()) {
+						$selected = 'selected="selected"';
+					}
+				?>
+				<option value="<?=$form['form_id']?>" <?=$selected?>><?=$form['name']?></option>
+				<?endforeach?>
+				</select>
+			</div>
+		</div>
+
+		<br style="clear:left;" />
+		<div style="float:left;">
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->siteSection->renderLabel()?>
+				<?=$this->form->siteSectionInput('FormSelect',array('options'=>$this->mainTabs,'style'=>'width:150px;'))?>
+			</div>
+			<br style="clear:left;" />
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->dynamicKey->renderLabel()?>
+				<?=$this->form->dynamicKeyInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+			<br style="clear:left;" />
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->prefix->renderLabel()?>
+				<?=$this->form->prefixInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+		</div>
+		<div style="float:left;margin-left:20px;">
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->title->renderLabel()?>
+				<?=$this->form->titleInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+			<br style="clear:left;" />
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->displayOrder->renderLabel()?>
+				<?=$this->form->displayOrderInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+		</div>
+
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->jsAction->renderLabel()?>
+			<?=$this->form->jsActionInput('FormTextarea',array('style'=>'width:350px;height:80px;'))?>
+		</div>
+
+	</fieldset>
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+		<?=$this->form->menuIdInput('FormHidden')?>
+		<?=$this->form->parentIdInput('FormHidden')?>
+		<?=$this->formButton('btnCancel','Cancel',array('onClick'=>'dhxWins.window("windowEditORMObjectId").close();'))?>
+		<?=$this->form->okInput('FormButton')?>
+	</div>
+
+	</form>
+</div>
+<script>
+updateMenuType("<?=$this->form->type->getValue()?>");
+</script>

@@ -1,0 +1,87 @@
+/* MAIN OBJ */
+div.dhx_acc_base_dhx_blue {
+	overflow: hidden;
+	background-color: #DDDDDD;
+	/*
+	background-color: #D3E2E5;
+	border-top: #609BCA 1px solid;
+	border-left: #609BCA 1px solid;
+	border-right: #C2D9EB 1px solid;
+	border-bottom: none;
+	*/
+}
+
+/* SINGLE ITEM */
+div.dhx_acc_item_dhx_blue {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	padding-bottom: 1px;
+}
+div.dhx_acc_item_hidden_dhx_blue {
+	display: none;
+}
+/* label */
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_label_dhx_blue {
+	position: relative;
+	color: #000;
+	font-family: Tahoma;
+	font-size: 12px;
+	font-weight: normal;
+	height: 22px;
+	line-height: 20px;
+	border: #CCCCCC 1px solid;
+	vertical-align: middle;
+	overflow: hidden;
+	background-image: url("../imgs/dhxaccord_dhx_blue/dhtmlxaccordion_bg.png");
+	background-position: top;
+	background-repeat: repeat-x;
+	-moz-user-select: none;
+	cursor: default;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+/* icon */
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_label_dhx_blue img.dhx_acc_item_icon_dhx_blue {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	right: 4px;
+	top: 3px;
+}
+/* content */
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_content_opened_dhx_blue {
+	awidth: 100%;
+	overflow: hidden;
+	position: relative;
+	aborder-bottom: #CCCCCC 1px solid;
+	amargin-top: 1px;
+	margin-top: 1px;
+}
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_content_opened_dhx_blue div.dhtmlx_wins_body_content {
+	position: relative;
+}
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_content_closed_dhx_blue {
+	display: none;
+}
+/* accordion attached to window */
+.dhtmlxAccordionAttached {
+	border: none !important;
+}
+div.dhx_acc_item_dhx_blue div.dhtmlxWindowMainContent {
+	amargin-top: 1px;
+	amargin-bottom: 1px;
+}
+/* inner window */
+div.dhx_acc_item_dhx_blue div.dhx_acc_item_content_opened_dhx_blue div.dhtmlxWindowMainContent {
+	background-color: #FFFFFF;
+	border: 1px solid #CCCCCC;
+}
+.dhxAccordLabelIEFix_dhx_blue {
+	height: 24px;
+	line-height: 18px;
+}
+.dhxAccordPolyIEFix_dhx_blue {
+	padding-bottom: 2px;
+	padding-right: 2px;
+}

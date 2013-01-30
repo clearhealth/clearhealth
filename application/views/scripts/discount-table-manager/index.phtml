@@ -1,0 +1,127 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div id="dtmToolbarId"></div>
+<div id="dtmGridId" style="width:100%;height:450px;"></div>
+
+<script>
+var dtmGrid =  new dhtmlXGridObject("dtmGridId");
+dtmGrid.setImagePath("<?=$this->baseUrl?>/img/");
+dtmGrid.setHeader("<?=__('Name')?>,<?=__('Date Start')?>,<?=__('Date End')?>");
+dtmGrid.setColTypes("ro,ro,ro");
+dtmGrid.setSkin("xp");
+dtmGrid.setInitWidths("*,120,120");
+dtmGrid.init();
+function dtmGridOnLoaded() {
+}
+function dtmGridReload() {
+	dtmGrid.clearAll();
+	dtmGrid.load("<?=$this->baseUrl?>/discount-table-manager.raw/list",dtmGridOnLoaded,"json");
+}
+dtmGridReload();
+
+function dtmGridOnRowSelected(rowId,cellIndex) {
+	dtmToolbar.enableItem("edit");
+	dtmToolbar.enableItem("delete");
+}
+dtmGrid.attachEvent("onRowSelect",dtmGridOnRowSelected);
+
+var dtmToolbar = new dhtmlXToolbarObject("dtmToolbarId","ClearSilver");
+function dtmToolbarOnLoaded() {
+	dtmToolbar.disableItem("edit");
+	dtmToolbar.disableItem("delete");
+}
+dtmToolbar.loadXML("<?=$this->baseUrl?>/discount-table-manager.raw/toolbar",dtmToolbarOnLoaded);
+dtmToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function dtmToolbarOnClicked(id) {
+	switch(id) {
+		case "add":
+			dtmProcessEdit();
+			break;
+		case "edit":
+			var rowId = dtmGrid.getSelectedRowId();
+			if (rowId == null) {
+				alert("<?=__('No selected item')?>");
+				break;
+			}
+			dtmProcessEdit(rowId);
+			break;
+		case "delete":
+			dtmProcessDelete();
+			break;
+		case "refresh":
+			dtmGridReload();
+			dtmToolbarOnLoaded();
+			break;
+		default:
+			alert("Invalid event: "+id);
+	}
+}
+dtmToolbar.attachEvent("onClick",dtmToolbarOnClicked);
+
+function dtmProcessEdit(id) {
+	var action = "add";
+	var label = "Add";
+	var params = [];
+	if (id) {
+		params.push("id="+id);
+		action = "edit";
+		label = "Edit";
+	}
+	var winEditDiscountTable = globalCreateWindow("windowEditDiscountTableId",params,"<?=$this->baseUrl?>/discount-table-manager.raw/"+action,label+" <?=__('Discount Table')?>",800,600);
+}
+
+function dtmProcessDelete(rowId) {
+	if (!rowId) rowId = dtmGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert("<?=__('No selected item')?>");
+		return;
+	}
+	if (!confirm("<?=__('Are you sure you want to delete selected item?')?>")) return;
+	dtmProcess("delete",{"id":rowId});
+}
+
+function dtmProcess(action,content,form) {
+	if (!action) action = "add";
+	var request = {
+		url: "<?=$this->baseUrl?>/discount-table-manager.raw/process-"+action,
+		handleAs: "json",
+		load: function (data) {
+			if (!data.id) {
+				alert(data);
+				return;
+			}
+			if (action == "delete") {
+				if (dtmGrid.doesRowExist(data.id)) {
+					dtmGrid.deleteRow(data.id);
+				}
+				else {
+					dtmGridReload();
+				}
+			}
+			else {
+				dtmGrid.renderRowData(data);
+			}
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error ('Error: ', error);
+		}
+	};
+	if (content) {
+		request.content = content;
+	}
+	if (form) {
+		request.form = form;
+	}
+	dojo.xhrPost(request);
+}
+
+function dtmGridOnRowDblClicked(rowId,colIndex) {
+	dtmProcessEdit(rowId);
+}
+dtmGrid.attachEvent("onRowDblClicked",dtmGridOnRowDblClicked);
+</script>

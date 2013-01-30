@@ -1,0 +1,26 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+div.gridbox#updateViewGridId table.obj tr.rowselected td {
+	background-color: #ccc;
+}
+</style>
+<fieldset><legend><?=$this->name?></legend>
+<div id="updateViewGridId" style="width:100%;height:320px;"></div>
+</fieldset>
+<script>
+var updateViewGrid = new dhtmlXGridObject("updateViewGridId");
+updateViewGrid.setImagePath("<?=$this->baseUrl?>/img/");
+updateViewGrid.setHeader("");
+updateViewGrid.setNoHeader(true);
+updateViewGrid.setInitWidths("*");
+updateViewGrid.setColTypes("ro");
+updateViewGrid.setSkin("xp");
+updateViewGrid.init();
+<?foreach ($this->data as $key=>$value):?>
+updateViewGrid.addRow("<?=$key?>","");
+updateViewGrid.cells("<?=$key?>",0).setValue("<?=$value?>");
+<?endforeach;?>
+</script>

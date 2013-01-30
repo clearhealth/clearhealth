@@ -1,0 +1,84 @@
+<?=$this->form->renderOpen()?>
+<div id="updateFileContainerId" style="width:100%;height:100%;">
+	<div style="width:99.9%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+		<div id="formRow" style="margin-left:10px;">
+			<dt><label for="updateFile"><strong><?=__('XML File')?></strong></label></dt>
+			<?=$this->formHidden('MAX_FILE_SIZE','204857600')?>
+			<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressKey'))?>
+			<?=$this->formFile('uploadFile',null)?>
+		</div>
+		<br style="clear:left;" />
+		<div id="formRow" style="margin-left:10px;">
+			<?=$this->form->description->renderLabel()?>
+			<?=$this->form->descriptionInput('FormTextarea',array('rows'=>4,'cols'=>30))?>
+		</div>
+		<br style="clear:left;" />
+		<div id="formRow" style="margin-left:10px;">
+			<?=$this->form->okInput()?>
+		</div>
+	</div>
+	<div style="width:99.9%;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+		<dt><label for="updateFile"><strong><?=__('Progress')?></strong></label></dt>
+		<div style="width:250px;border:thin solid black;height:20px;"><div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div></div>
+	</div>
+</div>
+<?=$this->form->renderClose()?>
+
+<script>
+var progressTimer = '';
+function updateFileAjaxUploadFile() {
+	preSubmit<?=$this->form->getId()?>();
+}
+
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.byId("fileUploadFormId").style.display = "none";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/update-manager.raw/process-upload",
+		handleAs: "json",
+		method: "post",
+		form: "<?=$this->form->getId()?>",
+		load: function(data){
+			clearTimeout(progressTimer);
+			dojo.byId("uploadProgressBarId").style.width = "100%";
+			updateMgrGridReload();
+			dojo.byId("fileUploadProgressId").style.display = "none";
+			dojo.byId("fileUploadFormId").style.display = "block";
+			dojo.byId("<?=$this->form->getId()?>").reset();
+			// temporarily close the window
+			dhxWins.window("winNewUploadId").close();
+		},
+		error: function(er) {
+			console.error("error: ",er);
+			return er;
+		}
+	});
+	updateFileInitProgressBar();
+	return false;
+}
+
+function updateFileInitProgressBar(progressKey) {
+	dojo.byId("fileUploadProgressId").style.display = "block";
+	if (typeof progressKey == "undefined") {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/update-manager.raw/view-upload-progress?uploadKey="+progressKey,
+		handleAs: "json", 
+		load: function (data) {
+			if (typeof data.err_msg != "undefined") {
+				clearTimeout(progressTimer);
+				dojo.byId("fileUploadProgressId").style.display = "none";
+				dojo.byId("fileUploadFormId").style.display = "block";
+				alert(data.err_msg);
+				return;
+			}
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout('updateFileInitProgressBar("'+progressKey+'")',1000);
+		}, 
+		error: function (er) {
+			alert("err: "+er)
+		}
+	});
+}
+</script>

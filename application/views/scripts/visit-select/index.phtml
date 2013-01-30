@@ -1,0 +1,376 @@
+<style>
+.visitInput {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 25em;
+}
+div.gridbox#visitListGridId table.obj tr.rowselected td {
+	background-color: #ccc;
+}
+</style>
+<script>
+function setBuildingRooms(practiceId) {
+	if (!practiceId) {
+		var practiceSelect = dojo.byId("visit-practiceId");
+		var practiceIndex = practiceSelect.selectedIndex;
+		practiceId = (practiceIndex >= 0)?practiceSelect.options[practiceIndex].value:0;
+	}
+	var practiceBuildingRoomMap = new Array();
+	<?$this->facilityIterator->rewind()?>
+	<?$this->facilityIterator->setFilter(array('Practice','Building', 'Room'))?>
+	<?foreach($this->facilityIterator as $facilities):?>
+		if (practiceBuildingRoomMap['<?=$facilities['Practice']->practiceId?>'] == undefined) {
+			practiceBuildingRoomMap['<?=$facilities['Practice']->practiceId?>'] = new Array();
+		}
+		if (practiceBuildingRoomMap['<?=$facilities['Practice']->practiceId?>']['<?=$facilities['Building']->buildingId?>_<?=$facilities['Room']->roomId?>'] == undefined) {
+			practiceBuildingRoomMap['<?=$facilities['Practice']->practiceId?>']['<?=$facilities['Building']->buildingId?>_<?=$facilities['Room']->roomId?>'] = new Array();
+		}
+		practiceBuildingRoomMap['<?=$facilities['Practice']->practiceId?>']['<?=$facilities['Building']->buildingId?>_<?=$facilities['Room']->roomId?>'] = '<?=$facilities['Building']->name?>-><?=$facilities['Room']->name?>';
+	<?endforeach?>
+	var buildingRoom = dojo.byId("visit-buildingRoomId");
+	if (practiceBuildingRoomMap[practiceId] == undefined) {
+		alert('<?=__("The selected practice has no buildings enabled, you must select another.")?>');
+		buildingRoom.disabled = true;
+		return;
+	}
+	buildingRoom.disabled = false;
+	buildingRoom.options.length = 0;
+	for (var roomId in practiceBuildingRoomMap[practiceId]) {
+		if (roomId == "<?=(int)$this->room->building->buildingId?>_<?=(int)$this->room->roomId?>") {
+			newOption = new Option(practiceBuildingRoomMap[practiceId][roomId],roomId,true);
+		}
+		else {
+			newOption = new Option(practiceBuildingRoomMap[practiceId][roomId],roomId);
+		}
+		buildingRoom.options[buildingRoom.options.length] = newOption;
+	}
+}
+</script>
+<div id="addSelectVisitContainer" style="width:99.9%;overflow:auto;">
+<fieldset>
+<legend><?=__('Select Visit')?></legend>
+	<div id="visitListGridId" style="margin-left:auto;margin-right:auto;width:600px;height:200px;"></div>
+	<div style="text-align:right;margin-top:10px;">
+		<input type="button" id="selectVisitId" value="<?=__('Select Visit and Enter Visit Data')?>" onClick="visitSelect();" />
+		<input type="button" id="newVisitId" value="<?=__('Add New Visit')?>" onClick="visitAddNew();" />
+	</div>
+</fieldset>
+
+<fieldset>
+<legend id="editVisitId"><?=__('Add New Visit')?></legend>
+<form name="visitFormId" id="visitFormId" method="post">
+	<div style="float:left;">
+		<div class="formRow">
+			<dt><label for="visit-practiceId"><?=__('Select Practice')?>:</label></dt>
+			<?=$this->formSelect(
+				array(
+					'name'=>'visit[practiceId]',
+					'options'=>$this->practices,
+					'attribs'=>array('onchange'=>'setBuildingRooms(this.options[this.selectedIndex].value)','class'=>'visitInput','id'=>'visit-practiceId'),
+					'value'=>(int)$this->room->building->practice->practiceId,
+				)
+			)?>
+		</div>
+		<br style="clear:left"/>
+		<div class="formRow">
+			<dt><label for="visit-buildingRoomId"><?=__('Select Building/Room')?>:</label></dt>
+			<?=$this->formSelect(
+				array(
+					'name'=>'visit[buildingRoomId]',
+					'options'=>array('0'=>__('Select Practice First')),
+					'attribs'=>array('class'=>'visitInput','id'=>'visit-buildingRoomId'),
+				)
+			)?>
+		</div>
+		<br style="clear:left"/>
+		<div class="formRow">
+			<dt><label for="visit-dateOfTreatment"><?=__('Date of Service')?></label></dt>
+			<?=$this->formDateText('visit[dateOfTreatment]',date('Y-m-d'))?>
+		</div>
+	</div>
+	<div style="float:left;margin-left:20px;">
+		<div class="formRow">
+			<dt><label for="visit-providerId"><?=__('Provider')?></label></dt>
+			<?=$this->formSelect(
+				array(
+					'name'=>'visit[providerId]',
+					'options'=>$this->providers,
+					'value'=>$this->providerId,
+					'attribs'=>array('class'=>'visitInput','id'=>'visit-providerId'),
+				)
+			)?>
+		</div>
+		<br style="clear:left"/>
+		<div class="formRow">
+			<dt><label for="visit-activePayerId"><?=__('Insurance Programs')?>:</label></dt>
+			<?=$this->formSelect(
+				array(
+					'name'=>'visit[activePayerId]',
+					'options'=>$this->insurancePrograms,
+					'attribs'=>array('class'=>'visitInput','id'=>'visit-activePayerId'),
+				)
+			)?>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="float:right;">
+		<input type="button" id="saveVisitId" value="<?=__('Save Visit')?>" onClick="visitProcessSave()" />
+		<input type="button" id="closeVisitId" value="<?=__('Save and Close Visit')?>" onClick="visitProcessSaveAndClose()" style="display:none;" />
+		<input type="button" id="voidVisitId" value="<?=__('Void Visit')?>" onClick="visitProcessVoid()" style="display:none;" />
+		<?=$this->formHidden('visit[visitId]',$this->visit->visitId,array('id'=>'visit-visitId'))?>
+		<?=$this->formHidden('visit[buildingId]',$this->visit->buildingId,array('id'=>'visit-buildingId'))?>
+		<?=$this->formHidden('visit[roomId]',$this->visit->roomId,array('id'=>'visit-roomId'))?>
+		<?=$this->formHidden('visit[patientId]',$this->personId,array('id'=>'visit-patientId'))?>
+	</div>
+</form>
+</fieldset>
+</div>
+
+<script>
+setBuildingRooms();
+
+var selectedVisitId = "<?=$this->visit->visitId?>";
+visitListGrid = new dhtmlXGridObject('visitListGridId');
+visitListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+visitListGrid.setHeader("<?=__('Date of Service')?>,<?=__('Location')?>,<?=__('Provider')?>,<?=__('Insurance Program')?>,,,,,,,,<?=__('Status')?>");
+var indexVisitDOS = 0;
+var indexVisitLocation = 1;
+var indexVisitProvider = 2;
+var indexVisitIP = 3;
+var indexVisitPracticeId = 4;
+var indexVisitBuildingId = 5;
+var indexVisitRoomId = 6;
+var indexVisitProviderId = 7;
+var indexVisitPayerId = 8;
+var indexVisitClosed = 9;
+var indexVisitVoid = 10;
+var indexVisitStatus = 11;
+visitListGrid.setInitWidths("120,*,*,*,0,0,0,0,0,0,0,50");
+visitListGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+visitListGrid.setSkin("xp");
+visitListGrid.init();
+visitListGrid.load("<?=$this->baseUrl?>/visit-select.raw/list-visits?personId="+mainController.getActivePatient(),function(){
+	if (visitListGrid.doesRowExist(selectedVisitId)) {
+		visitListGrid.selectRow(visitListGrid.getRowIndex(selectedVisitId),true);
+	}
+},"json");
+visitListGrid.attachEvent("onRowSelect",function (rowId,cellIndex){
+	if (this.cells(rowId,indexVisitVoid).getValue() != "0" && !confirm("Visit is marked VOID, are you sure you want to continue?")) {
+		this.clearSelection();
+		var activeVisit = mainController.getActiveVisit();
+		if (visitListGrid.doesRowExist(activeVisit)) {
+			visitListGrid.selectRow(visitListGrid.getRowIndex(activeVisit));
+		}
+		return;
+	}
+	dojo.byId("visit-visitId").value = rowId;
+	var practiceSelect = dojo.byId("visit-practiceId");
+	var practiceId = this.cells(rowId,indexVisitPracticeId).getValue();
+	for (var i = 0; i < practiceSelect.options.length; i++) {
+		if (practiceSelect.options[i].value == practiceId) {
+			practiceSelect.selectedIndex = i;
+			setBuildingRooms(practiceId);
+			break;
+		}
+	}
+	var buildingId = this.cells(rowId,indexVisitBuildingId).getValue();
+	var roomId = this.cells(rowId,indexVisitRoomId).getValue();
+	var buildingRoomSelect = dojo.byId("visit-buildingRoomId");
+	var buildingRoomId = buildingId + "_" + roomId;
+	for (var i = 0; i < buildingRoomSelect.options.length; i++) {
+		if (buildingRoomSelect.options[i].value == buildingRoomId) {
+			buildingRoomSelect.selectedIndex = i;
+			break;
+		}
+	}
+
+	var providerId = this.cells(rowId,indexVisitProviderId).getValue();
+	var providerSelect = dojo.byId("visit-providerId");
+	for (var i = 0; i < providerSelect.options.length; i++) {
+		if (providerSelect.options[i].value == providerId) {
+			providerSelect.selectedIndex = i;
+			break;
+		}
+	}
+
+	var activePayerId = this.cells(rowId,indexVisitPayerId).getValue();
+	var activePayerSelect = dojo.byId("visit-activePayerId");
+	for (var i = 0; i < activePayerSelect.options.length; i++) {
+		if (activePayerSelect.options[i].value == activePayerId) {
+			activePayerSelect.selectedIndex = i;
+			break;
+		}
+	}
+	var value = this.cells(rowId,indexVisitDOS).getValue()
+	// format: 2010-09-01
+	var yyyy = parseInt(value.substr(0,4));
+	var mm = value.substr(5,2);
+	if (mm.substr(0,1) == "0") {
+		mm = mm.substr(1,1);
+	}
+	mm = parseInt(mm) - 1;
+	var dd = value.substr(8,2);
+	if (dd.substr(0,1) == "0") {
+		dd = dd.substr(1,1);
+	}
+	dd = parseInt(dd);
+	boxVisitDateOfTreatment.setValue(new Date(yyyy,mm,dd));
+
+	var saveCloseVal = "<?=__('Save and Close Visit')?>";
+	// check if status is closed
+	var isClosed = this.cells(rowId,indexVisitClosed).getValue();
+	if (isClosed != "0") {
+		saveCloseVal = "<?=__('Save and Reopen Visit')?>";
+	}
+	dojo.byId("closeVisitId").value = saveCloseVal;
+	dojo.byId("closeVisitId").style.display = "";
+	dojo.byId("editVisitId").innerHTML = "<?=__('Edit Existing Visit')?>";
+
+	var voidDisplay = "";
+	// check if status is void
+	var isVoid = this.cells(rowId,indexVisitVoid).getValue();
+	if (isVoid != "0") {
+		voidDisplay = "none";
+		// hides setter buttons
+		dojo.byId("closeVisitId").style.display = "none";
+	}
+	dojo.byId("voidVisitId").style.display = voidDisplay;
+
+	// shows setter buttons by default
+	dojo.byId("saveVisitId").style.display = "";
+	// if status is void or closed then set to readonly mode
+	if (isVoid != "0" || isClosed != "0") {
+		dojo.byId("saveVisitId").style.display = "none";
+	}
+	// recall toolbar to reset to selected visit
+	mainController.setActiveVisit(rowId);
+	initMainToolbar(null,mainController.getActivePatient());
+});
+
+function visitSelect() {
+	var rowId = visitListGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert("<?=__('Please select visit.')?>");
+		return;
+	}
+	if (visitListGrid.cells(rowId,indexVisitVoid).getValue() != "0" && !confirm("Visit is marked VOID, are you sure you want to continue?")) return;
+	visitSelectSetMostRecentVisit(rowId);
+}
+
+function visitSelectSetMostRecentVisit(visitId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-select.raw/process-most-recent-visit",
+		handleAs: "json",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"visitId": visitId,
+		},
+		load: function (data) {
+			mainController.setActiveVisit(visitId);
+			initMainToolbar(null,mainController.getActivePatient());
+			refreshCurrentTab();
+			visitSelector.oAccordion.openItem(visitSelector.accordionVisitDetailsId);
+		},
+		error: function (er) {
+			alert('err: ' + er)
+		}
+	});
+}
+
+function visitAddNew() {
+	dojo.byId("visit-visitId").value = "0";
+	dojo.byId("closeVisitId").style.display = "none";
+	dojo.byId("voidVisitId").style.display = "none";
+	dojo.byId("saveVisitId").style.display = "";
+	dojo.byId("editVisitId").innerHTML = "<?=__('Add New Visit')?>";
+	visitResetForm();
+}
+
+function visitResetForm() {
+	dojo.byId("visitFormId").reset();
+	setBuildingRooms();
+	boxVisitDateOfTreatment.setValue(new Date());
+}
+
+function visitProcessSave() {
+	visitProcess("save-visit");
+}
+
+function visitProcessSaveAndClose() {
+	var action = "close";
+	if (dojo.byId("closeVisitId").value == "<?=__('Save and Reopen Visit')?>") {
+		action = "reopen";
+	}
+	if (!confirm("Are you sure you want to "+action+" visit?")) return;
+
+	if (action != "close") {
+		visitProcess("save-and-"+action+"-visit");
+		return;
+	}
+
+	var visitId = dojo.byId("visit-visitId").value;
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/check-rules",
+		handleAs: "json",
+		content: {
+			"visitId": visitId,
+		},
+		load: function(data) {
+			if (data.event) {
+				var msg = data.displayEvent + ": " + data.message;
+				if (data.event == "<?=ClaimRule::EVENT_WARNING?>" && !confirm(msg+"\nContinue?")) {
+					return;
+				}
+				else if (data.event == "<?=ClaimRule::EVENT_BLOCK?>") {
+					alert(msg);
+					return;
+				}
+			}
+			visitProcess("save-and-"+action+"-visit");
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+function visitProcessVoid() {
+	if (!confirm("<?=__('Are you sure you want to void visit?')?>")) return;
+	visitProcess("void-visit");
+}
+
+function visitProcess(action) {
+	var buildingRoomSelect = dojo.byId("visit-buildingRoomId");
+	var roomIndex = buildingRoomSelect.selectedIndex;
+	var buildingRoomId = (roomIndex >= 0)?buildingRoomSelect.options[roomIndex].value:0;
+	// explode buildingRoomId to buildingId and roomId
+	var splittedBuildingRoomId = buildingRoomId.split("_");
+	dojo.byId("visit-buildingId").value = (splittedBuildingRoomId[0]||0);
+	dojo.byId("visit-roomId").value = (splittedBuildingRoomId[1]||0);
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-select.raw/process-"+action,
+		handleAs: "json",
+		form: "visitFormId",
+		load: function (data) {
+			if (!data.id) {
+				alert(data);
+			}
+			else {
+				if (!visitListGrid.doesRowExist(data.id)) {
+					// append at first row
+					visitListGrid.addRow(data.id,"",0);
+				}
+				visitListGrid.renderRowData(data);
+				visitListGrid.selectRow(visitListGrid.getRowIndex(data.id),true);
+			}
+		},
+		error: function (er) {
+			alert('err: ' + er)
+		}
+	});
+}
+</script>

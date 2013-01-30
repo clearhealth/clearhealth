@@ -1,0 +1,508 @@
+<div style="width:760px;">
+	<fieldset><legend><?=__('Report Information')?></legend>
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Parent')?>: <span id="parentSpanId"><?=$this->parent?></span><?if (!($this->form->reportBaseId->getValue() > 0) && strlen($this->parent) > 0):?> &nbsp; &nbsp; <input type="checkbox" id="useParentId" name="useParentId" checked="checked" /> use as parent?<?=$this->formHidden('parentId',$this->parentId,array('id'=>'parentId'))?><?endif;?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Display Name')?>: <?=$this->form->displayNameInput('FormText',array('onChange'=>'reportBaseNameOnChanged(this.value)','style'=>'width:150px;'))?>
+		<span id="reportBaseSystemNameId"><?=$this->form->systemName->getValue()?></span>
+		<?=$this->form->systemNameInput('FormHidden')?>
+		&nbsp; &nbsp; &nbsp; <?=$this->form->okInput()?>
+	</div>
+	<?=$this->form->reportBaseIdInput('FormHidden')?>
+	<div id="filtersContainerId" style="display:none;"></div>
+	<?=$this->form->renderClose()?>
+	</fieldset>
+</div>
+<div id="reportBaseGridQueriesContainerId" style="width:760px;">
+	<fieldset><legend><?=__('Queries')?></legend>
+		<div id="reportBaseQueriesGridId" style="width:740px;height:200px;"></div>
+	</fieldset>
+</div>
+<div id="reportBaseGridContainerId" style="width:760px;">
+	<div style="float:left;width:380px;">
+		<fieldset><legend><?=__('Filters')?></legend>
+			<div id="reportBaseFiltersGridId" style="width:360px;height:150px;"></div>
+		</fieldset>
+	</div>
+	<div style="float:left;width:380px;">
+		<fieldset><legend><?=__('Views')?></legend>
+			<div id="reportBaseViewsGridId" style="width:360px;height:150px;"></div>
+		</fieldset>
+	</div>
+</div>
+<script>
+function reportBaseNameOnChanged(value) {
+	var systemName = dojo.byId("<?=$this->form->systemName->getId()?>");
+	if (systemName == null) return;
+
+	// convert value to camelCase
+	value = value.toLowerCase();
+	value = value.replace(/[^A-Z0-9 ]/ig,""); // remove character other than alphanumeric and space
+	value = value.replace(/^(.)|\s(.)/g,function ($1) {
+        		return $1.toUpperCase();
+	});
+	value = value.replace(/ /g,"");
+	value = value.charAt(0).toLowerCase() + value.substr(1);
+
+	systemName.value = value;
+	dojo.byId("reportBaseSystemNameId").innerHTML = value;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	var jsonData = dojo.fromJson(data);
+	var isAdd = jsonData.isAdd;
+	if (isAdd) {
+		reportsManagerGrid.addRow(jsonData.id,"",0,jsonData.parentId);
+	}
+	for (var i in jsonData.data) {
+		reportsManagerGrid.cells(jsonData.id,i).setValue(jsonData.data[i]);
+	}
+	if (isAdd) {
+		reportsManagerGrid.openItem(jsonData.parentId);
+	}
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+
+/* === FILTERS GRID === */
+var reportBaseFiltersGrid = new dhtmlXGridObject("reportBaseFiltersGridId");
+reportBaseFiltersGrid.enableDragAndDrop(true);
+reportBaseFiltersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseFiltersGrid.setHeader("<?=__('Name')?>,<?=__('Default Value')?>,<?=__('Type')?>,<?=__('Options')?>");
+//reportBaseFiltersGrid.setNoHeader(true);
+reportBaseFiltersGrid.setInitWidths("*,*,120,*");
+reportBaseFiltersGrid.setColTypes("ro,ro,ro,ro");
+reportBaseFiltersGrid.init();
+
+var indexRBFName = 0;
+var indexRBFDefaultValue = 1;
+var indexRBFType = 2;
+var indexRBFOptions = 3;
+
+<?/*$filters = array();
+if (strlen($this->form->filters->getValue()) > 0) $filters = unserialize($this->form->filters->getValue());*/
+foreach ($this->filters as $key=>$filter):?>
+var rowId = "<?=$key?>";
+reportBaseFiltersGrid.addRow(rowId,"");
+reportBaseFiltersGrid.cells(rowId,indexRBFName).setValue("<?=$filter->name?>");
+reportBaseFiltersGrid.cells(rowId,indexRBFDefaultValue).setValue("<?=$filter->defaultValue?>");
+reportBaseFiltersGrid.cells(rowId,indexRBFType).setValue("<?=$filter->type?>");
+reportBaseFiltersGrid.cells(rowId,indexRBFOptions).setValue("<?=$filter->options?>");
+<?endforeach;?>
+
+function reportBaseFiltersGridOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-reorder-filter",
+		handleAs: "json",
+		content: {
+			"baseId": dojo.byId("<?=$this->form->reportBaseId->getId()?>").value,
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			reportBaseFiltersGrid.clearAll();
+			for (var i in data.rows) {
+				var row = data.rows[i];
+				reportBaseFiltersGrid.addRow(row.id,"");
+				for (var j in row.data) {
+					reportBaseFiltersGrid.cells(row.id,j).setValue(row.data[j]);
+				}
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+reportBaseFiltersGrid.attachEvent("onDrag",reportBaseFiltersGridOnDragged);
+
+function reportBaseFiltersGridOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+reportBaseFiltersGrid.attachEvent("onDrop",reportBaseFiltersGridOnDropped);
+
+dhtmlxEvent(reportBaseFiltersGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function reportBaseFiltersEdit(id) {
+	var label = "<?=__('Add Filter')?>";
+	var action = "add-filter";
+	var params = [];
+	if (id) {
+		label = "<?=__('Edit Filter')?>";
+		action = "edit-filter";
+		if (reportBaseFiltersGrid.cells(id,0) != null) {
+			label += ": "+reportBaseFiltersGrid.cells(id,0).getValue();
+		}
+	}
+	else {
+		id = 0;
+	}
+	params.push("baseId="+dojo.byId("<?=$this->form->reportBaseId->getId()?>").value);
+	params.push("filterId="+id);
+	globalCreateWindow("winReportBaseFilterId",params,"<?=$this->baseUrl?>/reports-manager.raw/"+action,label,400,500);
+}
+
+function reportBaseFiltersDelete(id) {
+	if (!confirm("<?=__('Are you sure you want to delete filter')?>: "+reportBaseFiltersGrid.cells(id,0).getValue()+"?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-filter",
+		handleAs: "json",
+		content: {
+			"baseId": dojo.byId("<?=$this->form->reportBaseId->getId()?>").value,
+			"filterId": id,
+		},
+		load: function (data) {
+			reportBaseFiltersGrid.deleteRow(id);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportBaseFiltersGridOnRowDblClicked(rowId,cellIndex) {
+	reportBaseFiltersEdit(rowId);
+}
+reportBaseFiltersGrid.attachEvent("onRowDblClicked",reportBaseFiltersGridOnRowDblClicked);
+
+/* === FILTERS MENU === */
+var reportBaseFiltersMenu = new dhtmlXMenuObject(null,"standard");
+reportBaseFiltersMenu.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseFiltersMenu.renderAsContextMenu();
+reportBaseFiltersMenu.setOpenMode("web");
+function reportBaseFiltersMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			reportBaseFiltersEdit();
+			/*
+			var rowId = reportBaseFiltersGrid.uid();
+			reportBaseFiltersGrid.addRow(rowId,"blank",1);
+			reportBaseFiltersGrid.cells(rowId,indexRBFType).setValue("STRING");
+			reportBaseFiltersEdit(reportBaseFiltersGrid.getSelectedRowId());
+			*/
+			break;
+		case "edit":
+			reportBaseFiltersEdit(reportBaseFiltersGrid.getSelectedRowId());
+			break;
+		case "delete":
+			reportBaseFiltersDelete(reportBaseFiltersGrid.getSelectedRowId());
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+}
+reportBaseFiltersMenu.attachEvent("onClick",reportBaseFiltersMenuOnClicked);
+
+function reportBaseFiltersMenuOnLoaded() {
+}
+reportBaseFiltersMenu.loadXML("<?=$this->baseUrl?>/reports-manager.raw/get-context-menu?type=filter",reportBaseFiltersMenuOnLoaded);
+
+reportBaseFiltersMenu.attachEvent("onContextMenu",function(id){
+	reportBaseFiltersMenu.hideItem("edit");
+	reportBaseFiltersMenu.hideItem("delete");
+	var rowId = reportBaseFiltersGrid.getSelectedRowId();
+	if (rowId != null) {
+		reportBaseFiltersMenu.showItem("edit");
+		reportBaseFiltersMenu.showItem("delete");
+	}
+});
+
+reportBaseFiltersGrid.hdr.id = reportBaseFiltersGrid.uid();
+reportBaseFiltersMenu.addContextZone(reportBaseFiltersGrid.hdr.id);
+reportBaseFiltersGrid.enableContextMenu(reportBaseFiltersMenu);
+
+
+
+/* === QUERIES GRID === */
+var reportBaseQueriesGrid = new dhtmlXGridObject("reportBaseQueriesGridId");
+reportBaseQueriesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseQueriesGrid.setHeader("<?=__('Display Name')?>");
+reportBaseQueriesGrid.setInitWidths("*");
+reportBaseQueriesGrid.setColTypes("ro");
+reportBaseQueriesGrid.init();
+
+function reportBaseQueriesEdit(queryId) {
+	var label = "<?=__('Add Query')?>";
+	var action = "add-query";
+	var params = [];
+	if (queryId) {
+		label = "<?=__('Edit Query')?>";
+		action = "edit-query";
+		if (reportBaseQueriesGrid.cells(queryId,0) != null) {
+			label += ": "+reportBaseQueriesGrid.cells(queryId,0).getValue();
+		}
+	}
+	else {
+		queryId = 0;
+		params.push("baseId="+dojo.byId("<?=$this->form->reportBaseId->getId()?>").value);
+	}
+	params.push("queryId="+queryId);
+	globalCreateWindow("winReportBaseQueryId",params,"<?=$this->baseUrl?>/reports-manager.raw/"+action,label,400,500);
+}
+
+function reportBaseQueriesDelete(queryId) {
+	if (!confirm("<?=__('Are you sure you want to delete filter')?>: "+reportBaseQueriesGrid.cells(queryId,0).getValue()+"?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-query",
+		handleAs: "json",
+		content: {
+			"queryId": queryId,
+		},
+		load: function (data) {
+			//reportBaseQueriesDelete(queryId);
+			reportBaseQueriesGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportBaseQueriesGridOnRowDblClicked(rowId,cellIndex) {
+	reportBaseQueriesEdit(rowId);
+}
+reportBaseQueriesGrid.attachEvent("onRowDblClicked",reportBaseQueriesGridOnRowDblClicked);
+
+function reportBaseQueriesGridOnLoaded() {
+}
+function reportBaseQueriesGridReload() {
+	reportBaseQueriesGrid.clearAll();
+	reportBaseQueriesGrid.load("<?=$this->baseUrl?>/reports-manager.raw/list-queries?baseId="+dojo.byId("<?=$this->form->reportBaseId->getId()?>").value,reportBaseQueriesGridOnLoaded,"json");
+}
+
+dhtmlxEvent(reportBaseQueriesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+/* === QUERIES MENU === */
+var reportBaseQueriesMenu = new dhtmlXMenuObject(null,"standard");
+reportBaseQueriesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseQueriesMenu.renderAsContextMenu();
+reportBaseQueriesMenu.setOpenMode("web");
+function reportBaseQueriesMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			reportBaseQueriesEdit();
+			break;
+		case "edit":
+			reportBaseQueriesEdit(reportBaseQueriesGrid.getSelectedRowId());
+			break;
+		case "delete":
+			reportBaseQueriesDelete(reportBaseQueriesGrid.getSelectedRowId());
+			break;
+	}
+}
+reportBaseQueriesMenu.attachEvent("onClick",reportBaseQueriesMenuOnClicked);
+
+function reportBaseQueriesMenuOnLoaded() {
+}
+reportBaseQueriesMenu.loadXML("<?=$this->baseUrl?>/reports-manager.raw/get-context-menu?type=query",reportBaseQueriesMenuOnLoaded);
+
+reportBaseQueriesMenu.attachEvent("onContextMenu",function(id){
+	reportBaseQueriesMenu.hideItem("edit");
+	reportBaseQueriesMenu.hideItem("delete");
+	var rowId = reportBaseQueriesGrid.getSelectedRowId();
+	if (rowId != null) {
+		reportBaseQueriesMenu.showItem("edit");
+		reportBaseQueriesMenu.showItem("delete");
+	}
+});
+
+reportBaseQueriesGrid.hdr.id = reportBaseQueriesGrid.uid();
+reportBaseQueriesMenu.addContextZone(reportBaseQueriesGrid.hdr.id);
+reportBaseQueriesGrid.enableContextMenu(reportBaseQueriesMenu);
+
+
+
+/* === VIEWS GRID === */
+var reportBaseViewsGrid = new dhtmlXGridObject("reportBaseViewsGridId");
+reportBaseViewsGrid.enableDragAndDrop(true);
+reportBaseViewsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseViewsGrid.setHeader("<?=__('Display Name')?>");
+reportBaseViewsGrid.setInitWidths("*");
+reportBaseViewsGrid.setColTypes("ro");
+reportBaseViewsGrid.init();
+
+function reportBaseViewsAdd() {
+	var displayName = null;
+	do {
+		displayName = prompt("<?=__('View Display Name')?>");
+	} while (displayName != null && displayName.length <= 0);
+	if (displayName == null) {
+		return;
+	}
+
+	// convert value to camelCase
+	var systemName = displayName.toLowerCase();
+	systemName = systemName.replace(/[^A-Z0-9 ]/ig,""); // remove character other than alphanumeric and space
+	systemName = systemName.replace(/^(.)|\s(.)/g,function ($1) {
+        		return $1.toUpperCase();
+	});
+	systemName = systemName.replace(/ /g,"");
+	systemName = systemName.charAt(0).toLowerCase() + systemName.substr(1);
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-add-view",
+		handleAs: "json",
+		content: {
+			"reportView[reportBaseId]": "<?=$this->form->reportBaseId->getValue()?>",
+			"reportView[displayName]": displayName,
+			"reportView[systemName]": systemName,
+		},
+		load: function (data) {
+			if (!data) return;
+			if (!reportBaseViewsGrid.doesRowExist(data.id)) {
+				reportBaseViewsGrid.addRow(data.id,"");
+			}
+			for (var i in data.data) {
+				reportBaseViewsGrid.cells(data.id,i).setValue(data.data[i]);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportBaseViewsEdit(viewId) {
+	if (!viewId) {
+		reportBaseViewsAdd();
+		return;
+	}
+	var label = "<?=__('Edit View')?>";
+	var params = [];
+	if (reportBaseViewsGrid.cells(viewId,0) != null) {
+		label += ": "+reportBaseViewsGrid.cells(viewId,0).getValue();
+	}
+	params.push("viewId="+viewId);
+	globalCreateWindow("winReportBaseViewId",params,"<?=$this->baseUrl?>/reports-manager.raw/edit-view",label,500,500);
+}
+
+function reportBaseViewsDelete(viewId) {
+	if (!confirm("<?=__('Are you sure you want to delete view')?>: "+reportBaseViewsGrid.cells(viewId,0).getValue()+"?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-view",
+		handleAs: "json",
+		content: {
+			"viewId": viewId,
+		},
+		load: function (data) {
+			reportBaseViewsGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function reportBaseViewsGridOnRowDblClicked(rowId,cellIndex) {
+	reportBaseViewsEdit(rowId);
+}
+reportBaseViewsGrid.attachEvent("onRowDblClicked",reportBaseViewsGridOnRowDblClicked);
+
+function reportBaseViewsGridOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-reorder-view",
+		handleAs: "json",
+		content: {
+			"baseId": dojo.byId("<?=$this->form->reportBaseId->getId()?>").value,
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			reportBaseViewsGrid.clearAll();
+			reportBaseViewsGrid.parse(data,"json");
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+reportBaseViewsGrid.attachEvent("onDrag",reportBaseViewsGridOnDragged);
+
+function reportBaseViewsGridOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+reportBaseViewsGrid.attachEvent("onDrop",reportBaseViewsGridOnDropped);
+
+function reportBaseViewsGridOnLoaded() {
+}
+function reportBaseViewsGridReload() {
+	reportBaseViewsGrid.clearAll();
+	reportBaseViewsGrid.load("<?=$this->baseUrl?>/reports-manager.raw/list-views?baseId="+dojo.byId("<?=$this->form->reportBaseId->getId()?>").value,reportBaseViewsGridOnLoaded,"json");
+}
+
+dhtmlxEvent(reportBaseViewsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+/* === VIEWS MENU === */
+var reportBaseViewsMenu = new dhtmlXMenuObject(null,"standard");
+reportBaseViewsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+reportBaseViewsMenu.renderAsContextMenu();
+reportBaseViewsMenu.setOpenMode("web");
+function reportBaseViewsMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			reportBaseViewsAdd();
+			break;
+		case "edit":
+			reportBaseViewsEdit(reportBaseViewsGrid.getSelectedRowId());
+			break;
+		case "delete":
+			reportBaseViewsDelete(reportBaseViewsGrid.getSelectedRowId());
+			break;
+	}
+}
+reportBaseViewsMenu.attachEvent("onClick",reportBaseViewsMenuOnClicked);
+
+function reportBaseViewsMenuOnLoaded() {
+}
+reportBaseViewsMenu.loadXML("<?=$this->baseUrl?>/reports-manager.raw/get-context-menu?type=view",reportBaseViewsMenuOnLoaded);
+
+reportBaseViewsMenu.attachEvent("onContextMenu",function(id){
+	reportBaseViewsMenu.hideItem("edit");
+	reportBaseViewsMenu.hideItem("delete");
+	var rowId = reportBaseViewsGrid.getSelectedRowId();
+	if (rowId != null) {
+		reportBaseViewsMenu.showItem("edit");
+		reportBaseViewsMenu.showItem("delete");
+	}
+});
+
+reportBaseViewsGrid.hdr.id = reportBaseViewsGrid.uid();
+reportBaseViewsMenu.addContextZone(reportBaseViewsGrid.hdr.id);
+reportBaseViewsGrid.enableContextMenu(reportBaseViewsMenu);
+
+
+<?if ($this->form->reportBaseId->getValue() > 0):?>
+reportBaseQueriesGridReload();
+reportBaseViewsGridReload();
+<?endif;?>
+
+</script>

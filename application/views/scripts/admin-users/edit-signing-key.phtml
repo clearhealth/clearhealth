@@ -1,0 +1,87 @@
+<script>
+function editSigningKeySubmit() {
+	var currentSignature = dojo.byId("user-current-signature").value;
+	var newSignature = dojo.byId("user-new-signature").value;
+	var confirmNewSignature = dojo.byId("user-confirm-new-signature").value;
+	if (newSignature != confirmNewSignature) {
+		alert("<?=__('New signature does not match confirmed signature.')?>");
+		return;
+	}
+	<?if (!$this->isNewKey):?>
+	if (!confirm("<?=__('Changing of signing key is irreversible. Do you want to continue?')?>")) {
+		return;
+	}
+	<?endif;?>
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/admin-users.raw/process-edit-signing-key",
+		handleAs: "json",
+		content: {
+			"user[currentSignature]": currentSignature,
+			"user[newSignature]": newSignature,
+			"user[confirmNewSignature]": confirmNewSignature,
+		},
+		load: function (data) {
+			if (data == true) {
+				alert("<?=('Signing Key sucessfully changed')?>");
+				dhxWins.window("winEditSigningKeyId").close();
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function validateKeySubmit() {
+	var currentSignature = dojo.byId("user-current-signature").value;
+	alert(currentSignature);
+	if (currentSignature == "") {
+		alert("<?=__('Signature must not be empty.')?>");
+		return;
+	}
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/admin-users.raw/validate-signing-key",
+		handleAs: "json",
+		content: {
+			"signature": currentSignature,
+		},
+		load: function (data) {
+			alert(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>
+<div style="float:left;">
+	<form id="editSigningKeyForm" method="post" action="<?=$this->baseUrl?>/admin-users.raw/process-edit-signing-key">
+
+	<div class="formRow"<?=($this->isNewKey)?' style="display:none;"':''?>>
+		<dt><label for="user-current-signature" class="optional"><?=__('Current Signature')?></label></dt>
+		<input type="password" name="user[currentSignature]" id="user-current-signature" size="16" helper="formText" value=""/>
+		<a href="javascript:validateKeySubmit()" title="<?=__('Validate')?>"><img src="<?=$this->baseUrl?>/img/sm-completed.png" alt="<?=__('Validate')?>" /></a>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label for="user-new-signature" class="optional"><?=__('New Signature')?></label></dt>
+		<input type="password" name="user[newSignature]" id="user-new-signature" size="16" helper="formText" value=""/>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label for="user-old-signature" class="optional"><?=__('Confirm New Signature')?></label></dt>
+		<input type="password" name="user[confirmNewSignature]" id="user-confirm-new-signature" size="16" helper="formText" value=""/>
+	</div>
+	<br style="clear:left"/>
+	<div style="text-align:center;margin-top:10px;">
+		<input type="button" value="<?=__('OK')?>" onClick="editSigningKeySubmit()" />
+		<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winEditSigningKeyId').close()"/>
+	</div>
+
+	</form>
+</div>

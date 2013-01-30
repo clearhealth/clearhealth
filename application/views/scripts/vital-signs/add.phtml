@@ -1,0 +1,57 @@
+<style>
+#vitalsTable td, th {
+	text-align:center;
+	padding-right:4px;
+}
+</style>
+<fieldset>
+<legend><?=__("Vitals input template")?>: <?=__("Complete Set")?></legend>
+<?=$this->form->renderOpen()?>
+<?=$this->form->getElement('vitalSignTemplateId')->renderViewHelper()?>
+<?=$this->form->getElement('personId')->renderViewHelper()?>
+<table cellspacing="0" cellpadding="0" id="vitalsTable">
+<thead>
+<th>#</th>
+<th colspan="2"><?=__("Unavailable")?></th>
+<th colspan="2"><?=__("Refused")?></th>
+<th colspan="3"><?=__("Vital")?></th>
+<th colspan="2"><?=__("Value")?></th>
+<th colspan="2"><?=__("Units")?></th>
+<th><?=__("Qualifiers")?></th>
+</thead>
+<tbody>
+<?
+$counter =1;
+foreach($this->form->getDisplayGroups() as $displayGroup):?>
+<tr>
+<td><?=$counter++?></td>
+	<?foreach($displayGroup->getElements() as $element):?>
+	<?$element->setAttrib('style','width:90px;')?>
+	<td><?=$element->renderLabel()?></td>
+	<td><?echo $element->renderViewHelper();
+	if ($element->getDecorator('ScriptTag')) {
+		echo $element->renderScriptTag();
+	}?></td>
+	<?endforeach;?>
+</tr>
+<?endforeach;?>
+</tbody>
+</table>
+</fieldset>
+<div style="float:right;">
+<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowAddVitalSignsId').close()"/>
+<?=$this->form->okInput()?>
+<script>
+function postSubmitvsaddform() {
+	//initMainToolbar(null,mainController.getActivePatient());
+	mainController.refreshActivePatient();
+	//refreshCurrentTab();
+	<?if($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		<?=$this->jsCallback?>();
+	}
+	<?endif;?>
+}
+</script>
+<?=$this->form->renderClose()?>
+</div>

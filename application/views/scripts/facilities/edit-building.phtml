@@ -1,0 +1,86 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+<div style="float:left;width:100%;">
+	<?=$this->form->renderOpen()?>
+	<fieldset><legend><?=__('Building Information')?></legend>
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->name->renderLabel()?>
+			<?=$this->form->nameInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->description->renderLabel()?>
+			<?=$this->form->descriptionInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->identifier->renderLabel()?>
+			<?=$this->form->identifierInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->facilityCodeId->renderLabel()?>
+			<?=$this->form->facilityCodeIdInput('FormSelect',array('style'=>'width:200px;','options'=>$this->facilityCodes))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->phoneNumber->renderLabel()?>
+			<?=$this->form->phoneNumberInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->fax->renderLabel()?>
+			<?=$this->form->faxInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label class="optional"><strong><?=__('Address')?></strong></label></dt>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->line1->renderLabel()?>
+					<?=$this->form->line1Input('FormText',array('style'=>'width:150px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->line2->renderLabel()?>
+					<?=$this->form->line2Input('FormText',array('style'=>'width:150px;'))?>
+				</div>
+			</div>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->city->renderLabel()?>
+					<?=$this->form->cityInput('FormText',array('style'=>'width:130px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->state->renderLabel()?>
+					<?=$this->form->stateInput('FormSelect',array('style'=>'width:100px;','options'=>$this->statesList))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->postalCode->renderLabel()?>
+					<?=$this->form->postalCodeInput('FormText',array('style'=>'width:60px;'))?>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+		<?=$this->form->idInput('FormHidden')?>
+		<?=$this->form->practiceIdInput('FormHidden')?>
+		<?=$this->formButton('btnCancel','Cancel',array('onClick'=>'dhxWins.window("windowEditORMObjectId").close();'))?>
+		<?=$this->form->okInput('FormButton')?>
+	</div>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function postSubmit<?=$this->form->getId()?>() {
+	dhxWins.window("windowEditORMObjectId").close();
+	return false;
+}
+</script>

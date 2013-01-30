@@ -1,0 +1,145 @@
+<?if(isset($this->message)):?>
+<h1 style="color:red;"><?=$this->message?></h1>
+<?else:?>
+
+	<div style="float:left;width:100%;">
+
+<?=$this->form->renderOpen()?>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->breakdown->renderLabel()?>
+	<div id="breakdownGridId" style="width:400px;height:250px;"></div>
+	<div id="breakdownContainerId"></div>
+</div>
+<br style="clear:left;" />
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+	<?=$this->form->appointmentTemplateIdInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("windowEditORMObjectId").close()'))?>
+</div>
+
+<script>
+
+var breakdownMenu = new dhtmlXMenuObject(null,"standard");
+breakdownMenu.setImagePath("<?=$this->baseUrl?>/img/");
+breakdownMenu.renderAsContextMenu();
+breakdownMenu.setOpenMode("web");
+function breakdownMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			breakdownAdd();
+			break;
+		case "remove":
+			breakdownRemove();
+			break;
+	}
+}
+breakdownMenu.attachEvent("onClick",breakdownMenuOnClicked);
+function breakdownMenuOnLoaded() {
+}
+breakdownMenu.loadXML("<?=$this->baseUrl?>/appointment-templates.raw/get-context-menu",breakdownMenuOnLoaded);
+
+function breakdownAdd(rowId) {
+	if (!rowId) {
+		rowId = breakdownGrid.uid();
+	}
+	breakdownGrid.addRow(rowId,"blank,5,All");
+}
+
+function breakdownRemove(rowId) {
+	if (!rowId) {
+		rowId = breakdownGrid.getSelectedRowId();
+	}
+	if (rowId == null || rowId == 0) {
+		alert("No Slot selected");
+		return;
+	}
+	breakdownGrid.deleteRow(rowId);
+}
+
+var breakdownGrid = new dhtmlXGridObject("breakdownGridId");
+breakdownGrid.setImagePath("<?=$this->baseUrl?>/img/");
+breakdownGrid.setHeader("<?=__('Name')?>,<?=__('Length')?>,<?=__('Type')?>");
+breakdownGrid.setInitWidths("*,*,*");
+breakdownGrid.setColAlign("left,left,left");
+breakdownGrid.setColTypes("ed,coro,coro");
+breakdownGrid.setSkin("xp");
+breakdownGrid.init();
+
+<?foreach ($this->breakdowns as $breakdown):?>
+breakdownGrid.addRow(breakdownGrid.uid(),"<?=$breakdown['n']?>,<?=$breakdown['l']?>,<?=$breakdown['t']?>");
+<?endforeach;?>
+
+var maxLength = 1620;
+for (var i = 5; i <= maxLength; i += 5) {
+	breakdownGrid.getCombo(1).put(i,i);
+}
+
+breakdownGrid.getCombo(2).put("<?=__('All')?>","<?=__('All')?>");
+breakdownGrid.getCombo(2).put("<?=__('Provider')?>","<?=__('Provider')?>");
+
+// temporary replace grid onBeforeContextMenu
+breakdownGrid.hdr.id = breakdownGrid.uid();
+breakdownMenu.addContextZone(breakdownGrid.hdr.id);
+breakdownGrid.enableContextMenu(breakdownMenu);
+breakdownMenu.attachEvent("onContextMenu",function(id){
+	breakdownMenu.hideItem("remove");
+	var rowId = breakdownGrid.getSelectedRowId();
+	if (rowId != null) {
+		breakdownMenu.showItem("remove");
+	}
+});
+
+dhtmlxEvent(breakdownGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function preSubmitedit() {
+	var breakdowns = new Array();
+
+	var breakdownContainer = dojo.byId("breakdownContainerId");
+	breakdownGrid.forEachRow(function(rowId) {
+		var name = breakdownGrid.cells(rowId,0).getValue();
+		var length = breakdownGrid.cells(rowId,1).getValue();
+		var type = breakdownGrid.cells(rowId,2).getValue();
+
+		var nameInput = document.createElement('input');
+		nameInput.type = 'hidden';
+		nameInput.name = 'breakdownName[]';
+		nameInput.value = name;
+		breakdownContainer.appendChild(nameInput);
+
+		var lengthInput = document.createElement('input');
+		lengthInput.type = 'hidden';
+		lengthInput.name = 'breakdownLength[]';
+		lengthInput.value = length;
+		breakdownContainer.appendChild(lengthInput);
+
+		var typeInput = document.createElement('input');
+		typeInput.type = 'hidden';
+		typeInput.name = 'breakdownType[]';
+		typeInput.value = type;
+		breakdownContainer.appendChild(typeInput);
+	});
+	return true;
+}
+
+function postSubmitedit(data) {
+	dhxWins.window('windowEditORMObjectId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+
+<?endif?>

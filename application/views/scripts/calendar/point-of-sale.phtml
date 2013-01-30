@@ -1,0 +1,261 @@
+<h3><?=__('Payments')?></h3>
+<div id="payGridContainer" width="95%" height="100px" style="width:95%;height:75px;" ></div>
+<h3><?=__('Charges')?></h3>
+<div id="chargeGridContainer" width="95%" height="100px" style="width:95%;height:75px;" ></div>
+<h3><?=__('Eligibility')?></h3>
+<div id="eligibilityGridContainer" width="95%" height="100px" style="width:95%;height:75px;" ></div>
+
+<script>
+function appProcessEdit(content,action,cellIndex,grid) {
+	// common parameters
+	content["app[personId]"] = "<?=$this->appointment->patientId?>";
+	content["app[appointmentId]"] = "<?=$this->appointment->appointmentId?>";
+	content["app[visitId]"] = "<?=$this->visitId?>";
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/calendar.raw/process-"+action,
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data.id) {
+				if (content["app[id]"] == "0") {
+					grid.setRowId(grid.getRowIndex("trailingId"),data.id);
+					grid.addRow("trailingId","");
+				}
+				grid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+/* PAYMENTS */
+payGrid = new dhtmlXGridObject("payGridContainer");
+payGrid.setImagePath("<?=$this->baseUrl?>/img/");
+payGrid.setHeader("<?=__('Date')?>,<?=__('Type')?>,<?=__('Amount')?>,<?=__('Note')?>");
+var payColumnNames = ["paymentDate","paymentType","amount","title"];
+payGrid.setInitWidths("75,100,100,*");
+payGrid.setColTypes("dhxCalendar,coro,ed,ed");
+payGrid._dtmask = "%Y-%m-%d";
+payGrid.setColAlign("left");
+payGrid.setSkin("xp");
+payGrid.init(); 
+function payGridReload() {
+	payGrid.clearAll(); 
+	payGrid.load("<?=$this->baseUrl?>/calendar.raw/list-payments?appointmentId=<?=$this->appointment->appointmentId?>",function(){
+		payGrid.addRow("trailingId","");
+	},"json"); 
+}
+payGridReload();
+payGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		var action = "edit";
+		if (rowId == "trailingId") {
+			action = "add";
+			rowId = "0";
+		}
+		var content = {
+			"app[id]": rowId,
+		};
+		content["app["+payColumnNames[cellIndex]+"]"] = newValue;
+		appProcessEdit(content,action+"-payment",cellIndex,payGrid);
+	}
+	return true;
+});
+dhtmlxEvent(payGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+/* CHARGES */
+chargeGrid = new dhtmlXGridObject("chargeGridContainer");
+chargeGrid.setImagePath("<?=$this->baseUrl?>/img/");
+chargeGrid.setHeader("<?=__('Date')?>,<?=__('Type')?>,<?=__('Amount')?>,<?=__('Note')?>");
+var chargeColumnNames = ["chargeDate","chargeType","amount","note"];
+chargeGrid.setInitWidths("75,100,100,*");
+chargeGrid.setColTypes("dhxCalendar,coro,ed,ed");
+chargeGrid._dtmask = "%Y-%m-%d";
+chargeGrid.setColAlign("left");
+chargeGrid.setSkin("xp");
+chargeGrid.init(); 
+function chargeGridReload() {
+	chargeGrid.clearAll(); 
+	chargeGrid.load("<?=$this->baseUrl?>/calendar.raw/list-charges?appointmentId=<?=$this->appointment->appointmentId?>",function(){
+		chargeGrid.addRow("trailingId","");
+	},"json"); 
+}
+chargeGridReload();
+chargeGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		var action = "edit";
+		if (rowId == "trailingId") {
+			action = "add";
+			rowId = "0";
+		}
+		var content = {
+			"app[id]": rowId,
+		};
+		content["app["+chargeColumnNames[cellIndex]+"]"] = newValue;
+		appProcessEdit(content,action+"-charge",cellIndex,chargeGrid);
+	}
+	return true;
+});
+dhtmlxEvent(chargeGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+<?foreach (Enumeration::getEnumArray('Payment Types','key') as $key=>$value):?>
+payGrid.getCombo(1).put("<?=htmlspecialchars($key)?>","<?=htmlspecialchars($value)?>");
+<?endforeach;?>
+
+<?foreach (Enumeration::getEnumArray('Charge Types','key') as $key=>$value):?>
+chargeGrid.getCombo(1).put("<?=htmlspecialchars($key)?>","<?=htmlspecialchars($value)?>");
+<?endforeach;?>
+
+/* ELIGIBILITY */
+var indexPOSDate = 0;
+var indexPOSProgram = 1;
+var indexPOSExpires = 2;
+var indexPOSVerified = 3;
+var indexPOSDesc = 4;
+
+eligGrid = new dhtmlXGridObject("eligibilityGridContainer");
+eligGrid.setImagePath("<?=$this->baseUrl?>/img/");
+eligGrid.setHeader("<?=__('Date')?>,<?=__('Program')?>,<?=__('Expires')?>,<?=__('Verified')?>,<?=__('Desc')?>,Color");
+eligGrid.setInitWidths("75,125,75,85,*,0");
+eligGrid.setColTypes("ed,ro,ed,ro,txt,ro");
+//eligGrid.setColTypes("dhxCalendar,ro,dhxCalendar,ro,txt,ro");
+//eligGrid._dtmask = "%Y-%m-%d";
+eligGrid.setColAlign("center,left,center,center,left,left");
+eligGrid.setSkin("xp");
+eligGrid.init(); 
+function eligGridReload() {
+	eligGrid.clearAll(); 
+	eligGrid.load("<?=$this->baseUrl?>/calendar.raw/list-eligibility?appointmentId=<?=$this->appointment->appointmentId?>",function(){
+		eligGrid.forEachRow(function(rowId){
+			this.setCellTextStyle(rowId,2,"vertical-align:top;background-color:"+this.cells(rowId,5).getValue());
+		});
+	},"json"); 
+}
+eligGridReload();
+
+function eligGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		eligUpdate(rowId,cellIndex,newValue);
+	}
+	return true;
+}
+eligGrid.attachEvent("onEditCell",eligGridOnCellEdited);
+
+function eligUpdate(id,index,value) {
+	var content = {
+		"id": id,
+	};
+	switch (index) {
+		case indexPOSDate:
+			content["pos[dateLastVerified]"] = value;
+			break;
+		case indexPOSExpires:
+			content["pos[effectiveEnd]"] = value;
+			break;
+		case indexPOSDesc:
+			content["pos[desc]"] = value;
+			break;
+		default:
+			return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/calendar.raw/process-update-eligibility",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data == false) {
+				alert("<?=__('Invalid item')?>");
+			}
+			else if (data.error) {
+				alert(data.error);
+			}
+			else if (data.row) {
+				eligGridFillRow(id,data.row);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+dhtmlxEvent(eligGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+/* === ELIGIBILITY MENU === */
+var eligMenu = new dhtmlXMenuObject(null,"standard");
+eligMenu.setImagePath("<?=$this->baseUrl?>/img/");
+eligMenu.renderAsContextMenu();
+eligMenu.setOpenMode("web");
+function eligMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "eligibilityCheck":
+			var x = type.split("_");
+			var rowId = x[0];
+			//var cellIndex = x[1];
+			eligCheck(rowId);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+}
+eligMenu.attachEvent("onClick",eligMenuOnClicked);
+
+function eligMenuOnLoaded() {
+}
+eligMenu.loadXML("<?=$this->baseUrl?>/calendar.raw/pos-context-menu",eligMenuOnLoaded);
+eligGrid.enableContextMenu(eligMenu);
+
+
+function eligCheck(id) {
+	if (!confirm("<?=__('Are you sure you want to recheck eligibility now?')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/calendar.raw/process-check-eligibility",
+		handleAs: "json",
+		content: {
+			"id": id,
+		},
+		load: function (data) {
+			if (data == false) {
+				alert("<?=__('Invalid item')?>");
+			}
+			else if (data.error) {
+				alert(data.error);
+			}
+			else if (data.row) {
+				eligGridFillRow(id,data.row);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function eligGridFillRow(rowId,data) {
+	for (var i in data.data) {
+		eligGrid.cells(rowId,i).setValue(data.data[i]);
+	}
+	eligGrid.setCellTextStyle(rowId,2,"vertical-align:top;background-color:"+eligGrid.cells(rowId,5).getValue());
+}
+</script>

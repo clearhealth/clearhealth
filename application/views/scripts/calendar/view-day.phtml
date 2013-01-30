@@ -1,0 +1,1023 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;border-right:none;
+}
+div.dataForeground:hover {
+	z-index: 9999;
+	overflow: auto;
+}
+</style>
+
+<div id="stylesContainerId" style="display:none;height:0px;"><style></style></div>
+<div id="viewDayContainer" style="height:1000px;">
+	<div id="timeColumnContainer" style="float:left;width:80px;height:1000px;"></div>
+	<div id="scheduleColumnContainer" style="width:auto;overflow:auto;">
+		<div id="scheduleContainer"></div>
+	</div>
+</div>
+
+<!-- all user code -->
+<script type="text/javascript">
+function gridObjectsOnMouseOver(colIndex,rowId,cellIndex) {
+	var tooltip = timeColumnGrid.cells2(gridObjects[colIndex].getRowIndex(rowId),cellIndex).getValue();
+	var title = gridObjects[colIndex].getUserData(rowId,"title");
+	if (title && title.length > 0) {
+		tooltip += " " + title;
+	}
+	gridObjects[colIndex].cells(rowId,cellIndex).cell.title = tooltip;
+	return false;
+}
+
+var selectDateColumnId = null;
+function calendarLoadEvents(columns) {
+	if (!columns) {
+		columns = [];
+	}
+	columns = columns.join(",");
+	dojo.xhrGet({
+		url: globalBaseUrl + "/calendar.raw/list-events?colIndex="+columns,
+		handleAs: "json",
+		load: function(data) {
+			for (var colIndex in data) {
+				gridObjects[colIndex].clearAll();
+				// we need to change the label of the column header
+				gridObjects[colIndex].setColumnLabel("0",data[colIndex].header);
+				gridObjects[colIndex].parse(data[colIndex].events,function(){ postLoad(colIndex); },"json");
+				colSearch[colIndex] = null;
+			}
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response);
+			return response;
+		}
+	});
+}
+
+function expandAppointment(appointmentId,obj,height) {
+	obj.style.height = "auto";
+	if (parseInt(obj.offsetHeight) < parseInt(height)) obj.style.height = height+"px";
+	obj.style.zIndex = 9999;
+}
+
+function shrinkAppointment(appointmentId,obj,height,zIndex) {
+	obj.style.height = height+"px";
+	obj.style.zIndex = zIndex;
+}
+
+	var columnIds = new Array();
+	var gridObjects = new Array();
+	var menuObjects = new Array();
+	var winFilterObjects = new Array();
+	var numberOfRows = null;
+	var appointmentCopy = false;
+
+	var previousDaySelected = null;
+	// create a new instance of a Calendar
+	var calendar = new dojox.widget.Calendar({
+		onChange: function(val){
+			// when the value changes, hide the popup 
+			// and set a value to our input 
+			dijit.popup.close(calendar);
+			console.log(val, typeof val);
+			this._pushChangeTo.value = dojo.date.locale.format(val);
+			var y = val.getFullYear();
+			var m = val.getMonth() + 1;
+			var d = val.getDate();
+			var formattedDate = y + '-' + m + '-' + d;
+			// if you need not to load if no changes in date, please uncomment the if
+			//if (previousDaySelected != formattedDate) {
+				previousDaySelected = formattedDate;
+				changeDay(formattedDate);
+			//}
+		},
+		destroy: function(){
+			// avoid leaving a ref in object for IE?
+			delete this._pushChangeTo;
+			this.inherited(arguments);
+		},
+	});
+
+	dojo.extend(dojo.NodeList, {
+		// the guts of the "plugin"
+		addPicker: function(args){
+			this.forEach(function(n){
+				calendar._pushChangeTo = n; 
+				// and open the popup below the targeted input
+
+				dijit.popup.open({ 
+					popup: calendar,
+					around: n
+				});
+			});
+			return this; // dojo.NodeList
+		}
+	});
+
+	function openCalendar(id) {
+		dojo.query(id).addPicker();
+	}
+
+	function removeColumnObjects(columnIndex) {
+		var child = dojo.byId("eventColumn"+columnIndex+"Container");
+		var parentDiv = dojo.byId("scheduleContainer");
+		parentDiv.removeChild(child);
+		delete columnIds[columnIndex];
+		delete gridObjects[columnIndex];
+		delete menuObjects[columnIndex];
+		delete winFilterObjects[columnIndex];
+	}
+
+	function addAppointment(rowId, colIndex, colId) {
+		var rowIndex = gridObjects[colId].getRowIndex(rowId);
+		var timeStart = timeColumnGrid.cellByIndex(rowIndex,colIndex).getValue();
+		var params = {"columnId":colId,"rowId":rowId,"start":timeStart};
+		openAppointmentWindow(params);
+	}
+
+	function openAppointmentAccordion(divId,cellId,url) {
+		var newDiv = document.createElement("div");
+		newDiv.setAttribute("id",divId);
+		dojo.setInnerHTML(newDiv,"<img src=\"<?=$this->baseUrl?>/img/loading.gif\" alt=\"Loading...\" style=\"margin:10px;\" />");
+		appAccordion.cells(cellId).attachObject(newDiv);
+		dojo.xhrGet({
+			url: url,
+			handleAs: "text",
+			load: function(data,ioArgs) {
+				dojo.setInnerHTML(newDiv,data);
+				appAccordion.cells(cellId).attachObject(newDiv);
+				return data;
+			},
+			error: function(response, ioArgs) {
+				console.error("HTTP status code: ", ioArgs.xhr.status);
+				return response;
+			}
+		});
+	}
+
+	function calendarBuildQuery(params) {
+		var query = [];
+		if (params) {
+			for (var i in params) {
+				query.push(i+"="+params[i]);
+			}
+		}
+		return query;
+	}
+
+	function openAppointmentWindow(params) {
+		var query = calendarBuildQuery(params);
+		var url = "<?=$this->baseUrl?>/calendar.raw/add-appointment?"+query.join("&");
+		winAddAppointment = globalCreateWindow("windowAppointmentId",[],url,"<?=__('Add New Appointment')?>",800,500,{attachURL:false,setModal:false});
+		appAccordion = winAddAppointment.attachAccordion();
+		appAccordion.skin = 'dhx_blue';
+		appAccordion.setIconsPath("<?=$this->baseUrl?>/img/");
+		appAccordion.addItem("appointmentInfo","<?=__('Appointment Information')?>");
+		appAccordion.addItem("pointOfSale","<?=__('Account Status & Eligibility')?>");
+		appAccordion.attachEvent("onBeforeActive",function(itemId){
+			if (itemId == "pointOfSale" && window.appointmentHasChanges && window.appointmentHasChanges()) {
+				if (!confirm("<?=__('Your changes will be saved automatically, Continue?')?>")) return false;
+				if (window.calendarMakeAppointment) {
+					calendarMakeAppointment(false,function(data){
+						if (data.appointmentId) {
+							params = {"appointmentId":data.appointmentId};
+							winAddAppointment.setText("<?=__('Edit Appointment')?>");
+							appAccordion.cells(itemId).open();
+							appAccordion.callEvent("onActive",[itemId]);
+						}
+					});
+				}
+				return false;
+			}
+			return true;
+		});
+		appAccordion.attachEvent("onActive",function(itemId){
+			var query = calendarBuildQuery(params);
+			switch (itemId) {
+				case "appointmentInfo":
+					openAppointmentAccordion(itemId+"ContainerId",itemId,"<?=$this->baseUrl?>/calendar.raw/add-appointment?"+query.join("&"));
+					break;
+				case "pointOfSale":
+					openAppointmentAccordion(itemId+"ContainerId",itemId,"<?=$this->baseUrl?>/calendar.raw/point-of-sale?"+query.join("&"));
+					break;
+			}
+		});
+
+		appAccordion.cells("appointmentInfo").open();
+		openAppointmentAccordion("appointmentInfoContainerId","appointmentInfo",url);
+	}
+
+	function resizeScheduleContainer() {
+		var eventWidth = 275;
+		for (i in columnIds) {
+			eventWidth += parseInt(dojo.byId('eventColumn'+i+'Container').style.width);
+		}
+		dojo.byId('scheduleContainer').style.width = eventWidth + 'px';
+		// this will set the schedule column container
+		// NOTE: this will disable the vertical scrollbar and affects the Time column display/visibility
+		dojo.byId('scheduleColumnContainer').style.width = eventWidth + 'px';
+	}
+
+	function postLoad(columnId) {
+		var defaultWidth = 250;
+		var rowId = gridObjects[columnId].getRowId(0);
+		var colMultiplier = gridObjects[columnId].getUserData(rowId,'colMultiplier');
+		var colWidth = colMultiplier * defaultWidth;
+		if (colWidth > defaultWidth) {
+			defaultWidth = colWidth;
+		}
+		dojo.byId('eventColumn'+columnId+'Container').style.width = defaultWidth + 'px';
+		// reset the skin to update its design
+		gridObjects[columnId].setSkin("xp");
+		// add new column in list of column ids
+		columnIds[columnId] = columnId;
+		resizeScheduleContainer();
+	}
+
+	function appointmentEdit(columnIndex,rowId,colIndex,appointmentId) {
+		dblClickedEvent(columnIndex,rowId,colIndex,appointmentId);
+		apptFlag = true;
+	}
+
+	var apptFlag = false;
+	function dblClickedEvent(columnIndex,rowId,colIndex,appointmentId) {
+		if (apptFlag) {
+			apptFlag = false;
+			return;
+		}
+		var providerId = gridObjects[columnIndex].getUserData(gridObjects[columnIndex].getRowId(0),'providerId');
+		if (providerId == 'placeHolderId') {
+			alert('<?=__('No filter defined.')?>');
+			return;
+		}
+		if (appointmentId && appointmentId.length > 0) {
+			openAppointmentWindow({"appointmentId":appointmentId});
+			winAddAppointment.setText('<?=__('Edit Appointment')?>');
+		}
+		else {
+			addAppointment(rowId, colIndex, columnIndex);
+		}
+	}
+
+	function menuEvent(columnIndex, menuItemId, type) {
+		menuGridEvent(columnIndex, menuItemId, type);
+	}
+
+	function setFilterColumn(columnIndex, colIndex, obj) {
+		var url = "<?=$this->baseUrl?>/calendar.raw/set-filter?id="+gridObjects[columnIndex].getColumnId(colIndex);
+		winFilterObjects[columnIndex] = globalCreateWindow("windowSetFilter",[],url,"<?=__('Set Column Filter')?>",400,375);
+		return true;
+	}
+
+	function closeFilterWindow(columnId) {
+	 	winFilterObjects[columnId].close();
+	}
+
+	function createColumn(columnIndex) {
+		var newDiv = document.createElement('div');
+		newDiv.setAttribute('id',"eventColumn"+columnIndex+"Container");
+		newDiv.setAttribute('style',"float:left;width:250px;height:1000px;");
+		var parentDiv = dojo.byId('scheduleContainer');
+		parentDiv.appendChild(newDiv);
+
+		gridObjects[columnIndex] = new dhtmlXGridObject("eventColumn"+columnIndex+"Container");
+		gridObjects[columnIndex].enableDragAndDrop(true);
+		gridObjects[columnIndex].setImagePath("../img/");
+		gridObjects[columnIndex].setInitWidths("*");
+		gridObjects[columnIndex].setColTypes("ro");
+		gridObjects[columnIndex].setSkin("xp");
+		gridObjects[columnIndex].setColumnId("0",columnIndex);
+		gridObjects[columnIndex].attachEvent("onHeaderClick",function(colIndex,obj){ setFilterColumn(columnIndex,colIndex,obj); });
+		gridObjects[columnIndex].attachEvent("onDrag",dragHandler);
+		gridObjects[columnIndex].attachEvent("onDrop",dropHandler);
+		gridObjects[columnIndex].attachEvent("onRowDblClicked",function(rowId,colIndex) { dblClickedEvent(columnIndex,rowId,colIndex); });
+		gridObjects[columnIndex].attachEvent("onRowSelect",function(rowId,colIndex){
+			// reset the appointmentDiv to null
+			if (this.appointmentDiv) this.appointmentDiv = null;
+		});
+		gridObjects[columnIndex].attachEvent('onKeyPress',keyPressEvent);
+
+		menuObjects[columnIndex] = new dhtmlXMenuObject('cxColumnMenu','standard');
+		menuObjects[columnIndex].setImagePath("<?=$this->baseUrl?>/img/");
+		menuObjects[columnIndex].renderAsContextMenu();
+		menuObjects[columnIndex].setOpenMode("web");
+		menuObjects[columnIndex].attachEvent('onClick',function(menuItemId,type) { menuEvent(columnIndex,menuItemId,type); });
+		menuObjects[columnIndex].loadXML('<?=$this->baseUrl?>/calendar.raw/ajax-get-menu');
+
+		gridObjects[columnIndex].enableContextMenu(menuObjects[columnIndex]);
+		gridObjects[columnIndex].attachEvent('onBeforeContextMenu',beforeContextMenuEvent);
+		gridObjects[columnIndex].rowToDragElement = function(rowId){
+			var text = this.cells(rowId,0).getValue();
+			if (this.appointmentDiv) {
+				var node = this.appointmentDiv;
+				var marginLeft = node.style.marginLeft;
+				node.style.marginLeft = "4px";
+				var attributes = [];
+				for (var j = 0; j < node.attributes.length; j++) {
+					attributes.push(node.attributes[j].name+"=\""+node.attributes[j].value+"\"");
+				}
+				node.style.marginLeft = marginLeft;
+				text = "<div "+attributes.join(" ")+">"+node.innerHTML+"</div>";
+			}
+			return text;
+		};
+		gridObjects[columnIndex].setHeader("");
+		gridObjects[columnIndex].init();
+		gridObjects[columnIndex].attachEvent("onMouseOver",function(rowId,cellIndex) { return gridObjectsOnMouseOver(columnIndex,rowId,cellIndex); });
+
+		//resizeScheduleContainer();
+
+		dhtmlxEvent(gridObjects[columnIndex].entBox,"contextmenu",function(e){
+			(e||event).cancelBubble=true;
+			return false;
+		});
+
+		dojo.byId("stylesContainerId").childNodes[0].innerHTML += "div.gridbox_xp#eventColumn"+columnIndex+"Container table.hdr td div.hdrcell { height: 50px; }";
+	}
+
+	function keyPressEvent(code,ctrl,shift) {
+		if (ctrl || (code >= 17 && code <= 20)) {
+			appointmentCopy = true;
+		}
+		return true;
+	}
+
+	function beforeContextMenuEvent(rowId,colIndex,gridObj,obj) {
+		var columnId = gridObj.getColumnId(0);
+		menuObjects[columnId].hideItem("cancel_move");
+		menuObjects[columnId].hideItem("edit_appointment");
+		menuObjects[columnId].hideItem("create_visit");
+		menuObjects[columnId].hideItem("add_payment");
+		menuObjects[columnId].hideItem("route");
+		menuObjects[columnId].hideItem("mark");
+		var appointmentId = null;
+		if (obj.nodeName == "DIV" && obj.id.substr(0,5) == "event") { // edit
+			var appointmentId = parseInt(obj.getAttribute("appointmentId"));
+			if (isNaN(appointmentId)) appointmentId = 0;
+			var visitId = parseInt(obj.getAttribute("visitId"));
+			if (isNaN(visitId)) visitId = 0;
+			if (appointmentId > 0) {
+				menuObjects[columnId].showItem("edit_appointment");
+				menuObjects[columnId].showItem("add_payment");
+				if (visitId <= 0) {
+					menuObjects[columnId].showItem("create_visit");
+				}
+				menuObjects[columnId].showItem("route");
+				menuObjects[columnId].showItem("mark");
+			}
+		}
+		return true;
+	}
+
+	function changeDay(day) {
+		dojo.xhrGet( {
+			url: "<?=$this->baseUrl?>/calendar.raw/ajax-set-filter-day?day="+day,
+			handleAs: "json",
+			load: function(response, ioArgs) {
+				if (selectDateColumnId !== null) {
+					// recreate the affected columns
+					calendarLoadEvents([selectDateColumnId]);
+					selectDateColumnId = null;
+				}
+				else {
+					calendarLoadEvents();
+				}
+				return response;
+			},
+			error: function(response, ioArgs) {
+				console.error("HTTP status code: ", ioArgs.xhr.status);
+				return response;
+			}
+		});
+	}
+
+	function previousDay() {
+		changeDay('previous');
+	}
+
+	function nextDay() {
+		changeDay('next');
+	}
+
+	function addColumn() {
+		if (columnIds.length == 1) {
+			for (i in columnIds) {
+				var providerId = gridObjects[i].getUserData(gridObjects[i].getRowId(0),'providerId');
+			}
+			if (providerId == 'placeHolderId') {
+				alert('<?=__('Set filter first.')?>');
+				return;
+			}
+		}
+
+		winAddColumn = globalCreateWindow("windowAddColumn",[],"<?=$this->baseUrl?>/calendar.raw/add-column","<?=__('Add New Column')?>",400,375);
+	}
+
+	function closeAddColumnWindow() {
+	 	winAddColumn.close();
+	}
+
+	function applyNewColumn(columnId) {
+		// close window before reloading the column
+		createColumn(columnId, true);
+		calendarLoadEvents([columnId]);
+		closeAddColumnWindow();
+	}
+
+	function removeColumn(columnId) {
+		// check if how many columns left, .length does not gives us the exact number
+		currentNumberOfColumns = 0;
+		for (i in columnIds) {
+			currentNumberOfColumns++;
+		}
+		// at least one column must be present
+		if (currentNumberOfColumns <= 1) {
+			alert('<?=__('At least one column must be present on the calendar')?>');
+			return;
+		}
+
+		var label = gridObjects[columnId].getColumnLabel(0);
+		dojo.xhrPost ({
+			url: "<?=$this->baseUrl?>/calendar.raw/ajax-remove-column",
+			handleAs: "json",
+			content: {
+				id: columnId,
+			},
+			load: function (data) {
+				if (data.ret) {
+					removeColumnObjects(columnId);
+					resizeScheduleContainer();
+				}
+				else {
+					alert('<?=__('Failed to remove')?>');
+				}
+			},
+			error: function (error) {
+				alert(error);
+				console.error ('Error: ', error);
+			}
+		});
+	}
+
+	function menuGridEvent(columnId, menuItemId, type) {
+		var appointmentId = 0;
+		var visitId = 0;
+		if (gridObjects[columnId] && gridObjects[columnId].appointmentDiv) {
+			var appointmentDiv = gridObjects[columnId].appointmentDiv;
+			var appointmentId = appointmentDiv.getAttribute("appointmentId");
+			var visitId = appointmentDiv.getAttribute("visitId");
+		}
+		switch(menuItemId) {
+			case "new_schedule":
+				// new schedule interface
+				var colIndex = gridObjects[columnId].getColumnId(0);
+				var params = [];
+				params.push("colIndex="+colIndex);
+				globalCreateWindow("winNewScheduleId",params,"<?=$this->baseUrl?>/schedule.raw","<?=__('New Schedule')?>",800,600);
+				break;
+			case 'add_column':
+				// adding column
+				addColumn();
+				break;
+			case 'remove_column':
+				removeColumn(columnId);
+				break;
+			case 'select_date':
+				// popup date selector on selected row
+				selectDateColumnId = columnId;
+				openCalendar('.rowselected');
+				break;
+			case "edit_appointment":
+				openAppointmentWindow({"appointmentId":appointmentId});
+				winAddAppointment.setText("<?=__('Edit Appointment')?>");
+				break;
+			case 'cancel_move':
+				cancelMoveEvent();
+				break;
+			case "find_first":
+				viewCalendarFindFirst(columnId);
+				break;
+			case "create_visit":
+				if (!confirm("<?=__('Are you sure you want to create visit?')?>")) {
+					break;
+				}
+				dojo.xhrPost({
+					url: "<?=$this->baseUrl?>/appointment.raw/process-create-visit",
+					content: {
+						"appointmentId": appointmentId,
+					},
+					handleAs: "json",
+					load: function(responseObject,ioArgs){
+						calendarLoadEvents([columnId]);
+					},
+					error: function (er) {
+						alert("Error: "+er);
+					}
+				});
+				break;
+			case "add_payment":
+				var params = [];
+				params.push("visitId="+visitId);
+				params.push("appointmentId="+appointmentId);
+				params.push("columnId="+columnId);
+				globalCreateWindow("winPaymentId",params,"<?=$this->baseUrl?>/appointment.raw/add-payment","<?=__('Add Payment')?>",300,300);
+				break;
+			case "timeSearch":
+				var params = [];
+				params.push("columnId="+columnId);
+				globalCreateWindow("winTimeSearchId",params,"<?=$this->baseUrl?>/calendar.raw/time-search","<?=__('Time Search')?>",900,800);
+				break;
+			default:
+				action = menuItemId.split('_');
+
+				switch(action[0]) {
+					case 'routeTo':
+						dojo.xhrPost({
+							url: "<?=$this->baseUrl?>/routing.raw/process-next-station-by-appointment",
+							content : {
+								appointmentId: appointmentId,
+								stationId: action[1],
+							},
+							handleAs: 'json',
+							load: function(responseObject, ioArgs){
+								calendarLoadEvents([columnId]);
+							},
+							error: function (er) { alert('Error: ' + er) }
+						});
+					break;
+					case 'mark':
+						dojo.xhrPost({
+							url: "<?=$this->baseUrl?>/appointment.raw/ajax-mark-appointment",
+							content : {
+								appointmentId: appointmentId,
+								mark: action[1],
+							},
+							handleAs: 'json',
+							load: function(responseObject, ioArgs){
+								calendarLoadEvents([columnId]);
+							},
+							error: function (er) { alert('Error: ' + er) }
+						});
+					break;
+					default:
+						alert('<?=__('The action you selected is not available on this item: ')?>' + menuItemId);
+					break;
+				}
+		}
+		return true;
+	}
+
+	var timeColumnHeader = '<a href="javascript:previousDay();" title="[Previous Day]"><img src="' + globalBaseUrl + '/img/ar_left.gif" height="12" /></a> <label onclick="openCalendar(\'.dojoCalendar\')" class="dojoCalendar">Time</label> <a href="javascript:nextDay();" title="[Next Day]"><img src="' + globalBaseUrl + '/img/ar_right.gif" height="12" /></a>';
+
+        timeColumnGrid = new dhtmlXGridObject('timeColumnContainer');
+	timeColumnGrid.enableDragAndDrop(true);
+        timeColumnGrid.setImagePath("../img/");
+	timeColumnGrid.setHeader(timeColumnHeader);
+        timeColumnGrid.setInitWidths("*");
+        timeColumnGrid.setColTypes("ro");
+        timeColumnGrid.setSkin("xp");
+	timeColumnGrid.attachEvent("onDrag",dragHandler);
+	timeColumnGrid.attachEvent('onKeyPress',keyPressEvent);
+
+	timeColumnMenu = new dhtmlXMenuObject('cxTimeMenu','standard');
+	timeColumnMenu.setImagePath("<?=$this->baseUrl?>/img/");
+	timeColumnMenu.renderAsContextMenu();
+	timeColumnMenu.setOpenMode("web");
+	timeColumnMenu.attachEvent('onClick',function(menuItemId,type) { menuEvent(0,menuItemId,type); });
+	timeColumnMenu.loadXML('<?=$this->baseUrl?>/calendar.raw/ajax-get-menu');
+
+	timeColumnGrid.enableContextMenu(timeColumnMenu);
+	timeColumnGrid.attachEvent('onBeforeContextMenu',beforeContextTimeMenuEvent);
+
+        timeColumnGrid.init();
+        timeColumnGrid.load("<?=$this->baseUrl?>/calendar.raw/ajax-generate-time-column-data","json");
+
+	dhtmlxEvent(timeColumnGrid.entBox,"contextmenu",function(e){
+		(e||event).cancelBubble=true;
+		return false;
+	});
+	dojo.byId("stylesContainerId").childNodes[0].innerHTML += "div.gridbox_xp#timeColumnContainer table.hdr td div.hdrcell { height: 50px; }";
+
+	// temporarily placed it here
+	timeColumnGrid.attachEvent("onRowDblClicked",timeDblClickedEvent);
+	function timeDblClickedEvent(rowId, colIndex) {
+		var rowIndex = timeColumnGrid.getRowIndex(rowId);
+		var timeStart = timeColumnGrid.cellByIndex(rowIndex,colIndex).getValue();
+		var params = {"start":timeStart};
+		openAppointmentWindow(params);
+	}
+
+
+	function beforeContextTimeMenuEvent(rowId,colIndex,gridObj) {
+		timeColumnMenu.forEachItem(function(itemId){timeColumnMenu.hideItem(itemId);});
+		var selectedRowId = gridObj.getSelectedRowId();
+		if (selectedRowId == null) {
+			return true;
+		}
+		selectedRowIds = selectedRowId.split(',');
+		for (var i = 0; i < selectedRowIds.length; i++) {
+			var val = gridObj.cells(selectedRowIds[i],colIndex).getValue();
+			if (val.split('<div').length > 1) {
+				timeColumnMenu.showItem('cancel_move');
+				break;
+			}
+		}
+		return true;
+	}
+
+	function cancelMoveEvent() {
+		var id = timeColumnGrid.getSelectedRowId();
+		if (id == null) {
+			return true;
+		}
+		ids = id.split(',');
+		for (var i = 0; i < ids.length; i++) {
+			var val = timeColumnGrid.cells(ids[i],0).getValue();
+			splittedVal = val.split(' ', 1);
+			timeColumnGrid.cells(ids[i],0).setValue(splittedVal[0]);
+		}
+		resizeTimeColumnContainer();
+	}
+
+	function loadColumnData(colIndex) {
+		if (gridObjects[colIndex]) {
+			gridObjects[colIndex].load("<?=$this->baseUrl?>/calendar.raw/ajax-generate-event-column-data?columnIndex="+colIndex,function(){
+					postLoad(colIndex);
+					colIndex++;
+					if (columnIds.length != gridObjects.length) {
+						while (!gridObjects[colIndex]) {
+							colIndex++;
+						}
+						loadColumnData(colIndex); // load column data asynchronously
+					}
+				},"json");
+		}
+	}
+
+	function dragHandler(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+		// check if data come from ordinary column
+		if (gridTo == timeColumnGrid && gridFrom != timeColumnGrid) {
+			// check if data is not empty
+			var valFrom = gridFrom.cells(idFrom,colIndexFrom).getValue();
+			if (valFrom.length <= 0) {
+				return false;
+			}
+			// check the destination if there is already an occupant
+			var valTo = gridTo.cells(idTo,colIndexTo).getValue();
+			if (valTo.split('<div').length > 1) {
+				return false;
+			}
+			var splittedId = idFrom.split('i');
+			if (splittedId.length < 2) {
+				return false;
+			}
+			var appointmentId = splittedId[0];
+			var columnId = gridFrom.getColumnId(colIndexFrom);
+
+			var childNodes = gridFrom.cells(idFrom,colIndexFrom).cell.childNodes;
+			var appointmentId = 0;
+			if (gridFrom.appointmentDiv) appointmentId = gridFrom.appointmentDiv.getAttribute("appointmentId");
+			for (var i = 0; i < childNodes.length; i++) {
+				var node = childNodes[i];
+				if (node.nodeName.toLowerCase() == "div" && node.id == ("event"+appointmentId)) {
+					var marginLeft = node.style.marginLeft;
+					node.style.marginLeft = "8px";
+					var attributes = [];
+					for (var j = 0; j < node.attributes.length; j++) {
+						attributes.push(node.attributes[j].name+"=\""+node.attributes[j].value+"\"");
+					}
+					node.style.marginLeft = marginLeft;
+					valFrom = "<div "+attributes.join(" ")+">"+node.innerHTML+"</div>";
+					break;
+				}
+			}
+
+			gridTo.setUserData(idTo,'appointmentId',appointmentId);
+			gridTo.setUserData(idTo,'columnId',columnId);
+			gridTo.setUserData(idTo,'appCopy',appointmentCopy);
+
+			var imageCopy = '';
+			var marginLeft = '0';
+			var marginTop = '0';
+			if (appointmentCopy) {
+				imageCopy = '<img style="margin-left:5px;" src="<?=$this->baseUrl?>/img/appointment-copy.png" title="<?=__('copy appointment')?>" height="16" width="16" alt="<?=__('copy')?>" />';
+				appointmentCopy = false;
+				marginLeft = '15px';
+				marginTop = '-15px';
+			}
+
+			dojo.xhrPost ({
+				url: "<?=$this->baseUrl?>/calendar.raw/ajax-store-appointment",
+				handleAs: "json",
+				content: {
+					appointmentId: appointmentId,
+					columnId: columnId,
+				},
+				load: function (data) {
+					gridTo.cells(idTo,colIndexTo).setValue(gridTo.cells(idTo,colIndexTo).getValue()+' <div style="margin-top:'+marginTop+';margin-left:30px;">'+imageCopy+'<div style="margin-left:'+marginLeft+'">'+valFrom+'</div></div>');
+					resizeTimeColumnContainer();
+				},
+				error: function (error) {
+					alert(error);
+					console.error ('Error: ', error);
+				}
+			});
+			// do not remove the source column by returning false
+			return false;
+		}
+		// data come from time column
+		else if (gridFrom == timeColumnGrid && gridTo != timeColumnGrid) {
+			var appointmentId = gridFrom.getUserData(idFrom,'appointmentId');
+			var columnIdFrom = gridFrom.getUserData(idFrom,'columnId');
+			var appCopy = gridFrom.getUserData(idFrom,'appCopy');
+			var columnIdTo = gridTo.getColumnId(colIndexTo);
+
+			dojo.xhrGet ({
+				url: "<?=$this->baseUrl?>/calendar.raw/ajax-check-appointment?appointmentId="+appointmentId,
+				handleAs: "json",
+				load: function (data) {
+					// remove only if it's not copy
+					if (!appCopy) {
+						var valFrom = gridFrom.cells(idFrom,colIndexFrom).getValue();
+						splittedValFrom = valFrom.split(' ', 1);
+						gridFrom.cells(idFrom,colIndexFrom).setValue(splittedValFrom[0]);
+					}
+
+					if (data.hasChanged) {
+						// display the most recent appointment
+						if (!confirm("<?=__('Recent appointment information:')?>\n\n"+data.recentChanges+"\n\n<?=__('Approve changes anyway?')?>")) {
+							if (!appCopy) {
+								resizeTimeColumnContainer();
+							}
+							return false;
+						}
+					}
+
+					var rowIndexTo = gridTo.getRowIndex(idTo);
+					var valTime = gridFrom.cellByIndex(rowIndexTo,colIndexFrom).getValue();
+					var timeTo = valTime.split(' ', 1);
+
+					var rowIdFrom =  gridFrom.getUserData(idFrom,'appointmentId');
+
+					appointmentUpdate(rowIdFrom,idTo,columnIdFrom,columnIdTo,timeTo,appCopy,false,function(){
+						calendarLoadEvents([columnIdTo]);
+						if (!appCopy) {
+							if (data.existsInOtherColumn) {
+								calendarLoadEvents([data.columnId]);
+							}
+							resizeTimeColumnContainer();
+						}
+					});
+				},
+				error: function (error) {
+					alert(error);
+					console.error ('Error: ', error);
+				}
+			});
+
+			return false;
+		}
+		// temporarily don't permit dragging From time column to To time column
+		else if (gridFrom == timeColumnGrid && gridTo == timeColumnGrid) {
+			return false;
+		}
+
+		// handles the drag grids FROM and TO
+		var rowIndexFrom = gridFrom.getRowIndex(idFrom);
+		var timeFrom = timeColumnGrid.cellByIndex(rowIndexFrom,colIndexFrom).getValue();
+		var rowIndexTo = gridTo.getRowIndex(idTo);
+		var timeTo = timeColumnGrid.cellByIndex(rowIndexTo,colIndexTo).getValue();
+
+		var cellFrom = gridFrom.cells(idFrom,colIndexFrom);
+		if (cellFrom.getValue() == '') {
+			alert('<?=__('No appointment selected.')?>');
+			return false;
+		}
+		//var cellTo = gridTo.cells(idTo,colIndexFrom);
+		//style = cellTo.cell.style;
+		updateData(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo);
+		return false;
+	}
+
+	function resizeTimeColumnContainer() {
+		if (numberOfRows == undefined) {
+			numberOfRows = timeColumnGrid.getUserData(timeColumnGrid.getRowId(0),'numberOfRows');
+		}
+		var defaultTimeWidth = 80;
+		for (var i=0;i<numberOfRows;i++) {
+			// 0 = there is only one column in the Time column
+			timeVal = timeColumnGrid.cellByIndex(i,0).getValue();
+			if (timeVal.split('<div').length > 1) {
+				defaultTimeWidth += 250;
+				break;
+			}
+		}
+		dojo.byId('timeColumnContainer').style.width = defaultTimeWidth + 'px';
+        	timeColumnGrid.setSkin("xp");
+	}
+
+	function dropHandler(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+		// update the database now
+		return false;
+	}
+
+	function updateData(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+		var columnIdFrom = gridFrom.getColumnId(colIndexFrom);
+		var columnIdTo = gridTo.getColumnId(colIndexTo);
+
+		var rowIndexTo = gridTo.getRowIndex(idTo);
+		var timeTo = timeColumnGrid.cellByIndex(rowIndexTo,colIndexTo).getValue();
+		var appointmentId = 0;
+		if (gridFrom.appointmentDiv) appointmentId = gridFrom.appointmentDiv.getAttribute("appointmentId");
+
+		appointmentUpdate(appointmentId,idTo,columnIdFrom,columnIdTo,timeTo,false,false,function(){
+			// recreate the affected columns
+			var columns = [columnIdFrom];
+			if (columnIdFrom != columnIdTo) {
+				columns.push(columnIdTo);
+			}
+			calendarLoadEvents(columns);
+		});
+	}
+
+	function applyNewFilter(columnIndex,id) {
+		// close window before reloading the column
+		closeFilterWindow(columnIndex);
+		if (typeof id != "undefined" && columnIndex != id) {
+			removeColumnObjects(columnIndex);
+			columnIndex = id;
+			createColumn(columnIndex);
+		}
+		// reload column
+		calendarLoadEvents([columnIndex]);
+	}
+
+<?foreach ($this->columns as $index => $column):?>
+	// generate column on the fly
+	createColumn('<?=$index?>');
+<?endforeach;?>
+
+	calendarLoadEvents();
+
+
+var ok = false;
+var ctr = 4;
+var colSearch = [];
+function viewCalendarFindFirst(columnId) {
+	var grid = gridObjects[columnId];
+	var ctr = 0;
+	var rowId = null;
+	var prevSearch = colSearch[columnId];
+	if (prevSearch != null) {
+		ctr = prevSearch.ctr;
+		rowId = prevSearch.rowId;
+	}
+	var value = "";
+	var len = 0;
+	while (true) {
+		rowId = grid.getRowId(ctr++);
+		if (rowId == null) {
+			nextDay();
+			colSearch[columnId] = null;
+		}
+
+		if (grid.cells(rowId,0).cell.style.cssText.length <= 0) continue;
+		value = grid.cells(rowId,0).getValue();
+		if (value.length > 0) {
+			len = parseInt(grid.getUserData(rowId,"length"));
+			if (len > 0) {
+				ctr += (len - 1);
+			}
+			continue;
+		}
+
+		if (prevSearch != null) {
+			grid.cells(prevSearch.rowId,0).cell.style.border = prevSearch.border;
+			grid.cells(prevSearch.rowId,0).cell.style.borderColor = prevSearch.borderColor;
+		}
+		var border = grid.cells(rowId,0).cell.style.border;
+		var borderColor = grid.cells(rowId,0).cell.style.borderColor;
+		colSearch[columnId] = {"ctr":ctr,"rowId":rowId,"borderColor":borderColor,"border":border};
+
+		grid.cells(rowId,0).cell.style.border = "2px solid yellow";
+		break;
+	}
+	return;
+}
+
+function showPatientDetails(personId) {
+	mainController.setActivePatient(personId);
+	windowPatientDetails();
+}
+
+function appointmentMouseDown(obj,evt,columnIndex) {
+	if (!evt) evt = window.event;
+
+	var rightclick = false;
+	if (evt.which) rightclick = (evt.which == 3);
+	else if (evt.button) rightclick = (evt.button == 2);
+
+	if (rightclick) {
+		// cancel bubbles
+		if (evt.stopPropagation) evt.stopPropagation();
+		else evt.cancelBubble = true;
+	}
+
+	if (!gridObjects[columnIndex]) return;
+	gridObjects[columnIndex].appointmentDiv = obj;
+}
+
+function appointmentClicked(obj,evt,columnIndex) {
+	if (!evt) evt = window.event;
+
+	// cancel bubbles
+	if (evt.stopPropagation) evt.stopPropagation();
+	else evt.cancelBubble = true;
+
+	var appointmentId = parseInt(obj.getAttribute("appointmentId"));
+	if (isNaN(appointmentId) || !gridObjects[columnIndex]) return;
+
+	var grid = gridObjects[columnIndex];
+	grid.appointmentDiv = obj;
+
+	var target;
+	if (evt.target) target = evt.target;
+	else if (evt.srcElement) target = evt.srcElement;
+	if (target.nodeType == 3) target = target.parentNode; // defeat Safari bug
+
+	var rightclick = false;
+	if (evt.which) rightclick = (evt.which == 3);
+	else if (evt.button) rightclick = (evt.button == 2);
+
+	if (!rightclick || !menuObjects[columnIndex] || !beforeContextMenuEvent(0,0,grid,obj)) return;
+
+	var posx = 0;
+	var posy = 0;
+	if (evt.pageX || evt.pageY) {
+		posx = evt.pageX;
+		posy = evt.pageY;
+	}
+	else if (evt.clientX || evt.clientY) {
+		posx = evt.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+		posy = evt.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+	}
+
+	var menu = menuObjects[columnIndex];
+	menu.showContextMenu(posx,posy);
+}
+
+function appointmentDoubleClicked(evt,appointmentId) {
+	if (!evt) evt = window.event;
+	// cancel bubbles
+	if (evt.stopPropagation) evt.stopPropagation();
+	else evt.cancelBubble = true;
+
+	openAppointmentWindow({"appointmentId":appointmentId});
+	winAddAppointment.setText("<?=__('Edit Appointment')?>");
+}
+
+function appointmentMouseOver(appointmentId,obj,height) {
+	obj.style.height = "auto";
+	if (parseInt(obj.offsetHeight) < parseInt(height)) obj.style.height = height+"px";
+	obj.style.zIndex = 9999;
+}
+
+function appointmentMouseOut(appointmentId,obj,height,zIndex) {
+	obj.style.height = height+"px";
+	obj.style.zIndex = zIndex;
+}
+
+function appointmentUpdate(idFrom,idTo,columnIdFrom,columnIdTo,timeTo,isCopy,forced,callback) {
+	if (typeof forced == "undefined") forced = 0;
+	forced = (forced)?"1":"0";
+	var url = "<?=$this->baseUrl?>/calendar.raw/ajax-update-appointment";
+	dojo.xhrPost({
+		url: url,
+		handleAs: "json",
+		content: {
+			"idFrom": idFrom,
+			"idTo": idTo,
+			"columnIdFrom": columnIdFrom,
+			"columnIdTo": columnIdTo,
+			"timeTo": timeTo,
+			"isCopy": isCopy,
+			"forced": forced,
+		},
+		load: function (data) {
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			if (data.confirmation) {
+				if (confirm(data.confirmation  + "\n\nContinue?")) appointmentUpdate(idFrom,idTo,columnIdFrom,columnIdTo,timeTo,isCopy,true,callback);
+				return;
+			}
+			if (typeof callback == "function") callback();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>

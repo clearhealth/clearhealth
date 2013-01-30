@@ -1,0 +1,270 @@
+<div id="diagnosesContainer" style="width:100%;height:100%;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="diagnoses-section"><?=__("Diagnoses Section")?></label></dt>
+			<div id="diagnosesSectionListContainer" style="float:left;width:250px;height:100px;"></div><br />
+			<input type="button" value="<?=__('Other Diagnosis...')?>" style="float:right;width:150px;" onClick="openDiagnosisLookupWindow()" />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="diagnoses-section-name"><?=__("Section Name")?></label></dt>
+			<div id="diagnosesSectionNameListContainer" style="float:left;width:480px;height:120px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div id="diagnosesListContainer" style="width:auto;height:350px"></div>
+		<!--<div id="diagnosesCheckboxContainer" style="float:left;margin:10px;">
+			<input id="diagnoses-addToProblemList" type="checkbox" disabled="disabled" onClick="diagnosesSetAddToProblemList(this.checked)" /><?=__('Add to Problem List')?><br />
+			<input id="diagnoses-isPrimary" type="checkbox" disabled="disabled" onClick="diagnosesSetPrimary(this.checked)" /><?=__('Primary')?>
+			<br /><?=$this->formButton('diagnosesRemoveId',__('Remove'),array('id'=>'diagnosesRemoveId','onClick'=>'diagnosesRemoveSelected()','disabled'=>'disabled'))?>
+		</div>
+		<div style="float:left;width:100%;">
+		<br />
+		<?=__("Comments")?>: <?=$this->formText('diagnoses[comments]','',array('id'=>'diagnoses-comments','onchange'=>'diagnosesUpdateComment(this.value)','style'=>'width:70%','disabled'=>'disabled'))?>
+		</div>-->
+	</div>
+</div>
+
+<script>
+function openDiagnosisLookupWindow() {
+	var params = new Array();
+	params.push("jsCallback=selectedDiagnosis");
+	globalCreateWindow("windowDiagnosisLookupId",params,"<?=$this->baseUrl?>/diagnosis.raw/lookup","<?=__('Lookup Diagnosis')?>",400,450);
+}
+
+function selectedDiagnosis(code,description) {
+
+	if (!diagnosesListGrid.doesRowExist(code)) {
+		var primary = "";
+		if (diagnosesListGrid.getRowsNum() == 0) {
+			var primary = "1";
+		}
+		var id = "idx_" + diagnosesListGrid.uid();
+		diagnosesListGrid.addRow(id,"");
+		diagnosesListGrid.cells(id,indexDiagPrimary).setValue(primary);
+		diagnosesListGrid.cells(id,indexDiagCode).setValue(code);
+		diagnosesListGrid.cells(id,indexDiagDiagnosis).setValue(description);
+		var diagSectRowId = diagnosesSectionListGrid.getSelectedRowId();
+		diagnosisSave(id);
+	}
+}
+
+var diagnosesSectionListGrid = new dhtmlXGridObject("diagnosesSectionListContainer");
+diagnosesSectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+diagnosesSectionListGrid.setHeader("");
+diagnosesSectionListGrid.setNoHeader(true);
+diagnosesSectionListGrid.setInitWidths("*");
+diagnosesSectionListGrid.setSkin("xp");
+diagnosesSectionListGrid.init();
+diagnosesSectionListGrid.load("<?=$this->baseUrl?>/diagnosis.raw/list",null,"json");
+diagnosesSectionListGrid.attachEvent("onRowSelect",diagnosesSectionListOnRowSelected);
+function diagnosesSectionListOnRowSelected(rowId,cellIndex) {
+	diagnosesSectionNameListGrid.clearAll();
+	diagnosesSectionNameListGrid.load("<?=$this->baseUrl?>/diagnosis.raw/list-section?diagnosis="+rowId+"&personId="+mainController.getActivePatient(),diagnosesOnSectionNameLoaded,"json");
+}
+
+function diagnosesOnSectionNameLoaded() {
+	diagnosesListGrid.forEachRow(function(id){
+		var rowId = this.cells(id,indexDiagCode).getValue();
+		if (diagnosesSectionNameListGrid.doesRowExist(rowId)) {
+			diagnosesSectionNameListGrid.cells(rowId,0).setChecked(true);
+		}
+	});
+}
+
+var diagnosesSectionNameListGrid = new dhtmlXGridObject("diagnosesSectionNameListContainer");
+diagnosesSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+diagnosesSectionNameListGrid.setHeader(",,");
+diagnosesSectionNameListGrid.setNoHeader(true);
+diagnosesSectionNameListGrid.setInitWidths("20,*,120");
+diagnosesSectionNameListGrid.setColTypes("ch,ro,ro");
+diagnosesSectionNameListGrid.setColAlign("right,left,left");
+diagnosesSectionNameListGrid.setSkin("xp");
+diagnosesSectionNameListGrid.init();
+diagnosesSectionNameListGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	if (state) { // add to diagnoses list
+		var primary = "";
+		if (diagnosesListGrid.getRowsNum() == 0) {
+			var primary = "1";
+		}
+		var id = "idx_" + diagnosesListGrid.uid();
+		diagnosesListGrid.addRow(id,"");
+		diagnosesListGrid.cells(id,indexDiagCode).setValue(rowId);
+		diagnosesListGrid.cells(id,indexDiagPrimary).setValue(primary);
+		diagnosesListGrid.cells(id,indexDiagDiagnosis).setValue(diagnosesSectionNameListGrid.cells(rowId,1).getValue().replace(/,/g, "&#44;"));
+		var diagSectRowId = diagnosesSectionListGrid.getSelectedRowId();
+		if (diagSectRowId == "problem_list_items") {
+			diagnosesListGrid.cells(id,indexDiagPL).setDisabled(true);
+			diagnosesListGrid.cells(id,indexDiagFromPL).setValue("1");
+		}
+		diagnosisSave(id);
+	}
+	else { // remove from diagnoses list
+		var diagRowId = null;
+		diagnosesListGrid.forEachRow(function(id){
+			if (rowId == this.cells(id,indexDiagCode).getValue()) {
+				diagRowId = id;
+			}
+		});
+		if (diagRowId !== null) diagnosisRemove(diagRowId);
+	}
+});
+
+var diagnosesListGrid = new dhtmlXGridObject("diagnosesListContainer");
+diagnosesListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexDiagPL = 0;
+var indexDiagPrimary = 1;
+var indexDiagDiagnosis = 2;
+var indexDiagComments = 3;
+var indexDiagFromPL = 4;
+var indexDiagCode = 5;
+diagnosesListGrid.setHeader("<?=__('Add to PL')?>,<?=__('Primary')?>,<?=__('Selected Diagnoses')?>,<?=__('Comments')?>,,"); // fromPL, code
+diagnosesListGrid.setInitWidths("100,100,*,*,0,0");
+diagnosesListGrid.setColTypes("ch,ra,ro,txt,ro,ro");
+diagnosesListGrid.setSkin("xp");
+diagnosesListGrid.init();
+
+diagnosesListGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
+});
+
+diagnosesListGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexDiagComments:
+				diagnosisSave(rowId,function(data){
+					var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+					diagnosesListGrid.cells(rowId,cellIndex).setValue(value);
+				});
+				break;
+		}
+	}
+	return true;
+});
+
+diagnosesListGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	diagnosisSave(rowId,function(data){
+		var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+		diagnosesListGrid.cells(rowId,cellIndex).setValue(value);
+	});
+});
+
+function diagnosesListOnLoaded() {
+	var hasPrimary = false;
+	diagnosesListGrid.forEachRow(function(rowId){
+		if (diagnosesListGrid.cells(rowId,indexDiagPrimary).isChecked()) {
+			hasPrimary = true;
+		}
+		if (diagnosesListGrid.cells(rowId,indexDiagFromPL).getValue() == "1") {
+			diagnosesListGrid.cells(rowId,indexDiagPL).setDisabled(true);
+		}
+	});
+	if (!hasPrimary && diagnosesListGrid.getRowsNum() > 0) {
+		diagnosesListGrid.cells2(0,indexDiagPrimary).setChecked(true);
+	}
+}
+
+function diagnosesListGridReload() {
+	diagnosesListGrid.clearAll();
+	diagnosesListGrid.load("<?=$this->baseUrl?>/diagnosis.raw/list-patient-diagnoses?patientId="+mainController.getActivePatient()+"&visitId="+mainController.getActiveVisit(),diagnosesListOnLoaded,"json");
+}
+diagnosesListGridReload();
+
+var diagnosesListMenu = new dhtmlXMenuObject(null,"standard");
+diagnosesListMenu.setImagePath("<?=$this->baseUrl?>/img/");
+diagnosesListMenu.renderAsContextMenu();
+diagnosesListMenu.setOpenMode("web");
+diagnosesListMenu.loadXML("<?=$this->baseUrl?>/diagnosis.raw/get-menu");
+diagnosesListMenu.attachEvent("onClick",function(id){
+	switch (id) {
+		case "remove":
+			diagnosisRemove();
+			break;
+	}
+});
+diagnosesListGrid.enableContextMenu(diagnosesListMenu);
+dhtmlxEvent(diagnosesListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+diagnosesListMenu.attachEvent("onContextMenu",function(id){
+	diagnosesListMenu.hideItem("remove");
+	var rowId = diagnosesListGrid.getSelectedRowId();
+	if (rowId != null) {
+		diagnosesListMenu.showItem("remove");
+	}
+});
+diagnosesListGrid.hdr.id = diagnosesListGrid.uid();
+diagnosesListMenu.addContextZone(diagnosesListGrid.hdr.id);
+
+function diagnosisSave(rowId,callback) {
+	if (!rowId) rowId = diagnosesListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No selected diagnosis')?>");
+		return;
+	}
+	var patientDiagnosisId = (rowId.substr(0,4) == "idx_")?0:rowId;
+	var contents = {
+		"diagnosis[patientDiagnosisId]": patientDiagnosisId,
+		"diagnosis[code]": diagnosesListGrid.cells(rowId,indexDiagCode).getValue(),
+		"diagnosis[patientId]": mainController.getActivePatient(),
+		"diagnosis[visitId]": mainController.getActiveVisit(),
+		"diagnosis[providerId]": "<?=$this->providerId?>",
+		"diagnosis[diagnosis]": diagnosesListGrid.cells(rowId,indexDiagDiagnosis).getValue(),
+		"diagnosis[addToProblemList]": diagnosesListGrid.cells(rowId,indexDiagPL).getValue(),
+		"diagnosis[isPrimary]": diagnosesListGrid.cells(rowId,indexDiagPrimary).getValue(),
+		"diagnosis[comments]": diagnosesListGrid.cells(rowId,indexDiagComments).getValue(),
+	};
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/diagnosis.raw/process-patient-diagnosis",
+		handleAs: "json",
+		content: contents,
+		load: function (data) {
+			if (data.error) {
+				alert(data.error)
+				return;
+			}
+			if (patientDiagnosisId != rowId) {
+				diagnosesListGrid.setRowId(diagnosesListGrid.getRowIndex(rowId),data.id);
+			}
+			if (typeof callback == "function") {
+				callback(data)
+				return;
+			}
+			diagnosesListGrid.renderRowData(data);
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function diagnosisRemove(rowId) {
+	if (!rowId) rowId = diagnosesListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No selected diagnosis')?>");
+		return;
+	}
+	if (!confirm("Are you sure you want to delete diagnosis "+diagnosesListGrid.cells(rowId,indexDiagDiagnosis).getValue()+"?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/diagnosis.raw/process-delete-patient-diagnosis",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			var id = diagnosesListGrid.cells(rowId,indexDiagCode).getValue();
+			if (diagnosesSectionNameListGrid.doesRowExist(id)) {
+				diagnosesSectionNameListGrid.cells(id,0).setChecked(false);
+			}
+			diagnosesListGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+</script>

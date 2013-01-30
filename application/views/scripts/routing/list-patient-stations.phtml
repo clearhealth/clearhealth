@@ -1,0 +1,32 @@
+<?=$this->xmlHeader?>
+<rows>
+<head>
+<column width="0" type="ro" id="personId"></column>
+<column width="0" type="ro" id="stationId"></column>
+<column width="25" type="img"></column>
+<column width="*" type="ro">Station</column>
+<column width="75" type="ro">Time</column>
+<settings>
+<colwidth>px</colwidth>
+</settings>
+</head>
+<?for($i=0;$this->stations->valid();$i++):?>
+<?$station = $this->stations->current()?>
+<row id="<?=$station->routingId?>">
+<cell><?=$station->personId?></cell>
+<cell><?=$station->stationId?></cell>
+<cell><? 
+	if ($station->checkInTimestamp == "0000-00-00 00:00:00") {
+		echo $this->baseUrl . "/img/routed-to.png" . "^On Route To";
+	}
+	else {
+		echo $this->baseUrl . "/img/checked-in.png" . "^Checked In";
+	}
+?>
+</cell>
+<cell><?=$station->stationId?></cell>
+<cell><?=date('H:i',strtotime($station->timestamp))?></cell>
+</row>
+<?$this->stations->next()?>
+<?endfor?>
+</rows>

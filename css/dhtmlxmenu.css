@@ -1,0 +1,184 @@
+/*button text - all levels*/
+.menuButtonSecond td, .menuButton td, .menuButtondown td, .menuButtonover td {
+	cursor:default;
+}
+/*menu text - all levels*/
+.defaultMenuText{
+	font:12px Arial,sans-serif;
+	padding-left:10px;
+	padding-right:5px;
+	text-align:left;
+}
+/*disabled menu text - all levels*/
+.buttonTextDisabled{
+	font: 11px "Microsoft Sans Serif",Arial;
+	padding-left:10px;
+	padding-right:5px;
+    color:gray;
+}
+
+/*menu caption if any*/
+.menuName{
+	color : gray;
+	letter-spacing : 7px;
+	font : 11px Arial,sans-serif;
+	padding-left : 10px;
+	padding-right : 10px;
+}
+/*========= BUTTONS ======================*/
+
+/*plain button state - top level*/
+.menuButton {
+	border : solid 1px #D4D0C8;
+}
+/*down button state - top level*/
+.menuButtondown {
+	background-color : #DBD8D1;
+	border-bottom : solid 1px #FFFFFF;
+	border-left : solid 1px #808080;
+	border-right : solid 1px #FFFFFF;
+	border-top : solid 1px #808080;
+	cursor : default;
+}
+/*mouse over button state - top level*/
+.menuButtonover {
+	background-color : #DBD8D1;
+	border-bottom : solid 1px #808080;
+	border-left : solid 1px #FFFFFF;
+	border-right : solid 1px #808080;
+	border-top : solid 1px #FFFFFF;
+	cursor : default;
+}
+/*plain button state - other levels*/
+.menuButtonSecond {
+	background-color:#D4D0C8;
+	border:1px solid #D4D0C8;
+	font:12px Arial,sans-serif;
+}
+/*mouse over button and down button states - other levels*/
+.menuButtonSecondover, .menuButtonSeconddown {
+
+	background-color : #6495ed;
+	color:navy;
+	cursor : default;
+	border:1px solid navy;
+	font:12px Arial,sans-serif;
+	
+	/*
+	background-color : navy;
+	color:white;
+	cursor : default;
+	border:1px solid navy;
+	font:12px Arial,sans-serif;	*/
+}
+/*icon place style on button over/down - other levels
+.menuButtonSeconddownimg {
+	background-color : #C9D9F5;
+}*/
+
+/*text of mouse over button - other levels*/
+.menuButtonSeconddown td {
+	color:navy;
+	 cursor:default;
+	 border:0px solid;
+	
+	 /*
+	 color:white;
+	 cursor:default;
+	 border:0px solid;	*/ 
+}
+
+
+/*============ PANELS and DEVIDERS ===========================================*/
+
+/*manu panel - top level*/
+.menuTable{
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #d4d0c8 1px;
+	margin : 0px;
+	-moz-user-select : none;
+	padding : 0px;
+	
+}
+/*menu panel - other levels*/
+.secondMenuTable{
+	background-color : #D4D0C8;
+	border: 2px outset #ffffff; 
+	margin : 0px;
+	-moz-user-select : none;
+	padding : 0px 1px 0px 2px;
+}
+
+/*devider - horizontal*/
+.menuDivider {
+	background-color : #D4D0C8;
+	border-left : solid #808080 1px;
+	border-right : solid #FFFFFF 1px;
+	height : 100%;
+	margin-bottom : 2px;
+	margin-top : 1px;
+	overflow : hidden;
+	vertical-align : middle;
+	width : 2px;
+}
+/*devider - vertical*/
+.menuDividerY {
+	background-color : #D4D0C8;
+	border-bottom : solid #FFFFFF 1px;
+	border-top : solid #808080 1px;
+	height : 2px;
+	overflow : hidden;
+	width : 100%;
+}
+
+/*================== DRAG HANDLERS ==================*/
+
+/*drag handler for menu - horizontal*/
+.menuHandle {
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #FFFFFF 1px;
+	cursor : move;
+	height : 100%;
+	overflow : hidden;
+	width : 3px;
+}
+/*drag handler for menu - vertical*/
+.vmenuHandle {
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #FFFFFF 1px;
+	cursor : move;
+	height : 3px;
+}
+
+
+/*============ ICONS and SCROLLERS ====================*/
+
+/*disabled icon - all levels*/
+.iconGray {
+	filter : BlendTrans(Percent=50) gray();
+	cursor: default;
+	border:solid 1px #D4D0C8;
+}
+
+/*enabled scroller*/
+.menuScrollerEnabled{
+	background-color:#CAC8D4;
+	 cursor: pointer;
+	 text-align:center;
+}
+/*disabled scroller*/
+.menuScrollerDisabled{
+	background-color: #CAC8D4;
+	cursor: default;
+	visibility:hidden;
+	text-align:center;
+}

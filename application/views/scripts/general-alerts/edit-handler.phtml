@@ -1,0 +1,174 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',35)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->condition->renderLabel()?>
+	<?=$this->form->conditionInput('FormSelect',array('options' => $this->listConditions))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->handlerObject->renderLabel()?>
+	<script>
+	var gaHandlerObject = (<r><![CDATA[<?=$this->form->handlerObject->getValue()?>]]></r>).toString();
+	var gaDatasource = (<r><![CDATA[<?=$this->form->datasource->getValue()?>]]></r>).toString();
+	var gaTemplate = (<r><![CDATA[<?=$this->form->template->getValue()?>]]></r>).toString();
+	function gaHandlerEditCode(code) {
+		var handlerName = dojo.byId("handler-name").value;
+		if (handlerName == "") {
+			alert("<?=__('Handler Name must be supplied first')?>");
+			return;
+		}
+		var data = null;
+		var conditionSelect = dojo.byId("handler-condition");
+		var conditionValue = conditionSelect.options[conditionSelect.selectedIndex].value;
+		switch (code) {
+			case "handlerObject": // General Alert Handler object
+				if (conditionValue <= 0) {
+					alert("<?=__('Please select condition')?>");
+					return;
+				}
+				if (gaHandlerObject != "") {
+					data = gaHandlerObject;
+				}
+				break;
+			case "datasource": // datasource object
+				if (gaDatasource != "") {
+					data = gaDatasource;
+				}
+				break;
+			case "template": // template object
+				if (gaTemplate != "") {
+					data = gaTemplate;
+				}
+				break;
+		}
+		if (data != null) {
+			gaHandlerOpenCodeEditor(code,data);
+			return;
+		}
+		dojo.xhrGet({
+			url: "<?=$this->baseUrl?>/general-alerts.raw/generate-default-codes?code="+code+"&handlerName="+handlerName+"&condition="+conditionValue,
+			handleAs: "json",
+			load: function(data,ioArgs) {
+				gaHandlerOpenCodeEditor(code,data);
+				return data;
+			},
+			error: function(response, ioArgs) {
+				console.error("HTTP status code: ", ioArgs.xhr.status);
+				return response;
+			}
+		});
+	}
+
+	function gaHandlerOpenCodeEditor(code,data) {
+		var jsVar = "";
+		var winTitle = "";
+		switch (code) {
+			case "handlerObject": // General Alert Handler object
+				gaHandlerObject = data;
+				jsVar = "gaHandlerObject";
+				winTitle = "<?=__('Edit General Alert Handler Object')?>";
+				break;
+			case "datasource": // datasource object
+				gaDatasource = data;
+				jsVar = "gaDatasource";
+				winTitle = "<?=__('Edit Datasource')?>";
+				break;
+			case "template": // template object
+				gaTemplate = data;
+				jsVar = "gaTemplate";
+				winTitle = "<?=__('Edit Template')?>";
+				break;
+		}
+		var params = new Array();
+		params.push("jsVar="+jsVar);
+		globalCreateWindow("winCodeEditorId",params,"<?=$this->baseUrl?>/generic-edit.raw/code-editor",winTitle,800,600);
+	}
+	</script>
+	<?$attrib = array();
+	$attrib['onclick'] = 'gaHandlerEditCode("handlerObject")';?>
+	<?=$this->formButton('handlerObject',__('Edit Code'),$attrib)?>
+	<?=$this->form->handlerObjectInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="handler-datasource" class="optional"><?=__('Datasource')?></label></dt>
+	<?$attrib = array();
+	$attrib['onclick'] = 'gaHandlerEditCode("datasource")';?>
+	<?=$this->formButton('datasource',__('Edit Code'),$attrib)?>
+	<?=$this->form->datasourceInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="handler-template" class="optional"><?=__('Template')?></label></dt>
+	<?$attrib = array();
+	$attrib['onclick'] = 'gaHandlerEditCode("template")';?>
+	<?=$this->formButton('template',__('Edit Template'),$attrib)?>
+	<?=$this->form->templateInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->active->renderLabel()?>
+	<input type="checkbox" name="activeInput" id="activeInput" value="<?=$this->form->active->getValue()?>" helper="formText"<?=($this->form->active->getValue())?' checked="checked"':''?> />
+	<?=$this->form->activeInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->generalAlertHandlerId->getValue())?>
+	<?=$this->form->generalAlertHandlerIdInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("winEditHandlerId").close()'))?>
+</div>
+
+<script>
+function preSubmitedit() {
+	var activeInput = dojo.byId("activeInput");
+	var activeHiddenInput = dojo.byId("handler-active");
+	var val = 0;
+	if (activeInput.checked) {
+		val = 1;
+	}
+	activeHiddenInput.value = val;
+	activeInput.checked = false;
+
+	dojo.byId("handler-handlerObject").value = gaHandlerObject;
+	dojo.byId("handler-datasource").value = gaDatasource;
+	dojo.byId("handler-template").value = gaTemplate;
+	return true;
+}
+
+function postSubmitedit(data) {
+	GAHandlersGridReload();
+	dhxWins.window('winEditHandlerId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

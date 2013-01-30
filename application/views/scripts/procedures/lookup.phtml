@@ -1,0 +1,62 @@
+<script>
+function proceduresLookupGridOnLoaded() {
+}
+
+function proceduresLookup() {
+	var q = dojo.byId("q").value;
+	if (q.length < 2) {
+		alert("<?=__('Enter at least 3 characters to search')?>");
+		return;
+	}
+	proceduresLookupGrid.clearAll();
+	proceduresLookupGrid.load("<?=$this->baseUrl?>/code-lookup.raw?src=cpt&q="+q,proceduresLookupGridOnLoaded,"json");
+}
+
+function selectedProceduresLookup(rowId) {
+	if (!rowId) {
+		var rowId = proceduresLookupGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert('<?=__('No allergy selected')?>');
+		return;
+	}
+	<?if($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		<?=$this->jsCallback?>(rowId,proceduresLookupGrid.cells(rowId,0).getValue());
+	}
+	<?endif;?>
+	dhxWins.window("winLookupProceduresId").close();
+}
+
+function keyPressInput(e) {
+	var key = window.event ? e.keyCode : e.which;
+	if (key == 13) {
+		proceduresLookup();
+	}
+}
+</script>
+
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+
+<?=$this->formText('q','',array('id'=>'q','style'=>'width:80%;','onkeypress'=>'keyPressInput(event);'))?>
+<?=$this->formButton('searchLabel',__('Search'),array('id'=>'searchLabel','onClick'=>'proceduresLookup();'))?>
+<br /><br />
+<div id="proceduresLookupGridId" style="width:100%;height:80%;overflow:hidden"></div>
+
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="selectedProceduresLookup()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winLookupProceduresId').close()" style="width:150px;margin-top:10px;" />
+</div>
+<script>
+var proceduresLookupGrid = new dhtmlXGridObject("proceduresLookupGridId");
+proceduresLookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+proceduresLookupGrid.setHeader("<?=__('Name')?>,<?=__('Code')?>");
+proceduresLookupGrid.setSkin("xp");
+proceduresLookupGrid.setInitWidths("*,80");
+proceduresLookupGrid.setColTypes("ro,ro");
+function proceduresLookupGridOnRowDblClicked(rowId,colIndex) {
+	selectedProceduresLookup(rowId);
+}
+proceduresLookupGrid.attachEvent("onRowDblClicked",proceduresLookupGridOnRowDblClicked);
+proceduresLookupGrid.init();
+</script>

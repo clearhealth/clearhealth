@@ -1,0 +1,140 @@
+#!/usr/bin/php
+<?php
+/*****************************************************************************
+*       CHProcessingDaemon
+*
+*       Author:  ClearHealth Inc. (www.clear-health.com)        2009
+*       
+*       ClearHealth(TM), HealthCloud(TM), WebVista(TM) and their 
+*       respective logos, icons, and terms are registered trademarks 
+*       of ClearHealth Inc.
+*
+*       Though this software is open source you MAY NOT use our 
+*       trademarks, graphics, logos and icons without explicit permission. 
+*       Derivitive works MUST NOT be primarily identified using our 
+*       trademarks, though statements such as "Based on ClearHealth(TM) 
+*       Technology" or "incoporating ClearHealth(TM) source code" 
+*       are permissible.
+*
+*       This file is licensed under the GPL V3, you can find
+*       a copy of that license by visiting:
+*       http://www.fsf.org/licensing/licenses/gpl.html
+*       
+*****************************************************************************/
+
+/**
+ * ClearHealth Processing Daemon
+ */
+
+
+function __($str) {
+	return $str;
+}
+
+define('APPLICATION_ENVIRONMENT','production');
+$appFile = realpath(dirname(__FILE__) . '/../application/library/WebVista/App.php');
+require_once $appFile;
+
+class CHProcessingDaemon extends WebVista {
+
+	public static function getInstance() {
+        	if (null === self::$_instance) {
+        		self::$_instance = new self();
+        	}
+		return self::$_instance;
+	}
+
+	public function run() {
+		$this->_setupEnvironment()
+			->_setupDb()
+			->_setupCache()
+			->_setupTranslation()
+			->_setupAutoLogin()
+			->_dispatch();
+		return $this;
+	}
+
+	protected function _setupEnvironment() {
+		// disable strict reporting
+		error_reporting(E_ALL);
+		set_include_path($this->getPath('library') . PATH_SEPARATOR 
+					. $this->getPath('models') . PATH_SEPARATOR
+					. $this->getPath('controllers') . PATH_SEPARATOR
+					. get_include_path());
+		require_once('WebVista/Model/ORM.php');
+		require_once('User.php');
+		require_once('Person.php');
+		require_once('Zend/Session.php');
+		require_once('WebVista/Session/SaveHandler.php');
+		Zend_Session::setSaveHandler(new WebVista_Session_SaveHandler());
+		Zend_Session::start();
+		require_once 'Zend/Loader.php';
+		Zend_Loader::registerAutoLoad();
+		$sessionTimeout = ini_get('session.gc_maxlifetime') - (5 * 60);
+		Zend_Registry::set('sessionTimeout',$sessionTimeout);
+		$this->_config = new Zend_Config_Ini($this->getPath('application') . "/config/app.ini", APPLICATION_ENVIRONMENT);
+		Zend_Registry::set('config', $this->_config);
+		Zend_Registry::set('baseUrl',substr($_SERVER['PHP_SELF'],0,strpos(strtolower($_SERVER['PHP_SELF']),'index.php')));
+		Zend_Registry::set('basePath',$this->getPath('base') . DIRECTORY_SEPARATOR);
+		try {
+			date_default_timezone_set(Zend_Registry::get('config')->date->timezone);
+		}
+		catch (Zend_Exception $e) {
+			die($e->getMessage());
+		}
+		Audit::$_synchronousAudits = true;
+		Audit::$_processedAudits = true;
+		return $this;
+	}
+
+	protected function _setupAutoLogin() {
+		$username = 'admin';
+		$password = 'admin';
+		$user = new User();
+		$user->username = $username;
+		$user->populateWithUsername();
+		if (!$user->userId > 0) {
+			$person = new Person();
+			$person->_shouldAudit = false;
+			$person->last_name = 'Administrator';
+			$person->first_name = 'ClearHealth';
+			$person->middle_name = 'U';
+			$person->persist();
+
+			$user->_shouldAudit = false;
+			$user->person = $person;
+			$user->password = $password;
+			$user->userId = $person->personId;
+			$user->personId = $person->personId;
+			$user->persist();
+		}
+		Zend_Auth::getInstance()->getStorage()->write($user);
+		return $this;
+	}
+
+	private function __construct() {
+		$this->_computePaths();
+	}
+
+	private function __clone() {}
+
+	protected function _dispatch() {
+		$process = Processingd::getInstance();
+		$process->addProcess(new ProcessHL7());
+		$process->addProcess(new ProcessAlert());
+		$process->addProcess(new ProcessHSA());
+		$process->addProcess(new ProcessUpdateManager());
+		$process->startProcessing();
+		return $this;
+	}
+
+	public static function unlock() {
+		@unlink('/tmp/CHProcessingDaemon.lock');
+	}
+
+}
+
+touch('/tmp/CHProcessingDaemon.lock');
+register_shutdown_function(array('CHProcessingDaemon','unlock'));
+$CHProcessingDaemon = CHProcessingDaemon::getInstance();
+$CHProcessingDaemon->run();

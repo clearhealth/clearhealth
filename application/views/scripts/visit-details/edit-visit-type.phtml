@@ -1,0 +1,36 @@
+<?if(isset($this->message)):?>
+<h1 style="color:red;"><?=$this->message?></h1>
+<?else:?>
+<div style="float:left;width:100%;">
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="visitType" class="optional"><?=__('Visit Type')?></label></dt>
+		<input type="radio" name="ormClass" id="ormClass" value="ProcedureCodesCPT" checked="checked" /> Procedure
+		<input type="radio" name="ormClass" id="ormClass" value="DiagnosisCodesICD" /> Diagnosis
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->textShort->renderLabel()?>
+		<?=$this->form->textShortInput('FormText',array('style'=>'width:360px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->textLong->renderLabel()?>
+		<?=$this->form->textLongInput('FormTextarea',array('style'=>'height:150px;width:360px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+		<?=$this->formButton('cancelId',__('Cancel'),array('onClick'=>'dhxWins.window("windowEditORMObjectId").close()'))?>
+		<?=$this->form->okInput()?>
+	</div>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function postSubmit<?=$this->form->getId()?>(data) {
+	dhxWins.window("windowEditORMObjectId").close();
+	return false;
+}
+</script>
+<?endif?>

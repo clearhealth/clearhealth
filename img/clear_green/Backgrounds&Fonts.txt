@@ -1,0 +1,8 @@
+
+Active dialog:
+  Background color: #E6E5E5
+  Font: Tahoma 11px bold #383838
+
+Inactive dialof:
+  Background color: #E6E5E5
+  Font: Tahoma 11px bold #999999

@@ -1,0 +1,235 @@
+<div id="inventoryDivId" style="float:left;width:100%;">
+<fieldset><legend><?=__('Edit Information')?>: <?=$this->form->immunization->getValue()?></legend>
+<?=$this->form->renderOpen()?>
+
+<div class="formRow" style="padding-top:4px;">
+	<dt style="line-height:20px;"><label><?=__('Total In Stock')?>: <span id="totalInStockId"><?=(int)$this->totalInStock?></span></label></dt>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:2px;">
+	<dt style="line-height:20px;"><label><?=__('Total Expired')?>: <span id="totalExpiredId"><?=(int)$this->totalExpired?></span></label></dt>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:2px;">
+	<?=$this->form->parLevel->renderLabel()?>
+	<?=$this->form->parLevelInput('FormNumberSpinner')?>
+	<?=$this->formButton('setParLevelId',__('Set Par Level'),array('id'=>'setParLevelId','onClick'=>'inventorySetParLevel()','disabled'=>'disabled'))?>
+</div>
+<br style="clear:left;" />
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formButton('addId',__('Add'),array('onClick'=>'javascript:dojo.byId("inventoryPanelId").style.display="";'))?>
+	<div id="inventoryPanelId" style="position:absolute;display:none;background-color:Silver;padding:3px;border:1px solid #000;width:300px;z-index:9999;">
+		<div style="width:100%;background-color:#fff;">
+			<fieldset><legend><?=__('Add New')?></legend>
+				<div class="formRow" style="padding-top:2px;">
+					<?=$this->form->lotNumber->renderLabel()?>
+					<?=$this->form->lotNumberInput()?>
+				</div>
+				<br style="clear:left;" />
+				<div class="formRow" style="padding-top:2px;">
+					<?=$this->form->manufacturer->renderLabel()?>
+					<?=$this->form->manufacturerInput()?>
+				</div>
+				<br style="clear:left;" />
+				<div class="formRow" style="padding-top:2px;">
+					<?=$this->form->mvxCode->renderLabel()?>
+					<?=$this->form->mvxCodeInput()?>
+				</div>
+				<br style="clear:left;" />
+				<div class="formRow" style="padding-top:2px;">
+					<?=$this->form->expiration->renderLabel()?>
+					<?=$this->form->expirationInput('FormDateText')?>
+				</div>
+				<br style="clear:left;" />
+				<div class="formRow" style="padding-top:2px;">
+					<dt style="line-height:20px;"><label><?=__('Quantity')?></label></dt>
+					<?=$this->formNumberSpinner('quantity',1,array('id'=>'quantity'))?>
+				</div>
+				<br style="clear:left;" />
+				<br style="clear:left;" />
+				<div class="formRow" style="padding-top:2px;">
+					<?=$this->formButton('ok',__('OK'),array('onClick'=>'inventoryProcessAdd()'))?>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	<div id="inventoryGridId" style="width:460px;height:300px;"></div>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;float:right;">
+	<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+	<?=$this->form->immunizationInput('FormHidden')?>
+	<?=$this->form->immunizationInventoryIdInput('FormHidden')?>
+</div>
+
+<?=$this->form->renderClose()?>
+</fieldset>
+</div>
+
+<script>
+function inventoryDivOnClicked(evt) {
+	var target = evt.target;
+	var isOverlay = false;
+	var inventoryPanelId = "inventoryPanelId";
+	var parentNode = target;
+	if (target.id == "addId") return;
+	while (parentNode) {
+		if (parentNode.id == inventoryPanelId) {
+			isOverlay = true;
+			break;
+		}
+		parentNode = parentNode.parentNode;
+	}
+	if (!isOverlay) {
+		dojo.byId(inventoryPanelId).style.display = "none";
+	}
+}
+dojo.connect(dojo.byId("inventoryDivId"),"onclick","inventoryDivOnClicked");
+
+function inventoryProcessAdd() {
+	var content = {
+		"inventory[immunization]": dojo.byId("<?=$this->form->immunization->getId()?>").value,
+		"inventory[lotNumber]": dojo.byId("<?=$this->form->lotNumber->getId()?>").value,
+		"inventory[parLevel]": dojo.byId("<?=$this->form->parLevel->getId()?>").value,
+		"inventory[manufacturer]": dojo.byId("<?=$this->form->manufacturer->getId()?>").value,
+		"inventory[mvxCode]": dojo.byId("<?=$this->form->mvxCode->getId()?>").value,
+		"inventory[expiration]": dojo.byId("<?=$this->form->expiration->getId()?>").value,
+		"quantity": dojo.byId("quantity").value,
+	};
+	inventoryProcess("process-add",content,function(data){
+		if (data) {
+			dojo.byId("<?=$this->form->lotNumber->getId()?>").value = "";
+			dojo.byId("<?=$this->form->manufacturer->getId()?>").value = "";
+			dojo.byId("<?=$this->form->mvxCode->getId()?>").value = "";
+			dojo.byId("<?=$this->form->expiration->getId()?>").value = "<?=$this->form->expiration->getValue()?>";
+			dojo.byId("quantity").value = "1";
+		}
+	});
+}
+
+var inventoryGrid = new dhtmlXGridObject("inventoryGridId");
+inventoryGrid.setImagePath("<?=$this->baseUrl?>/img/");
+inventoryGrid.setHeader("<?=__('Manufacturer')?>,<?=__('MVX Code')?>,<?=__('Lot Number')?>,<?=__('Expiration')?>,Immunization Id");
+var inventoryColumnNames = ["manufacturer","mvxCode","lotNumber","expiration"];
+inventoryGrid.setInitWidths("*,*,*,*,0");
+inventoryGrid.setColTypes("ed,ed,ed,ed,ro");
+inventoryGrid.setSkin("xp");
+inventoryGrid.enableMultiselect(true);
+inventoryGrid.init();
+function inventoryGridReload() {
+	inventoryGrid.clearAll();
+	inventoryGrid.load("<?=$this->baseUrl?>/immunization-inventory.raw/list?immunization=<?=$this->form->immunization->getValue()?>",function(){
+		var totalInStock = 0;
+		var totalExpired = 0;
+		var today = dojo.date.stamp.fromISOString("<?=date('Y-m-d')?>");
+		var setParLevel = dojo.byId("setParLevelId");
+		setParLevel.disabled = true;
+		var parLevel = dojo.byId("<?=$this->form->parLevel->getId()?>");
+		parLevel.value = "1";
+		inventoryGrid.forEachRow(function(rowId){
+			setParLevel.disabled = false;
+			if (this.cells(rowId,3).getValue > 0) return;
+			var expiration = dojo.date.stamp.fromISOString(this.cells(rowId,3).getValue());
+			var comparison = dojo.date.compare(expiration,today);
+			if (comparison >= 0) { // expiration > today
+				totalInStock++;
+			} else {
+				totalExpired++;
+			}
+		});
+		if (!setParLevel.disabled) parLevel.value = inventoryGrid.getUserData(inventoryGrid.getRowId(0),"parLevel");
+		dojo.byId("totalInStockId").innerHTML = totalInStock;
+		dojo.byId("totalExpiredId").innerHTML = totalExpired;
+	},"json");
+}
+inventoryGridReload();
+inventoryGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		var content = {
+			"inventory[immunizationInventoryId]": rowId,
+		};
+		content["inventory["+inventoryColumnNames[cellIndex]+"]"] = newValue;
+		inventoryProcess("process-edit",content);
+	}
+	return true;
+});
+
+var inventoryMenu = new dhtmlXMenuObject(null,"standard");
+inventoryMenu.setImagePath("<?=$this->baseUrl?>/img/");
+inventoryMenu.renderAsContextMenu();
+inventoryMenu.setOpenMode("web");
+function inventoryMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "delete":
+			inventoryDelete();
+			break;
+	}
+}
+inventoryMenu.attachEvent("onClick",inventoryMenuOnClicked);
+function inventoryMenuOnLoaded() {
+}
+inventoryMenu.loadXML("<?=$this->baseUrl?>/immunization-inventory.raw/get-context-menu",inventoryMenuOnLoaded);
+
+// temporary replace grid onBeforeContextMenu
+inventoryGrid.hdr.id = inventoryGrid.uid();
+inventoryMenu.addContextZone(inventoryGrid.hdr.id);
+inventoryGrid.enableContextMenu(inventoryMenu);
+inventoryMenu.attachEvent("onContextMenu",function(id){
+	inventoryMenu.hideItem("delete");
+	var rowId = inventoryGrid.getSelectedRowId();
+	if (rowId != null) {
+		inventoryMenu.showItem("delete");
+	}
+});
+
+dhtmlxEvent(inventoryGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function inventoryDelete(rowId) {
+	if (!rowId) {
+		rowId = inventoryGrid.getSelectedRowId();
+	}
+	if (!rowId) {
+		alert("No item selected");
+		return;
+	}
+	if (!confirm("<?=__('Are you sure you want to delete selected items?')?>")) return;
+	inventoryProcess("process-delete",{"ids":rowId});
+}
+
+function inventorySetParLevel() {
+	var content = {
+		"immunization": "<?=$this->form->immunization->getValue()?>",
+		"parLevel": dojo.byId("<?=$this->form->parLevel->getId()?>").value,
+	};
+	inventoryProcess("process-set-par-level",content);
+}
+
+function inventoryProcess(action,content,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/immunization-inventory.raw/"+action,
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (typeof callback == "function") callback(data);
+			inventoryGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function preSubmit<?=$this->form->getId()?>() {
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+</script>

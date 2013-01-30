@@ -1,0 +1,533 @@
+<div style="position:relative;padding-left:5px;height:20px;padding-top:4px;margin:0;background-color:#ece9d8;">
+	<input type="checkbox" onClick="showAbnormalResultsOnly(this.checked)" /> Show Abnormal Results Only
+</div>
+
+<div id="testsContainer" style="overflow:auto;position:relative;float:left;height:420px;width:99%;">
+	<div id="chartContainer" style="overflow:auto;width:100%;height:200px;">
+		<div id="graphLegend" style="float:right;width:99%;height:10%;overflow:auto;"></div>
+		<div id="graphChart" style="float:left;width:99%;height:75%;overflow:auto;"></div>
+	</div>
+	<div id="commentsTree" style="overflow:auto;width:100%;"></div>
+</div>
+
+<script>
+var graphChart = null;
+var chartData = {};
+var minDate = null;
+var maxDate = null;
+
+function showAbnormalResultsOnly(state) {
+	resultsGrid.forEachRow(function(rowId){
+		if (resultsGrid.cells(rowId,indexLRAbnormal).getValue().toLowerCase() == "abnormal") {
+			resultsGrid.setRowHidden(rowId,state);
+		}
+	});
+}
+
+var colorList = [];
+colorList[colorList.length] = "#FF0000"; // Red
+colorList[colorList.length] = "#008000"; // Green
+colorList[colorList.length] = "#0000FF"; // Blue
+colorList[colorList.length] = "#FFFF00"; // Yellow
+colorList[colorList.length] = "#FFA500"; // Orange
+colorList[colorList.length] = "#FF4500"; // OrangeRed
+colorList[colorList.length] = "#FFC0CB"; // Pink
+colorList[colorList.length] = "#800080"; // Purple
+colorList[colorList.length] = "#A52A2A"; // Brown
+colorList[colorList.length] = "#00FFFF"; // Cyan
+colorList[colorList.length] = "#D2691E"; // Chocolate
+colorList[colorList.length] = "#FF7F50"; // Coral
+colorList[colorList.length] = "#FFD700"; // Gold
+colorList[colorList.length] = "#FF00FF"; // Fuchsia
+colorList[colorList.length] = "#EE82EE"; // Violet
+colorList[colorList.length] = "#FF00FF"; // Magenta
+colorList[colorList.length] = "#800000"; // Maroon
+
+function getColor(index) {
+	if (index < 0 || index > colorList.length-1) {
+		return null;
+	}
+	return colorList[index];
+}
+
+var testLayout = new dhtmlXLayoutObject("testsContainer", "3E");
+testLayout.setImagePath("<?=$this->baseUrl?>/img/");
+testLayout.cells("a").hideHeader();
+var resultsGrid = testLayout.cells("a").attachGrid();
+testLayout.cells("a").setHeight('160');
+testLayout.cells("b").setText('<?=__('Graph')?>');
+testLayout.cells("b").attachObject("chartContainer");
+testLayout.cells("b").setHeight('250');
+testLayout.cells("b").collapse();
+testLayout.cells("c").setText('<?=__('Comments')?>');
+testLayout.cells("c").attachObject("commentsTree");
+testLayout.setEffect('collapse',true);
+testLayout.setEffect("resize",true);
+
+resultsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+resultsGrid.setHeader("<?=__('Date')?>,<?=__('Test Name')?>,<?=__('Value')?>,<?=__('Unit')?>,<?=__('Ref. Range')?>,<?=__('Abnormal')?>,<?=__('Status')?>,<?=__('I')?>,,");
+resultsGrid.setInitWidths("120,*,*,*,*,60,50,10,0,0");
+resultsGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+resultsGrid.setSkin("xp");
+resultsGrid.enableDynamicLoading(true);
+resultsGrid.init();
+//resultsGrid.load('<?=$this->baseUrl?>/lab-results.raw/results.json?patientId='+mainController.getActivePatient()+'&dateBegin='+TabState.getParam('dateBegin')+'&dateEnd='+TabState.getParam('dateEnd'),onPostLoad,"json");
+reloadLabResultsGrid();
+
+var indexLRDate = 0;
+var indexLRTestName = 1;
+var indexLRValue = 2;
+var indexLRUnit = 3;
+var indexLRRefRange = 4;
+var indexLRAbnormal = 5;
+var indexLRStatus = 6;
+var indexLRI = 7;
+var indexLRHidden = 8;
+var indexLRSign = 9;
+
+function onPostLoad() {
+	numRows = resultsGrid.getRowsNum();
+	if (numRows <= 0) {
+		return;
+	}
+	var firstRowId = resultsGrid.getRowId(0);
+	var lastRowId = resultsGrid.getRowId(numRows - 1);
+	var userData = resultsGrid.cells2(numRows-1,indexLRHidden).getValue();
+	userData = userData.split("::");
+	minDate = userData[0];
+	userData = resultsGrid.cells2(0,indexLRHidden).getValue();
+	userData = userData.split("::");
+	maxDate = userData[0];
+
+	var oMinDate = dojo.date.stamp.fromISOString(minDate);
+	var oMaxDate = dojo.date.stamp.fromISOString(maxDate);
+	var comparison = dojo.date.compare(oMinDate,oMaxDate);
+	if (comparison > 0) {
+		var tmpDate = minDate;
+		minDate = maxDate;
+		maxDate = tmpDate;
+	}
+}
+
+resultsGrid.attachEvent('onRowSelect',onRowSelected);
+function onRowSelected(rowId,cellIndex) {
+	resultsMenu.hideItem("sign");
+	var sign = resultsGrid.cells(rowId,indexLRSign).getValue();
+	var x = sign.split("::");
+	if (x[0] == "1") {
+		resultsMenu.showItem("sign");
+	}
+	dojo.xhrGet( {
+                                url: "<?=$this->baseUrl?>/lab-results.raw/comments-for-result?labResultId=" + rowId,
+                                handleAs: "json",
+                                load: function(data, ioArgs) {
+                                       dojo.byId('commentsTree').innerHTML = '<p>' + data + '</p>';
+                                        return data;
+                                },
+                                error: function(response, ioArgs) {
+                                        console.error("HTTP status code: ", ioArgs.xhr.status);
+                                        return response;
+                                }
+                        });
+}
+
+var resultsMenu = new dhtmlXMenuObject('resultsColumnMenu','standard');
+resultsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+resultsMenu.renderAsContextMenu();
+resultsMenu.setOpenMode("web");
+resultsMenu.attachEvent('onClick',resultsOnMenuClicked);
+function resultsOnMenuClicked(itemId,type) {
+	switch (itemId) {
+		case 'add_to_graph':
+			addSelectedResultsToChart();
+			break;
+		case 'clear_graph':
+			clearChart();
+			break;
+		case 'print':
+			printResults();
+			break;
+		case "sign":
+			var rowId = resultsGrid.getSelectedRowId();
+			if (rowId == null) break;
+			var sign = resultsGrid.cells(rowId,indexLRSign).getValue();
+			var x = sign.split("::");
+			windowReviewSignDocuments(x[1]);
+			clearChart();
+			break;
+	}
+}
+
+function clearChart() {
+	dojo.setInnerHTML(dojo.byId('graphLegend'),'');
+	dojo.setInnerHTML(dojo.byId('graphChart'),'');
+	chartData = {};
+}
+
+function printResults() {
+	if (TabState.getParam('orderId') > 0 ) { 
+		window.open('<?=$this->baseUrl?>/lab-results.xml/print-lab-results?patientId='+mainController.getActivePatient()+'&orderId='+TabState.getParam('orderId'),'pdfTemplate');
+	}
+	else {
+		window.open('<?=$this->baseUrl?>/lab-results.xml/print-lab-results?patientId='+mainController.getActivePatient()+'&dateBegin='+TabState.getParam('dateBegin')+'&dateEnd='+TabState.getParam('dateEnd'),'pdfTemplate');
+	}
+}
+
+// convert date format yyyy-mm-dd hh:mm:ss to JS date object
+function labResultsConvertToDate(value) {
+	// 2010-09-01 22:17:39
+	var yyyy = parseInt(value.substr(0,4));
+	var mm = value.substr(5,2);
+	if (mm.substr(0,1) == "0") {
+		mm = mm.substr(1,1);
+	}
+	mm = parseInt(mm) - 1;
+	var dd = value.substr(8,2);
+	if (dd.substr(0,1) == "0") {
+		dd = dd.substr(1,1);
+	}
+	dd = parseInt(dd);
+
+	var hr = value.substr(11,2);
+	if (hr.length > 0) {
+		if (hr.substr(0,1) == "0") {
+			hr = hr.substr(1,1);
+		}
+		hr = parseInt(hr);
+	}
+	else {
+		hr = 0;
+	}
+	var min = value.substr(14,2);
+	if (min.length > 0) {
+		if (min.substr(0,1) == "0") {
+			min = min.substr(1,1);
+		}
+		min = parseInt(min);
+	}
+	else {
+		min = 0;
+	}
+	var ss = value.substr(17,2);
+	if (ss.length > 0) {
+		if (ss.substr(0,1) == "0") {
+			ss = ss.substr(1,1);
+		}
+		ss = parseInt(ss);
+	}
+	else {
+		ss = 0;
+	}
+
+	return new Date(yyyy,mm,dd,hr,min,ss);
+}
+
+function addSelectedResultsToChart() {
+	var rowIds = resultsGrid.getSelectedRowId();
+	if (rowIds == null) {
+		alert('<?=__('No lab selected/')?>');
+		return;
+	}
+
+	if (testLayout.cells("b").isCollapsed()) {
+		testLayout.cells("b").expand();
+	}
+
+	var hAxis = [];
+	var vAxis = [];
+
+	var needRedraw = false;
+	rowIds = rowIds.split(',');
+	for (var key in rowIds) {
+		rowId = rowIds[key];
+		if (rowId in chartData) {
+			// Selected lab already in the graph
+			continue;
+		}
+
+		needRedraw = true;
+		// retrieve all the results having the same Test Name
+		var testName = resultsGrid.cells(rowId,indexLRTestName).getValue();
+		resultsGrid.forEachRow(function(id){
+			var userData = null;
+			if (hAxis.length <= resultsGrid.getRowsNum()) {
+				userData = resultsGrid.cells(id,indexLRHidden).getValue();
+				userData = userData.split("::");
+				hAxis[hAxis.length] = userData[0];
+				//vAxis[vAxis.length] = userData[1];
+			}
+
+			if (resultsGrid.cells(id,indexLRTestName).getValue() == testName && !chartData[id]) {
+				if (userData == null) {
+					var userData = resultsGrid.cells(id,indexLRHidden).getValue();
+					userData = userData.split("::");
+				}
+				chartData[id] = {xTxt:userData[0],yTxt:userData[1],name:testName};
+			}
+		});
+	}
+
+	if (!needRedraw) {
+		alert('<?=__('Selected labs already in the graph')?>');
+		return;
+	}
+
+	hAxis.sort();
+	//vAxis.sort(function(a,b){return(a-b);}); // numeric sort in ascending order
+
+	var hAxes = []; // storage of dates in itemList
+	var hasVZero = false;
+	var uniqueNames = [''];
+	var itemList = [];
+	for (var rowId in chartData) {
+		var name = chartData[rowId].name;
+		var inArray = false;
+		for (x in uniqueNames) {
+			if (uniqueNames[x] == name) {
+				indexName = x;
+				inArray = true;
+				break;
+			}
+		}
+		if (!inArray) {
+			indexName = uniqueNames.length;
+			uniqueNames[indexName] = name;
+		}
+
+		var xTxt = chartData[rowId].xTxt;
+		//var origTxt = xTxt;
+		//var tmpTxt = xTxt.split('-');
+		//xTxt = tmpTxt[1] + '/' + tmpTxt[2] + '/' + tmpTxt[0];
+		var inArray = false;
+		for (x in hAxis) {
+			if (hAxis[x] == xTxt) {
+				xVal = x;
+				inArray = true;
+				break;
+			}
+		}
+		if (!inArray) {
+			xVal = hAxis.length;
+			hAxis[xVal] = xTxt;
+		}
+
+		var yTxt = chartData[rowId].yTxt;
+		inArray = false;
+		for (x in vAxis) {
+			if (vAxis[x] == yTxt) {
+				yVal = x;
+				inArray = true;
+				break;
+			}
+		}
+		if (!inArray) {
+			yVal = vAxis.length;
+			vAxis[yVal] = yTxt;
+		}
+		if (yTxt == '0') {
+			hasVZero = true;
+		}
+
+		itemList[itemList.length] = {xLabel:xTxt,yLabel:yTxt,name:name};
+		hAxes.push(xTxt);
+	}
+
+	if (!hasVZero) {
+		vAxis[vAxis.length] = '0';
+	}
+	vAxis.sort(function(a,b){return(a-b);}); // numeric sort in ascending order
+	hAxes.sort();
+
+	var xMajorTickStep = 1;
+	var xMinorTickStep = 1;
+	var xMicroTickStep = 1;
+	var yMajorTickStep = 1;
+	var yMinorTickStep = 1;
+	var yMicroTickStep = 1;
+
+	var xMin = 0;
+	var xMax = 10;
+	var yMin = 0;
+	var yMax = 9;
+
+	var series = [];
+
+	var dStart = labResultsConvertToDate(hAxes[0]);
+
+	// 1 day = 86400000 ms
+	var dayMs = 86400000;
+
+	var dEnd = labResultsConvertToDate(hAxes[(hAxes.length-1)]);
+
+	var daysDiff = (dEnd.getTime() - dStart.getTime()) / dayMs;
+
+	var diff = daysDiff / xMax;
+	var xIntDiff = parseInt(diff) + 1;
+	dEnd.setTime(dEnd.getTime() + (dayMs * xIntDiff));
+
+	xMajorTickStep = dayMs * xIntDiff;
+	if (xMajorTickStep == 0) {
+		xMajorTickStep = dayMs;
+	}
+
+	var xLabels = [];
+
+	var tmpDate = dStart;
+	var dStartTime = dStart.getTime();
+	var tmpArr = [];
+	tmpXMax = 0;
+	for (var i = 0; i <= xMax; i++) {
+		tmpArr = [];
+		var mo = tmpDate.getMonth() + 1;
+		if (mo < 10) mo = "0"+mo;
+		tmpArr.push(mo);
+		var day = tmpDate.getDate();
+		if (day < 10) day = "0"+day;
+		tmpArr.push(day);
+		tmpArr.push(tmpDate.getFullYear());
+		xLabels.push({value:i,text:tmpArr.join("/")});
+		var newTime = tmpDate.getTime() + xMajorTickStep;
+		if (newTime > dEnd.getTime()) break;
+		tmpDate.setTime(newTime);
+		tmpXMax++;
+	}
+	if (tmpXMax < xMax) {
+		xMax = tmpXMax;
+	}
+
+	var yValMin = parseInt(vAxis[0]);
+	var yValMax = parseInt(vAxis[(vAxis.length-1)]);
+	if (yValMax != vAxis[(vAxis.length-1)]) {
+		yValMax++;
+	}
+
+	var yValDiff = yValMax - yValMin;
+
+	var diff = yValDiff / yMax;
+	var yIntDiff = parseInt(diff);
+	if (yIntDiff != diff) {
+		yIntDiff++;
+	}
+
+	yValMax += yIntDiff;
+
+	yMajorTickStep = yIntDiff;
+	if (yMajorTickStep == 0) {
+		yMajorTickStep = 1;
+	}
+
+	var yLabels = [];
+	var val = yValMin;
+	for (var i = 0; i <= yMax; i++) {
+		yLabels.push({value:val,text:val});
+		val += yMajorTickStep;
+	}
+	yMax = yValMax;
+
+	var oGraphChart = dojo.byId("graphChart");
+	dojo.setInnerHTML(oGraphChart,"");
+	var chart = new dojox.charting.Chart2D("graphChart");
+	chart.addAxis("x",{labels:xLabels,majorTickStep:xMajorTickStep,minorTickStep:xMinorTickStep,microTickStep:xMicroTickStep});
+	chart.addAxis("y", {vertical:true,labels:yLabels,majorTickStep:yMajorTickStep,minorTickStep:yMinorTickStep,microTickStep:yMicroTickStep});
+
+	series = [];
+	series.push({x:xMin,y:yMax});
+	series.push({x:xMin,y:yMin});
+	series.push({x:xMax,y:yMin});
+	chart.addPlot("imaginary",{type:"Lines",markers:false});
+	chart.addSeries("Imaginary Plot",series,{plot:"imaginary",stroke:{color:"gray"}});
+
+	var xLabel = "";
+	var yLabel = "";
+	var testName = "";
+	var itemKey = 0;
+	var xKey = 0;
+	var yKey = 0;
+	var nameKey = 0;
+	var origItemList = itemList;
+	var arrPlots = [];
+	for (xKey in hAxis) {
+		xIndex = xKey;
+		// get all items with the horizontal values
+		for (itemKey in itemList) {
+			yIndex = -1;
+			if (itemList[itemKey].xLabel == hAxis[xKey]) {
+				xLabel = itemList[itemKey].xLabel;
+				yLabel = itemList[itemKey].yLabel;
+				// locate the position/index of the yLabel in the vAxis
+				for (yKey in vAxis) {
+					if (vAxis[yKey] == yLabel) {
+						yIndex = yKey;
+						break;
+					}
+				}
+				testName = itemList[itemKey].name;
+				delete itemList[itemKey]; // remove to speed up the loops
+				// if could not locate the vertical index, just continue
+				if (yIndex == -1) {
+					continue;
+				}
+
+				// find the index given the test name
+				for (nameKey in uniqueNames) {
+					if (uniqueNames[nameKey] == testName) {
+						break;
+					}
+				}
+
+				// yLabel == yValue
+				yIndex = yLabel;
+				var dTmp = labResultsConvertToDate(xLabel);
+				xIndex = ((dTmp.getTime() - dStartTime) / dayMs) / xIntDiff;
+
+				if (!(nameKey in arrPlots)) {
+					arrPlots[nameKey] = {name:"plot"+nameKey,seriesName:testName,series:[],};
+				}
+				arrPlots[nameKey].series.push({x:xIndex,y:yIndex});
+			}
+		}
+	}
+
+	var oGraphLegend = dojo.byId("graphLegend");
+	var graphLegend = "";
+	var plots = [];
+	for (var i in arrPlots) {
+		var plot = arrPlots[i];
+		if (plot.series.length > 0) {
+			var color = getColor(i);
+			chart.addPlot(plot.name,{type:"Lines",markers:true});
+			chart.addSeries(plot.seriesName,plot.series,{plot:plot.name,stroke:{color:color}});
+			graphLegend += "<label style=\"color:"+color+"\">"+plot.seriesName+"</label> ";
+		}
+	}
+
+	dojo.setInnerHTML(oGraphLegend,graphLegend);
+	chart.render();
+}
+
+function sortByXAxis(a,b) {
+	return strSort(a.x,b.x);
+}
+
+function strSort(a,b) {
+	//return a.localeCompare(b);
+	if (a < b) {
+		return -1;
+	}
+	else if (a > b) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+resultsMenu.loadXML('<?=$this->baseUrl?>/lab-results.xml/menu.xml');
+
+resultsGrid.enableContextMenu(resultsMenu);
+dhtmlxEvent(resultsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+resultsGrid.enableMultiselect(true);
+</script>

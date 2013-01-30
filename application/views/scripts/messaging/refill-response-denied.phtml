@@ -1,0 +1,109 @@
+<fieldset><legend><?=__('MessageId')?>: <?=$this->messagingId?></legend>
+	<?=($this->isScheduled)?'':'<input type="checkbox" value="" name="newPrescriptionId" id="newPrescriptionId" onClick="refillResponseNewPrescriptionToFollow(this.checked)" /> '.__('New Prescription To Follow').'
+	<br />
+	<hr />'?>
+	<div id="deniedId">
+		<?=__('Reason Code')?> <?=$this->formSelect('denialReasonCode','',array('id'=>'denialReasonCode','style'=>'width:460px;'),$this->reasonCodes)?>
+		<br />
+		<?=__('Reason')?> <?=$this->formTextarea('denialReason',$this->denialReason,array('id'=>'denialReason','style'=>'height:50px;width:460px;','maxlength'=>70))?>
+	</div>
+	<div id="deniedNewPrescriptionToFollowId" style="display:none;">
+		<!--<?=__('Medication')?> <?=$this->formSelect('medicationId','',array('id'=>'medicationId','style'=>'width:460px;'),$this->medications)?>-->
+		<?=__('Note')?> <?=$this->formTextarea('note',$this->note,array('id'=>'note','style'=>'height:100px;width:460px;','maxlength'=>70))?>
+	</div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Pharmacy')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Pharmacy']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Provider')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Provider']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Patient')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Patient']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Medication')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Medication']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Refills requested')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->refills?></div>
+	<br style="clear:left;" />
+	<?=$this->formButton('ok',__('OK'),array('onClick'=>'refillResponseDenied()'))?>
+</fieldset>
+<fieldset><legend><?=__('Refill Request Details')?></legend>
+	<div style="float:left;"><?=$this->formTextarea('refillRequestDetailsId',$this->refillRequestDetails,array('id'=>'refillRequestDetailsId','style'=>'height:150px;width:460px;background-color:#fff;','readonly'=>'readonly'))?></div>
+</fieldset>
+<script>
+function refillResponseNewPrescriptionToFollow(value) {
+	var deniedDisplay = "none";
+	var deniedNewPrescriptionToFollowDisplay = "block";
+	if (!value) {
+		deniedDisplay = "block";
+		deniedNewPrescriptionToFollowDisplay = "none";
+	}
+	dojo.byId("deniedId").style.display = deniedDisplay;
+	dojo.byId("deniedNewPrescriptionToFollowId").style.display = deniedNewPrescriptionToFollowDisplay;
+}
+function refillResponseDenied() {
+	var newPrescription = false;
+<?if (!$this->isScheduled):?>
+	newPrescription = dojo.byId("newPrescriptionId").checked;
+<?endif;?>
+	if (newPrescription) { // denied new prescription to follow
+		var note = dojo.byId("note").value;
+		/*var medicationSelect = dojo.byId("medicationId");
+		var medicationId = medicationSelect.options[medicationSelect.selectedIndex].value;
+		if (medicationId == "") {
+			alert("<?=__('No medication selected')?>");
+			return;
+		}*/
+		var content = {
+			"data[note]":note,
+		//	"data[medicationId]":medicationId,
+		};
+	}
+	else { // denied
+		var reasonCodeSelect = dojo.byId("denialReasonCode");
+		var reasonCode = reasonCodeSelect.options[reasonCodeSelect.selectedIndex].value;
+		var reason = dojo.byId("denialReason").value;
+		if (reason == "" && reasonCode == "") {
+			alert("<?=__('No reason specified')?>");
+			return;
+		}
+		var content = {
+			"data[reasonCode]":reasonCode,
+			"data[reason]":reason,
+		};
+	}
+	content.messagingId = "<?=$this->messagingId?>";
+	content.response = "denied";
+	messagingRefillResponse(content);
+	dhxWins.window("winRefillResponseDenied").close();
+	if (newPrescription) {
+		var params = [];
+		params.push("personId="+mainController.getActivePatient());
+		params.push("refillRequestId=<?=$this->messagingId?>");
+		params.push("medicationId=<?=$this->refillRequest->medicationId?>");
+		params.push("copy=1");
+		winNewMedObjects = globalCreateWindow("windowNewMedication",params,"<?=$this->baseUrl?>/medications.raw/edit-medication","<?=__('New Medication')?>",520,600);
+	}
+}
+
+function textareaOnkeypress(evt) {
+	var target = evt.target;
+	var maxlength = target.getAttribute("maxlength");
+	if (maxlength == null) {
+		return;
+	}
+
+	var key = evt.which;
+	//all keys including return.
+	if(key >= 33 || key == 13) {
+		var length = target.value.length;
+		if(length >= maxlength) {
+			evt.preventDefault();
+		}
+	}
+}
+dojo.connect(dojo.byId("denialReason"),"onkeypress","textareaOnkeypress");
+dojo.connect(dojo.byId("note"),"onkeypress","textareaOnkeypress");
+</script>

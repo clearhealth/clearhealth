@@ -1,0 +1,121 @@
+<style>
+input,select,#markDuplicateId {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+<div style="float:left;width:100%;">
+	<?=$this->form->renderOpen()?>
+		<?=$this->form->idInput('FormHidden')?>
+	<fieldset><legend><?=__('Practice Information')?></legend>
+		<div style="float:left;">
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->name->renderLabel()?>
+				<?=$this->form->nameInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->website->renderLabel()?>
+				<?=$this->form->websiteInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<div style="float:left;">
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->form->identifier->renderLabel()?>
+				<?=$this->form->identifierInput('FormText',array('style'=>'width:150px;'))?>
+			</div>
+			<div class="formRow" style="padding-top:4px;">
+				<dt><label class="optional"><strong><?=__('Main Phone')?></strong></label></dt>
+				<?=$this->form->formMainPhone->numberInput('FormText',array('style'=>'width:150px;'))?>
+				<?=$this->form->formMainPhone->numberIdInput('FormHidden')?>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<div style="float:left;">
+			<div class="formRow" style="padding-top:4px;">
+				<dt><label class="optional"><strong><?=__('Secondary Phone')?></strong></label></dt>
+				<?=$this->form->formSecondaryPhone->numberInput('FormText',array('style'=>'width:150px;'))?>
+				<?=$this->form->formSecondaryPhone->numberIdInput('FormHidden')?>
+			</div>
+			<div class="formRow" style="padding-top:4px;">
+				<dt><label class="optional"><strong><?=__('Fax')?></strong></label></dt>
+				<?=$this->form->formFax->numberInput('FormText',array('style'=>'width:150px;'))?>
+				<?=$this->form->formFax->numberIdInput('FormHidden')?>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label class="optional"><strong><?=__('Primary Address')?></strong></label></dt>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formPrimaryAddress->line1->renderLabel()?>
+					<?=$this->form->formPrimaryAddress->line1Input('FormText',array('style'=>'width:150px;'))?>
+					<?=$this->form->formPrimaryAddress->addressIdInput('FormHidden')?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formPrimaryAddress->line2->renderLabel()?>
+					<?=$this->form->formPrimaryAddress->line2Input('FormText',array('style'=>'width:150px;'))?>
+				</div>
+			</div>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formPrimaryAddress->city->renderLabel()?>
+					<?=$this->form->formPrimaryAddress->cityInput('FormText',array('style'=>'width:130px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formPrimaryAddress->state->renderLabel()?>
+					<?=$this->form->formPrimaryAddress->stateInput('FormSelect',array('style'=>'width:100px;','options'=>$this->statesList))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formPrimaryAddress->postalCode->renderLabel()?>
+					<?=$this->form->formPrimaryAddress->postalCodeInput('FormText',array('style'=>'width:60px;'))?>
+				</div>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label class="optional"><strong><?=__('Secondary Address')?></strong></label></dt>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formSecondaryAddress->line1->renderLabel()?>
+					<?=$this->form->formSecondaryAddress->line1Input('FormText',array('style'=>'width:150px;'))?>
+					<?=$this->form->formSecondaryAddress->addressIdInput('FormHidden')?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formSecondaryAddress->line2->renderLabel()?>
+					<?=$this->form->formSecondaryAddress->line2Input('FormText',array('style'=>'width:150px;'))?>
+				</div>
+			</div>
+			<div style="float:left;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formSecondaryAddress->city->renderLabel()?>
+					<?=$this->form->formSecondaryAddress->cityInput('FormText',array('style'=>'width:130px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formSecondaryAddress->state->renderLabel()?>
+					<?=$this->form->formSecondaryAddress->stateInput('FormSelect',array('style'=>'width:100px;','options'=>$this->statesList))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->formSecondaryAddress->postalCode->renderLabel()?>
+					<?=$this->form->formSecondaryAddress->postalCodeInput('FormText',array('style'=>'width:60px;'))?>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+		<?=$this->formButton('btnCancel','Cancel',array('onClick'=>'dhxWins.window("windowEditORMObjectId").close();'))?>
+		<?=$this->form->okInput('FormButton')?>
+	</div>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function postSubmit<?=$this->form->getId()?>() {
+	dhxWins.window("windowEditORMObjectId").close();
+	return false;
+}
+</script>

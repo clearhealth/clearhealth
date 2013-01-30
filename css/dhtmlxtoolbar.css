@@ -1,0 +1,113 @@
+.defaultButtonText{
+	font: 11px Arial;
+	cursor:pointer;
+}
+.defaultButtonTextBottom{
+	font: 8pt Arial;
+	cursor:pointer;
+}
+.toolbarNormalButton select{
+	font: 8pt Arial;
+	cursor:pointer;
+}
+
+.defaultButton {
+	border : solid 1px #D4D0C8;
+	margin:1px;
+	cursor:pointer;
+	font: 11px Arial; 	
+}
+.buttonTextDisabled {
+	color: gray;
+	font: 11px Arial;
+}
+.defaultButtonDown {
+	background-color : #DBD8D1;
+	border-bottom : solid 1px #FFFFFF;
+	border-left : solid 1px #808080;
+	border-right : solid 1px #FFFFFF;
+	border-top : solid 1px #808080;
+	cursor : pointer;
+}
+
+.defaultButtonOver {
+	background-color : #DBD8D1;
+	border-bottom : solid 1px #808080;
+	border-left : solid 1px #FFFFFF;
+	border-right : solid 1px #808080;
+	border-top : solid 1px #FFFFFF;
+	cursor : pointer;
+}
+
+.iconGray {
+	border : solid 1px #D4D0C8;
+	cursor : default;
+	filter : BlendTrans(Percent=50) gray();
+	filter:alpha(opacity=50);
+    -moz-opacity:.50;
+    opacity:.50;
+}
+
+.toolbarDivider {
+	background-color : #D4D0C8;
+	border-left : solid #808080 1px;
+	border-right : solid #FFFFFF 1px;
+	height : 100%;
+	margin-bottom : 2px;
+	margin-top : 1px;
+	overflow : hidden;
+	vertical-align : middle;
+	width : 2px;
+}
+
+.toolbarDividerY {
+	background-color : #D4D0C8;
+	border-bottom : solid #FFFFFF 1px;
+	border-top : solid #808080 1px;
+	height : 2px;
+	overflow : hidden;
+	width : 100%;
+}
+
+.toolbarHandle {
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #FFFFFF 1px;
+	cursor : move;
+	height : 100%;
+	overflow : hidden;
+	width : 1px;
+}
+
+.toolbarName{
+	color : #43537B;
+	font : 11px 'Arial Black',Arial,sans-serif;
+	letter-spacing : 3px;
+	padding-left : 10px;
+	padding-right : 10px;
+}
+
+.toolbarTable{
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #FFFFFF 1px;
+	margin : 0px;
+	-moz-user-select : none;
+	padding : 0px;
+	table-layout : fixed;
+}
+
+.vtoolbarHandle {
+	background-color : #D4D0C8;
+	border-bottom : solid #808080 1px;
+	border-left : solid #FFFFFF 1px;
+	border-right : solid #808080 1px;
+	border-top : solid #FFFFFF 1px;
+	cursor : move;
+	height : 1px;
+	overflow : hidden;
+}

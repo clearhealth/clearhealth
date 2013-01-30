@@ -1,0 +1,283 @@
+/*****************************************************************************************************************************************************************
+								dhtmlxToolbar "STANDARD" skin
+*****************************************************************************************************************************************************************/
+.dhtmlxToolbar_standard {
+	white-space: nowrap;
+	overflow: hidden;
+	height: 26px;
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_top_bg_middle.gif");
+}
+.dhtmlxToolbar_standard table.dhtmlxToolbarTable_standard {
+	height: 100%;
+}
+table.dhtmlxToolbarTable_standard td {
+	white-space: nowrap;
+	position: relative;
+}
+/* td with item's icon and text */
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarIMG {
+	padding: 0px 2px;
+	width: 18px;
+	height: 18px;
+	-moz-user-select: none;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarIMG img {
+	width: 18px;
+	height: 18px;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarTEXT {
+	padding: 2px;
+	padding-right: 5px;
+	-moz-user-select: none;
+	text-align: left;
+}
+/* item states */
+table.dhtmlxToolbarTable_standard table.itemDefault {
+	height: 20px;
+	margin: 1px;
+	background: none;
+	cursor: default;
+	color: #000000;
+}
+table.dhtmlxToolbarTable_standard table.itemDisabled {
+	height: 22px;
+	border: #D3E2E5 1px solid;
+	background: none;
+	cursor: default;
+	color: #999999;
+}
+table.dhtmlxToolbarTable_standard table.itemOver {
+	border-top: #FFFFFF 1px solid;
+	border-left: #FFFFFF 1px solid;
+	border-right: #C0C0C0 1px solid;
+	border-bottom: #C0C0C0 1px solid;
+	
+	height: 21px;
+	margin-top: 1px;
+	cursor: default;
+	color: #000000;
+	background-position: top;
+	background-repeat: repeat-x;
+}
+table.dhtmlxToolbarTable_standard table.itemPressed {
+	border-top: #C0C0C0 1px solid;
+	border-left: #C0C0C0 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-bottom: #FFFFFF 1px solid;
+	background-color: #D2D1D1;
+	
+	height: 21px;
+	margin-top: 1px;
+	cursor: default;
+	color: #000000;
+}
+
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem {
+	
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem span {
+	font-family: Tahoma;
+	font-size: 12px;
+}
+/* separator */
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem div.dhtmlxToolbarSep {
+	width: 0px;
+	height: 19px;
+	font-size: 2px;
+	margin-left: 1px;
+	margin-right: 0px;
+	margin-top: 1px;
+	#margin-right: -1px;
+	border-left: #BCBBBB 1px solid;
+	border-right: #E3E3E3 1px solid;
+	-moz-user-select: none;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem .dhtmlxToolbarInp {
+	position: relative;
+	border-top: #C0C0C0 1px solid;
+	border-left: #C0C0C0 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-bottom: #FFFFFF 1px solid;
+	background-color: #FEFEFE;
+	font-family: Tahoma;
+	font-size: 11px;
+	margin-top: 1px;
+}
+/* select button arrow */
+td.dhtmlxToolbarArrow {
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarArrow {
+	width: 11px;
+	position: relative;
+	margin: -1px;
+	@margin-top: 1px;
+	-moz-user-select: none;
+	background-repeat: no-repeat;
+	background-position: middle center;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDefault div.dhtmlxToolbarArrow {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_btnarrow.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemOver div.dhtmlxToolbarArrow {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_btnarrow.gif");
+	@margin-top: 0px;
+	
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemPressed div.dhtmlxToolbarArrow {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_btnarrow.gif");
+	@margin-top: 0px;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDisabled div.dhtmlxToolbarArrow {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_btnarrow_dis.gif");
+}
+/* button select polygon */
+div.dhtmlxToolbarPoly_standard {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	border-top: #D2D1D1 1px solid;
+	border-left: #D2D1D1 1px solid;
+	border-right: #7E7E7E 1px solid;
+	border-bottom: #7E7E7E 1px solid;
+	background-color: #FFFFFF;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhtmlxToolbarPoly_standard div.buttonItem {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_standard div.buttonItemDis {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #999999;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_standard div.buttonItemOver {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	background-color: #B0B0B0;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_standard div.buttonItemSelected {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	background-color: #bfdff1;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_standard div.buttonSeparator {
+	position: relative;
+	border-top: #C0C0C0 1px solid;
+	font-size: 1px;
+}
+div.dhtmlxToolbarPoly_standard img.buttonImage {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	top: 2px;
+	margin-left: -16px;
+}
+/* slider */
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDefault td.dhtmlxToolbarSliderBarLeft {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_left.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDefault td.dhtmlxToolbarSliderBarMiddle {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_middle.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDefault td.dhtmlxToolbarSliderBarRight {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_right.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDisabled td.dhtmlxToolbarSliderBarLeft {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_left_dis.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDisabled td.dhtmlxToolbarSliderBarMiddle {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_middle_dis.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDisabled td.dhtmlxToolbarSliderBarRight {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_right_dis.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem td.dhtmlxToolbarSliderBarLeft {
+	font-size: 2px;
+	width: 3px;
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem td.dhtmlxToolbarSliderBarMiddle {
+	font-size: 2px;
+	height: 20px;
+	background-repeat: repeat-x;
+	background-position: center center;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem td.dhtmlxToolbarSliderBarRight {
+	font-size: 2px;
+	width: 3px;
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDefault div.dhtmlxToolbarBarSliderPen {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_pen.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem table.itemDisabled div.dhtmlxToolbarBarSliderPen {
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_pen_dis.gif");
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem div.dhtmlxToolbarBarSliderPen {
+	position: absolute;
+	top: 3px;
+	width: 7px;
+	height: 16px;
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+table.dhtmlxToolbarTable_standard td.dhtmlxToolbarItem div.dhtmlxToolbarBarSliderPenOver {
+	position: absolute;
+	top: 3px;
+	width: 7px;
+	height: 16px;
+	background-image: url("../imgs/dhxtoolbar_standard/dhtmlxtoolbar_slider_hor_pen_over.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div.dhtmlxToolbarSliderPenLabel_standard {
+	position: absolute;
+	border: #A3A172 1px solid;
+	background-color: #FFF992;
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	cursor: default;
+	-moz-user-select: none;
+	z-index: 8422;
+}

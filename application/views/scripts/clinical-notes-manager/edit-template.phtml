@@ -1,0 +1,116 @@
+<?=$this->form->renderOpen()?>
+
+<fieldset>
+<legend><?=__(ucwords($this->event)." Clinical Notes Template")?></legend>
+<div style="float:left;">
+	<div class="formRow">
+		<?=$this->form->clinicalNoteTemplateIdInput('FormHidden')?>
+
+		<?=$this->form->name->renderLabel()?>
+		<?$this->form->name->setAttrib('size',60)?>
+
+		<?=$this->form->nameInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->guid->renderLabel()?>
+		<?$this->form->guid->setAttrib('size',60)?>
+
+		<?=$this->form->guidInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->template->renderLabel()?>
+		<textarea cols="70" rows="12" name="cnTemplate[template]" id="cnTemplate-template"><?=htmlspecialchars($this->form->template->getValue());?></textarea>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->okInput('FormButton')?>
+		<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowEditTemplateId').close();" />
+
+	</div>
+</div>
+</fieldset>
+
+<?=$this->form->renderClose()?>
+
+<script>
+
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.xhrPost({
+		url: globalBaseUrl+"/clinical-notes-manager.raw/check-namespaces",
+		handleAs: "json",
+		form: "<?=$this->form->getId()?>",
+		load: function(data){
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			var autoAdd = false;
+			if (data.namespaces && data.namespaces.length > 0) {
+				var label = "Namespace";
+				var isAre = "is";
+				if (data.namespaces.length > 1) {
+					label = "Namespaces";
+					isAre = "are";
+				}
+				var namespaces = [];
+				for (var i in data.namespaces) {
+					namespaces.push("'"+data.namespaces[i]+"'");
+				}
+				label += " "+namespaces.join(", ");
+				if (data.msg) {
+					label = data.msg+"\n\n"+label;
+				}
+				if (confirm(label+" "+isAre+" not currently defined, add and point to GenericData handler?")) {
+					autoAdd = true;
+				}
+				else {
+					return;
+				}
+			}
+			noteTemplatePostSubmit(autoAdd);
+		},
+		error: function (error) {
+			alert("ERROR: " + error.responseText);
+		}
+	});
+	return false;
+}
+
+function noteTemplatePostSubmit(autoAdd) {
+	dojo.xhrPost({
+		url: "<?=$this->form->getAction()?>",
+		handleAs: "json",
+		form: "<?=$this->form->getId()?>",
+		content: {
+			"autoAdd": (autoAdd)?"1":"0",
+		},
+		load: function(data){
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			if (data.msg) {
+				alert(data.msg);
+			}
+			cnmTemplateGrid.clearAll();
+			cnmTemplateGrid.load("<?=$this->baseUrl?>/clinical-notes-manager.raw/templates.json","json");
+			cnmDefinitionGrid.clearAll();
+			cnmToggleButtons(true);
+			dhxWins.window("windowEditTemplateId").close();
+		},
+		error: function (error) {
+			alert("ERROR: " + error.responseText);
+		}
+	});
+	return false;
+}
+
+</script>

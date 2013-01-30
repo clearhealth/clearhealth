@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<toolbar name="" width="100%" disableType="image" absolutePosition="auto" toolbarAlign="left">
+	<ImageTextButtonXP src="../img/newproblem.png" height="50" width="80" id="0_delete" tooltip="Delete" ><![CDATA[ <div style="margin-top:-5px;">New Vitals</div> ]]></ImageTextButtonXP>
+	<ImageTextButtonXP src="../img/editproblem.png" height="50" width="75px" id="0_delete" tooltip="Delete" ><![CDATA[ <div style="margin-top:-5px;">Entered in Error</div> ]]></ImageTextButtonXP>
+	<divider id="div_1"/>	
+	<ImageTextButtonXP src="../img/editproblem.png" height="50" width="125px" align="right" id="0_delete" tooltip="Delete" ><![CDATA[ <div style="margin-top:-5px;">Pediatric Growth Chart</div> ]]></ImageTextButtonXP>
+</toolbar>

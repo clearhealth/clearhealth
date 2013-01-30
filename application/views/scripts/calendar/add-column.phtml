@@ -1,0 +1,64 @@
+<div style="float:left;">
+	<form id="addColumnForm" method="post" action="<?=$this->baseUrl?>/calendar.raw/process-add-column">
+	<div style="margin-left:10px;width:350px;">
+	<div class="formRow">
+	<dt><label for="calendar-provider-id"><?=__("Provider")?></label></dt>
+	<select id="calendar-provider-id"  name="calendar[providerId]" style="width:325px;">
+	<option value=""></option>
+        <?foreach(Provider::getArray() as $personId => $name):?>
+                <option value="<?=$personId?>" <?if ($personId == $this->providerId):?>selected="selected"<?endif;?>><?=$name?></option>
+        <?endforeach;?>
+        </select>
+	</div>
+<br />
+	<div class="formRow" style="padding-top:4px;">
+        <dt><label for="calendar-room-id"><?=__("Room")?></label></dt>
+	<select id="calendar-room-id"  name="calendar[roomId]" style="width:325px;">
+	<option value=""></option>
+	<?foreach(Room::getRoomArray() as $roomId => $name):?>
+		<option value="<?=$roomId?>" <?if ($roomId == $this->currentRoomId):?>selected="selected"<?endif;?>><?=$name?></option>
+	<?endforeach;?>
+	</select>
+	</div>
+<br />
+	<div class="formRow" style="padding-top:4px;">
+        <dt><label for="calendar-date-filter"><?=__("Filter Date")?></label></dt>
+	<?if(!isset($this->data['dateFilter'])):
+		$dateFilterValue = date('Y-m-d',strtotime('today'));
+	else:
+		$dateFilterValue = date('Y-m-d',strtotime($this->data['dateFilter']));
+	endif;?>
+	<?=$this->formDateText('calendar[dateFilter]',$dateFilterValue,array('id'=>'calendar-date-filter'))?>
+	</div>
+<br style="clear:both;" />
+	<div class="formRow" style="padding-top:4px;">
+		<input type="hidden" name="calendar[showCancelledAppointments]" id="calendar-showCancelledAppointments" value="0" />
+		<input type="checkbox" name="calendar[showCancelledAppointments]" id="calendar-showCancelledAppointments" value="1" /> <?=__('Show Cancelled Appointments')?>
+	</div>
+<br style="clear:left"/>
+<div style="text-align:right;margin-top:10px;">
+	<input type="button" value="<?=__("Cancel")?>" onClick="closeAddColumnWindow()" />
+	<input type="button" value="<?=__("Add Column")?>" onClick="calendarAddColumn()" />
+</div>
+</form>
+</div>
+<script>
+function calendarAddColumn() {
+	var dateFilter = boxCalendarDateFilter.getValue();
+	if (!dateFilter) {
+		alert("<?=__('Invalid date.')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/calendar.raw/process-add-column",
+		form: "addColumnForm",
+		handleAs: "json",
+		load: function (data) {
+			applyNewColumn(data.columnId);
+		},
+		error: function (er) {
+			console.error ("Error: ", err);
+		}
+	});
+}
+</script>

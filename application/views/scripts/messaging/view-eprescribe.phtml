@@ -1,0 +1,118 @@
+<fieldset><legend><?=__('ePrescribe')?></legend>
+	<div class="formRow">
+		<?=__('Date Transmitted')?>: <?=$this->messaging->dateStatus?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Status')?>: <?=$this->messaging->status?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Note')?>: <?=$this->messaging->note?>
+	</div>
+	<br style="clear:left" />
+	<br style="clear:left" />
+	<div class="formRow">
+		<!--<?=$this->formButton('resend',__('Resend'),array('onClick'=>'ePrescribeResend()'))?>-->
+	</div>
+</fieldset>
+<?if (strlen($this->missingPON) > 0):?>
+<fieldset><legend><?=__('Missing PON')?></legend>
+	<div class="formRow">
+		<?=__('Patient')?>: <div id="patientSelectAutoCompleteDiv"></div>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Medication')?>: <?=$this->formSelect('medicationId',null,array('options'=>$this->listMedications,'style'=>'width:350px;'))?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=$this->formButton('setPON',__('Set PON'),array('onClick'=>'ePrescribeSetPON()'))?>
+	</div>
+	<?=$this->formHidden('personId',$this->messaging->personId,array('id'=>'personId'))?>
+</fieldset>
+<script>
+function ePrescribeSetPON() {
+	var medicationSelect = dojo.byId("medicationId");
+	var selectedIndex = medicationSelect.selectedIndex;
+	if (selectedIndex == -1) {
+		alert("<?=__('No medication selected')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-set-pon",
+		handleAs: "json",
+		content: {
+			"personId": dojo.byId("personId").value,
+			"messagingId": "<?=$this->messaging->messagingId?>",
+			"medicationId": medicationSelect.options[selectedIndex].value,
+		},
+		load: function(data) {
+			dhxWins.window("winEPrescribeId").close();
+		},
+		error: function (er) {
+			alert("error: "+er)
+		}
+	});
+}
+var pscb = dijit.byId("patientSelectAutoCompleteDiv");
+if (pscb != undefined) { 
+	pscb.destroyRecursive();
+	pscb = null;
+}
+var psac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/patient.raw/auto-complete",requestMethod:"get"},"personSelectAutoComplete");
+pscb = new custom.SelectComboBox({name:"patientSelectAutoCompleteId",autocomplete:false,store:psac,hasDownArrow:false},"patientSelectAutoCompleteDiv");
+dojo.connect(pscb,"onChange","patientLoad");
+function patientLoad(id) {
+	var patientId = pscb.selectedKey;
+	if (patientId > 0) {
+		patientLoadMedications(patientId);
+	}
+}
+function patientLoadMedications(personId) {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/medications.raw/list-medications",
+		handleAs: "json",
+		content: {
+			"personId": personId,
+		},
+		load: function(data) {
+			dojo.byId("personId").value = personId;
+			var medicationSelect = dojo.byId("medicationId");
+			medicationSelect.options.length = 0;
+			medicationSelect.options[medicationSelect.options.length] = new Option("Does not link to an existing medication entry","0");
+			for (var i in data.rows) {
+				var row = data.rows[i];
+				var tmp = row.data[1]+" ("+row.data[3]+")";
+				medicationSelect.options[medicationSelect.options.length] = new Option(tmp,row.id);
+			}
+		},
+		error: function (er) {
+			alert("error: "+er)
+		}
+	});
+}
+</script>
+<?endif;
+$prettyPrintHeight = 200;
+if(strlen($this->relatedMessage) > 0) {
+	$prettyPrintHeight = 80;
+	$relatedMessageHeight = 150;
+}
+?>
+<?if(strlen($this->prettyPrint) > 0):?>
+<fieldset><legend><?=__('Pretty Print')?></legend>
+	<?=$this->formTextarea('prettyPrint',$this->prettyPrint,array('readonly'=>true,'style'=>'background-color:#fff;height:'.$prettyPrintHeight.'px;width:460px;'))?>
+</fieldset>
+<?endif;?>
+
+<?if(strlen($this->relatedMessage) > 0):?>
+<fieldset><legend><?=__('Pretty Print for Related Message')?></legend>
+	<?=$this->formTextarea('relatedMessage',$this->relatedMessage,array('readonly'=>true,'style'=>'background-color:#fff;height:'.$relatedMessageHeight.'px;width:460px;'))?>
+</fieldset>
+<?endif;?>
+<script>
+function ePrescribeResend() {
+	alert("Not yet implemented");
+}
+</script>

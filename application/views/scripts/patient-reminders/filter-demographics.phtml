@@ -1,0 +1,89 @@
+<style>
+.filterOperator {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:17px;
+	width:80px;
+}
+.filterOperand {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:17px;
+	width:150px;
+}
+</style>
+<div style="margin-top:5px;height:300px;overflow:auto;">
+<form id="demographicsFormId" name="demographicsFormId">
+<?foreach ($this->demographics as $key=>$value):?>
+	<?if (!isset($this->filters[$key])) $this->filters[$key] = array('enabled'=>0,'operator'=>'','operand1'=>'','operand2'=>'');?>
+	<div style="margin-top:2px;">
+	<input type="checkbox" id="<?=$key?>-enabled" name="filters[<?=$key?>][enabled]" <?=($this->filters[$key]['enabled'])?'checked="checked"':''?> onClick="filterDemographicsOnClickEnabled()" /> <?=$value['name']?> 
+	<?if ($value['type'] == PatientStatisticsDefinition::TYPE_ENUM):?>
+		<?=$this->formSelect('filters['.$key.'][operand1]',$this->filters[$key]['operand1'],array('onChange'=>'filterDemographicsOnChanged("'.$key.'")','class'=>'filterOperand'),$value['options'])?>
+	<?elseif ($value['type'] == PatientStatisticsDefinition::TYPE_CHECKBOX):?>
+		<input type="checkbox" id="<?=$key?>" name="filters[<?=$key?>][operand1]" <?=($this->filters[$key]['operand1'])?'checked="checked"':''?> onClick="filterDemographicsOnChanged('<?=$key?>')" />
+	<?elseif ($value['type'] == PatientStatisticsDefinition::TYPE_DATE):?>
+		<?=$this->formSelect('filters['.$key.'][operator]',$this->filters[$key]['operator'],array('id'=>$key.'-operator','class'=>'filterOperator','onChange'=>'filtersOperatorOnChanged(this,"'.$key.'");filterDemographicsOnChanged("'.$key.'");'),$this->operators)?>
+		<?=$this->formDateText('filters['.$key.'][operand1]',date('Y-m-d',strtotime($this->filters[$key]['operand1'])),array('id'=>$key,'onChange'=>'filterDemographicsOnChanged("'.$key.'")','class'=>'filterOperand'))?>
+		<script>
+		dojo.connect(box<?=str_replace(' ','',ucwords(str_replace('-',' ',$key)))?>,"onChange",function(value){
+			filterDemographicsOnChanged("<?=$key?>");
+		});
+		</script>
+		<label id="<?=$key?>DivId" style="display:none;margin-left:5px;">
+			<?=__('AND')?> <?=$this->formDateText('filters['.$key.'][operand2]',$this->filters[$key]['operand2'],array('id'=>$key.'Id2','onChange'=>'filterDemographicsOnChanged("'.$key.'")','class'=>'filterOperand','style'=>'margin-left:5px;'),$value['options'])?>
+			<script>
+			dojo.connect(box<?=str_replace(' ','',ucwords(str_replace('-',' ',$key.'Id2')))?>,"onChange",function(value){
+				filterDemographicsOnChanged("<?=$key?>Id2");
+			});
+			</script>
+		</label>
+	<?else: // PatientStatisticsDefinition::TYPE_INPUT or others?>
+		<?=$this->formSelect('filters['.$key.'][operator]',$this->filters[$key]['operator'],array('id'=>$key.'-operator','class'=>'filterOperator','onChange'=>'filtersOperatorOnChanged(this,"'.$key.'");filterDemographicsOnChanged("'.$key.'");'),$this->operators)?>
+		<?=$this->formText('filters['.$key.'][operand1]',$this->filters[$key]['operand1'],array('id'=>$key,'onChange'=>'filterDemographicsOnChanged("'.$key.'")','class'=>'filterOperand'))?>
+		<label id="<?=$key?>DivId" style="display:none;margin-left:5px;">
+			<?=__('AND')?> <?=$this->formText('filters['.$key.'][operand2]',$this->filters[$key]['operand2'],array('id'=>$key.'Id2','onChange'=>'filterDemographicsOnChanged("'.$key.'")','class'=>'filterOperand','style'=>'margin-left:5px;'))?>
+		</label>
+	<?endif;?></div>
+<?endforeach;?>
+</form>
+</div>
+<br style="clear:both;" />
+<div style="float:right;">
+	<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterDemographicsApply()','id'=>'applyFilters','disable'=>'disable'))?>
+</div>
+<script>
+<?foreach ($this->demographics as $key=>$value):?>
+var operator = dojo.byId("<?=$key?>-operator");
+if (operator) filtersOperatorOnChanged(operator,"<?=$key?>");
+<?endforeach;?>
+function filtersOperatorOnChanged(obj,name) {
+	var div = dojo.byId(name+"DivId");
+	div.style.display = "none";
+	if (obj.value == "between") {
+		div.style.display = "inline";
+	}
+}
+function filterDemographicsOnChanged(id) {
+	dojo.byId(id+"-enabled").checked = true;
+	dojo.byId("applyFilters").disabled = false;
+}
+function filterDemographicsOnClickEnabled() {
+	dojo.byId("applyFilters").disabled = false;
+}
+function filterDemographicsApply() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-reminders.raw/process-filter-demographics",
+		handleAs: "json",
+		form: "demographicsFormId",
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

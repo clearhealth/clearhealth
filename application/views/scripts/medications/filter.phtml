@@ -1,0 +1,33 @@
+<div style="width:100%;">
+	<fieldset><legend><?=__('Filter Medication')?></legend>
+		<div style="float:left;"><input type="checkbox" id="filterActive" name="filterActive" style="width:20px;" <?=($this->filters['active'])?'checked="checked"':''?> /> <?=__('Show Active')?></div>
+		<div style="float:left;margin-left:10px;"><input type="checkbox" id="filterDiscontinued" name="filterDiscontinued" style="width:20px;" <?=($this->filters['discontinued'])?'checked="checked"':''?> /> <?=__('Show Discontinued')?></div>
+		<div style="float:left;margin-left:10px;"><input type="checkbox" id="filterPatientReported" name="filterPatientReported" style="width:20px;" <?=($this->filters['patientReported'])?'checked="checked"':''?> /> <?=__('Patient Reported')?></div>
+	</fieldset>
+	<?=$this->formButton('ok',__('OK'),array('onClick'=>'setFilter()'))?>
+</div>
+<script>
+function setFilter() {
+	var active = 0;
+	if (dojo.byId("filterActive").checked) active = 1;
+	var discontinued = 0;
+	if (dojo.byId("filterDiscontinued").checked) discontinued = 1;
+	var patientReported = (dojo.byId("filterPatientReported").checked)?1:0;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/medications.raw/set-session-filter",
+		handleAs: "json",
+		content: {
+			"filters[active]": active,
+			"filters[discontinued]": discontinued,
+			"filters[patientReported]": patientReported,
+		},
+		load: function (data) {
+			if (loadMedication) loadMedication();
+			dhxWins.window("winFilterId").close();
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

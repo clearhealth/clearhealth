@@ -1,0 +1,77 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+<fieldset style="width:300px;"><legend><?=__("Enumeration Information")?></legend>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',35)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->type->renderLabel()?>
+	<?$this->form->type->setAttrib('size',35)?>
+	<?=$this->form->typeInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->category->renderLabel()?>
+	<?$this->form->category->setAttrib('size',35)?>
+	<?=$this->form->categoryInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->ormClass->renderLabel()?>
+	<?$this->form->ormClass->setAttrib('size',35)?>
+	<?=$this->form->ormClassInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="enumeration-ormClass" class="optional">Orm Id</label></dt>
+	<?$this->form->ormId->setAttrib('size',35)?>
+	<?=$this->form->ormIdInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->ormEditMethod->renderLabel()?>
+	<?$this->form->ormEditMethod->setAttrib('size',35)?>
+	<?=$this->form->ormEditMethodInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->enumerationIdInput('FormHidden')?>
+	<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowEditORMObjectId').close()"/>
+	<?=$this->form->okInput()?>
+</div>
+
+</fieldset>
+
+<script>
+function postSubmiteditenumeration() {
+	dhxWins.window('windowEditORMObjectId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

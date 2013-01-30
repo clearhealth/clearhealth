@@ -1,0 +1,285 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+.even{
+	background-color: white;
+}
+.uneven{
+	background-color: ghostwhite;
+}
+</style>
+
+<div id="orderLayoutId" style="position:absolute;width:100%;height:480px;"></div>
+<div>
+	<div id="orderLeftContainerId">
+		<div id="orderFilterGridId" style="width:100%;height:150px;"></div>
+		<div id="orderWriteGridId" style="width:100%;height:400px;"></div>
+	</div>
+</div>
+
+<script>
+var orderLayout = new dhtmlXLayoutObject("orderLayoutId", "2U");
+orderLayout.cells("a").hideHeader();
+orderLayout.cells("a").setWidth("300");
+orderLayout.cells("a").attachObject(dojo.byId("orderLeftContainerId"));
+orderLayout.cells("b").hideHeader();
+
+var orderFilterGrid = new dhtmlXGridObject("orderFilterGridId");
+orderFilterGrid.setImagePath("<?=$this->baseUrl?>/img/");
+orderFilterGrid.setHeader("<?=__('Filter')?>");
+orderFilterGrid.setInitWidths("*");
+orderFilterGrid.setColTypes("ro");
+orderFilterGrid.setSkin("xp");
+orderFilterGrid.attachEvent("onRowSelect",orderFilterGridOnRowSelected);
+orderFilterGrid.init();
+
+var filters = {
+	"rows": [
+		{"id":"active","data":[(<r><![CDATA[ <?=__('Active Orders (includes Pending & Recent Activity) - ALLSERVICES')?> ]]></r>).toString()]},
+		{"id":"current","data":[(<r><![CDATA[ <?=__('Current Orders (Active & Pending status only)')?> ]]></r>).toString()]},
+		{"id":"expiring","data":[(<r><![CDATA[ <?=__('Expiring Orders')?> ]]></r>).toString()]},
+		{"id":"unsigned","data":[(<r><![CDATA[ <?=__('Unsigned Orders')?> ]]></r>).toString()]},
+		/*{"id":"recently_expired","data":[(<r><![CDATA[ <?=__('Recently Expired Orders')?> ]]></r>).toString()]},*/
+	]
+};
+orderFilterGrid.parse(filters,"json");
+
+dhtmlxEvent(orderFilterGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+function orderFilterGridOnRowSelected(rowId,cellIndex) {
+	orderListGridReload();
+}
+
+var orderWriteGrid = new dhtmlXGridObject("orderWriteGridId");
+orderWriteGrid.setImagePath("<?=$this->baseUrl?>/img/");
+orderWriteGrid.setHeader("<?=__('Write Orders')?>");
+orderWriteGrid.setInitWidths("*");
+orderWriteGrid.setColTypes("ro");
+orderWriteGrid.setSkin("xp");
+orderWriteGrid.attachEvent("onRowSelect",orderWriteGridOnRowSelected);
+orderWriteGrid.init();
+
+var writeOrders = {
+	"rows": [
+		/*{"id":"common-orders","data":[(<r><![CDATA[ <?=__('Common Orders')?> ]]></r>).toString()]},*/
+		{"id":"lab-test","data":[(<r><![CDATA[ <?=__('Lab Test')?> ]]></r>).toString()]},
+		{"id":"imaging","data":[(<r><![CDATA[ <?=__('Imaging')?> ]]></r>).toString()]},
+		{"id":"text-order","data":[(<r><![CDATA[ <?=__('Text Only Order')?> ]]></r>).toString()]},
+	]
+};
+orderWriteGrid.parse(writeOrders,"json");
+
+dhtmlxEvent(orderWriteGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+function orderWriteGridOnRowSelected(rowId,cellIndex) {
+	if (!mainController.getActivePatient() > 0) {
+		alert("<?=__('No patient selected')?>");
+		return;
+	}
+	switch(rowId) {
+		case "imaging":
+			orderWindowImaging();
+			break;
+		case "lab-test":
+			orderWindowLabTest();
+			break;
+		case "text-order":
+			orderWindowTextOnly();
+			break;
+	}
+}
+
+function orderWindowTextOnly(orderId,copy) {
+	var params = [];
+	params.push("personId="+mainController.getActivePatient());
+	if (orderId) {
+		params.push("orderId="+orderId);
+	}
+	if (copy) {
+		params.push("copy=1");
+	}
+	return globalCreateWindow("windowTextOnlyId",params,"<?=$this->baseUrl?>/orders.raw/text-only","<?=__('Text Only Order')?>",350,240);
+}
+
+function orderWindowLabTest(orderId,copy) {
+	var params = [];
+	params.push("personId="+mainController.getActivePatient());
+	if (orderId) {
+		params.push("orderId="+orderId);
+	}
+	if (copy) {
+		params.push("copy=1");
+	}
+	return globalCreateWindow("windowLabTestId",params,"<?=$this->baseUrl?>/orders.raw/lab-test","<?=__('Order a Lab Test')?>",700,600);
+}
+
+function orderWindowImaging(orderId,copy) {
+	var params = [];
+	params.push("personId="+mainController.getActivePatient());
+	if (orderId) {
+		params.push("orderId="+orderId);
+	}
+	if (copy) {
+		params.push("copy=1");
+	}
+	return globalCreateWindow("windowImagingId",params,"<?=$this->baseUrl?>/orders.raw/imaging","<?=__('Order an Imaging Procedure')?>",700,600);
+}
+
+function orderWindowViewDetails(orderId) {
+	if (!orderId) {
+		orderId = orderListGrid.getSelectedRowId();
+	}
+	if (!orderId) {
+		return;
+	}
+	var params = [];
+	params.push("orderId="+orderId);
+	globalCreateWindow("windowOrderViewDetailsId",params,"<?=$this->baseUrl?>/orders.raw/view-details","<?=__('View Details Order')?>",800,500);
+}
+
+function orderWindowLabResults(orderId) {
+	if (!orderId) orderId = orderListGrid.getSelectedRowId();
+	if (!orderId) return;
+	var params = [];
+	params.push("orderId="+orderId);
+	return globalCreateWindow("windowLabResultsId",params,"<?=$this->baseUrl?>/orders.raw/lab-results","<?=__('Enter Lab Results')?>",900,600);
+}
+
+var orderMenu = new dhtmlXMenuObject(null ,"standard");
+orderMenu.setImagePath("<?=$this->baseUrl?>/img/");
+orderMenu.renderAsContextMenu();
+orderMenu.setOpenMode("web");
+orderMenu.loadXML("<?=$this->baseUrl?>/orders.raw/context-menu");
+orderMenu.attachEvent("onContextMenu",function(id){
+	this.hideItem("labResults");
+	this.hideItem("release");
+	this.hideItem("unrelease");
+	this.showItem("discontinue");
+	var rowId = orderListGrid.getSelectedRowId();
+	if (!rowId) return;
+	if (orderListGrid.cells(rowId,indexOrderType).getValue() == "<?=Order::TYPE_LAB_TEST?>" && orderListGrid.cells(rowId,indexOrderESignatureId).getValue() > 0) this.showItem("labResults");
+	if (orderListGrid.cells(rowId,indexOrderReleased).getValue() > 0) {
+		this.showItem("unrelease");
+	}
+	else {
+		this.showItem("release");
+	}
+	if (orderListGrid.cells(rowId,indexOrderDiscontinued).getValue() > 0) this.hideItem("discontinue");
+});
+orderMenu.attachEvent("onClick",orderMenuOnClicked);
+function orderMenuOnClicked(id) {
+	var rowId = orderListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No selected order')?>");
+		return;
+	}
+	switch (id) {
+		case "discontinue":
+			orderProcess("discontinue",rowId);
+			break;
+		case "copy":
+			orderWindowOpen(rowId,true);
+			break;
+		case "viewDetails":
+			orderWindowViewDetails(rowId);
+			break;
+		case "labResults":
+			orderWindowLabResults(rowId);
+			break;
+		case "release":
+			orderProcess("release",rowId);
+			break;
+		case "unrelease":
+			orderProcess("unrelease",rowId);
+			break;
+	}
+}
+
+function orderProcess(action,rowId) {
+	if (!rowId) rowId = orderListGrid.getSelectedRowId();
+	if (!rowId || !action) return;
+	if (!confirm("Are you sure you want to "+action+" order: "+orderListGrid.cells(rowId,indexOrderOrder).getValue()+"?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/orders.raw/process-"+action,
+		handleAs: "json",
+		content: {
+			"orderId": rowId,
+		},
+		load: function (data) {
+			orderListGridReload();
+		},
+		error: function (error) {
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+var orderListGrid = orderLayout.cells("b").attachGrid();
+orderListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexOrderService = 0;
+var indexOrderStatus = 1;
+var indexOrderOrder = 2;
+var indexOrderStartStop = 3;
+var indexOrderProvider = 4;
+var indexOrderType = 5;
+var indexOrderESignatureId = 6;
+var indexOrderReleased = 7;
+var indexOrderDiscontinued = 8;
+orderListGrid.setHeader("<?=__('Service')?>,<?=__('Status')?>,<?=__('Order')?>,<?=__('Ordered Date/Comp. Date')?>,<?=__('Provider')?>,,,,");
+orderListGrid.setInitWidths("200,75,*,180,150,0,0,0,0");
+orderListGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
+orderListGrid.setSkin("xp");
+orderListGrid.enableAlterCss("even","uneven");
+orderListGrid.attachEvent("onRowDblClicked",orderListGridOnRowDblClicked);
+orderListGrid.enableContextMenu(orderMenu);
+orderListGrid.init();
+
+function orderListGridOnRowDblClicked(rowId,colIndex) {
+	if (orderListGrid.cells(rowId,indexOrderESignatureId).getValue() > 0) {
+		orderWindowViewDetails(rowId);
+		return;
+	}
+	orderWindowOpen(rowId);
+}
+
+function orderWindowOpen(rowId,copy) {
+	switch (orderListGrid.cells(rowId,indexOrderType).getValue()) {
+		case "<?=Order::TYPE_LAB_TEST?>": // lab test
+			orderWindowLabTest(rowId,copy);
+			break;
+		case "<?=Order::TYPE_IMAGING?>": // imaging
+			orderWindowImaging(rowId,copy);
+			break;
+		default: // text-only
+			orderWindowTextOnly(rowId,copy);
+			break;
+	}
+}
+
+dhtmlxEvent(orderListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+function orderListGridReload() {
+	if (!mainController.getActivePatient() > 0) {
+		return;
+	}
+	var filter = "";
+	var rowId = orderFilterGrid.getSelectedRowId();
+	if (rowId !== null) {
+		filter = "&filter="+rowId;
+	}
+	orderListGrid.clearAll();
+	orderListGrid.load("<?=$this->baseUrl?>/orders.raw/list.json?personId=" + mainController.getActivePatient() + filter,"json");
+}
+orderListGridReload();
+</script>

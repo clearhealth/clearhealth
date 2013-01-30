@@ -1,0 +1,77 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div class="formRow" style="padding-top:8px;padding-bottom:8px;">
+	<?=__('Date Range')?>: <?=$this->formDateText('dateStart',date('Y-m-d',strtotime($this->dateStart)),array('id'=>'dateStart'))?>
+	<?=$this->formText('startTime',date('H:i:s',strtotime($this->startTime)),array('id'=>'startTime'))?>
+ to 
+	<?=$this->formDateText('dateEnd',date('Y-m-d',strtotime($this->dateEnd)),array('id'=>'dateEnd'))?>
+	<?=$this->formText('endTime',date('H:i:s',strtotime($this->endTime)),array('id'=>'endTime'))?>
+	<?=$this->formButton('search',__('Search'),array('id'=>'search','onClick'=>'ALVGridReload()'))?>
+</div>
+<br style="clear:left;" />
+<div id="ALVGridId" style="height:444px;"></div>
+<div id="auditListIframeDivId" style="display:none;"></div>
+<script>
+auditcxMenu = new dhtmlXMenuObject(null ,'standard');
+auditcxMenu.setImagePath("<?=$this->baseUrl?>/img/");
+auditcxMenu.renderAsContextMenu();
+auditcxMenu.setOpenMode("web");
+auditcxMenu.attachEvent('onClick',handleAuditContextClick);
+auditcxMenu.loadXML(globalBaseUrl+'/audit-log-viewer.xml/audit-context-menu');
+
+
+var ALVGrid = new dhtmlXGridObject("ALVGridId");
+ALVGrid.setImagePath("<?=$this->baseUrl?>/img/");
+ALVGrid.setHeader('<?=__('Date')?>,<?=__('Time')?>,<?=__('Patient/Message')?>,<?=__('User')?>,<?=__('Action')?>');
+ALVGrid.setColTypes("ro,ro,ro,ro,ro");
+ALVGrid.setSkin("xp");
+ALVGrid.setInitWidths("80,70,*,150,100");
+ALVGrid.setColSorting("str,str,str,str,str");
+ALVGrid.enableDynamicLoading(true);
+ALVGrid.enableContextMenu(auditcxMenu);
+dhtmlxEvent(ALVGrid.entBox,'contextmenu',function(e){
+        (e||event).cancelBubble=true;
+        return false;
+});
+
+
+ALVGrid.init();
+function ALVGridReload() {
+	ALVGrid.clearAll();
+	ALVGrid.load(globalBaseUrl+'/audit-log-viewer.raw/list?start='+dojo.byId('dateStart').value+'&end='+dojo.byId('dateEnd').value+'&startTime='+dojo.byId('startTime').value+'&endTime='+dojo.byId('endTime').value,function(){},'json');
+}
+ALVGridReload();
+
+function handleAuditContextClick(item,rowId) {
+
+        var ctr = ALVGrid.getRowsNum();
+        if (ctr == 0) {
+                alert("Patient list is empty.");
+                return;
+        }
+        dojo.xhrPost({
+                url: '<?=$this->baseUrl?>/audit-log-viewer.raw/export?start='+dojo.byId('dateStart').value+'&end='+dojo.byId('dateEnd').value+'&startTime='+dojo.byId('startTime').value+'&endTime='+dojo.byId('endTime').value,
+                handleAs: "json",
+                load: function (data) {
+                        if (data.filename) {
+                                var iframe = document.createElement("IFRAME");
+                                iframe.setAttribute("src","<?=$this->baseUrl?>/audit-log-viewer.raw/download-exported?filename="+data.filename);
+                                iframe.style.display = "none";
+                                var iframeDiv = dojo.byId("auditListIframeDivId");
+                                iframeDiv.innerHTML = "";
+                                iframeDiv.appendChild(iframe);
+                        }
+                        else if (data.error) {
+                                alert(data.error);
+                        }
+                },
+                error: function (er) {
+                        alert("err: " + er.responseText);
+                }
+        });
+}
+</script>

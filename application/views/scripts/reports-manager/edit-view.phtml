@@ -1,0 +1,919 @@
+<style>
+.smallButton {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:15px;
+}
+div.gridbox#reportViewTransformGridId table.hdr td div.hdrcell {
+	height: 12px;
+}
+</style>
+<div style="float:left;width:100%;" id="reportViewEditDivId">
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->displayName->renderLabel()?>
+		<?=$this->form->displayNameInput('FormText',array('onChange'=>'reportViewDisplayNameOnChanged(this.value)','style'=>'width:150px;'))?>
+		<span id="reportViewSystemNameId"><?=$this->form->systemName->getValue()?></span>
+		<?=$this->form->systemNameInput('FormHidden')?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<div style="float:left;"><input type="checkbox" id="reportViewRunQueriesImmediatelyId" onClick="reportViewRunQueriesImmediatelyOnClicked(this.checked)" <?=($this->form->runQueriesImmediately->getValue())?'checked="checked"':''?> /></div> <div style="float:left;"><?=$this->form->runQueriesImmediately->renderLabel()?></div>
+		<div style="float:left;margin-left:20px;"><input type="checkbox" id="reportViewActiveId" onClick="reportViewActiveOnClicked(this.checked)" <?=($this->form->active->getValue())?'checked="checked"':''?> /></div> <div style="float:left;"><?=$this->form->active->renderLabel()?></div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<div style="float:left;"><input type="checkbox" id="reportViewCustomizeColumnNamesId" onClick="reportViewCustomizeColumnNamesOnClicked(this.checked)" <?=($this->form->customizeColumnNames->getValue())?'checked="checked"':''?> /></div> <div style="float:left;"><?=__('Customize Column Names and Add Transforms')?></div>
+	</div>
+	<div id="reportViewMappingGridContainerId" style="display:none;">
+		<br style="clear:left"/>
+		<div class="formRow" style="padding-top:4px;">
+			<div id="reportViewMappingGridId" style="width:470px;height:180px;"></div>
+		</div>
+		<div id="reportViewTransformPanelId" style="position:absolute;display:none;background-color:Silver;padding:3px;border:1px solid #000;width:400px;">
+			<div style="float:left;width:190px;background-color:#fff;">
+				<fieldset><legend><?=__('Edit Transform')?></legend>
+				<div id="reportViewTransformEditPaneId"></div>
+				<br />
+				<?=$this->formButton('transformOK',__('OK'),array('id'=>'transformOK','class'=>'smallButton','disabled'=>true,'onClick'=>'reportViewTransformSave()'))?>
+				</fieldset>
+			</div>
+			<div style="float:left;width:200px;margin-left:10px;">
+				<?=$this->formSelect('transformType',__('Transform Type'),array('id'=>'transformType','class'=>'smallButton'),$this->transformTypes)?>
+				<input type="image" style="vertical-align:bottom;" src="<?=$this->baseUrl?>/img/newproblem.png" width="15" height="15" alt="<?=__('Add')?>" title="<?=__('Add')?>" onClick="reportViewTransformAdd(); return false;" />
+				<br />
+				<input type="image" style="vertical-align:bottom;" src="<?=$this->baseUrl?>/img/removeproblem.png" width="15" height="15" alt="<?=__('Delete')?>" title="<?=__('Delete')?>" onClick="reportViewTransformDelete(); return false;" />
+				<div id="reportViewTransformGridId" style="width:100%;height:150px;"></div>
+			</div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->showResultsIn->renderLabel()?>
+		<?$i = 0;
+		foreach ($this->showResults as $key=>$value):
+			$checked = '';
+			if (($i++ == 0 && strlen($this->form->showResultsIn->getValue()) <= 0) || ($this->form->showResultsIn->getValue() == $key)) $checked = 'checked="checked"';
+		?>
+		<div style="float:left;margin-left:5px;"><input type="radio" name="<?=$this->form->showResultsIn->getFullyQualifiedName()?>" id="<?=$this->form->showResultsIn->getId()?>" value="<?=$key?>" onClick="reportViewShowResultsInOnChanged(this.value)" <?=$checked?> /> <?=$value?></div>
+		<?endforeach;?>
+
+		<?=$this->form->reportViewIdInput('FormHidden')?>
+		<?=$this->form->reportBaseIdInput('FormHidden')?>
+		<?=$this->form->runQueriesImmediatelyInput('FormHidden')?>
+		<?=$this->form->activeInput('FormHidden')?>
+		<?=$this->form->customizeColumnNamesInput('FormHidden')?>
+		<?=$this->form->renderClose()?>
+
+		<form id="resultsOptionForm" name="resultsOptionForm" method="post" enctype="multipart/form-data">
+		<br />
+		<div id="showResultsOptionsId" style="clear:left;margin-top:30px;"></div>
+		</form>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="margin-top:10px;">
+		<?=$this->form->okInput()?>
+	</div>
+</div>
+<script>
+function reportViewEditDivOnClicked(evt) {
+	var target = evt.target;
+	var isOverlay = false;
+	var reportViewTransformPanelId = "reportViewTransformPanelId";
+	var parentNode = target;
+	while (parentNode) {
+		if (parentNode.id == reportViewTransformPanelId) {
+			isOverlay = true;
+			break;
+		}
+		parentNode = parentNode.parentNode;
+	}
+	if (!isOverlay) {
+		reportViewMappingHideTransformPanel();
+	}
+}
+dojo.connect(dojo.byId("reportViewEditDivId"),"onclick","reportViewEditDivOnClicked");
+var progressTimer = "";
+function reportViewAjaxUploadFile() {
+	dojo.byId("fileUploadFormId").style.display = "none";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/attachments.raw/process-add-attachments",
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "resultsOptionForm",
+		load: function(data){ 
+			clearTimeout(progressTimer);
+			dojo.byId("uploadProgressBarId").style.width = "100%";
+			dojo.byId("showResultsOptions-pdfTemplateFile").value = data.attachmentId;
+			dojo.byId("fileUploadProgressId").style.display = "none";
+			dojo.byId("fileUploadFormId").style.display = "block";
+			document.resultsOptionForm.reset();
+		},
+		error: function (er) {alert("err: " + er)}	
+	});
+	reportViewInitProgressBar();
+}
+
+function reportViewInitProgressBar(progressKey) {
+	if (dojo.byId("progressKey") == undefined) return;
+	if (progressKey == undefined) {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.byId("fileUploadProgressId").style.display = "block";
+	dojo.xhrGet ({
+		url: "<?=$this->baseUrl?>/attachments.raw/view-upload-progress?uploadKey=" + progressKey,
+		handleAs: "json",
+		load: function (data) {
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout("reportViewInitProgressBar(\""+progressKey+"\")",1000);
+		}, 
+		error: function (er) {alert("err: " + er)}}
+	);
+}
+
+function reportViewShowResultsInOnChanged(type) {
+	var showResultsOptions = dojo.byId("showResultsOptionsId");
+	showResultsOptions.innerHTML = "";
+	switch (type) {
+		case "file":
+			showResultsOptions.innerHTML = (<r><![CDATA[
+				<div style="float:left;margin-left:10px;"><?=__('Separator')?> <?=$this->formText('showResultsOptions[separator]',null,array('id'=>'showResultsOptions-separator','class'=>'smallButton'))?></div>
+				<div style="float:left;margin-left:20px;"><?=__('Line Endings')?> <?=$this->formSelect('showResultsOptions[lineEndings]',null,array('id'=>'showResultsOptions-lineEndings','class'=>'smallButton'),$this->lineEndings)?></div>
+				<br style="clear:left;margin-top:5px;" />
+				<div style="float:left;margin-left:10px;"><?=__('Results Separator')?> <?=$this->formText('showResultsOptions[resultsSeparator]',null,array('id'=>'showResultsOptions-resultsSeparator','class'=>'smallButton'))?></div>
+				<div style="float:left;margin-left:20px;"><input type="checkbox" id="showResultsOptions-includeHeaderRow" name="showResultsOptions[includeHeaderRow]" /> <?=__('include header row')?></div>
+			]]></r>).toString();
+			if (type == "<?=$this->form->showResultsIn->getValue()?>" && <?=(count($this->showResultsOptions) > 0)?'true':'false'?>) {
+				dojo.byId("showResultsOptions-separator").value = "<?=isset($this->showResultsOptions['separator'])?$this->showResultsOptions['separator']:''?>";
+				var lineEndingsSelect = dojo.byId("showResultsOptions-lineEndings");
+				for (var i = 0; i < lineEndingsSelect.options.length; i++) {
+					if (lineEndingsSelect.options[i].value == "<?=isset($this->showResultsOptions['lineEndings'])?$this->showResultsOptions['lineEndings']:''?>") {
+						lineEndingsSelect.selectedIndex = i;
+						break;
+					}
+				}
+				dojo.byId("showResultsOptions-includeHeaderRow").checked = <?=(isset($this->showResultsOptions['includeHeaderRow']) && $this->showResultsOptions['includeHeaderRow'])?'true':'false'?>;
+				dojo.byId("showResultsOptions-resultsSeparator").value = "<?=isset($this->showResultsOptions['resultsSeparator'])?$this->showResultsOptions['resultsSeparator']:''?>";
+			}
+			break;
+		case "pdf":
+			showResultsOptions.innerHTML = (<r><![CDATA[
+				<?=$this->formHidden('showResultsOptions[pdfTemplateFile]',null,array('id'=>'showResultsOptions-pdfTemplateFile'))?>
+				<div style="float:left;" id="uploadAttachmentContainer" style="border: thin solid blank;">
+					<div style="margin-left:10px;width:350px;">
+						<div style="width:99.9%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+							<strong><?=__('Template File')?>:</strong>
+							<?=$this->formHidden('attachmentReferenceId',$this->form->reportViewId->getValue(),array('id'=>'attachmentReferenceId'))?>
+							<?=$this->formHidden('MAX_FILE_SIZE',10485760,array('id'=>'MAX_FILE_SIZE'))?>
+							<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressKey'))?>
+							<input type="file" name="uploadFile"/>
+							<?=$this->formButton('upload',__('Upload'),array('onClick'=>'reportViewAjaxUploadFile()'))?>
+						</div>
+						<div style="width:325px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+							<strong><?=__("Progress")?>:</strong>
+							<div style="width:320px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;"><div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div></div>
+						</div>
+					</div>
+				</div>
+			]]></r>).toString();
+			if (type == "<?=$this->form->showResultsIn->getValue()?>" && <?=(count($this->showResultsOptions) > 0)?'true':'false'?>) {
+				showResultsOptions.innerHTML += (<r><![CDATA[
+				<br /><?=isset($this->showResultsOptions['pdfTemplateFileContent'])?$this->showResultsOptions['pdfTemplateFileContent']:''?>
+				]]></r>).toString();
+			}
+			break;
+		case "graph":
+		case "xml":
+		case "grid":
+		default:
+			break;
+	}
+}
+
+var showResultsIn = "";
+var showResultsInSelect = document.getElementsByName("<?=$this->form->showResultsIn->getFullyQualifiedName()?>");
+for (var i = 0; i < showResultsInSelect.length; i++) {
+	if (showResultsInSelect[i].checked) {
+		showResultsIn = showResultsInSelect[i].value;
+		break;
+	}
+}
+reportViewShowResultsInOnChanged(showResultsIn);
+
+function reportViewTransformSave() {
+	var rowId = reportViewTransformGrid.getSelectedRowId();
+	var content = {
+		"viewId": "<?=$this->form->reportViewId->getValue()?>",
+		"mappingId": reportViewMappingGrid.getSelectedRowId(),
+		"transformId": rowId,
+	};
+	switch (reportViewTransformGrid.cells(rowId,indexRVTSystemName).getValue()) {
+		case "pad":
+			content["options[type]"] = dojo.byId("options-type").value;
+			content["options[char]"] = dojo.byId("options-char").value;
+			content["options[len]"] = dojo.byId("options-len").value;
+			break;
+		case "truncate":
+			content["options[len]"] = dojo.byId("options-len").value;
+			break;
+		case "customLink":
+			content["options[href]"] = dojo.byId("options-href").value;
+			content["options[onclick]"] = dojo.byId("options-onclick").value;
+			break;
+		case "regex":
+			var optionsPattern = dojo.byId("options-pattern").value;
+			content["options[pattern]"] = optionsPattern;
+			content["options[replacement]"] = dojo.byId("options-replacement").value;
+			if (optionsPattern.substr(0,1) == "/" && optionsPattern.substr(optionsPattern.length-1,1) == "/") {
+				alert("start / and end / are not needed");
+				return;
+			}
+			break;
+		case "enumLookup":
+			content["options[enumKey]"] = document.getElementsByName("options[enumKey]")[0].value;
+			var optionsEnumValue = dojo.byId("options-enumValue").value;
+			optionsEnumValue = elncb.getDisplayedValue();
+			content["options[enumValue]"] = optionsEnumValue;
+			var direction = "";
+			var directionSelect = document.getElementsByName("options[direction]");
+			for (var i = 0; i < directionSelect.length; i++) {
+				if (directionSelect[i].checked) {
+					direction = directionSelect[i].value;
+				}
+			}
+			content["options[direction]"] = direction;
+			break;
+		case "dateFormat":
+			content["options[format]"] = dojo.byId("options-format").value;
+			break;
+		default:
+			return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-edit-mapping-transform",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (!data) return;
+			if (!reportViewTransformGrid.doesRowExist(data.id)) {
+				reportViewTransformGrid.addRow(data.id,"");
+			}
+			for (var i in data.data) {
+				reportViewTransformGrid.cells(data.id,i).setValue(data.data[i]);
+			}
+			var reportViewTransformEditPane = dojo.byId("reportViewTransformEditPaneId");
+			reportViewTransformEditPane.innerHTML = "";
+			//reportViewTransformGrid.selectRow(reportViewTransformGrid.getRowIndex(data.id),true);
+		},
+		error: function (error) {
+			alert(error);
+			console.error('Error: ', error);
+		}
+	});
+}
+
+function reportViewTransformAdd() {
+	var transformTypeSelect = dojo.byId("transformType");
+	if (transformTypeSelect.selectedIndex < 0) {
+		alert("<?=__('No transform type selected')?>");
+		return false;
+	}
+	var value = transformTypeSelect.options[transformTypeSelect.selectedIndex].value;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-add-mapping-transform",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingId": reportViewMappingGrid.getSelectedRowId(),
+			"value": value,
+		},
+		load: function (data) {
+			if (!data) return;
+			if (!reportViewTransformGrid.doesRowExist(data.id)) {
+				reportViewTransformGrid.addRow(data.id,"");
+			}
+			for (var i in data.data) {
+				reportViewTransformGrid.cells(data.id,i).setValue(data.data[i]);
+			}
+			reportViewTransformGrid.selectRow(reportViewTransformGrid.getRowIndex(data.id),true);
+			var mappingRowId = reportViewMappingGrid.getSelectedRowId();
+			reportViewMappingGrid.cells(mappingRowId,indexRVMTransform).setValue(globalBaseUrl + "/img/transform.png^Transform Set");
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportViewTransformDelete() {
+	var rowId = reportViewTransformGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No item selected')?>");
+		return false;
+	}
+	var rowIds = rowId.split(",");
+	var transforms = [];
+	for (var i in rowIds) {
+		var transform = reportViewTransformGrid.cells(rowIds[i],indexRVTTransforms).getValue();
+		transforms.push(transform);
+	}
+	if (transforms.length > 1 && !confirm("<?=__('Are you sure you want to delete transforms')?>: "+transforms.join(", ")+"?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-mapping-transform",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingId": reportViewMappingGrid.getSelectedRowId(),
+			"transformIds": rowId,
+		},
+		load: function (data) {
+			if (!data) return;
+			var reportViewTransformEditPane = dojo.byId("reportViewTransformEditPaneId");
+			reportViewTransformEditPane.innerHTML = "";
+			reportViewTransformGrid.clearAll();
+			reportViewTransformGrid.parse(data,"json");
+			if (reportViewTransformGrid.getRowsNum() <= 0) {
+				var mappingRowId = reportViewMappingGrid.getSelectedRowId();
+				reportViewMappingGrid.cells(mappingRowId,indexRVMTransform).setValue(globalBaseUrl + "/img/stop.png^No Transform");
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	reportViewTransformGrid.deleteRow(rowIds);
+}
+
+function reportViewRunQueriesImmediatelyOnClicked(checked) {
+	dojo.byId("<?=$this->form->runQueriesImmediately->getId()?>").value = checked?"1":"0";
+}
+
+function reportViewActiveOnClicked(checked) {
+	dojo.byId("<?=$this->form->active->getId()?>").value = checked?"1":"0";
+}
+
+function reportViewCustomizeColumnNamesOnClicked(checked) {
+	dojo.byId("<?=$this->form->customizeColumnNames->getId()?>").value = checked?"1":"0";
+
+	var display = "";
+	if (!checked) { // disable mapping grid
+		display = "none";
+	}
+	dojo.byId("reportViewMappingGridContainerId").style.display = display;
+}
+
+function reportViewDisplayNameOnChanged(value) {
+	var systemName = dojo.byId("<?=$this->form->systemName->getId()?>");
+	if (systemName == null) return;
+
+	// convert value to camelCase
+	value = value.toLowerCase();
+	value = value.replace(/[^A-Z0-9 ]/ig,""); // remove character other than alphanumeric and space
+	value = value.replace(/^(.)|\s(.)/g,function ($1) {
+        		return $1.toUpperCase();
+	});
+	value = value.replace(/ /g,"");
+	value = value.charAt(0).toLowerCase() + value.substr(1);
+
+	systemName.value = value;
+	dojo.byId("reportViewSystemNameId").innerHTML = value;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (!data) return;
+	if (!reportBaseViewsGrid.doesRowExist(data.id)) {
+		reportBaseViewsGrid.addRow(data.id,"");
+	}
+	for (var i in data.data) {
+		reportBaseViewsGrid.cells(data.id,i).setValue(data.data[i]);
+	}
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+var reportViewCustomizeColumnNames = dojo.byId("reportViewCustomizeColumnNamesId");
+reportViewCustomizeColumnNamesOnClicked(reportViewCustomizeColumnNames.checked);
+
+
+/* === MAPPING GRID === */
+var reportViewMappingGrid = new dhtmlXGridObject("reportViewMappingGridId");
+reportViewMappingGrid.enableDragAndDrop(true);
+reportViewMappingGrid.selMultiRows = true;
+reportViewMappingGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportViewMappingGrid.setHeader("<?=__('Query')?>,<?=__('Result Set Name')?>,<?=__('Display Name')?>,<?=__('Transform')?>");
+reportViewMappingGrid.setInitWidths("120,120,140,70");
+reportViewMappingGrid.setColTypes("coro,ed,ed,img");
+
+function reportViewMappingCheckDupes(rowId,cellIndex,value) {
+	var ret = false;
+	for (var a in reportViewMappingGrid.rowsAr) {
+		if (!(reportViewMappingGrid.rowsAr[a] && reportViewMappingGrid.rowsAr[a].idd)) {
+			continue;
+		}
+		var id = reportViewMappingGrid.rowsAr[a].idd;
+		if (id == rowId) continue;
+
+		if (cellIndex == indexRVMQuery) {
+			if ((value == reportViewMappingGrid.cells(id,cellIndex).getValue()) && 
+			    (reportViewMappingGrid.cells(rowId,indexRVMResultSetName).getValue() == reportViewMappingGrid.cells(id,indexRVMResultSetName).getValue())) {
+				ret = true;
+				break;
+			}
+		}
+		else if (cellIndex == indexRVMResultSetName) {
+			if ((value == reportViewMappingGrid.cells(id,cellIndex).getValue()) && 
+			    (reportViewMappingGrid.cells(rowId,indexRVMQuery).getValue() == reportViewMappingGrid.cells(id,indexRVMQuery).getValue())) {
+				ret = true;
+				break;
+			}
+		}
+	}
+	return ret;
+}
+
+function reportViewMappingGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		var key = "";
+		switch (cellIndex) {
+			case indexRVMQuery:
+				if (reportViewMappingCheckDupes(rowId,cellIndex,newValue)) {
+					alert("<?=__('Duplicate query found')?>");
+					return false;
+				}
+				key = "queryName";
+				break;
+			case indexRVMResultSetName:
+				if (reportViewMappingCheckDupes(rowId,cellIndex,newValue)) {
+					alert("<?=__('Duplicate result set found')?>");
+					return false;
+				}
+				key = "resultSetName";
+				break;
+			case indexRVMDisplayName:
+				key = "displayName";
+				break;
+			case indexRVMTransform:
+				key = "transform";
+				break;
+			default:
+				return false;
+		}
+		dojo.xhrPost({
+			url: "<?=$this->baseUrl?>/reports-manager.raw/process-edit-mapping",
+			handleAs: "json",
+			content: {
+				"viewId": "<?=$this->form->reportViewId->getValue()?>",
+				"mappingId": rowId,
+				"key": key,
+				"value": newValue,
+			},
+			load: function (data) {
+				if (!data) return;
+				if (!reportViewMappingGrid.doesRowExist(data.id)) {
+					reportViewMappingGrid.addRow(data.id,"");
+				}
+				for (var i in data.data) {
+					reportViewMappingGrid.cells(data.id,i).setValue(data.data[i]);
+				}
+			},
+			error: function (error) {
+				alert(error);
+				console.error ('Error: ', error);
+			}
+		});
+	}
+	return true;
+}
+reportViewMappingGrid.attachEvent("onEditCell",reportViewMappingGridOnCellEdited);
+
+function reportViewMappingGridOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-reorder-mapping",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			reportViewMappingReload(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+reportViewMappingGrid.attachEvent("onDrag",reportViewMappingGridOnDragged);
+
+function reportViewMappingGridOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+reportViewMappingGrid.attachEvent("onDrop",reportViewMappingGridOnDropped);
+
+function reportViewMappingGridOnRowSelected(rowId,cellIndex) {
+	switch (cellIndex) {
+		case indexRVMTransform:
+			reportViewMappingShowTransformPanel(rowId);
+			break;
+		default:
+			reportViewMappingHideTransformPanel();
+			break;
+	}
+}
+reportViewMappingGrid.attachEvent("onRowSelect",reportViewMappingGridOnRowSelected);
+reportViewMappingGrid.init();
+
+var indexRVMQuery = 0;
+var indexRVMResultSetName = 1;
+var indexRVMDisplayName = 2;
+var indexRVMTransform = 3;
+
+<?foreach ($this->queries as $key=>$query):?>
+reportViewMappingGrid.getCombo(indexRVMQuery).put("<?=$key?>","<?=$query?>");
+<?endforeach;?>
+
+<?foreach ($this->mappings as $map):?>
+reportViewMappingGrid.addRow("<?=$map['id']?>","");
+	<?foreach ($map['data'] as $k=>$v):?>
+	reportViewMappingGrid.cells("<?=$map['id']?>",<?=$k?>).setValue("<?=$v?>");
+	<?endforeach;?>
+<?endforeach;?>
+
+dhtmlxEvent(reportViewMappingGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function reportViewMappingDelete(id) {
+	if (!id) return;
+	var ids = id.split(",");
+	var mappings = [];
+	for (var i in ids) {
+		var mapping = reportViewMappingGrid.cells(ids[i],indexRVMQuery).getValue()+"::"+reportViewMappingGrid.cells(ids[i],indexRVMResultSetName).getValue();
+		mappings.push(mapping);
+	}
+	if (mappings.length > 1 && !confirm("<?=__('Are you sure you want to delete mappings')?>: "+mappings.join(", ")+"?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-mapping",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingIds": id,
+		},
+		load: function (data) {
+			reportViewMappingReload(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportViewMappingReload(data) {
+	reportViewMappingGrid.clearAll();
+	for (var i in data.rows) {
+		var row = data.rows[i];
+		reportViewMappingGrid.addRow(row.id,"");
+		for (var j in row.data) {
+			reportViewMappingGrid.cells(row.id,j).setValue(row.data[j]);
+		}
+	}
+}
+
+function reportViewMappingLoadMetaFromQueries() {
+	var params = ["viewId=<?=$this->form->reportViewId->getValue()?>"];
+	globalCreateWindow("winReportViewMappingId",params,"<?=$this->baseUrl?>/reports-manager.raw/load-column-meta-data-from-queries","<?=__('Load column-meta-data from Queries')?>",400,400);
+}
+
+function reportViewMappingAdd() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-add-mapping?viewId=<?=$this->form->reportViewId->getValue()?>",
+		handleAs: "json",
+		load: function (data) {
+			if (!data) return;
+			if (!reportViewMappingGrid.doesRowExist(data.id)) {
+				reportViewMappingGrid.addRow(data.id,"");
+			}
+			for (var i in data.data) {
+				reportViewMappingGrid.cells(data.id,i).setValue(data.data[i]);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+/* === FILTERS MENU === */
+var reportViewMappingMenu = new dhtmlXMenuObject(null,"standard");
+reportViewMappingMenu.setImagePath("<?=$this->baseUrl?>/img/");
+reportViewMappingMenu.renderAsContextMenu();
+reportViewMappingMenu.setOpenMode("web");
+function reportViewMappingMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "loadMetaFromQueries":
+			reportViewMappingLoadMetaFromQueries();
+			break;
+		case "add":
+			reportViewMappingAdd();
+			break;
+		case "delete":
+			reportViewMappingDelete(reportViewMappingGrid.getSelectedRowId());
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+}
+reportViewMappingMenu.attachEvent("onClick",reportViewMappingMenuOnClicked);
+
+function reportViewMappingMenuOnLoaded() {
+}
+reportViewMappingMenu.loadXML("<?=$this->baseUrl?>/reports-manager.raw/get-context-menu?type=mapping",reportViewMappingMenuOnLoaded);
+
+reportViewMappingMenu.attachEvent("onContextMenu",function(id){
+	reportViewMappingMenu.hideItem("delete");
+	var rowId = reportViewMappingGrid.getSelectedRowId();
+	if (rowId != null) {
+		reportViewMappingMenu.showItem("delete");
+	}
+});
+
+reportViewMappingGrid.hdr.id = reportViewMappingGrid.uid();
+reportViewMappingMenu.addContextZone(reportViewMappingGrid.hdr.id);
+reportViewMappingGrid.enableContextMenu(reportViewMappingMenu);
+
+function reportViewMappingShowTransformPanel(rowId) {
+	var transformPanel = dojo.byId("reportViewTransformPanelId");
+	transformPanel.style.display = "";
+
+	var reportViewTransformEditPane = dojo.byId("reportViewTransformEditPaneId");
+	reportViewTransformEditPane.innerHTML = "";
+
+	var obj = reportViewMappingGrid.cells(rowId,indexRVMTransform).cell;
+	var offsetLeft = 0;
+	var offsetTop = 0;
+	if (obj.offsetParent) {
+		var scrollDiff = 0;
+		var gridOffsetHeight = reportViewMappingGrid.entBox.offsetHeight - reportViewMappingGrid.hdr.offsetHeight;
+		if (obj.offsetTop > gridOffsetHeight) {
+			scrollDiff = obj.offsetTop - gridOffsetHeight + 100;
+		}
+		while (true) {
+			offsetLeft += obj.offsetLeft;
+			offsetTop += obj.offsetTop;
+			if (!obj.offsetParent) break;
+			obj = obj.offsetParent;
+		}
+		offsetTop -= scrollDiff;
+	}
+	else if (obj.x) {
+		offsetLeft += obj.x;
+		offsetTop += obj.y;
+	}
+	var win = dhxWins.window("<?=$this->form->getWindow()?>");
+	if (win) {
+		var pos = win.getPosition();
+		offsetLeft -= (pos[0] + 6); // left
+		offsetTop -= (pos[1] + 12); // top
+	}
+	offsetLeft -= 340;
+	transformPanel.style.left = offsetLeft + "px";
+	transformPanel.style.top = offsetTop + "px";
+
+	/* Load transforms to grid */
+	reportViewTransformGrid.clearAll();
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/list-mapping-transforms",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingId": rowId,
+		},
+		load: function (data) {
+			if (!data) return;
+			reportViewTransformGrid.parse(data,"json");
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportViewMappingHideTransformPanel() {
+	dojo.byId("reportViewTransformPanelId").style.display = "none";
+}
+
+
+/* === TRANSFORM GRID === */
+var reportViewTransformGrid = new dhtmlXGridObject("reportViewTransformGridId");
+reportViewTransformGrid.enableDragAndDrop(true);
+reportViewTransformGrid.selMultiRows = true;
+reportViewTransformGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportViewTransformGrid.setHeader("<?=__('Transforms')?>,<?=__('System Name')?>");
+reportViewTransformGrid.setInitWidths("*,0");
+reportViewTransformGrid.setColTypes("ro,ro");
+reportViewTransformGrid.init();
+var indexRVTTransforms = 0;
+var indexRVTSystemName = 1;
+
+function reportViewTransformGridOnRowSelected(rowId,cellIndex) {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/get-mapping-transform-options",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingId": reportViewMappingGrid.getSelectedRowId(),
+			"transformId": rowId,
+		},
+		load: function (data) {
+			if (!data) return;
+			reportViewTransformShowOptions(rowId,data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error('Error: ', error);
+		}
+	});
+}
+
+function reportViewTransformShowOptions(rowId,options) {
+	if (options.length == 0) {
+		options = false;
+	}
+	var reportViewTransformEditPane = dojo.byId("reportViewTransformEditPaneId");
+	reportViewTransformEditPane.innerHTML = "";
+	var transformOK = dojo.byId("transformOK");
+	transformOK.disabled = false;
+	var label = reportViewTransformGrid.cells(rowId,indexRVTTransforms).getValue();
+	var type = reportViewTransformGrid.cells(rowId,indexRVTSystemName).getValue();
+	switch (type) {
+		case "ucase":
+		case "lcase":
+		case "ucwords":
+		case "squote":
+		case "dquote":
+			transformOK.disabled = true;
+			reportViewTransformEditPane.innerHTML = "No options are available for the "+label+" transformation";
+			break;
+		case "pad":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<label><?=__('Pad Type')?><label> <?=$this->formSelect('options[type]',null,array('id'=>'options-type','class'=>'smallButton'),array(STR_PAD_LEFT=>'left',STR_PAD_RIGHT=>'right',STR_PAD_BOTH=>'both'))?>
+				<br /><label><?=__('Pad Char')?></label> <?=$this->formText('options[char]',null,array('id'=>'options-char','class'=>'smallButton'))?>
+				<br /><label><?=__('Pad Length')?></label> <?=$this->formText('options[len]',null,array('id'=>'options-len','class'=>'smallButton'))?>
+			]]></r>).toString();
+			if (options) {
+				var optionsTypeSelect = dojo.byId("options-type");
+				for (var i in optionsTypeSelect.options) {
+					if (optionsTypeSelect.options[i].value == options.type) {
+						optionsTypeSelect.selectedIndex = i;
+						break;
+					}
+				}
+				dojo.byId("options-char").value = options.char;
+				dojo.byId("options-len").value = options.len;
+			}
+			break;
+		case "truncate":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<label><?=__('Length')?></label> <?=$this->formText('options[len]',null,array('id'=>'options-len','class'=>'smallButton'))?>
+			]]></r>).toString();
+			if (options) {
+				dojo.byId("options-len").value = options.len;
+			}
+			break;
+		case "customLink":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<label><?=__('href')?></label> <?=$this->formText('options[href]',null,array('id'=>'options-href','class'=>'smallButton'))?> use {{value}} as token
+				<br /><label><?=__('onclick')?></label> <?=$this->formText('options[onclick]',null,array('id'=>'options-onclick','class'=>'smallButton'))?>
+			]]></r>).toString();
+			if (options) {
+				dojo.byId("options-href").value = options.href;
+				dojo.byId("options-onclick").value = options.onclick;
+			}
+			break;
+		case "regex":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<label><?=__('Pattern')?></label> <?=$this->formText('options[pattern]',null,array('id'=>'options-pattern','class'=>'smallButton'))?>
+				<br /><label><?=__('Replacement')?></label> <?=$this->formText('options[replacement]',null,array('id'=>'options-replacement','class'=>'smallButton'))?>
+			]]></r>).toString();
+			if (options) {
+				dojo.byId("options-pattern").value = options.pattern;
+				dojo.byId("options-replacement").value = options.replacement;
+			}
+			break;
+		case "enumLookup":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<div id="enumLookupNameAutoCompleteDivId"></div>
+				<input type="hidden" name="options[enumValue]" id="options-enumValue" />
+				<br /><input type="radio" name="options[direction]" id="options-direction" value="displayName" /> <?=__('Use value to lookup display name')?>
+				<br /><input type="radio" name="options[direction]" id="options-direction" value="key" /> <?=__('Use value to lookup key')?>
+			]]></r>).toString();
+			reportViewGenerateEnumLookup();
+
+			var direction = "displayName";
+			if (options) {
+				elncb.setValue(options.enumKey);
+				elncb.setDisplayedValue(options.enumValue);
+				if (options.direction && options.direction.length > 0) {
+					direction = options.direction;
+				}
+			}
+			var optionsDirection = document.getElementsByName("options[direction]");
+			for (var i = 0; i < optionsDirection.length; i++) {
+				if (optionsDirection[i].value == direction) {
+					optionsDirection[i].checked = true;
+				}
+			}
+			break;
+		case "dateFormat":
+			reportViewTransformEditPane.innerHTML = (<r><![CDATA[
+				<label><?=__('Format')?></label> <?=$this->formText('options[format]',null,array('id'=>'options-format','class'=>'smallButton'))?>
+			]]></r>).toString();
+			if (options) {
+				dojo.byId("options-format").value = options.format;
+			}
+			break;
+		case "total":
+			reportViewTransformEditPane.innerHTML = "Not yet implemented";
+		default:
+			transformOK.disabled = true;
+			break;
+	}
+}
+reportViewTransformGrid.attachEvent("onRowSelect",reportViewTransformGridOnRowSelected);
+
+function reportViewTransformReload(data) {
+	reportViewTransformGrid.clearAll();
+	for (var i in data.rows) {
+		var row = data.rows[i];
+		reportViewTransformGrid.addRow(row.id,"");
+		for (var j in row.data) {
+			reportViewTransformGrid.cells(row.id,j).setValue(row.data[j]);
+		}
+	}
+}
+
+function reportViewTransformGridOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-reorder-mapping-transform",
+		handleAs: "json",
+		content: {
+			"viewId": "<?=$this->form->reportViewId->getValue()?>",
+			"mappingId": reportViewMappingGrid.getSelectedRowId(),
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			reportViewTransformReload(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+reportViewTransformGrid.attachEvent("onDrag",reportViewTransformGridOnDragged);
+
+function reportViewTransformGridOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+reportViewTransformGrid.attachEvent("onDrop",reportViewTransformGridOnDropped);
+
+
+
+var elncb = null;
+function reportViewGenerateEnumLookup() {
+	elncb = dijit.byId("enumLookupNameAutoCompleteDivId");
+	if (elncb != undefined) { 
+		elncb.destroyRecursive();
+		elncb = null;
+	}
+	var elnac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/reports-manager.raw/auto-complete-enum-filter",requestMethod:"get"},"enumLookupNameAutoComplete");
+	elncb = new dijit.form.FilteringSelect({name:"options[enumKey]",autocomplete:true,store:elnac},"enumLookupNameAutoCompleteDivId");
+	elncb.validate = function() {
+		return true;
+	};
+	dojo.connect(elncb,"onChange","enumLookupOnChanged");
+	elncb.domNode.style.width = "150px";
+}
+
+function enumLookupOnChanged(args) {
+	if (args === undefined) return;
+	dojo.byId("options-enumValue").value = dojo.byId("enumLookupNameAutoCompleteDivId").value;
+}
+</script>

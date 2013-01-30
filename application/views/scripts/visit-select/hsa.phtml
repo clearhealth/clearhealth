@@ -1,0 +1,192 @@
+<?//on that tab any active HSA alerts that apply to the current patient are shown (they can be marked as inactived fulfilled or ignored manually), on that tab the user can subscribe patients to a particular hsaHandler.?>
+
+<div id="hsaContainer" style="width:100%;height:100%;overflow:none;">
+	<div style="width:100%;">
+		<fieldset><legend><strong><?=__('Active HSA Alerts')?></strong></legend>
+			<div id="hsaActiveAlertsGridId" style="width:720px;height:120px"></div>
+			<div style="float:left;">
+				<input type="button" id="hsaAddAlertId" value="<?=__('Add Alert')?>" onClick="hsaAddAlert()" />
+			</div>
+			<div style="float:right;">
+				<input type="button" id="hsaId-inactived" value="<?=__('Inactived')?>" onClick="hsaUpdateStatus(this.id)" disabled="disabled" />
+				<input type="button" id="hsaId-fulfilled" value="<?=__('Fulfilled')?>" onClick="hsaUpdateStatus(this.id)" disabled="disabled" />
+				<input type="button" id="hsaId-ignored" value="<?=__('Ignored')?>" onClick="hsaUpdateStatus(this.id)" disabled="disabled" />
+			</div>
+		</fieldset>
+	</div>
+	<br />
+	<div style="width:100%;">
+		<fieldset><legend><strong><?=__('Subscribed Handlers')?></strong></legend>
+		<div style="float:left;">
+			<dt><label for="hsa-section"><?=__("Available Handlers")?></label></dt>
+			<div id="hsaHandlersGridId" style="width:350px;height:120px"></div>
+			<input type="button" id="hsaSubscribeId" value="<?=__('Subscribe')?>" onClick="hsaUpdateSubscription(false)" disabled="disabled" />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="hsa-section"><?=__("Assigned Handlers")?></label></dt>
+			<div id="hsaSubscribedGridId" style="width:350px;height:120px"></div>
+			<input type="button" id="hsaUnsubscribeId" value="<?=__('Unsubscribe')?>" onClick="hsaUpdateSubscription(true)" disabled="disabled" />
+		</div>
+		</fieldset>
+	</div>
+</div>
+
+<script>
+function hsaAddAlert(id) {
+	if (!id) {
+		id = 0;
+	}
+	var url = "<?=$this->baseUrl?>/health-status.raw/edit-alert?callback=hsaActiveAlertsGridReload&id="+id;
+	var winEditHSAlert = globalCreateWindow("winHSAEditAlertId",[],url,"<?=__('Add/Edit HSA Alert')?>",350,250);
+}
+
+function hsaUpdateStatus(id) {
+	if (!id) {
+		id = "";
+	}
+	id += "";
+	var stat = id;
+	if (id.substr(0,6) == "hsaId-") {
+		var stat = id.substr(6);
+	}
+	var healthStatusAlertId = hsaActiveAlertsGrid.getSelectedRowId();
+	if (healthStatusAlertId == null) {
+		alert("<?=__('No selected alert')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/health-status.raw/process-edit-status",
+		content: {
+			"healthStatusAlertId": healthStatusAlertId,
+			"status": stat,
+		},
+		handleAs: 'json',
+		load: function (data) {
+			hsaActiveAlertsGridReload();
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function hsaUpdateSubscription(unsubscribe) {
+	var subscribe = 1;
+	var objGrid = hsaHandlersGrid;
+	if (unsubscribe) {
+		subscribe = 0;
+		objGrid = hsaSubscribedGrid;
+	}
+	var handlerId = objGrid.getSelectedRowId();
+	if (handlerId == null) {
+		alert("<?=__('No selected handler')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/health-status.raw/process-edit-subscription",
+		content: {
+			"personId": mainController.getActivePatient(),
+			"subscribe": subscribe,
+			"handlerId": handlerId,
+		},
+		handleAs: 'json',
+		load: function (data) {
+			hsaReloadSubscriptionGrids();
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function toggleActiveAlertButtons(disabled) {
+	dojo.byId("hsaId-inactived").disabled = disabled;
+	dojo.byId("hsaId-fulfilled").disabled = disabled;
+	dojo.byId("hsaId-ignored").disabled = disabled;
+}
+
+// ACTIVE HSA ALERTS
+var hsaActiveAlertsGrid = new dhtmlXGridObject("hsaActiveAlertsGridId");
+hsaActiveAlertsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hsaActiveAlertsGrid.setHeader('<?=__('Alerts')?>,<?=__('Due Date')?>');
+hsaActiveAlertsGrid.setInitWidths("*,120");
+hsaActiveAlertsGrid.setColTypes("ro,ro");
+hsaActiveAlertsGrid.setSkin("xp");
+function hsaActiveAlertsGridOnRowSelect(rowId,cellIndex) {
+	toggleActiveAlertButtons(false);
+}
+hsaActiveAlertsGrid.attachEvent("onRowSelect",hsaActiveAlertsGridOnRowSelect);
+hsaActiveAlertsGrid.init();
+function hsaActiveAlertsGridOnLoaded() {
+	toggleActiveAlertButtons(true);
+}
+function hsaActiveAlertsGridReload() {
+	hsaActiveAlertsGrid.clearAll();
+	hsaActiveAlertsGrid.load("<?=$this->baseUrl?>/health-status.raw/list-patient-active-hsa.json?personId="+mainController.getActivePatient(),hsaActiveAlertsGridOnLoaded,"json");
+}
+hsaActiveAlertsGridReload();
+
+
+// SUBSCRIBED HANDLERS
+var hsaHandlersGrid = new dhtmlXGridObject("hsaHandlersGridId");
+hsaHandlersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hsaHandlersGrid.setHeader('<?=__('Handler Name')?>');
+hsaHandlersGrid.setNoHeader(true);
+hsaHandlersGrid.setInitWidths("*");
+hsaHandlersGrid.setColTypes("ro");
+hsaHandlersGrid.setSkin("xp");
+function hsaHandlersGridOnRowSelect(rowId,cellIndex) {
+	dojo.byId("hsaSubscribeId").disabled = false;
+}
+hsaHandlersGrid.attachEvent("onRowSelect",hsaHandlersGridOnRowSelect);
+hsaHandlersGrid.init();
+
+
+var hsaSubscribedGrid = new dhtmlXGridObject("hsaSubscribedGridId");
+hsaSubscribedGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hsaSubscribedGrid.setHeader('<?=__('Handler Name')?>');
+hsaSubscribedGrid.setNoHeader(true);
+hsaSubscribedGrid.setInitWidths("*");
+hsaSubscribedGrid.setColTypes("ro");
+hsaSubscribedGrid.setSkin("xp");
+function hsaSubscribedGridOnRowSelect(rowId,cellIndex) {
+	dojo.byId("hsaUnsubscribeId").disabled = false;
+}
+hsaSubscribedGrid.attachEvent("onRowSelect",hsaSubscribedGridOnRowSelect);
+hsaSubscribedGrid.init();
+
+
+function hsaHandlersGridOnLoaded() {
+	dojo.byId("hsaSubscribeId").disabled = true;
+	hsaHandlersGrid.forEachRow(function(rowId) {
+		if (hsaSubscribedGrid.doesRowExist(rowId)) {
+			hsaHandlersGrid.deleteRow(rowId);
+		}
+	});
+}
+function hsaHandlersGridReload() {
+	hsaHandlersGrid.clearAll();
+	hsaHandlersGrid.load("<?=$this->baseUrl?>/health-status.raw/list-available-handlers",hsaHandlersGridOnLoaded,"json");
+}
+
+function hsaSubscribedGridOnLoaded() {
+	dojo.byId("hsaUnsubscribeId").disabled = true;
+	hsaSubscribedGrid.forEachRow(function(rowId) {
+		if (hsaHandlersGrid.doesRowExist(rowId)) {
+			hsaHandlersGrid.deleteRow(rowId);
+		}
+	});
+}
+function hsaSubscribedGridReload() {
+	hsaSubscribedGrid.clearAll();
+	hsaSubscribedGrid.load("<?=$this->baseUrl?>/health-status.raw/list-subscriptions?personId="+mainController.getActivePatient(),hsaSubscribedGridOnLoaded,"json");
+}
+
+
+function hsaReloadSubscriptionGrids() {
+	hsaHandlersGridReload();
+	hsaSubscribedGridReload();
+}
+
+hsaReloadSubscriptionGrids();
+</script>

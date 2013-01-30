@@ -1,0 +1,32 @@
+<div id="scheduleTemplateContainerId" style="width:100%;">
+	<form name="scheduleTemplateFormId" id="scheduleTemplateFormId">
+	<div class="formRow">
+		<dt><label class="optional"><?=__('Template')?></label></dt>
+		<?=$this->formSelect('scheduleTemplateId',null,array('id'=>'scheduleTemplateId','style'=>'width:200px;'),$this->templates)?>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->formButton('loadTemplate',__('Load Template'),array('onClick'=>'templateOnLoaded()'))?>
+	</div>
+	</form>
+</div>
+<script>
+function templateOnLoaded() {
+	var templateSelect = dojo.byId("scheduleTemplateId");
+	if (templateSelect.options.length < 1) {
+		alert("<?=__('No available template')?>");
+		return;
+	}
+	if (!confirm("<?=__('Are you sure you want to load selected template?')?>\n<?=__('Note: All existing schedules will be overwritten.')?>")) {
+		return;
+	}
+	var data = templateSelect.options[templateSelect.selectedIndex].value;
+<?if ($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		window.<?=$this->jsCallback?>(data);
+	}
+	winScheduleLoadTemplate.close();
+<?endif;?>
+}
+</script>

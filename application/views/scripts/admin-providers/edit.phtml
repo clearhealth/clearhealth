@@ -1,0 +1,176 @@
+<?if ($this->noProvider):?>
+<script>
+function addProvider() {
+	dojo.xhrGet ({
+		url: "<?=$this->baseUrl?>/admin-providers.raw/add-process?personId=" + personId,
+		handleAs: "json",
+		load: function (data) { localRefreshCurrentTab(); },
+		error: function (er) {alert(er)}
+	});
+}
+</script>
+<?=__("No provider record exists for this person. Would you like to add a provider record?")?><br /> <input type="button" value="Add Provider Record" onclick="addProvider();"/>
+<?elseif ($this->person->person_id == 0):?>
+<?=__("No person is selected, you must select a person to edit.")?>
+<?else:?>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<div style="float:left;">
+		<?if ($this->message):?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__('Provider Information')?></legend>
+		<div style="float:left;width:400px;">
+			<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+			<?=$error?>
+			<?}?>
+
+			<?=$this->form->personIdInput('FormHidden')?>
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->stateLicenseNumber->renderLabel()?>
+					<?=$this->form->stateLicenseNumberInput()?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->cliaNumber->renderLabel()?>
+					<?=$this->form->cliaNumberInput()?>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->deaNumber->renderLabel()?>
+					<?=$this->form->deaNumberInput()?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->billAs->renderLabel()?>
+					<?=$this->form->billAsInput()?>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->routingStation->renderLabel()?>
+					<?=$this->form->routingStationInput('FormSelect',array('options'=>$this->stations))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->color->renderLabel()?>
+					<select id="colorPicker" name="provider[color]" onchange="this.style.backgroundColor=this.value;"<?=($this->form->color->getValue())?' style="background-color:'.$this->form->color->getValue().'"':''?>>
+						<option value=""></option>
+					<?foreach ($this->colors as $key=>$value):?>
+						<option value="<?=$key?>" style="background-color:<?=$key?>"<?=($key == $this->form->color->getValue())?' selected="selected"':''?>><?=$value?></option>
+					<?endforeach;?>
+					</select>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->specialty->renderLabel()?>
+					<?=$this->form->specialtyInput('FormSelect',array('style'=>'width:150px;','options'=>$this->specialties))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+				</div>
+			</div>
+		</div>
+		</fieldset>
+		<?=$this->form->renderClose()?>
+		<div style="text-align:right;">
+			<?=$this->form->okInput('FormButton')?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div style="float:left;">
+		<fieldset><legend><?=__('Provider Signature')?></legend>
+		<center><div style="border:1px solid #000;height:60px;width:160px;"><img height="58" width="150" id="signatureId" src="" alt="Signature" /></div></center>
+		<br />
+		<div style="padding:5px;">
+			<div style="float:left;" id="uploadAttachmentContainer" style="border: thin solid blank;">
+				<form id="addAttachmentsForm" method="post" action="<?=$this->baseUrl?>/attachments.raw/process-add-attachments" enctype="multipart/form-data">
+				<div style="margin-left:10px;width:325px;">
+					<div style="margin-left:auto;margin-right:auto;" id="fileUploadInput">
+						<input type="hidden" name="attachmentReferenceId" value="<?=$this->person->personId?>">
+						<input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+						<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progressKey" value="<?=uniqid('');?>"/>
+						<input type="file" name="uploadFile" id="uploadFile" /> <br />
+						<?=$this->formButton('upload',__('Upload'),array('onClick'=>'ajaxUploadFile();'))?>
+					</div>
+					<div style="width:325px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+						<strong><?=__("Progress")?>:</strong>
+						<div style="width:320px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+							<div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+		</div>
+		<script>
+		var progressTimer = null;
+		dojo.require("dojo.io.iframe");
+		function ajaxUploadFile() {
+			dojo.io.iframe.send({
+				url: "<?=$this->baseUrl?>/attachments.raw/process-add-attachments",
+				method: "post",
+				handleAs: "json",
+				method: "post",
+				form: "addAttachmentsForm",
+				load: function(data){ 
+					clearTimeout(progressTimer);
+					dojo.byId("uploadProgressBarId").style.width = "100%";
+					dojo.byId("fileUploadInput").style.display = "block";
+					dojo.byId("fileUploadProgressId").style.display = "none";
+					dojo.byId("signatureId").src = "<?=$this->baseUrl?>/attachments.raw/view-attachment?attachmentId=" + data.attachmentId;
+				},
+				error: function (er) {
+					alert("err: " + er)
+				}
+			});
+			initProgressBar();
+		}
+		function initProgressBar(progressKey) {
+			if (dojo.byId("progressKey") == undefined) {
+				return;
+			}
+			if (progressKey == undefined) {
+				progressKey = dojo.byId("progressKey").value;
+			}
+			dojo.byId("fileUploadInput").style.display = "none";
+			dojo.byId("fileUploadProgressId").style.display = "block";
+			dojo.xhrGet({
+				url: "<?=$this->baseUrl?>/attachments.raw/view-upload-progress?uploadKey=" + progressKey,
+				handleAs: "json",
+				load: function (data) {
+					dojo.byId("uploadProgressBarId").style.width = data + "%";
+					progressTimer = setTimeout("initProgressBar(progressKey)", 1000);
+				}, 
+				error: function (er) {
+					alert("err: " + er)
+				}
+			});
+		}
+		function renderSignature() {
+			dojo.xhrGet({
+				url: "<?=$this->baseUrl?>/attachments.raw/list-attachments?attachmentReferenceId=<?=$this->person->personId?>",
+				handleAs: "json",
+				load: function (data) {
+					if (typeof data.rows[0] != "undefined") {
+						var row = data.rows[0];
+						dojo.byId("signatureId").src = "<?=$this->baseUrl?>/attachments.raw/view-attachment?attachmentId=" + row.id;
+					}
+				}, 
+				error: function (er) {
+					alert("err: " + er)
+				}
+			});
+		}
+		renderSignature();
+		</script>
+		</fieldset>
+	</div>
+</div>
+<?endif;?>

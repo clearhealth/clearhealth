@@ -1,0 +1,13 @@
+#php_value date.timezone "UTC"
+php_value short_open_tag "1"
+php_value error_reporting "8191"
+php_value display_startup_errors "0"
+php_value display_errors "0"
+php_value magic_quotes_gpc "0"
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
+

@@ -1,0 +1,513 @@
+/* "CLEAR SILVER" SKIN */
+
+/* inner table*/
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver {
+	background: none;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver {
+	background: none;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td {
+	background: none;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td {
+	background: none;
+}
+
+/* HEADER */
+
+/* full header td */
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full {
+	height: 32px;
+	-moz-user-select: none;
+	cursor: default;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full {
+	height: 32px;
+	-moz-user-select: none;
+	cursor: default;
+	font-size: 1px;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header {
+	height: 32px;
+	-moz-user-select: none;
+	cursor: default;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header {
+	height: 32px;
+	-moz-user-select: none;
+	cursor: default;
+}
+
+/* header left side */
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_left {
+	height: 32px;
+	width: 7px;
+	background-image: url("../img/clear_silver/active/header_left.gif");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	cursor: default;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_left {
+	height: 32px;
+	width: 7px;
+	background-image: url("../img/clear_silver/inactive/header_left.gif");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	cursor: default;
+	font-size: 1px;
+}
+/* header middle side */
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_middle {
+	height: 32px;
+	background-image: url("../img/clear_silver/active/header_middle.gif");
+	background-position: bottom;
+	background-repeat: repeat-x;
+	cursor: default;
+	font-size: 2px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_middle {
+	height: 32px;
+	background-image: url("../img/clear_silver/inactive/header_middle.gif");
+	background-position: bottom;
+	background-repeat: repeat-x;
+	cursor: default;
+	font-size: 2px;
+}
+/* header right side */
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_right {
+	height: 32px;
+	width: 7px;
+	background-image: url("../img/clear_silver/active/header_right.gif");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	cursor: default;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_header_full table.dhtmlx_wins_header td.dhtmlx_wins_td_header_right {
+	height: 32px;
+	width: 7px;
+	background-image: url("../img/clear_silver/inactive/header_right.gif");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	cursor: default;
+	font-size: 1px;
+}
+
+/* BODY */
+
+/*
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td {
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td {
+	font-size: 1px;
+}
+*/
+
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_middle_left {
+	width: 6px;
+	background-image: url("../img/clear_silver/active/body_middle_left.gif");
+	background-repeat: repeat-y;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_middle_left {
+	width: 6px;
+	background-image: url("../img/clear_silver/inactive/body_middle_left.gif");
+	background-repeat: repeat-y;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_content {
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	background-color: #E6E5E5;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_content {
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	background-color: #E6E5E5;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_content div.dhtmlx_wins_body_content {
+	/* width: 100%; */
+	position: relative;
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	background-color: #E6E5E5;
+	overflow: auto;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_content div.dhtmlx_wins_body_content {
+	/* width: 100%; */
+	position: relative;
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	background-color: #E6E5E5;
+	overflow: auto;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_middle_right {
+	width: 6px;
+	background-image: url("../img/clear_silver/active/body_middle_right.gif");
+	background-repeat: repeat-y;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_middle_right {
+	width: 6px;
+	background-image: url("../img/clear_silver/inactive/body_middle_right.gif");
+	background-repeat: repeat-y;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_left {
+	width: 6px;
+	height: 6px;
+	background-image: url("../img/clear_silver/active/body_bottom_left.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_left {
+	width: 6px;
+	height: 6px;
+	background-image: url("../img/clear_silver/inactive/body_bottom_left.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_middle {
+	height: 6px;
+	background-image: url("../img/clear_silver/active/body_bottom_middle.gif");
+	background-repeat: repeat-x;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_middle {
+	height: 6px;
+	background-image: url("../img/clear_silver/inactive/body_bottom_middle.gif");
+	background-repeat: repeat-x;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_active table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_right {
+	width: 6px;
+	height: 6px;
+	background-image: url("../img/clear_silver/active/body_bottom_right.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+div.dhtmlx_window_inactive table.dhtmlx_wins_clear_silver td.dhtmlx_wins_td_body_full table.dhtmlx_wins_body td.dhtmlx_wins_body_border_bottom_right {
+	width: 6px;
+	height: 6px;
+	background-image: url("../img/clear_silver/inactive/body_bottom_right.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	font-size: 1px;
+}
+
+/* TITLE */
+
+div.dhtmlx_window_active div.dhtmlx_wins_title_clear_silver {
+	position: absolute;
+	top: 9px;
+	left: 20px;
+	color: #383838;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: bold;
+	cursor: default;
+	white-space: nowrap;
+	overflow: hidden;
+	-moz-user-select: none;
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_title_clear_silver {
+	position: absolute;
+	top: 9px;
+	left: 20px;
+	color: #999999;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: bold;
+	cursor: default;
+	white-space: nowrap;
+	overflow: hidden;
+	-moz-user-select: none;
+}
+
+/* ICON */
+
+div.dhtmlx_window_active img.dhtmlx_wins_icon_clear_silver {
+	position: absolute;
+	top: 12px;
+	left: 6px;
+	width: 9px;
+	height: 9px;
+	border: none;
+	-moz-user-select: none;
+}
+div.dhtmlx_window_inactive img.dhtmlx_wins_icon_clear_silver {
+	position: absolute;
+	top: 12px;
+	left: 6px;
+	width: 9px;
+	height: 9px;
+	border: none;
+	-moz-user-select: none;
+}
+
+/* BUTTONS */
+
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver {
+	position: absolute;
+	right: 6px;
+	top: 9px;
+	height: 16px;
+	border: none;
+	background: none;
+	-moz-user-select: none;
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver {
+	position: absolute;
+	right: 6px;
+	top: 9px;
+	height: 16px;
+	border: none;
+	background: none;
+	-moz-user-select: none;
+}
+
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td.dhtmlx_wins_btn_visible {
+	width: 17px;
+	text-align: left;
+	cursor: default;
+	-moz-user-select: none;
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td.dhtmlx_wins_btn_visible {
+	width: 17px;
+	text-align: left;
+	cursor: default;
+	-moz-user-select: none;
+}
+
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td.dhtmlx_wins_btn_hidden {
+	display: none;
+	width: 17px;
+	text-align: left;
+	cursor: default;
+	-moz-user-select: none;
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td.dhtmlx_wins_btn_hidden {
+	display: none;
+	width: 17px;
+	text-align: left;
+	cursor: default;
+	-moz-user-select: none;
+}
+
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div {
+	width: 16px;
+	height: 16px;
+	-moz-user-select: none;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div {
+	width: 16px;
+	height: 16px;
+	-moz-user-select: none;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+
+/* park */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_park_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_park.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_park_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_park.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_park_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_park.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_park_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_park.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_park_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_park.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_park_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_park.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_park_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_park.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_park_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_park.gif");
+}
+
+/* minmax maximize */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_minmax1.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_minmax1.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_minmax1.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_minmax1.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_minmax1.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_minmax1.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_minmax1.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax1_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_minmax1.gif");
+}
+
+/* minmax restore */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_minmax2.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_minmax2.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_minmax2.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_minmax2.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_minmax2.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_minmax2.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_minmax2.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_minmax2_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_minmax2.gif");
+}
+
+/* close */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_close_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_close.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_close_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_close.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_close_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_close.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_close_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_close.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_close_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_close.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_close_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_close.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_close_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_close.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_close_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_close.gif");
+}
+
+/* help */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_help_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_help.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_help_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_help.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_help_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_help.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_help_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_help.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_help_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_help.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_help_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_help.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_help_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_help.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_help_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_help.gif");
+}
+
+/* stick */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_stick.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_stick.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_stick.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_stick.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_stick.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_stick.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_stick.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_stick_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_stick.gif");
+}
+
+/* sticked */
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_default {
+	background-image: url("../img/clear_silver/active/btns_default/btn_sticked.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_default {
+	background-image: url("../img/clear_silver/inactive/btns_default/btn_sticked.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_disabled {
+	background-image: url("../img/clear_silver/active/btns_disabled/btn_sticked.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_disabled {
+	background-image: url("../img/clear_silver/inactive/btns_disabled/btn_sticked.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_over_default {
+	background-image: url("../img/clear_silver/active/btns_over_default/btn_sticked.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_over_default {
+	background-image: url("../img/clear_silver/inactive/btns_over_default/btn_sticked.gif");
+}
+div.dhtmlx_window_active div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_over_pressed {
+	background-image: url("../img/clear_silver/active/btns_over_pressed/btn_sticked.gif");
+}
+div.dhtmlx_window_inactive div.dhtmlx_wins_buttons_clear_silver table td div.button_sticked_over_pressed {
+	background-image: url("../img/clear_silver/inactive/btns_over_pressed/btn_sticked.gif");
+}

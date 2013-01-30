@@ -1,0 +1,76 @@
+<div id="appointmentRulesContainerId" style="position:absolute;width:100%;height:400px;">
+	<div id="appointmentRulesToolbarId" style="width:100%;"></div>
+	<div id="appointmentRulesGridId" style="width:100%;height:100%;overflow:auto;"></div>
+</div>
+
+<script>
+var appointmentRulesTemplateId = null;
+var appointmentRulesToolbar = new dhtmlXToolbarObject("appointmentRulesToolbarId","ClearSilver");
+appointmentRulesToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+appointmentRulesToolbar.attachEvent("onClick",appointmentRulesOnToolbarClicked);
+
+var ctr = 1;
+appointmentRulesToolbar.addButton("addCustom",ctr++,"<?=__('Add Custom')?>","newproblem.png","newproblem.png");
+appointmentRulesToolbar.addButton("addFromLibrary",ctr++,"<?=__('Add from Library')?>","newproblem.png","newproblem.png");
+
+function appointmentRulesEdit(ruleId,type) {
+	var label = "<?=__('Add Rule')?>";
+	var params = [];
+	if (ruleId) {
+		params.push("ruleId="+ruleId);
+		label = "<?=__('Edit Rule')?>";
+	}
+	if (type) {
+		params.push("type="+type);
+		if (type == "custom") {
+			label += " <?=__('Custom')?>";
+		}
+		if (type == "fromLibrary") {
+			label += " <?=__('from Library')?>";
+		}
+	}
+	if (ruleId && appointmentRulesGrid.cells(ruleId,0)) {
+		label += ": "+appointmentRulesGrid.cells(ruleId,0).getValue();
+	}
+	globalCreateWindow("winAppointmentRulesEditId",params,"<?=$this->baseUrl?>/appointment-rules.raw/edit",label,600,450);
+}
+
+function appointmentRulesOnToolbarClicked(id) {
+	switch (id) {
+		case "addCustom":
+			appointmentRulesEdit(null,"custom");
+			break;
+		case "addFromLibrary":
+			appointmentRulesEdit(null,"fromLibrary");
+			break;
+		default:
+			alert("<?=__('Invalid event.')?>");
+	}
+}
+
+var appointmentRulesGrid = new dhtmlXGridObject("appointmentRulesGridId");
+appointmentRulesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+appointmentRulesGrid.selMultiRows = true;
+appointmentRulesGrid.setHeader("<?=__('Name')?>,<?=__('Rule')?>,");
+appointmentRulesGrid.setInitWidths("200,*,0");
+appointmentRulesGrid.setColTypes("ro,ro,ro");
+appointmentRulesGrid.init();
+
+function appointmentRulesGridOnRowDblClicked(rowId,cellIndex) {
+	appointmentRulesEdit(rowId);
+}
+appointmentRulesGrid.attachEvent("onRowDblClicked",appointmentRulesGridOnRowDblClicked);
+
+function appointmentRulesOnLoaded() {
+}
+function appointmentRulesGridReload(templateId) {
+	appointmentRulesGrid.clearAll();
+	appointmentRulesGrid.load("<?=$this->baseUrl?>/appointment-rules.raw/list",appointmentRulesOnLoaded,"json");
+}
+appointmentRulesGridReload();
+
+dhtmlxEvent(appointmentRulesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+</script>

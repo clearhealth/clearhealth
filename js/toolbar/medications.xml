@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<toolbar name="" width="100%" disableType="image" absolutePosition="auto" toolbarAlign="left">
+	<ImageTextButtonXP src="../img/newproblem.png" height="50" width="130px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="margin-top:-5px;">New Inpatient Medication</div> ]]></ImageTextButtonXP>
+	<ImageTextButtonXP src="../img/newproblem.png" height="50" width="130px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="margin-top:-5px;">New Outpatient Medication</div> ]]></ImageTextButtonXP>
+	<ImageTextButtonXP src="../img/editproblem.png" height="50" width="60px" id="0_delete" tooltip="Delete" disabled="disabled"><![CDATA[ <div style="margin-top:-5px;">Change</div> ]]></ImageTextButtonXP>
+	<ImageTextButtonXP src="../img/removeproblem.png" height="50" width="125px" id="0_delete" tooltip="Delete" disabled="disabled"><![CDATA[ <div style="margin-top:-5px;">Discontinue / Cancel</div> ]]></ImageTextButtonXP>
+	<divider id="div_1"/>
+	<ImageTextButtonXP src="../img/removeproblem.png" height="50" width="50px" id="0_delete" tooltip="Delete" disabled="disabled"><![CDATA[ <div style="margin-top:-5px;">Copy</div> ]]></ImageTextButtonXP>
+</toolbar>

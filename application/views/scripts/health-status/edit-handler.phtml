@@ -1,0 +1,180 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',35)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->timeframe->renderLabel()?>
+	<?$this->form->timeframe->setAttrib('size',35)?>
+	<?=$this->form->timeframeInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->condition->renderLabel()?>
+	<?=$this->form->conditionInput('FormSelect',array('options' => $this->listConditions))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->handlerObject->renderLabel()?>
+	<script>
+	var hsaHandlerObject = (<r><![CDATA[<?=$this->form->handlerObject->getValue()?>]]></r>).toString();
+	var hsaDatasource = (<r><![CDATA[<?=$this->form->datasource->getValue()?>]]></r>).toString();
+	var hsaTemplate = (<r><![CDATA[<?=$this->form->template->getValue()?>]]></r>).toString();
+	function hsaHandlerEditCode(code) {
+		var handlerName = dojo.byId("handler-name").value;
+		if (handlerName == "") {
+			alert("<?=__('Handler Name must be supplied first')?>");
+			return;
+		}
+		var data = null;
+		var conditionSelect = dojo.byId("handler-condition");
+		var conditionValue = conditionSelect.options[conditionSelect.selectedIndex].value;
+		switch (code) {
+			case "handlerObject": // Health Status Handler object
+				if (conditionValue <= 0) {
+					alert("<?=__('Please select condition')?>");
+					return;
+				}
+				if (hsaHandlerObject != "") {
+					data = hsaHandlerObject;
+				}
+				break;
+			case "datasource": // datasource object
+				if (hsaDatasource != "") {
+					data = hsaDatasource;
+				}
+				break;
+			case "template": // template object
+				if (hsaTemplate != "") {
+					data = hsaTemplate;
+				}
+				break;
+		}
+		if (data != null) {
+			hsaHandlerOpenCodeEditor(code,data);
+			return;
+		}
+		dojo.xhrGet({
+			url: "<?=$this->baseUrl?>/health-status.raw/generate-default-codes?code="+code+"&handlerName="+handlerName+"&condition="+conditionValue,
+			handleAs: "json",
+			load: function(data,ioArgs) {
+				hsaHandlerOpenCodeEditor(code,data);
+				return data;
+			},
+			error: function(response, ioArgs) {
+				console.error("HTTP status code: ", ioArgs.xhr.status);
+				return response;
+			}
+		});
+	}
+
+	function hsaHandlerOpenCodeEditor(code,data) {
+		var jsVar = "";
+		var winTitle = "";
+		switch (code) {
+			case "handlerObject": // Health Status Handler object
+				hsaHandlerObject = data;
+				jsVar = "hsaHandlerObject";
+				winTitle = "<?=__('Edit Health Status Handler Object')?>";
+				break;
+			case "datasource": // datasource object
+				hsaDatasource = data;
+				jsVar = "hsaDatasource";
+				winTitle = "<?=__('Edit Datasource')?>";
+				break;
+			case "template": // template object
+				hsaTemplate = data;
+				jsVar = "hsaTemplate";
+				winTitle = "<?=__('Edit Template')?>";
+				break;
+		}
+		var params = new Array();
+		params.push("jsVar="+jsVar);
+		globalCreateWindow("winCodeEditorId",params,"<?=$this->baseUrl?>/generic-edit.raw/code-editor",winTitle,800,600);
+	}
+	</script>
+	<?$attrib = array();
+	$attrib['onclick'] = 'hsaHandlerEditCode("handlerObject")';?>
+	<?=$this->formButton('handlerObject',__('Edit Code'),$attrib)?>
+	<?=$this->form->handlerObjectInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="handler-datasource" class="optional"><?=__('Datasource')?></label></dt>
+	<?$attrib = array();
+	$attrib['onclick'] = 'hsaHandlerEditCode("datasource")';?>
+	<?=$this->formButton('datasource',__('Edit Code'),$attrib)?>
+	<?=$this->form->datasourceInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="handler-template" class="optional"><?=__('Template')?></label></dt>
+	<?$attrib = array();
+	$attrib['onclick'] = 'hsaHandlerEditCode("template")';?>
+	<?=$this->formButton('template',__('Edit Template'),$attrib)?>
+	<?=$this->form->templateInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->active->renderLabel()?>
+	<input type="checkbox" name="activeInput" id="activeInput" value="<?=$this->form->active->getValue()?>" helper="formText"<?=($this->form->active->getValue())?' checked="checked"':''?> />
+	<?=$this->form->activeInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->healthStatusHandlerId->getValue())?>
+	<?=$this->form->healthStatusHandlerIdInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("winEditHandlerId").close()'))?>
+</div>
+
+<script>
+function preSubmitedit() {
+	var activeInput = dojo.byId("activeInput");
+	var activeHiddenInput = dojo.byId("handler-active");
+	var val = 0;
+	if (activeInput.checked) {
+		val = 1;
+	}
+	activeHiddenInput.value = val;
+	activeInput.checked = false;
+
+	dojo.byId("handler-handlerObject").value = hsaHandlerObject;
+	dojo.byId("handler-datasource").value = hsaDatasource;
+	dojo.byId("handler-template").value = hsaTemplate;
+	return true;
+}
+
+function postSubmitedit(data) {
+	HSAHandlersGridReload();
+	dhxWins.window('winEditHandlerId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

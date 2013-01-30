@@ -1,0 +1,42 @@
+<script>
+function selectedExamLookup(rowId) {
+	if (!rowId) {
+		var rowId = examLookupGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert('<?=__('No exam selected')?>');
+		return;
+	}
+	<?if($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		<?=$this->jsCallback?>(rowId,examLookupGrid.cells(rowId,0).getValue());
+	}
+	<?endif;?>
+	dhxWins.window("winLookupExamId").close();
+}
+</script>
+
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+<div id="examLookupGridId" style="width:100%;height:85%;overflow:hidden;margin-top:5px;"></div>
+
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="selectedExamLookup()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winLookupExamId').close()" style="width:150px;margin-top:10px;" />
+</div>
+<script>
+var examLookupGrid = new dhtmlXGridObject("examLookupGridId");
+examLookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+examLookupGrid.setHeader("");
+examLookupGrid.setNoHeader(true);
+examLookupGrid.setInitWidths("*");
+examLookupGrid.setColAlign("left");
+examLookupGrid.setColTypes("ro");
+function examLookupGridOnRowDblClicked(rowId,colIndex) {
+	selectedExamLookup(rowId);
+}
+examLookupGrid.attachEvent("onRowDblClicked",examLookupGridOnRowDblClicked);
+examLookupGrid.init();
+<?foreach ($this->listExams as $code=>$topic):?>
+examLookupGrid.addRow("<?=$code?>","<?=$topic?>");
+<?endforeach;?>
+</script>

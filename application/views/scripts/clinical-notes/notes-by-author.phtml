@@ -1,0 +1,17 @@
+<style>table.obj td {border-bottom: none;border-right:none;}</style>
+<div style="float:left;">
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="author-user-id"><?=__("Author")?></label></dt>
+		<select id="authoring-person-id"  name="authoringPersonId" style="width:325px;">
+        	<?foreach(Provider::getArray() as $personId => $name):?>
+                	<option value="<?=$personId?>"><?=$name?></option>
+	        <?endforeach;?>
+        	</select>
+	</div>
+	<br />
+	<br style="clear:left"/>
+	<div style="text-align:right;margin-top:10px;">
+		<input type="button" value="<?=__("Cancel")?>" onClick="closeNotesByAuthorWindow()" />
+		<input type="button" value="<?=__("Select")?>" onClick="TabState.setParam({'filter':'byAuthoringPersonId','authoringPersonId':dojo.byId('authoring-person-id').value});TabState.redrawTab();closeNotesByAuthorWindow();" />
+	</div>
+</div>

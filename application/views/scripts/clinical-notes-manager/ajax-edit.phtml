@@ -1,0 +1,165 @@
+<?=$this->form->renderOpen()?>
+
+<fieldset>
+<legend><?=__(ucwords($this->event)." Clinical Notes Template")?></legend>
+<div style="float:left;">
+	<div class="formRow">
+		<?=$this->form->clinicalNoteTemplateIdInput('FormHidden')?>
+
+		<?=$this->form->name->renderLabel()?>
+		<?$this->form->name->setAttrib('size',60)?>
+
+		<?=$this->form->nameInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->template->renderLabel()?>
+		<textarea cols="70" rows="8" name="cnTemplate[template]" id="cnTemplate-template"><?=$this->form->template->getValue()?></textarea>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->okInput('FormButton')?>
+
+	</div>
+</div>
+</fieldset>
+
+<?if($this->event == 'edit'):?>
+<fieldset>
+<legend><?=__("Clinical Note Definitions")?></legend>
+<div style="float:left;">
+	<div id="cnDefinitionContainer" style="float:left;width:70%;height:130px;"></div>
+	<div id="cnDefinitionButtons" style="float:right;margin-left:10px;">
+		<input type="button" id="add-new-definition" onClick="addNewDefinition()" value="<?=__('Add New')?>" />
+		<br />
+		<input type="button" id="remove-definition" onClick="removeDefinition()" value="<?=__('Remove')?>" />
+	</div>
+	<script>
+	var cndGrid = new dhtmlXGridObject('cnDefinitionContainer');
+	cndGrid.setImagePath("<?=$this->baseUrl?>/img/");
+	cndGrid.setHeader('<?=__('Definition')?>');
+	cndGrid.setInitWidths("*");
+	cndGrid.setColTypes("ed");
+	cndGrid.setSkin("xp");
+	cndGrid.init();
+	cndGrid.attachEvent("onRowDblClicked",function(rowId,colIndex){ openWindowAddAttachments(rowId); });
+	cndGrid.attachEvent("onEditCell",onEditCellEvent);
+
+	function onEditCellEvent(stage,rowId,cellIndex,newValue,oldValue) {
+		if (stage == 2) {
+			dojo.xhrPost ({
+				url: '<?=$this->baseUrl?>/clinical-notes-manager.raw/ajax-process-edit-definition',
+				handleAs: "json",
+				content: {
+					"definition[clinicalNoteDefinitionId]": rowId,
+					"definition[title]": newValue,
+					"definition[clinicalNoteTemplateId]": '<?=$this->form->clinicalNoteTemplateId->getValue()?>',
+				},
+				load: function (data) {
+					if (data.code != '200') {
+						// revert previous settings
+						cndGrid.cells(rowId,cellIndex).setValue(oldValue);
+					}
+				},
+				error: function (er) {
+					alert("ERROR: " + er.responseText);
+				}
+			});
+			return true;
+		}
+	}
+
+	<?foreach($this->definitions as $definition):?>
+	cndGrid.addRow('<?=$definition->clinicalNoteDefinitionId?>','<?=$definition->title?>');
+	<?endforeach?>
+
+	function openWindowAddAttachments(cndId) {
+		if (cndId == undefined) {
+			cndId = cndGrid.getSelectedRowId();
+		}
+		if (!cndId > 0) {
+			alert('A clinical note definition must be selected before adding an attachment.');
+			return false;
+		}
+		var url = "<?=$this->baseUrl?>/attachments.raw/add-attachments?attachmentReferenceId=" + cndId;
+		winAA = globalCreateWindow("windowAddAttachmentId",[],url,"<?=__('Add Attachments')?>",400,175);
+	}
+
+	function addNewDefinition() {
+		var title = null;
+		title = window.prompt('Please enter definition');
+		if (title == null) {
+			return;
+		}
+
+		dojo.xhrPost ({
+			url: '<?=$this->baseUrl?>/clinical-notes-manager.raw/ajax-process-edit-definition',
+			handleAs: "json",
+			content: {
+				"definition[title]": title,
+				"definition[clinicalNoteTemplateId]": '<?=$this->form->clinicalNoteTemplateId->getValue()?>',
+			},
+			load: function (data) {
+				if (data.code == '200') {
+					cndGrid.addRow(data.clinicalNoteDefinitionId,title);
+				}
+			},
+			error: function (er) {
+				alert("ERROR: " + er.responseText);
+			}
+		});
+	}
+
+	function removeDefinition(cndId) {
+		if (cndId == undefined) {
+			cndId = cndGrid.getSelectedRowId();
+		}
+		if (!cndId > 0) {
+			alert('A clinical note definition to remove must be selected.');
+			return false;
+		}
+
+		dojo.xhrPost ({
+			url: '<?=$this->baseUrl?>/clinical-notes-manager.raw/ajax-process-delete-definition',
+			handleAs: "json",
+			content: {
+				clinicalNoteDefinitionId: cndId,
+			},
+			load: function (data) {
+				if (data.code == '200') {
+					cndGrid.deleteRow(cndId);
+				}
+			},
+			error: function (er) {
+				alert("ERROR: " + er.responseText);
+			}
+		});
+	}
+
+	</script>
+</div>
+</fieldset>
+<?endif?>
+
+
+<?=$this->form->renderClose()?>
+
+<script>
+
+function preSubmitcnTemplate() {
+	return true;
+}
+
+function postSubmitcnTemplate() {
+	// reload all template items
+	cnmTemplateGrid.clearAll();
+	cnmTemplateGrid.load('<?=$this->baseUrl?>/clinical-notes-manager.raw/templates.json',"json");
+	dojo.setInnerHTML(dojo.byId('cnmDefinition'),'');
+	alert('<?=__('Data saved.')?>');
+	return false;
+}
+</script>

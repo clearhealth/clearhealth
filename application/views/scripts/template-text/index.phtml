@@ -1,0 +1,28 @@
+*Subjective:
+
+
+*Objective:
+
+	<?=$this->objective?>
+
+
+*Assessment:
+
+Some standardized boilerplate for the assessment section...
+
+*Problems:
+
+<?
+$problems = '';
+foreach($this->problemListIterator as $problem) {
+$problems .="	--{$problem->code} " . trim($problem->diagnosisCode->textShort). "  Onset: {$problem->dateOfOnset} --\n\n";
+	
+}?>
+<?=$problems?>
+
+*Plan:
+
+Some standardized boilerplate for the plan section...
+
+<?=$problems?>
+	

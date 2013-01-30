@@ -1,0 +1,604 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: 1px solid #eee;
+	border-right: 1px solid #eee;
+}
+button,input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+
+<div id="vitalSignsToolbarsId">
+	<div id="vitalSignsToolbarId" style="width:100%;border:1px solid Silver;"></div>
+	<div id="vitalSignsFilterId" style="width:100%;height:20px;background-color:#ece9d8;padding:5px;">
+		<div style="float:left;">
+			<label><?=__('Date')?>:</label> <select id="filterDateId" onChange="vitalSignsSetFilterDate(this.options[this.selectedIndex].value)">
+				<?foreach ($this->filterDates as $key=>$value):?>
+				<option value="<?=$key?>"><?=$value?></option>
+				<?endforeach;?>
+				<option value="custom"><?=__('Custom')?></option>
+			</select>
+			<label><?=__('From')?>:</label> <?=$this->formDateText('filterFrom','',array('id'=>'filterFromId','disable'=>true))?>
+			<label><?=__('To')?>:</label> <?=$this->formDateText('filterTo','',array('id'=>'filterToId','disable'=>true))?>
+		</div>
+		<div style="float:right;margin-right:10px;">
+			<label><?=__('Graph')?>:</label> <select id="filterGraphId" onChange="vitalSignsSetFilterGraph(this.options[this.selectedIndex].value)">
+				<option value=""><?=__('None')?></option>
+				<?foreach ($this->filterGraphs as $key=>$value):?>
+				<option value="<?=$key?>"<?=($key == 'temperature-pulse-respiration')?' selected="selected"':''?>><?=$value?></option>
+				<?endforeach;?>
+			</select>
+		</div>
+	</div>
+</div>
+<div style="position:absolute;width:100%;height:480px;">
+	<div id="vitalSignsLayoutId" style="width:100%;height:100%;"></div>
+</div>
+
+<div id="vitalSignsGraphId" style="width:100%;height:200px;">
+	<div id="graphLegendId" style="width:100%;height:20px;overflow:auto;background-color:#ece9d8;padding-top:5px;padding-bottom:5px;"><center><label id="vitalSignsLegendLabelId" style="border:1px solid #000;padding:3px;background-color:#fff;">Legend</label></center></div>
+	<div id="graphChartId" style="width:100%;height:170px;overflow:auto;"></div>
+</div>
+<iframe id="iframeVitalSignsPrintId" style="width:0px;height:0px;margin:0;padding:0;position:relative;float:top;border:none;" />
+<script>
+
+var colorList = [];
+colorList[colorList.length] = "#FF0000"; // Red
+colorList[colorList.length] = "#008000"; // Green
+colorList[colorList.length] = "#0000FF"; // Blue
+colorList[colorList.length] = "#FFFF00"; // Yellow
+colorList[colorList.length] = "#FFA500"; // Orange
+colorList[colorList.length] = "#FF4500"; // OrangeRed
+colorList[colorList.length] = "#FFC0CB"; // Pink
+colorList[colorList.length] = "#800080"; // Purple
+colorList[colorList.length] = "#A52A2A"; // Brown
+colorList[colorList.length] = "#00FFFF"; // Cyan
+colorList[colorList.length] = "#D2691E"; // Chocolate
+colorList[colorList.length] = "#FF7F50"; // Coral
+colorList[colorList.length] = "#FFD700"; // Gold
+colorList[colorList.length] = "#FF00FF"; // Fuchsia
+colorList[colorList.length] = "#EE82EE"; // Violet
+colorList[colorList.length] = "#FF00FF"; // Magenta
+colorList[colorList.length] = "#800000"; // Maroon
+
+var chartData = {};
+var minDate = null;
+var maxDate = null;
+
+function getColor(index) {
+	if (index < 0) {
+		index = 0;
+	}
+	if (index > (colorList.length - 1)) {
+		index = index % (colorList.length - 1);
+	}
+	return colorList[index];
+}
+
+dojo.connect(boxFilterFromId,"onChange","vitalSignsBoxFiltersOnChange");
+dojo.connect(boxFilterToId,"onChange","vitalSignsBoxFiltersOnChange");
+function vitalSignsBoxFiltersOnChange() {
+	vitalSignsSetFilterDate();
+}
+
+function vitalSignsSetFilterDate(filterDate) {
+	if (typeof filterDate == "undefined") {
+		var filterDateSelect = dojo.byId("filterDateId");
+		filterDate = filterDateSelect.options[filterDateSelect.selectedIndex].value;
+	}
+	if (filterDate == "custom") {
+		boxFilterFromId.setDisabled(false);
+		boxFilterToId.setDisabled(false);
+	}
+	else {
+		boxFilterFromId.setDisabled(true);
+		boxFilterToId.setDisabled(true);
+	}
+	vitalSignsLabelGridReload();
+}
+
+var graphFilterList = {
+<?foreach ($this->filterGraphs as $key=>$value):?>
+	"<?=$key?>": "<?=$value?>",
+<?endforeach;?>
+	"systolic": "Systolic",
+	"diastolic": "Diastolic",
+};
+
+function vitalSignsSetFilterGraph(filterGraph,doc) {
+	if (!doc) {
+		doc = document;
+	}
+	if (typeof filterGraph == "undefined" || filterGraph == null) {
+		var filterGraphSelect = dojo.byId("filterGraphId");
+		filterGraph = filterGraphSelect.options[filterGraphSelect.selectedIndex].value;
+	}
+	if (filterGraph == "") {
+		doc.getElementById("vitalSignsGraphId").style.display = "none";
+	}
+	else {
+		if (doc.getElementById("vitalSignsGraphId").style.display == "none") {
+			doc.getElementById("vitalSignsGraphId").style.display = "block";
+		}
+		var filterData = [];
+		var legend = "";
+		var filters = [];
+		var tmpFilters = filterGraph.split("-");
+		for (var i = 0; i < tmpFilters.length; i++) {
+			var filter = tmpFilters[i];
+			if (filter == "bloodPressure") {
+				filters.push(filter+"-systolic");
+				filters.push(filter+"-diastolic");
+			}
+			else {
+				filters.push(filter);
+			}
+		}
+		for (var i = 0; i < filters.length; i++) {
+			var color = getColor(i);
+			var filter = filters[i];
+			var filterIndex = filter;
+			var rowId = filter;
+			var arrFilter = filter.split("-");
+			if (arrFilter.length > 1) {
+				filterIndex = arrFilter[1];
+				rowId = arrFilter[0];
+			}
+			legend += " <font color=\""+color+"\">"+graphFilterList[filterIndex]+"</font> ";
+			if (!vitalSignsLabelGrid.doesRowExist(rowId)) {
+				continue;
+			}
+			filterData[filterIndex] = {"color":color,"filter":filter,"data":[]};
+		}
+		dojo.setInnerHTML(doc.getElementById("vitalSignsLegendLabelId"),legend);
+
+		vitalSignsGenerateGraph(filterData,doc);
+	}
+}
+
+// convert date format mm/dd/yyyy hh:mmAP to JS date object
+function vitalSignsConvertToDate(value) {
+	// 09/01/2010 09:17PM
+	var yyyy = parseInt(value.substr(6,4));
+	var mm = value.substr(0,2);
+	if (mm.substr(0,1) == "0") {
+		mm = mm.substr(1,1);
+	}
+	mm = parseInt(mm) - 1;
+	var dd = value.substr(3,2);
+	if (dd.substr(0,1) == "0") {
+		dd = dd.substr(1,1);
+	}
+	dd = parseInt(dd);
+
+	var hr = value.substr(11,2);
+	if (hr.length > 0) {
+		if (hr.substr(0,1) == "0") {
+			hr = hr.substr(1,1);
+		}
+		hr = parseInt(hr);
+	}
+	else {
+		hr = 0;
+	}
+	var min = value.substr(14,2);
+	if (min.length > 0) {
+		if (min.substr(0,1) == "0") {
+			min = min.substr(1,1);
+		}
+		min = parseInt(min);
+	}
+	else {
+		min = 0;
+	}
+	var ap = value.substr(16,2);
+	if (ap == "PM") hr += 12;
+
+	return new Date(yyyy,mm,dd,hr,min);
+}
+
+function vitalSignsGenerateGraph(filtersData,doc) {
+	if (!doc) {
+		doc = document;
+	}
+	dojo.setInnerHTML(doc.getElementById("graphChartId"),"");
+	var numCols = vitalSignsLabelGrid.getColumnsNum();
+	if (typeof filtersData != "object" || !(numCols > 1)) {
+		return;
+	}
+	var vAxes = [];
+	var hAxes = [];
+	var vZero = false;
+	var hIndex = 0;
+	var vIndex = 0;
+
+	for (var i in filtersData) {
+		var filter = filtersData[i].filter;
+		var rowId = filter;
+		var arrFilter = rowId.split("-");
+		if (arrFilter.length > 1) {
+			filter = arrFilter[1];
+			rowId = arrFilter[0];
+		}
+		if (!vitalSignsLabelGrid.doesRowExist(rowId)) {
+			continue;
+		}
+		for (var j = 1; j < numCols; j++) {
+			var vitalDate = vitalSignsLabelGrid.cells("dates",j).getValue();
+			var inArray = false;
+			for (var k in hAxes) {
+				if (hAxes[k] == vitalDate) {
+					hIndex = k;
+					inArray = true;
+					break;
+				}
+			}
+			if (!inArray) {
+				hIndex = hAxes.length;
+				hAxes[hIndex] = vitalDate;
+			}
+
+			var value = vitalSignsLabelGrid.cells(rowId,j).getValue();
+			if (value == "") {
+				continue;
+			}
+			// remove metric value if any
+			value = value.replace(/ \(.*\)/i,"");
+
+			if (rowId != filter) {
+				if (rowId == "bloodPressure") {
+					arrValues = value.split("/");
+					if (filter == "systolic") {
+						value = arrValues[0];
+					}
+					else if (filter == "diastolic") {
+						value = arrValues[1];
+					}
+				}
+			}
+
+			inArray = false;
+			for (var k in vAxes) {
+				if (vAxes[k] == value) {
+					vIndex = k;
+					inArray = true;
+					break;
+				}
+			}
+			if (!inArray) {
+				if (value == "0") {
+					vZero = true;
+				}
+				vIndex = vAxes.length;
+				vAxes[vIndex] = value;
+			}
+			filtersData[i].data.push({"date":vitalDate,"value":value,"axis":{"x":hIndex,"y":vIndex}});
+		}
+	}
+
+	if (!vZero) {
+		vAxes.push("0");
+	}
+	vAxes.sort(function(a,b){return(a-b);}); // numeric sort in ascending order
+
+
+	var xMajorTickStep = 1;
+	var xMinorTickStep = 1;
+	var xMicroTickStep = 1;
+	var yMajorTickStep = 1;
+	var yMinorTickStep = 1;
+	var yMicroTickStep = 1;
+
+	var xMin = 0;
+	var xMax = 15;
+	var yMin = 0;
+	var yMax = 9;
+
+	var series = [];
+
+	var dStart = vitalSignsConvertToDate(hAxes[0]);
+
+	// 1 day = 86400000 ms
+	var dayMs = 86400000;
+
+	var dEnd = vitalSignsConvertToDate(hAxes[(hAxes.length-1)]);
+
+	var daysDiff = (dEnd.getTime() - dStart.getTime()) / dayMs;
+
+	var diff = daysDiff / xMax;
+	var xIntDiff = parseInt(diff) + 1;
+	dEnd.setTime(dEnd.getTime() + (dayMs * xIntDiff));
+
+	xMajorTickStep = dayMs * xIntDiff;
+	if (xMajorTickStep == 0) {
+		xMajorTickStep = dayMs;
+	}
+
+	var xLabels = [];
+
+	var tmpDate = dStart;
+	var dStartTime = dStart.getTime();
+	var tmpArr = [];
+	tmpXMax = 0;
+	for (var i = 0; i <= xMax; i++) {
+		tmpArr = [];
+		var mo = tmpDate.getMonth() + 1;
+		if (mo < 10) mo = "0"+mo;
+		tmpArr.push(mo);
+		var day = tmpDate.getDate();
+		if (day < 10) day = "0"+day;
+		tmpArr.push(day);
+		tmpArr.push(tmpDate.getFullYear());
+		xLabels.push({value:i,text:tmpArr.join("/")});
+		var newTime = tmpDate.getTime() + xMajorTickStep;
+		if (newTime > dEnd.getTime()) break;
+		tmpDate.setTime(newTime);
+		tmpXMax++;
+	}
+	if (tmpXMax < xMax) {
+		xMax = tmpXMax;
+	}
+
+	var yValMin = parseInt(vAxes[0]);
+	var yValMax = parseInt(vAxes[(vAxes.length-1)]);
+	if (yValMax != vAxes[(vAxes.length-1)]) {
+		yValMax++;
+	}
+
+	var yValDiff = yValMax - yValMin;
+
+	var diff = yValDiff / yMax;
+	var yIntDiff = parseInt(diff);
+	if (yIntDiff != diff) {
+		yIntDiff++;
+	}
+
+	yValMax += yIntDiff;
+
+	yMajorTickStep = yIntDiff;
+	if (yMajorTickStep == 0) {
+		yMajorTickStep = 1;
+	}
+
+	var yLabels = [];
+	var val = yValMin;
+	for (var i = 0; i <= yMax; i++) {
+		yLabels.push({value:val,text:val});
+		val += yMajorTickStep;
+	}
+	yMax = yValMax;
+
+	var chart = new dojox.charting.Chart2D(doc.getElementById("graphChartId"));
+	chart.addAxis("x",{labels:xLabels,majorTickStep:xMajorTickStep,minorTickStep:xMinorTickStep,microTickStep:xMicroTickStep});
+	chart.addAxis("y", {vertical:true,labels:yLabels,majorTickStep:yMajorTickStep,minorTickStep:yMinorTickStep,microTickStep:yMicroTickStep});
+
+	series = [];
+	series.push({x:xMin,y:yMax});
+	series.push({x:xMin,y:yMin});
+	series.push({x:xMax,y:yMin});
+	chart.addPlot("imaginary",{type:"Lines",markers:false});
+	chart.addSeries("Imaginary Plot",series,{plot:"imaginary",stroke:{color:"white"}});
+
+	for (var i in filtersData) {
+		var filter = filtersData[i];
+		if (!(filter.data.length > 0)) {
+			continue;
+		}
+		series = [];
+		for (var j in filter.data) {
+			var x = 0;
+			var y = 0;
+			for (var k in hAxes) {
+				if (hAxes[k] == filter.data[j].date) {
+					x = hAxes[k];
+					break;
+				}
+			}
+			for (var k in vAxes) {
+				if (vAxes[k] == filter.data[j].value) {
+					y = vAxes[k];
+					break;
+				}
+			}
+			if (x != 0) {
+				var dTmp = vitalSignsConvertToDate(x);
+				x = ((dTmp.getTime() - dStartTime) / dayMs) / xIntDiff;
+			}
+			series.push({x:x,y:y});
+		}
+		if (series.length > 0) {
+			chart.addPlot("plot"+i,{type:"Lines",markers:true});
+			chart.addSeries("Plot "+i,series,{plot:"plot"+i,stroke:{color:filtersData[i].color}});
+		}
+	}
+	chart.render();
+}
+
+
+var vitalSignsLayout = new dhtmlXLayoutObject("vitalSignsLayoutId","3E");
+vitalSignsLayout.setEffect("collapse",true);
+vitalSignsLayout.cells("a").hideHeader();
+vitalSignsLayout.cells("a").setHeight(80);
+vitalSignsLayout.cells("a").attachObject(dojo.byId("vitalSignsToolbarsId"));
+vitalSignsLayout.cells("a").fixSize(false,true);
+vitalSignsLayout.cells("b").hideHeader();
+vitalSignsLayout.cells("b").setHeight(200);
+vitalSignsLayout.cells("c").hideHeader();
+vitalSignsLayout.cells("c").setHeight(200);
+vitalSignsLayout.cells("c").attachObject("vitalSignsGraphId");
+
+var vitalSignsLabelGrid = vitalSignsLayout.cells("b").attachGrid();
+vitalSignsLabelGrid.setImagePath("<?=$this->baseUrl?>/img/");
+vitalSignsLabelGrid.setHeader("");
+vitalSignsLabelGrid.setNoHeader(true);
+vitalSignsLabelGrid.setSkin("xp");
+vitalSignsLabelGrid.init();
+vitalSignsLabelGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
+});
+
+function vitalSignsLabelGridOnLoaded() {
+	vitalSignsLabelGrid.setColumnColor("#ddd");
+	var rowId = vitalSignsLabelGrid.getRowId(0);
+	if (rowId && vitalSignsLabelGrid.getColumnsNum() > 1) {
+		vitalSignsLabelGrid.setRowColor(rowId,"#ddd")
+	}
+	vitalSignsSetFilterGraph();
+}
+
+function vitalSignsLabelGridReload() {
+	var filterDateSelect = dojo.byId("filterDateId");
+	var filterDate = filterDateSelect.options[filterDateSelect.selectedIndex].value;
+	if (filterDate == "custom") {
+		var filterFrom = dojo.byId("filterFromId").value;
+		var filterTo = dojo.byId("filterToId").value;
+		filterDate = filterFrom + "|" + filterTo;
+	}
+	vitalSignsLabelGrid.clearAll();
+	vitalSignsLabelGrid.loadXML("<?=$this->baseUrl?>/vital-signs.raw/list-xml?personId="+mainController.getActivePatient()+"&filter="+filterDate,vitalSignsLabelGridOnLoaded);
+}
+vitalSignsLabelGridReload();
+dhtmlxEvent(vitalSignsLabelGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+var vitalSignsMenu = new dhtmlXMenuObject(null,"standard");
+vitalSignsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+vitalSignsMenu.renderAsContextMenu();
+vitalSignsMenu.setOpenMode("web");
+vitalSignsMenu.attachEvent("onClick",function(menuItemId,type) {
+	switch(menuItemId) {
+		case "markError":
+			var cellIndex = vitalSignsLabelGrid.getSelectedCellIndex();
+			if (cellIndex > 0) {
+				var groupId = vitalSignsLabelGrid.getUserData("","groupId"+cellIndex);
+				if (confirm("Are you sure you want to entered in error the selected vitals: "+vitalSignsLabelGrid.cells2(0,cellIndex).getValue()+"?")) {
+					vitalSignsEnteredInError(groupId);
+				}
+			}
+			else {
+				alert("No vitals selected");
+			}
+			break;
+	}
+});
+vitalSignsMenu.loadXML("<?=$this->baseUrl?>/vital-signs.raw/get-menu",function(){});
+vitalSignsLabelGrid.enableContextMenu(vitalSignsMenu);
+vitalSignsLabelGrid.attachEvent("onBeforeContextMenu",function(rowId,colIndex,gridObj) {
+	vitalSignsMenu.hideItem("markError");
+	if (colIndex > 0) vitalSignsMenu.showItem("markError");
+	return true;
+});
+
+var vitalSignsToolbar = new dhtmlXToolbarObject("vitalSignsToolbarId","ClearSilver");
+vitalSignsToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function vitalSignsToolbarOnClicked(itemId,itemValue) {
+	switch(itemId) {
+		case "newVitals":
+			windowAddVitals("vitalSignsLabelGridReload");
+			break;
+		case "pediatricGrowth":
+			windowGrowthCharts();
+			break;
+		case "print":
+			vitalSignsPrint();
+			break;
+		default:
+			alert("Invalid event "+itemId+" was pressed "+itemValue);
+			break;
+	}
+}
+vitalSignsToolbar.attachEvent("onClick",vitalSignsToolbarOnClicked);
+vitalSignsToolbar.loadXML("<?=$this->baseUrl?>/vital-signs.raw/toolbar-xml")
+
+function vitalSignsEnteredInError(groupId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/vital-signs.raw/process-entered-in-error",
+		handleAs: "json",
+		content: {
+			"groupId": groupId,
+		},
+		load: function (data) {
+			vitalSignsLabelGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+function vitalSignsPrint() {
+	var colsNum = vitalSignsLabelGrid.getColumnsNum();
+	if (colsNum < 2) {
+		alert("<?=__('Nothing to print')?>");
+		return;
+	}
+
+	var rowsNum = vitalSignsLabelGrid.getRowsNum();
+	var vitalSignsTable = "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+	vitalSignsTable += "<tr>";
+	for (var col = 0; col < colsNum; col++) {
+		var val = vitalSignsLabelGrid.cells2(0,col).getValue();
+		if (val.length < 1) val = "&nbsp;";
+		vitalSignsTable += "<td style=\"font-size:9px;\"><strong>"+val+"</strong></td>";
+	}
+	vitalSignsTable += "</tr>";
+	for (var row = 1; row < rowsNum; row++) {
+		vitalSignsTable += "<tr>";
+		for (col = 0; col < colsNum; col++) {
+			vitalSignsTable += "<td style=\"font-size:9px;\">";
+			if (col == 0) vitalSignsTable += "<strong>";
+			var val = vitalSignsLabelGrid.cells2(row,col).getValue();
+			if (val.length < 1) val = "&nbsp;";
+			vitalSignsTable += val;
+			if (col == 0) vitalSignsTable += "</strong>";
+			vitalSignsTable += "</td>";
+		}
+		vitalSignsTable += "</tr>";
+	}
+	vitalSignsTable += "</table>";
+
+	var printHtml = "";
+	printHtml += "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+	printHtml += "<thead>";
+	printHtml += "<tr><th><div style=\"margin-bottom:30px;\">"+dojo.byId("mainToolbar").innerHTML+"</div></th></tr>";
+	printHtml += "</thead><tbody>";
+	printHtml += "<tr><td><div style=\"margin-bottom:30px;\">"+vitalSignsTable+"</div></td></tr>";
+	printHtml += "<tr><td style=\"font-size:9px;\"><div id=\"vitalSignsGraphId\" style=\"width:1000px;height:200px;\">"+dojo.byId("vitalSignsGraphId").innerHTML+"</div></td></tr>";
+	//printHtml += "<tr><td style=\"font-size:9px;\"><div id=\"vitalSignsGraphId\" style=\"width:100%;\"><div id=\"graphLegendId\" style=\"width:100%;height:20px;overflow:auto;background-color:#ece9d8;padding-top:5px;padding-bottom:5px;\"><center><label id=\"vitalSignsLegendLabelId\" style=\"border:1px solid #000;padding:3px;background-color:#fff;\">Legend</label></center></div><div id=\"graphChartId\" style=\"width:1000px;height:250px;overflow:auto;\"></div></div>";
+	//printHtml += "</div></td></tr>";
+	printHtml += "</tbody></table>";
+
+	var doc = null;
+	var iframe = dojo.byId("iframeVitalSignsPrintId");
+	if (iframe.contentDocument) {
+		// Firefox/Opera
+		doc = iframe.contentDocument;
+	}
+	else if (iframe.contentWindow) {
+		// Internet Explorer
+		doc = iframe.contentWindow.document;
+	}
+	else if (iframe.document) {
+		// Others
+		doc = iframe.document;
+	}
+	if (doc == null) {
+		throw "Document not initialized";
+	}
+	doc.open();
+	doc.write(printHtml);
+	doc.close();
+
+	vitalSignsSetFilterGraph(null,doc);
+	iframe.contentWindow.focus();
+	iframe.contentWindow.print();
+}
+
+
+</script>

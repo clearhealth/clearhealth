@@ -1,0 +1,76 @@
+<div style="width:auto;" id="importsContainerDivId">
+<form name="cryptFormId" id="cryptFormId" method="post" enctype="multipart/form-data">
+	<div style="width:100%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+		<div class="formRow" style="padding-top:8px;">
+			<label><strong><?=__('File')?></strong></label>
+			<input type="file" name="uploadFile"/>
+			<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressKey'))?>
+			<?=$this->formHidden('personId',$this->personId,array('id'=>'personId'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->formButton('import',__('Import'),array('id'=>'import','onClick'=>'processUploadFile();'))?>
+		</div>
+	</div>
+	<div style="width:280px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+		<strong><?=__('Progress')?>:</strong>
+		<div style="width:280px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+			<div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+		</div>
+	</div>
+</form>
+</div>
+
+<script>
+var progressTimer = "";
+var uploadStarted = false;
+function processUploadFile(action) {
+	action = "hl7-lab";
+	uploadStarted = true;
+	var fileUploadForm = dojo.byId("fileUploadFormId");
+	fileUploadForm.style.display = "none";
+	var fileUploadProgress = dojo.byId("fileUploadProgressId");
+	fileUploadProgress.style.display = "";
+	//var results = dojo.byId("resultsId");
+	//results.innerHTML = "";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/imports.raw/process-"+action,
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "cryptFormId",
+		load: function(data) {
+			uploadStarted = false;
+			dojo.byId("cryptFormId").reset();
+			clearTimeout(progressTimer);
+			fileUploadProgress.style.display = "none";
+			fileUploadForm.style.display = "";
+			dojo.byId("uploadProgressBarId").style.width = "0%";
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+	processProgressBar();
+}
+
+function processProgressBar(progressKey) {
+	if (!uploadStarted) return;
+	if (progressKey == undefined) {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/imports.raw/view-upload-progress?uploadKey=" + progressKey,
+		handleAs: "json",
+		load: function (data) {
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout("processProgressBar('"+progressKey+"')", 1000);
+		}, 
+		error: function (er) {
+			alert("err: " + er.responseText)
+		}
+	});
+}
+
+</script>

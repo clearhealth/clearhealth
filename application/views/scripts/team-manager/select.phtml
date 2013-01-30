@@ -1,0 +1,192 @@
+<script>
+function changeTeam() {
+	dojo.byId("team-team").disabled = false;
+	dojo.byId("selectTeamId").disabled = false;
+	dojo.byId("changeTeamId").disabled = true;
+}
+function teamOnSelected(teamId) {
+	if (typeof teamId == "undefined") {
+		var teamSelect = dojo.byId("team-team");
+		teamId = teamSelect.options[teamSelect.selectedIndex].value;
+	}
+	if (teamId == null || teamId == '') {
+		alert("<?=__("No team selected")?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/team-manager.raw/process-select",
+		handleAs: "json",
+		content: {
+			"teamId": teamId,
+			"patientId": mainController.getActivePatient(),
+		},
+		load: function (data) {
+			initMainToolbar(null,mainController.getActivePatient());
+			teamSelector.closeWindow();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>
+<div style="width:100%;">
+	<fieldset><legend><?=__('Care Team')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Team")?>:</strong> <?=$this->formSelect("team[team]",$this->patient->teamId,array("id" => "team-team"),$this->teamList);?>
+	</div>
+
+<?if($this->hasTeam):?>
+	<br /><br /><br />
+	<div style="padding-top:4px;background-color:#fff;" id="teamMemberList">
+		<?=$this->teamMemberList?>
+	</div>
+	<br />
+	<div class="formRow" style="float:left;padding-top:4px;">
+		<input type="button" id="changeTeamId" value="<?=__("Change Team")?>" onclick="changeTeam()" />
+	</div>
+<?else:?>
+	<br /><br />
+	<br /><br />
+	<script>
+	//teamSelector.setWindowDimension(200,100);
+	</script>
+<?endif;?>
+	<div class="formRow" style="float:right;padding-top:4px;">
+		<input type="button" value="<?=__("Cancel")?>" onclick="teamSelector.closeWindow()" />
+		<input type="button" id="selectTeamId" value="<?=__("Select Team")?>" onclick="teamOnSelected()" />
+	</div>
+	</fieldset>
+</div>
+
+<div style="float:left;width:100%;">
+	<fieldset><legend><?=__('External Team')?></legend>
+		<div id="externalTeamGridId" style="height:150px;"></div>
+	</fieldset>
+</div>
+
+<script>
+//dojo.byId("team-team").disabled = true;
+//dojo.byId("selectTeamId").disabled = true;
+
+function externalTeamSingleUpdate(id,field,value,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/team-manager.raw/process-edit-external-by-field",
+		handleAs: "json",
+		content: {
+			personId: mainController.getActivePatient(),
+			id: id,
+			field: field,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function externalTeamRemove(id,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/team-manager.raw/process-delete-external",
+		handleAs: "json",
+		content: {
+			personId: mainController.getActivePatient(),
+			id: id,
+		},
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ",error);
+		}
+	});
+}
+
+var externalTeamColFields = new Array();
+// Field names, in order based on externalTeamGrid.setHeader
+externalTeamColFields.push("practice");
+externalTeamColFields.push("provider");
+externalTeamColFields.push("role");
+externalTeamColFields.push("phone");
+externalTeamColFields.push("fax");
+externalTeamColFields.push("active");
+
+var externalTeamGrid = new dhtmlXGridObject("externalTeamGridId");
+externalTeamGrid.setImagePath("<?=$this->baseUrl?>/img/");
+externalTeamGrid.setHeader("<?=__('Practice')?>,<?=__('Provider')?>,<?=__('Role')?>,<?=__('Phone')?>,<?=__('Fax')?>,<?=__('Active')?>");
+//externalTeamGrid.setInitWidths("*,*,*,*,50");
+externalTeamGrid.setInitWidths("200,200,150,200,200,50");
+externalTeamGrid.setColTypes("ed,ed,ed,ed,ed,ch");
+externalTeamGrid.setSkin("xp");
+function externalTeamGridReload() {
+	externalTeamGrid.clearAll();
+	externalTeamGrid.load("<?=$this->baseUrl?>/team-manager.raw/list-external-team?patientId="+mainController.getActivePatient(),null,"json");
+}
+function externalTeamGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		externalTeamSingleUpdate(rowId,externalTeamColFields[cellIndex],newValue,externalTeamGridReload);
+	}
+	return true;
+}
+externalTeamGrid.attachEvent("onEditCell",externalTeamGridOnCellEdited);
+function externalTeamGridOnChecked(rowId,cellIndex,state) {
+	var val = 0;
+	if (state) {
+		val = 1;
+	}
+	externalTeamSingleUpdate(rowId,externalTeamColFields[cellIndex],val,externalTeamGridReload);
+}
+externalTeamGrid.attachEvent("onCheck",externalTeamGridOnChecked);
+externalTeamGrid.init();
+
+var externalTeamMenu = new dhtmlXMenuObject(null,"standard");
+externalTeamMenu.setImagePath("<?=$this->baseUrl?>/img/");
+externalTeamMenu.renderAsContextMenu();
+externalTeamMenu.setOpenMode("web");
+function externalTeamMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "menuNew":
+			externalTeamSingleUpdate(0,externalTeamColFields[0],"blank",externalTeamGridReload);
+			break;
+		case "menuRemove":
+			var rowId = externalTeamGrid.getSelectedRowId();
+			if (rowId != null) {
+				externalTeamRemove(rowId,externalTeamGridReload);
+			}
+			break;
+		default:
+			alert("<?=__('Invalid event')?> "+menuItemId);
+	}
+}
+externalTeamMenu.attachEvent("onClick",externalTeamMenuOnClicked);
+externalTeamMenu.loadXML("<?=$this->baseUrl?>/team-manager.raw/get-external-menu");
+
+externalTeamGrid.hdr.id = externalTeamGrid.uid();
+externalTeamMenu.addContextZone(externalTeamGrid.hdr.id);
+externalTeamGrid.enableContextMenu(externalTeamMenu);
+externalTeamMenu.attachEvent("onContextMenu",function(id){
+	externalTeamMenu.forEachItem(function (itemId) { externalTeamMenu.hideItem(itemId); });
+	var rowId = externalTeamGrid.getSelectedRowId();
+	externalTeamMenu.showItem("menuNew");
+	if (rowId != null) {
+		externalTeamMenu.showItem("menuRemove");
+	}
+});
+
+dhtmlxEvent(externalTeamGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+externalTeamGridReload();
+</script>

@@ -1,0 +1,6 @@
+<?="<?xml version='1.0' encoding='iso-8859-1'?>"?>
+<toolbar>
+	<?foreach($this->toolbars as $toolbar):?>
+	<item id="<?=$toolbar['id']?>" type="button" img="newproblem.png" imgdis="newproblem.png" height="50" width="80" title="<?=$toolbar['text']?>" text="<?=htmlspecialchars('<br />'.$toolbar['text'])?>" />
+	<?endforeach?>
+</toolbar>

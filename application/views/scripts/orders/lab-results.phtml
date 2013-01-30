@@ -1,0 +1,220 @@
+<style>
+input {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 20em;
+}
+div.gridbox_xp#labResultsGridId table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<fieldset><legend><?=__('Lab Order Information')?> : <?=$this->order->orderText?></legend>
+<?=$this->form->renderOpen()?>
+	<div style="float:left;">
+		<div class="formRow" style="padding-top:4px;width:20em;">
+			<dt><label class="optional"><?=__('Ordering Provider')?></label></dt>
+			<?=$this->order->order->provider->displayName?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<dt><label class="optional"><?=__('Date Ordered')?></label></dt>
+			<?=$this->order->dateTime?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->orderNum->renderLabel()?>
+			<?=$this->form->orderNum->getValue()?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div style="float:left;">
+		<div class="formRow" style="padding-top:4px;width:20em;">
+			<?=$this->form->componentCode->renderLabel()?>
+			<?=$this->form->componentCodeInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->service->renderLabel()?>
+			<?=$this->form->serviceInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->specimenReceivedTime->renderLabel()?>
+			<?=$this->form->specimenReceivedTimeInput()?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div style="float:left;">
+		<div class="formRow" style="padding-top:4px;width:20em;">
+			<?=$this->form->observationTime->renderLabel()?>
+			<?=$this->form->observationTimeInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->reportTime->renderLabel()?>
+			<?=$this->form->reportTimeInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->filerOrderNum->renderLabel()?>
+			<?=$this->form->filerOrderNumInput()?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div style="float:left;">
+		<div class="formRow" style="padding-top:4px;width:20em;">
+			<?=$this->form->status->renderLabel()?>
+			<?=$this->form->statusInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<?=$this->form->cliaDisclosure->renderLabel()?>
+			<?=$this->form->cliaDisclosureInput()?>
+		</div>
+		<div class="formRow" style="padding-top:4px;margin-left:20px;width:20em;">
+			<dt style="line-height:10px;"><label>&nbsp;</label></dt>
+			<?=$this->form->labTestIdInput('FormHidden')?>
+			<?=$this->form->okInput()?>
+		</div>
+	</div>
+<?=$this->form->renderClose()?>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div id="labResultsGridId" style="width:866px;height:200px;"></div>
+</fieldset>
+
+<script>
+var labResultsGrid = new dhtmlXGridObject("labResultsGridId");
+labResultsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexLRDate = 0;
+var indexLRDescription = 1;
+var indexLRValue = 2;
+var indexLRUnit = 3;
+var indexLRRefRange = 4;
+var indexLRAbnormal = 5;
+var indexLRStatus = 6;
+var indexLRCLIAPerformingOrg = 7;
+var lrColumnNames = ["observationTime","description","value","units","referenceRange","abnormalFlag","resultStatus","cliaPerformingOrg"];
+labResultsGrid.setHeader("<?=__('Date')?>,<?=__('Test Name')?>,<?=__('Value')?>,<?=__('Unit')?>,<?=__('Ref. Range')?>,<?=__('Abnormal')?>,<?=__('Status')?>,<?=__('Perf. Name')?>,<?=__('Perf. Code')?>,<?=__('Perf. Line1')?>,<?=__('Perf. City')?>,<?=__('Perf. State')?>,<?=__('Perf. Zip')?>");
+labResultsGrid.setInitWidths("120,*,*,*,*,60,50,*,*,*,*,*,*");
+labResultsGrid.setColTypes("ed,ed,ed,ed,ed,ed,ed,ed,ed,ed,ed,coro,ed");
+labResultsGrid._dtmask = "%Y-%m-%d"; // hacks for calendar date format
+labResultsGrid.setSkin("xp");
+labResultsGrid.init();
+labResultsGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		var action = "edit";
+		if (rowId == "trailingId") {
+			action = "add";
+			rowId = "0";
+		}
+		var content = {
+			"result[labResultId]": rowId,
+		};
+		if (action == "add") {
+			if (cellIndex != indexLRDescription) {
+				content["result[description]"] = "<?=$this->order->displayLabTest?>";
+			}
+			if (cellIndex != indexLRDate) {
+				content["result[observationTime]"] = "<?=date('Y-m-d')?>";
+			}
+		}
+		if (cellIndex >= indexLRCLIAPerformingOrg) {
+			cellIndex = indexLRCLIAPerformingOrg;
+			var ctr = cellIndex + 6;
+			var arr = [];
+			for (var i = indexLRCLIAPerformingOrg; i < ctr; i++) {
+				arr.push(this.cells(rowId,i).getValue());
+			}
+			newValue = arr[0]+"^"+arr[1]+"^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|"+arr[2]+"^^"+arr[3]+"^"+arr[4]+"^"+arr[5]+"^^B";
+		}
+		content["result["+lrColumnNames[cellIndex]+"]"] = newValue;
+		labResultsProcessEdit(content,action,cellIndex);
+	}
+	return true;
+});
+// state
+labResultsGrid.getCombo(11).put("","");
+<?foreach (Address::getStatesList() as $key=>$name):?>
+labResultsGrid.getCombo(11).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+var labResultsMenu = new dhtmlXMenuObject(null ,"standard");
+labResultsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+labResultsMenu.renderAsContextMenu();
+labResultsMenu.setOpenMode("web");
+labResultsMenu.loadXML("<?=$this->baseUrl?>/orders.raw/context-menu?type=lab-results");
+labResultsMenu.attachEvent("onClick",function(id) {
+	switch (id) {
+		case "delete":
+			labResultsProcessDelete();
+			break;
+	}
+});
+// temporary replace grid onBeforeContextMenu
+labResultsGrid.hdr.id = labResultsGrid.uid();
+labResultsMenu.addContextZone(labResultsGrid.hdr.id);
+labResultsGrid.enableContextMenu(labResultsMenu);
+
+function labResultsProcessEdit(content,action,cellIndex) {
+	if (!action) action = "edit";
+	content["orderId"] = "<?=$this->order->orderId?>";
+	content["result[labTestId]"] = "<?=$this->form->labTestId->getValue()?>";
+	content["result[identifier]"] = "<?=$this->order->labTest?>";
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/orders.raw/process-"+action+"-lab-result",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data.id) {
+				if (content["result[labResultId]"] == "0") {
+					labResultsGrid.setRowId(labResultsGrid.getRowIndex("trailingId"),data.id);
+					if (cellIndex != indexLRDescription) {
+						labResultsGrid.cells(data.id,indexLRDescription).setValue(data.data[indexLRDescription]);
+					}
+					if (cellIndex != indexLRDate) {
+						labResultsGrid.cells(data.id,indexLRDate).setValue(data.data[indexLRDate]);
+					}
+					labResultsAddTrailingRow();
+				}
+				labResultsGrid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+function labResultsProcessDelete(rowId) {
+	if (!rowId) rowId = labResultsGrid.getSelectedRowId();
+	if (!rowId || !confirm("Are you sure you want to delete selected item?")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/orders.raw/process-delete-lab-result",
+		handleAs: "json",
+		content: {
+			"resultId": rowId,
+		},
+		load: function (data) {
+			labResultsGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+function labResultsAddTrailingRow() {
+	// create trailing row
+	labResultsGrid.addRow("trailingId","");
+}
+
+function labResultsGridReload() {
+	labResultsGrid.clearAll();
+	labResultsGrid.load("<?=$this->baseUrl?>/orders.raw/list-lab-results.json?orderId=<?=$this->order->orderId?>",labResultsAddTrailingRow,"json");
+}
+labResultsGridReload();
+</script>

@@ -1,0 +1,19 @@
+<div style="float:left;">
+	<div style="margin-left:10px;width:375px;"
+	<div style="width:375px;margin-left:auto;margin-right:auto;">
+	<strong><?=__("Locations")?>:</strong>
+	<select id="locationSelect" multiple="multiple" style="width:375px; height:100px;">
+	<?foreach($this->locations as $count => $location):?>
+        	<option value="<?=$location['locationId']?>" <?if ($count == 0):?>selected="selected"<?endif;?>"><?=$location['displayName']?></option>
+	<?endforeach;?>
+	</select>
+	</div>
+<br />
+<br style="clear:left"/>
+<div style="text-align:right;margin-top:10px;">
+	<input type="button" value="<?=__("Cancel")?>"/>
+	<input type="button" value="<?=__("Select")?>" onClick="cprsSelectLocation(dojo.byId('locationSelect').options[dojo.byId('locationSelect').selectedIndex].value,dhxWins.window('windowSelectLocationId'));" />
+	<!--<input type="submit" />-->
+</div>
+</form>
+</div>

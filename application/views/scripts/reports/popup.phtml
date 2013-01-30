@@ -1,0 +1,120 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+</style>
+<div id="reportsResultsGridId" style="height:520px;width:100%;overflow:auto;"></div>
+<div style="margin-top:4px;">
+	<?=$this->formButton('print',__('Print'),array('onClick'=>'printPopupReport()','style'=>'margin-left:10px;'))?>
+</div>
+<iframe id="iFramePrint" style="width:0px;height:0px;margin:0;padding:0;position:relative;float:top;border:none;"></iframe>
+<script>
+var popupReportGrid = new dhtmlXGridObject("reportsResultsGridId");
+popupReportGrid.setImagePath(globalBaseUrl+"/img/");
+popupReportGrid.enableDynamicLoading(true);
+
+function printPopupReport() {
+	var rows = popupReportGrid.getRowsNum();
+	var cols = popupReportGrid.getColumnsNum();
+	if (rows <= 0) {
+		alert("<?=__('No report to print')?>");
+		return;
+	}
+
+	//var body = document.getElementsByTagName("body")[0];
+	var tbl = document.createElement("table");
+	var tblBody = document.createElement("tbody");
+
+	var tr = document.createElement("tr");
+	for (var col = 0; col < cols; col++) {
+		var cell = document.createElement("th");
+		var cellText = document.createTextNode(popupReportGrid.getColumnLabel(col));
+		cell.appendChild(cellText);
+		tr.appendChild(cell);
+	}
+	tblBody.appendChild(tr);
+
+	for (var row = 0; row < rows; row++) {
+		var tr = document.createElement("tr");
+		for (var col = 0; col < cols; col++) {
+			var cell = document.createElement("td");
+			var cellText = document.createTextNode(popupReportGrid.cells2(row,col).getValue() + "");
+			cell.appendChild(cellText);
+			tr.appendChild(cell);
+		}
+		tblBody.appendChild(tr);
+	}
+
+	tbl.appendChild(tblBody);
+	tbl.setAttribute("cellpadding","2");
+	//tbl.setAttribute("cellspacing","2");
+
+	var div = document.createElement("div");
+	div.appendChild(tbl);
+	dojo.byId("iFramePrint").contentWindow.document.body.innerHTML = div.innerHTML;
+	dojo.byId("iFramePrint").contentWindow.focus();
+	dojo.byId("iFramePrint").contentWindow.print();
+}
+
+function popupReportGetResults(viewId,queryId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports.raw/process-query",
+		content: {
+			"queryId": queryId,
+			"viewId": viewId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			return popupReportBuildResults(data);
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function popupReportBuildResults(query) {
+	if (query.error) {
+		alert(query.error);
+		return;
+	}
+	var headers = [];
+	var widths = ["*"];
+	var colTypes = ["ro"];
+	var colSorts = ["str"];
+	for (var i in query.headers) {
+		var j = query.headers[i];
+		if (!query.reportQuery.customColNames) {
+			var name = j.replace(/_/," ");
+			var prettyName = name.replace(/([A-Z])(?![A-Z])/," $1");
+			prettyName = prettyName.replace(/^(.)|\s(.)/g,function ($1) {
+				return $1.toUpperCase();
+			});
+			j = prettyName;
+		}
+		headers.push(j);
+		widths.push("*");
+		colTypes.push("ro");
+		colSorts.push("str");
+	}
+	popupReportGrid.setHeader(headers.join(","));
+	popupReportGrid.setInitWidths(widths.join(","));
+	popupReportGrid.setColTypes(colTypes.join(","));
+	popupReportGrid.setColSorting(colSorts.join(","));
+	popupReportGrid.setSkin("xp");
+	popupReportGrid.init();
+	popupReportGrid.parse({"rows":query.rows},"json");
+
+	popupReportGrid.userScrollTop = 0;
+	popupReportGrid.userOffset = 0;
+	popupReportGrid.userHasRows = true;
+	popupReportGrid.displayName = query.reportQuery.displayName;
+	dhtmlxEvent(popupReportGrid.entBox,"contextmenu",function(e){
+		(e||event).cancelBubble=true;
+		return false;
+	});
+}
+popupReportGetResults("<?=(int)$this->viewId?>","<?=(int)$this->queryId?>");
+</script>

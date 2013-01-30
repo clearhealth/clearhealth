@@ -1,0 +1,64 @@
+<div style="float:left;">
+	<form id="usersPreferencesForm" name="usersPreferencesForm" method="post" action="<?=$this->baseUrl?>/users.raw/process-preferences">
+	<div class="formRow">
+		<dt><label for="usersPreferences-tabs" class="optional"><?=__('Visible Tabs')?></label></dt>
+		<?foreach ($this->tabs as $key=>$value):?>
+		<div style="float:left;margin-right:10px;"><input type="checkbox" name="usersPreferences[tabs][]" id="usersPreferences-tabs" value="<?=$key?>" <?=isset($this->data['tabs'][$key])?'checked="checked"':''?> /> <?=$value?></div>
+		<?endforeach;?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label for="usersPreferences-defaultTab" class="optional"><?=__('Default Tab')?></label></dt>
+		<?=$this->formSelect('usersPreferences[defaultTab]',$this->data['defaultTab'],array('id'=>'usersPreferences-defaultTab','onChange'=>'usersPreferencesDefaultTabOnChanged(this.value)','style'=>'width:250px;'),$this->tabs)?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label for="usersPreferences-currentLocation" class="optional"><?=__('Current Location')?></label></dt>
+		<?=$this->formSelect('usersPreferences[currentLocation]',$this->data['currentLocation'],array('id'=>'usersPreferences-currentLocation','style'=>'width:250px;'),$this->facilities)?>
+	</div>
+	<br style="clear:left"/>
+	<div style="text-align:center;margin-top:10px;">
+		<?=$this->formButton('ok',__('OK'),array('onClick'=>'usersPreferencesFormSubmit()'))?>
+		<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'closeThisForm()'))?>
+	</div>
+	</form>
+</div>
+<script>
+function usersPreferencesFormSubmit() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/users.raw/process-preferences",
+		handleAs: "json",
+		form: "usersPreferencesForm",
+		load: function (data) {
+			if (data == true) {
+				//alert("<?=('Record sucessfully saved')?>");
+				closeThisForm();
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+function closeThisForm() {
+	dhxWins.window("winMyPreferencesId").close();
+}
+function usersPreferencesDefaultTabOnChanged(value) {
+	var tabsSelect = document.getElementsByName("usersPreferences[tabs][]");
+	for (var i = 0; i < tabsSelect.length; i++) {
+		if (tabsSelect[i].value == value) {
+			tabsSelect[i].checked = true;
+			break;
+		}
+	}
+}
+var defaultTabSelect = dojo.byId("usersPreferences-defaultTab");
+if (defaultTabSelect.selectedIndex >= 0) {
+	var value = defaultTabSelect.options[defaultTabSelect.selectedIndex].value;
+	usersPreferencesDefaultTabOnChanged(value);
+}
+</script>

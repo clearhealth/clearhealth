@@ -1,0 +1,339 @@
+<div id="immunizationsContainer" style="width:100%;height:300px;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="immunizations-section"><?=__("Immunization Section")?></label></dt>
+			<div id="immunizationsSectionListContainer" style="float:left;width:250px;height:100px;"></div><br />
+			<input type="button" value="<?=__('Other Immunization...')?>" style="float:right;" onClick="openImmunizationsSelectionListWindow()" />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="immunizations-section"><?=__("Section Name")?></label></dt>
+			<div id="immunizationsSectionNameListContainer" style="float:left;width:480px;height:120px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div id="immunizationsListContainer" style="float:left;width:740px;height:350px"></div>
+	</div>
+</div>
+<script>
+function openImmunizationsBulkEntryWindow() {
+	var params = [];
+	var winImmunizationsBulkEntry = globalCreateWindow("windowImmunizationsBulkEntryId",params,"<?=$this->baseUrl?>/immunizations.raw/bulk-entry","<?=__('Make Immunizations Bulk Entry')?>",900,600);
+}
+
+function openImmunizationsSelectionListWindow() {
+	var params = [];
+	params.push("id=<?=$this->othersId?>");
+	params.push("jsCallback=selectedImmunization");
+	var winImmunizationsSelectionList = globalCreateWindow("windowImmunizationsSelectionListId",params,"<?=$this->baseUrl?>/immunizations.raw/selection-list","<?=__('Immunization Selection List')?>",400,400);
+}
+
+function selectedImmunization(code,description) {
+	/*if (immunizationsListGrid.doesRowExist(code)) {
+		alert("<?=__('Selected code already exists: ')?>"+code);
+		return;
+	}*/
+	description += ""; // forced it to be string
+	description = description.replace(/,/g,"&#44;"); // replace comma with an HTML equivalent value
+	immunizationSave(null,code,description);
+}
+
+var immunizationsSectionListGrid = new dhtmlXGridObject("immunizationsSectionListContainer");
+immunizationsSectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+immunizationsSectionListGrid.setHeader("");
+immunizationsSectionListGrid.setNoHeader(true);
+immunizationsSectionListGrid.setInitWidths("*");
+immunizationsSectionListGrid.setSkin("xp");
+immunizationsSectionListGrid.init();
+<?foreach ($this->sections as $key=>$value):?>
+immunizationsSectionListGrid.addRow("<?=$key?>","");
+immunizationsSectionListGrid.cells("<?=$key?>",0).setValue("<?=$value?>");
+<?endforeach;?>
+//immunizationsSectionListGrid.load("<?=$this->baseUrl?>/visit-details.raw/immunizations.json","json");
+immunizationsSectionListGrid.attachEvent("onRowSelect",immunizationsSectionListOnRowSelected);
+function immunizationsSectionListOnRowSelected(rowId,cellIndex) {
+	if (rowId == undefined) {
+		rowId = immunizationsSectionListGrid.getSelectedRowId();
+	}
+	if (cellIndex == undefined) {
+		cellIndex = immunizationsSectionListGrid.getSelectedCellIndex();
+	}
+	immunizationsSectionNameListGrid.clearAll();
+	immunizationsSectionNameListGrid.load("<?=$this->baseUrl?>/immunizations.raw/list-immunization-section-name?sectionId="+rowId,immunizationsOnSectionNameLoaded,"json");
+}
+
+function immunizationsOnSectionNameLoaded() {
+	immunizationsListGrid.forEachRow(function(rowId){
+		if (immunizationsSectionNameListGrid.doesRowExist(rowId)){
+			immunizationsSectionNameListGrid.cells(rowId,0).setChecked(true);
+			immunizationsSectionNameListGrid.cells(rowId,0).setDisabled(true);
+		}
+	});
+	//immunizationsSectionNameListGrid.forEachRow(function(rowId){ immunizationsSectionNameListGrid.cells(rowId,0).setDisabled(true); });
+}
+
+var immunizationsSectionNameListGrid = new dhtmlXGridObject("immunizationsSectionNameListContainer");
+immunizationsSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+immunizationsSectionNameListGrid.setHeader(",,");
+immunizationsSectionNameListGrid.setNoHeader(true);
+immunizationsSectionNameListGrid.setInitWidths("20,*,120");
+immunizationsSectionNameListGrid.setColTypes("ch,ro,ro");
+immunizationsSectionNameListGrid.setColAlign("right,left,left");
+immunizationsSectionNameListGrid.setSkin("xp");
+immunizationsSectionNameListGrid.init();
+immunizationsSectionNameListGrid.attachEvent("onCheck",immunizationsSectionNameOnChecked);
+immunizationsSectionNameListGrid.attachEvent("onRowSelect",immunizationsSectionNameListOnRowSelected);
+function immunizationsSectionNameListOnRowSelected(rowId,cellIndex) {
+	var id = rowId.split("_");
+}
+
+function immunizationsSectionNameOnChecked(rowId,cellIndex,state) {
+	//immunizationsSectionNameListGrid.cells(rowId,0).setDisabled(true);
+	immunizationsSectionNameListGrid.selectRow(immunizationsSectionNameListGrid.getRowIndex(rowId),true);
+	if (state) { // add to immunizations list
+		immunizationSave(null,rowId,immunizationsSectionNameListGrid.cells(rowId,1).getValue().replace(/,/g, "&#44;"));
+	}
+	else { // remove from immunizations list
+		//immunizationRemove(rowId);
+	}
+}
+
+var immunizationsListGrid = new dhtmlXGridObject("immunizationsListContainer");
+immunizationsListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+immunizationsListGrid.setHeader("<?=__('Date')?>{#special},<?=__('Lot')?>,<?=__('Amount')?>,<?=__('Units')?>,<?=__('Route')?>,<?=__('Site')?>,<?=__('Series')?>,<?=__('Reaction')?>,<?=__('Selected Immunizations')?>,<?=__('PR')?>,<?=__('Comment')?>");
+immunizationsListGrid._in_header_special=function(tag,index,data){ 
+	tag.innerHTML = data[0];
+	tag.title = "Format: yyyy-mm-dd H:i"; 
+}
+// defined the index for easy re-indexing in the future
+var indexPIMDate = 0;
+var indexPIMLot = 1;
+var indexPIMAmount = 2;
+var indexPIMUnits = 3;
+var indexPIMRoute = 4;
+var indexPIMSite = 5;
+var indexPIMSeries = 6;
+var indexPIMReaction = 7;
+var indexPIMImmunization = 8;
+var indexPIMPR = 9;
+var indexPIMComment = 10;
+
+<?$lotColType = ($this->useImmunizationInventory)?'coro':'ed'?>
+immunizationsListGrid.setInitWidths("100,45,60,45,80,60,80,85,*,25,*");
+immunizationsListGrid.setColTypes("ed,<?=$lotColType?>,ed,ed,coro,coro,coro,coro,ro,ch,ed");
+immunizationsListGrid._dtmask = "%Y-%m-%d"; // hacks for calendar date format
+immunizationsListGrid.setSkin("xp");
+immunizationsListGrid.attachEvent("onEditCell",immunizationsListGridOnEditCell);
+immunizationsListGrid.attachEvent("onCheck",immunizationsListGridOnChecked);
+immunizationsListGrid.attachEvent("onRowSelect",immunizationsListGridOnRowSelected);
+immunizationsListGrid.enableMultiselect(true);
+
+var immunizationsListMenu = new dhtmlXMenuObject(null,"standard");
+immunizationsListMenu.setImagePath("<?=$this->baseUrl?>/img/");
+immunizationsListMenu.renderAsContextMenu();
+immunizationsListMenu.setOpenMode("web");
+immunizationsListMenu.loadXML("<?=$this->baseUrl?>/immunizations.raw/immunization-context-menu");
+immunizationsListMenu.attachEvent("onClick",immunizationsListMenuOnClicked);
+function immunizationsListMenuOnClicked(id) {
+	switch (id) {
+		case "bulkEntry":
+			openImmunizationsBulkEntryWindow();
+			break;
+		case "remove":
+			immunizationRemove();
+			break;
+	}
+}
+immunizationsListGrid.enableContextMenu(immunizationsListMenu);
+dhtmlxEvent(immunizationsListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+immunizationsListMenu.attachEvent("onContextMenu",function(id){
+	immunizationsListMenu.hideItem("remove");
+	var rowId = immunizationsListGrid.getSelectedRowId();
+	if (rowId != null) {
+		immunizationsListMenu.showItem("remove");
+	}
+});
+immunizationsListGrid.hdr.id = immunizationsListGrid.uid();
+immunizationsListMenu.addContextZone(immunizationsListGrid.hdr.id);
+
+
+immunizationsListGrid.getCombo(indexPIMRoute).put("","");
+<?foreach ($this->routes as $key=>$value):?>
+immunizationsListGrid.getCombo(indexPIMRoute).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+immunizationsListGrid.getCombo(indexPIMSite).put("","");
+<?foreach ($this->sites as $key=>$value):?>
+immunizationsListGrid.getCombo(indexPIMSite).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+immunizationsListGrid.getCombo(indexPIMSeries).put("","");
+<?foreach ($this->series as $key=>$value):?>
+immunizationsListGrid.getCombo(indexPIMSeries).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+immunizationsListGrid.getCombo(indexPIMReaction).put("","");
+<?foreach ($this->reactions as $key=>$value):?>
+immunizationsListGrid.getCombo(indexPIMReaction).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+immunizationsListGrid.init();
+function immunizationsListGridReload() {
+	immunizationsListGrid.clearAll();
+	immunizationsListGrid.load("<?=$this->baseUrl?>/immunizations.raw/list-patient-immunizations.json?patientId="+mainController.getActivePatient(),function(){
+	<?if($this->useImmunizationInventory):?>
+		immunizationsListGrid.getCombo(indexPIMLot).put("","");
+		immunizationsListGrid.forEachRow(function(rowId){
+			var lotNumbers = this.getUserData(rowId,"lotNumbers");
+			for (var i in lotNumbers) {
+				if (immunizationsListGrid.cells(rowId,indexPIMLot).getValue() == i) {
+					immunizationsListGrid.cells(rowId,indexPIMLot).setValue(lotNumbers[i]);
+					immunizationsListGrid.setUserData(rowId,"lotValue",i);
+					break;
+				}
+			}
+		});
+	<?endif;?>
+	},"json");
+}
+immunizationsListGridReload();
+
+function immunizationsListGridOnRowSelected(rowId,cellIndex) {
+}
+
+function immunizationsListGridOnChecked(rowId,cellIndex,state) {
+	immunizationsListGridOnEditCell(2,rowId,cellIndex,state,!state);
+}
+
+function immunizationsListGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	<?if($this->useImmunizationInventory):?>
+	if (stage == 0) {
+		immunizationsListGrid.getCombo(indexPIMLot).clear();
+		immunizationsListGrid.getCombo(indexPIMLot).put("","");
+		var lotNumbers = this.getUserData(rowId,"lotNumbers");
+		if (typeof lotNumbers == "object") {
+			for (var i in lotNumbers) {
+				immunizationsListGrid.getCombo(indexPIMLot).put(i,lotNumbers[i]);
+			}
+		}
+		var lotNumber = immunizationsListGrid.getUserData(rowId,"lotValue");
+		if (lotNumber) {
+			immunizationsListGrid.cells(rowId,indexPIMLot).setValue(lotNumber);
+			immunizationsListGrid.setUserData(rowId,"lotValue","");
+		}
+	}
+	<?endif;?>
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexPIMDate:
+			case indexPIMLot:
+			case indexPIMAmount:
+			case indexPIMUnits:
+			case indexPIMRoute:
+			case indexPIMSite:
+			case indexPIMSeries:
+			case indexPIMReaction:
+			case indexPIMImmunization:
+			case indexPIMPR:
+			case indexPIMComment:
+				immunizationSave(rowId,null,null,function(data){
+					var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+					immunizationsListGrid.cells(rowId,cellIndex).setValue(value);
+				});
+				break;
+		}
+	}
+	return true;
+}
+
+function immunizationRemove(rowId) {
+	if (rowId == undefined) {
+		rowId = immunizationsListGrid.getSelectedRowId();
+	}
+	if (rowId == null || !confirm("<?=__('Are you sure you want to delete selected item(s).')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/immunizations.raw/process-delete-immunization",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			immunizationsListGridReload();
+			if (immunizationsSectionNameListGrid.doesRowExist(rowId)){
+				immunizationsSectionNameListGrid.cells(rowId,0).setChecked(false);
+				immunizationsSectionNameListGrid.cells(rowId,0).setDisabled(false);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function immunizationSave(rowId,code,description,callback) {
+	if (rowId == null) {
+		var immunizationContent = {
+			"immunizations[patientId]": mainController.getActivePatient(),
+			"immunizations[code]": code,
+			"immunizations[immunization]": description,
+		};
+	}
+	else {
+		var immunizationContent = {
+			"immunizations[patientImmunizationId]": rowId,
+			"immunizations[patientId]": mainController.getActivePatient(),
+			"immunizations[dateAdministered]": immunizationsListGrid.cells(rowId,indexPIMDate).getValue(),
+			"immunizations[lot]": immunizationsListGrid.cells(rowId,indexPIMLot).getValue(),
+			"immunizations[amount]": immunizationsListGrid.cells(rowId,indexPIMAmount).getValue(),
+			"immunizations[units]": immunizationsListGrid.cells(rowId,indexPIMUnits).getValue(),
+			"immunizations[route]": immunizationsListGrid.cells(rowId,indexPIMRoute).getValue(),
+			"immunizations[site]": immunizationsListGrid.cells(rowId,indexPIMSite).getValue(),
+			"immunizations[series]": immunizationsListGrid.cells(rowId,indexPIMSeries).getValue(),
+			"immunizations[reaction]": immunizationsListGrid.cells(rowId,indexPIMReaction).getValue(),
+			"immunizations[immunization]": immunizationsListGrid.cells(rowId,indexPIMImmunization).getValue().replace(/\n/g," "),
+			"immunizations[patientReported]": immunizationsListGrid.cells(rowId,indexPIMPR).getValue(),
+			"immunizations[comment]": immunizationsListGrid.cells(rowId,indexPIMComment).getValue(),
+		};
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/immunizations.raw/process-edit-immunization",
+		handleAs: "json",
+		content: immunizationContent,
+		load: function (data) {
+			if (!data.id) return;
+			if (typeof callback == "function") {
+				callback(data);
+				return;
+			}
+			immunizationsListGrid.renderRowData(data);
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error ("Error: ", error);
+		}
+	});
+
+}
+
+function immunizationsOnChecked(rowId,cellIndex,state) {
+	immunizationsListGrid.selectRow(immunizationsListGrid.getRowIndex(rowId),true);
+}
+immunizationsListGrid.attachEvent("onCheck",immunizationsOnChecked);
+
+function immunizationsOnRowSelected(rowId,cellIndex) {
+	if (immunizationsListGrid.cells(rowId,0).cell.innerHTML == "") {
+		var isPatientReported = false;
+		if (immunizationsListGrid.cells(rowId,7).getValue() == '1') {
+			isPatientReported = true;
+		}
+	}
+}
+immunizationsListGrid.attachEvent("onRowSelect",immunizationsOnRowSelected);
+</script>

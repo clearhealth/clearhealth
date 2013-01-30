@@ -1,0 +1,58 @@
+<?=$this->form->renderOpen()?>
+<?=$this->form->orderText->renderLabel()?>
+<?=$this->form->orderTextInput('FormTextarea',array('style'=>'width:330px;height:80px;'))?>
+<?=$this->form->textOnlyType->renderLabel()?>
+<?$textOnlyTypes = array(''=>''); foreach (Enumeration::getEnumArray(Order::TEXT_ONLY_TYPE_ENUM_NAME,'key') as $key=>$value) $textOnlyTypes[$key] = $value;?>
+<?=$this->form->textOnlyTypeInput('FormSelect',array('options'=>$textOnlyTypes,'style'=>'width:330px;'))?>
+<div>
+<div style="float:left;">
+	<div class="formRow">
+	<?=$this->form->dateStart->renderLabel()?>
+	<?=$this->form->dateStartInput()?>
+	</div>
+</div>
+<div style="float:left;">
+	<div class="formRow">
+	<?=$this->form->dateStop->renderLabel()?>
+	<?=$this->form->dateStopInput()?>
+	</div>
+</div>
+</div>
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:8px;">
+	<?=$this->form->orderIdInput('FormHidden')?>
+	<?=$this->form->patientIdInput('FormHidden')?>
+	<?=$this->form->okInput('FormButton')?>
+	<?=$this->formButton('cancel',__('Cancel'),array('id'=>'cancel','onclick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?>
+</div>
+
+<?=$this->form->renderClose()?>
+
+<script>
+
+function preSubmit<?=$this->form->getId()?>() {
+	// do before form submitted
+	var orderText = dojo.byId("<?=$this->form->orderText->getId()?>");
+	var dateStart = dojo.byId("<?=$this->form->dateStart->getId()?>");
+	var dateStop = dojo.byId("<?=$this->form->dateStop->getId()?>");
+	var ret = true;
+	if (orderText.value.length == 0 || 
+	    dateStart.value.length == 0 || 
+	    dateStop.value.length == 0) {
+		alert("<?=__('Please fill all the fields.')?>");
+		ret = false;
+	}
+	else if (dateStart.value > dateStop.value) {
+		alert("<?=__('Date start must be less than date stop')?>");
+		ret = false;
+	}
+	return ret;
+}
+
+function postSubmit<?=$this->form->getId()?>() {
+	orderListGridReload();
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+</script>

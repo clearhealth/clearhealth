@@ -1,0 +1,297 @@
+<?=$this->form->renderOpen()?>
+<fieldset><legend id="ruleLegendId"><?=__('Add Rule')?></legend>
+	<div class="formRow" style="height:80px;">
+		<?=$this->form->type->renderLabel()?>
+		<?$types = array(''=>''); foreach (ClaimRule::$_types as $key=>$value) $types[$key] = $value;?>
+		<?=$this->form->typeInput('FormSelect',array('style'=>'width:130px;margin-bottom:20px;','onChange'=>'claimRuleTypeOnChanged(this)','options'=>$types))?>
+		<br/>
+		<?=$this->form->codeInput('FormHidden')?>
+		<?=$this->form->operatorInput('FormSelect',array('style'=>'width:60px;display:none;','options'=>ClaimRule::$_operators))?>
+		<div id="divId<?=ClaimRule::TYPE_PROCEDURE?>" style="display:none;">
+			<?=$this->formText('value'.ClaimRule::TYPE_PROCEDURE,'',array('id'=>'value'.ClaimRule::TYPE_PROCEDURE,'style'=>'width:130px;','readonly'=>'readonly'))?>
+			<?=$this->formButton('browseProcedure','...',array('onClick'=>'procedureLookupWindow()'))?>
+		</div>
+		<div id="divId<?=ClaimRule::TYPE_DIAGNOSIS?>" style="display:none;">
+			<?=$this->formText('value'.ClaimRule::TYPE_DIAGNOSIS,'',array('id'=>'value'.ClaimRule::TYPE_DIAGNOSIS,'style'=>'width:130px;','readonly'=>'readonly'))?>
+			<?=$this->formButton('browseDiagnosis','...',array('onClick'=>'diagnosisLookupWindow()'))?>
+		</div>
+		<div id="divId<?=ClaimRule::TYPE_INSURANCE_PROGRAM?>" style="display:none;">
+			<?=$this->formSelect('value'.ClaimRule::TYPE_INSURANCE_PROGRAM,'',array('id'=>'value'.ClaimRule::TYPE_INSURANCE_PROGRAM,'style'=>'width:130px;'),$this->insurancePrograms)?>
+		</div>
+		<div id="divId<?=ClaimRule::TYPE_MODIFIER?>" style="display:none;">
+			<?=$this->formSelect('value'.ClaimRule::TYPE_MODIFIER,'',array('id'=>'value'.ClaimRule::TYPE_MODIFIER,'style'=>'width:130px;'),$this->modifiers)?>
+		</div>
+		<div id="divId<?=ClaimRule::TYPE_LINE_AMOUNT?>" style="display:none;">
+			<?=$this->formNumberSpinner('value'.ClaimRule::TYPE_LINE_AMOUNT,0,array('id'=>'value'.ClaimRule::TYPE_LINE_AMOUNT,'places'=>2))?>
+		</div>
+		<div id="divId<?=ClaimRule::TYPE_CLAIM_TOTAL?>" style="display:none;">
+			<?=$this->formNumberSpinner('value'.ClaimRule::TYPE_CLAIM_TOTAL,0,array('id'=>'value'.ClaimRule::TYPE_CLAIM_TOTAL,'places'=>2))?>
+		</div>
+		<div id="buttonsId" style="display:none;">
+			<?=$this->form->operandInput('FormSelect',array('style'=>'width:60px;','options'=>ClaimRule::$_operands))?>
+			<?=$this->formButton('addToList',__('Add to list'),array('id'=>'addToList','onClick'=>'claimRuleAdd()'))?>
+			<?=$this->formButton('removeFromList',__('Remove from list'),array('id'=>'removeFromList','onClick'=>'claimRuleRemove()','style'=>'display:none;'))?>
+		</div>
+	</div>
+</fieldset>
+<?=$this->form->renderClose()?>
+
+<fieldset><legend><?=__('Rule List')?>  [ <a href="javascript:claimRuleNew()" title="<?=__('New Rule"')?>><?=__('New Rule')?></a> ]</legend>
+	<div class="formRow" style="padding-top:4px;">
+		<div id="claimRuleGridId" style="width:auto;height:200px;"></div>
+	</div>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->title->renderLabel()?>
+		<?=$this->form->titleInput('FormText',array('style'=>'width:500px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->event->renderLabel()?>
+		<?=$this->formRadio($this->form->event->getFullyQualifiedName(),$this->form->event->getValue(),array('id'=>$this->form->event->getId(),'label_style'=>'display:inline;'),ClaimRule::$_events,'')?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->message->renderLabel()?>
+		<?=$this->form->messageInput('FormTextarea',array('style'=>'width:500px;height:50px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->formButton('saveRule',__('Save Rule'),array('onClick'=>'claimRuleSave()'))?>
+		<?=$this->formButton('cance',__('Cancel'),array('onClick'=>'dhxWins.window("'.$this->form->getWindow().'").close()'))?>
+	</div>
+</fieldset>
+
+<script>
+var globalClaimRuleId = null;
+
+function claimRuleSave() {
+	var title = dojo.byId("<?=$this->form->title->getId()?>").value;
+	var message = dojo.byId("<?=$this->form->message->getId()?>").value;
+	var error = null;
+	if (claimRuleGrid.getRowsNum() <= 0) error = "Rule list is empty";
+	else if (title.length <= 0) error = "Title is required";
+	else if (message.length <= 0) error = "Error Message is required";
+	if (error != null) {
+		alert(error);
+		return;
+	}
+	var event = "";
+	var evtObj = document.getElementsByName("<?=$this->form->event->getFullyQualifiedName()?>");
+	for (var i = 0; i < evtObj.length; i++) {
+		if (evtObj[i].checked) {
+			event = evtObj[i].value;
+			break;
+		}
+	}
+	var content = {
+		"title":title,
+		"message":message,
+		"groupId":"<?=$this->form->groupId->getValue()?>",
+		"event":event,
+	};
+	claimRuleGrid.forEachRow(function(rowId){
+		content["rules["+rowId+"][type]"] = this.getUserData(rowId,"type");
+		content["rules["+rowId+"][operator]"] = this.getUserData(rowId,"operator");
+		content["rules["+rowId+"][code]"] = this.getUserData(rowId,"code");
+		content["rules["+rowId+"][value]"] = this.getUserData(rowId,"value");
+		content["rules["+rowId+"][operand]"] = this.getUserData(rowId,"operand");
+		content["rules["+rowId+"][rowOrder]"] = parseInt(this.getRowIndex(rowId)) + 1;
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/claim-rules.raw/process-<?=$this->action?>",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			claimRulesGridReload();
+			dhxWins.window("<?=$this->form->getWindow()?>").close();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+function claimRuleTypeOnChanged(obj) {
+	if (!obj) obj = dojo.byId("<?=$this->form->type->getId()?>");
+	if (obj.options.length <= 0 || obj.selectedIndex < 0) return;
+	var value = obj.options[obj.selectedIndex].value;
+	var divObj = dojo.byId("divId"+value);
+	for (var i = 0; i < obj.options.length; i++) {
+		var tmpObj = dojo.byId("divId"+obj.options[i].value);
+		if (tmpObj) tmpObj.style.display = "none";
+	}
+	if (!divObj) { // hide
+		dojo.byId("<?=$this->form->operator->getId()?>").style.display = "none";
+		dojo.byId("buttonsId").style.display = "none";
+	}
+	else { // show
+		dojo.byId("<?=$this->form->operator->getId()?>").style.display = "inline";
+		dojo.byId("buttonsId").style.display = "inline";
+		divObj.style.display = "inline";
+	}
+}
+
+function claimRuleAdd() {
+	var rowId = globalClaimRuleId;
+	if (!rowId) rowId = claimRuleGrid.uid();
+	if (!claimRuleGrid.doesRowExist(rowId)) claimRuleGrid.addRow(rowId,"");
+	var typeObj = dojo.byId("<?=$this->form->type->getId()?>");
+	if (typeObj.options.length == 0) return;
+
+	var typeSel = (typeObj.selectedIndex < 0)? {"value":"","text":""} : typeObj.options[typeObj.selectedIndex];
+	var valObj = dojo.byId("value"+typeSel.value);
+	var value = "";
+	var text = "";
+	switch (valObj.tagName) {
+		case "INPUT":
+			value = valObj.value;
+			break;
+		case "SELECT":
+			value = valObj.options[valObj.selectedIndex].value;
+			text = valObj.options[valObj.selectedIndex].text;
+			break;
+	}
+	var code = "";
+	if (typeSel.value == "<?=ClaimRule::TYPE_PROCEDURE?>" ||
+	    typeSel.value == "<?=ClaimRule::TYPE_DIAGNOSIS?>") {
+		code = dojo.byId("<?=$this->form->code->getId()?>").value;
+	}
+	var operatorObj = dojo.byId("<?=$this->form->operator->getId()?>");
+	var operatorSel = (operatorObj.selectedIndex < 0)? {"value":"","text":""} : operatorObj.options[operatorObj.selectedIndex];
+	var operandObj = dojo.byId("<?=$this->form->operand->getId()?>");
+	var operandSel = (operandObj.selectedIndex < 0)? {"value":"","text":""} : operandObj.options[operandObj.selectedIndex];
+
+	claimRuleGrid.cells(rowId,indexCRType).setValue(typeSel.text);
+	claimRuleGrid.cells(rowId,indexCROperator).setValue(operatorSel.text);
+	claimRuleGrid.cells(rowId,indexCRValue).setValue((text == "")? value : text);
+	claimRuleGrid.cells(rowId,indexCROperand).setValue(operandSel.text);
+
+	claimRuleGrid.setUserData(rowId,"type",typeSel.value);
+	claimRuleGrid.setUserData(rowId,"operator",operatorSel.value);
+	claimRuleGrid.setUserData(rowId,"code",code);
+	claimRuleGrid.setUserData(rowId,"value",value);
+	claimRuleGrid.setUserData(rowId,"operand",operandSel.value);
+
+	claimRuleNew();
+}
+
+function claimRuleGetSelectedBox(id) {
+	var ret = {"key":"","value":""};
+	var obj = dojo.byId(id);
+	if (!obj || !obj.options) return ret;
+	if (obj.selectedIndex >= 0) {
+		ret.key = obj.options[obj.selectedIndex].value;
+		ret.value = obj.options[obj.selectedIndex].text;
+	}
+	return ret;
+}
+
+function claimRuleGetSelectBox(id,key) {
+	var ret = "";
+	var obj = dojo.byId(id);
+	if (!obj || !obj.options) return ret;
+	for (var i = 0; i < obj.options.length; i++) {
+		if (obj.options[i].value == key) {
+			ret = obj.options[i].text;
+			break;
+		}
+	}
+	return ret;
+}
+
+function claimRuleSetSelectBox(id,key) {
+	var obj = dojo.byId(id);
+	if (!obj || !obj.options) return ret;
+	for (var i = 0; i < obj.options.length; i++) {
+		if (obj.options[i].value == key) {
+			obj.selectedIndex = i;
+			break;
+		}
+	}
+}
+
+function claimRuleNew() {
+	dojo.byId("<?=$this->form->getId()?>").reset();
+	claimRuleTypeOnChanged();
+	dojo.byId("removeFromList").style.display = "none";
+	dojo.byId("addToList").innerHTML = "<?=__('Add to list')?>";
+	dojo.byId("ruleLegendId").innerHTML = "<?=__('Add Rule')?>";
+	globalClaimRuleId = null;
+}
+
+function claimRuleRemove() {
+	var rowId = claimRuleGrid.getSelectedRowId();
+	claimRuleGrid.deleteRow(rowId);
+	claimRuleNew();
+}
+
+function claimRuleEdit(rowId) {
+	dojo.byId("removeFromList").style.display = "inline";
+	dojo.byId("addToList").innerHTML = "<?=__('Update list')?>";
+	dojo.byId("ruleLegendId").innerHTML = "<?=__('Edit Rule')?>";
+	globalClaimRuleId = rowId;
+
+	var type = claimRuleGrid.getUserData(rowId,"type");
+	claimRuleSetSelectBox("<?=$this->form->type->getId()?>",type);
+	claimRuleTypeOnChanged();
+	claimRuleSetSelectBox("<?=$this->form->operator->getId()?>",claimRuleGrid.getUserData(rowId,"operator"));
+	dojo.byId("<?=$this->form->code->getId()?>").value = claimRuleGrid.getUserData(rowId,"code");
+	claimRuleSetSelectBox("<?=$this->form->operand->getId()?>",claimRuleGrid.getUserData(rowId,"operand"));
+	dojo.byId("value"+type).value = claimRuleGrid.getUserData(rowId,"value");
+}
+
+var claimRuleGrid = new dhtmlXGridObject("claimRuleGridId");
+claimRuleGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexCRType = 0;
+var indexCROperator = 1;
+var indexCRValue = 2;
+var indexCROperand = 3;
+claimRuleGrid.setHeader("<?=__('Type')?>,<?=__('Operator')?>,<?=__('Value')?>,<?=__('Operand')?>");
+claimRuleGrid.setColTypes("ro,ro,ro,ro");
+claimRuleGrid.setSkin("xp");
+claimRuleGrid.setInitWidths("150,60,*,60");
+claimRuleGrid.enableDragAndDrop(true);
+claimRuleGrid.init();
+function claimRuleGridReload() {
+	claimRuleGrid.clearAll();
+	claimRuleGrid.load("<?=$this->baseUrl?>/claim-rules.raw/list-rules?groupId=<?=$this->form->groupId->getValue()?>",function(){
+		claimRuleGrid.forEachRow(function(rowId){
+			var type = this.getUserData(rowId,"type");
+			this.cells(rowId,indexCRType).setValue(claimRuleGetSelectBox("<?=$this->form->type->getId()?>",type));
+			this.cells(rowId,indexCROperator).setValue(claimRuleGetSelectBox("<?=$this->form->operator->getId()?>",this.getUserData(rowId,"operator")));
+			var value = this.getUserData(rowId,"value");
+			var val = claimRuleGetSelectBox("value"+type,value);
+			if (val != "") value = val;
+			this.cells(rowId,indexCRValue).setValue(value);
+			this.cells(rowId,indexCROperand).setValue(claimRuleGetSelectBox("<?=$this->form->operand->getId()?>",this.getUserData(rowId,"operand")));
+		});
+	},"json");
+}
+claimRuleGridReload();
+claimRuleGrid.attachEvent("onRowDblClicked",function(rowId,colIndex) {
+	claimRuleEdit(rowId);
+});
+
+function procedureLookupHandler(code,description) {
+	dojo.byId("<?=$this->form->code->getId()?>").value = code;
+	dojo.byId("value<?=ClaimRule::TYPE_PROCEDURE?>").value = description;
+}
+
+function procedureLookupWindow() {
+	var params = [];
+	params.push("callback=procedureLookupHandler");
+	globalCreateWindow("winLookupProceduresId",params,"<?=$this->baseUrl?>/procedures.raw/lookup","<?=__('Lookup Procedure')?>",400,400);
+}
+
+function diagnosisLookupWindow() {
+	var params = [];
+	params.push("jsCallback=diagnosisLookupHandler");
+	globalCreateWindow("windowDiagnosisLookupId",params,"<?=$this->baseUrl?>/diagnosis.raw/lookup","<?=__('Lookup Diagnosis')?>",400,450);
+}
+
+function diagnosisLookupHandler(code,description) {
+	dojo.byId("<?=$this->form->code->getId()?>").value = code;
+	dojo.byId("value<?=ClaimRule::TYPE_DIAGNOSIS?>").value = description;
+}
+</script>

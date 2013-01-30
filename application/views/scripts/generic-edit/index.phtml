@@ -1,0 +1,33 @@
+<?
+if (is_object($this->form) && $this->form instanceof WebVista_Form):
+	echo $this->form->renderOpen();
+	$fields = $this->ormObject->ormFields();
+	foreach ($fields as $field):
+		if (!is_object($this->ormObject->$field)):
+			$input = "{$field}Input";
+			if (in_array($field,$this->ormObject->_primaryKeys)):
+				echo $this->form->$input("FormHidden");
+			else:
+				echo $this->form->$field->renderLabel();
+				echo $this->form->$input();
+			endif;
+		endif;
+	endforeach;
+?>
+	<br /><br/>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?>
+
+	<?=$this->form->renderClose()?>
+
+	<script>
+	function postSubmiteditobject() {
+		dhxWins.window("<?=$this->form->getWindow()?>").close();
+		return false;
+	}
+	</script>
+<?
+else:
+	echo $this->form;
+endif;
+?>

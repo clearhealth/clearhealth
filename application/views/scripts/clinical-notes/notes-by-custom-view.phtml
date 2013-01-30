@@ -1,0 +1,145 @@
+<style>table.obj td {border-bottom: none;border-right:none;}</style>
+<script>
+	function _cnFilterReload() {
+		dojo.xhrPost ({
+			url: '<?=$this->baseUrl?>/clinical-notes.raw/list-notes?personId=' + mainController.getActivePatient(),
+			form: 'frmCustomView',
+			handleAs: 'json',
+			load: function (data) {
+				cnGrid.clearAll();
+				cnGrid.parse(data,'json');
+				closeNotesByCustomViewWindow();
+			},
+			error: function (er) {
+				alert("ERROR: " + er.responseText);
+			}
+		});
+	}
+	function toggleDates(filter) {
+		dojo.byId('custom-date-begin').disabled = !filter.checked;
+		dojo.byId('custom-date-end').disabled = !filter.checked;
+	}
+	function checkStatus(statusVal) {
+		var disabled = false;
+		if (statusVal == 'signed') {
+			disabled = true;
+		}
+		dojo.byId('custom-max-results').disabled = !disabled;
+		dojo.byId('custom-max-results-value').disabled = !disabled;
+	}
+</script>
+<form id="frmCustomView" name="frmCustomView">
+<div style="float:left;">
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Status")?></strong>
+		<select id="custom-status" name="custom[status]" style="width:325px;" onChange="checkStatus(this.options[this.selectedIndex].value)">
+                	<option value="signed"><?=__('Signed')?></option>
+                	<option value="unsigned"><?=__('Unsigned')?></option>
+                	<option value="uncosigned"><?=__('Uncosigned')?></option>
+        	</select>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Author")?></strong>
+		<select id="custom-authoring-person-id"  name="custom[authoringPersonId]" style="width:325px;">
+        	<?foreach(Provider::getArray() as $personId => $name):?>
+                	<option value="<?=$personId?>"><?=$name?></option>
+	        <?endforeach;?>
+        	</select>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<input type="checkbox" name="custom[filterDate]" id="custom-filter-date" onClick="toggleDates(this)" /> <strong><?=__('Filter By Date Range')?></strong>
+		<br />
+		<div style="float:left;"><?=__("Begin Date")?>:</div>
+		<div style="float:right;"><input type="text" name="custom[dateBegin]" id="custom-date-begin" /></div>
+		<script>
+			var dateBegin = dijit.byId('custom-date-begin');
+			if (dateBegin != undefined) {
+				dateBegin.destroyRecursive();
+				dateBegin = null;
+			}
+
+			dateBegin = new dijit.form.DateTextBox({name:'custom[dateBegin]',constraints: {datePattern:'yyyy-MM-dd'}},dojo.byId('custom-date-begin'));
+			<?$dateBeginValue = date('Y-m-d');
+			  $x = explode('-',$dateBeginValue);?>
+			var beginDate = new Date();
+			beginDate.setFullYear(<?=$x[0]?>,<?=($x[1]-1)?>,<?=$x[2]?>);
+			dateBegin.setValue(beginDate);
+		</script>
+		<br />
+		<div style="float:left;"><?=__("End Date")?>:</div>
+		<div style="float:right;"><input type="text" name="custom[dateEnd]" id="custom-date-end" /></div>
+		<script>
+			var dateEnd = dijit.byId('custom-date-end');
+			if (dateEnd != undefined) {
+				dateEnd.destroyRecursive();
+				dateEnd = null;
+			}
+
+			dateEnd = new dijit.form.DateTextBox({name:'custom[dateEnd]',constraints: {datePattern:'yyyy-MM-dd'}},dojo.byId('custom-date-end'));
+			<?$dateEndValue = date('Y-m-d');
+			  $x = explode('-',$dateEndValue);?>
+			var endDate = new Date();
+			endDate.setFullYear(<?=$x[0]?>,<?=($x[1]-1)?>,<?=$x[2]?>);
+			dateEnd.setValue(endDate);
+		</script>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Filter Results")?></strong><br />
+		<?=__("When document contains")?>:<br />
+		<input type="text" name="custom[filterResults]" id="custom-filter-results" />
+			<?=__('in')?>: <input type="checkbox" name="custom[inTitles]" id="custom-in-titles" /> <?=__('Titles')?>
+			<input type="checkbox" name="custom[inSubjects]" id="custom-in-subjects" /> <?=__('Subjects')?>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Grouping")?></strong><br />
+		<input type="checkbox" name="custom[groupDoc]" id="custom-group-doc" /> <?=__("Group documents by")?>:
+		<select id="custom-group-by"  name="custom[groupBy]">
+                	<option value="groupDateVisit"><?=__('Visit Date')?></option>
+                	<option value="groupLocation"><?=__('Location')?></option>
+                	<option value="groupTitle"><?=__('Title')?></option>
+                	<option value="groupAuthor"><?=__('Author')?></option>
+        	</select>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Sort Order")?></strong><br />
+		<input type="radio" name="custom[sortDoc]" id="custom-sort-doc" value="chronological" /> <?=__("Chronological")?>
+		<input type="radio" name="custom[sortDoc]" id="custom-sort-doc" value="reverse-chronological" checked="checked" /> <?=__("Reverse Chronological")?>
+		<select id="custom-sort-by"  name="custom[sortBy]">
+                	<option value="sortDateNote"><?=__('Date of Note')?></option>
+                	<option value="sortTitle"><?=__('Title')?></option>
+                	<option value="sortAuthor"><?=__('Author')?></option>
+                	<option value="sortLocation"><?=__('Location')?></option>
+        	</select>
+	</div>
+	<br />
+	<div class="formRow" style="padding-top:4px;">
+		<strong><?=__("Limit Results")?></strong><br />
+		<input type="checkbox" name="custom[maxResults]" id="custom-max-results" /> <?=__("Max results to return")?>: <input type="text" id="custom-max-results-value" name="custom[maxResultsValue]"></div>
+		<script>
+			if (maxResultsValue != undefined) {
+				maxResultsValue.destroyRecursive();
+				maxResultsValue = null;
+			}
+			var maxResultsValue = new dijit.form.NumberSpinner({value:0,constraints:{min:0,places:0},maxlength:2,style:"width:100px;",name:"custom[maxResultsValue]"},dojo.byId("custom-max-results-value"));
+		</script>
+	</div>
+
+	<br />
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div style="text-align:right;margin-top:10px;">
+		<input type="button" value="<?=__("Cancel")?>" onClick="closeNotesByCustomViewWindow()" style="width:150px;" />
+		<input type="button" value="<?=__("Filter")?>" onClick="_cnFilterReload()" style="width:150px" />
+	</div>
+</div>
+</form>
+<script>
+	statusObj = dojo.byId('custom-status');
+	checkStatus(statusObj.options[statusObj.selectedIndex].value);
+	toggleDates(dojo.byId('custom-filter-date'));
+</script>

@@ -1,0 +1,42 @@
+<script>
+function selectedEducationLookup(rowId) {
+	if (!rowId) {
+		var rowId = educationLookupGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert('<?=__('No education topic selected')?>');
+		return;
+	}
+	<?if($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		<?=$this->jsCallback?>(rowId,educationLookupGrid.cells(rowId,1).getValue());
+	}
+	<?endif;?>
+	dhxWins.window("winLookupEducationId").close();
+}
+</script>
+
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+<div id="educationLookupGridId" style="width:100%;height:85%;overflow:hidden;margin-top:5px;"></div>
+
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="selectedEducationLookup()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winLookupEducationId').close()" style="width:150px;margin-top:10px;" />
+</div>
+<script>
+var educationLookupGrid = new dhtmlXGridObject("educationLookupGridId");
+educationLookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+educationLookupGrid.setHeader(",");
+educationLookupGrid.setNoHeader(true);
+educationLookupGrid.setInitWidths("*,0");
+educationLookupGrid.setColAlign("left");
+educationLookupGrid.setColTypes("ro,ro");
+function educationLookupGridOnRowDblClicked(rowId,colIndex) {
+	selectedEducationLookup(rowId);
+}
+educationLookupGrid.attachEvent("onRowDblClicked",educationLookupGridOnRowDblClicked);
+educationLookupGrid.init();
+<?foreach ($this->listEducationTopics as $code=>$topic):?>
+educationLookupGrid.addRow("<?=$code?>",(<r><![CDATA[<?=$topic['displayName']?>]]></r>).toString()+","+(<r><![CDATA[<?=$topic['name']?>]]></r>).toString());
+<?endforeach;?>
+</script>

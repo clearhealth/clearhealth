@@ -1,0 +1,140 @@
+<div id="scheduleRepeatTemplateContainerId" style="width:100%;">
+	<div style="float:left;">
+		<div class="formRow">
+			<dt><label class="optional"><?=__('Copy from Start date')?></label></dt>
+			<?=$this->formDateText('dateStartFrom',null,array('id'=>'dateStartFrom'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow">
+			<dt><label class="optional"><?=__('Copy to Start date')?></label></dt>
+			<?=$this->formDateText('dateStartTo',null,array('id'=>'dateStartTo'))?>
+		</div>
+	</div>
+	<div style="float:left;margin-left:20px;">
+		<div class="formRow">
+			<dt><label class="optional"><?=__('Copy from End date')?></label></dt>
+			<?=$this->formDateText('dateEndFrom',null,array('id'=>'dateEndFrom'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow">
+			<dt><label class="optional"><?=__('Copy to End date')?></label></dt>
+			<?=$this->formDateText('dateEndTo',null,array('id'=>'dateEndTo'))?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->formButton('repeatTemplate',__('Apply'),array('onClick'=>'repeatTemplateOnSaved()'))?>
+	</div>
+</div>
+<script>
+<?$dateStart = explode('-',$this->dateStart);?>
+var dateStart = new Date(<?=(int)$dateStart[0]?>,<?=((int)$dateStart[1] - 1)?>,<?=(int)$dateStart[2]?>);
+<?$dateEnd = explode('-',$this->dateEnd);?>
+var dateEnd = new Date(<?=(int)$dateEnd[0]?>,<?=((int)$dateEnd[1] - 1)?>,<?=(int)$dateEnd[2]?>);
+var dateToday = new Date(<?=date('Y')?>,<?=(date('m') - 1)?>,<?=date('d')?>);
+var dateThreeYears = dojo.date.add(dateToday,"year",3);
+
+dojo.connect(boxDateStartFrom,"onChange","dateStartFromOnChanged");
+function dateStartFromOnChanged(value) {
+	if (value.getTime() < dateStart.getTime()) {
+		boxDateStartFrom.setValue(dateStart);
+	}
+}
+boxDateStartFrom.setValue(dateToday);
+
+dojo.connect(boxDateEndFrom,"onChange","dateEndFromOnChanged");
+function dateEndFromOnChanged(value) {
+	if (value.getTime() > dateThreeYears.getTime()) {
+		boxDateEndFrom.setValue(dateThreeYears);
+	}
+	else if (value.getTime() < boxDateStartFrom.getValue()) {
+		boxDateEndFrom.setValue(dateEnd);
+	}
+}
+boxDateEndFrom.setValue(dojo.date.add(dateToday,"day",6));
+
+dojo.connect(boxDateStartTo,"onChange","dateStartToOnChanged");
+function dateStartToOnChanged(value) {
+	if (value.getTime() > dateThreeYears.getTime()) {
+		boxDateStartTo.setValue(dateThreeYears);
+	}
+	else if (value.getTime() < dateEnd.getTime()) {
+		boxDateStartTo.setValue(dojo.date.add(dateEnd,"day",1));
+	}
+	else if (value.getTime() < boxDateEndFrom.getValue().getTime()) {
+		boxDateStartTo.setValue(dojo.date.add(boxDateEndFrom.getValue(),"day",1));
+	}
+	if (value.getTime() > boxDateEndTo.getValue().getTime()) {
+		boxDateEndTo.setValue(dojo.date.add(value,"day",6));
+	}
+}
+boxDateStartTo.setValue(dojo.date.add(boxDateEndFrom.getValue(),"day",1));
+
+dojo.connect(boxDateEndTo,"onChange","dateEndToOnChanged");
+function dateEndToOnChanged(value) {
+	var dateStartFrom = boxDateStartFrom.getValue();
+	var dateEndFrom = boxDateEndFrom.getValue();
+	var dateFromDiff = dateEndFrom.getTime() - dateStartFrom.getTime();
+
+	var dateStartTo = boxDateStartTo.getValue();
+	var dateToDiff = value.getTime() - dateStartTo.getTime();
+	if (dateToDiff < 0 || dateToDiff < dateFromDiff) {
+		boxDateEndTo.setValue(dateThreeYears);
+	}
+	if (value.getTime() < dateStartTo.getTime()) {
+		boxDateEndTo.setValue(dateEnd);
+	}
+}
+boxDateEndTo.setValue(dojo.date.add(boxDateStartTo.getValue(),"day",6));
+
+function repeatTemplateOnSaved() {
+	var dateStartFrom = formatScheduleDate(boxDateStartFrom.getValue());
+	var dateEndFrom = formatScheduleDate(boxDateEndFrom.getValue());
+	var dateStartTo = formatScheduleDate(boxDateStartTo.getValue());
+	var dateEndTo = formatScheduleDate(boxDateEndTo.getValue());
+
+	dojo.xhrGet({
+		url: globalBaseUrl+"/schedule-manager.raw/get-schedule-data",
+		handleAs: "json",
+		content: {
+			"dateStart": dateStartFrom,
+			"dateEnd": dateEndFrom,
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			if (!confirm(data.numberOfEvents+" <?=__('schedule blocks will be copied from')?> "+dateStartFrom+" <?=__('through')?> "+dateEndFrom+" <?=__('to')?> "+dateStartTo+" <?=__('through')?> "+dateEndTo+" <?=__('creating')?> "+data.numberOfEvents+" <?=__('total new schedule blocks')?>. <?=__('Any existing schedule for that time will be removed.')?>")) {
+				return;
+			}
+			duplicateScheduleApply(dateStartFrom,dateEndFrom,dateStartTo,dateEndTo);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function duplicateScheduleApply(dateStartFrom,dateEndFrom,dateStartTo,dateEndTo) {
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-repeat-template",
+		handleAs: "json",
+		content: {
+			"dateStartFrom": dateStartFrom,
+			"dateEndFrom": dateEndFrom,
+			"dateStartTo": dateStartTo,
+			"dateEndTo": dateEndTo,
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+	winScheduleRepeatTemplate.close();
+}
+</script>

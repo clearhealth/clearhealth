@@ -1,0 +1,95 @@
+<div id="esignItemsContainerId" style="width:100%;height:85%;overflow:hidden"></div>
+<script>
+        esrdGrid = new dhtmlXGridObject('esignItemsContainerId');
+        esrdGrid.setImagePath("<?=$this->baseUrl?>/img/");
+        esrdGrid.selMultiRows = true;
+        esrdGrid.setHeader(",Sign,,");
+        esrdGrid.setInitWidths("*,45,0,0");
+        esrdGrid.setColAlign("left,center,left,left");
+        esrdGrid.setColTypes("tree,ch,ro,ro");
+	esrdGrid.attachEvent('onRowDblClicked',doubleClickedEvent);
+	esrdGrid.attachEvent('onCheck',onCheckedEvent);
+        esrdGrid.enableMultiline(true);
+        esrdGrid.init();
+	function esrdGridReload() {
+		esrdGrid.clearAll();
+		esrdGrid.load("<?=$this->baseUrl?>/e-sign.raw/list-items?objectId=<?=$this->objectId?>",esrdExpand,"xml");
+	}
+	esrdGridReload();
+	function esrdExpand() {
+		esrdGrid.expandAll();
+		if (!<?=$this->multipleSign?>) {
+			esrdGrid.forEachRow(function(rowId){
+				if (esrdGrid.getLevel(rowId) != 1) { // level 0 is parent
+					esrdGrid.cells(rowId,1).cell.innerHTML = "";
+				}
+			});
+		}
+	}
+	function doubleClickedEvent(rowId,colIndex) {
+		var objectClassId = esrdGrid.getParentId(rowId);
+		if (objectClassId == null || esrdGrid.getLevel(rowId) != 1) {
+			return;
+		}
+		//var objectId = esrdGrid.cells(rowId,2).getValue();
+		var objectId = esrdGrid.getUserData(rowId,"objectId");
+		//var patientId = esrdGrid.cells(rowId,3).getValue();
+		var patientId = esrdGrid.getUserData(rowId,"patientId");
+		if (patientId == '0' || patientId == '') {
+			winES.close();
+			return;
+		}
+		//var jsCode = esrdGrid.cells(objectClassId,2).getValue();
+		var jsCode = esrdGrid.getUserData(objectClassId,"js");
+		jsCode += "\njumpLink"+objectClassId+"('"+objectId+"','"+patientId+"');";
+		eval(jsCode);
+		winES.close();
+	}
+	function onCheckedEvent(rowId,cellIndex,state) {
+		var objectClassId = esrdGrid.getParentId(rowId);
+		if (rowId == objectClassId) {
+			esrdGrid.setCheckedRows(1,state);
+		}
+	}
+</script>
+	 
+	<?=$this->form->renderOpen()?>
+<div style="float:right;">
+<?=$this->form->getElement('signature')->renderViewHelper()?>
+</div>
+<div style="float:right;padding-right:4px;padding-top:4px;">
+<?=$this->form->signature->renderLabel()?>
+</div>
+<div style="clear:right;text-align:right;">
+<?=$this->form->okInput()?>
+</div>
+<?=$this->form->renderClose()?>
+<input type="hidden" name="signIds" value="" id="e-sign-doc-ids"/>
+<script>
+function preSubmit<?=$this->form->getId()?> () {
+	var ids = esrdGrid.getCheckedRows(1);
+	dojo.xhrPost ({
+	    url: "<?=$this->baseUrl?>/e-sign.raw/edit-sign-items",
+	    content: {'electronicSignatureIds': dojo.toJson(ids), 'signature':dojo.byId('signature').value },
+	    load: function(data){
+		switch (mainTabbar.getActiveTab()) {
+			case "tab_Medications":
+				loadMedication();
+				break;
+			case "tab_Notes":
+				onButtonClick("refresh");
+				break;
+			case "tab_Orders":
+				orderListGridReload();
+				break;
+		}
+		dhxWins.window("windowESignId").close();
+	     },
+	     error: function (error) {
+	        errObj = dojo.fromJson(error.responseText);
+		alert(errObj.error);
+	     }
+	});
+	return false;
+}
+</script>

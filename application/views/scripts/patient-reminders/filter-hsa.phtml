@@ -1,0 +1,79 @@
+<div style="margin-top:5px;">
+	<div id="filterHSAGridId" style="width:auto;height:300px;"></div>
+	<div style="float:left;">
+		<?=$this->formButton('add',__('Add'),array('onClick'=>'filterHSAAdd()'))?>
+		<?=$this->formButton('remove',__('Remove'),array('onClick'=>'filterHSARemove()'))?>
+	</div>
+	<div style="float:right;">
+		<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterHSAApply()','id'=>'applyFilters','disable'=>'disable'))?>
+	</div>
+</div>
+<script>
+var filterHSAGrid = new dhtmlXGridObject("filterHSAGridId");
+filterHSAGrid.enableMultiselect(true);
+filterHSAGrid.setImagePath("<?=$this->baseUrl?>/img/");
+filterHSAGrid.setHeader("<?=__('HSA')?>,<?=__('Operator')?>,<?=__('Due Date')?>,<?=__('Due Date 2')?>,<?=__('OR')?>");
+filterHSAGrid.setInitWidths("*,120,120,120,30");
+filterHSAGrid.setColTypes("ed,coro,ed,ed,ch");
+filterHSAGrid.setSkin("xp");
+filterHSAGrid.init();
+filterHSAGrid.load("<?=$this->baseUrl?>/patient-reminders.raw/list-filter-hsa",function(){
+},"json");
+filterHSAGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 0 && cellIndex == 3) {
+		if (this.cells(rowId,1).getValue() != "between") return false;
+	}
+	dojo.byId("applyFilters").disabled = false;
+	return true;
+});
+filterHSAGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	dojo.byId("applyFilters").disabled = false;
+});
+
+<?foreach ($this->operators as $key=>$value):?>
+filterHSAGrid.getCombo(1).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+function filterHSAAdd() {
+	filterHSAGrid.addRow(filterHSAGrid.uid(),"blank,,,,");
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterHSARemove() {
+	var rowId = filterHSAGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var id = rowIds[i];
+		if (filterHSAGrid.doesRowExist(id)) filterHSAGrid.deleteRow(id);
+	}
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterHSAApply() {
+	var content = {};
+	filterHSAGrid.forEachRow(function(rowId){
+		content["filters["+rowId+"][hsa]"] = this.cells(rowId,0).getValue();
+		content["filters["+rowId+"][operator]"] = this.cells(rowId,1).getValue();
+		content["filters["+rowId+"][operand1]"] = this.cells(rowId,2).getValue();
+		content["filters["+rowId+"][operand2]"] = this.cells(rowId,3).getValue();
+		content["filters["+rowId+"][OR]"] = this.cells(rowId,4).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-reminders.raw/process-filter-hsa",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

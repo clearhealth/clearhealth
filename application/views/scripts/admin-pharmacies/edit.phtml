@@ -1,0 +1,214 @@
+<?if (strlen($this->pharmacy->pharmacyId) < 2 && $this->addPharmacy == false):?>
+<?=__("No pharmacy is selected, you must select a pharmacy to edit.")?>
+<?else:?>
+<script>
+
+function submitpharmacydetailForm() {
+}
+
+function pharmacySubmit() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-pharmacies.raw/process-edit",
+		form: "pharmacydetail",
+		handleAs: "json", 
+		load: function (data) { 
+			alert("Pharmacy saved"); 
+			pharmacyId = data.pharmacyId;
+			adminPharmacyTabbarAttachContent("tab_pharmacyDetails","<?=$this->baseUrl?>/admin-pharmacies.raw/edit?pharmacyId=" + data.pharmacyId);
+        	        pharmacyEditTabbar.setTabActive("tab_pharmacyDetails");
+			localRefreshCurrentTab();
+		},
+		error: function (er) {
+			alert("err: " + er);
+		}
+	});
+}
+</script>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;height:370px;overflow:auto;">
+	<div style="float:left;">
+		<?if ($this->message):?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__("Pharmacy Information")?></legend>
+		<div style="float:left;width:400px;">
+			<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+			<?=$error?>
+			<?}?>
+			</div>
+
+			<div class="formRow" style="padding-top:4px;">
+				<?=$this->formButton('editPharmacy',(strlen($this->pharmacy->pharmacyId) > 0)?__('Update Pharmacy'):__('Add Pharmacy'),array('onClick'=>'pharmacySubmit();'))?>
+			</div>
+			<br style="clear:both;" />
+			<div style="float:left;width:45%;">
+				<div class="formRow" style="padding-top:4px;">
+					<dt><label for="<?=$this->form->NCPDPID->getId()?>" class="optional"><?=__('NCPDPID')?></label></dt>
+					<?=$this->form->NCPDPIDInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->ReferenceNumberAlt1->renderLabel()?>
+					<?=$this->form->ReferenceNumberAlt1Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->StoreName->renderLabel()?>
+					<?=$this->form->StoreNameInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->AddressLine2->renderLabel()?>
+					<?=$this->form->AddressLine2Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->State->renderLabel()?>
+					<?=$this->form->StateInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhonePrimary->renderLabel()?>
+					<?=$this->form->PhonePrimaryInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->Email->renderLabel()?>
+					<?=$this->form->EmailInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt1Qualifier->renderLabel()?>
+					<?=$this->form->PhoneAlt1QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt2Qualifier->renderLabel()?>
+					<?=$this->form->PhoneAlt2QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt3Qualifier->renderLabel()?>
+					<?=$this->form->PhoneAlt3QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt4Qualifier->renderLabel()?>
+					<?=$this->form->PhoneAlt4QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt5Qualifier->renderLabel()?>
+					<?=$this->form->PhoneAlt5QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->ActiveEndTime->renderLabel()?>
+					<?$activeEnd = (strlen($this->pharmacy->pharmacyId) > 0)? $this->pharmacy->ActiveEndTime:date('Y-m-d',strtotime('+1 year'));
+					$this->form->ActiveEndTime->setValue($activeEnd)?>
+					<?=$this->form->ActiveEndTimeInput('FormDateText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PartnerAccount->renderLabel()?>
+					<?=$this->form->PartnerAccountInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->CrossStreet->renderLabel()?>
+					<?=$this->form->CrossStreetInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->OldServiceLevel->renderLabel()?>
+					<?=$this->form->OldServiceLevelInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->TextServiceLevelChange->renderLabel()?>
+					<?=$this->form->TextServiceLevelChangeInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<dt><label for="<?=$this->form->NPI->getId()?>" class="optional"><?=__('NPI')?></label></dt>
+					<?=$this->form->NPIInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+			</div>
+			<div style="float:left;margin-left:10px;width:45%;">
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->StoreNumber->renderLabel()?>
+					<?=$this->form->StoreNumberInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->ReferenceNumberAlt1Qualifier->renderLabel()?>
+					<?=$this->form->ReferenceNumberAlt1QualifierInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->AddressLine1->renderLabel()?>
+					<?=$this->form->AddressLine1Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->City->renderLabel()?>
+					<?=$this->form->CityInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->Zip->renderLabel()?>
+					<?=$this->form->ZipInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->Fax->renderLabel()?>
+					<?=$this->form->FaxInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt1->renderLabel()?>
+					<?=$this->form->PhoneAlt1Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt2->renderLabel()?>
+					<?=$this->form->PhoneAlt2Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt3->renderLabel()?>
+					<?=$this->form->PhoneAlt3Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt4->renderLabel()?>
+					<?=$this->form->PhoneAlt4Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->PhoneAlt5->renderLabel()?>
+					<?=$this->form->PhoneAlt5Input('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->ActiveStartTime->renderLabel()?>
+					<?=$this->form->ActiveStartTimeInput('FormDateText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->ServiceLevel->renderLabel()?>
+					<?=$this->form->ServiceLevelInput('FormText',array('style'=>'width:180px;'))?>
+					<!--<input type="checkbox" name="serviceLevels[1]" id="" value="0" /> NewRx
+					<input type="checkbox" name="serviceLevels[2]" id="" value="0" /> RefReq/RefRes
+					<input type="checkbox" name="serviceLevels[3]" id="" value="0" /> RxChg/ChgRes
+					<input type="checkbox" name="serviceLevels[4]" id="" value="0" /> RxFill
+					<input type="checkbox" name="serviceLevels[5]" id="" value="0" /> CanRx/CanRxRes
+					<input type="checkbox" name="serviceLevels[6]" id="" value="0" /> Medication History
+					<input type="checkbox" name="serviceLevels[7]" id="" value="0" /> Eligibility-->
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->TwentyFourHourFlag->renderLabel()?>
+					<?=$this->form->TwentyFourHourFlagInput('FormSelect',array('options'=>array('T'=>'True','F'=>'False','N'=>'Not Applicable'),'style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->TextServiceLevel->renderLabel()?>
+					<?=$this->form->TextServiceLevelInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->Version->renderLabel()?>
+					<?=$this->form->VersionInput('FormText',array('style'=>'width:180px;'))?>
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->preferred->renderLabel()?>
+					<input type="checkbox" name="<?=$this->form->preferred->getFullyQualifiedName()?>" id="<?=$this->form->preferred->getId()?>" value="0" <?=($this->form->preferred->getValue() > 0)?'checked="checked"':''?> /> 
+				</div>
+				<div class="formRow" style="padding-top:4px;">
+					<?=$this->form->print->renderLabel()?>
+					<input type="checkbox" name="<?=$this->form->print->getFullyQualifiedName()?>" id="<?=$this->form->print->getId()?>" value="1" <?=($this->form->print->getValue() > 0)?'checked="checked"':''?> /> 
+				</div>
+			</div>
+
+			<br style="clear:left"/>
+			<br style="clear:left"/>
+			<div style="text-align:right;">
+				<?=$this->form->okInput('FormButton',array('onClick'=>'pharmacySubmit();'))?>
+				<?=$this->form->pharmacyIdInput('FormHidden')?>
+			</div>
+		</div>
+	</div>
+</div>
+<?endif;?>

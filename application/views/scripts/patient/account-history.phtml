@@ -1,0 +1,107 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+</style>
+
+        
+<fieldset>
+<legend>Filter</legend>
+
+<form id='h3sform' class='generalForm' method='post' action='' enctype='multipart/form-data'>
+<div style="float:left;margin-left:10px; margin-bottom:10px;">
+	<label>Date: </label> <nobr class="jscal"><input name="filter[start]" value="" size="10" id="_cal_1"><img id="_cal_1_trigger" src="/index.php/Images//stock/set_time.gif?" style="cursor: pointer; vertical-align: top"></nobr>
+<script type="text/javascript">Calendar.setup( {inputField:"_cal_1", showsTime: false,ifFormat:"%m/%d/%Y",button:"_cal_1_trigger" }); clni_register_validation_rule('_cal_1','date','alert');</script> to <nobr class="jscal"><input name="filter[end]" value="" size="10" id="_cal_2"><img id="_cal_2_trigger" src="/index.php/Images//stock/set_time.gif?" style="cursor: pointer; vertical-align: top"></nobr>
+<script type="text/javascript">Calendar.setup( {inputField:"_cal_2", showsTime: false,ifFormat:"%m/%d/%Y",button:"_cal_2_trigger" }); clni_register_validation_rule('_cal_2','date','alert');</script>
+</div>
+
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>Facility: </label><select name="filter[facility]"><option></option><option label="Ak Chin Clinic" value="134629">Ak Chin Clinic</option><option label="Bylas Health Center" value="134762">Bylas Health Center</option><option label="Cibecue Health Center" value="135103">Cibecue Health Center</option><option label="Fallon Tribal Health Center" value="134826">Fallon Tribal Health Center</option><option label="Fort Yuma PHS Indian Hospital" value="135392">Fort Yuma PHS Indian Hospital</option><option label="Ft. Duchesne Health Center" value="135631">Ft. Duchesne Health Center</option><option label="Havasupai Health Station" value="134356">Havasupai Health Station</option><option label="Hopi PHS Indian Hospital" value="135446">Hopi PHS Indian Hospital</option><option label="Hu Hu Kam Memorial Hospital" value="134675">Hu Hu Kam Memorial Hospital</option><option label="Las Vegas Paiute Tribe Health Clinic" value="134872">Las Vegas Paiute Tribe Health Clinic</option><option label="McDermitt Tribal Health Station" value="134849">McDermitt Tribal Health Station</option><option label="Newe Medical Clinic" value="134483">Newe Medical Clinic</option><option label="PARKER INDIAN HOSPITAL" value="135280">PARKER INDIAN HOSPITAL</option><option label="Peach Springs Health Ctr" value="134379">Peach Springs Health Ctr</option><option label="Phoenix Indian Medical Center" value="56537">Phoenix Indian Medical Center</option><option label="Pyramid Lake Health Center" value="134895">Pyramid Lake Health Center</option><option label="Reno/Sparks Health Center" value="134918">Reno/Sparks Health Center</option><option label="Salt River Health Center" value="134191">Salt River Health Center</option><option label="San Carlos PHS Indian Hospital" value="135522">San Carlos PHS Indian Hospital</option><option label="Schurz PHS Indian Hospital" value="135577">Schurz PHS Indian Hospital</option><option label="Southern Bands Health Center" value="135336">Southern Bands Health Center</option><option label="Walker River Tribal Health Clinic" value="134952">Walker River Tribal Health Clinic</option><option label="Washoe Tribal Health Center" value="134975">Washoe Tribal Health Center</option><option label="Wassaja Memorial Health Center" value="134652">Wassaja Memorial Health Center</option><option label="Whiteriver PHS Indian Hospital" value="135654">Whiteriver PHS Indian Hospital</option><option label="Yavapai Apache Health Clinic" value="134698">Yavapai Apache Health Clinic</option><option label="Yerington Tribal Health Center" value="134998">Yerington Tribal Health Center</option></select>
+
+</div>
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>Payer: </label>
+	<select name="filter[payer]"><option></option><option label="BCBS MN-&gt;BCBSMN" value="104602">BCBS MN-&gt;BCBSMN</option><option label="Blue Cross of Arizona-&gt;Healthy Families" value="1000281">Blue Cross of Arizona-&gt;Healthy Families</option><option label="Blue Cross of Arizona-&gt;HMO" value="1000269">Blue Cross of Arizona-&gt;HMO</option><option label="Delta Dental-&gt;SourceINS" value="81814">Delta Dental-&gt;SourceINS</option><option label="Medicaid-&gt;SoonerCare" value="104854">Medicaid-&gt;SoonerCare</option><option label="Medicare-&gt;NHIC" value="1000236">Medicare-&gt;NHIC</option><option label="System-&gt;AAT Funding" value="161441">System-&gt;AAT Funding</option><option label="System-&gt;Collections" value="105731">System-&gt;Collections</option><option label="System-&gt;Correction" value="100002">System-&gt;Correction</option><option label="System-&gt;Self Pay2" value="100001">System-&gt;Self Pay2</option></select>
+
+</div>
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<label>Provider: </label>
+	<select name="filter[provider]"><option></option><option label="Gooddoc, Horace" value="48502">Gooddoc, Horace</option><option label="Hornerstone, Jerold" value="50920">Hornerstone, Jerold</option><option label="Newdoc, Besty" value="51769">Newdoc, Besty</option><option label="Chapermann, Fernando" value="56143">Chapermann, Fernando</option><option label="Smith, John" value="1000099">Smith, John</option><option label="Falconer, Corazon" value="1000119">Falconer, Corazon</option><option label="Rossmiller, Halley" value="1000172">Rossmiller, Halley</option><option label="user, staff" value="1061028">user, staff</option><option label="kunkle, Nash" value="1069649">kunkle, Nash</option><option label="Healthy, IAM" value="1070080">Healthy, IAM</option></select>
+</div>
+	<div style="float:left;margin-left:10px;margin-bottom:10px;">
+			<label>
+				Entered By:
+				<select name="filter[user]">
+					<option></option>
+					<option label="admin" value="1000112">admin</option><option label="bnewdoc" value="51782">bnewdoc</option><option label="cfalconer" value="1000132">cfalconer</option><option label="hgooddoc" value="48515">hgooddoc</option><option label="hrossmiller" value="1000185">hrossmiller</option><option label="jhornerstone" value="50933">jhornerstone</option><option label="nkunkle" value="1069662">nkunkle</option><option label="staffuser" value="1061041">staffuser</option>
+				</select>
+			</label>
+		</div>
+<div style="float:left;margin-left:10px;margin-bottom:10px;">
+	<input type='submit' name="filter_submit" value="Filter">
+</div>
+</form>
+</fieldset>
+	<fieldset class="radio" id="account_history">
+	<legend>Account History</legend>
+		<div id="acctHistoryContainer" style="width:99%;height:300px;"></div>
+<script>
+acctHistoryGrid = new dhtmlXGridObject('acctHistoryContainer');
+acctHistoryGrid.setImagePath("../img/");
+acctHistoryGrid.setHeader(',<?=__('Id')?>,<?=__('Payer Name')?>,<?=__('Date Billed')?>,<?=__('Date')?>,<?=__('Billed')?>,<?=__('Paid')?>,<?=__('Write Off')?>,<?=__('Balance')?>,<?=__('Chk #')?>,<?=__('Facility')?>,<?=__('Provider')?>,<?=__('Entered By')?>');
+acctHistoryGrid.setInitWidths("20,*,*,*,*,*,*,*,*,*,*,*");
+acctHistoryGrid.setColTypes("ro");
+acctHistoryGrid.setSkin("xp");
+var testdata=[
+        ['1','175247-3610-175217','System','06/11/2009','06/11/2009','102.00','40.00','0.00','62.00','Wassaja Memorial Health Center','Falconer,Corazon','admin'],
+        ['','Payment','System->AAT Funding','','06/11/2009','','40.00','0.00','','','','','admin'],
+        ['2','174751-3610-173351','Blue Cross of Arizona','Not Sent','06/10/2009','102.00','51.00','0.00','51.00','','Salt River Health Center','Falconer,Corazon','admin'],
+]
+acctHistoryGrid.enableAlterCss("even","uneven");
+acctHistoryGrid.init();
+acctHistoryGrid.parse(testdata,"jsarray");
+</script>
+
+	</fieldset>
+
+<form id='h3sform' class='generalForm' method='post' action='/index.php/main/Account/history/1042177?' enctype='multipart/form-data'>
+<fieldset id="notes">
+	<legend>Account Notes [<span id="addLabel"><a href="#notes" onclick="selectSection('Add')">Add a Note</a></span>] [<span id="viewLabel"><b>View Notes</b></span>]</legend>
+	<div id="sectionAdd" class="section" style="display:none">
+	<table>
+		<tr>
+			<td colspan=2>
+				<label class="inline">Note Type:</label>
+
+			       	<select name="account_note[note_type]"><option label="X12" value="1">X12</option><option label="Batch" value="2">Batch</option></select>
+				<label class="inline">Claim:</label>
+				<select id="claimSelect" name="account_note[claim_id]" onclick="select(this.selectedIndex)">
+					<option value="0">General Note</option>
+				</select>
+			</td>
+
+		</tr>
+		<tr>
+			<td><label>Note:</label></td>
+			<td><textarea name="account_note[note]" cols=40></textarea></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td> <input type="submit" value="Add Note"></td>
+		</tr>
+	</table>
+	</div>
+	<div id="sectionView" class="section">
+		<div><label class="inline">View Notes For:</label>
+			<select id="claimSelect2" onclick="select(this.selectedIndex)">
+				<option value="0">General Account</option>
+			</select>
+
+		</div>
+		<div id="noteBody"></div>
+	</div>
+	
+</fieldset>
+</form>
+

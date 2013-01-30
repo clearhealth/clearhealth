@@ -1,0 +1,135 @@
+<?if(isset($this->message)):?>
+<h1 style="color:red;"><?=$this->message?></h1>
+<?else:?>
+<div style="float:left;width:100%;">
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="visitType" class="optional"><?=__('Type')?></label></dt>
+		<?=$this->form->ormClassInput('FormSelect',array('onChange'=>'ormClassOnChanged(this.value)','options'=>$this->ormClasses,'style'=>'width:300px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div id="lookupDivId">
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->formText('q',null,array('id'=>'q','style'=>'width:250px;','onkeypress'=>'keyPressInput(event);'))?>
+			<?=$this->formButton('searchLabel',__('Search'),array('id'=>'searchLabel','onClick'=>'lookupCode();'))?>
+			<br />
+			<div id="lookupGridId" style="width:360px;height:120px;;"></div>
+			<div class="formRow">
+				<?=$this->formButton('selectId',__('Change Code and Value'),array('id'=>'selectId','onClick'=>'selectedLookupCode();'))?>
+			</div>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<div style="float:left;"><dt><label for="<?=$this->form->key->getId()?>" class="optional"><?=__('Code')?></label></dt></div><div style="float:left;margin-left:10px;width:300px;"><?=$this->form->keyInput('FormText',array('style'=>'width:300px;'))?></div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<div style="float:left;"><dt><label for="<?=$this->form->name->getId()?>" class="optional"><?=__('Value')?></label></dt></div><div style="float:left;margin-left:10px;width:300px;"><?=$this->form->nameInput('FormText',array('style'=>'width:300px;'))?></div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->form->enumerationIdInput('FormHidden')?>
+		<?=$this->formHidden('enumerationParentId',$this->enumerationParentId)?>
+		<?=$this->formButton('cancelId',__('Cancel'),array('onClick'=>'dhxWins.window("windowEditORMObjectId").close()'))?>
+		<?=$this->form->okInput()?>
+	</div>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.byId("<?=$this->form->ormClass->getId()?>").disabled = false;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	dhxWins.window("windowEditORMObjectId").close();
+	enumUpdateListGrid();
+	return false;
+}
+
+function lookupCode() {
+	var codeType = "";
+	var ormClass = getSelectedORMClass();
+	switch (ormClass) {
+		case "ProcedureCodesCPT":
+			codeType = "cpt";
+			break;
+		case "DiagnosisCodesICD":
+			codeType = "icd9";
+			break;
+		default:
+			alert("<?=__('No selected Visit Type')?>");
+			return;
+	}
+	lookupGrid.clearAll();
+	lookupGrid.load("<?=$this->baseUrl?>/code-lookup.raw?src="+codeType+"&q="+dojo.byId("q").value,"json");
+}
+
+function selectedLookupCode() {
+	var rowId = lookupGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert("<?=__('No code selected')?>");
+		return;
+	}
+	var text = lookupGrid.cells(rowId,0).getValue();
+	var code = lookupGrid.cells(rowId,1).getValue();
+	var key = dojo.byId("<?=$this->form->key->getId()?>");
+	var name = dojo.byId("<?=$this->form->name->getId()?>");
+	key.value = code;
+	name.value = text+" ("+code+")";
+}
+
+function getSelectedORMClass() {
+	var ormClassValue = "";
+	var ormClass = dojo.byId("<?=$this->form->ormClass->getId()?>");
+	var selectedIndex = ormClass.selectedIndex;
+	if (selectedIndex >= 0) {
+		ormClassValue = ormClass.options[selectedIndex].value;
+	}
+	return ormClassValue;
+}
+
+function ormClassOnChanged(value) {
+	if (value && value == "Visit") {
+		dojo.byId("lookupDivId").style.display = "none";
+	}
+	else {
+		dojo.byId("lookupDivId").style.display = "";
+	}
+}
+ormClassOnChanged(getSelectedORMClass());
+<?if($this->disableTypes):?>
+var ormClass = dojo.byId("<?=$this->form->ormClass->getId()?>");
+ormClass.disabled = true;
+<?endif;?>
+
+function keyPressInput(e) {
+	var key = window.event ? e.keyCode : e.which;
+	if (key == 13) {
+		lookupCode();
+		if(!e) var e = window.event;
+		e.cancelBubble = true;
+		e.returnValue = false;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	}
+}
+
+var lookupGrid = new dhtmlXGridObject("lookupGridId");
+lookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+lookupGrid.setHeader("<?=__('Description')?>,<?=__('Code')?>");
+lookupGrid.setInitWidths("*,120");
+lookupGrid.setColTypes("ro,ro");
+lookupGrid.setSkin("xp");
+lookupGrid.attachEvent("onRowDblClicked",lookupRowDoubleClickedHandler);
+lookupGrid.init();
+
+function lookupRowDoubleClickedHandler(rowId,colIndex) {
+	selectedLookupCode();
+}
+</script>
+<?endif?>

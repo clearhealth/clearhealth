@@ -1,0 +1,496 @@
+<style>
+.even{
+	background-color: white;
+}
+.uneven{
+	background-color: ghostwhite;
+}
+</style>
+<div style="font-size:9pt;">
+	<div style="width:60%;float:left;">
+		<strong><?=__("Patient Information")?></strong>
+		<div style="float:left;">
+			<div>
+			<div style="display:table-cell; vertical-align:middle; height:100px;">
+				<img id="patientSelectPhotoId" src="<?=$this->baseUrl?>/img/no-person-image.png" height="50" width="50" onClick="if(psPersonId > 0){windowPatientPictures(psPersonId);}">
+			</div>
+			</div>
+		</div>
+		<div style="float:left;">
+			<div style="margin-left:10px;">
+				<div id="patientSelectNoPatientId"><strong><?=__("No Patient")?></strong><br /></div>
+				<div id="patientSelectDetailDisplayId" style="display: none;">
+					<strong><span id="patientSelectDetailNameId"></span></strong><br />
+					<?=__("MRN")?>: <span id="patientSelectDetailMRNId"></span><br />
+					<?=__("Age/Sex")?>: <span id="patientSelectDetailAgeId"></span> (<span id="patientSelectDetailSexId"></span>)<br />
+					<?=__("DOB")?>: <span id="patientSelectDetailDateOfBirthId"></span><br />
+					<?=__("Location")?>: <span id="patientSelectDetailCurrentLocationId"></span>
+				</div>
+			</div>
+		</div>
+		<br style="clear:left;" />
+		<div>
+		<strong><?=__("Quick List Options")?></strong>
+		<div style="padding-left:10px;padding-bottom:10px;">
+		<input type="radio" style="width:30px;" name="quicklist" value="default" checked="checked" onclick="changeQuickList(this)"><?=__('Default').': <label id="defaultQLId">'.$this->defaultQuickList['text'].'</label>'?><br />
+		<?$i = 0;
+		foreach($this->quickList as $key=>$val):
+			if ($i != 0 && $i % 3 == 0):?>
+				<br />
+			<?endif; $i++;?>
+			<input type="radio" style="width:30px;" name="quicklist" value="<?=$key?>" onclick="changeQuickList(this)"><?=$val?>
+		<?endforeach;?>
+		</div>
+		<span id="psItemList" style="font-weight:bold;color:grey;"><label id="psSelectLabelId"><?=__("Select an Item")?></label><br />
+		<input type="text" id="itemInputId" disabled="disabled" style="width:98%;">
+		<select id="itemListId" disabled="disabled" multiple="multiple" style="width:98%;height:100px;" onchange="changePatientList(this)">
+		<option><?=__("No items")?></option>
+		</select>
+		</span>
+		<span id="psAppointmentList" style="font-weight:bold;color:grey;"><?=__("List Appointments For")?>:
+		<select id="appointmentListId" disabled="disabled" style="width:60%;">
+		<option><?=__("Today")?></option>
+		</select><br />
+		<!--<input type="radio" disabled="disabled"><?=__("All Days Of Week")?>
+		<input type="radio" disabled="disabled"><?=__("Current Day Only")?>-->
+		</span>
+		<input type="button" id="setDefaultId" value="<?=__("Set as Default")?>" disabled="disabled" onclick="setDefaultQuickList()">
+		</div>
+	</div>
+	<div style="float:left; width:39%;">
+		<strong><label id="allPatientsLabelId"><?=__("All Patients")?></label></strong><br />
+		<div id="patientSelectAutoCompleteDiv"></div>
+		<select id="patientSelectMultiSelect" multiple="multiple" style="width:100%;height:330px;" onChange="patientSelectMultiSelectOnChanged(this);">
+		</select>
+		<input style="float:right;" type="button" value="<?=__("Select Patient")?>" onClick="patientSelectSelected();"/>
+	</div>
+	</div>
+</div>
+<div style="width:100%;clear:both;padding-top:20px;">
+	<strong>My Alerts (<label id="myAlertsCtr">0</label>)</strong>
+
+	<div id="alertsContainer" style="height:125px;"></div>
+	<div style="padding-top:5px;">
+		<input type="button" id="processInfoId" value="<?=__('Process Info')?>" disabled="disabled"/>
+		<input type="button" id="processAllId" value="<?=__('Process All')?>" onClick="processAllAlerts()" disabled="disabled" />
+		<input type="button" id="processId" value="<?=__('Process')?>" onClick="processSelectedAlert()" disabled="disabled"/>
+		<input type="button" id="forwardId" value="<?=__('Forward')?>" onClick="forwardSelectedAlert()" disabled="disabled"/>
+		<input type="button" id="addId" value="<?=__('Add')?>" onClick="addAlert()" />
+	</div>
+</div>
+
+
+<script>
+var psPersonId = 0;
+var quickLists = { <?foreach ($this->quickList as $k=>$v) { echo '"'.$k.'":"'.$v.'",'; } ?> };
+var defaultQuickListType = "<?=$this->defaultQuickList['type']?>";
+var defaultQuickListId = "<?=$this->defaultQuickList['id']?>";
+var defaultQuickListText = "<?=$this->defaultQuickList['text']?>";
+var allPatientsLabelId = "<?=__('All Patients')?>";
+
+function clearListSelect() {
+	var itemListSelect = dojo.byId("itemListId");
+	itemListSelect.options.length = 0;
+	var patientSelect = dojo.byId("patientSelectMultiSelect");
+	patientSelect.options.length = 0;
+}
+
+function patientListOnLoaded(data) {
+	if (typeof data != "object") {
+		return;
+	}
+	var listSelect = dojo.byId("patientSelectMultiSelect");
+	listSelect.options.length = 0;
+	var i = 0;
+	for (key in data) {
+		listSelect.options[i++] = new Option(data[key],key);
+	}
+	if (i == 0) {
+		listSelect.options[i++] = new Option("<?=__('No patients found.')?>","");
+	}
+}
+function changePatientList(listSelect) {
+	var ql = null;
+	var quicklist = document.getElementsByName("quicklist");
+	for (var i = 0; i < quicklist.length; i++) {
+		if (quicklist[i].checked) {
+			ql = quicklist[i];
+			break;
+		}
+	}
+	if (!ql) {
+		return;
+	}
+	var id = listSelect.options[listSelect.selectedIndex].value;
+	dojo.byId("allPatientsLabelId").innerHTML = allPatientsLabelId + " (" + listSelect.options[listSelect.selectedIndex].text + ")";
+	displayQuickListInfo("<?=$this->baseUrl?>/patient-select.raw/list-patients",{"type":ql.value,"id":id},patientListOnLoaded);
+}
+function displayQuickListInfo(url,content,callback) {
+	dojo.xhrGet({
+		url: url,
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+function defaultSelected() {
+	displayQuickListInfo("<?=$this->baseUrl?>/patient-select.raw/list-patients",{"type":defaultQuickListType,"id":defaultQuickListId},patientListOnLoaded);
+}
+function providersSelected() {
+	var listSelect = dojo.byId("itemListId");
+	listSelect.options.length = 0;
+	<?$providers = $this->providerIterator->toArray('personId','displayName');
+	$i = 0;
+	foreach ($providers as $id=>$name):?>
+	listSelect.options[<?=$i++?>] = new Option("<?=$name?>","<?=$id?>");
+	<?endforeach;?>
+}
+function clinicsSelected() {
+}
+function specialtiesSelected() {
+}
+function teamSelected() {
+	var listSelect = dojo.byId("itemListId");
+	listSelect.options.length = 0;
+	<?$teamList = $this->teamList->toArray('key','name');
+	$i = 0;
+	foreach ($teamList as $key=>$name):?>
+	listSelect.options[<?=$i++?>] = new Option("<?=$name?>","<?=$key?>");
+	<?endforeach;?>
+}
+function unitsSelected() {
+}
+function mostRecentSelected() {
+}
+function changeQuickList(quicklist) {
+	dojo.byId("setDefaultId").disabled = false;
+	dojo.byId("appointmentListId").disabled = true;
+	dojo.byId("psItemList").style.color = "";
+	psEnableItemList(true);
+	dojo.byId("psAppointmentList").style.color = "gray";
+
+	var defaultItemLabel = "";
+	var psSelectLabelId = "<?=__('Select an Item')?>";
+
+	clearListSelect();
+	switch (quicklist.value) {
+		case "default":
+			dojo.byId("setDefaultId").disabled = true;
+			dojo.byId("psItemList").style.color = "gray";
+			defaultItemLabel = " ("+defaultQuickListText+")";
+			psEnableItemList(false);
+			defaultSelected();
+			break;
+		case "providers":
+			psSelectLabelId = "<?=__('Select a Provider')?>";
+			providersSelected();
+			break;
+		case "clinics":
+			psSelectLabelId = "<?=__('Select a Clinic')?>";
+			dojo.byId("appointmentListId").disabled = false;
+			dojo.byId("psAppointmentList").style.color = "";
+			clinicsSelected();
+			break;
+		case "specialties":
+			psSelectLabelId = "<?=__('Select a Specialty')?>";
+			specialtiesSelected();
+			break;
+		case "team":
+			psSelectLabelId = "<?=__('Select a Team')?>";
+			teamSelected();
+			break;
+		case "units":
+			psSelectLabelId = "<?=__('Select a Unit')?>";
+			unitsSelected();
+			break;
+		case "mostRecent":
+			dojo.byId("psItemList").style.color = "gray";
+			psEnableItemList(false);
+			mostRecentSelected();
+			defaultItemLabel = " (<?=$this->quickList['mostRecent']?>)";
+			break;
+	}
+	dojo.byId("psSelectLabelId").innerHTML = psSelectLabelId;
+	dojo.byId("allPatientsLabelId").innerHTML = allPatientsLabelId + defaultItemLabel;
+}
+function setDefaultQuickList() {
+	var itemList = null;
+	var hasSelected = false;
+	var itemListIdSelect = dojo.byId("itemListId");
+	for (var i = 0; i < itemListIdSelect.length; i++) {
+		if (itemListIdSelect.options[i].selected) {
+			itemList = itemListIdSelect.options[i];
+			hasSelected = true;
+			break;
+		}
+	}
+	var ql = null;
+	var quicklist = document.getElementsByName("quicklist");
+	for (var i = 0; i < quicklist.length; i++) {
+		if (quicklist[i].checked) {
+			ql = quicklist[i];
+			break;
+		}
+	}
+	if (!hasSelected && ql.value != "mostRecent") {
+		if (ql && ql.value != "default") {
+			var msg = "";
+			switch (ql.value) {
+				case "providers":
+					msg = "<?=__('A Provider must be selected to save settings for the Providers quick list.')?>";
+					break;
+				case "clinics":
+					msg = "<?=__('A Clinic must be selected to save settings for the Clinics quick list.')?>";
+					break;
+				case "specialties":
+					msg = "<?=__('A Specialty must be selected to save settings for the Specialties quick list.')?>";
+					break;
+				case "team":
+					msg = "<?=__('A Team must be selected to save settings for the Teams quick list.')?>";
+					break;
+				case "units":
+					msg = "<?=__('A Unit must be selected to save settings for the Units quick list.')?>";
+					break;
+			}
+			alert(msg);
+		}
+		return;
+	}
+	if (itemList) {
+		var id = itemList.value;
+		var quicklist = itemList.text;
+	}
+	else {
+		var id = ql.value;
+		var quicklist = eval("quickLists."+ql.value);
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-select.raw/process-set-default-quicklist",
+		handleAs: "json",
+		content: {
+			'type': ql.value,
+			'id': id,
+			'text': quicklist,
+		},
+		load: function (data) {
+			dojo.byId("defaultQLId").innerHTML = quicklist;
+			dojo.byId("allPatientsLabelId").innerHTML = allPatientsLabelId + " (" + quicklist + ")";
+			var quicklistSelect = document.getElementsByName("quicklist");
+			quicklistSelect[0].checked = true;
+
+			defaultQuickListType = ql.value;
+			defaultQuickListId = id;
+			defaultQuickListText = quicklist;
+
+			changeQuickList(quicklistSelect[0]);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+function psEnableItemList(enable) {
+	var disabled = true;
+	if (enable) {
+		disabled = false;
+	}
+	dojo.byId("itemInputId").disabled = disabled;
+	dojo.byId("itemListId").disabled = disabled;
+}
+
+
+function populatePatientList(/*Object*/ results, /*Object*/ dataObject) {
+	pscb._hideResultList();
+	var selectList = dojo.byId('patientSelectMultiSelect');
+	if (!selectList) return;
+	selectList.options.length = 0;
+	for (i=0;i<results.length;i++) {
+		var newOption = document.createElement('option');
+    		newOption.text = results[i].i['name'];
+    		newOption.value = results[i].i['label'];
+    		  
+    		try {
+      			selectList.add(newOption,null); // standards compliant; doesn't work in IE
+    		}
+    		catch(ex) {
+      			selectList.add(newOption,null); // IE only
+    		}
+		if (i==0) {
+			selectList.selectedIndex = 0;
+			patientSelectMultiSelectOnChanged(selectList);
+		}
+	}
+}
+
+function loadPatientDetail(data) {
+	if (data != undefined) {
+		var patient = data;
+		psPersonId = patient.person_id;
+		dojo.byId("patientSelectDetailNameId").innerHTML = patient.person.last_name + ", " + patient.person.first_name + " " + patient.person.middle_name;
+		dojo.byId("patientSelectDetailMRNId").innerHTML = patient.record_number;
+		dojo.byId("patientSelectDetailAgeId").innerHTML = patient.age;
+		dojo.byId("patientSelectDetailSexId").innerHTML = patient.displayGender;
+		dojo.byId("patientSelectDetailDateOfBirthId").innerHTML = patient.person.date_of_birth;
+		//dojo.byId('patientDetailLocation').innerHTML = patient['dateOfBirth'];
+		//dojo.byId('patientDetailRoom').innerHTML = patient['dateOfBirth'];
+		//dojo.byId('patientDetailBed').innerHTML = patient['dateOfBirth'];
+		var photoImage = "<?=$this->baseUrl?>/img/no-person-image.png";
+		if (patient.person.activePhoto > 0) {
+			photoImage = "<?=$this->baseUrl?>/attachments.raw/view-attachment?attachmentId="+patient.person.activePhoto;
+		}
+		dojo.byId("patientSelectPhotoId").src = photoImage;
+	  }
+	  dojo.byId("patientSelectNoPatientId").style.display = "none";
+	  dojo.byId("patientSelectDetailDisplayId").style.display = "block";
+}
+var pscb = dijit.byId('patientSelectAutoCompleteDiv');
+if (pscb != undefined) { 
+	pscb.destroyRecursive();
+	pscb = null;
+}
+var psac = new custom.PatientSelectAutoComplete({url:"<?=$this->baseUrl?>/patient-select.raw/auto-complete",requestMethod:"get"},'patientSelectAutoComplete');
+pscb = new custom.PatientSelectComboBox({name:"patientSelectAutoCompleteId",autocomplete:false,store:psac,hasDownArrow:false},"patientSelectAutoCompleteDiv");
+dojo.connect(pscb,"_openResultList",'populatePatientList');
+function patientSelectMultiSelectOnChanged(select) {
+	psPersonId = 0;
+	var personId = select.options[select.selectedIndex].value;
+	if (personId == "") {
+		return;
+	}
+	dojo.xhrGet({
+		url: '<?=$this->baseUrl?>/patient-select.raw/detail?personId=' + personId,
+		handleAs: 'json',
+		load: loadPatientDetail,
+		error: function (er) {
+			alert('multiselect: ' + er)
+		}
+	});
+}
+
+
+function patientSelectSelected() {
+	var patientId = dojo.byId('patientSelectMultiSelect').options[dojo.byId('patientSelectMultiSelect').selectedIndex].value;
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/patient-select.raw/get-most-recent-visit?personId="+patientId,
+		handleAs: "json",
+		load: function (data) {
+			mainController.setActiveVisit(data);
+			mainController.setActivePatient(patientId);
+			closeWindowSelectPatient();
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var quicklist = document.getElementsByName("quicklist");
+for (var i = 0; i < quicklist.length; i++) {
+	if (quicklist[i].checked) {
+		changeQuickList(quicklist[i]);
+		break;
+	}
+}
+
+
+var alGrid = new dhtmlXGridObject('alertsContainer');
+alGrid.setImagePath("<?=$this->baseUrl?>/img/");
+alGrid.setHeader("<?=__('Urgency')?>,<?=__('Patient')?>,<?=__('Location')?>,<?=__('Alert Date/Time')?>,<?=__('Message')?>,<?=__('Forwarded By')?>,<?=__('Comment')?>,,");
+alGrid.setInitWidths("55,125,80,110,*,*,*,0,0");
+//alGrid.setColAlign("left,left,left,left,left,left,left");
+alGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
+alGrid.setSkin("xp");
+alGrid.enableAlterCss("even","uneven");
+alGrid.attachEvent('onRowDblClicked',alGridOnRowDblClicked);
+alGrid.attachEvent("onRowSelect",alGridOnRowSelectHandler);
+alGrid.init();
+function alertsOnLoaded() {
+	globAlerts = new Array();
+	alGrid.forEachRow(function(rowId){
+		globAlerts.push({id:rowId,jumpLink:alGrid.cells(rowId,7).getValue(),others:alGrid.cells(rowId,8).getValue()});
+	});
+	toggleAllProcessButtons(true);
+	var numRows = alGrid.getRowsNum();
+	if (!numRows > 0) {
+		return;
+	}
+	dojo.byId("processAllId").disabled = false;
+	dojo.byId("myAlertsCtr").innerHTML = alGrid.getRowsNum();
+}
+function toggleAllProcessButtons(disabled) {
+	dojo.byId("processInfoId").disabled = disabled;
+	dojo.byId("processAllId").disabled = disabled;
+	dojo.byId("processId").disabled = disabled;
+	dojo.byId("forwardId").disabled = disabled;
+}
+function alertsReload() {
+	alGrid.clearAll();
+	alGrid.load("<?=$this->baseUrl?>/general-alerts.raw/my-alerts",alertsOnLoaded,"json");
+}
+function alGridOnRowDblClicked(rowId,colIndex) {
+	executeJumpLinkAlert(rowId);
+	showProcessAlertBar(rowId);
+	closeWindowSelectPatient();
+}
+function alGridOnRowSelectHandler(rowId,cellIndex) {
+	if (dojo.byId("processId"))
+		dojo.byId("processId").disabled = false;
+	if (dojo.byId("forwardId"))
+		dojo.byId("forwardId").disabled = false;
+}
+alertsReload();
+function processSelectedAlert() {
+	var rowId = alGrid.getSelectedRowId();
+	if (rowId == null) {
+		return;
+	}
+	alGridOnRowDblClicked(rowId,0);
+}
+function processAddOption(objSelect,rowId) {
+	var patient = alGrid.cells(rowId,1).getValue();
+	var message = alGrid.cells(rowId,4).getValue();
+	objSelect.options[objSelect.options.length] = new Option(patient + ' ' + message,rowId);
+}
+function showProcessAlertBar(rowId) {
+	var mainProcessingBar = dojo.byId("mainProcessingBar");
+	mainProcessingBar.style.display = "block";
+	var processAlertItemsSelect = dojo.byId("processAlertItems");
+	processAlertItemsSelect.options.length = 0;
+
+	if (rowId) {
+		processAddOption(processAlertItemsSelect,rowId);
+	}
+	else {
+		alGrid.forEachRow(function(rowId){ processAddOption(processAlertItemsSelect,rowId); });
+	}
+}
+function processAllAlerts() {
+	showProcessAlertBar();
+	var objSelect = dojo.byId("processAlertItems");
+	if (objSelect.options.length <= 0) return;
+	executeJumpLinkAlert(objSelect.options[0].value);
+	closeWindowSelectPatient();
+}
+function forwardSelectedAlert() {
+	// temporarily call processSelectedAlert
+	//processSelectedAlert();
+	var rowId = alGrid.getSelectedRowId();
+	if (rowId == null) {
+		return;
+	}
+	processAlertForward(rowId,"alertsReload");
+}
+function addAlert() {
+	globalCreateWindow("winAddAlertId",new Array(),"<?=$this->baseUrl?>/general-alerts.raw/user-add-alert","<?=__('Add Alert')?>",600,300);
+}
+</script>

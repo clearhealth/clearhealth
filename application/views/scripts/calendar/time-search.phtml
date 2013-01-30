@@ -1,0 +1,374 @@
+<style>
+.dxcalmonth td.month_btn_left, .dxcalmonth td.month_btn_right {
+	background:none !important;
+}
+div.gridbox_xp#calendarTimeGridId table.hdr td div.hdrcell, div.gridbox_xp#calendarScheduleGridId table.hdr td div.hdrcell {
+	height:50px;
+}
+</style>
+<div id="timeSearchLayoutId" style="width:auto;height:750px;"></div>
+<div id="leftDivId" style="margin:10px;display:none;">
+	<div id="loadingMiniCalDivId" style="display:none;"><img src="<?=$this->baseUrl?>/img/loading.gif" style="margin-left:5px;margin-top:5px;" alt="Loading..." /></div>
+	<div id="miniCalDivId" style="display:none;position:relative;overflow:auto;width:300px;">
+		<div id="calDivId0"></div>
+		<div id="calDivId1" style="margin-top:-30px;"></div>
+		<div id="calDivId2" style="margin-top:-30px;"></div>
+		<div id="calDivId3" style="margin-top:-30px;"></div>
+	</div>
+</div>
+<div id="centerDivId" style="margin:5px;display:none;">
+	<div style="margin-top:5px;"><?=__('Provider')?><br /><?=$this->formSelect('providerId',$this->providerId,array('id'=>'providerId','style'=>'width:205px;'),$this->providers)?></div>
+	<div style="margin-top:5px;"><?=__('Room')?><br /><?=$this->formSelect('roomId',$this->roomId,array('id'=>'roomId','style'=>'width:205px;'),$this->rooms)?></div>
+	<div style="margin-top:5px;"><?=__('Time')?><br />
+		<?=__('from')?> <?=$this->formText('startTime',$this->timeStart,array('id'=>'startTime','style'=>'width:50px;'))?>
+		<?=__('to')?> <?=$this->formText('endTime',$this->timeEnd,array('id'=>'endTime','style'=>'width:50px;'))?>
+	</div>
+	<!--<div style="margin-top:5px;"><?=__('Title')?><br /><?=$this->formText('title',null,array('id'=>'title','style'=>'width:200px;'))?></div>-->
+	<div style="margin-top:5px;"><?=$this->formButton('searchId',__('Search'),array('id'=>'searchId','onClick'=>'timeSearchLookup()'))?></div>
+</div>
+<div id="rightDivId" style="margin:5px;display:none;">
+	<div id="loadingCalDivId" style="display:none;"><img src="<?=$this->baseUrl?>/img/loading.gif" style="margin-left:5px;margin-top:5px;" alt="Loading..." /></div>
+	<div id="calendarDivId" style="display:none;width:auto;">
+		<div id="calendarTimeGridId" style="float:left;width:50px;height:1500px;"></div>
+		<div id="calendarScheduleGridId" style="float:left;width:250px;height:1500px;"></div>
+	</div>
+</div>
+<script>
+if (typeof globalCallbackList == "undefined") globalCallbackList = {};
+
+var globalCalendarFilters = {};
+var timeSearchLayout = new dhtmlXLayoutObject("timeSearchLayoutId","3W");
+timeSearchLayout.setEffect("collapse",true);
+timeSearchLayout.cells("a").hideHeader();
+timeSearchLayout.cells("b").hideHeader();
+timeSearchLayout.cells("c").hideHeader();
+timeSearchLayout.cells("a").setWidth(200);
+timeSearchLayout.cells("b").setWidth(250);
+timeSearchLayout.cells("c").setWidth(450);
+timeSearchLayout.cells("a").fixSize(true,false);
+timeSearchLayout.cells("b").fixSize(true,false);
+timeSearchLayout.cells("c").fixSize(true,false);
+timeSearchLayout.cells("a").attachObject("leftDivId");
+timeSearchLayout.cells("b").attachObject("centerDivId");
+timeSearchLayout.cells("c").attachObject("rightDivId");
+dojo.byId("rightDivId").parentNode.style.overflow = "auto";
+
+var calendarTimeGrid = new dhtmlXGridObject("calendarTimeGridId");
+calendarTimeGrid.setImagePath("<?=$this->baseUrl?>/img/");
+calendarTimeGrid.setHeader("<?=__('Time')?><br /><label id=\"timeLabelId\" style=\"font-size:9px;\">2015-01-01</label>");
+calendarTimeGrid.setInitWidths("*");
+calendarTimeGrid.setColTypes("ro");
+calendarTimeGrid.setSkin("xp");
+calendarTimeGrid.init();
+calendarTimeGrid.load("<?=$this->baseUrl?>/calendar.raw/generate-time-column","json");
+dhtmlxEvent(calendarTimeGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+var calendarScheduleGrid = new dhtmlXGridObject("calendarScheduleGridId");
+calendarScheduleGrid.enableDragAndDrop(true);
+calendarScheduleGrid.setImagePath("<?=$this->baseUrl?>/img/");
+calendarScheduleGrid.setInitWidths("*");
+calendarScheduleGrid.setColTypes("ro");
+calendarScheduleGrid.setSkin("xp");
+calendarScheduleGrid.rowToDragElement = function(rowId){
+	var appointmentId = calendarScheduleGrid._appointmentCalendar.appointmentId;
+	var text = this.cells(rowId,0).getValue();
+	if (parseInt(this.getUserData(rowId,"ctr")) > 1) { // double book detected
+		var childNodes = this.cells(rowId,0).cell.childNodes;
+		for (var i = 0; i < childNodes.length; i++) {
+			var node = childNodes[i];
+			if (node.nodeName.toLowerCase() == "div" && node.id == ("event"+appointmentId)) {
+				var marginLeft = node.style.marginLeft;
+				node.style.marginLeft = "8px";
+				var attributes = [];
+				for (var j = 0; j < node.attributes.length; j++) {
+					attributes.push(node.attributes[j].name+"=\""+node.attributes[j].value+"\"");
+				}
+				node.style.marginLeft = marginLeft;
+				text = "<div "+attributes.join(" ")+">"+node.innerHTML+"</div>";
+				break;
+			}
+		}
+	}
+	return text;
+};
+calendarScheduleGrid.attachEvent("onDrag",function(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	var callbackId = calendarScheduleGrid.uid();
+	globalCallbackList[callbackId] = {
+		"func": calendarScheduleGridReload,
+		"object": {
+			"id": callbackId,
+		},
+		"params": [globalCalendarFilters],
+	};
+	return this._appointmentCalendar.onDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo,callbackId);
+});
+
+calendarScheduleGrid.attachEvent("onDrop",function(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	return false;
+});
+calendarScheduleGrid.attachEvent("onRowDblClicked",function(rowId,colIndex){
+	this._appointmentCalendar.appointmentId = null;
+	var callbackId = calendarScheduleGrid.uid();
+	globalCallbackList[callbackId] = {
+		"func": calendarScheduleGridReload,
+		"object": {
+			"id": callbackId,
+		},
+		"params": [globalCalendarFilters],
+	};
+	this._appointmentCalendar.onDblClicked(rowId,colIndex,callbackId);
+});
+calendarScheduleGrid._appointmentCalendar = new appointmentCalendarClass(calendarScheduleGrid,calendarTimeGrid);
+function calendarSetAppointmentId(appointmentId) {
+	calendarScheduleGrid._appointmentCalendar.appointmentId = appointmentId;
+}
+
+function calendarExpandAppointment(appointmentId,obj,height) {
+	obj.style.height = "auto";
+	if (parseInt(obj.offsetHeight) < parseInt(height)) obj.style.height = height+"px";
+	obj.style.zIndex = 9999;
+}
+
+function calendarShrinkAppointment(appointmentId,obj,height,zIndex) {
+	obj.style.height = height+"px";
+	obj.style.zIndex = zIndex;
+}
+
+calendarScheduleGrid.setHeader("");
+calendarScheduleGrid.init();
+calendarScheduleGrid.attachEvent("onMouseOver",function(rowId,cellIndex){
+	var tooltip = timeColumnGrid.cells2(calendarScheduleGrid.getRowIndex(rowId),cellIndex).getValue();
+	var title = calendarScheduleGrid.getUserData(rowId,"title");
+	if (title && title.length > 0) {
+		tooltip += " " + title;
+	}
+	calendarScheduleGrid.cells(rowId,cellIndex).cell.title = tooltip;
+	return false;
+});
+function calendarScheduleGridReload(filters) {
+	var loadingCalDiv = dojo.byId("loadingCalDivId");
+	var calendarDiv = dojo.byId("calendarDivId");
+	loadingCalDiv.style.display = "";
+	calendarDiv.style.display = "none";
+
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/calendar.raw/get-appointment-details",
+		handleAs: "json",
+		content: filters,
+		load: function (data) {
+			loadingCalDiv.style.display = "none";
+			calendarDiv.style.display = "";
+			dojo.byId("timeLabelId").innerHTML = filters.date;
+
+			calendarScheduleGrid.clearAll();
+			calendarScheduleGrid.parse(data.events,calendarScheduleGridOnLoaded,"json");
+			calendarScheduleGrid.setColumnLabel("0",data.header);
+		},
+		error: function (error) {
+			loadingCalDiv.style.display = "none";
+			calendarDiv.style.display = "none";
+			alert(error);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+dhtmlxEvent(calendarScheduleGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function calendarScheduleGridOnLoaded() {
+	var defaultWidth = 250;
+	var rowId = calendarScheduleGrid.getRowId(0);
+	var colMultiplier = calendarScheduleGrid.getUserData(rowId,"colMultiplier");
+	var colWidth = colMultiplier * defaultWidth;
+	if (colWidth > defaultWidth) {
+		defaultWidth = colWidth;
+	}
+	dojo.byId("calendarScheduleGridId").style.width = defaultWidth + "px";
+	// reset the skin to update its design
+	calendarScheduleGrid.setSkin("xp");
+	var timeWidth = parseInt(dojo.byId("calendarTimeGridId").style.width);
+	if (isNaN(timeWidth)) timeWidth = 60;
+	dojo.byId("calendarDivId").style.width = (defaultWidth + timeWidth + 10) + "px";
+}
+
+function timeSearchLoadCalendar(value) {
+	var d = new Date(value);
+	var month = (d.getMonth() + 1);
+	if (month < 10) month = "0" + month;
+	var day = d.getDate();
+	if (day < 10) day = "0" + day;
+	globalCalendarFilters = {
+		"providerId": currentFilters.providerId,
+		"roomId": currentFilters.roomId,
+		"date": d.getFullYear() + "-" + month + "-" + day,
+	};
+	calendarScheduleGridReload(globalCalendarFilters);
+}
+
+var currentFilters = {};
+var dates = {};
+var oCalendars = [null,null,null,null];
+<?foreach($this->months as $key=>$value):?>
+oCalendars[<?=$key?>] = new dhtmlxCalendarObject("calDivId<?=$key?>",true);
+oCalendars[<?=$key?>].setDate("<?=$value['month']?>-1");
+oCalendars[<?=$key?>].attachEvent("onClick",function(value){
+	var d = new Date(value);
+	var ym = d.getFullYear() + "" + d.getMonth();
+	var data = dates[ym];
+	if (dojo.byId("searchId").disabled || (data.key == 0 && d.getDate() < <?=date('d',strtotime($this->dateStart))?>)) {
+		oCalendars[0].setDate("<?=$this->dateStart?>");
+		return;
+	}
+	timeSearchLoadCalendar(value);
+});
+oCalendars[<?=$key?>].attachEvent("onChangeMonth",function(curMonth,prevMonth){
+	this.setDate(this.getDate()); // disable month change
+});
+dates["<?=$value['jsmonth']?>"] = {
+	"key": "<?=$key?>",
+	"month": "<?=$value['month']?>",
+	"lastDay": "<?=$value['lastDay']?>",
+};
+<?endforeach;?>
+oCalendars[0].setDate("<?=$this->dateStart?>");
+//timeSearchLoadCalendar(oCalendars[0].getDate());
+
+function timeSearchCalendarReset() {
+	for (var i in oCalendars) {
+		var d = new Date(oCalendars[i].getDate());
+		var ym = d.getFullYear() + "" + d.getMonth();
+		var data = dates[ym];
+		for (d = 1; d <= data.lastDay; d++) {
+			var id = oCalendars[data.key].uid + ym + "" + d;
+			var obj = dojo.byId(id);
+			if (obj) obj.style.backgroundColor = "#CCD0CF";
+		}
+	}
+}
+timeSearchCalendarReset();
+
+function timeSearchLookup() {
+	var providerId = 0;
+	var roomId = 0;
+	var dateStart = "00:00";
+	var dateEnd = "23:59";
+
+	var oProvider = dojo.byId("providerId");
+	if (oProvider.selectedIndex >= 0) providerId = oProvider.options[oProvider.selectedIndex].value;
+
+	var oRoom = dojo.byId("roomId");
+	if (oRoom.selectedIndex >= 0) roomId = oRoom.options[oRoom.selectedIndex].value;
+
+	var startTime = dojo.byId("startTime").value + "";
+	if (startTime.length > 0) {
+		var x = startTime.split(":");
+		var valid = false;
+		if (x.length > 1 && !isNaN(x[0]) && !isNaN(x[1])
+		   && (parseInt(x[0]) >= 0 && parseInt(x[0]) < 24)
+		   && (parseInt(x[1]) >= 0 && parseInt(x[1]) < 60)) {
+			dateStart = x[0] + ":" + x[1];
+			valid = true;
+		}
+		if (!valid) {
+			alert("Start Time is invalid");
+			return;
+		}
+	}
+	var endTime = dojo.byId("endTime").value + "";
+	if (endTime.length > 0) {
+		var x = endTime.split(":");
+		var valid = false;
+		if (x.length > 1 && !isNaN(x[0]) && !isNaN(x[1])
+		   && (parseInt(x[0]) >= 0 && parseInt(x[0]) < 24)
+		   && (parseInt(x[1]) >= 0 && parseInt(x[1]) < 60)) {
+			dateEnd = x[0] + ":" + x[1];
+			valid = true;
+		}
+		if (!valid) {
+			alert("End Time is invalid");
+			return;
+		}
+	}
+
+	timeSearchCalendarReset();
+	dateStart = "<?=$this->dateStart?> " + dateStart;
+	dateEnd = "<?=$this->dateEnd?> " + dateEnd;
+
+	currentFilters = {
+		"providerId": providerId,
+		"roomId": roomId,
+		"dateStart": dateStart,
+		"dateEnd": dateEnd,
+	};
+	var oSearch = dojo.byId("searchId");
+	oSearch.disabled = true;
+	oSearch.innerHTML = "<?=__('Please wait...')?>";
+
+	var loadingMiniCalDiv = dojo.byId("loadingMiniCalDivId");
+	var miniCalDiv = dojo.byId("miniCalDivId");
+	loadingMiniCalDiv.style.display = "";
+	miniCalDiv.style.display = "none";
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/calendar.raw/lookup-time-search",
+		handleAs: "json",
+		content: currentFilters,
+		load: function (data) {
+			for (var ymd in data) {
+				var value = data[ymd];
+				var month = dates[value.month];
+				if (!month) continue;
+				var id = oCalendars[month.key].uid + ymd;
+				var oId = dojo.byId(id);
+				if (!oId) continue;
+				if (value.value) { // freetime/unbooked
+					oId.style.backgroundColor = "#82CA9D";
+				}
+				else { // fully booked
+					oId.style.backgroundColor = "#F7977A";
+				}
+			}
+			oSearch.disabled = false;
+			oSearch.innerHTML = "<?=__('Search')?>";
+			loadingMiniCalDiv.style.display = "none";
+			miniCalDiv.style.display = "";
+		},
+		error: function (error) {
+			oSearch.disabled = false;
+			oSearch.innerHTML = "<?=__('Search')?>";
+			loadingMiniCalDiv.style.display = "none";
+			miniCalDiv.style.display = "none";
+			alert(error);
+			console.error("Error: ",error);
+		}
+	});
+}
+timeSearchLookup();
+
+function timeSearchDoubleClicked(obj,evt) {
+	if (!evt) evt = window.event;
+	// cancel bubbles
+	if (evt.stopPropagation) evt.stopPropagation();
+	else evt.cancelBubble = true;
+
+	var callbackId = calendarScheduleGrid.uid();
+	globalCallbackList[callbackId] = {
+		"func": calendarScheduleGridReload,
+		"object": {
+			"id": callbackId,
+		},
+		"params": [globalCalendarFilters],
+	};
+	var appointmentId = obj.getAttribute("appointmentId");
+	var win = calendarScheduleGrid._appointmentCalendar.openAppointmentWindow({
+		"appointmentId":appointmentId,
+		"callbackId":callbackId,
+	},"edit");
+	win.setText("Edit Appointment");
+}
+</script>

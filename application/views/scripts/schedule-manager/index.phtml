@@ -1,0 +1,842 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+div.gridbox#scheduleGridId table.obj td { /* data cell */
+	text-align: center; /* alternative for grid.setColAlign("center") since it currently not working; it assumes that all cells be a centered align */
+}
+div.gridbox#scheduleGridId table.obj tr.rowselected td { /* elements in the selected row */
+	background-color: white;
+}
+
+div.gridbox#scheduleGridId table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected { /* element in the selected cell */
+	background-color: #ccc;
+}
+.smallButton {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:15px;
+}
+</style>
+
+<div id="schedToolbarId" style="width:100%;border:1px solid Silver;"></div>
+<div class="formRow">
+	<div style="float:left;">
+		<dt><label class="optional"><?=__('Person/Resource')?></label></dt>
+		<div id="personResourceSelectAutoCompleteDiv"></div>
+	</div>
+	<div style="float:left;margin-left:25px;">
+		<dt><label class="optional"><?=__('Date')?></label></dt>
+		<div><?=$this->formDateText('scheduleDate')?></div>
+	</div>
+</div>
+<br style="clear:left;" />
+<div id="scheduleGridId" style="width:auto;height:400px;overflow:hidden;"></div>
+
+<div id="scheduleTimePickerId" style="position:absolute;display:none;background-color:#ddd;padding:3px;">
+	<div><?=__('Start')?></div>
+	<div><?=$this->formTimeSpinner('timeStart','8:00 AM',array('smallDelta'=>15))?></div>
+	<div><?=__('End')?></div>
+	<div><?=$this->formTimeSpinner('timeEnd','8:15 AM',array('smallDelta'=>15))?></div>
+	<div><?=__('Title')?></div>
+	<div><?=$this->formText('title',null,array('class'=>'smallButton','id'=>'title','style'=>'width:90px;'))?></div>
+	<div><?=__('Building')?></div>
+	<div><?=$this->formSelect('buildingId',null,array('class'=>'smallButton','id'=>'buildingId','style'=>'width:90px;'),Building::getBuildingArray())?></div>
+	<div>&nbsp;</div>
+	<div><?=$this->formButton('ok',__('OK'),array('class'=>'smallButton','onClick'=>'scheduleTimeOnOK()'))?> <?=$this->formButton('cancel',__('Cancel'),array('class'=>'smallButton','onClick'=>'scheduleTimeOnCancel()'))?></div>
+</div>
+
+<script>
+var trailingRowId = "trailingRowId";
+var schedToolbar = new dhtmlXToolbarObject("schedToolbarId","ClearSilver");
+schedToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+schedToolbar.attachEvent("onClick",function(id){
+	if (globProviderId <= 0 && globRoomId <= 0) {
+		alert("<?=__('No person/resource selected')?>");
+		return;
+	}
+	if (id == "loadTemplate") return;
+	if (id.substr(0,13) == "loadTemplate_") {
+		loadScheduleTemplate(id.substr(13));
+		return;
+	}
+	if (id != "repeatTemplate" && scheduleGrid.getRowsNum() <= 1) {
+		alert("<?=__('Empty schedule list')?>");
+		return;
+	}
+	var rowId = scheduleGrid.getSelectedRowId();
+	var cellIndex = scheduleGrid.getSelectedCellIndex();
+	switch(id) {
+		case "clearWeek":
+			scheduleClearWeek(rowId,cellIndex);
+			break;
+		case "saveTemplate":
+			scheduleSaveTemplate();
+			break;
+		case "loadTemplate":
+			scheduleLoadTemplate();
+			break;
+		case "repeatTemplate":
+			scheduleRepeatTemplate();
+			break;
+		case "copy2User":
+			scheduleCopyToUser();
+			break;
+		default:
+			alert("Invalid event: "+id);
+	}
+});
+function schedToolbarOnLoaded() {
+}
+//schedToolbar.loadXML("<?=$this->baseUrl?>/schedule-manager.xml/toolbar-xml",schedToolbarOnLoaded);
+schedToolbar.addButton("clearWeek",1,"<?=__('Clear Week')?>","clear.png","clear.png");
+schedToolbar.addButton("saveTemplate",2,"<?=__('Save Template')?>","save.png","save.png");
+var opts = [];
+<?foreach ($this->templates as $id=>$name):?>
+opts.push(["loadTemplate_<?=$id?>","obj","<?=$name?>","blank.gif"]);
+<?endforeach;?>
+schedToolbar.addButtonSelect("loadTemplate",3,"<?=__('Load Template')?>",opts,"getStatus.png","getStatus.png");
+schedToolbar.addButton("repeatTemplate",4,"<?=__('Duplicate Schedule')?>","newproblem.png","newproblem.png");
+schedToolbar.addButton("copy2User",5,"<?=__('Copy to User/Room')?>","copydocument.png","copydocument.png");
+
+function scheduleRepeatTemplate() {
+	var params = [];
+	params.push("date="+formatScheduleDate(boxScheduleDate.getValue()));
+	winScheduleRepeatTemplate = globalCreateWindow("windowScheduleRepeatTemplateId",params,"<?=$this->baseUrl?>/schedule-manager.raw/repeat-template","<?=__('Duplicate Schedule')?>",300,250);
+}
+
+function scheduleCopyToUser() {
+	var params = [];
+	params.push("date="+formatScheduleDate(boxScheduleDate.getValue()));
+	params.push("providerId="+globProviderId);
+	params.push("roomId="+globRoomId);
+	winScheduleCopyToUser = globalCreateWindow("windowScheduleCopyToUserId",params,"<?=$this->baseUrl?>/schedule-manager.raw/copy-to-user","<?=__('Copy To User')?>",500,300);
+}
+
+var userDetails = null;
+
+dojo.connect(boxScheduleDate,"onChange","scheduleDateOnChanged");
+function scheduleDateOnChanged(value) {
+	scheduleGridReload();
+}
+
+function scheduleCheckConflicts(timeStart,timeEnd) {
+	var timeStartHrMin = extractHrMin(timeStart);
+	var timeEndHrMin = extractHrMin(timeEnd);
+	var rowId;
+	var val;
+	var arrVal;
+	var hrMin;
+	// alternative to grid.forEachRow
+	for (var a in scheduleGrid.rowsAr) {
+		if (!(scheduleGrid.rowsAr[a] && scheduleGrid.rowsAr[a].idd)) {
+			continue;
+		}
+		rowId = scheduleGrid.rowsAr[a].idd;
+		val = scheduleGrid.getUserData(rowId,"t"+globCellIndex);
+		if (!(rowId != globRowId && rowId != trailingRowId && (val != null && val.length > 0))) {
+			continue;
+		}
+		arrVal = val.split("-");
+		if (arrVal.length != 2) continue;
+		var startHrMin = extractHrMin(arrVal[0]);
+		var endHrMin = extractHrMin(arrVal[1]);
+		if (checkBetween(startHrMin,endHrMin,timeStartHrMin) || checkBetween(startHrMin,endHrMin,timeEndHrMin)) {
+			return val;
+		}
+	}
+	return false;
+}
+
+function checkBetween(timeStart,timeEnd,timeCompare) {
+	var dateStart = new Date(<?=date('Y')?>,<?=(date('m') - 1)?>,<?=date('d')?>,timeStart.hr,timeStart.min);
+	var dateEnd = new Date(<?=date('Y')?>,<?=(date('m') - 1)?>,<?=date('d')?>,timeEnd.hr,timeEnd.min);
+	var dateCompare = new Date(<?=date('Y')?>,<?=(date('m') - 1)?>,<?=date('d')?>,timeCompare.hr,timeCompare.min);
+	var dateStartTime = dateStart.getTime();
+	var dateEndTime = dateEnd.getTime();
+	var dateCompareTime = dateCompare.getTime();
+
+	return (dateCompareTime > dateStartTime && dateCompareTime < dateEndTime);
+}
+
+function scheduleTimeOnOK() {
+	if (globRowId === null || globOrmId === null || globOrmId < 1) {
+		alert("<?=__('No Person/Resource selected')?>");
+		scheduleTimeOnCancel();
+		return;
+	}
+	var timeStart = formatHrMin(timeStartTimeSpin.getValue());
+	var timeEnd = formatHrMin(timeEndTimeSpin.getValue());
+
+	var conflicts = scheduleCheckConflicts(timeStart,timeEnd);
+	if (conflicts != false) {
+		alert("<?=__('Conflict schedules')?>: "+conflicts);
+		return;
+	}
+
+	//var value = timeStart + "-" + timeEnd;
+	//scheduleGrid.cells(globRowId,globCellIndex).setValue(value);
+
+	var buildingSelect = dojo.byId("buildingId");
+	var buildingId = 0;
+	if (buildingSelect.selectedIndex >= 0) {
+		buildingId = buildingSelect.options[buildingSelect.selectedIndex].value;
+	}
+
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-edit",
+		handleAs: "json",
+		content: {
+			"scheduleEventId": scheduleGrid.getUserData(globRowId,globCellIndex),
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"schedules[providerId]": globProviderId,
+			"schedules[roomId]": globRoomId,
+			"weekday": scheduleGrid.getColumnId(globCellIndex),
+			"schedules[start]": timeStart,
+			"schedules[end]": timeEnd,
+			"schedules[title]": dojo.byId("title").value,
+			"schedules[buildingId]": buildingId,
+		},
+		load: function (data) {
+			scheduleGridGetEvent(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+	scheduleTimeOnCancel();
+}
+
+function scheduleGridGetEvent(id) {
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/get-event?id="+id,
+		handleAs: "json",
+		load: function (data) {
+			var rowId = globRowId;
+			if (rowId == trailingRowId) {
+				rowId = scheduleGrid.getRowsNum();
+				scheduleGrid.addRow(rowId,"",(rowId-1));
+				globRowId = rowId;
+			}
+			fillGridCell(rowId,globCellIndex,data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleTimeOnCancel() {
+	dojo.byId("scheduleTimePickerId").style.display = "none";
+}
+
+function scheduleChangeTitle() {
+	// Value should default to prior days title for block matching same times exactly
+	var cellIndex = globCellIndex - 1;
+	if (cellIndex < 0) {
+		cellIndex = 6;
+	}
+	var times = formatHrMin(timeStartTimeSpin.getValue()) + "-" + formatHrMin(timeEndTimeSpin.getValue());
+	for (var a in scheduleGrid.rowsAr) {
+		if (!(scheduleGrid.rowsAr[a] && scheduleGrid.rowsAr[a].idd)) {
+			continue;
+		}
+		rowId = scheduleGrid.rowsAr[a].idd;
+		var val = scheduleGrid.cells(rowId,cellIndex).getValue();
+		var arr = val.split("<br>");
+		if (arr[0] == times) {
+			dojo.byId("title").value = arr[1];
+			break;
+		}
+	}
+}
+
+dojo.connect(timeStartTimeSpin,"onChange","timeStartOnChanged");
+function timeStartOnChanged(value) {
+	var timeEnd = dojo.date.add(value,"minute",15);
+	var timeValue = timeEndTimeSpin.getValue();
+	if (timeValue.getTime() < timeEnd.getTime()) {
+		timeEndTimeSpin.setValue(timeEnd);
+	}
+
+	//scheduleChangeTitle();
+}
+
+dojo.connect(timeEndTimeSpin,"onChange","timeEndOnChanged");
+function timeEndOnChanged(value) {
+	var timeValue = timeStartTimeSpin.getValue();
+	var timeStart = dojo.date.add(timeValue,"minute",15);
+	if (value.getTime() < timeStart.getTime()) {
+		timeEndTimeSpin.setValue(timeStart);
+	}
+}
+
+var prscb = dijit.byId("personResourceSelectAutoCompleteDiv");
+if (prscb != undefined) { 
+	prscb.destroyRecursive();
+	prscb = null;
+}
+
+var prsac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/schedule-manager.raw/auto-complete",requestMethod:"get"},"personResourceSelectAutoComplete");
+prscb = new dijit.form.FilteringSelect({name:"personResourceSelectAutoCompleteId",autocomplete:true,store:prsac,searchDelay:500},"personResourceSelectAutoCompleteDiv");
+prscb.validate = function () {return true;};
+dojo.connect(prscb,"onChange","getPersonResourceDetails");
+function getPersonResourceDetails(args) {
+	if (args === undefined) return;
+	// args refers to value (personId or roomId)
+	if (args.length > 0) {
+		userDetails = null;
+		var pref = args.substr(0,3);
+		var id = parseInt(args.substr(3));
+		var providerId = 0;
+		var roomId = 0;
+		if (pref == "rid") {
+			roomId = id;
+		}
+		else {
+			providerId = id;
+			getUserDetails(id);
+		}
+		scheduleGridReload(providerId,roomId);
+	}
+}
+
+function getUserDetails(id) {
+	dojo.xhrGet({
+		url: globalBaseUrl+"/schedule-manager.raw/get-user-details?id="+id,
+		handleAs: "json",
+		load: function (data) {
+			userDetails = data;
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleCopyToPreviousDay(colIndex) {
+	var previousCol = colIndex - 1;
+	if (previousCol < 0) {
+		previousCol = 6;
+	}
+	scheduleCopy(colIndex,previousCol);
+}
+
+function scheduleCopyToNextDay(colIndex) {
+	var nextCol = colIndex + 1;
+	if (nextCol > 6) {
+		nextCol = 0;
+	}
+	scheduleCopy(colIndex,nextCol);
+}
+
+function scheduleCopy(from,to) {
+	if (globOrmId === null || globOrmId < 1) {
+		return;
+	}
+	var hasSchedule = false;
+	var hasScheduleTo = false;
+	scheduleGrid.forEachRow(function(rowId){
+		if (rowId == trailingRowId) return;
+		var val = parseInt(this.getUserData(rowId,from));
+		if (val > 0) {
+			hasSchedule = true;
+		}
+		val = parseInt(this.getUserData(rowId,to));
+		if (val > 0) {
+			hasScheduleTo = true;
+		}
+	});
+	if (!hasSchedule) {
+		alert("<?=__('Source has no schedule')?>");
+		return;
+	}
+	if (hasScheduleTo && !confirm("<?=__('Are you sure you want to proceed? Destination schedule will be overwritten.')?>\n <?=__('from')?> "+daysOfWeek[from]+" <?=__('to')?> " +daysOfWeek[to])) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-copy",
+		handleAs: "json",
+		content: {
+			"from": scheduleGrid.getColumnId(from),
+			"to": scheduleGrid.getColumnId(to),
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			scheduleFillColumn(to,data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleFillColumn(cellIndex,data) {
+	// clear column
+	scheduleGrid.forEachRow(function(id){
+		if (id == trailingRowId) return;
+		clearGridCell(id,cellIndex);
+	});
+	//scheduleGridReload();
+	for (var i in data) {
+		// array('data'=>'','userdata'=>'','buildingId'=>'')
+		var id = scheduleGrid.getRowId(i);
+		fillGridCell(id,cellIndex,data[i]);
+	}
+}
+
+function schedulePreviousLink(index) {
+	var icon = '<img src="' + globalBaseUrl + '/img/ar_left.gif" height="12" />';
+	return '<a href="javascript:scheduleCopyToPreviousDay(' + index + ');" title="<?=__('Copy to Previous Day')?>">' + icon + "</a>";
+}
+
+function scheduleNextLink(index) {
+	var icon = '<img src="' + globalBaseUrl + '/img/ar_right.gif" height="12" />';
+	return '<a href="javascript:scheduleCopyToNextDay(' + index + ');" title="<?=__('Copy to Next Day')?>">' + icon + "</a>";
+}
+
+var scheduleGrid = new dhtmlXGridObject("scheduleGridId");
+scheduleGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexSchedSunday = 0;
+var indexSchedMonday = 1;
+var indexSchedTuesday = 2;
+var indexSchedWednesday = 3;
+var indexSchedThursday = 4;
+var indexSchedFriday = 5;
+var indexSchedSaturday = 6;
+var daysOfWeek = ["<?=__('Sunday')?>","<?=__('Monday')?>","<?=__('Tuesday')?>","<?=__('Wednesday')?>","<?=__('Thursday')?>","<?=__('Friday')?>","<?=__('Saturday')?>"];
+var monday = schedulePreviousLink(indexSchedMonday) + " <label id=\"headerLabel1\">" + daysOfWeek[indexSchedMonday] + "</label> " + scheduleNextLink(indexSchedMonday);
+var tuesday = schedulePreviousLink(indexSchedTuesday) + " <label id=\"headerLabel2\">" + daysOfWeek[indexSchedTuesday] + "</label> " + scheduleNextLink(indexSchedTuesday);
+var wednesday = schedulePreviousLink(indexSchedWednesday) + " <label id=\"headerLabel3\">" + daysOfWeek[indexSchedWednesday] + "</label> " + scheduleNextLink(indexSchedWednesday);
+var thursday = schedulePreviousLink(indexSchedThursday) + " <label id=\"headerLabel4\">" + daysOfWeek[indexSchedThursday] + "</label> " + scheduleNextLink(indexSchedThursday);
+var friday = schedulePreviousLink(indexSchedFriday) + " <label id=\"headerLabel5\">" + daysOfWeek[indexSchedFriday] + "</label> " + scheduleNextLink(indexSchedFriday);
+var saturday = schedulePreviousLink(indexSchedSaturday) + " <label id=\"headerLabel6\">" + daysOfWeek[indexSchedSaturday] + "</label> " + scheduleNextLink(indexSchedSaturday);
+var sunday = schedulePreviousLink(indexSchedSunday) + " <label id=\"headerLabel7\">" + daysOfWeek[indexSchedSunday] + "</label> " + scheduleNextLink(indexSchedSunday);
+scheduleGrid.setHeader(sunday+","+monday + "," + tuesday + "," + wednesday + "," + thursday + "," + friday + "," + saturday);
+scheduleGrid.setColumnIds("7,1,2,3,4,5,6"); // Sunday to Saturday
+scheduleGrid.setInitWidths("110,110,110,110,110,110,110");
+scheduleGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
+scheduleGrid.setSkin("xp");
+
+var globRowId = null;
+var globCellIndex = null;
+var globOrmId = null;
+var globProviderId = 0;
+var globRoomId = 0;
+var globBuildingId = 0;
+function scheduleGridOnRowDblClicked(rowId,cellIndex) {
+	globRowId = rowId;
+	globCellIndex = cellIndex;
+	var scheduleTimePicker = dojo.byId("scheduleTimePickerId");
+
+	var obj = scheduleGrid.cells(rowId,cellIndex).cell;
+	var offsetLeft = 0;
+	var offsetTop = 0;
+	if (obj.offsetParent) {
+		while (true) {
+			offsetLeft += obj.offsetLeft;
+			offsetTop += obj.offsetTop;
+			if (!obj.offsetParent) break;
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.x) {
+		offsetLeft += obj.x;
+		offsetTop += obj.y;
+	}
+
+	var win = dhxWins.window("windowScheduleManagerId");
+	var pos = win.getPosition();
+	offsetLeft -= (pos[0] + 6); // left
+	offsetTop -= (pos[1] + 12); // top
+	var dime = win.getDimension();
+	var offsetHeight = scheduleTimePicker.offsetHeight;
+	if (offsetHeight <= 0) offsetHeight = 160;
+	offsetHeight += 40;
+	if ((offsetTop + offsetHeight) > dime[1]) offsetTop = dime[1] - offsetHeight;
+
+	scheduleTimePicker.style.left = offsetLeft + "px";
+	scheduleTimePicker.style.top = offsetTop + "px";
+
+	var timeStart = new Date();
+	timeStart.setHours(8);
+	timeStart.setMinutes(0);
+	timeStart.setSeconds(0);
+	var timeEnd = new Date();
+	timeEnd.setHours(8);
+	timeEnd.setMinutes(15);
+	timeEnd.setSeconds(0);
+
+	var rowValue = scheduleGrid.getUserData(rowId,"t"+cellIndex);
+	var buildingId = scheduleGrid.getUserData(rowId,"b"+cellIndex);
+	var title = scheduleGrid.getUserData(rowId,"tt"+cellIndex);
+	var emptyDay = true;
+	scheduleGrid.forEachRow(function(id){
+		var val = parseInt(this.getUserData(id,cellIndex));
+		if (id != trailingRowId && val > 0) {
+			emptyDay = false;
+		}
+	});
+	if (emptyDay) {
+		var previousCellIndex = cellIndex - 1;
+		if (previousCellIndex < 0) {
+			previousCellIndex = 6;
+		}
+		var preceedingRowId = scheduleGrid.getRowId(0);
+		var preceedingValue = scheduleGrid.getUserData(preceedingRowId,"t"+previousCellIndex);
+		if (preceedingValue != null && preceedingRowId != trailingRowId && preceedingValue.length > 0) {
+			rowValue = preceedingValue;
+			title = scheduleGrid.getUserData(preceedingRowId,"tt"+previousCellIndex);
+			buildingId = scheduleGrid.getUserData(preceedingRowId,"b"+previousCellIndex);
+		}
+	}
+	if (rowValue != null && (rowValue != scheduleGrid.getUserData(rowId,cellIndex) || (rowId != trailingRowId && rowValue.length > 0))) {
+		var arrValues = rowValue.split("-");
+		var x = extractHrMin(arrValues[0]);
+		timeStart.setHours(x.hr);
+		timeStart.setMinutes(x.min);
+		x = extractHrMin(arrValues[1]);
+		timeEnd.setHours(x.hr);
+		timeEnd.setMinutes(x.min);
+	}
+	else {
+		var val = "";
+		var arr = [];
+		var h = 0;
+		var m = 0;
+		var hr = 0;
+		var min = 0;
+		scheduleGrid.forEachRow(function(id){
+			if (id == trailingRowId) return;
+			val = this.getUserData(id,"t"+cellIndex);
+			if (val != null && val.length > 0) {
+				arr = val.split("-");
+				var x = extractHrMin(arr[1]);
+				if (x.hr > hr || (x.hr == hr && x.min > min)) {
+					hr = x.hr;
+					min = x.min;
+					title = this.getUserData(id,"tt"+cellIndex);
+					buildingId = this.getUserData(id,"b"+cellIndex);
+				}
+			}
+		});
+		if (hr > 0) {
+			timeStart.setHours(hr);
+			timeStart.setMinutes(min);
+			timeEnd = dojo.date.add(timeStart,"minute",15);
+		}
+	}
+	timeStartTimeSpin.setValue(timeStart);
+	timeEndTimeSpin.setValue(timeEnd);
+
+	var buildingSelect = dojo.byId("buildingId");
+	buildingSelect.selectedIndex = 0;
+
+	if (buildingId <= 0 && userDetails != null) {
+		buildingId = userDetails.defaultBuildingId;
+	}
+	for (var i in buildingSelect.options) {
+		if (buildingSelect.options[i].value != buildingId) {
+			continue;
+		}
+		buildingSelect.selectedIndex = i;
+		break;
+	}
+	dojo.byId("title").value = title;
+
+	scheduleTimePicker.style.display = "block";
+}
+scheduleGrid.attachEvent("onRowDblClicked",scheduleGridOnRowDblClicked);
+
+var scheduleMenu = new dhtmlXMenuObject(null,"standard");
+scheduleMenu.setImagePath("<?=$this->baseUrl?>/img/");
+scheduleMenu.renderAsContextMenu();
+scheduleMenu.setOpenMode("web");
+scheduleMenu.loadXML("<?=$this->baseUrl?>/schedule-manager.raw/get-context-menu");
+scheduleMenu.attachEvent("onClick",scheduleMenuOnClicked);
+function scheduleMenuOnClicked(id,zoneId,casState) {
+	var rowCol = zoneId.split("_");
+	var rowId = rowCol[0];
+	var cellIndex = rowCol[1];
+	switch (id) {
+		case "removeSched":
+			scheduleRemove(rowId,cellIndex);
+			break;
+		case "clearDay":
+			scheduleClearDay(rowId,cellIndex);
+			break;
+	}
+}
+scheduleGrid.enableContextMenu(scheduleMenu);
+scheduleGrid.init();
+
+function scheduleRemove(rowId,cellIndex) {
+	if (!confirm("<?=__('Are you sure you want to remove selected schedule?')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-remove-schedule",
+		handleAs: "json",
+		content: {
+			"weekday": scheduleGrid.getColumnId(cellIndex),
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+			"id": scheduleGrid.getUserData(rowId,cellIndex),
+		},
+		load: function (data) {
+			scheduleFillColumn(cellIndex,data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleClearDay(rowId,cellIndex) {
+	if (!confirm("<?=__('Are you sure you want to clear selected day schedule?')?>\n <?=__('Day')?>: "+daysOfWeek[cellIndex])) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-clear-day",
+		handleAs: "json",
+		content: {
+			"weekday": scheduleGrid.getColumnId(cellIndex),
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			scheduleFillColumn(cellIndex,data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function clearGridCell(rowId,cellIndex) {
+	scheduleGrid.cells(rowId,cellIndex).setValue("");
+	scheduleGrid.setUserData(rowId,cellIndex,"");
+	scheduleGrid.setUserData(rowId,"t"+cellIndex,""); // time
+	scheduleGrid.setUserData(rowId,"b"+cellIndex,""); // buildingId
+	scheduleGrid.setUserData(rowId,"tt"+cellIndex,""); // title
+	scheduleGrid.setCellTextStyle(rowId,cellIndex,"vertical-align:top;background-color:");
+}
+
+function fillGridCell(rowId,cellIndex,data) {
+	scheduleGrid.cells(rowId,cellIndex).setValue(data.data);
+	scheduleGrid.setUserData(rowId,cellIndex,data.userdata);
+	scheduleGrid.setUserData(rowId,"t"+cellIndex,data.time);
+	scheduleGrid.setUserData(rowId,"b"+cellIndex,data.buildingId);
+	scheduleGrid.setUserData(rowId,"tt"+cellIndex,data.title);
+	scheduleGrid.setCellTextStyle(rowId,cellIndex,"vertical-align:top;background-color:"+color);
+}
+
+function scheduleClearWeek(rowId,cellIndex) {
+	if (!confirm("<?=__('Are you sure you want to clear all schedules?')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-clear-week",
+		handleAs: "json",
+		content: {
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			scheduleGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleSaveTemplate() {
+	while (true) {
+		var templateName = prompt("<?=__('Enter template name')?>");
+		if (templateName === null) return;
+		if (templateName.length < 1) {
+			alert("<?=__('Template name is required')?>");
+		}
+		else {
+			break;
+		}
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-save-template",
+		handleAs: "json",
+		content: {
+			"templateName": templateName,
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			var arr = schedToolbar.getAllListOptions("loadTemplate");
+			schedToolbar.addListOption("loadTemplate","loadTemplate_"+data.id,(arr.length+1),"button",data.name,"blank.gif");
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function loadScheduleTemplate(data) {
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-load-template",
+		handleAs: "json",
+		content: {
+			"templateId": parseInt(data),
+			"scheduleDate": formatScheduleDate(boxScheduleDate.getValue()),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			scheduleGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+var winScheduleLoadTemplate = null;
+function scheduleLoadTemplate() {
+	var params = [];
+	params.push("jsCallback=loadScheduleTemplate");
+	winScheduleLoadTemplate = globalCreateWindow("windowScheduleLoadTemplateId",params,"<?=$this->baseUrl?>/schedule-manager.raw/load-template","<?=__('Load Schedule Template')?>",250,150);
+}
+
+function extractHrMin(value) {
+	var ret = {"hr": 0, "min": 0};
+	var hr = 0;
+	var min = 0;
+	var x = value.split(":");
+	hr = x[0];
+	if (hr.substr(0,1) == "0") {
+		hr = hr.substr(1);
+	}
+	if (x.length > 1) {
+		min = x[1].substr(0,2);
+		var ap = x[1].substr(2);
+		if (ap == "PM" && hr < 12) {
+			hr = parseInt(hr) + 12;
+		}
+		if (min.substr(0,1) == "0") {
+			min = min.substr(1);
+		}
+	}
+	ret.hr = parseInt(hr);
+	ret.min = parseInt(min);
+	return ret;
+}
+
+function formatHrMin(value) {
+	var ret = "";
+	var hr = value.getHours();
+	if (hr < 10) {
+		hr = "0" + hr;
+	}
+	var min = value.getMinutes();
+	if (min < 10) {
+		min = "0" + min;
+	}
+	ret += hr + ":" + min;
+	return ret;
+}
+
+function formatScheduleDate(value) {
+	var ret = [];
+	var yr = value.getFullYear();
+	if (yr < 10) {
+		yr = "0" + yr;
+	}
+	ret.push(yr);
+	var mo = value.getMonth() + 1;
+	if (mo < 10) {
+		mo = "0" + mo;
+	}
+	ret.push(mo);
+	var dt = value.getDate();
+	if (dt < 10) {
+		dt = "0" + dt;
+	}
+	ret.push(dt);
+	return ret.join("-");
+}
+
+dhtmlxEvent(scheduleGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+function scheduleGridOnLoaded() {
+	if (globProviderId == 0 && globRoomId == 0) {
+		return;
+	}
+	dojo.xhrGet({
+		url: globalBaseUrl+"/schedule-manager.raw/get-schedule-holidays?date="+formatScheduleDate(boxScheduleDate.getValue())+"&providerId="+globProviderId+"&roomId="+globRoomId,
+		handleAs: "json",
+		load: function (data) {
+			color = data.color;
+			scheduleGrid.forEachRow(function(rowId){
+				for (var cellIndex = 0; cellIndex < this.getColumnsNum(); cellIndex++) {
+					val = parseInt(this.getUserData(rowId,cellIndex));
+					if (val > 0) {
+						this.setCellTextStyle(rowId,cellIndex,"vertical-align:top;background-color:"+color);
+					}
+				}
+			});
+			// add trailing row
+			scheduleGrid.addRow(trailingRowId,"");
+			for (var i in data.rows) {
+				if (data.rows[i].data.length > 0) {
+					scheduleGrid.cells(trailingRowId,scheduleGrid.getColIndexById(i)).setValue(data.rows[i].data);
+					scheduleGrid.setCellTextStyle(trailingRowId,scheduleGrid.getColIndexById(i),"color:red;background-color:#ddd;");
+				}
+				dojo.byId("headerLabel"+i).title = data.rows[i].date;
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function scheduleGridReload(providerId,roomId) {
+	if (providerId == undefined) {
+		providerId = globProviderId;
+	}
+	if (roomId == undefined) {
+		roomId = globRoomId;
+	}
+	globProviderId = parseInt(providerId);
+	globRoomId = parseInt(roomId);
+	globOrmId = globRoomId;
+	if (globProviderId > 0) {
+		globOrmId = globProviderId;
+	}
+	var schedDate = boxScheduleDate.getValue();
+	schedDate = formatScheduleDate(schedDate);
+	scheduleGrid.clearAll();
+	scheduleGrid.load(globalBaseUrl+"/schedule-manager.raw/list-schedule?providerId="+globProviderId+"&roomId="+globRoomId+"&schedDate="+schedDate,scheduleGridOnLoaded,"json");
+}
+scheduleGridReload();
+
+</script>

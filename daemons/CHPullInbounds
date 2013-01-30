@@ -1,0 +1,105 @@
+#!/usr/bin/php
+<?php
+/*****************************************************************************
+*       CHPullInbounds
+*
+*       Author:  ClearHealth Inc. (www.clear-health.com)        2009
+*       
+*       ClearHealth(TM), HealthCloud(TM), WebVista(TM) and their 
+*       respective logos, icons, and terms are registered trademarks 
+*       of ClearHealth Inc.
+*
+*       Though this software is open source you MAY NOT use our 
+*       trademarks, graphics, logos and icons without explicit permission. 
+*       Derivitive works MUST NOT be primarily identified using our 
+*       trademarks, though statements such as "Based on ClearHealth(TM) 
+*       Technology" or "incoporating ClearHealth(TM) source code" 
+*       are permissible.
+*
+*       This file is licensed under the GPL V3, you can find
+*       a copy of that license by visiting:
+*       http://www.fsf.org/licensing/licenses/gpl.html
+*       
+*****************************************************************************/
+
+/**
+ * ClearHealth Processing Daemon
+ */
+
+
+function __($str) {
+	return $str;
+}
+
+define('APPLICATION_ENVIRONMENT','production');
+$appFile = realpath(dirname(__FILE__) . '/../application/library/WebVista/App.php');
+require_once $appFile;
+
+class CHPullInbounds extends WebVista {
+
+	public static function getInstance() {
+        	if (null === self::$_instance) {
+        		self::$_instance = new self();
+        	}
+		return self::$_instance;
+	}
+
+	public function run() {
+		$this->_setupEnvironment()
+			->_setupDb()
+			->_setupCache()
+			->_setupTranslation()
+			->_setupAutoLogin()
+			->_dispatch();
+		return $this;
+	}
+
+	protected function _setupEnvironment() {
+		parent::_setupEnvironment();
+		// disable strict reporting
+		error_reporting(E_ALL);
+		return $this;
+	}
+
+	protected function _setupAutoLogin() {
+		$username = 'admin';
+		$password = 'admin';
+		$user = new User();
+		$user->username = $username;
+		$user->populateWithUsername();
+		if (!$user->userId > 0) {
+			$person = new Person();
+			$person->_shouldAudit = false;
+			$person->last_name = 'Administrator';
+			$person->first_name = 'ClearHealth';
+			$person->middle_name = 'U';
+			$person->persist();
+
+			$user->_shouldAudit = false;
+			$user->person = $person;
+			$user->password = $password;
+			$user->userId = $person->personId;
+			$user->personId = $person->personId;
+			$user->persist();
+		}
+		Zend_Auth::getInstance()->getStorage()->write($user);
+		return $this;
+	}
+
+	private function __construct() {
+		$this->_computePaths();
+	}
+
+	private function __clone() {}
+
+	protected function _dispatch() {
+		$ctr = ePrescribe::pull();
+		echo 'New messages received: '.$ctr.PHP_EOL;
+		return $this;
+	}
+
+}
+
+$CHPullInbounds = CHPullInbounds::getInstance();
+$CHPullInbounds->run();
+

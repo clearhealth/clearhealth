@@ -1,0 +1,278 @@
+<div id="proceduresContainer" style="width:100%;height:100%;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="procedures-section"><?=__("Procedure Section")?></label></dt>
+			<div id="proceduresSectionListContainer" style="float:left;width:240px;height:120px;"></div><br />
+			<?=$this->formButton('otherProcedure',__('Other Procedure...'),array('style'=>'float:right;','onClick'=>'openProcedureLookupWindow()'))?>
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="procedures-section"><?=__("Section Name")?></label></dt>
+			<div id="proceduresSectionNameListContainer" style="float:left;width:240px;height:140px;"></div>
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="procedures-modifiers"><?=__("Modifiers")?></label></dt>
+			<div id="proceduresModifiersListContainer" style="float:left;width:240px;height:140px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div id="proceduresListContainer" style="width:auto;height:350px"></div>
+	</div>
+</div>
+
+<script>
+function openProcedureLookupWindow() {
+	var params = new Array();
+	params.push("callback=proceduresAddToList");
+	globalCreateWindow("winLookupProceduresId",params,"<?=$this->baseUrl?>/procedures.raw/lookup","<?=__('Lookup Procedure')?>",400,400);
+}
+
+var proceduresSectionListGrid = new dhtmlXGridObject("proceduresSectionListContainer");
+proceduresSectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+proceduresSectionListGrid.setHeader("");
+proceduresSectionListGrid.setNoHeader(true);
+proceduresSectionListGrid.setInitWidths("*");
+proceduresSectionListGrid.setSkin("xp");
+proceduresSectionListGrid.init();
+proceduresSectionListGrid.load("<?=$this->baseUrl?>/procedures.raw/list","json");
+proceduresSectionListGrid.attachEvent("onRowSelect",proceduresSectionListOnRowSelected);
+function proceduresSectionListOnRowSelected(rowId,cellIndex) {
+	proceduresSectionNameListGrid.clearAll();
+	proceduresSectionNameListGrid.load("<?=$this->baseUrl?>/procedures.raw/list-section?section="+rowId,proceduresOnSectionNameLoaded,"json");
+}
+
+function proceduresOnSectionNameLoaded() {
+	proceduresListGrid.forEachRow(function(id){
+		var rowId = this.cells(id,indexProcCode).getValue();
+		var data = this.cells(id,indexProcProcedure).getValue();
+		var id = getRowId(proceduresSectionNameListGrid,rowId,2,data,1);
+		if (id != null) proceduresSectionNameListGrid.cells(id,0).setChecked(true);
+	});
+}
+
+function getRowId(grid,rowId,rowIdIndex,data,dataIndex) {
+	for (var i in grid.rowsAr) {
+		if (grid.rowsAr[i] && grid.rowsAr[i].idd) {
+			var id = grid.rowsAr[i].idd;
+			if (grid.cells(id,rowIdIndex).getValue() == rowId) {
+				if (typeof data != "undefined" && grid.cells(id,dataIndex).getValue() != data) return null;
+				return id;
+			}
+		}
+	}
+	return null;
+}
+
+var proceduresSectionNameListGrid = new dhtmlXGridObject("proceduresSectionNameListContainer");
+proceduresSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+proceduresSectionNameListGrid.setHeader(",,");
+proceduresSectionNameListGrid.setNoHeader(true);
+proceduresSectionNameListGrid.setInitWidths("20,*,70");
+proceduresSectionNameListGrid.setColTypes("ch,ro,ro");
+proceduresSectionNameListGrid.setColAlign("right,left,left");
+proceduresSectionNameListGrid.setSkin("xp");
+proceduresSectionNameListGrid.init();
+proceduresSectionNameListGrid.attachEvent("onCheck",proceduresSectionNameOnChecked);
+
+function proceduresAddToList(code,data) {
+	// check if code already exists
+	var rowId = null;
+	proceduresListGrid.forEachRow(function(id){
+		if (this.cells(id,indexProcCode).getValue() == code && this.cells(id,indexProcProcedure).getValue() == data) {
+			rowId = id;
+		}
+	});
+	if (rowId == null) {
+		var rowId = "idx_"+proceduresListGrid.uid();
+		proceduresListGrid.addRow(rowId,"");
+		proceduresListGrid.cells(rowId,indexProcCode).setValue(code);
+		proceduresListGrid.cells(rowId,indexProcProcedure).setValue(data);
+		proceduresListGrid.cells(rowId,indexProcQuantity).setValue(1);
+		proceduresListGrid.cells(rowId,indexProcProvider).setValue("<?=$this->providerId?>");
+	}
+	else {
+		var qty = parseFloat(proceduresListGrid.cells(rowId,indexProcQuantity).getValue());
+		if (isNaN(qty)) qty = 0;
+		qty++;
+		proceduresListGrid.cells(rowId,indexProcQuantity).setValue(qty);
+	}
+	procedureSave(rowId);
+}
+
+function proceduresSectionNameOnChecked(rowId,cellIndex,state) {
+	if (state) { // add to procedure list
+		var id = proceduresSectionNameListGrid.cells(rowId,2).getValue();
+		if (id == "99213" && getRowId(proceduresListGrid,"99214",indexProcCode) != null) {
+			alert("NCCI Edit: code 99213 is mutually exclusive with code 99214");
+		}
+		else if (id == "99214" && getRowId(proceduresListGrid,"99213",indexProcCode) != null) {
+			alert("NCCI Edit: code 99214 is mutually exclusive with code 99213");
+		}
+		proceduresAddToList(proceduresSectionNameListGrid.cells(rowId,2).getValue(),proceduresSectionNameListGrid.cells(rowId,1).getValue().replace(/,/g, "&#44;"));
+	}
+	else { // remove from procedure list
+		var procRowId = null;
+		proceduresListGrid.forEachRow(function(id){
+			if (rowId == this.cells(id,indexProcCode).getValue()) {
+				procRowId = id;
+			}
+		});
+		if (procRowId !== null) procedureRemove(procRowId);
+	}
+}
+
+var proceduresModifiersListGrid = new dhtmlXGridObject("proceduresModifiersListContainer");
+proceduresModifiersListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+proceduresModifiersListGrid.setHeader("");
+proceduresModifiersListGrid.setNoHeader(true);
+proceduresModifiersListGrid.setInitWidths("*");
+proceduresModifiersListGrid.setSkin("xp");
+proceduresModifiersListGrid.init();
+proceduresModifiersListGrid.load("<?=$this->baseUrl?>/procedures.raw/list-modifiers","json");
+
+
+var proceduresListGrid = new dhtmlXGridObject("proceduresListContainer");
+proceduresListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexProcQuantity = 0;
+var indexProcProcedure = 1;
+var indexProcProvider = 2;
+var indexProcComments = 3;
+var indexProcCode = 4;
+proceduresListGrid.setHeader("<?=__('Quantity')?>,<?=__('Selected Procedures')?>,<?=__('Provider')?>,<?=__('Comments')?>,");
+proceduresListGrid.setInitWidths("70,*,200,200,0");
+proceduresListGrid.setColTypes("ed,ro,coro,txt,ro");
+proceduresListGrid.setSkin("xp");
+proceduresListGrid.init();
+
+var comboProc = proceduresListGrid.getCombo(indexProcProvider);
+comboProc.put("","");
+<?foreach ($this->listProviders as $key=>$value):?>
+comboProc.put((<r><![CDATA[<?=$key?>]]></r>).toString(),(<r><![CDATA[<?=$value?>]]></r>).toString());
+<?endforeach;?>
+
+proceduresListGrid.attachEvent("onRowSelect",function(rowId,cellIndex){
+});
+
+function proceduresListGridReload() {
+	proceduresListGrid.clearAll();
+	proceduresListGrid.load("<?=$this->baseUrl?>/procedures.raw/list-patient-procedures?patientId="+mainController.getActivePatient()+"&visitId="+mainController.getActiveVisit(),null,"json");
+}
+proceduresListGridReload();
+
+proceduresListGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexProcQuantity:
+			case indexProcProvider:
+			case indexProcComments:
+				procedureSave(rowId,function(data){
+					var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+					proceduresListGrid.cells(rowId,cellIndex).setValue(value);
+				});
+				break;
+		}
+	}
+	return true;
+});
+
+var proceduresListMenu = new dhtmlXMenuObject(null,"standard");
+proceduresListMenu.setImagePath("<?=$this->baseUrl?>/img/");
+proceduresListMenu.renderAsContextMenu();
+proceduresListMenu.setOpenMode("web");
+proceduresListMenu.loadXML("<?=$this->baseUrl?>/procedures.raw/get-menu");
+proceduresListMenu.attachEvent("onClick",function(id){
+	switch (id) {
+		case "remove":
+			procedureRemove();
+			break;
+	}
+});
+proceduresListGrid.enableContextMenu(proceduresListMenu);
+dhtmlxEvent(proceduresListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+proceduresListMenu.attachEvent("onContextMenu",function(id){
+	proceduresListMenu.hideItem("remove");
+	var rowId = proceduresListGrid.getSelectedRowId();
+	if (rowId != null) {
+		proceduresListMenu.showItem("remove");
+	}
+});
+proceduresListGrid.hdr.id = proceduresListGrid.uid();
+proceduresListMenu.addContextZone(proceduresListGrid.hdr.id);
+
+
+function procedureSave(rowId,callback) {
+	if (!rowId) rowId = proceduresListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No selected procedure')?>");
+		return;
+	}
+	var patientProcedureId = (rowId.substr(0,4) == "idx_")?0:rowId;
+	var contents = {
+		"procedure[patientProcedureId]": patientProcedureId,
+		"procedure[patientId]": mainController.getActivePatient(),
+		"procedure[visitId]": mainController.getActiveVisit(),
+		"procedure[code]": proceduresListGrid.cells(rowId,indexProcCode).getValue(),
+		"procedure[procedure]": proceduresListGrid.cells(rowId,indexProcProcedure).getValue(),
+		"procedure[quantity]": proceduresListGrid.cells(rowId,indexProcQuantity).getValue(),
+		"procedure[providerId]": proceduresListGrid.cells(rowId,indexProcProvider).getValue(),
+		"procedure[comments]": proceduresListGrid.cells(rowId,indexProcComments).getValue(),
+	};
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/procedures.raw/process-patient-procedure",
+		handleAs: "json",
+		content: contents,
+		load: function (data) {
+			if (data.error) {
+				alert(data.error)
+				return;
+			}
+			if (patientProcedureId != rowId) {
+				proceduresListGrid.setRowId(proceduresListGrid.getRowIndex(rowId),data.id);
+			}
+			if (typeof callback == "function") {
+				callback(data);
+				return;
+			}
+			proceduresListGrid.renderRowData(data);
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function procedureRemove(rowId) {
+	if (!rowId) rowId = proceduresListGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No selected procedure')?>");
+		return;
+	}
+	if (!confirm("Are you sure you want to delete procedure "+proceduresListGrid.cells(rowId,indexProcProcedure).getValue()+"?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/procedures.raw/process-delete-patient-procedure",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			var id = proceduresListGrid.cells(rowId,indexProcCode).getValue();
+			var data = proceduresListGrid.cells(rowId,indexProcProcedure).getValue();
+			var id = getRowId(proceduresSectionNameListGrid,id,2,data,1);
+			if (id != null) {
+				proceduresSectionNameListGrid.cells(id,0).setChecked(false);
+			}
+			proceduresListGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+</script>

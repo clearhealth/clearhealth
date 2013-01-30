@@ -1,0 +1,125 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 25em;
+}
+#defaultFeeId {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 11em;
+}
+#<?=$this->form->fee->getId()?> {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__('Fee Schedule Information')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->name->renderLabel()?>
+		<?=$this->form->nameInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->guid->renderLabel()?>
+		<?=$this->form->guidInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->dateOfServiceStart->renderLabel()?>
+		<?=$this->form->dateOfServiceStartInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->dateOfServiceEnd->renderLabel()?>
+		<?=$this->form->dateOfServiceEndInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label class="optional"><?=__('Insurance Programs')?></label></dt>
+		<div id="IPGridId" style="width:300px;height:150px;"></div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->fee->renderLabel()?>
+		<?$attribs = array('onClick'=>'feeScheduleSetDefaultFee()','id'=>'defaultFeeId');
+		$feeAttribs = array('places'=>2);
+		if (!strlen($this->form->guid->getValue()) > 0) {
+			$attribs['disabled'] = 'disabled';
+			$feeAttribs['disabled'] = 'disabled';
+		}?>
+		<?=$this->form->feeInput('FormNumberSpinner',$feeAttribs)?>
+		<?=$this->formButton('defaultFeeId',__('Set Default Fee'),$attribs)?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->insuranceProgramIdsInput('FormHidden')?>
+		<?=$this->form->okInput()?>
+		<?=$this->formHidden('oldGuid',$this->form->guid->getValue())?>
+		<?=$this->formButton('cance',__('Cancel'),array('onClick'=>'dhxWins.window("'.$this->form->getWindow().'").close()'))?>
+	</div>
+</fieldset>
+<?=$this->form->renderClose()?>
+
+<script>
+var IPGrid = new dhtmlXGridObject("IPGridId");
+IPGrid.setImagePath("<?=$this->baseUrl?>/img/");
+IPGrid.setHeader(",<?=__('Program')?>");
+IPGrid.setColTypes("ch,ro");
+IPGrid.setSkin("xp");
+IPGrid.setInitWidths("20,280");
+IPGrid.init();
+IPGrid.load("<?=$this->baseUrl?>/fee-schedule-manager.raw/list-insurance-programs?fid=<?=$this->form->guid->getValue()?>",null,"json");
+
+function preSubmit<?=$this->form->getId()?>() {
+	var insurancePrograms = [];
+	IPGrid.forEachRow(function(rowId){
+		if (IPGrid.cells(rowId,0).isChecked()) {
+			insurancePrograms.push(rowId);
+		}
+	});
+	dojo.byId("<?=$this->form->insuranceProgramIds->getId()?>").value = insurancePrograms.join(",");
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (!data.id) {
+		alert(data);
+		return false;
+	}
+	if (data.id != "<?=$this->form->guid->getValue()?>" && feeScheduleGrid.doesRowExist("<?=$this->form->guid->getValue()?>")) {
+		feeScheduleGrid.setRowId(feeScheduleGrid.getRowIndex("<?=$this->form->guid->getValue()?>"),data.id);
+	}
+	feeScheduleSetRowData(data);
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+function feeScheduleSetDefaultFee() {
+	if (!confirm("<?=__('Are you sure you want to set fee to default?')?>")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/fee-schedule-manager.raw/process-set-default-fee",
+		handleAs: "json",
+		content: {
+			"guid": "<?=$this->form->guid->getValue()?>",
+			"fee": dojo.byId("<?=$this->form->fee->getId()?>").value,
+		},
+		load: function (data) {
+			alert(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+</script>

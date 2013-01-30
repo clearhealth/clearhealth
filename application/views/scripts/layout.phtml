@@ -1,0 +1,94 @@
+<?='<?xml version="1.0" encoding="UTF-8" ?>'; ?>
+<?=$this->doctype()?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script>
+var globalBaseUrl = '<?=$this->baseUrl?>';
+var globalDefaultAction = '<?=Zend_Registry::get('config')->user->preferences->default_action?>';
+var globalLogoutTimer = null;
+var globalForceLogout = false;
+var globalTimerTimeout = '<?=Zend_Registry::get('sessionTimeout')?>';
+var globalPhotoIsClicked = false;
+var globalAutologout = "<?=(int)Zend_Registry::get('config')->autologout?>";
+
+// used by generic processing like single edit field and deleting
+function globalProcessGeneric(action,content,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/generic-edit.raw/"+action,
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ",error);
+		}
+	});
+}
+</script>
+<?=$this->headTitle() ?>
+<?if ($this->authenticated):?>
+<?=$this->headLink() ?>
+<?=$this->headScript() ?>
+<?else:?>
+<link rel="stylesheet" type="text/css" href="<?=$this->baseUrl?>/css/global.css" />
+<link rel="stylesheet" type="text/css" href="<?=$this->baseUrl?>/css/style.css" />
+<link rel="stylesheet" type="text/css" href="<?=$this->baseUrl?>/css/dhtmlxwindows.css" />
+<link rel="stylesheet" type="text/css" href="<?=$this->baseUrl?>/css/dhtmlxwindows_clear_silver.css" />
+<script type="text/javascript" src="<?=$this->baseUrl?>/js/dhtmlxcommon.js"></script>
+<script type="text/javascript" src="<?=$this->baseUrl?>/js/dhtmlxwindows.js"></script>
+<?endif;?>
+</head>
+<body class="tundra">
+<div id="mainLayoutContainerId">
+<script>
+var dhxWins = new dhtmlXWindows();
+dhxWins.setImagePath("<?=$this->baseUrl?>/img/");
+dhxWins.pathPrefix = '';
+dhxWins.setSkin('clear_silver');
+
+if (window.mainControllerClass) {
+	mainController = new mainControllerClass();
+}
+if (window.mainFileLoaderClass) {
+	mainFileLoader = new mainFileLoaderClass();
+}
+if (window.barcodeControllerClass) {
+	barcodeController = new barcodeControllerClass();
+	window.onkeypress = function (e) { barcodeController.pressed(e); }
+}
+if (window.tabStateClass) {
+	tabStateObject = new tabStateClass();
+}
+if (window.visitSelectorClass) {
+	visitSelector = new visitSelectorClass();
+}
+if (window.teamSelectorClass) {
+	teamSelector = new teamSelectorClass();
+}
+</script>
+
+<?if ($this->authenticated):?>
+<div id="systemsWarning" style="width:100%;background-color:#ECE9D8;text-align:right;color:red;<?=(Zend_Registry::get('memcache')->get(Service::SERVICE_NOMINAL))?'display:none;':''?>"><?=__('Please contact your administrator, services needed for some features are not running. You may experience errors if you continue.')?></div>
+<?endif;?>
+<div id="mainContentLayout">
+<?if ($this->authenticated):?>
+	<script>
+	function onLoadedComplete() {
+	}
+	mainFileLoader.onLoadComplete = 'onLoadedComplete';
+	mainFileLoader.render('mainContentLayout');
+	</script>
+<?endif;?>
+<?=$this->layout()->content?>
+</div>
+</div>
+</body>
+</html>

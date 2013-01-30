@@ -1,0 +1,170 @@
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<fieldset><legend><?=__('Location Information')?></legend>
+		<div class="formRow">
+			<div id="locationGridId" style="width:100%;height:250px;"></div>
+			<?=$this->formButton('syncAll',__('Sync All to HealthCloud'),array('id'=>'syncAll','onClick'=>'locationSyncAll()'))?>
+		</div>
+	</fieldset>
+</div>
+<script>
+function locationSyncAll() {
+	var rowsNum = locationGrid.getRowsNum();
+	if (rowsNum <= 0) {
+		alert("<?=__('No location to sync.')?>");
+		return;
+	}
+	locationDoProcess("sync-all",{"providerId":"<?=$this->personId?>"},function(data){
+		if (data.error.length > 0) {
+			var msg = "The following errors detected:\n";
+			if (data.error.length == 1) {
+				msg = "Error detected:\n";
+			}
+			alert(msg+data.error.join("\n"));
+		}
+		else {
+			for (var rowId in data.SSID) {
+				locationGrid.cells(rowId,4).setValue(data.SSID[rowId]);
+			}
+			alert("Successfully saved.");
+		}
+	});
+}
+
+var indexLocationFields = [
+	"buildingId",
+	"serviceLevel",
+	"dateActiveStart",
+	"dateActiveEnd",
+	"SSID",
+];
+var locationGrid = new dhtmlXGridObject("locationGridId");
+locationGrid.setImagePath("<?=$this->baseUrl?>/img/");
+locationGrid.setHeader("<?=__('Building')?>,<?=__('Service Level')?>,<?=__('Active Start')?>,<?=__('Active End')?>,<?=__('SureScripts SPI')?>");
+locationGrid.setInitWidths("200,*,80,80,110");
+locationGrid.setColTypes("coro,coro,ed,ed,ro");
+locationGrid.setSkin("xp");
+locationGrid.init();
+locationGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		locationEdit(rowId,cellIndex,newValue);
+	}
+	return true;
+});
+
+
+var locationMenu = new dhtmlXMenuObject(null,"standard");
+locationMenu.setImagePath("<?=$this->baseUrl?>/img/");
+locationMenu.renderAsContextMenu();
+locationMenu.setOpenMode("web");
+function locationMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			locationEdit();
+			break;
+		case "sync":
+			var rowId = locationGrid.getSelectedRowId();
+			locationDoProcess("sync",{"ePrescriberId":rowId},function(data){
+				if (data.error) {
+					alert(data.error);
+				}
+				else {
+					locationGrid.cells(rowId,4).setValue(data.SSID);
+					alert("Successfully saved.");
+				}
+			});
+			break;
+		case "remove":
+			locationDelete(locationGrid.getSelectedRowId());
+			break;
+	}
+}
+locationMenu.attachEvent("onClick",locationMenuOnClicked);
+
+function locationMenuOnLoaded() {
+}
+locationMenu.loadXML("<?=$this->baseUrl?>/admin-users.raw/ajax-get-context-menu",locationMenuOnLoaded);
+
+locationMenu.attachEvent("onContextMenu",function(id){
+	locationMenu.hideItem("sync");
+	locationMenu.hideItem("remove");
+	var rowId = locationGrid.getSelectedRowId();
+	if (rowId != null) {
+		locationMenu.showItem("sync");
+		locationMenu.showItem("remove");
+	}
+});
+
+locationGrid.hdr.id = locationGrid.uid();
+locationMenu.addContextZone(locationGrid.hdr.id);
+locationGrid.enableContextMenu(locationMenu);
+
+dhtmlxEvent(locationGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+locationGrid.getCombo(0).put("","");
+<?$this->facilityIterator->setFilter(array('Practice','Building'));
+foreach($this->facilityIterator as $facilities):?>
+locationGrid.getCombo(0).put("<?=$facilities['Building']->buildingId?>","<?=$facilities['Practice']->name.'->'.$facilities['Building']->name?>");
+<?endforeach?>
+
+<?foreach($this->serviceLevels as $key=>$value):?>
+locationGrid.getCombo(1).put("<?=$key?>","<?=$value?>");
+<?endforeach?>
+
+<?foreach($this->prescriberList as $prescriber):?>
+locationGrid.addRow("<?=$prescriber['id']?>","");
+<?	foreach($prescriber['data'] as $key=>$value):?>
+locationGrid.cells("<?=$prescriber['id']?>","<?=$key?>").setValue("<?=$value?>");
+<?	endforeach?>
+<?endforeach?>
+
+function locationDoProcess(action,content,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-users.raw/process-"+action+"-location",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function locationEdit(rowId,cellIndex,value) {
+	var content = {
+		"prescriber[providerId]":"<?=$this->personId?>",
+	};
+	if (rowId) {
+		content["prescriber["+indexLocationFields[cellIndex]+"]"] = value;
+		content["prescriber[ePrescriberId]"] = rowId;
+	}
+	locationDoProcess("edit",content,function(data){
+		if (!data) return;
+		if (!locationGrid.doesRowExist(data.id)) {
+			locationGrid.addRow(data.id,"");
+		}
+		if (rowId) {
+			if (data.data[cellIndex]) locationGrid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+		}
+		else {
+			locationGrid.renderRowData(data);
+		}
+	});
+}
+
+function locationDelete(rowId) {
+	if (!confirm("<?=__('Are you sure you want to remove selected location')?>: "+locationGrid.cells(rowId,0).getValue()+"?")) {
+		return;
+	}
+	locationDoProcess("delete",{"id":rowId},function(data){
+		if (!data) return;
+		locationGrid.deleteRow(rowId);
+	});
+}
+</script>

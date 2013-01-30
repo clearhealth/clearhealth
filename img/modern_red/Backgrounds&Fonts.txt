@@ -1,0 +1,8 @@
+
+Active dialog:
+  Background color: #F6F6EE
+  Font: Arial 12px bold #FFFFFF
+
+Inactive dialof:
+  Background color: #F4F4F4
+  Font: Arial 12px bold #CCCCCC

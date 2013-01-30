@@ -1,0 +1,98 @@
+<script>
+function userAddAlertSubmit() {
+	var recipient = dojo.byId("alert-user-id").value;
+	if (!recipient.length > 0) {
+		alert("<?=__('Recipient is required.')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/general-alerts.raw/process-user-add-alert",
+		handleAs: "json",
+		form: "add-alert-form",
+		load: function (data) {
+			if (data == true) {
+				alert("<?=('Alert sucessfully added')?>");
+				alertsReload();
+				dhxWins.window("winAddAlertId").close();
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>
+<div style="float:left;">
+	<form id="add-alert-form" >
+
+	<div class="formRow">
+		<dt><label class="optional"><?=__('Urgency')?></label></dt>
+		<select name="alert[urgency]" id="alert-urgency">
+			<option value="Low">Low</option>
+			<option value="Med">Med</option>
+			<option value="High">High</option>
+		</select>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label class="optional"><?=__('Recipient')?></label></dt>
+		<div id="personpatSelectAutoCompleteDiv"></div>
+		<script>
+		var patscb = dijit.byId('personpatSelectAutoCompleteDiv');
+		if (patscb != undefined) { 
+			patscb.destroyRecursive();
+			patscb = null;
+		}
+
+		var patsac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/users.raw/auto-complete",requestMethod:"get"},'personpatSelectAutoComplete');
+		patscb = new dijit.form.FilteringSelect({name:"personpatSelectAutoCompleteId",searchDelay:500,autocomplete:true,store:patsac},"personpatSelectAutoCompleteDiv");
+		patscb.validate = function () {return true;};
+		dojo.connect(patscb,"onChange",'getPatDetails');
+		function getPatDetails(args) {
+			// don't need args coz it holds the selected value
+			var value = patscb.getValue();
+			if (value.length > 0) dojo.byId("alert-user-id").value = value;
+		}
+		</script>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="appointment-patient"><?=__("Patient")?></label></dt>
+		<div id="alertPatientSelectAutoCompleteDiv"></div>
+		<script>
+		var apscb = dijit.byId('alertPatientSelectAutoCompleteDiv');
+		if (apscb != undefined) {
+			apscb.destroyRecursive();
+			apscb = null;
+		}
+		var apsac = new custom.PatientSelectAutoComplete({url:"<?=$this->baseUrl?>/patient-select/auto-complete",requestMethod:"get"},'patientSelectAutoComplete');
+		apscb = new custom.SelectComboBox({name:"alertPatientSelector",value:'',searchDelay:500,autocomplete:false,store:apsac,hasDownArrow:false},"alertPatientSelectAutoCompleteDiv");
+		dojo.connect(apscb,"onChange",'getDetails');
+		function getDetails(args) {
+			// don't need args coz it holds the selected value
+			dojo.byId('alert-patient-id').value = apscb.selectedKey;
+		}
+		</script>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label class="optional"><?=__('Message')?></label></dt>
+		<textarea name="alert[message]"></textarea>
+	</div>
+	<br style="clear:left"/>
+	<div style="text-align:center;margin-top:10px;">
+		<input type="button" value="<?=__('OK')?>" onClick="userAddAlertSubmit()" />
+		<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winAddAlertId').close()"/>
+	</div>
+
+	<input type="hidden" name="alert[status]" value="new" />
+	<input type="hidden" id="alert-patient-id" name="alert[objectId]" value="" />
+	<input type="hidden"  name="alert[objectClass]" value="Person" />
+	<input type="hidden"  id="alert-user-id" name="alert[userId]" value="" />
+
+	</form>
+</div>

@@ -1,0 +1,585 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+.even{
+	background-color: white;
+}
+.uneven{
+	background-color: ghostwhite;
+}
+</style>
+
+
+<div style="float:left;font-size:9pt;">
+
+	<div id="patientTabContainer" style="float:left;width:75%;height:420px;"></div>
+
+	<div id="patientDetailsContainer">
+	<fieldset>
+		<legend><?=__("Patient")?></legend>
+		<div style="float:left">
+		<table>
+			<tbody>
+			<tr>
+
+				<td><label>Last Name: </label></td>
+				<td><input id="last_name" name="person[last_name]" size="20" value="Brogdons"></td>
+				<td rowspan="2" colspan="2" align="right">
+					<!--todo duplicate display<b>Marked as Duplicate</b> of<br> brogdon, aletha  #10053<br>
+					<button onclick="window.location = '/index.php/main/Patient/edit/unmarkDuplicate/1042177?process=true'; return false;">Remove Duplicate Mark</button>-->
+				</td>
+			</tr>
+			<tr>
+				<td><label>First Name: </label></td>
+				<td style="white-space: nowrap;"><input id="first_name" name="person[first_name]" size="20" value="aletha"></td>
+			</tr>
+			<tr>
+				<td><label>Middle Name: </label></td>
+				<td><input type='text' name="person[middle_name]" value="R" size="2"></td>
+			</tr>
+			<tr>
+				<td style="white-space:nowrap;"><label>Record Number: </label></td>
+				<td ><input id="record_number" name="person[record_number]" size="8" value="3610"></td>
+				<td style="white-space:nowrap;"><label>Id #: </label></td>
+				<td style="white-space:nowrap;"><input id="identifier" name="person[identifier]" size="14" value="">
+					<select name="person[identifier_type]" id="identifier_type">
+						<option label="Other" value="7">Other</option><option label="SSN" value="1" selected="selected">SSN</option><option label="EIN" value="2">EIN</option><option label="NPI" value="3">NPI</option><option label="UPIN" value="4">UPIN</option><option label="Other MRN" value="5">Other MRN</option><option label="DL" value="6">DL</option>
+					</select>
+				</td>
+			</tr>
+		 	<tr>
+		 		<td><label>DOB:</label></td>
+				<td>
+					<input name="person[date_of_birth]" value="11/27/1961" size="10" id="date_of_birth">
+					<script type="text/javascript">
+					var dateOfBirth = dijit.byId('date_of_birth');
+					if (dateOfBirth != undefined) {
+						dateOfBirth.destroyRecursive();
+						dateOfBirth = null;
+					}
+					dateOfBirth = new dijit.form.DateTextBox({name:'person[date_of_birth]',constraints: {datePattern:'yyyy-MM-dd'}},dojo.byId('date_of_birth'));
+					</script>
+				</td>
+				<td colspan="2">
+					<label class="inline" for="hipaa">Signed HIPAA:</label>
+					<input name="person[signed_hipaa]" value="" size="10" id="signed-hipaa">
+					<script type="text/javascript">
+					var dateOfSignedHIPAA = dijit.byId('signed-hipaa');
+					if (dateOfSignedHIPAA != undefined) {
+						dateOfSignedHIPAA.destroyRecursive();
+						dateOfSignedHIPAA = null;
+					}
+					dateOfSignedHIPAA = new dijit.form.DateTextBox({name:'person[signed_hipaa]',constraints: {datePattern:'yyyy-MM-dd'}},dojo.byId('signed-hipaa'));
+					</script>
+				</td>
+		 	</tr>
+            		<tr>
+				<td><label>Gender:</label> </td>
+				<td>
+					<select name="person[gender]" id="gender">
+						<option></option>
+						<option label="Male" value="1">Male</option><option label="Female" value="2" selected="selected">Female</option><option label="Female to Male" value="3">Female to Male</option>
+					</select>&nbsp;&nbsp;
+				</td>
+				<td colspan="2">Marital Status:&nbsp;
+					<select name="person[marital_status]"><option label="." value="9">.</option><option label="Accompanied" value="4">Accompanied</option><option label="Divorced" value="5">Divorced</option><option label="Married" value="2" selected="selected">Married</option><option label="Not Specified" value="6">Not Specified</option><option label="Separated" value="3">Separated</option><option label="Single" value="1">Single</option><option label="Unknown" value="7">Unknown</option><option label="Widowed" value="8">Widowed</option></select>&nbsp;&nbsp;
+				</td>
+			</tr>
+			<tr>
+                                <td><label>Default Provider:</label></td>
+        	                <td><div id="providerDisplay" style="cursor:pointer;" onClick="this.style.display='none';document.getElementById('providerEdit').style.display='block';"><a>Falconer, Corazon </a></div>
+                            	<div id="providerEdit" style="display:none;">
+                                <select name="person[default_provider]">
+                                        <option value='0'>No Provider</option>
+                                        <option label="afafafa, Jfdadf" value="104599">afafafa, Jfdadf</option><option label="Anderson, Fred" value="104594">Anderson, Fred</option><option label="demo, demo" value="104831">demo, demo</option><option label="demo, demo" value="104583">demo, demo</option><option label="Falconer, Corazon" value="1000119" selected="selected">Falconer, Corazon</option><option label="Gooddoc, Horace" value="48502">Gooddoc, Horace</option><option label="Gross, Douglas" value="104593">Gross, Douglas</option><option label="Healthy, IAM" value="1070080">Healthy, IAM</option><option label="Kjfuajgfs, Brhfodkghd" value="104598">Kjfuajgfs, Brhfodkghd</option><option label="kjsdfn, sdfjk" value="79520">kjsdfn, sdfjk</option><option label="loss, weight" value="79519">loss, weight</option><option label="loss, weight" value="79518">loss, weight</option><option label="Newdoc, Besty" value="51769">Newdoc, Besty</option><option label="Paul, John" value="79500">Paul, John</option><option label="Rossmiller, Halley" value="1000172">Rossmiller, Halley</option><option label="Schmo, Brhfodkghd" value="104597">Schmo, Brhfodkghd</option><option label="Schmo, Frederico" value="104596">Schmo, Frederico</option><option label="Schmo, Joe" value="104595">Schmo, Joe</option><option label="Teofanescu, Lucian" value="81746">Teofanescu, Lucian</option><option label="Teofanescu, Lucian" value="81745">Teofanescu, Lucian</option><option label="Test123, Testing" value="105035">Test123, Testing</option>
+                                </select>
+                            	</div>
+                        	</td>
+				<td colspan="2">Active:&nbsp;
+					<input name="person[inactive]" type="radio" value="0" checked="checked" />Yes
+					<input name="person[inactive]" type="radio" value="1"  />No
+				</td>
+			</tr>
+			<tr>
+				<td><label>Confidentiality:</label></td>
+				<td colspan="3">
+					<select name="person[confidentiality]">
+						<option label="1 - No Special Restrictions" value="1" selected="selected">1 - No Special Restrictions</option><option label="2 - Basic Confidentiality" value="2">2 - Basic Confidentiality</option><option label="3 - Family Planning" value="3">3 - Family Planning</option><option label="4 - Disease Confidentiality" value="4">4 - Disease Confidentiality</option><option label="5 - Disease and Family Planning Confidentiality" value="6">5 - Disease and Family Planning Confidentiality</option><option label="6 - Extreme Confidentiality" value="5">6 - Extreme Confidentiality</option>
+
+					</select>&nbsp;&nbsp;
+				</td>
+			</tr>
+    			<tr>
+				<td><label for="person__primary_practice_id">Primary Practice</label></td>
+				<td>
+					<select name="person[primary_practice_id]" id="person__primary_practice_id" class="required">
+						<option></option>
+
+						<option label="Phoenix Service Unit" value="56459" selected="selected">Phoenix Service Unit</option><option label="Elko Service Unit" value="120067">Elko Service Unit</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td> <input name="label" value="Update" type="submit" onClick="updateParent();"></td>
+			</tr>
+			</tbody>
+		</table>
+		</div>
+
+	</fieldset>
+	</div>
+
+
+	<div id="statsContainer">
+		<div class="tab" title="Statistics" tabKey="CPatientTabSet0/statistics">
+		<table>
+			<tr>
+				<td><label>Ethnicity:</label></td>
+				<td><select name="patientStatistics[ethnicity]"><option value="Array"></option><option label="Hispanic or Latino" value="1">Hispanic or Latino</option><option label="Not Hispanic or Latino" value="3" selected="selected">Not Hispanic or Latino</option></select></td>
+				<td><label>Race:</label></td>
+				<td><select name="patientStatistics[race]"><option value="Array"></option><option label="American Indian or Alaska Native" value="1">American Indian or Alaska Native</option><option label="Asian" value="2" selected="selected">Asian</option><option label="Black or African American" value="3">Black or African American</option><option label="Native Hawaiian or other Pacific Islander" value="4">Native Hawaiian or other Pacific Islander</option><option label="White" value="5">White</option><option label="Other" value="6">Other</option><option label="Unknown" value="7">Unknown</option></select></td>
+			</tr>
+			<tr>
+				<td><label>Language:</label></td>
+				<td><select name="string[patientStatistics[language]]" id="patientStatistics[language]" extra=" blank=&quot;&quot;"><option label="English" value="English">English</option><option label="Spanish" value="Spanish">Spanish</option><option label="Chinese" value="Chinese">Chinese</option><option label="Japanese" value="Japanese">Japanese</option><option label="Korean" value="Korean">Korean</option><option label="Portuguese" value="Portuguese">Portuguese</option><option label="Russian" value="Russian">Russian</option><option label="Sign Language" value="Sign Language">Sign Language</option><option label="Vietnamese" value="Vietnamese">Vietnamese</option><option label="Tagalog" value="Tagalog">Tagalog</option><option label="Punjabi" value="Punjabi">Punjabi</option><option label="Hindustani" value="Hindustani">Hindustani</option><option label="Armenian" value="Armenian">Armenian</option><option label="Arabic" value="Arabic">Arabic</option><option label="Laotian" value="Laotian">Laotian</option><option label="Hmong" value="Hmong">Hmong</option><option label="Cambodian" value="Cambodian">Cambodian</option><option label="Finnish" value="Finnish">Finnish</option><option label="Other" value="Other">Other</option></select></td>
+				<td><label>Migrant Status:</label></td>
+				<td><select name="patientStatistics[migrant_status]"><option value="Array"></option><option label="Migrant Worker" value="1" selected="selected">Migrant Worker</option><option label="Seasonal Worker" value="2">Seasonal Worker</option><option label="No" value="3">No</option><option label="other" value="4">other</option></select></td>
+				<td><label></label></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><label>Monthly Income:</label></td>
+				<td><input name="patientStatistics[monthly_income]" id="ps_monthly_income" value="2000" size=8 maxlength=8></td>
+				<td><label>Income:</label></td>
+				<td><select name="patientStatistics[income]"><option value="Array"></option><option label="Unknown" value="1">Unknown</option><option label="Under 100% of Poverty" value="2" selected="selected">Under 100% of Poverty</option><option label="100-200% of Poverty" value="3">100-200% of Poverty</option><option label="Above 200% of Poverty" value="4">Above 200% of Poverty</option></select></td>
+			</tr>
+			<tr>
+				<td><label>Family Size:</label></td>
+				<td><input name="patientStatistics[family_size]" id="ps_family_size" value="2" size=3 maxlength=3></td>
+				<td><label>Number of Adults: </label></td>
+				<td><input type='text' name="patientStatistics[number_of_adults]" value="2" id="patientStatistics[number_of_adults]" size="4"></td>
+			</tr>
+			<tr>
+				<td><label>Date of First Encounter:</label></td>
+				<td>04/16/2007</td>
+				<td><label>Sign in Date: </label></td>
+				<td><nobr class="jscal"><input name="patientStatistics[sign_in_date]" value="04/13/2009" size="10" id="_cal_2"><img id="_cal_2_trigger" src="/index.php/Images//stock/set_time.gif?" style="cursor: pointer; vertical-align: top"></nobr>
+<script type="text/javascript">Calendar.setup( {inputField:"_cal_2", showsTime: false,ifFormat:"%m/%d/%Y",button:"_cal_2_trigger" }); clni_register_validation_rule('_cal_2','date','alert');</script></td>
+			</tr>
+			<tr>
+				<td><label>Registration Location: </label></td>
+				<td>
+				    <select name="patientStatistics[registration_location]">
+					    <option label="Ak Chin Clinic" value="134629">Ak Chin Clinic</option><option label="Bylas Health Center" value="134762">Bylas Health Center</option><option label="Cibecue Health Center" value="135103">Cibecue Health Center</option><option label="Fallon Tribal Health Center" value="134826">Fallon Tribal Health Center</option><option label="Fort Yuma PHS Indian Hospital" value="135392">Fort Yuma PHS Indian Hospital</option><option label="Ft. Duchesne Health Center" value="135631">Ft. Duchesne Health Center</option><option label="Havasupai Health Station" value="134356">Havasupai Health Station</option><option label="Hopi PHS Indian Hospital" value="135446">Hopi PHS Indian Hospital</option><option label="Hu Hu Kam Memorial Hospital" value="134675">Hu Hu Kam Memorial Hospital</option><option label="Las Vegas Paiute Tribe Health Clinic" value="134872">Las Vegas Paiute Tribe Health Clinic</option><option label="McDermitt Tribal Health Station" value="134849">McDermitt Tribal Health Station</option><option label="Newe Medical Clinic" value="134483">Newe Medical Clinic</option><option label="PARKER INDIAN HOSPITAL" value="135280">PARKER INDIAN HOSPITAL</option><option label="Peach Springs Health Ctr" value="134379">Peach Springs Health Ctr</option><option label="Phoenix Indian Medical Center" value="56537">Phoenix Indian Medical Center</option><option label="Pyramid Lake Health Center" value="134895">Pyramid Lake Health Center</option><option label="Reno/Sparks Health Center" value="134918">Reno/Sparks Health Center</option><option label="Salt River Health Center" value="134191" selected="selected">Salt River Health Center</option><option label="San Carlos PHS Indian Hospital" value="135522">San Carlos PHS Indian Hospital</option><option label="Schurz PHS Indian Hospital" value="135577">Schurz PHS Indian Hospital</option><option label="Southern Bands Health Center" value="135336">Southern Bands Health Center</option><option label="Walker River Tribal Health Clinic" value="134952">Walker River Tribal Health Clinic</option><option label="Washoe Tribal Health Center" value="134975">Washoe Tribal Health Center</option><option label="Wassaja Memorial Health Center" value="134652">Wassaja Memorial Health Center</option><option label="Whiteriver PHS Indian Hospital" value="135654">Whiteriver PHS Indian Hospital</option><option label="Yavapai Apache Health Clinic" value="134698">Yavapai Apache Health Clinic</option><option label="Yerington Tribal Health Center" value="134998">Yerington Tribal Health Center</option>
+				    </select>
+				</td>
+			</tr>
+			<tr>
+				<td><label>Blood Quantum: </label></td>
+				<td><select name="patientStatistics[indian_blood_quantum]" id="patientStatistics[indian_blood_quantum]" extra=""><option label="None" value="None">None</option><option label="Full" value="Full" selected="selected">Full</option><option label="Unknown" value="Unknown">Unknown</option><option label="Unspecified" value="Unspecified">Unspecified</option></select>
+                                    </td>
+				<td><label>Occupation: </label></td>
+				<td><input type='text' name="patientStatistics[occupation]" value="none" id="patientStatistics[occupation]"></td>
+			</tr>
+			<tr>
+				<td><label>Education Level: </label></td>
+				<td>
+				<select name="patientStatistics[education_level]" id="patientStatistics[education_level]" extra=""><option label="Unknown" value="Unknown">Unknown</option><option label="None-illiterate" value="None-illiterate">None-illiterate</option><option label="Some Elementary Education" value="Some Elementary Education">Some Elementary Education</option><option label="Some Middle School" value="Some Middle School">Some Middle School</option><option label="Some High School" value="Some High School">Some High School</option><option label="High School Degree" value="High School Degree">High School Degree</option><option label="Vocational/Tech School" value="Vocational/Tech School">Vocational/Tech School</option><option label="Some College" value="Some College" selected="selected">Some College</option><option label="Associates Degree" value="Associates Degree">Associates Degree</option><option label="Bachelors Degree" value="Bachelors Degree">Bachelors Degree</option><option label="Post Grad College" value="Post Grad College">Post Grad College</option><option label="Masters Degree" value="Masters Degree">Masters Degree</option><option label="Advanced Degree" value="Advanced Degree">Advanced Degree</option><option label="Other" value="Other">Other</option><option label="Blank" value="Blank">Blank</option></select>
+				</td>
+				<td><label>Employment Status: </label></td>
+				<td>
+				<select name="patientStatistics[employment_status]" id="patientStatistics[employment_status]" extra=""><option label="Employed" value="Employed">Employed</option><option label="Unemployed" value="Unemployed" selected="selected">Unemployed</option><option label="Unknown" value="Unknown">Unknown</option><option label="Blank" value="Blank">Blank</option></select>
+				</td>
+			</tr>
+			<tr>
+				<td><label>Indian Tribe: </label></td>
+				<td colspan="3"><select name="patientStatistics[indian_tribe]" id="patientStatistics[indian_tribe]" extra=""><option label="None" value="None">None</option><option label="Absentee-Shawnee Tribe of Indians of Oklahoma " value="Absentee-Shawnee Tribe of Indians of Oklahoma ">Absentee-Shawnee Tribe of Indians of Oklahoma </option><option label="Agua Caliente Band of Cahuilla Indians of the Agua Caliente Indian Reservation, California " value="Agua Caliente Band of Cahuilla Indians of the Agua Caliente Indian Reservation, California " selected="selected">Agua Caliente Band of Cahuilla Indians of the Agua Caliente Indian Reservation, California </option><option label="Ak Chin Indian Community of the Maricopa (Ak Chin) Indian Reservation, Arizona " value="Ak Chin Indian Community of the Maricopa (Ak Chin) Indian Reservation, Arizona ">Ak Chin Indian Community of the Maricopa (Ak Chin) Indian Reservation, Arizona </option><option label="Alabama-Coushatta Tribes of Texas " value="Alabama-Coushatta Tribes of Texas ">Alabama-Coushatta Tribes of Texas </option><option label="Alabama-Quassarte Tribal Town, Oklahoma " value="Alabama-Quassarte Tribal Town, Oklahoma ">Alabama-Quassarte Tribal Town, Oklahoma </option><option label="Alturas Indian Rancheria, California " value="Alturas Indian Rancheria, California ">Alturas Indian Rancheria, California </option><option label="Apache Tribe of Oklahoma " value="Apache Tribe of Oklahoma ">Apache Tribe of Oklahoma </option><option label="Arapahoe Tribe of the Wind River Reservation, Wyoming " value="Arapahoe Tribe of the Wind River Reservation, Wyoming ">Arapahoe Tribe of the Wind River Reservation, Wyoming </option><option label="Aroostook Band of Micmac Indians of Maine " value="Aroostook Band of Micmac Indians of Maine ">Aroostook Band of Micmac Indians of Maine </option><option label="Assiniboine and Sioux Tribes of the Fort Peck Indian Reservation, Montana " value="Assiniboine and Sioux Tribes of the Fort Peck Indian Reservation, Montana ">Assiniboine and Sioux Tribes of the Fort Peck Indian Reservation, Montana </option></select>
+</td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Save"></td>
+			</tr>
+		</table>
+		</div>
+
+	</div>
+
+
+	<div id="dataSharingContainer">
+		<fieldset><legend>Sharing Options</legend>
+		<div style="float:left;padding-right:10px;width:150px;">
+			<div><input style="float:left;display:inline;" id="optDemographics" type="checkbox" name="sharing[]" value="patient,person" /> <label style="display:inline;" for="optDemographics">Demographics</label> </div>
+<div><input style="display:inline;" id="optEncounters" type="checkbox" name="sharing[]" value="encounter" /> <label style="display:inline;" for="optEncounters"><a href="">Encounters</a></label> </div>
+
+			<div><input style="display:inline;" id="optForms" type="checkbox" name="sharing[]" value="form" /> <label style="display:inline;" for="optForms"><a href="">Forms</a></label> </div>
+			<div><input style="display:inline;" id="optForms" type="checkbox" name="sharing[]" value="form" /> <label style="display:inline;" for="optForms"><a href="">Reports</a></label> </div>
+			<div><input style="display:inline;" id="optEMR" type="checkbox" name="sharing[]" value="medications,allergies,immunizations,vitals,problems,alerts" /> <label style="display:inline;" for="optEMR"><a href="">EMR</a></label> </div>
+			<div><input style="display:inline;" id="optEMR" type="checkbox" name="sharing[]" value="medications,allergies,immunizations,vitals,problems,alerts" /> <label style="display:inline;" for="optEMR"><a href="">Documents</a></label> </div>
+			<div><input style="display:inline;" id="optLabs" type="checkbox" name="sharing[]" value="labs" /> <label style="display:inline;" for="optLabs"><a href="">Labs</a></label> </div>
+
+		</div>
+		<div style="float:left;">Authorized Parties <a href="">Add</a><br />
+			<select multiple="multiple" style="height:175px;">
+				<option>jsmith@openid.clear-health.com</option>
+				<option>ssmith@openid.clear-health.com</option>
+				<option>mjones@openid.clear-health.com</option>
+				<option>jdoe@openid.clear-health.com</option>
+				<option>rdoe@openid.clear-health.com</option>
+				<option>sallydoe@openid.clear-health.com</option>
+			</select>
+		</div>
+		</fieldset>
+	</div>
+
+	<div id="phoneContainer" style="width:97%;height:290px;"></div>
+	<div id="addressContainer" style="width:97%;height:290px;"></div>
+
+
+	<div id="leftContainer" style="float:right;margin-left:2px;width:200px">
+		<div id="pictureContainer">
+			<fieldset><legend><?=__("Picture")?></legend>
+				<center><img src="<?=$this->baseUrl?>/img/minnie.jpeg" /></center>
+			</fieldset>
+		</div>
+		<br />
+		<div id="accountInfo">
+			<fieldset><legend>Account Information</legend>
+				<p><a href="javascript:viewAccountHistory()">Account History</a></p>
+				<table>
+				<tr>
+					<td><label>Total Billed: </label></td><td style="text-align:right">2944.50</td>
+				</tr>
+				<tr>
+					<td><label>Total Paid: </label></td><td style="text-align:right">271.00</td>
+				</tr>
+				<tr>
+					<td><label>Total Writeoff: </label></td><td style="text-align:right">0.00</td>
+				</tr>
+				<tr>
+					<td><label>Balance: </label></td><td style="border-top: solid 1px black; text-align:right">2673.50</td>
+				</tr>
+				<tr>
+					<td colspan="2">Unpaid Payments</td>
+				</tr>
+				<tr><th>Date</th><th>Amount</th></tr>
+				<tr>
+					<td style="color:Red;">10/17/2006</td><td>37.50</td>
+				</tr>
+				<tr>
+					<td style="color:Red;">11/16/2006</td><td>37.50</td>
+				</tr>
+				<tr>
+					<td></td><td style="border-top:solid 1px black;">75.00</td>
+				</tr>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+</div>
+
+<br style="clear:left"/>
+<fieldset>
+<div id="othersTabContainer" style="position:relative;width:99.9%;height:200px;"></div>
+<div id="relatedPeopleContainer" style="width:97%;height:170px;"></div>
+<div id="secondaryIdentifiersContainer" style="width:97%;height:170px;"></div>
+<div id="nameHistoryContainer" style="width:97%;height:170px;"></div>
+<div id="emailAddressesContainer" style="width:97%;height:170px;">
+	<table>
+		<tr>
+			<td>Primary Email</td>
+			<td><input type='text' name="person[email]" value=""></td>
+		</tr>
+		<tr>
+			<td>Secondary Email</td>
+			<td><input type='text' name="person[secondary_email]" value=""></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type='submit' name="" value="Update"></td>
+		</tr>
+	</table>
+</div>
+<div id="secondaryPracticesContainer" style="width:97%;height:170px;">
+	<div id="SecondaryPracticeGrid">
+		<p>There are no secondary practices for this person.</p>
+	</div>
+	
+	<div id="SecondaryPracticeForm">
+		<form id='h3sform' class='generalForm' method='post' enctype='multipart/form-data'>
+			<table>
+				<tr>
+					<td><label for="SecondaryPractice__practice_id">Practice</label></td>
+					<td>
+						<select name="SecondaryPractice[practice_id]">
+							<option></option>
+							<option label="Phoenix Service Unit" value="56459">Phoenix Service Unit</option><option label="Elko Service Unit" value="120067">Elko Service Unit</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="SecondaryPractice[person_id]" value="1042177" />
+						<input type="hidden" name="SecondaryPractice[id]" value="" />
+						<input type="submit" value="Save" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+<div id="specialNeedsContainer" style="width:97%;height:170px;">
+	<table>
+		<tr>
+			<td><em>Notes</em></td><td>&nbsp;&nbsp;</td><td><em>Options</em></td>
+
+		</tr>
+		
+		<tr>
+			<td><textarea name="person[specialNeedsNote]" id="" rows="5" cols="35"></textarea></td>
+			<td></td>
+			<td valign="top">Translator Needed: <select name="person[specialNeeds]"></select></td>
+		</tr>
+	</table>
+</div>
+</fieldset>
+<br style="clear:left"/>
+<fieldset>
+<div id="pdTabbarContainer" style="position:relative;width:99.9%;height:200px;"></div>
+<div id="statsContainer" style="width:97%;height:170px;"></div>
+<div id="dataSharingContainer" style="width:97%;height:170px;"></div>
+<div id="insuranceContainer" style="width:97%;height:170px;"></div>
+<div id="participationContainer" style="width:97%;height:170px;"></div>
+<div id="encountersContainer" style="width:97%;height:170px;"></div>
+<div id="appointmentsContainer" style="width:97%;height:170px;"></div>
+</fieldset>
+
+
+<script>
+
+relatedPeopleGrid = new dhtmlXGridObject('relatedPeopleContainer');
+relatedPeopleGrid.setImagePath("../img/");
+relatedPeopleGrid.setHeader(',<?=__('Person')?>,<?=__('Relation Of')?>,<?=__('Relation')?>,<?=__('DOB')?>,<?=__('Guarantor?')?>');
+relatedPeopleGrid.setInitWidths("10,*,*,*,*,*");
+relatedPeopleGrid.setColTypes("ro,ed,ed,ed,ed,ed");
+relatedPeopleGrid.setSkin("xp");
+var testdata=[
+	['1','aletha Brogdons','Grand Parent','Guillermo Bielicki','1995-05-01','Yes (R of P) #1'],
+]
+relatedPeopleGrid.enableAlterCss("even","uneven");
+relatedPeopleGrid.init();
+relatedPeopleGrid.parse(testdata,"jsarray");
+
+
+secondaryIdentifiersGrid = new dhtmlXGridObject('secondaryIdentifiersContainer');
+secondaryIdentifiersGrid.setImagePath("../img/");
+secondaryIdentifiersGrid.setHeader(',<?=__('Identifier')?>,<?=__('Type')?>');
+secondaryIdentifiersGrid.setInitWidths("10,*,*");
+secondaryIdentifiersGrid.setColTypes("ro,ed,ed");
+secondaryIdentifiersGrid.setSkin("xp");
+var testdata=[
+	['1','marsha brogdons','Other'],
+	['2','marsha brogdons','Other'],
+]
+secondaryIdentifiersGrid.enableAlterCss("even","uneven");
+secondaryIdentifiersGrid.init();
+secondaryIdentifiersGrid.parse(testdata,"jsarray");
+
+
+nameHistoryGrid = new dhtmlXGridObject('nameHistoryContainer');
+nameHistoryGrid.setImagePath("../img/");
+nameHistoryGrid.setHeader(',<?=__('Date Changed')?>,<?=__('First Name')?>,<?=__('Last Name')?>,<?=__('Middle Initial')?>');
+nameHistoryGrid.setInitWidths("10,*,*,*,*");
+nameHistoryGrid.setColTypes("ro,ed,ed,ed,ed");
+nameHistoryGrid.setSkin("xp");
+var testdata=[
+	['1','2009-05-13','Aletha','Brogdons','R'],
+	['2','2009-05-13','marsha','Brogdons','R'],
+	['3','2009-04-30','Aletha','Brogdon','R'],
+	['4','2007-05-10','Aletha','Brogdon','Radlinski'],
+	['5','2007-05-08','Aletha','Brogdon','Radlinski'],
+	['6','2007-05-08','Aletha','O\'Brogdon','Radlinski'],
+]
+nameHistoryGrid.enableAlterCss("even","uneven");
+nameHistoryGrid.init();
+nameHistoryGrid.parse(testdata,"jsarray");
+
+
+othersTab = new dhtmlXTabBar('othersTabContainer');
+othersTab.setImagePath('<?=$this->baseUrl?>/img/');
+othersTab.setStyle('silver');
+othersTab.setHrefMode('ajax');
+othersTab.setSkinColors('#FFFFFF,#FFFACD');
+
+othersTab.addTab('relatedPeople','<?=__('Related People')?>','150px');
+othersTab.addTab('secondaryIdentifiers','<?=__('Secondary Identifiers')?>','150px');
+othersTab.addTab('nameHistory','<?=__('Name History')?>','150px');
+othersTab.addTab('emailAddresses','<?=__('Email Addresses')?>','150px');
+othersTab.addTab('secondaryPractices','<?=__('Secondary Practices')?>','150px');
+othersTab.addTab('specialNeeds','<?=__('Special Needs')?>','150px');
+othersTab.setContent('relatedPeople','relatedPeopleContainer');
+othersTab.setContent('secondaryIdentifiers','secondaryIdentifiersContainer');
+othersTab.setContent('nameHistory','nameHistoryContainer');
+othersTab.setContent('emailAddresses','emailAddressesContainer');
+othersTab.setContent('secondaryPractices','secondaryPracticesContainer');
+othersTab.setContent('specialNeeds','specialNeedsContainer');
+othersTab.setTabActive('relatedPeople');
+
+
+function viewAccountHistory() {
+	winSP = globalCreateWindow("windowAccountHistoryId",[],"<?=$this->baseUrl?>/patient.raw/account-history","<?=__('Account History')?>",800,600);
+}
+
+phoneGrid = new dhtmlXGridObject('phoneContainer');
+phoneGrid.setImagePath("../img/");
+phoneGrid.setHeader('<?=__('Number')?>,<?=__('Type')?>,<?=__('Notes')?>');
+phoneGrid.setInitWidths("*,*,*");
+phoneGrid.setColTypes("ed,ed,ed");
+phoneGrid.setSkin("xp");
+var testdata=[
+	['342-344-2342','Home','information'],
+	['555-555-1212','Emergency',''],
+	['8769087000','Mobile',''],
+]
+phoneGrid.enableAlterCss("even","uneven");
+phoneGrid.init();
+phoneGrid.parse(testdata,"jsarray");
+
+
+addressGrid = new dhtmlXGridObject('addressContainer');
+addressGrid.setImagePath("../img/");
+addressGrid.setHeader('<?=__('Name')?>,<?=__('Type')?>,<?=__('Address')?>,<?=__('City')?>,<?=__('Zip')?>');
+addressGrid.setInitWidths("*,*,*,*,*");
+addressGrid.setColTypes("ed,ed,ed,ed,ed");
+addressGrid.setSkin("xp");
+var testdata=[  
+	['Parents\' Address','','123','Schenectady','12345'],
+	['main','','123 Main Street','Gaithersburg','20878'],
+	['mailing','Billing','1 main st','Phoenix','85001'],
+]
+addressGrid.enableAlterCss("even","uneven");
+addressGrid.init();
+addressGrid.parse(testdata,"jsarray");
+
+
+patientTab = new dhtmlXTabBar('patientTabContainer');
+patientTab.setImagePath('<?=$this->baseUrl?>/img/');
+patientTab.setStyle('silver');
+patientTab.setHrefMode('ajax');
+patientTab.setSkinColors('#FFFFFF,#FFFACD');
+
+patientTab.addTab('patientDetails','<?=__('Patient Details')?>','100px');
+patientTab.addTab('stats','<?=__('Statistics')?>','100px');
+patientTab.addTab('insurance','<?=__('Insurance')?>','100px');
+patientTab.addTab('phone','<?=__('Phone Numbers')?>','100px');
+patientTab.addTab('address','<?=__('Addresses')?>','100px');
+patientTab.setContent('patientDetails','patientDetailsContainer');
+patientTab.setContent('stats','statsContainer');
+patientTab.setContent('insurance','insuranceContainer');
+patientTab.setContent('phone','phoneContainer');
+patientTab.setContent('address','addressContainer');
+patientTab.setTabActive('patientDetails');
+
+
+insuranceGrid = new dhtmlXGridObject('insuranceContainer');
+insuranceGrid.setImagePath("../img/");
+insuranceGrid.setHeader('<?=__('Company')?>,<?=__('Program')?>,<?=__('Group Name')?>,<?=__('Group Number')?>,<?=__('Co-pay')?>,<?=__('Subscriber')?>,<?=__('Effective')?>,<?=__('Active')?>');
+insuranceGrid.setInitWidths("*,*,*,*,60,80,*,50");
+insuranceGrid.setColTypes("ed,ed,ed,ed,ed,ed,ed,ed");
+insuranceGrid.setSkin("xp");
+var testdata=[  
+	['Blue Cross of Arizona','HMO','c71d0','942128','22.00','self','Until 10/16/2009','Yes'],
+	['System','Self Pay2','NA','NA','0.00','self','Ended 00/00/0000','Yes'],
+	['Medicare','NHIC','11233','12333','15.00','self','Ended 10/31/2006','Yes'],
+	['Delta Dental','SourceINS','','','10.00','self','Ended 00/00/0000','Yes'],
+	['System','AAT Funding','','','0.00','self','Ended 00/00/0000','Yes'],
+	['System','Collections','','','0.00','self','Ended 00/00/0000','Yes'],
+	['System','Correction','','','0.00','self','Ended 00/00/0000','Yes'],
+	['Blue Cross of Arizona','HMO','ertert','ertert','15.00','relative','Ended 00/00/0000','Yes'],
+	['Medicare','NHIC','1123355','12333','15.00','self','Ended 10/31/2006','Yes'],
+	['System','Collections','','','0.00','self','Ended 00/00/0000','Yes'],
+	['Blue Cross of Arizona','HMO','','','0.00','relative','Ended 00/00/0000','Yes'],
+	['System','Collections','','','0.00','self','Ended 00/00/0000','Yes'],
+	['Medicare','NHIC','grpo','12344','12.00','relative','Ended 00/00/0000','Yes'],
+]
+insuranceGrid.enableAlterCss("even","uneven");
+insuranceGrid.init();
+insuranceGrid.parse(testdata,"jsarray");
+
+
+participationGrid = new dhtmlXGridObject('participationContainer');
+participationGrid.setImagePath("../img/");
+participationGrid.setHeader(',<?=__('Name')?>,<?=__('Start')?>,<?=__('End')?>,<?=__('Expires')?>,<?=__('Active')?>');
+participationGrid.setInitWidths("20,*,100,100,50,50");
+participationGrid.setColTypes("ro,ed,ed,ed,ed,ed");
+participationGrid.setSkin("xp");
+var testdata=[  
+	['1','Adhoc','2007-09-15','2008-09-15','no','yes'],
+	['2','New Program Other','2007-05-04','2008-05-04','no','yes'],
+	['3','OpenClinica','2008-08-07','0000-00-00','yes','yes'],
+	['4','PSU','2007-05-27','2008-05-27','no','yes'],
+]
+participationGrid.enableAlterCss("even","uneven");
+participationGrid.init();
+participationGrid.parse(testdata,"jsarray");
+
+
+encountersGrid = new dhtmlXGridObject('encountersContainer');
+encountersGrid.setImagePath("../img/");
+encountersGrid.setHeader(',<?=__('Date of Treatment')?>,<?=__('Reason')?>,<?=__('Building')?>,<?=__('Treated By')?>,<?=__('Status')?>');
+encountersGrid.setInitWidths("10,*,*,*,*,50");
+encountersGrid.setColTypes("ro,ed,ed,ed,ed,ed");
+encountersGrid.setSkin("xp");
+var testdata=[
+	['1','06/11/2009','Provider','Wassaja Memorial Health Center','Corazon Falconer','open'],
+	['2','06/10/2009','Provider','Salt River Health Center','Corazon Falconer','closed'],
+	['3','04/17/2009','Provider','Newe Medical Clinic','Jfdadf afafafa','open'],
+]
+encountersGrid.enableAlterCss("even","uneven");
+encountersGrid.init();
+encountersGrid.parse(testdata,"jsarray");
+appointmentsGrid.attachEvent("onRowDblClicked",function(rowId,colIndex) { windowEncounters(); });
+
+function windowEncounters() {
+	winSP = globalCreateWindow("windowEncountersId",[],"<?=$this->baseUrl?>/patient.raw/encounter","<?=__('Edit Encounter')?>",800,600);
+}
+
+
+appointmentsGrid = new dhtmlXGridObject('appointmentsContainer');
+appointmentsGrid.setImagePath("../img/");
+appointmentsGrid.setHeader(',<?=__('Start')?>,<?=__('Time')?>,<?=__('Title')?>,<?=__('Reason')?>,<?=__('Code')?>,<?=__('Provider')?>,<?=__('Location')?>');
+appointmentsGrid.setInitWidths("10,*,*,*,*,*,*,*");
+appointmentsGrid.setColTypes("ro,ed,ed,ed,ed,ed,ed,ed");
+appointmentsGrid.setSkin("xp");
+var testdata=[
+	['1','07/09/09 08:00','15m','followup','Provider','','Falconer, Corazon','Salt River Health Center -> General Care'],
+	['2','05/28/09 08:00','15m','Completed: cough','Provider','COM','Falconer, Corazon','Salt River Health Center -> General Care'],
+	['3','05/06/09 08:00','15m','test','Provider','','Gooddoc, Horace','Salt River Health Center -> General Care'],
+]
+appointmentsGrid.enableAlterCss("even","uneven");
+appointmentsGrid.init();
+appointmentsGrid.parse(testdata,"jsarray");
+
+
+pdTabbar = new dhtmlXTabBar('pdTabbarContainer');
+pdTabbar.setImagePath('<?=$this->baseUrl?>/img/');
+pdTabbar.setStyle('silver');
+pdTabbar.setHrefMode('ajax');
+pdTabbar.setSkinColors('#FFFFFF,#FFFACD');
+
+pdTabbar.addTab('insurance','<?=__('Insurance Programs')?>','150px');
+pdTabbar.addTab('participation','<?=__('Participation')?>','150px');
+pdTabbar.addTab('encounters','<?=__('Encounters')?>','150px');
+pdTabbar.addTab('appointments','<?=__('Appointments')?>','150px');
+pdTabbar.setContent('insurance','insuranceContainer');
+pdTabbar.setContent('participation','participationContainer');
+pdTabbar.setContent('encounters','encountersContainer');
+pdTabbar.setContent('appointments','appointmentsContainer');
+pdTabbar.setTabActive('insurance');
+
+</script>
+
+
+

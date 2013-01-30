@@ -1,0 +1,32 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div id="HSASPGridId" style="height:300px;"></div>
+<input type="button" onclick="dhxWins.window('winViewSubscribedPatientsId').close()" value="   <?=__('OK')?>    " />
+</div>
+
+<script>
+var HSASPGrid = new dhtmlXGridObject("HSASPGridId");
+HSASPGrid.setImagePath("<?=$this->baseUrl?>/img/");
+HSASPGrid.setHeader('<?=__('Patient Name')?>');
+HSASPGrid.setColTypes("ro");
+HSASPGrid.setSkin("xp");
+HSASPGrid.setInitWidths("*");
+HSASPGrid.init();
+var data = {
+	rows:[
+	<?foreach ($this->rows as $id=>$data):?>
+		{ id:<?=$id?>,
+		data:[
+		<?foreach ($data as $item):?>
+			"<?=$item?>",
+		<?endforeach;?>
+		] },
+	<?endforeach;?>
+	]
+};
+HSASPGrid.parse(data,"json");
+</script>

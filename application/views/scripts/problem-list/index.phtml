@@ -1,0 +1,336 @@
+<div style="width:100%;height:100%;background-color:white; position:absolute; top:0px;left:0px;">
+<script>
+var previousFilterRowId = 'active_problems';
+var previousFilterCellIndex = 0;
+
+function closeProblemWindow() {
+	winEditProblem.close();
+}
+function closeLookupProblemWindow() {
+	winLookupProblem.close();
+}
+
+function openLookupProblemWindow() {
+	var url = '<?=$this->baseUrl?>/diagnosis.raw/lookup?jsCallback=selectedProblemLookup';
+	winLookupProblem = globalCreateWindow("windowDiagnosisLookupId",[],url,"<?=__('Problem Lookup')?>",400,450);
+}
+
+function selectedProblemLookup(code,description) {
+	dojo.byId('problemList-code').value = code;
+	dojo.byId('problemList-code-text-short').value = description; // + ' ('+code+')';
+}
+
+function openViewProblemWindow(id) {
+	var url = '<?=$this->baseUrl?>/problem-list.raw/view-problem';
+	if (id != undefined) {
+		url += '?problemListId='+id;
+	}
+	winViewProblem = globalCreateWindow("windowViewProblem",[],url,"<?=__('Problem Details')?>",400,450);
+}
+
+function closeViewProblemWindow() {
+	winViewProblem.close();
+}
+
+function editProblem(id) {
+	var label = '<?=__('Add New')?>';
+	if (id != undefined) {
+		label = '<?=__('Edit')?>';
+		var statusValue = plGrid.cells(id,0).getValue();
+		if (statusValue == '<?=__('Removed')?>') {
+			return;
+		}
+	}
+	var url = "<?=$this->baseUrl?>/problem-list.raw/ajax-edit-problem?personId=" + mainController.getActivePatient();
+	if (id != undefined) {
+		url += "&problemListId=" + id;
+	}
+	winEditProblem = globalCreateWindow("windowEditProblem",[],url,label + " <?=__('Problem')?>",510,500);
+
+	if (id == undefined) {
+		openLookupProblemWindow();
+	}
+}
+function activateProblem(id) {
+	problemChangeStatus(id,"newStatus","Active");
+}
+function inActivateProblem(id) {
+	problemChangeStatus(id,"newStatus","Inactive");
+}
+function verifyProblem(id) {
+	alert(id);
+}
+function removeProblem(id) {
+	problemChangeStatus(id,"newStatus","Removed");
+}
+function annotateProblem(id) {
+	var comment = null;
+	comment = window.prompt('Please enter your comment');
+	if (comment == null) {
+		return;
+	}
+	dojo.xhrPost ({
+		url: '<?=$this->baseUrl?>/problem-list.raw/ajax-annotate',
+		content: {
+			problemListId: id,
+			comment: comment,
+		},
+		load: function (data) {
+			filterRowSelectHandler(previousFilterRowId,previousFilterCellIndex);
+			return;
+		},
+		error: function (er) {
+			alert('err: ' + er)
+		}
+	});
+}
+function problemChangeStatus(id,key,value) {
+	var content = {
+		"problemListId": id,
+	};
+	content[key] = value;
+	dojo.xhrPost({
+		url: '<?=$this->baseUrl?>/problem-list.raw/ajax-change-status',
+		content: content,
+		load: function (data) {
+			filterRowSelectHandler(previousFilterRowId,previousFilterCellIndex);
+			return;
+		},
+		error: function (er) {
+			alert("ERROR: " + er.responseText)
+		}
+	});
+}
+function restoreProblem(id) {
+	problemChangeStatus(id,"restore",true);
+}
+function resolveProblem(id) {
+	problemChangeStatus(id,"newStatus","Resolved");
+}
+//function viewProblem(id,showComments) {
+function viewProblem(id) {
+	openViewProblemWindow(id);
+}
+</script>
+<div id="problemListToolbar" style="height:50px;width:100%;border:1px solid Silver;"></div>
+<script>
+	plToolbar=new dhtmlXToolbarObject('problemListToolbar','ClearSilver');
+	plToolbar.attachEvent("onClick", onClickEvent);
+	plToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+	plToolbar.loadXML('<?=$this->baseUrl?>/problem-list.raw/toolbar.xml');
+
+	function onClickEvent(itemId) {
+		if (itemId != 'new_problem') {
+			var rowId = plGrid.getSelectedRowId();
+			if (rowId == null) {
+				alert('<?=__('No problem selected')?>');
+				return;
+			}
+		}
+		switch (itemId) {
+			case 'new_problem':
+				editProblem();
+				break;
+			case 'edit_problem':
+				editProblem(rowId);
+				break;
+			case 'remove_problem':
+				removeProblem(rowId);
+				break;
+			case 'annotate_problem':
+				annotateProblem(rowId);
+				break;
+			default:
+				alert('<?=__('Invalid event.')?>');
+		}
+	}
+</script>
+<div>
+	<div style="width:12%;">
+	<style>div.gridbox_xp table.obj td {border-bottom: thin dashed;border-right:none;}</style>
+	<div id="problemsFilterContainer" style="float:left;width:100%;height:457px;"></div>
+<script>
+	pfGrid = new dhtmlXGridObject('problemsFilterContainer');
+	pfGrid.setImagePath("<?=$this->baseUrl?>/img/");
+	pfGrid.setHeader('Filter');
+	pfGrid.setInitWidths("*");
+	pfGrid.setColTypes("ro");
+	pfGrid.setSkin("xp");
+	pfGrid.attachEvent("onRowSelect",filterRowSelectHandler);
+	pfGrid.init();
+	pfGrid.load("<?=$this->baseUrl?>/problem-list.raw/filter.json","json");
+
+	function filterRowSelectHandler(rowId,cellIndex) {
+		// disable toolbars for Edit, Remove and Annotate
+		plToolbar.disableItem('edit_problem');
+		plToolbar.disableItem('remove_problem');
+		plToolbar.disableItem('annotate_problem');
+		// enable menu based on filter
+
+		previousFilterRowId = rowId;
+		previousFilterCellIndex = cellIndex;
+		var filterLabel = pfGrid.cellById(rowId,'0').getValue();
+		plGrid.clearAll();
+		plGrid.load("<?=$this->baseUrl?>/problem-list.raw/list.json?filter="+rowId + "&personId=" + mainController.getActivePatient(),function (){ setProblemListLabel(filterLabel) },"json");
+	}
+	function setProblemListLabel(filterLabel) {
+		var numRows = plGrid.getRowsNum();
+		dojo.byId('problemListLabel').innerHTML = filterLabel + ' (' + numRows + ' of ' + numRows + ')';
+	}
+
+	function enableMenuBasedOnStatus(plStatus) {
+		plMenu.setItemDisabled('edit');
+		plMenu.setItemDisabled('activate');
+		plMenu.setItemDisabled('inactivate');
+		plMenu.setItemDisabled('verify');
+		plMenu.setItemDisabled('annotate');
+		plMenu.setItemDisabled('remove');
+		plMenu.setItemDisabled('restore');
+		plMenu.setItemDisabled("resolve");
+		plMenu.setItemDisabled("flags");
+
+		// remove: New Problem, Restore, View Details, Comments
+		switch (plStatus.toLowerCase()) {
+			case 'active':
+				plMenu.setItemEnabled('edit');
+				plMenu.setItemEnabled('inactivate');
+				plMenu.setItemEnabled('annotate');
+				plMenu.setItemEnabled('remove');
+				plMenu.setItemEnabled("resolve");
+				plMenu.setItemEnabled('flags');
+				break;
+			case 'inactive':
+				plMenu.setItemEnabled('edit');
+				plMenu.setItemEnabled('activate');
+				plMenu.setItemEnabled('annotate');
+				plMenu.setItemEnabled('remove');
+				plMenu.setItemEnabled('flags');
+				break;
+			case 'removed':
+				plMenu.setItemEnabled('restore');
+				break;
+		}
+	}
+</script>
+	</div>
+
+	<div style="float:left;width:86%;">
+	<div style="padding-left:5px;padding-top:4px;">
+	<div id="problemListLabel"></div>
+	<div id="problemsListContainer" style="position:absolute;width:100%;height:440px;"></div>
+<script>
+	plGrid = new dhtmlXGridObject('problemsListContainer');
+	plGrid.setImagePath("<?=$this->baseUrl?>/img/");
+	plGrid.setHeader('Status,,Flags,Description,Diagnosis Code,Diagnosis Date,Provider,Location,Last Updated');
+	plGrid.setInitWidths("75,25,75,*,100,100,150,100,125");
+	plGrid.setColTypes("ro,sub_row,ro,ro,ro,ro,ro,ro,ro");
+	plGrid.setSkin("xp");
+	plGrid.enableAlterCss("even","uneven");
+	plGrid.attachEvent("onRowSelect",listRowSelectHandler);
+	plGrid.attachEvent("onRowDblClicked",listRowDoubleClickedHandler);
+
+	plMenu = new dhtmlXMenuObject('cxColumnMenu','standard');
+	plMenu.setImagePath("<?=$this->baseUrl?>/img/");
+	plMenu.renderAsContextMenu();
+	plMenu.setOpenMode("web");
+	plMenu.attachEvent('onClick',listMenuEvent);
+	plMenu.loadXML('<?=$this->baseUrl?>/problem-list.raw/list-menu.xml');
+
+	plGrid.enableContextMenu(plMenu);
+	dhtmlxEvent(plGrid.entBox,"contextmenu",function(e){
+		(e||event).cancelBubble=true;
+		return false;
+	});
+	//plGrid.attachEvent('onBeforeContextMenu',beforeContextMenuEvent);
+
+	plGrid.init();
+	plGrid.load("<?=$this->baseUrl?>/problem-list.raw/list.json?personId=" + mainController.getActivePatient(),function (){ setProblemListLabel('<?=__('Active Problems')?>') },"json");
+
+function plSetFlags(rowId,flags) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/problem-list.raw/process-set-flags",
+		content: {
+			"problemListId": rowId,
+			"flags": flags,
+		},
+		load: function (data) {
+			filterRowSelectHandler(previousFilterRowId,previousFilterCellIndex);
+			return;
+		},
+		error: function (er) {
+			alert('err: ' + er)
+		}
+	});
+}
+
+	function listMenuEvent(menuItemId,type) {
+		var rowId = plGrid.getSelectedRowId();
+		if (rowId == null) {
+			alert('<?=__('No problem selected')?>');
+			return;
+		}
+		if (menuItemId.substr(0,6) == "flags_") {
+			var flags = menuItemId.substr(6);
+			plSetFlags(rowId,flags);
+			return;
+		}
+
+		switch (menuItemId) {
+			case 'new':
+				editProblem();
+				break;
+			case 'edit':
+				editProblem(rowId);
+				break;
+			case 'activate':
+				activateProblem(rowId);
+				break;
+			case 'inactivate':
+				inActivateProblem(rowId);
+				break;
+			case 'verify':
+				verifyProblem(rowId);
+				break;
+			case 'annotate':
+				annotateProblem(rowId);
+				break;
+			case 'remove':
+				removeProblem(rowId);
+				break;
+			case 'restore':
+				restoreProblem(rowId);
+				break;
+			case 'resolve':
+				resolveProblem(rowId);
+				break;
+			case 'view':
+				//viewProblem(rowId,plMenu.getCheckboxState('show_comments'));
+				viewProblem(rowId);
+				break;
+			default:
+				alert('<?=__('Invalid event.')?>');
+		}
+	}
+
+	function listRowSelectHandler(rowId,cellIndex) {
+		var plStatus = plGrid.cellById(rowId,'0').getValue();
+		if (plStatus != 'Removed') {
+			// enable toolbars for Edit, Remove and Annotate
+			plToolbar.enableItem('edit_problem');
+			plToolbar.enableItem('remove_problem');
+			plToolbar.enableItem('annotate_problem');
+		}
+
+		// enable menu based on status
+		enableMenuBasedOnStatus(plStatus);
+	}
+
+	function listRowDoubleClickedHandler(rowId,colIndex) {
+		editProblem(rowId);
+	}
+</script>
+	</div>
+	</div>
+	</div>
+</div>
+</div>

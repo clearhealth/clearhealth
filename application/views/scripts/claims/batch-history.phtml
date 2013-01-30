@@ -1,0 +1,19 @@
+<div style="margin:2px;">
+	<div id="batchHistoryGridId" style="width:780px;height:400px;"></div>
+</div>
+<script>
+var batchHistoryGrid = new dhtmlXGridObject("batchHistoryGridId");
+batchHistoryGrid.setImagePath("<?=$this->baseUrl?>/img/");
+batchHistoryGrid.setHeader("<?=__('Date/Time Transmitted')?>,<?=__('Transmitted By')?>,<?=__('Destination')?>,<?=__('Status')?>");
+batchHistoryGrid.setSkin("xp");
+batchHistoryGrid.setColTypes("ro,ro,ro,ro");
+batchHistoryGrid.setInitWidths("150,*,*,100");
+batchHistoryGrid.init();
+batchHistoryGrid.load("<?=$this->baseUrl?>/claims.raw/list-files",function(){
+},"json");
+
+batchHistoryGrid.attachEvent("onRowDblClicked",function(rowId,colIndex){
+	claimsSetFilters({"filters[batchHistoryId]":rowId});
+	dhxWins.window("windowClaimsAdvancedFiltersId").close();
+});
+</script>

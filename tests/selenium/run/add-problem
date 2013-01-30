@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>add-problem</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">add-problem</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/30/main/index</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemListToolbar']/table/tbody/tr/td[2]/table/tbody/tr/td/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.00</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//table[@id='dijit__Calendar_0']/tbody/tr[3]/td[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Add']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemListToolbar']/table/tbody/tr/td[2]/table/tbody/tr/td/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.00</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>diabetes</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>DMII</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.02</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.01</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.00</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>250.01</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>agreeButtonCenter</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>agreeButtonCenter</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=ENTER THOSE WHO DARE</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>diaper humiliation suppository mall</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; humiliation suppository mall</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; humiliation suppository mall smell</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=4</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; suppository mall smell</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>diaper rubber pants suppository</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Safe Search Moderate</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>adlt_set_off</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>adlt_set_off</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Save settings']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>adlt_confirm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>adlt_confirm</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form2_q</td>
+	<td>&quot;her diaper&quot; mess mall</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form2_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form2_q</td>
+	<td>&quot;her diaper&quot; mitten</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form2_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; mitten locked</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; mitten locked sleeper</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Stories</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Room and Board</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>sb_form_q</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>sb_form_q</td>
+	<td>&quot;her diaper&quot; mitten &quot;footed sleeper&quot;</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>sb_form_go</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Kit Fox</td>
+	<td></td>
+</tr>
+<tr>
+	<td>selectWindow</td>
+	<td>name=null</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemListToolbar']/table/tbody/tr/td[2]/table/tbody/tr/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>q</td>
+	<td>DMII</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>searchLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Add']</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

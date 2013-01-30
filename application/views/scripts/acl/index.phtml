@@ -1,0 +1,334 @@
+<form name="aclFormName" id="aclFormId">
+<div id="aclContainerId" style="position:absolute;width:100%;height:400px;">
+	<div id="aclToolbarId" style="width:99.9%;"></div>
+	<fieldset style="width:800px;height:100%;"><legend id="legendId"><?=__('Add New Template')?></legend>
+		<div id="aclGridId" style="width:800px;height:100%;overflow:auto;"></div>
+	</fieldset>
+	<?=$this->formHidden('acl[templateName]',null,array('id'=>'aclTemplateName'))?>
+	<?=$this->formHidden('acl[templateId]',null,array('id'=>'aclTemplateId'))?>
+</div>
+</form>
+
+<script>
+var aclTemplateId = null;
+var aclToolbar = new dhtmlXToolbarObject("aclToolbarId","ClearSilver");
+aclToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+aclToolbar.attachEvent("onClick",aclOnToolbarClicked);
+
+var ctr = 1;
+aclToolbar.addButton("newTemplate",ctr++,"<?=__('New Template')?>","newproblem.png","newproblem.png");
+aclToolbar.addButton("refreshResources",ctr++,"<?=__('Refresh Resources')?>","refresh.png","refresh.png");
+aclToolbar.addButton("saveTemplate",ctr++,"<?=__('Save Template')?>","save.png","save.png");
+aclToolbar.addButton("copyTemplate",ctr++,"<?=__('Copy Template')?>","copy.png","copy.png");
+var opts = [];
+<?foreach ($this->templates as $id=>$name):?>
+opts.push(["loadTemplate_<?=$id?>","obj","<?=$name?>","blank.gif"]);
+<?endforeach;?>
+aclToolbar.addButtonSelect("loadTemplate",ctr++,"<?=__('Load Template')?>",opts,"getStatus.png","getStatus.png");
+
+function aclOnToolbarClicked(id) {
+	if (id == "loadTemplate") return;
+	if (id.substr(0,13) == "loadTemplate_") {
+		aclTemplateId = id.substr(13);
+		aclGridReload(aclTemplateId);
+		dojo.byId("legendId").innerHTML = "<?=__('Edit Template')?>: "+aclToolbar.getListOptionText("loadTemplate",id);
+		return;
+	}
+	switch (id) {
+		case "newTemplate":
+			aclTemplateId = null;
+			dojo.byId("legendId").innerHTML = "<?=__('Add New Template')?>";
+			aclGridReload();
+			break;
+		case "refreshResources":
+			var aclCheckedInputs = {};
+			var aclForm = dojo.byId("aclFormId");
+			var aclInputs = aclForm.getElementsByTagName("INPUT");
+			for (var i = 0; i < aclInputs.length; i++) {
+				if (aclInputs[i].type != "hidden" || aclInputs[i].name.substr(0,4) != "acl[") continue;
+				aclCheckedInputs[aclInputs[i].id] = aclInputs[i].value;
+			}
+			aclGridReload(aclTemplateId,function(){
+				var chk = null;
+				var input = null;
+				for (var i in aclCheckedInputs) {
+					if (!i) continue;
+					input = dojo.byId(i);
+					chk = dojo.byId("chk_"+i);
+					if (!input || !chk) continue;
+					input.value = aclCheckedInputs[i];
+					chk.checked = (input.value == 1)?true:false;
+				}
+			},true);
+			break;
+		case "saveTemplate":
+			aclSaveTemplate();
+			break;
+		case "copyTemplate":
+			var templateId = (aclTemplateId == null)?"":aclTemplateId;
+			var params = ["permissionTemplateId="+templateId];
+			globalCreateWindow("winACLCopyTemplate",params,"<?=$this->baseUrl?>/acl.raw/copy-template","<?=__('Copy Template')?>",300,300);
+			break;
+		default:
+			alert("<?=__('Invalid event.')?>");
+	}
+}
+
+var aclGrid = new dhtmlXGridObject("aclGridId");
+aclGrid.setImagePath("<?=$this->baseUrl?>/img/");
+aclGrid.selMultiRows = true;
+var headerColRead = '<input id="<?=$this->chkLabelRead?>Header" name="<?=$this->chkLabelRead?>Header" disabled="disabled" type="checkbox" onclick="toggleColumn(this)"> <?=__('Read')?>';
+var headerColWrite = '<input id="<?=$this->chkLabelWrite?>Header" name="<?=$this->chkLabelWrite?>Header" disabled="disabled" type="checkbox" onclick="toggleColumn(this)"> <?=__('Write')?>';
+var headerColDelete = '<input id="<?=$this->chkLabelDelete?>Header" name="<?=$this->chkLabelDelete?>Header" disabled="disabled" type="checkbox" onclick="toggleColumn(this)"> <?=__('Delete')?>';
+var headerColOther = '<input id="<?=$this->chkLabelOther?>Header" name="<?=$this->chkLabelOther?>Header" disabled="disabled" type="checkbox" onclick="toggleColumn(this)"> <?=__('Other')?>';
+aclGrid.setHeader("Resource,"+headerColRead+","+headerColWrite+","+headerColDelete+","+headerColOther);
+aclGrid.setInitWidths("*,*,*,*,*");
+aclGrid.setColTypes("ro,ro,ro,ro,ro");
+aclGrid.init();
+
+function aclGridReload(templateId,callback,refreshResources) {
+	dojo.byId("<?=$this->chkLabelRead?>Header").checked = false;
+	dojo.byId("<?=$this->chkLabelWrite?>Header").checked = false;
+	dojo.byId("<?=$this->chkLabelDelete?>Header").checked = false;
+	dojo.byId("<?=$this->chkLabelOther?>Header").checked = false;
+	if (!templateId) {
+		aclTemplateId = null;
+		dojo.byId("legendId").innerHTML = "<?=__('Add New Template')?>";
+		templateId = "";
+	}
+	var params = [];
+	params.push("templateId="+templateId);
+	if (templateId != "" && refreshResources) {
+		params.push("refresh=1");
+	}
+	aclGrid.clearAll();
+	if (typeof callback != "function") callback = aclOnLoaded;
+	aclGrid.load("<?=$this->baseUrl?>/acl.raw/list?"+params.join("&"),callback,"json");
+}
+aclGridReload();
+
+function aclOnLoaded() {
+	toggleCheckboxHeaders(true);
+	var numRows = aclGrid.getRowsNum();
+	if (numRows <= 0) {
+		return;
+	}
+	toggleCheckboxHeaders(false);
+}
+
+var aclMenu = new dhtmlXMenuObject("aclColumnMenu","standard");
+aclMenu.setImagePath("<?=$this->baseUrl?>/img/");
+aclMenu.renderAsContextMenu();
+aclMenu.setOpenMode("web");
+aclMenu.attachEvent("onClick",onMenuClicked);
+aclMenu.loadXML("<?=$this->baseUrl?>/acl.raw/get-menu.xml");
+
+function onMenuClicked(itemId,type) {
+	switch (itemId) {
+		case "acl_add_resource":
+			do {
+				var name = prompt("<?=__('Resource Name')?>");
+			} while (name != null && name.length <= 0);
+			if (name != null) {
+				addResource(name);
+			}
+			break;
+		case "acl_add_permission":
+			var rowCol = type.split('_'); // 0: rowId, 1: colIndex
+			addPermission(rowCol[0],rowCol[1]);
+			break;
+	}
+}
+
+function addResource(name) {
+	if (!name || name.length <= 0) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/acl.raw/process-add",
+		handleAs: "json",
+		content: {
+			"aclTemplateId": aclTemplateId,
+			"type": "resource",
+			"value": name,
+		},
+		load: function(data,ioArgs) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else {
+				aclGrid.addRow(data.id,data.name);
+			}
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function addPermission(rowId,colIndex) {
+	var name = "Other";
+	switch (parseInt(colIndex)) {
+		case 1:
+			name = "Read";
+			break;
+		case 2:
+			name = "Write";
+			break;
+		case 3:
+			name = "Delete";
+			break;
+		case 4:
+			name = "Other";
+			break;
+		default:
+			return;
+	}
+	var resourceName = aclGrid.cells(rowId,0).getValue();
+	do {
+		var value = prompt(resourceName+"->"+name+"\n<?=__('Permission Name')?>");
+	} while (value != null && value.length <= 0);
+
+	if (value == null) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/acl.raw/process-add",
+		handleAs: "json",
+		content: {
+			"aclTemplateId": aclTemplateId,
+			"type": "permission",
+			"value": value,
+			"resourceId": rowId,
+			"mode": name.toLowerCase(),
+		},
+		load: function(data,ioArgs) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else {
+				var val = aclGrid.cells(rowId,colIndex).getValue();
+				if (val.length > 0) {
+					val += "<br />";
+				}
+				val += data;
+				aclGrid.cells(rowId,colIndex).setValue(val);
+			}
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+aclGrid.enableContextMenu(aclMenu);
+dhtmlxEvent(aclGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+aclGrid.attachEvent("onBeforeContextMenu",onBeforeContextMenuEvent);
+
+function onBeforeContextMenuEvent(rowId,colIndex,gridObj) {
+	// hide all menus, only show relevant menu
+	aclMenu.forEachItem(function(id){ aclMenu.hideItem(id); });
+	if (colIndex == 0) {
+		aclMenu.showItem("acl_add_resource");
+	}
+	else {
+		aclMenu.showItem("acl_add_permission");
+	}
+
+	return true;
+}
+
+function toggleCheckboxHeaders(state) {
+	dojo.byId("<?=$this->chkLabelRead?>Header").disabled = state;
+	dojo.byId("<?=$this->chkLabelWrite?>Header").disabled = state;
+	dojo.byId("<?=$this->chkLabelDelete?>Header").disabled = state;
+	dojo.byId("<?=$this->chkLabelOther?>Header").disabled = state;
+}
+
+function toggleColumn(oChk) {
+	var chkName = oChk.name.replace(/Header/,"");
+	var chkEl = document.getElementsByName(chkName);
+	for(var i=0; i < chkEl.length; i++) {
+		chkEl[i].checked = oChk.checked;
+		dojo.byId(chkEl[i].value).value = (oChk.checked)?"1":"0";
+	}
+	savePermission(chkName,oChk.checked,"admin","all");
+}
+
+function toggleItem(oChk) {
+	dojo.byId(oChk.value).value = (oChk.checked)?"1":"0";
+	return;
+	savePermission(oChk.name,oChk.checked,"admin",oChk.value);
+}
+
+function savePermission(name,value,template,access) {
+	return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/acl.raw/ajax-save-permission",
+		handleAs: "json",
+		content: {
+			name: name,
+			value: value,
+			template: template,
+			access: access,
+		},
+		load: function(data,ioArgs) {
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function aclSaveTemplate() {
+	if (aclTemplateId == null) {
+		while (true) {
+			var templateName = prompt("<?=__('Enter Template name')?>");
+			if (templateName === null) return;
+			if (templateName.length < 1) {
+				alert("<?=__('Template name is required')?>");
+			}
+			else {
+				break;
+			}
+		}
+		dojo.byId("aclTemplateName").value = templateName;
+	}
+	else {
+		dojo.byId("aclTemplateId").value = aclTemplateId;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/acl.raw/process-save-template",
+		handleAs: "json",
+		form: "aclFormId",
+		load: function (data) {
+			alert("<?=__('Please reload Permissions Service to take effect')?>");
+			aclTemplateOnProcessed(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function aclTemplateOnProcessed(data) {
+	if (typeof aclToolbar.objPull[aclToolbar.idPrefix+"loadTemplate_"+data.id] == "undefined") {
+		var arr = aclToolbar.getAllListOptions("loadTemplate");
+		aclToolbar.addListOption("loadTemplate","loadTemplate_"+data.id,(arr.length+1),"button",data.name,"blank.gif");
+	}
+	dojo.byId("legendId").innerHTML = "<?=__('Edit Template')?>: "+data.name;
+	aclTemplateId = data.id;
+	aclGridReload(aclTemplateId);
+}
+</script>

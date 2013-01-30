@@ -1,0 +1,127 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+</style>
+
+<fieldset><legend><?=__('Holidays')?></legend>
+	<div id="holidayGridId" style="width:auto;height:300px;"></div>
+</fieldset>
+
+<script>
+var holidayGrid = new dhtmlXGridObject("holidayGridId");
+holidayGrid.setImagePath("<?=$this->baseUrl?>/img/");
+holidayGrid.setHeader("<?=__('Date')?>,<?=__('Description')?>");
+var indexSchedHolDate = 0;
+var indexSchedHolDescription = 1;
+
+holidayGrid.setInitWidths("75,*");
+holidayGrid.setColTypes("ed,ed");
+holidayGrid.setSkin("xp");
+holidayGrid.attachEvent("onEditCell",holidayGridOnEditCell);
+
+var holidayMenu = new dhtmlXMenuObject(null,"standard");
+holidayMenu.setImagePath("<?=$this->baseUrl?>/img/");
+holidayMenu.renderAsContextMenu();
+holidayMenu.setOpenMode("web");
+holidayMenu.loadXML("<?=$this->baseUrl?>/holidays.raw/get-context-menu");
+holidayMenu.attachEvent("onClick",holidayMenuOnClicked);
+function holidayMenuOnClicked(id,zoneId,casState) {
+	var rowCol = zoneId.split("_");
+	if (rowCol[0] == "") {
+		return;
+	}
+	switch (id) {
+		case "remove":
+			holidayRemove(rowCol[0]);
+			break;
+	}
+}
+holidayGrid.enableContextMenu(holidayMenu);
+holidayGrid.init();
+
+dhtmlxEvent(holidayGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+function holidayGridOnLoaded() {
+	holidayGrid.addRow("",",,<?=date('Y')?>");
+}
+
+function holidayGridReload() {
+	holidayGrid.clearAll();
+	holidayGrid.load(globalBaseUrl+"/holidays.raw/list",holidayGridOnLoaded,"json");
+}
+holidayGridReload();
+
+
+function holidayGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		if (cellIndex == indexSchedHolDate) {
+			holidayGrid.forEachRow(function(id){
+				if (id != rowId && this.cells(id,cellIndex).getValue() == newValue) {
+				}
+			});
+		}
+		switch (cellIndex) {
+			case indexSchedHolDate:
+			case indexSchedHolDescription:
+				holidaySave(rowId);
+				break;
+		}
+	}
+	return true;
+}
+
+function holidayRemove(rowId) {
+	if (rowId == undefined) {
+		rowId = holidayGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert("<?=__('No row selected')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/holidays.raw/process-delete",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			holidayGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function holidaySave(rowId) {
+	if (rowId == undefined) {
+		rowId = holidayGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/holidays.raw/process-edit",
+		handleAs: "json",
+		content: {
+			"holiday[holidayId]": rowId,
+			"holiday[date]": holidayGrid.cells(rowId,indexSchedHolDate).getValue(),
+			"holiday[description]": holidayGrid.cells(rowId,indexSchedHolDescription).getValue(),
+		},
+		load: function (data) {
+			holidayGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

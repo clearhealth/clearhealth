@@ -1,0 +1,66 @@
+
+<div style="width:100%;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->conditionObjectInput('FormTextarea',array('cols'=>65,'rows'=>22))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->handlerId->getValue())?>
+	<?=$this->form->handlerIdInput('FormHidden')?>
+	<?=$this->formHidden('type',$this->form->handlerType->getValue())?>
+	<?=$this->form->handlerTypeInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('cancelId',__('Cancel'),array('onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?>
+</div>
+
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+<?if ($this->codeEdited):?>
+	if (!confirm('<?=__('Are you sure you want to overwrite?')?>')) {
+		return false;
+	}
+<?endif?>
+	var validName = "class "+globalNormalizedName(dojo.byId("<?=$this->form->name->getId()?>").value)+"ConditionHandler extends DataIntegrationConditionHandlerAbstract";
+	var conditionObject = dojo.byId("<?=$this->form->conditionObject->getId()?>").value;
+	if (conditionObject.substr(0,validName.length) != validName) {
+		alert("Must be defined as: \n"+validName);
+		return false;
+	}
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	data = data + '';
+	data = data.substr(1,data.length-2);
+	var pos = data.indexOf('|');
+	if (pos === -1) {
+		return false;
+	}
+	var code = data.substr(0,pos);
+	if (code == 200) {
+		dhxWins.window('<?=$this->form->getWindow()?>').close();
+	}
+	else {
+		alert(data.substr(pos+1,data.length));
+	}
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

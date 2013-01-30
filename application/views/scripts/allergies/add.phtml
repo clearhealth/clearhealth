@@ -1,0 +1,158 @@
+<script>
+function updateObserved(val) {
+	var observed = dojo.byId("allergy-observed-"+val);
+	if (!observed) {
+		return;
+	}
+
+	dojo.byId("allergy-severity").disabled = true;
+	dojo.byId("allergy-dateTimeReaction").disabled = true;
+	if (val == "1") { // observed
+		dojo.byId("allergy-severity").disabled = false;
+		dojo.byId("allergy-dateTimeReaction").disabled = false;
+	}
+}
+
+function updateCausativeAgent(data) {
+	dojo.byId("reaction-input").style.display = "none";
+	dojo.byId("reaction-select").style.display = "block";
+	var category = globalSelectedAllergy.category;
+	if (category == "<?=__('Drug Class')?>" || category == "<?=__('Specific Drug')?>") {
+		dojo.byId("reaction-input").value = category+" <?=__('Allergy')?>";
+		dojo.byId("reaction-input").style.display = "block";
+		dojo.byId("reaction-select").style.display = "none";
+	}
+	dojo.byId("allergy-drugAllergy").value = globalSelectedAllergy.id;
+	dojo.byId("allergy-causativeAgent").value = data;
+}
+
+function updateNoKnownAllergies(disabled) {
+	dojo.byId("allergy-causativeAgent").disabled = disabled;
+	dojo.byId("allergyLookupId").disabled = disabled;
+	dojo.byId("allergy-reactionType").disabled = disabled;
+	dojo.byId("allergy-observed-0").disabled = disabled;
+	dojo.byId("allergy-observed-1").disabled = disabled;
+	dojo.byId("allergy-severity").disabled = disabled;
+	dojo.byId("allergy-dateTimeReaction").disabled = disabled;
+	dojo.byId("allergy-symptoms").disabled = disabled;
+	dojo.byId("allergy-comments").disabled = disabled;
+}
+
+function _openLookupAllergy() {
+	var patientId = mainController.getActivePatient();
+	var params = new Array();
+	params.push("personId="+patientId);
+	params.push("callback=updateCausativeAgent");
+	globalCreateWindow("winLookupAllergiesId",params,"<?=$this->baseUrl?>/allergies.raw/lookup","<?=__('Lookup Allergy/ADR')?>",400,400);
+}
+
+</script>
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->observerId->renderLabel()?>
+	<?=$this->form->observerIdInput('FormSelect',array('options' => $this->listObservers,'style'=>'width:300px;'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->causativeAgent->renderLabel()?>
+	<?$this->form->causativeAgent->setAttrib('size',30);
+	$this->form->causativeAgent->setAttrib('readonly',true)?>
+	<?=$this->form->causativeAgentInput()?>
+	<input type="button" id="allergyLookupId" onclick="_openLookupAllergy()" value="..." />
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->reactionType->renderLabel()?>
+	<?=$this->formText('reactionInput',$this->form->reactionType->getValue(),array('id'=>'reaction-input','style'=>'width:300px;display:none;'))?>
+	<?=$this->formSelect('reactionSelect',$this->form->reactionType->getValue(),array('id'=>'reaction-select','style'=>'width:300px;'),$this->listReactionTypes)?>
+	<?=$this->form->reactionTypeInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formRadio('allergy[observed]',(int)$this->form->observed->getValue(),array('onclick'=>'updateObserved(this.value)'),array(1=>'Observed',0=>'Historical'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->severity->renderLabel()?>
+	<?=$this->form->severityInput('FormSelect',array('options' => $this->listSeverities,'style'=>'width:300px;'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->dateTimeReaction->renderLabel()?>
+	<?$this->form->dateTimeReaction->setAttrib('size',35)?>
+	<?=$this->form->dateTimeReactionInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->symptoms->renderLabel()?>
+	<?=$this->form->symptomsInput('FormSelect',array('options' => $this->listSymptoms,'multiple'=>true,'style'=>'height:80px;width:300px;'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->comments->renderLabel()?>
+	<?=$this->form->commentsInput('FormTextarea',array('rows'=>4,'cols'=>40))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<input type="checkbox" name="noKnownAllergiesInput" id="noKnownAllergiesInput" value="<?=$this->form->noKnownAllergies->getValue()?>" helper="formText"<?=($this->form->noKnownAllergies->getValue())?' checked="checked"':''?> onclick="updateNoKnownAllergies(this.checked)"<?=($this->disableNoKnownAllergies)?' disabled="disabled"':''?> /> <?=__('No Known Allergies')?>
+	<?=$this->form->noKnownAllergiesInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->patientAllergyIdInput('FormHidden')?>
+	<?=$this->form->patientIdInput('FormHidden')?>
+	<?=$this->form->drugAllergyInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("winAddAllergyId").close()'))?>
+</div>
+
+<script>
+function preSubmitadd() {
+	if (dojo.byId("reaction-input").style.display == "block") {
+		var reactionType = dojo.byId("reaction-input").value;
+		dojo.byId("allergy-reactionType").value = reactionType;
+	}
+	else if (dojo.byId("reaction-select").style.display == "block") {
+		var reactionType = dojo.byId("reaction-select").value;
+		dojo.byId("allergy-reactionType").value = reactionType;
+	}
+	var noKnownAllergiesInput = dojo.byId("noKnownAllergiesInput");
+	var val = 0;
+	if (noKnownAllergiesInput.checked) {
+		allergiesMarkNoKnownAllergies();
+		dhxWins.window('winAddAllergyId').close();
+		return false;
+	}
+	noKnownAllergiesInput.checked = false;
+	return true;
+}
+
+function postSubmitadd(data) {
+	allergiesGridReload();
+	initMainToolbar(null,mainController.getActivePatient());
+	dhxWins.window('winAddAllergyId').close();
+	return false;
+}
+updateObserved("<?=(int)$this->form->observed->getValue()?>");
+updateCausativeAgent("<?=$this->form->causativeAgent->getValue()?>");
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

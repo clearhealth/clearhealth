@@ -1,0 +1,222 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div id="insuranceGridId" style="float:left;width:100%;height:440px;overflow:auto;"></div>
+<script>
+function companySingleUpdate(id,field,value,type,objId,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/insurance-manager.raw/process-edit-by-field",
+		handleAs: "json",
+		content: {
+			objId: objId,
+			type: type,
+			id: id,
+			field: field,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function companyRemove(id,type,objId,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/insurance-manager.raw/process-delete",
+		handleAs: "json",
+		content: {
+			objId: objId,
+			type: type,
+			id: id,
+		},
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function insuranceDelete(id) {
+	if (!id) {
+		id = insuranceGrid.getSelectedRowId();
+	}
+	if (!insuranceGrid.doesRowExist(id)) {
+		alert("<?=__('Invalid company id specified')?>");
+		return;
+	}
+
+	var type = "program";
+	var parentId = insuranceGrid.getParentId(id);
+	if (parentId == null || parentId == 0) {
+		// root/Company
+		type = "company";
+	}
+
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/insurance-manager.raw/process-delete",
+		handleAs: "json",
+		content: {
+			type: type,
+			id: id,
+		},
+		load: function (data) {
+			insuranceGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function insuranceEditCompany(id) {
+	var winLabel = "<?=__('Edit')?>";
+	if (!id) {
+		winLabel = "<?=__('Add')?>";
+		id = 0;
+	}
+	var params = new Array();
+	params.push("id="+id);
+	globalCreateWindow("winEditCompanyId",params,"<?=$this->baseUrl?>/insurance-manager.raw/edit-company",winLabel+" <?=__('Company')?>",800,500);
+}
+
+function insuranceEditProgram(companyId,id) {
+	if (!companyId) {
+		alert("<?=__('No company selected')?>");
+		return;
+	}
+	var winLabel = "<?=__('Edit')?>";
+	if (!id) {
+		winLabel = "<?=__('Add')?>";
+		id = 0;
+	}
+	var companyName = insuranceGrid.cells(companyId,0).getValue();
+	var params = new Array();
+	params.push("id="+id);
+	params.push("companyId="+companyId);
+	globalCreateWindow("winEditProgramId",params,"<?=$this->baseUrl?>/insurance-manager.raw/edit-program",winLabel+" <?=__('Program')?> (Company: "+companyName+")",800,500);
+}
+
+function insuranceAddCompany() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/insurance-manager.raw/process-add-company",
+		handleAs: "json",
+		content: {
+			"company[name]": "--blank",
+		},
+		load: function (data) {
+			insuranceGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function insuranceAddProgram(companyId) {
+	if (!companyId) {
+		alert("<?=__('No company selected')?>");
+		return;
+	}
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/insurance-manager.raw/process-add-program",
+		handleAs: "json",
+		content: {
+			"program[companyId]": companyId,
+			"program[name]": "--blank",
+		},
+		load: function (data) {
+			insuranceGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var insuranceMenu = new dhtmlXMenuObject(null,"standard");
+insuranceMenu.setImagePath("<?=$this->baseUrl?>/img/");
+insuranceMenu.renderAsContextMenu();
+insuranceMenu.setOpenMode("web");
+function insuranceMenuOnClicked(menuItemId,type) {
+	var rowIdCol = type.split("_");
+	var rowId = rowIdCol[0];
+	var colIndex = rowIdCol[1];
+	switch(menuItemId) {
+		case "addProgram":
+			insuranceAddProgram(rowId);
+			break;
+		case "delete":
+			insuranceDelete(rowId);
+			break;
+	}
+}
+insuranceMenu.attachEvent("onClick",insuranceMenuOnClicked);
+function insuranceMenuOnLoaded() {
+}
+insuranceMenu.loadXML("<?=$this->baseUrl?>/insurance-manager.raw/get-menu",insuranceMenuOnLoaded);
+
+var insuranceGrid = new dhtmlXGridObject("insuranceGridId");
+insuranceGrid.setImagePath("<?=$this->baseUrl?>/img/");
+insuranceGrid.setHeader('<?=__('Insurance')?> ( <a href="javascript:insuranceAddCompany()" title="<?=__('Add New')?>"><?=__('Add New')?></a> )');
+insuranceGrid.setInitWidths("*");
+insuranceGrid.setColAlign("left");
+insuranceGrid.setColTypes("tree");
+insuranceGrid.setSkin("xp");
+
+insuranceGrid.enableContextMenu(insuranceMenu);
+function insuranceGridOnBeforeContextMenu(rowId,colIndex,gridObj) {
+	insuranceMenu.hideItem("addProgram");
+	var parentId = gridObj.getParentId(rowId);
+	if (parentId == null || parentId == 0) {
+		// root/Company
+		insuranceMenu.showItem("addProgram");
+	}
+
+	return true;
+}
+insuranceGrid.attachEvent("onBeforeContextMenu",insuranceGridOnBeforeContextMenu);
+function insuranceGridOnDoubleClicked(rowId,colIndex) {
+	var parentId = insuranceGrid.getParentId(rowId);
+	if (parentId == null || parentId == 0) {
+		// root/Company
+		insuranceEditCompany(rowId);
+	}
+	else {
+		// Insurance program
+		insuranceEditProgram(parentId,rowId);
+	}
+}
+insuranceGrid.attachEvent("onRowDblClicked",insuranceGridOnDoubleClicked);
+insuranceGrid.init();
+dhtmlxEvent(insuranceGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function insuranceGridOnLoaded() {
+}
+
+function insuranceGridReload() {
+	insuranceGrid.clearAll();
+	insuranceGrid.load("<?=$this->baseUrl?>/insurance-manager.raw/list",insuranceGridOnLoaded,"json");
+}
+
+insuranceGridReload();
+</script>

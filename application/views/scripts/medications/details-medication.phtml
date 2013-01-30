@@ -1,0 +1,430 @@
+<script>
+var chBaseMed24Url = '<?=$this->chBaseMed24Url?>';
+var chBaseMed24DetailUrl = '<?=$this->chBaseMed24DetailUrl?>';
+var medQty = 0;
+
+var currentMedData = null;
+<?if(strlen($this->form->pkey->getValue()) > 0):?>
+medicationPopulateDetails("<?=$this->form->pkey->getValue()?>",false);
+<?endif;?>
+
+var adminSchedules = [];
+<?foreach ($this->adminSchedules as $key=>$name):?>
+adminSchedules['<?=$key?>'] = "<?=$name?>";
+<?endforeach;?>
+
+function buildOptions(optionData,optionId,selectedItem) {
+	var opts = dojo.byId(optionId);
+	var selectedIndex = 0;
+	if (opts == undefined) {
+		return;
+	}
+	var i;
+	for(i=opts.options.length-1; i>=0; i--) {
+		opts.remove(i);
+	}
+	for (i=0; i<optionData.length; i++) {
+		var newOpt = document.createElement('option');
+		newOpt.text = optionData[i];
+		newOpt.value = optionData[i];
+		if (optionData[i] == selectedItem) {
+			selectedIndex = i;
+		}
+		try {
+			opts.add(newOpt, null);
+		}
+		catch (e) {
+			opts.add(newOpt);
+		}
+	}
+	opts.selectedIndex = selectedIndex;
+}
+
+function medicationSetDirections() {
+	var scheduleVal = dojo.byId("<?=$this->form->schedule->getId()?>").value;
+	var scheduleText = "";
+	if (typeof adminSchedules[scheduleVal] != "undefined") {
+		var scheduleText = adminSchedules[scheduleVal];
+		if (dojo.byId("medication-prn").checked) {
+			scheduleText += " or as needed";
+		}
+	}
+	var qty = dojo.byId("<?=$this->form->quantity->getId()?>").value;
+
+//	var daysSupply = drugSchedule.getDaysSupply(qty,scheduleVal);
+//	if (isNaN(daysSupply)) {
+//		daysSupply = 1;
+//	}
+	// compute correlation among quantity, days supply, and schedule
+	var qtyVal = drugSchedule.getDosage(qty,spinMedicationDaysSupply.getValue(),scheduleVal);
+	dojo.byId("medication-directions").value = "take " + qtyVal + " " + dojo.byId("medication-dose").value + " by " + dojo.byId("medication-route").value + " route " + scheduleText;
+}
+
+function medicationComputeDaysSupply() {
+	var schedule = dojo.byId("<?=$this->form->schedule->getId()?>").value;
+	var qty = dojo.byId("<?=$this->form->quantity->getId()?>").value;
+//	var daysSupply = drugSchedule.getDaysSupply(qty,schedule);
+//	if (isNaN(daysSupply)) {
+//		daysSupply = 1;
+//	}
+//	spinMedicationDaysSupply.setValue(daysSupply);
+}
+
+function populateDetails(data,medPopulate) {
+	currentMedData = data;
+
+	checkSchedule(data.schedule);
+
+	// first item in the dose contains quantity
+	if (data.dose == undefined) data.dose = "";
+	var origDose = data.dose;
+	var dose = data.dose.split(" ");
+	var medQty = dose[0];
+	if (dose.length == 2) {
+		data.dose = dose[1];
+	}
+	var optionsDose = data.dose.split(',');
+	var doseOption = optionsDose[0];
+	optionsDose[0] = data.strength + data.unit + ' ' + optionsDose[0];
+
+	var optionsRoute = data.route.split(';');
+
+	var optionsSchedule = new Array('<?=implode('\',\'',$this->scheduleOptions)?>');
+	if (!medPopulate) {
+		return;
+	}
+	if (optionsDose[0] != undefined) {
+		dojo.byId('medication-dose').value = optionsDose[0];
+	}
+	if (optionsRoute[0] != undefined) {
+		dojo.byId('medication-route').value = optionsRoute[0];
+	}
+	if (optionsSchedule[0] != undefined) {
+		dojo.byId('medication-schedule').value = optionsSchedule[0];
+	}
+	dojo.byId('medication-directions').value = data.directions;
+
+	dojo.byId("displayLabel").disabled = true;
+	if (data.has_xml_label != 'false') {
+		// enable label button
+		dojo.byId("displayLabel").disabled = false;
+	}
+	if (data.packsize == null) {
+		data.packsize = "";
+	}
+	var packsize = data.packsize.split(';');
+	dojo.byId("medication-quantity").value = parseInt(packsize[0],10);
+	//quantity.setValue(packsize[0]);
+
+	var scheduleVal = dojo.byId("medication-schedule").value;
+	var scheduleText = "";
+	if (typeof adminSchedules[scheduleVal] != "undefined") {
+		var scheduleText = adminSchedules[scheduleVal];
+	}
+	medicationComputeDaysSupply();
+	medicationSetDirections();
+	generateDescription();
+	//dojo.byId('medication-medicationId').value = data.pkey;
+	dojo.byId('medication-pkey').value = data.pkey;
+	dojo.byId('medication-hipaaNDC').value = data.hipaa_ndc;
+	dojo.byId("medication-strength").value = data.strength;
+	dojo.byId("medication-unit").value = data.unit;
+
+	doseOption = doseOption.toLowerCase();
+	var qualifierSelect = dojo.byId("<?=$this->form->quantityQualifier->getId()?>");
+	for (var i = 0; i < qualifierSelect.options.length; i++) {
+		if (qualifierSelect.options[i].text.toLowerCase() == doseOption) {
+			qualifierSelect.selectedIndex = i;
+		}
+	}
+}
+
+var signPrescribe = false;
+function prescribeTransmitted(data) {
+	var params = [];
+	params.push("objectId="+globalMedicationId);
+	var windowESign = globalCreateWindow("windowESignId",params,"<?=$this->baseUrl?>/e-sign.raw","<?=__('Sign Medication')?>",450,450);
+	windowESign.attachEvent("onClose",function(win){
+		reloadMedicationGrid();
+		return true;
+	});
+}
+
+function getCHMedDetails(arg) {
+	var tradename = arg;
+	var pkey = mscb.selectedKey;
+	medicationPopulateDetails(pkey);
+}
+
+function medicationPopulateDetails(pkey,medPopulate) {
+	if (typeof medPopulate == "undefined") {
+		medPopulate = true;
+	}
+	dojo.xhrPost ({
+		url: chBaseMed24DetailUrl,
+		content: {
+			'': pkey
+		},
+		handleAs: 'json',
+		load: function (data) {
+			populateDetails(data,medPopulate);
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function drugDetailsWindow() {
+        var pkey = mscb.selectedKey;
+        var labelUrl = '';
+        if (currentMedData.externalUrl != null && currentMedData.externalUrl.length > 0) {
+                labelUrl = currentMedData.externalUrl;
+                return true;
+        }
+        else if (currentMedData.hasLabel > 0) {
+                pkey = currentMedData.pkey;
+		if (currentMedData.labelId != null) {
+			pkey = currentMedData.labelId;
+		}
+                labelUrl = '<?=$this->baseUrl?>/chmed.raw/basemed-24-label?pkey=' + pkey;
+        }
+	winDrugDetails = globalCreateWindow("windowDrugDetailsId",[],"<?=$this->baseUrl?>/","<?=__('Display Details/Drug Label')?>",800,600,{attachURL:false,setModal:false});
+        drugDetailsAccordion = winDrugDetails.attachAccordion();
+        drugDetailsAccordion.skin = 'dhx_blue';
+        drugDetailsAccordion.setIconsPath("<?=$this->baseUrl?>/img/");
+        drugDetailsAccordion.addItem("drugLabel","Drug Label");
+        drugDetailsAccordion.cells('drugLabel').attachURL(labelUrl);
+        drugDetailsAccordion.addItem("drugInteractions","Interactions");
+        interGrid = drugDetailsAccordion.cells("drugInteractions").attachGrid();
+        interGrid.setImagePath("<?=$this->baseUrl?>/img/");
+        interGrid.setHeader('Tradename,FDA Name,Level');
+        interGrid.setInitWidths("*,*,*");
+        interGrid.setColAlign("left,left,left");
+        interGrid.setColTypes("ro");
+        interGrid.setSkin("xp");
+        interGrid.init();
+        interGrid.load('<?=$this->baseUrl?>/chmed.raw/ajax-list-interactions?md5=' + currentMedData.md5,"json");
+        drugDetailsAccordion.cells('drugLabel').open();
+}
+
+
+function checkSchedule(schedule) {
+	var rNum = ["","I","II","III","IV","V"];
+	schedule = parseInt(schedule);
+
+	var scheduleAlert = dojo.byId("scheduleAlertId");
+	scheduleAlert.title = "";
+	scheduleAlert.style.display = "none";
+	mscb.domNode.style.width = "470px";
+
+//	var transmitEPrescribe = dojo.byId("medication-transmit-eprescribe");
+//	transmitEPrescribe.disabled = false;
+	if (schedule > 0) {
+		scheduleAlert.style.display = "block";
+		mscb.domNode.style.width = "450px";
+//		transmitEPrescribe.disabled = true;
+//		dojo.byId("medication-transmit-print").checked = true;
+		scheduleAlert.title = "<?=__('This drug is listed as Schedule')?> "+rNum[schedule]+" <?=__('by the DEA')?>";
+	}
+}
+
+</script>
+
+<style>
+input {
+	width: 145px;
+}
+</style>
+
+<form id="addMedicationForm" method="post" action="<?=$this->baseUrl?>/medications.raw/process-add-medication">
+
+<div style="width:490px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+<?=$this->form->renderOpen()?>
+<fieldset style="width:490px;"><legend><?=__("Medication Information")?></legend>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+<div id="scheduleAlertId" style="float:left;display:none;"><img src="<?=$this->baseUrl?>/img/alert.png" height="15px" width="15px" /> &nbsp; </div><div id="medicationSelectAutoCompleteDiv"></div>
+<br style="clear:left;" />
+<input id="displayLabel" type="button" value="<?=__('Display Details/Drug Label')?>" style="width:475px; font-size:9pt;" onClick="drugDetailsWindow();" disabled="disabled" />
+<script>
+if (mscb != undefined) {
+	mscb.destroyRecursive();
+	mscb = null;
+}
+var msac = new custom.MedicationSelectAutoComplete({url:chBaseMed24Url,requestMethod:"post",doClientPaging:true},'medicationSelectAutoComplete');
+//var msac = new custom.MedicationSelectAutoComplete({url:'<?=$this->baseUrl?>/medications.raw/auto-complete',requestMethod:"post"},'medicationSelectAutoComplete');
+var mscb = new custom.MedicationSelectComboBox({name:"medication[tradename]",value:'<?=(isset($this->medication))?$this->medication->description:''?>',autocomplete:false,store:msac,hasDownArrow:false},"medicationSelectAutoCompleteDiv");
+// change combobox width
+mscb.domNode.style.width = "470px";
+
+dojo.connect(mscb,"onChange",'getCHMedDetails');
+
+function changeOptionsSelected(optionsId,optionId) {
+	var opts = dojo.byId(optionsId);
+	if (opts == undefined) {
+		return;
+	}
+	var opt = dojo.byId(optionId);
+	if (opt == undefined) {
+		return;
+	}
+	var i;
+	var selectedVal = '';
+	for(i=opts.options.length-1; i>=0; i--) {
+		if (opts.options[i].selected) {
+			if (selectedVal != '') {
+				selectedVal += ', ';
+			}
+			selectedVal += opts.options[i].text;
+		}
+	}
+	if (selectedVal != '') {
+		opt.value = selectedVal;
+	}
+	generateDescription();
+}
+
+function generateDescription() {
+	var description = '';
+	var doses = [];
+	var doseList = currentMedData.dose.split(",");
+	for (var i in doseList) {
+		if (doseList[i].length > 0) {
+			doses.push(doseList[i]);
+		}
+	}
+	description += currentMedData.tradename + ' ' + currentMedData.strength + currentMedData.unit + ' ' + doses.join(",");
+	//description += ' [RXN:' + currentMedData.rxnorm + ']';
+	dojo.byId('medication-description').value = description;
+
+}
+
+function selectPharmacyPopup() {
+	var url = "<?=$this->baseUrl?>/medications.raw/select-pharmacy?personId="+mainController.getActivePatient();
+	winSelectPharmacy = globalCreateWindow("windowSelectPharmacy",[],url,"<?=__('Select Pharmacy')?>",810,410);
+}
+
+function medicationChangeDirections() {
+	medicationSetDirections();
+	medicationComputeDaysSupply();
+}
+</script>
+<div class="formRow" style="padding-top:4px;">
+        <dt style="line-height:20px;"><label><?=__("Dose")?></label></dt>
+        <?=$this->form->doseInput()?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+        <dt style="line-height:20px;"><label><?=__("Route")?></label></dt>
+        <?=$this->form->routeInput()?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+        <dt style="line-height:20px;"><label><?=__("Schedule")?> <input type="checkbox" id="medication-prn" name="medication[prn]" <?=($this->form->prn->getValue())?'checked="checked" ':''?>value="1" style="width:20px;padding:0;margin-left:50px;" onClick="medicationSetDirections()" /> <?=__('PRN')?></label></dt>
+        <?=$this->form->scheduleInput()?>
+</select>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->quantity->renderLabel())?>
+	<?=$this->formNumberSpinner($this->form->quantity->getFullyQualifiedName(),$this->form->quantity->getValue(),array('places'=>1))?>
+	<select name="<?=$this->form->quantityQualifier->getFullyQualifiedName()?>" id="<?=$this->form->quantityQualifier->getId()?>" style="border:1px solid #b3b3b3;width:80px;font-size:7pt;height:15px;">
+		<option value=""></option>
+	<?foreach ($this->quantityQualifiers as $description=>$code):?>
+		<option value="<?=$description?>" <?=($this->form->quantityQualifier->getValue() == $description)?'selected="selected"':''?>><?=$description?></option>
+	<?endforeach;?>
+	</select>
+</div>
+<script>
+dojo.connect(spinMedicationQuantity,"onChange","medicationQuantityOnChanged");
+function medicationQuantityOnChanged(value) {
+	if (currentMedData == null) return;
+	medicationSetDirections();
+}
+</script>
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->refills->renderLabel())?>
+	<?=$this->formNumberSpinner($this->form->refills->getFullyQualifiedName(),$this->form->refills->getValue(),array('places'=>1))?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->daysSupply->renderLabel())?>
+	<?=$this->formNumberSpinner($this->form->daysSupply->getFullyQualifiedName(),$this->form->daysSupply->getValue())?>
+</div>
+<div class="formRow" style="vertical-align:middle;">
+	<dt style="margin-top:-5px;"><label>&nbsp;</label></dt>
+	<input type="checkbox" id="<?=$this->form->substitution->getId()?>" name="<?=$this->form->substitution->getFullyQualifiedName()?>" <?=($this->form->substitution->getValue())?'checked="checked" ':''?>value="1" style="width:15px;margin-top:10px;" /> <?=__('Substitution')?>
+</div>
+<script>
+/*
+dojo.connect(spinMedicationDaysSupply,"onChange","medicationDaysSupplyOnChanged");
+var drugSchedule = new drugScheduleClass();
+function medicationDaysSupplyOnChanged(value) {
+	if (currentMedData == null) return;
+	medicationSetDirections();
+}*/
+</script>
+<br style="clear:left;" />
+<div class="formRow" style="clear:both;padding-top:4px;">
+	<div style="float:left;width:200px;">
+	        <!--<?=__($this->form->transmit->renderLabel())?>
+        	<input type="radio" id="medication-transmit-print" name="medication[transmit]" <?=($this->form->transmit->getValue() == 'Print')?'checked="checked" ':''?>value="Print" style='width:15px;' /> Print-->
+	       <!-- <input type="radio" id="medication-transmit-fax" name="medication[transmit]" <?=($this->form->transmit->getValue() == 'Fax')?'checked="checked" ':''?>value="Fax" style='width:15px;' /> <a href="javascript:void(0);" onclick="selectPharmacyPopup();">Fax</a>-->
+<!--        	<input type="radio" id="medication-transmit-eprescribe" name="medication[transmit]" <?=($this->form->transmit->getValue() == 'ePrescribe' || $this->form->transmit->getValue() == '')?'checked="checked" ':''?>value="ePrescribe" style='width:15px;' /> <a href="javascript:void(0);" onclick="selectPharmacyPopup();">ePrescribe</a>-->
+		<?=$this->form->transmit->getValue()?>
+		<br />
+		<label id="pharmacyInfo" style="font-size:7px;">
+<?if (isset($this->defaultPharmacy)):?>
+<?=$this->defaultPharmacy->StoreName?><br /> <?=$this->defaultPharmacy->AddressLine1?>, <?=$this->defaultPharmacy->City?>
+<?else:?>
+<?=__('No default pharmacy set for patient')?>
+<?endif?>
+		</label>
+		<input type="checkbox" id="medication-patient-reported" name="medication[patientReported]" <?=($this->form->patientReported->getValue())?'checked="checked" ':''?>value="1" style="width:15px;margin-top:10px;" /> <?=__('Patient Reported')?>
+	</div>
+	<div style="float:left;">
+        	<?=__($this->form->comment->renderLabel())?>
+	        <?=$this->formTextarea($this->form->comment->getBelongsTo().'['.$this->form->comment->getName().']',$this->form->comment->getValue(),array('id'=>$this->form->comment->getId(),'style'=>'width:250px;height:50px;margin-right:25px;margin-bottom:10px;'))?>
+	</div>
+</div>
+
+<hr style="clear:both;" />
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->description->renderLabel())?>
+        <?=$this->formText($this->form->description->getBelongsTo().'['.$this->form->description->getName().']',$this->form->description->getValue(),array('id'=>$this->form->description->getId(),'style'=>'width:475px; font-size:6pt;'))?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->directions->renderLabel())?>
+        <?=$this->formTextarea($this->form->directions->getBelongsTo().'['.$this->form->directions->getName().']',$this->form->directions->getValue(),array('id'=>$this->form->directions->getId(),'style'=>'width:475px;height:50px;'))?>
+</div>
+<?if (strlen($this->form->refillRequestId->getValue()) > 0):?>
+<br style="clear:both;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=__('Prescription for Refill Response Rx Reference Number').' <a href="javascript:void(0);" title="'.__('Click here to view refill request info').'" onClick="viewRefillRequest()">'.$this->medication->rxReferenceNumber.'</a>'?>
+</div>
+<script>
+function viewRefillRequest() {
+	var params = ["messagingId=<?=$this->form->refillRequestId->getValue()?>"];
+	globalCreateWindow("winEPrescribeId",params,"<?=$this->baseUrl?>/messaging.raw/view-eprescribe","<?=__('Refill Request')?>",500,450);
+}
+</script>
+<?endif;?>
+
+<br style="clear:left;" />
+<br style="clear:left;" />
+<hr style="clear:both;" />
+<div class="formRow" style="padding-top:4px;font-size:8pt;">
+	<div><?=$this->prescriberDetails?></div>
+	<div><?=$this->signedDetails?></div>
+	<div><?=$this->transmitDetails?></div>
+</div>
+</fieldset>
+</div>
+</form>

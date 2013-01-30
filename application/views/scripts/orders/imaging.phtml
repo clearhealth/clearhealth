@@ -1,0 +1,293 @@
+<style>
+select {
+	margin: 0em 0.1em;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+input,select,textarea {
+	border:1px solid #b3b3b3;
+}
+</style>
+
+<?=$this->form->renderOpen()?>
+<div style="float:left;width:30%">
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Imaging Type')?></label></dt>
+		<?=$this->form->imagingTypeInput('FormSelect',array('style'=>'width:200px;font-size:8pt;','onChange'=>'imagingTypeOnChanged(this.selectedIndex)'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Imaging Procedures')?></label></dt>
+		<?=$this->form->procedureInput('FormSelect',array('style'=>'width:200px;font-size:8pt;','onChange'=>'imagingProcedureOnChanged(this.selectedIndex)'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Category')?></label></dt>
+		<?=$this->form->categoryInput('FormSelect',array('style'=>'width:200px;font-size:8pt;','options'=>$this->categories))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Urgency')?></label></dt>
+		<?=$this->form->urgencyInput('FormSelect',array('style'=>'width:200px;font-size:8pt;','onChange'=>'imagingCommentOnChanged()','options'=>$this->urgencies))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Transport')?></label></dt>
+		<?=$this->form->transportModeInput('FormSelect',array('style'=>'width:200px;font-size:8pt;','options'=>$this->transports))?>
+	</div>
+</div>
+<div style="float:left;width:70%">
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('History & Reason for Exam')?></label></dt>
+		<?=$this->form->historyAndReasonInput('FormTextarea',array('style'=>'width:450px;height:60px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<div style="float:left;">
+			<dt style="line-height:20px;"><label><?=__('Exams Over the Last 7 Days')?></label></dt>
+			<textarea id="imagingExamsOverId" style="width:300px;height:100px;" readonly="readonly"><?=$this->examsOver7days?></textarea>
+		</div>
+		<div style="float:left;margin:15px 0 0 10px;">
+			<dt style="line-height:20px;"><label><?=__('Requested Date')?></label></dt>
+			<?=$this->form->dateRequestedInput()?>
+			<dt style="line-height:20px;"><input type="checkbox" name="imaging[isolation]" id="<?=$this->form->isolation->getId()?>" style="width:30px;" /> <?=__('Isolation')?></dt>
+			<dt style="line-height:20px;"><label><?=__('Pregnant')?></label></dt>
+			<?=$this->form->pregnantInput('FormSelect',array('style'=>'width:150px;font-size:8pt;','options'=>$this->pregnants))?>
+		</div>
+	</div>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<div style="float:left;">
+		<div style="float:left;">
+			<dt style="line-height:20px;"><label><?=__('Available Modifiers')?></label></dt>
+			<div id="imagingAvailModGridId" style="width:200px;height:80px;"></div>
+		</div>
+		<div style="float:left;margin:30px 10px 0 10px;">
+			<div><input type="button" value="<?=__('Add')?>" style="width:80px;" onClick="imagingModifiersAddSel()" /></div>
+			<div style="margin-top:5px;"><input type="button" value="<?=__('Remove')?>" style="width:80px;" onClick="imagingModifiersRemSel()" /></div>
+		</div>
+		<div style="float:left;">
+			<dt style="line-height:20px;"><label><?=__('Selected Modifiers')?></label></dt>
+			<div id="imagingSelModGridId" style="width:200px;height:80px;"></div>
+		</div>
+	</div>
+	<!--<div style="float:left;margin:15px 0 0 10px;">
+		<dt style="line-height:20px;"><label><?=__('Pre-Op Scheduled')?></label></dt>
+		<?=$this->form->datePreOpInput()?>
+		<dt style="line-height:20px;"><label><?=__('Submit To')?></label></dt>
+		<?=$this->form->submitToInput('FormSelect',array('style'=>'width:150px;font-size:8pt;','disabled'=>'disabled','options'=>$this->imagingSubmitTo))?>
+	</div>-->
+</div>
+<br style="clear:left;" />
+<div id="unitCommentContainerId" style="width:550px;height:100px;display:none;">
+	<br style="clear:left;" />
+	<strong><?=__('Unit Comment')?></strong>
+	<?=$this->formTextarea('unitCommentName',null,array('id'=>'unitCommentId','readonly'=>'readonly','cols'=>75,'rows'=>3))?>
+</div>
+<hr style="color:#b3b3b3;" />
+
+<div class="formRow" style="padding-top:4px;">
+	<div style="float:left;">
+		<?=$this->form->formOrder->orderTextInput('FormTextarea',array('style'=>'width:500px;height:100px;'))?>
+		<?=$this->form->formOrder->serviceInput('FormHidden')?>
+		<?=$this->form->formOrder->patientIdInput('FormHidden')?>
+		<?=$this->form->orderIdInput('FormHidden')?>
+		<?=$this->form->modifiersInput('FormHidden')?>
+	</div>
+	<div style="float:left;margin-left:10px;">
+		<div><?=$this->formButton('order',__('Order'),array('style'=>'width:100px;','onClick'=>'submit'.$this->form->getId().'Form()'))?></div>
+		<div style="margin-top:5px;"><?=$this->formButton('cancel',__('Cancel'),array('style'=>'width:100px;','onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?></div>
+	</div>
+</div>
+
+<?=$this->form->renderClose()?>
+
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	var modifier = [];
+	imagingSelModGrid.forEachRow(function(rowId){
+		modifier.push(rowId);
+	});
+	var modifiers = dojo.byId("<?=$this->form->modifiers->getId()?>");
+	modifiers.value = modifier.join(",");
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	orderListGridReload();
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+function imagingModifiersAddSel() {
+	var selId = imagingAvailModGrid.getSelectedRowId();
+	if (selId === null) {
+		return;
+	}
+	var selectedIds = selId.split(",");
+	for (var i in selectedIds) {
+		var id = selectedIds[i];
+		if (imagingSelModGrid.doesRowExist(id)) {
+			continue;
+		}
+		imagingSelModGrid.addRow(id,imagingAvailModGrid.cells(id,0).getValue());
+	}
+	imagingCommentOnChanged();
+}
+
+function imagingModifiersRemSel() {
+	imagingSelModGrid.deleteSelectedRows();
+	imagingCommentOnChanged();
+}
+
+var imagingAvailModGrid = new dhtmlXGridObject("imagingAvailModGridId");
+imagingAvailModGrid.setImagePath("<?=$this->baseUrl?>/img/");
+imagingAvailModGrid.setHeader("");
+imagingAvailModGrid.setNoHeader(true);
+imagingAvailModGrid.setInitWidths("*");
+imagingAvailModGrid.setColTypes("ro");
+imagingAvailModGrid.setSkin("xp");
+imagingAvailModGrid.enableMultiselect(true);
+imagingAvailModGrid.init();
+
+var imagingSelModGrid = new dhtmlXGridObject("imagingSelModGridId");
+imagingSelModGrid.setImagePath("<?=$this->baseUrl?>/img/");
+imagingSelModGrid.setHeader("");
+imagingSelModGrid.setNoHeader(true);
+imagingSelModGrid.setInitWidths("*");
+imagingSelModGrid.setColTypes("ro");
+imagingSelModGrid.setSkin("xp");
+imagingSelModGrid.enableMultiselect(true);
+imagingSelModGrid.init();
+
+function imagingTypeOnChanged(selectedIndex) {
+	if (typeof selectedIndex == "undefined") {
+		selectedIndex = imagingType.selectedIndex;
+	}
+	if (selectedIndex < 0) return;
+	var value = imagingType.options[selectedIndex].value;
+
+	var imagingProcedure = dojo.byId("<?=$this->form->procedure->getId()?>");
+	imagingProcedure.options.length = 0;
+	if (typeof imagingList[value] == "undefined") {
+		return;
+	}
+	var i = 0;
+	var imgType = imagingList[value];
+	var procedures = imgType.procedures;
+	for (var k in procedures) {
+		imagingProcedure.options[i] = new Option(procedures[k].procedure,k);
+		if (!imagingTypeFlag && k == "<?=$this->form->procedure->getValue()?>") imagingProcedure.options[i].selected = true;
+		i++;
+	}
+	imagingTypeFlag = true;
+	imagingProcedureOnChanged();
+	imagingAvailModGrid.clearAll();
+	var modifiers = imgType.modifiers;
+	for (var k in modifiers) {
+		imagingAvailModGrid.addRow(k,modifiers[k]);
+	}
+	var imagingService = dojo.byId("<?=$this->form->formOrder->service->getId()?>");
+	var typeText = imagingType.options[selectedIndex].text;
+	typeText = typeText.toLowerCase();
+	typeText = typeText.replace(/\//g," ");
+	typeText = typeText.replace(/^(.)|\s(.)/g,function($1){
+		return $1.toUpperCase();
+	});
+	imagingService.value = "Imaging - " + typeText;
+}
+
+function imagingProcedureOnChanged(selectedIndex) {
+	imagingSelModGrid.clearAll();
+	var unitComment = dojo.byId("unitCommentContainerId");
+	unitComment.style.display = "none";
+	var imagingProcedure = dojo.byId("<?=$this->form->procedure->getId()?>");
+	if (typeof selectedIndex == "undefined") {
+		selectedIndex = imagingProcedure.selectedIndex;
+	}
+	imagingCommentOnChanged();
+	var valProcedure = imagingProcedure.options[selectedIndex].value;
+	var valType = imagingType.options[imagingType.selectedIndex].value;
+	if (typeof imagingList[valType] == "undefined") {
+		return;
+	}
+	var imgType = imagingList[valType];
+	var procedures = imgType.procedures;
+	if (typeof procedures[valProcedure] == "undefined") {
+		return;
+	}
+	if (procedures[valProcedure].comment.length > 0) {
+		dojo.byId("unitCommentId").innerHTML = procedures[valProcedure].comment;
+		unitComment.style.display = "block";
+	}
+}
+
+function imagingCommentOnChanged() {
+	var imagingComments = dojo.byId("<?=$this->form->formOrder->orderText->getId()?>");
+	var imagingProcedure = dojo.byId("<?=$this->form->procedure->getId()?>");
+
+	var comments = imagingProcedure.options[imagingProcedure.selectedIndex].text;
+
+	var selComments = [];
+	imagingSelModGrid.forEachRow(function(id){
+		selComments.push(imagingSelModGrid.cells(id,0).getValue());
+	});
+	if (selComments.length > 0) {
+		comments += " " + selComments.join(", ");
+	}
+	var imagingUrgency = dojo.byId("<?=$this->form->urgency->getId()?>");
+	if (imagingUrgency.value != "ROUTINE") {
+		comments += " " + imagingUrgency.value;
+	}
+	imagingComments.value = comments;
+}
+
+<?$defaultTypeKey = '';?>
+var imagingList = {
+<?foreach ($this->imagingList as $typeKey=>$imagingTypes):?>
+	"<?=$typeKey?>": {
+		"name": (<r><![CDATA[<?=$imagingTypes['name']?>]]></r>).toString(),
+		"procedures": {
+<?foreach ($imagingTypes['procedures'] as $procedureKey=>$procedure):
+	if ($procedureKey == $this->form->procedure->getValue()):
+		$defaultTypeKey = $typeKey;
+	endif;
+?>
+			"<?=$procedureKey?>": {"procedure": (<r><![CDATA[<?=$procedure['procedure']?>]]></r>).toString(), "comment": (<r><![CDATA[<?=$procedure['comment']?>]]></r>).toString()},
+<?endforeach;?>
+		},
+		"modifiers": {
+<?foreach ($imagingTypes['modifiers'] as $modifierKey=>$modifier):?>
+			"<?=$modifierKey?>": (<r><![CDATA[<?=$modifier?>]]></r>).toString(),
+<?endforeach;?>
+		},
+	},
+<?endforeach;?>
+};
+
+var imagingType = dojo.byId("<?=$this->form->imagingType->getId()?>");
+imagingType.options.length = 0;
+var imagingTypeFlag = false;
+var i = 0;
+for (var k in imagingList) {
+	imagingType.options[i] = new Option(imagingList[k].name,k);
+	if (k == "<?=$this->form->imagingType->getValue()?>") {
+		imagingType.options[i].selected = true;
+	}
+	i++;
+}
+imagingTypeOnChanged();
+
+var modifier = "";
+<?$modifiers = explode(',',$this->form->modifiers->getValue());
+foreach($modifiers as $modifier):
+	if (!strlen($modifier) > 0) continue;?>
+modifier = "<?=$modifier?>";
+if (imagingAvailModGrid.doesRowExist(modifier)) modifier = imagingAvailModGrid.cells(modifier,0).getValue();
+imagingSelModGrid.addRow("<?=$modifier?>",modifier);
+<?endforeach;?>
+imagingCommentOnChanged();
+
+</script>

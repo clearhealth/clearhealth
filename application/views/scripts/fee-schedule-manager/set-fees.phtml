@@ -1,0 +1,65 @@
+<style>
+#filterInput,#search {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+#search {
+	width: 8em;
+}
+</style>
+<fieldset><legend><?=__('Fee Schedule Information')?></legend>
+<div id="setFeesContainerId" style="width:750px;height:330px;">
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Name')?>: <?=$this->form->name->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Date of Service')?>: <?=$this->form->dateOfServiceStart->getValue()?> - <?=$this->form->dateOfServiceEnd->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;height:50px;overflow:auto;">
+		<?=__('Insurance Programs')?>: <?=$this->form->insuranceProgramIds->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<div class="formRow" style="padding-top:4px;">
+			<?=__('Filter')?>: <?=$this->formText('filterInput','',array('id'=>'filterInput'))?> <?=$this->formButton('search',__('Search'),array('id'=>'search','onClick'=>'setFeesGridReload(\'filter=\'+dojo.byId(\'filterInput\').value.replace(/%/g,\'%_\'))'))?>
+		</div>
+		<br style="clear:left;" />
+		<div id="setFeesGridId" style="width:750px;height:200px;"></div>
+	</div>
+</div>
+</fieldset>
+
+<script>
+var setFeesGrid = new dhtmlXGridObject("setFeesGridId");
+setFeesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+setFeesGrid.setHeader("<?=__('Code')?>,<?=__('Mapped Code')?>,<?=__('Fee')?>,<?=__('Modifiers')?>,<?=__('Obsolete Date')?>");
+setFeesGrid.setColTypes("ro,ro,ro,ro,ro");
+setFeesGrid._dtmask = "%Y-%m-%d"; // hacks for calendar date format
+setFeesGrid.setSkin("xp");
+setFeesGrid.setInitWidths("130,130,120,250,120");
+setFeesGrid.enableDynamicLoading(true);
+setFeesGrid.init();
+function setFeesGridReload(filter) {
+	setFeesGrid.clearAll();
+	var url = "<?=$this->baseUrl?>/fee-schedule-manager.raw/list-fees?id=<?=$this->form->guid->getValue()?>";
+	if (filter) {
+		url += "&"+filter;
+	}
+	setFeesGrid.load(url,null,"json");
+}
+setFeesGridReload();
+
+function setFeesGridOnRowDblClicked(rowId,colIndex) {
+	var params = [
+		"guid=<?=$this->form->guid->getValue()?>",
+		"code="+rowId
+	];
+	globalCreateWindow("windowEditFeeId",params,"<?=$this->baseUrl?>/fee-schedule-manager.raw/edit-fee","<?=__('Edit Fee')?>",400,500);
+}
+setFeesGrid.attachEvent("onRowDblClicked",setFeesGridOnRowDblClicked);
+</script>

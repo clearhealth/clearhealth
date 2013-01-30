@@ -1,0 +1,31 @@
+<div style="width:390px;height:440px;">
+<fieldset>
+<legend><?=$this->problemList->diagnosisCode->textShort.' ('.$this->problemList->diagnosisCode->code.')'?></legend>
+<textarea style="width:360px;height:335px">
+<?=__('Onset').': '.date('m/d/Y',strtotime($this->problemList->dateOfOnset))?>
+
+<?=__('Status').': '.$this->problemList->status?>
+
+<?=__('SC Cond').': '.$this->problemList->immediacy?>
+
+
+<?=__('Provider').': '.$this->problemList->provider->last_name.','.$this->problemList->provider->first_name?>
+
+<?=__('Clinic').': '?>
+
+
+---------- <?=__('Comments')?> ----------
+<?foreach($this->problemList->problemListComments as $comment):?>
+<?=date('m/d/Y',strtotime($comment->date))?> <?=__('by')?> <?=$comment->person->last_name.','.$comment->person->first_name?>: <?=$comment->comment?>
+
+<?endforeach?>
+</textarea>
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:8px;">
+	<input type="button" value="<?=__('Close')?>" style="width:150px;margin-top:10px;" onClick="closeViewProblemWindow()"/>
+</div>
+
+</fieldset>
+</div>
+

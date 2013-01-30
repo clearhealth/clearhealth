@@ -1,0 +1,112 @@
+<div style="margin-top:5px;">
+	<div id="filterMedicationSelectAutoCompleteDiv"></div>
+	<?=$this->formButton('medicationAddButton',__('Add to list'),array('id'=>'medicationAddButton','disabled'=>'disabled','onClick'=>'addSelectedMedication()'))?>
+	<br />
+	<div id="filterMedicationGridId" style="width:auto;height:250px;"></div>
+	<div style="float:left;">
+		<?=$this->formButton('removeId',__('Remove'),array('onClick'=>'filterMedicationRemove()'))?>
+	</div>
+	<div style="float:right;">
+		<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterMedicationApply()','id'=>'applyFilters','disable'=>'disable'))?>
+	</div>
+</div>
+<script>
+var chBaseMed24Url = "<?=$this->chBaseMed24Url?>";
+var chBaseMed24DetailUrl = "<?=$this->chBaseMed24DetailUrl?>";
+
+var filterMedicationGrid = new dhtmlXGridObject("filterMedicationGridId");
+filterMedicationGrid.enableMultiselect(true);
+filterMedicationGrid.setImagePath("<?=$this->baseUrl?>/img/");
+filterMedicationGrid.setHeader("<?=__('Not')?>,<?=__('Medication')?>,<?=__('Operator')?>,<?=__('Date Prescribed')?>{#special},<?=__('Date Prescribed 2')?>{#special}");
+filterMedicationGrid._in_header_special=function(tag,index,data){ 
+	tag.innerHTML = data[0];
+	tag.title = "Format: yyyy-mm-dd"; 
+}
+filterMedicationGrid.setInitWidths("30,*,120,120,120");
+filterMedicationGrid.setColTypes("ch,ro,coro,ed,ed");
+filterMedicationGrid.setSkin("xp");
+filterMedicationGrid.init();
+filterMedicationGrid.load("<?=$this->baseUrl?>/patient-list.raw/list-filter-medication","json");
+filterMedicationGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 0 && cellIndex == 4) {
+		if (this.cells(rowId,2).getValue() != "between") return false;
+	}
+	dojo.byId("applyFilters").disabled = false;
+	return true;
+});
+filterMedicationGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	dojo.byId("applyFilters").disabled = false;
+});
+
+<?foreach ($this->operators as $key=>$value):?>
+filterMedicationGrid.getCombo(2).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+function addSelectedMedication() {
+	if (!fscb.item || !fscb.item.i) {
+		alert("Selected medication was changed.");
+		return;
+	}
+	var key = fscb.item.i.label;
+	var value = fscb.item.i.name;
+	if (filterMedicationGrid.doesRowExist(key)) {
+		alert("Medication "+value+ " already exists.");
+		return;
+	}
+	filterMedicationGrid.addRow(key,","+value);
+	dojo.byId("medicationAddButton").disabled = true;
+	dojo.byId("applyFilters").disabled = false;
+}
+
+if (fscb != undefined) {
+	fscb.destroyRecursive();
+	fscb = null;
+}
+var fsac = new custom.MedicationSelectAutoComplete({url:"<?=$this->chBaseMed24Url?>",requestMethod:"post",doClientPaging:true},"filterMedicationSelectAutoComplete");
+var fscb = new custom.MedicationSelectComboBox({name:"medication[tradename]",value:"",autocomplete:false,store:fsac,hasDownArrow:false},"filterMedicationSelectAutoCompleteDiv");
+// change combobox width
+fscb.domNode.style.width = "300px";
+
+function setMedicationCHMed(arg) {
+	dojo.byId("medicationAddButton").disabled = false;
+}
+dojo.connect(fscb,"onChange","setMedicationCHMed");
+
+function filterMedicationRemove() {
+	var rowId = filterMedicationGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var id = rowIds[i];
+		if (filterMedicationGrid.doesRowExist(id)) filterMedicationGrid.deleteRow(id);
+	}
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterMedicationApply() {
+	var content = {};
+	filterMedicationGrid.forEachRow(function(rowId){
+		content["filters["+rowId+"][NOT]"] = this.cells(rowId,0).getValue();
+		content["filters["+rowId+"][medication]"] = this.cells(rowId,1).getValue();
+		content["filters["+rowId+"][operator]"] = this.cells(rowId,2).getValue();
+		content["filters["+rowId+"][operand1]"] = this.cells(rowId,3).getValue();
+		content["filters["+rowId+"][operand2]"] = this.cells(rowId,4).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-list.raw/process-filter-medication",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

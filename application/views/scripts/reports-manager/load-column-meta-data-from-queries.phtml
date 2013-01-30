@@ -1,0 +1,53 @@
+<div style="float:left;width:100%;">
+	<fieldset><legend><?=__('Load Column Meta Data from Queries Information')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="filter-name" class="optional"><?=__('Query')?></label></dt>
+		<div id="queryGridId" style="width:350px;height:250px;"></div>
+<!--		<?=$this->formTextarea('query',$this->query,array('id'=>'query','style'=>'width:350px;height:250px;'))?>-->
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:10px;">
+		<?=$this->formHidden('viewId',$this->viewId,array('id'=>'viewId'))?>
+		<?=$this->formButton('runQuery',__('Run query'),array('id'=>'runQuery','onClick'=>'reportViewMappingRunQuery();'))?>
+	</div>
+	</fieldset>
+</div>
+<script>
+function reportViewMappingRunQuery() {
+	var queries = {};
+	queryGrid.forEachRow(function(rowId){
+		queries["queries["+rowId+"]"] = queryGrid.cells(rowId,0).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-load-column-meta-data-from-queries?viewId="+dojo.byId("viewId").value,
+		handleAs: "json",
+		content: queries,
+		load: function (data) {
+			if (!data) return;
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			reportViewMappingReload(data);
+			dhxWins.window("winReportViewMappingId").close();
+		},
+		error: function (error) {
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var queryGrid = new dhtmlXGridObject("queryGridId");
+queryGrid.setImagePath("<?=$this->baseUrl?>/img/");
+queryGrid.setHeader("");
+queryGrid.setNoHeader(true);
+queryGrid.setInitWidths("*");
+queryGrid.setColTypes("txt");
+queryGrid.init();
+var val = "";
+<?foreach ($this->queries as $key=>$value):?>
+queryGrid.addRow("<?=$key?>","");
+val = (<r><![CDATA[ <?=$value?>; ]]></r>).toString();
+queryGrid.cells("<?=$key?>",0).setValue(val);
+<?endforeach;?>
+</script>

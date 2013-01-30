@@ -1,0 +1,340 @@
+<fieldset><legend><?=__('Allergies')?></legend>
+<div id="allergiesGridId" style="float:left;width:550px;height:200px;overflow:auto;"></div>
+</fieldset>
+<fieldset><legend><?=__('Postings')?></legend>
+<div id="postingsGridId" style="float:left;width:550px;height:200px;overflow:auto;"></div>
+</fieldset>
+<script>
+function allergiesMarkEnteredInError(rowId) {
+	if (!rowId) {
+		var rowId = allergiesGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert('<?=__('No allergy selected')?>');
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/allergies.raw/process-mark-entered-in-error",
+		handleAs: "json",
+		content: {
+			id: rowId,
+		},
+		load: function (data) {
+			allergiesGridReload();
+			initMainToolbar(null,mainController.getActivePatient());
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function allergiesMarkNoKnownAllergies() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/allergies.raw/process-mark-no-known-allergies",
+		handleAs: "json",
+		content: {
+			personId: mainController.getActivePatient(),
+		},
+		load: function (data) {
+			alert(data);
+			allergiesGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function openNewAllergy(data) {
+	var patientId = mainController.getActivePatient();
+	var params = new Array();
+	params.push("personId="+patientId);
+	params.push("allergy="+data);
+	globalCreateWindow("winAddAllergyId",params,"<?=$this->baseUrl?>/allergies.raw/add","<?=__('Enter Allergy or Adverse Reaction')?>",400,550);
+}
+
+function openLookupAllergy() {
+	var patientId = mainController.getActivePatient();
+	var params = new Array();
+	params.push("personId="+patientId);
+	params.push("callback=openNewAllergy");
+	globalCreateWindow("winLookupAllergiesId",params,"<?=$this->baseUrl?>/allergies.raw/lookup","<?=__('Lookup Allergy/ADR')?>",400,400);
+}
+
+function allergiesMarkActive(active,rowId) {
+	if (!rowId) {
+		rowId = allergiesGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert("<?=__('No allergy selected')?>");
+		return;
+	}
+	var act = (active)?"1":"0";
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/allergies.raw/process-mark-active",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+			"active": act
+		},
+		load: function (data) {
+			allergiesGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var allergiesMenu = new dhtmlXMenuObject(null,"standard");
+allergiesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+allergiesMenu.renderAsContextMenu();
+allergiesMenu.setOpenMode("web");
+function allergiesMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "newAllergy":
+			openLookupAllergy();
+			break;
+		case "enteredInError":
+			allergiesMarkEnteredInError();
+			break;
+		case "nka":
+			allergiesMarkNoKnownAllergies();
+			break;
+		case "markActive":
+			allergiesMarkActive(true);
+			break;
+		case "markInactive":
+			allergiesMarkActive(false);
+			break;
+		case "showing_active":
+		case "showing_inactive":
+			allergiesGridReload();
+			break;
+	}
+}
+allergiesMenu.attachEvent("onClick",allergiesMenuOnClicked);
+function allergiesMenuOnLoaded() {
+	allergiesMenu.setCheckboxState("showing_active",<?=(int)$this->active?>);
+	allergiesMenu.setCheckboxState("showing_inactive",<?=(int)$this->inactive?>);
+}
+allergiesMenu.loadXML("<?=$this->baseUrl?>/allergies.raw/get-context-menu",allergiesMenuOnLoaded);
+
+var allergiesGrid = new dhtmlXGridObject("allergiesGridId");
+allergiesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+allergiesGrid.setHeader("<?=__('Allergy')?>,<?=__('Severity')?>,<?=__('Signs/Symptoms')?>");
+allergiesGrid.setInitWidths("*,100,*");
+allergiesGrid.setColAlign("left,left,left");
+allergiesGrid.setColTypes("ro,ro,ro");
+allergiesGrid.setSkin("xp");
+
+function allergiesGridOnDoubleClicked(rowId,colIndex) {
+	if (allergiesGrid.cells(rowId,0).getValue() == "<?=__('No Known Allergies')?>") {
+		return;
+	}
+	var params = [];
+	params.push("id="+rowId);
+	globalCreateWindow("winAddAllergyId",params,"<?=$this->baseUrl?>/allergies.raw/edit","<?=__('Edit Allergy or Adverse Reaction')?>",400,550);
+}
+allergiesGrid.attachEvent("onRowDblClicked",allergiesGridOnDoubleClicked);
+function allergiesOnRowSelected(rowId,cellIndex) {
+}
+allergiesGrid.attachEvent("onRowSelect",allergiesOnRowSelected);
+
+allergiesGrid.init();
+
+// temporary replace grid onBeforeContextMenu
+allergiesGrid.hdr.id = allergiesGrid.uid();
+allergiesMenu.addContextZone(allergiesGrid.hdr.id);
+allergiesGrid.enableContextMenu(allergiesMenu);
+allergiesMenu.attachEvent("onContextMenu",function(id){
+	allergiesMenu.forEachItem(function (itemId) { allergiesMenu.hideItem(itemId); });
+	var rowId = allergiesGrid.getSelectedRowId();
+	allergiesMenu.showItem("newAllergy");
+	allergiesMenu.showItem("showing");
+	allergiesMenu.showItem("showing_active");
+	allergiesMenu.showItem("showing_inactive");
+	if (rowId != null) {
+		if (allergiesGrid.cells(rowId,0).getValue() == "<?=__('No Known Allergies')?>") {
+			return;
+		}
+		allergiesMenu.showItem("enteredInError");
+		if (allergiesGrid.getUserData(rowId,"active") == "1") {
+			allergiesMenu.showItem("markInactive");
+		}
+		else {
+			allergiesMenu.showItem("markActive");
+		}
+	}
+	if (parseInt(allergiesGrid.getUserData("ctrRowId","noOfAllergies")) == 0) {
+		allergiesMenu.showItem("nka");
+	}
+});
+allergiesMenu.attachEvent("onCheckboxClick",function(id,state,zoneId,casState){
+	this.setCheckboxState(id,!state);
+	allergiesGridReload();
+	this.hideContextMenu();
+	return false;
+});
+
+
+dhtmlxEvent(allergiesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function allergiesGridOnLoaded() {
+	allergiesGrid.setRowHidden("ctrRowId",true);
+}
+
+function allergiesGridReload() {
+	// defaults are checked
+	var showActive = "<?=$this->active?>";
+	var showInactive = "<?=$this->inactive?>";
+	var active = allergiesMenu.getCheckboxState("showing_active");
+	if (active) {
+		showActive = 1;
+	}
+	else if (active == false) {
+		showActive = 0;
+	}
+	var inactive = allergiesMenu.getCheckboxState("showing_inactive");
+	if (inactive) {
+		showInactive = 1;
+	}
+	else if (inactive == false) {
+		showInactive = 0;
+	}
+	allergiesGrid.clearAll();
+	allergiesGrid.load("<?=$this->baseUrl?>/allergies.raw/list?personId="+mainController.getActivePatient()+"&active="+showActive+"&inactive="+showInactive,allergiesGridOnLoaded,"json");
+}
+
+allergiesGridReload();
+
+
+var postingsColFields = new Array();
+// Note field names, in order based on postingsGrid.setHeader
+postingsColFields.push("priority");
+postingsColFields.push("note_date");
+postingsColFields.push("user_id");
+postingsColFields.push("reason");
+postingsColFields.push("note");
+postingsColFields.push("active");
+
+var postingsGrid = new dhtmlXGridObject("postingsGridId");
+postingsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+postingsGrid.setHeader("<?=__('Priority')?>,<?=__('Date')?>,<?=__('User')?>,<?=__('Reason')?>,<?=__('Note')?>,<?=__('Done')?>,");
+postingsGrid.setInitWidths("60,120,120,120,*,50,0");
+postingsGrid.setColTypes("coro,ed,ro,coro,txt,coro,ro");
+postingsGrid.setSkin("xp");
+
+function postingsGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		postingsEdit(rowId,postingsColFields[cellIndex],newValue);
+	}
+	return true;
+}
+postingsGrid.attachEvent("onEditCell",postingsGridOnCellEdited);
+
+function postingsGridReload(showAll) {
+	postingsGrid.clearAll();
+	var url = "<?=$this->baseUrl?>/postings.raw/list?patientId="+mainController.getActivePatient();
+	if (typeof showAll == "undefined") {
+		showAll = postingsMenu.getCheckboxState("showAll");
+	}
+	if (showAll != null && showAll) { // showAll because this is called before check
+		url += "&showAll=1";
+	}
+	postingsGrid.load(url,"json");
+}
+
+for (var i = 1; i <= 5; i++) {
+	postingsGrid.getCombo(0).put(i,i);
+}
+postingsGrid.getCombo(5).put("1","<?=__('No')?>");
+postingsGrid.getCombo(5).put("0","<?=__('Yes')?>");
+
+<?foreach ($this->reasons as $id=>$reason):?>
+postingsGrid.getCombo(3).put("<?=$id?>","<?=$reason?>");
+<?endforeach;?>
+
+function postingsProcessDone(data) {
+	postingsGridReload();
+}
+
+function postingsEdit(id,field,value,callback) {
+	if (typeof callback == "undefined") {
+		callback = postingsProcessDone;
+	}
+	var content = {
+		personId: mainController.getActivePatient(),
+		orm: "patientNote",
+		id: id,
+		field: field,
+		value: value,
+	};
+	globalProcessGeneric("process-edit-by-field",content,callback);
+}
+
+function postingsMenuOnClicked(menuItemId,type) {
+	switch (menuItemId) {
+		case "newPosting":
+			postingsEdit(0,"posting","1",function(data){
+				postingsProcessDone(data);
+				initMainToolbar(null,mainController.getActivePatient());
+			});
+			break;
+		case "showAll":
+			postingsGridReload();
+			break;
+		case "markDone":
+			var rowId = postingsGrid.getSelectedRowId();
+			if (rowId != null) {
+				postingsEdit(rowId,postingsColFields[5],"0",function(data){
+					postingsProcessDone(data);
+					initMainToolbar(null,mainController.getActivePatient());
+				});
+			}
+			break;
+		default:
+			alert("<?=__('Invalid event')?> "+menuItemId);
+	}
+}
+
+var postingsMenu = new dhtmlXMenuObject(null,"standard");
+postingsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+postingsMenu.renderAsContextMenu();
+postingsMenu.setOpenMode("web");
+postingsMenu.attachEvent("onClick",postingsMenuOnClicked);
+postingsMenu.loadXML("<?=$this->baseUrl?>/postings.raw/get-context-menu");
+postingsMenu.attachEvent("onCheckboxClick",function(id,state,zoneId,caseState) {
+	postingsGridReload(!state);
+	postingsMenu.hideContextMenu();
+	return true;
+});
+
+postingsGrid.hdr.id = postingsGrid.uid();
+postingsMenu.addContextZone(postingsGrid.hdr.id);
+postingsGrid.enableContextMenu(postingsMenu);
+postingsMenu.attachEvent("onContextMenu",function(id) {
+	postingsMenu.forEachItem(function (itemId) { postingsMenu.hideItem(itemId); });
+	var rowId = postingsGrid.getSelectedRowId();
+	postingsMenu.showItem("newPosting");
+	postingsMenu.showItem("showAll");
+	if (rowId != null && postingsGrid.cells(rowId,6).getValue() == "1") {
+		postingsMenu.showItem("markDone");
+	}
+});
+
+dhtmlxEvent(postingsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+postingsGrid.init();
+postingsGridReload();
+</script>

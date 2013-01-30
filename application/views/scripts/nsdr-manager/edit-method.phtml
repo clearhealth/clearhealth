@@ -1,0 +1,92 @@
+<style>
+body {
+	margin: 0;
+	font: 13px Myriad,Arial,Helvetica,clean,sans-serif; 
+	*font-size: small;
+	*font: x-small;
+}
+</style>
+
+<?=$this->form->renderOpen()?>
+
+<form name="frmMethod" method="post" onsubmit="return false;">
+<div style="float:left;">
+	<div class="formRow">
+		<?=$this->form->methodName->renderLabel()?>
+		<?$this->form->methodName->setAttrib('size',50)?>
+		<?=$this->form->methodNameInput('FormText',array('onChange'=>'nsdrMethodNameOnChanged(this.value)'))?>
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->method->renderLabel()?>
+		<?=$this->form->methodInput('FormTextarea',array('style'=>'width:480px;height:300px;'))?>
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->uuidInput('FormHidden')?>
+		<?=$this->form->nsdrDefinitionUuidInput('FormHidden')?>
+		<?=$this->form->okInput('FormButton')?>
+		<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>"dhxWins.window('".$this->form->getWindow()."').close()"))?>
+	</div>
+</div>
+
+<?=$this->form->renderClose()?>
+
+
+<script>
+function nsdrMethodNameOnChanged(value) {
+	var methodName = dojo.byId("<?=$this->form->methodName->getId()?>");
+	if (methodName == null || methodName.length <= 0) return;
+
+	value = value.replace(/^(.)|\s(.)/g,function ($1) {
+		return $1.toUpperCase();
+	});
+	value = value.replace(/ /g,"");
+	value = value.replace(/[^a-zA-Z0-9]/g,"_");
+
+	var name = value.charAt(0).toLowerCase() + value.substr(1);
+	value = value.charAt(0);
+	if ((typeof(value) == "number" || typeof(value) == "string") && value != "" && !isNaN(value)) {
+		name = "_" + name;
+	}
+	methodName.value = name;
+}
+nsdrMethodNameOnChanged(dojo.byId("<?=$this->form->methodName->getId()?>").value);
+
+function preSubmit<?=$this->form->getId()?>() {
+	var methodName = dojo.byId("<?=$this->form->methodName->getId()?>");
+	if (methodName.value.length <= 0) {
+		alert("<?=__('Method name is required.')?>");
+		return false;
+	}
+	var method = dojo.byId("<?=$this->form->method->getId()?>");
+	if (method.value.length <= 0) {
+		alert("<?=__('Method definition is required.')?>");
+		return false;
+	}
+	var duplicateMethod = false;
+	mGrid.forEachRow(function(rowId){
+		if (this.cells(rowId,0).getValue() == methodName) {
+			duplicateMethod = true;
+		}
+	});
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (data != true) {
+		alert(data);
+		return false;
+	}
+	else {
+		alert("<?=__('Record successfully saved.')?>");
+	}
+	nsdrMethodReload();
+	alert("<?=__('You must restart NSDR service for the changes to take effect.')?>");
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+</script>

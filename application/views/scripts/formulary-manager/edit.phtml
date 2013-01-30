@@ -1,0 +1,371 @@
+<style>
+div.gridbox#formularyGridContainer table.obj tr.rowselected td {
+	background-color: #ccc;
+}
+.smallButton {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:15px;
+}
+.smallUploadButton {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:20px;
+}
+</style>
+<fieldset>
+	<legend><?=__('Formulary Name: ').$this->prettyName?></legend>
+	<div id="formularySelectAutoCompleteDiv"></div>
+	<br />
+	<input type="button" id="formularyAddButton" value="<?=__('Add to current formulary')?>" disabled="disabled" onclick="addSelectedFormulary()" class="smallButton" />
+	<br /><br />
+	<div id="formularyGridContainer" style="position:relative;height:200px;"></div>
+	<div style="margin:5px;">
+		<div style="float:left;">
+			<input type="button" id="downloadCSVId" value="<?=__('Download CSV')?>" disabled="disabled" onclick="formularyDownloadCSVFile()" class="smallButton" />
+		</div>
+		<div style="float:right;">
+			<form id="uploadCSVForm" method="post" action="<?=$this->baseUrl?>/formulary-manager.raw/process-upload-csv" enctype="multipart/form-data">
+			<div style="margin-left:10px;">
+				<div id="fileUploadFormId" style="margin-left:auto;margin-right:auto;">
+					<input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+					<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progressKey" value="<?=uniqid('');?>"/>
+					<input type="file" name="uploadFile" class="smallUploadButton"/>
+					<input type="button" value="<?=__('Upload CSV')?>" onClick="formularyUploadCSVFile();" class="smallUploadButton" />
+				</div>
+				<div id="fileUploadProgressId" style="width:325px;margin-left:auto;margin-right:auto;display:none;">
+					<strong><?=__('Progress')?>:</strong>
+					<div style="width:320px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+						<div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+</fieldset>
+
+<script>
+//dojo.byId("formularyAddButton").disabled = false;
+
+var currentFormularyData = null;
+
+function openFormularyEditWindow(formularyId,data) {
+	if (formularyId == undefined || formularyId == null) {
+		formularyId = 0;
+	}
+	var url = "<?=$this->baseUrl?>/formulary-manager.raw/edit-formulary?name=<?=$this->tableName?>&formularyId="+formularyId;
+	if (data) {
+		url = "<?=$this->baseUrl?>/formulary-manager.raw/edit-formulary?name=<?=$this->tableName?>&formularyId="+formularyId+"&fullNDC="+data.full_ndc+"&directions="+data.directions+"&comments="+data.comments+"&price="+data.price;
+	}
+	var winFE = globalCreateWindow("windowFormularyEditId",[],url,"<?=__('Add / Edit Formulary')?>",350,250);
+}
+
+function addSelectedFormulary() {
+	if (!currentFormularyData) return;
+	//openFormularyEditWindow(null,currentFormularyData);
+	var packsize = currentFormularyData.packsize.split(";");
+	var qty = parseInt(packsize[0],10);
+	var print = 0;
+	if (currentFormularyData.schedule > 0) {
+		print = 1;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/formulary-manager.raw/process-edit",
+		handleAs: "json",
+		content: {
+			"name": "<?=$this->tableName?>",
+			"formulary[fullNDC]": currentFormularyData.full_ndc,
+			"formulary[directions]": currentFormularyData.directions,
+			"formulary[comments]": currentFormularyData.comments,
+			//"formulary[schedule]": "",
+			"formulary[labelId]": currentFormularyData.labelId,
+			"formulary[externalUrl]": currentFormularyData.externalUrl,
+			"formulary[price]": currentFormularyData.price,
+			"formulary[qty]": qty,
+			//"formulary[keywords]": "",
+			"formulary[deaSchedule]": currentFormularyData.schedule,
+			"formulary[print]": print,
+		},
+		load: function (data) {
+			currentFormularyData = null;
+			formularyGridReload();
+			dojo.byId("formularyAddButton").disabled = true;
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+if (fscb != undefined) {
+	fscb.destroyRecursive();
+	fscb = null;
+}
+var fsac = new custom.MedicationSelectAutoComplete({url:'<?=$this->chBaseMed24Url?>',requestMethod:"post",doClientPaging:true},'formularySelectAutoComplete');
+var fscb = new custom.MedicationSelectComboBox({name:"formulary[tradename]",value:'',autocomplete:false,store:fsac,hasDownArrow:false},"formularySelectAutoCompleteDiv");
+// change combobox width
+fscb.domNode.style.width = "470px";
+
+function populateFormularyDetails(data) {
+	dojo.byId("formularyAddButton").disabled = false;
+}
+
+function getFormularyCHMedDetails(arg) {
+	var tradename = arg;
+	var pkey = fscb.selectedKey;
+	dojo.xhrPost({
+		url: '<?=$this->chBaseMed24DetailUrl?>',
+		content: {
+			'': pkey,
+		},
+		handleAs: 'json',
+		load: function (data) {
+			currentFormularyData = data;
+			populateFormularyDetails();
+			dojo.byId("formularyAddButton").disabled = false;
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+dojo.connect(fscb,"onChange",'getFormularyCHMedDetails');
+
+// Formulary Grid
+var formularyGrid =  new dhtmlXGridObject("formularyGridContainer");
+formularyGrid.setImagePath("<?=$this->baseUrl?>/img/");
+formularyGrid.setHeader("<?=__('Drug')?>,<?=__('Directions')?>,<?=__('Comments')?>,<?=__('Schedule')?>,<?=__('Label Id')?>,<?=__('External Url')?>,<?=__('Price')?>,<?=__('Qty')?>,<?=__('Qualifier')?>,<?=__('Keywords')?>,<?=__('DEA Sched')?>,<?=__('Print')?>,<?=__('Description')?>,<?=__('Dose')?>,<?=__('Route')?>,<?=__('PRN')?>,<?=__('Refills')?>,<?=__('Days Supply')?>,<?=__('Subs')?>");
+formularyGrid.setColTypes("ro,ed,ed,co,ed,ed,ed,ed,co,ed,co,ch,ed,co,co,ch,ed,ed,ch");
+formularyGrid.setSkin("xp");
+formularyGrid.setInitWidths("*,*,*,50,50,*,50,30,50,*,50,30,*,50,50,30,50,50,30");
+formularyGrid.enableDynamicLoading(true);
+formularyGrid.init();
+
+var indexDrug = 0;
+var indexDirections = 1;
+var indexComments = 2;
+var indexSchedule = 3;
+var indexLabelId = 4;
+var indexExternalUrl = 5;
+var indexPrice = 6;
+var indexQty = 7;
+var indexQuantityQualifier = 8;
+var indexKeywords = 9;
+var indexDEASchedule = 10;
+var indexPrint = 11;
+var indexDescription = 12;
+var indexDose = 13;
+var indexRoute = 14;
+var indexPRN = 15;
+var indexRefills = 16;
+var indexDaysSupply = 17;
+var indexSubstitutions = 18;
+
+var fieldNameLookup = [];
+fieldNameLookup[indexDirections] = "directions";
+fieldNameLookup[indexComments] = "comments";
+fieldNameLookup[indexSchedule] = "schedule";
+fieldNameLookup[indexLabelId] = "labelId";
+fieldNameLookup[indexExternalUrl] = "externalUrl";
+fieldNameLookup[indexPrice] = "price";
+fieldNameLookup[indexQty] = "qty";
+fieldNameLookup[indexQuantityQualifier] = "quantityQualifier";
+fieldNameLookup[indexKeywords] = "keywords";
+fieldNameLookup[indexDEASchedule] = "deaSchedule";
+fieldNameLookup[indexPrint] = "print";
+fieldNameLookup[indexDescription] = "description";
+fieldNameLookup[indexDose] = "dose";
+fieldNameLookup[indexRoute] = "route";
+fieldNameLookup[indexPRN] = "prn";
+fieldNameLookup[indexRefills] = "refills";
+fieldNameLookup[indexDaysSupply] = "daysSupply";
+fieldNameLookup[indexSubstitutions] = "substitution";
+
+formularyGrid.getCombo(indexSchedule).put("","");
+<?foreach ($this->scheduleOptions as $key=>$value):?>
+formularyGrid.getCombo(indexSchedule).put("<?=$value?>","<?=$value?>");
+<?endforeach;?>
+
+formularyGrid.getCombo(indexQuantityQualifier).put("","");
+<?foreach ($this->quantityQualifiers as $key=>$value):?>
+formularyGrid.getCombo(indexQuantityQualifier).put("<?=$key?>","<?=$key?>");
+<?endforeach;?>
+
+formularyGrid.getCombo(indexDEASchedule).put("0","");
+formularyGrid.getCombo(indexDEASchedule).put("1","I");
+formularyGrid.getCombo(indexDEASchedule).put("2","II");
+formularyGrid.getCombo(indexDEASchedule).put("3","III");
+formularyGrid.getCombo(indexDEASchedule).put("4","IV");
+formularyGrid.getCombo(indexDEASchedule).put("5","V");
+
+function formularyGridOnLoaded() {
+	var downloadCSV = dojo.byId("downloadCSVId");
+	downloadCSV.disabled = true;
+	var rowsNum = formularyGrid.getRowsNum();
+	if (rowsNum > 0) {
+		downloadCSV.disabled = false;
+	}
+	formularyGrid.forEachRow(function(rowId){
+		if (this.cells(rowId,indexDEASchedule).getValue() > 0) {
+			this.cells(rowId,indexPrint).setDisabled(true);
+		}
+		else {
+			this.cells(rowId,indexPrint).setDisabled(false);
+		}
+	});
+}
+
+function formularyGridReload() {
+	formularyGrid.clearAll();
+	formularyGrid.load("<?=$this->baseUrl?>/formulary-manager.raw/list-formularies?name=<?=$this->tableName?>",formularyGridOnLoaded,"json");
+}
+
+formularyGridReload();
+
+formularyGrid.attachEvent("onRowSelect",onFormularyRowSelected);
+function onFormularyRowSelected(rowId,cellIndex) {
+}
+
+function formularySingleUpdate(field,id,value,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/formulary-manager.raw/process-single-update",
+		handleAs: "json",
+		content: {
+			name: '<?=$this->tableName?>',
+			field: field,
+			id: id,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function formularyOnUpdated(data) {
+	formularyGridReload();
+}
+
+formularyGrid.attachEvent("onEditCell",formularyOnEditCell);
+function formularyOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	switch (stage) {
+		case 2:
+			if (cellIndex > 0 && newValue != oldValue) {
+				formularySingleUpdate(fieldNameLookup[cellIndex],rowId,newValue,formularyOnUpdated);
+			}
+			break;
+	}
+	return true;
+}
+formularyGrid.attachEvent("onCheck",formularyGridOnChecked);
+function formularyGridOnChecked(rowId,cellIndex,value) {
+	var newValue = 0;
+	if (value) {
+		newValue = 1;
+	}
+	formularySingleUpdate(fieldNameLookup[cellIndex],rowId,newValue,formularyOnUpdated);
+}
+
+var formularyMenu = new dhtmlXMenuObject(null,'standard');
+formularyMenu.setImagePath("<?=$this->baseUrl?>/img/");
+formularyMenu.renderAsContextMenu();
+formularyMenu.setOpenMode("web");
+formularyMenu.attachEvent('onClick',onFormularyMenuClicked);
+formularyMenu.loadXML('<?=$this->baseUrl?>/formulary-manager.raw/formulary-context-menu');
+function onFormularyMenuClicked(menuItemId,type) {
+	var formulary = type.split('_');
+	switch (menuItemId) {
+		case "formularyDelete":
+			dojo.xhrPost({
+				url: '<?=$this->baseUrl?>/formulary-manager.raw/process-delete-formulary',
+				content: {
+					'name': '<?=$this->tableName?>',
+					'formularyId': formulary[0],
+				},
+				handleAs: 'json',
+				load: function (data) {
+					formularyGridReload();
+				},
+				error: function (er) {
+					alert('err: ' + er);
+				}
+			});
+			break;
+	}
+}
+
+formularyGrid.enableContextMenu(formularyMenu);
+dhtmlxEvent(formularyGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+function formularyDownloadCSVFile() {
+	window.open("<?=$this->baseUrl?>/formulary-manager.raw/process-download-csv?name=<?=$this->tableName?>");
+}
+
+function formularyUploadCSVFile() {
+	if (!confirm("<?=__('Changes will overwrite existing formularies. Are you sure you want to continue?')?>")) {
+		return;
+	}
+	var fileUploadForm = dojo.byId("fileUploadFormId");
+	fileUploadForm.style.display = "none";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/formulary-manager.raw/process-upload-csv",
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "uploadCSVForm",
+		content: {
+			"name": "<?=$this->tableName?>",
+		},
+		load: function(data) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else {
+				formularyGridReload();
+			}
+			dojo.byId("uploadProgressBarId").style.width = "100%";
+
+			fileUploadForm.style.display = "";
+			var fileUploadProgress = dojo.byId("fileUploadProgressId");
+			fileUploadProgress.style.display = "none";
+			clearTimeout(alertTimer);
+		},
+		error: function (er) {
+			alert("err: " + er)
+		}
+	});
+	formularyInitProgressBar();
+}
+
+function formularyInitProgressBar(progressKey) {
+	var fileUploadProgress = dojo.byId("fileUploadProgressId");
+	fileUploadProgress.style.display = "";
+	if (progressKey == undefined) {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/attachments.raw/view-upload-progress?uploadKey="+progressKey,
+		handleAs: "json",
+		load: function (data) {
+			if (dojo.byId("uploadProgressBarId").style.width == "100%") return;
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			alertTimer = setTimeout("formularyInitProgressBar(\""+progressKey+"\")",1000);
+		}, 
+		error: function (er) {
+			alert("err: " + er)
+		}
+	});
+}
+</script>

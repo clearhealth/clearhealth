@@ -1,0 +1,56 @@
+<script>
+	function diagnosisLookup() {
+		diagnosisLookupGrid.clearAll();
+		diagnosisLookupGrid.load("<?=$this->baseUrl?>/diagnosis.raw/lookup-diagnosis?q="+dojo.byId('q').value,function (){dojo.byId('diagnosisLookupEntriesLabel').innerHTML = diagnosisLookupGrid.getRowsNum() + ' of ' + diagnosisLookupGrid.getRowsNum() + ' entries displayed';}, "json");
+	}
+
+	function selectedDiagnosisLookup() {
+		var rowId = diagnosisLookupGrid.getSelectedRowId();
+		if (rowId == null) {
+			alert('<?=__('No diagnosis selected')?>');
+			return;
+		}
+		<?if($this->jsCallback != ''):?>
+		if ('<?=$this->jsCallback?>' != '' && window.<?=$this->jsCallback?>) {
+			<?=$this->jsCallback?>(rowId,diagnosisLookupGrid.cellById(rowId,"0").getValue());
+		}
+		<?endif;?>
+		dhxWins.window("windowDiagnosisLookupId").close();
+	}
+
+	function keyPressInput(e) {
+		var key = window.event ? e.keyCode : e.which;
+		if (key == 13) {
+			diagnosisLookup();
+		}
+	}
+</script>
+<input type="text" id="q" name="q" style="width:80%" onkeypress="keyPressInput(event);" /><input id="searchLabel" type="button" value="<?=__('Search')?>" onClick="diagnosisLookup();" />
+<br />
+	<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+	<div id="diagnosisLookupContainer" style="width:99%;height:80%;"></div>
+<script>
+	var diagnosisLookupGrid = new dhtmlXGridObject('diagnosisLookupContainer');
+	diagnosisLookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+	diagnosisLookupGrid.setHeader('<?=__('Description,Diagnosis Code')?>');
+	diagnosisLookupGrid.setInitWidths("*,120");
+	diagnosisLookupGrid.setColAlign("left,right");
+	diagnosisLookupGrid.setColTypes("ro");
+	diagnosisLookupGrid.setSkin("xp");
+	diagnosisLookupGrid.attachEvent("onRowSelect",diagnosisLookupRowSelectHandler);
+	diagnosisLookupGrid.attachEvent("onRowDblClicked",diagnosisLookupRowDoubleClickedHandler);
+	diagnosisLookupGrid.init();
+
+	function diagnosisLookupRowSelectHandler(rowId,cellIndex) {
+	}
+
+	function diagnosisLookupRowDoubleClickedHandler(rowId,colIndex) {
+		selectedDiagnosisLookup();
+	}
+</script>
+
+<div id="diagnosisLookupEntriesLabel"></div>
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="selectedDiagnosisLookup()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('windowDiagnosisLookupId').close()" style="width:150px;margin-top:10px;" />
+</div>

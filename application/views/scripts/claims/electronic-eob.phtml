@@ -1,0 +1,73 @@
+<fieldset><legend><?=__('EOB File List')?></legend>
+	<div id="eobFilesGridId" style="width:auto;height:350px;"></div>
+</fieldset>
+<script>
+var eobFilesGrid = new dhtmlXGridObject("eobFilesGridId");
+eobFilesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexEOBDate = 0;
+var indexEOBName = 1;
+var indexEOBIDS = 2;
+var indexEOBFunds = 3;
+eobFilesGrid.setHeader("<?=__('Date')?>,<?=__('Name')?>,,");
+eobFilesGrid.setColTypes("ro,ro,ro,ro");
+eobFilesGrid.setInitWidths("75,*,0,0");
+eobFilesGrid.setSkin("xp");
+eobFilesGrid.init();
+function eobFilesGridReload() {
+	eobFilesGrid.clearAll(); 
+	eobFilesGrid.load("<?=$this->baseUrl?>/claims.raw/list-eob-files",function(){
+	},"json"); 
+}
+eobFilesGridReload();
+
+/* === MENU === */
+var eobFilesMenu = new dhtmlXMenuObject(null,"standard");
+eobFilesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+eobFilesMenu.renderAsContextMenu();
+eobFilesMenu.setOpenMode("web");
+eobFilesMenu.attachEvent("onClick",function(menuItemId,type){
+	switch(menuItemId) {
+		case "processBatch":
+			eobProcessBatch();
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+});
+eobFilesMenu.loadXML("<?=$this->baseUrl?>/claims.raw/get-context-menu?type=eob",function(){});
+eobFilesMenu.attachEvent("onContextMenu",function(id){
+	eobFilesMenu.hideItem("processBatch");
+	var rowId = eobFilesGrid.getSelectedRowId();
+	if (rowId != null) {
+		eobFilesMenu.showItem("processBatch");
+	}
+});
+
+eobFilesGrid.hdr.id = eobFilesGrid.uid();
+eobFilesMenu.addContextZone(eobFilesGrid.hdr.id);
+eobFilesGrid.enableContextMenu(eobFilesMenu);
+
+function eobProcessBatch() {
+	var rowId = eobFilesGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected EOB File");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl + "/claims.raw/set-session-ids",
+		handleAs: "json",
+		content: {
+			"ids": eobFilesGrid.cells(rowId,indexEOBIDS).getValue(),
+			"unallocatedFunds": eobFilesGrid.cells(rowId,indexEOBFunds).getValue(),
+		},
+		load: function(data) {
+			openDefaultAccordion();
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+</script>

@@ -1,0 +1,215 @@
+<div id="examsContainer" style="width:100%;height:100%;overflow:none;">
+	<div class="formRow">
+		<div style="float:left;">
+			<dt><label for="exams-section"><?=__("Exam Section")?></label></dt>
+			<div id="examsSectionListContainer" style="float:left;width:250px;height:100px;"></div><br />
+			<input type="button" value="<?=__('Other Exam...')?>" style="float:right;" onClick="openExamsLookupWindow()" />
+		</div>
+		<div style="float:left;margin-left:10px;">
+			<dt><label for="exams-section"><?=__("Section Name")?></label></dt>
+			<div id="examsSectionNameListContainer" style="float:left;width:480px;height:120px;"></div>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div id="examsListContainer" style="float:left;width:740px;height:150px"></div>
+	</div>
+</div>
+
+<script>
+function openExamsLookupWindow() {
+	var params = new Array();
+	params.push("callback=examAddOthers");
+	globalCreateWindow("winLookupExamId",params,"<?=$this->baseUrl?>/exams.raw/lookup","<?=__('Other Exams')?>",400,400);
+}
+
+function examAddOthers(code,data) {
+	if (examsListGrid.doesRowExist(code)) {
+		alert("<?=__('Selected exam already exists')?>");
+		return;
+	}
+	examAddToList(code,data);
+}
+var examsSectionListGrid = new dhtmlXGridObject("examsSectionListContainer");
+examsSectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+examsSectionListGrid.setHeader("");
+examsSectionListGrid.setNoHeader(true);
+examsSectionListGrid.setInitWidths("*");
+examsSectionListGrid.setSkin("xp");
+examsSectionListGrid.init();
+examsSectionListGrid.load("<?=$this->baseUrl?>/exams.raw/list",null,"json");
+examsSectionListGrid.attachEvent("onRowSelect",examsSectionListOnRowSelected);
+
+function examsSectionListOnRowSelected(rowId,cellIndex) {
+	examsSectionNameListGrid.clearAll();
+	examsSectionNameListGrid.load("<?=$this->baseUrl?>/exams.raw/list-section?section="+rowId,examsOnSectionNameLoaded,"json");
+}
+
+function examsOnSectionNameLoaded() {
+	examsListGrid.forEachRow(function(rowId){ if (examsSectionNameListGrid.doesRowExist(rowId)){ examsSectionNameListGrid.cells(rowId,0).setChecked(true);} });
+}
+
+
+var examsSectionNameListGrid = new dhtmlXGridObject("examsSectionNameListContainer");
+examsSectionNameListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+examsSectionNameListGrid.setHeader(",,");
+examsSectionNameListGrid.setNoHeader(true);
+examsSectionNameListGrid.setInitWidths("20,*,120");
+examsSectionNameListGrid.setColTypes("ch,ro,ro");
+examsSectionNameListGrid.setColAlign("right,left,left");
+examsSectionNameListGrid.setSkin("xp");
+examsSectionNameListGrid.init();
+examsSectionNameListGrid.attachEvent("onCheck",examsSectionNameOnChecked);
+
+function examAddToList(id,data) {
+	var today = new Date();
+	examsListGrid.addRow(id,today.getFullYear() +"-" + (today.getMonth()+1)+ "-" + today.getDate() + ",,,,");
+	examsListGrid.cells(id,indexPEXExams).setValue(data);
+	examSave(id);
+}
+
+function examsSectionNameOnChecked(rowId,cellIndex,state) {
+	if (state) { // add to exams list
+		var today = new Date();
+		examsListGrid.addRow(rowId,today.getFullYear() +"-" + (today.getMonth()+1)+ "-" + today.getDate() + ",,,,");
+		examsListGrid.cells(rowId,indexPEXExams).setValue(examsSectionNameListGrid.cells(rowId,1).getValue().replace(/,/g, "&#44;"));
+	}
+	else { // remove from exams list
+		examRemove(rowId);
+	}
+}
+
+var examsListGrid = new dhtmlXGridObject("examsListContainer");
+examsListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+examsListGrid.setHeader("<?=__('Date')?>,<?=__('Results')?>,<?=__('Selected Exams')?>,<?=__('Refused')?>,<?=__('Comments')?>");
+var indexPEXDate = 0;
+var indexPEXResults = 1;
+var indexPEXExams = 2;
+var indexPEXRefused = 3;
+var indexPEXComments = 4;
+
+examsListGrid.setInitWidths("75,120,*,50,0");
+examsListGrid.setColTypes("ed,coro,ro,ch,ro");
+examsListGrid.setColAlign("right,left,left,left,left");
+examsListGrid.setSkin("xp");
+examsListGrid.attachEvent("onEditCell",examsListGridOnEditCell);
+examsListGrid.attachEvent("onCheck",examsListGridOnChecked);
+examsListGrid.attachEvent("onRowSelect",examsListGridOnRowSelected);
+
+var examsListMenu = new dhtmlXMenuObject(null,"standard");
+examsListMenu.setImagePath("<?=$this->baseUrl?>/img/");
+examsListMenu.renderAsContextMenu();
+examsListMenu.setOpenMode("web");
+examsListMenu.loadXML("<?=$this->baseUrl?>/exams.raw/exam-context-menu");
+examsListMenu.attachEvent("onClick",examsListMenuOnClicked);
+function examsListMenuOnClicked(id) {
+	switch (id) {
+		case "remove":
+			examRemove();
+			break;
+	}
+}
+examsListGrid.enableContextMenu(examsListMenu);
+dhtmlxEvent(examsListGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+examsListGrid.getCombo(indexPEXResults).put("","");
+<?foreach ($this->listResults as $key=>$value):?>
+examsListGrid.getCombo(indexPEXResults).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+examsListGrid.init();
+function examsListGridReload() {
+	examsListGrid.clearAll();
+	examsListGrid.load("<?=$this->baseUrl?>/exams.raw/list-patient-exams?patientId="+mainController.getActivePatient(),null,"json");
+}
+examsListGridReload();
+
+function examsListGridOnRowSelected(rowId,cellIndex) {
+}
+
+function examsListGridOnChecked(rowId,cellIndex,state) {
+	examsListGridOnEditCell(2,rowId,cellIndex,state,!state);
+}
+
+function examsListGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexPEXDate:
+			case indexPEXResults:
+			case indexPEXExams:
+			case indexPEXRefused:
+				examSave(rowId,function(data){
+					var value = (data.data[cellIndex])?data.data[cellIndex]:"";
+					examsListGrid.cells(rowId,cellIndex).setValue(value);
+				});
+				break;
+		}
+	}
+	return true;
+}
+
+function examRemove(rowId) {
+	if (rowId == undefined) {
+		rowId = examsListGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/exams.raw/process-delete-exam",
+		handleAs: "json",
+		content: {
+			"code": rowId,
+		},
+		load: function (data) {
+			examsListGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function examSave(rowId,callback) {
+	if (rowId == undefined) {
+		rowId = examsListGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		return;
+	}
+	var arrExams = [];
+	arrExams.push("'exams[patientId]': '"+mainController.getActivePatient()+"'");
+	arrExams.push("'exams[code]': '"+rowId+"'");
+	arrExams.push("'exams[dateExamined]':'"+examsListGrid.cells(rowId,indexPEXDate).getValue()+"'");
+	arrExams.push("'exams[result]':'"+examsListGrid.cells(rowId,indexPEXResults).getValue()+"'");
+	arrExams.push("'exams[exam]':'"+examsListGrid.cells(rowId,indexPEXExams).getValue().replace(/\n/g,"")+"'");
+	arrExams.push("'exams[refused]':'"+examsListGrid.cells(rowId,indexPEXRefused).getValue()+"'");
+	arrExams.push("'exams[comments]':'"+examsListGrid.cells(rowId,indexPEXComments).getValue()+"'");
+
+	var jsCode = "var examsContent = {"+arrExams.join(",")+"}";
+	eval(jsCode);
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/exams.raw/process-edit-exam",
+		handleAs: "json",
+		content: examsContent,
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+				return;
+			}
+			examsListGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

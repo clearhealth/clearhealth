@@ -1,0 +1,212 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+</style>
+
+<div id="messagingContainerId" style="height:480px;width:100%;">
+	<div id="messagingToolbarId" style="width:100%;"></div>
+	<div id="messagingGridId" style="width:100%;height:420px;overflow:auto;"></div>
+</div>
+
+<script>
+var messagingToolbar = new dhtmlXToolbarObject("messagingToolbarId","ClearSilver");
+messagingToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function messagingToolbarOnClicked(id) {
+	var params = [];
+	params.push("callback=messagingGridReload");
+	switch (id) {
+		case "filter":
+			globalCreateWindow("winFilterId",params,"<?=$this->baseUrl?>/messaging.raw/filter","<?=__('Filter')?>",400,350);
+			break;
+		case "patient":
+			alert("Not yet implemented");
+			break;
+		case "settings":
+			globalCreateWindow("winSettingsId",[],"<?=$this->baseUrl?>/messaging.raw/settings","<?=__('Settings')?>",300,200);
+			break;
+		case "checkInbound":
+			messagingCheckInbound();
+			break;
+		case "refresh":
+			messagingGridReload();
+			break;
+	}
+}
+messagingToolbar.attachEvent("onClick",messagingToolbarOnClicked);
+messagingToolbar.loadXML("<?=$this->baseUrl?>/messaging.raw/toolbar.xml")
+
+var messagingGrid = new dhtmlXGridObject("messagingGridId");
+messagingGrid.setImagePath("<?=$this->baseUrl?>/img/");
+messagingGrid.setHeader("<?=__('Date')?>,<?=__('Status')?>,<?=__('Message')?>,<?=__('Notes')?>,,");
+messagingGrid.setInitWidths("120,100,150,*,0,0");
+messagingGrid.setColTypes("ro,ro,ro,ro,ro,ro");
+messagingGrid.setSkin("xp");
+function messagingGridOnRowSelected(rowId,cellIndex) {
+}
+messagingGrid.attachEvent("onRowSelect",messagingGridOnRowSelected);
+
+var winMessagingInboundId = null;
+function messagingGridOnRowDblClicked(rowId,colIndex) {
+	var objectType = messagingGrid.cells(rowId,4).getValue();
+	var params = [];
+	params.push("messagingId="+rowId);
+	switch (objectType) {
+		case "<?=Messaging::TYPE_INBOUND_FAX?>":
+			winMessagingInboundId = globalCreateWindow("winInboundFaxId",params,"<?=$this->baseUrl?>/messaging.raw/view-inbound-fax","<?=__('Inbound Fax')?>",300,250);
+			break;
+		case "<?=Messaging::TYPE_OUTBOUND_FAX?>":
+			globalCreateWindow("winOutboundFaxId",params,"<?=$this->baseUrl?>/messaging.raw/view-outbound-fax","<?=__('Outbound Fax')?>",300,250);
+			break;
+		default:
+			globalCreateWindow("winEPrescribeId",params,"<?=$this->baseUrl?>/messaging.raw/view-eprescribe","<?=__('EPrescribe')?>",500,450);
+	}
+}
+messagingGrid.attachEvent("onRowDblClicked",messagingGridOnRowDblClicked);
+
+var messagingMenu = new dhtmlXMenuObject(null,"standard");
+messagingMenu.setImagePath("<?=$this->baseUrl?>/img/");
+messagingMenu.renderAsContextMenu();
+messagingMenu.setOpenMode("web");
+messagingMenu.attachEvent("onClick",messagingGridOnContextMenu);
+messagingMenu.loadXML("<?=$this->baseUrl?>/messaging.xml/get-context-menu");
+
+messagingGrid.init();
+messagingGrid.enableContextMenu(messagingMenu);
+messagingGrid.attachEvent("onBeforeContextMenu",function(rowId,cellIndex){
+	var messageType = messagingGrid.cells(rowId,5).getValue();
+	messagingMenu.forEachItem(function(itemId){
+		if (itemId == "viewRawMessage" || itemId == "viewGatewayResponseRawMessage" || itemId.substr(0,13) == "directDenied_") return;
+		messagingMenu.hideItem(itemId);
+	});
+	if (messageType == "RefillRequest") {
+		messagingMenu.showItem("approved");
+		messagingMenu.showItem("denied");
+		messagingMenu.showItem("ms1");
+		if (this.getUserData(rowId,"unresolved") == "1") {
+			messagingMenu.showItem("markAsResolved");
+			messagingMenu.showItem("directDenied");
+		}
+	}
+	return true;
+});
+dhtmlxEvent(messagingGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+function messagingGridOnContextMenu(item,rowId) {
+	var arr = rowId.split("_");
+	var messagingId = arr[0];
+
+	var params = [];
+	params.push("messagingId="+messagingId);
+
+	if (item.substr(0,13) == "directDenied_") {
+		var code = item.substr(13);
+		if (!confirm("<?=__('Are you sure you want to directly deny selected item?')?>")) return;
+		dojo.xhrPost({
+			url: "<?=$this->baseUrl?>/messaging.raw/process-direct-denied",
+			handleAs: "json",
+			content: {
+				"messagingId": messagingId,
+				"code": code,
+			},
+			load: function (data) {
+				messagingGridReload();
+			},
+			error: function (er) {
+				alert('err: ' + er);
+			}
+		});
+		return;
+	}
+
+	switch (item) {
+		case "approved":
+			globalCreateWindow("winRefillResponseApproved",params,"<?=$this->baseUrl?>/messaging.raw/refill-response-approved","<?=__('Refill Response - Approved')?>",500,500);
+			break;
+		case "denied":
+			globalCreateWindow("winRefillResponseDenied",params,"<?=$this->baseUrl?>/messaging.raw/refill-response-denied","<?=__('Refill Response - Denied')?>",500,500);
+			break;
+		case "viewRawMessage":
+			globalCreateWindow("winViewRawMessage",params,"<?=$this->baseUrl?>/messaging.raw/view-raw-message","<?=__('View Raw Message')?>",500,500);
+			break;
+		case "viewGatewayResponseRawMessage":
+			globalCreateWindow("winViewGatewayResponseRawMessage",params,"<?=$this->baseUrl?>/messaging.raw/view-gateway-response-raw-message","<?=__('View Gateway Response Raw Message')?>",500,500);
+			break;
+		case "markAsResolved":
+			if (!confirm("<?=__('Are you sure you are going to mark as resolved the selected item?')?>")) return;
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/messaging.raw/process-mark-resolved",
+				handleAs: "json",
+				content: {
+					"messagingId": messagingId,
+				},
+				load: function (data) {
+					messagingGridReload();
+				},
+				error: function (er) {
+					alert('err: ' + er);
+				}
+			});
+			break;
+		default:
+			alert(item);
+	}
+}
+
+function messagingRefillResponse(content) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-refill-response",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data != true) {
+				alert(data);
+			}
+			switch (mainTabbar.getActiveTab()) {
+				case "tab_Medications":
+					rrGridReload();
+					break;
+				case "tab_Messaging":
+					messagingGridReload();
+					break;
+			}
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function messagingGridOnLoaded() {
+	messagingGrid.forEachRow(function(rowId){
+		this.setRowColor(rowId,"#90EE90"); // light green
+		if (this.getUserData(rowId,"unresolved") == "1") {
+			this.setRowColor(rowId,"#FF0000"); // light red
+		}
+	});
+}
+
+function messagingGridReload() {
+	messagingGrid.clearAll();
+	messagingGrid.load("<?=$this->baseUrl?>/messaging.raw/list",messagingGridOnLoaded,"json");
+}
+messagingGridReload();
+
+function messagingCheckInbound() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-check-inbound",
+		handleAs: "json",
+		load: function (data) {
+			alert("<?=__('New messages received')?>:"+data);
+			messagingGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>

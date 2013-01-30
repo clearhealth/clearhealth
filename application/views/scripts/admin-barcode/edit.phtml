@@ -1,0 +1,63 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__("Barcode Macro Information")?></legend>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->regex->renderLabel()?>
+	<?$this->form->regex->setAttrib('size',35)?>
+	<?=$this->form->regexInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->macro->renderLabel()?>
+	<?=$this->form->macroInput('FormTextarea',array('cols'=>40,'rows'=>12))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->active->renderLabel()?>
+	<?=$this->form->activeInput('FormCheckbox',array('checked' => (int)$this->form->active->getValue()))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->cache->renderLabel()?>
+	<?=$this->form->cacheInput('FormCheckbox',array('checked' => (int)$this->form->cache->getValue()))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->orderInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowEditBarcodeMacroId').close()"/>
+</div>
+
+</fieldset>
+
+<script>
+function postSubmiteditbarcode() {
+	abMacroGridReload();
+	dhxWins.window('windowEditBarcodeMacroId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

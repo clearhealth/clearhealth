@@ -1,0 +1,71 @@
+<?$isScheduled = ($this->isScheduled && strlen($this->note) > 0)?true:false;?>
+<fieldset><legend><?=__('MessageId')?>: <?=$this->messagingId?></legend>
+	<div style="float:left;"><?=($isScheduled)?$this->note.'<br /><br />':__('Note').'<br />'.$this->formTextarea('note',$this->rawMessage,array('id'=>'note','style'=>'height:80px;width:460px;','maxlength'=>70))?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Pharmacy')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Pharmacy']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Provider')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Provider']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Patient')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Patient']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Medication')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->data['Medication']?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Refills requested')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=$this->refills?></div>
+	<br style="clear:left;" />
+	<div style="float:left;width:20%;"><?=__('Number of refills')?>:</div>
+	<div style="float:left;margin-left:10px;width:70%;"><?=($isScheduled)?$this->refills:$this->formNumberSpinner('refills',$this->refills,array('id'=>'refills','style'=>'width:70px;','places'=>1,'validate'=>'return true;')).' '.__('Total number of dispensings approved.')?></div>
+	<br style="clear:left;" />
+	<?=$this->formButton('ok',__('OK'),array('onClick'=>'refillResponseApproved()'))?>
+</fieldset>
+<fieldset><legend><?=__('Refill Request Details')?></legend>
+	<div style="float:left;"><?=$this->formTextarea('refillRequestDetailsId',$this->refillRequestDetails,array('id'=>'refillRequestDetailsId','style'=>'height:180px;width:460px;background-color:#fff;','readonly'=>'readonly'))?></div>
+</fieldset>
+<script>
+function refillResponseApproved() {
+	var content = {
+		"messagingId":"<?=$this->messagingId?>",
+		"response":"approved",
+	};
+<?if (!$isScheduled):?>
+	var refills = dojo.byId("refills").value;
+	if (refills < 1) {
+		alert("<?=__('Refills must be non-zero')?>");
+		return;
+	}
+	content["data[refills]"] = refills;
+	content["data[note]"] = dojo.byId("note").value;
+<?endif;?>
+	messagingRefillResponse(content);
+	dhxWins.window("winRefillResponseApproved").close();
+<?if ($isScheduled):?>
+	var params = [];
+	params.push("personId="+mainController.getActivePatient());
+	params.push("refillRequestId=<?=$this->messagingId?>");
+	params.push("medicationId=<?=$this->refillRequest->medicationId?>");
+	params.push("copy=1");
+	winNewMedObjects = globalCreateWindow("windowNewMedication",params,"<?=$this->baseUrl?>/medications.raw/edit-medication","<?=__('New Medication')?>",520,600);
+<?endif;?>
+}
+function textareaOnkeypress(evt) {
+	var target = evt.target;
+	var maxlength = target.getAttribute("maxlength");
+	if (maxlength == null) {
+		return;
+	}
+
+	var key = evt.which;
+	//all keys including return.
+	if(key >= 33 || key == 13) {
+		var length = target.value.length;
+		if(length >= maxlength) {
+			evt.preventDefault();
+		}
+	}
+}
+dojo.connect(dojo.byId("note"),"onkeypress","textareaOnkeypress");
+</script>

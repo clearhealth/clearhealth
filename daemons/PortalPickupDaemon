@@ -1,0 +1,1446 @@
+#!/usr/bin/php
+<?php
+/*****************************************************************************
+*       PortalPickupDaemon
+*
+*       Author:  ClearHealth Inc. (www.clear-health.com)        2009
+*       
+*       ClearHealth(TM), HealthCloud(TM), WebVista(TM) and their 
+*       respective logos, icons, and terms are registered trademarks 
+*       of ClearHealth Inc.
+*
+*       Though this software is open source you MAY NOT use our 
+*       trademarks, graphics, logos and icons without explicit permission. 
+*       Derivitive works MUST NOT be primarily identified using our 
+*       trademarks, though statements such as "Based on ClearHealth(TM) 
+*       Technology" or "incoporating ClearHealth(TM) source code" 
+*       are permissible.
+*
+*       This file is licensed under the GPL V3, you can find
+*       a copy of that license by visiting:
+*       http://www.fsf.org/licensing/licenses/gpl.html
+*       
+*****************************************************************************/
+
+/**
+ * ClearHealth Processing Daemon
+ */
+
+
+function __($str) {
+	return $str;
+}
+
+define('APPLICATION_ENVIRONMENT','production');
+$appFile = realpath(dirname(__FILE__) . '/../application/library/WebVista/App.php');
+require_once $appFile;
+
+class PortalPickupDaemon extends WebVista {
+
+	protected static $_instance = null;
+
+	public static function getInstance() {
+        	if (null === self::$_instance) {
+        		self::$_instance = new self();
+			self::$_instance->run();
+        	}
+		return self::$_instance;
+	}
+
+	public function run() {
+		$this->_setupEnvironment()
+			->_setupDb()
+			->_setupCache()
+			->_setupTranslation()
+			->_setupAutoLogin();
+		return $this;
+	}
+
+	protected function _setupEnvironment() {
+		// disable strict reporting
+		error_reporting(E_ALL);
+		set_include_path($this->getPath('library') . PATH_SEPARATOR 
+					. $this->getPath('models') . PATH_SEPARATOR
+					. $this->getPath('controllers') . PATH_SEPARATOR
+					. get_include_path());
+		require_once('WebVista/Model/ORM.php');
+		require_once('User.php');
+		require_once('Person.php');
+		//require_once('Zend/Session.php');
+		//require_once('WebVista/Session/SaveHandler.php');
+		//Zend_Session::setSaveHandler(new WebVista_Session_SaveHandler());
+		//Zend_Session::start();
+		require_once 'Zend/Loader.php';
+		Zend_Loader::registerAutoLoad();
+		$sessionTimeout = ini_get('session.gc_maxlifetime') - (5 * 60);
+		Zend_Registry::set('sessionTimeout',$sessionTimeout);
+		$this->_config = new Zend_Config_Ini($this->getPath('application') . "/config/app.ini", APPLICATION_ENVIRONMENT);
+		Zend_Registry::set('config', $this->_config);
+		Zend_Registry::set('baseUrl',substr($_SERVER['PHP_SELF'],0,strpos(strtolower($_SERVER['PHP_SELF']),'index.php')));
+		Zend_Registry::set('basePath',$this->getPath('base') . DIRECTORY_SEPARATOR);
+		try {
+			date_default_timezone_set(Zend_Registry::get('config')->date->timezone);
+		}
+		catch (Zend_Exception $e) {
+			die($e->getMessage());
+		}
+		Audit::$_synchronousAudits = true;
+		Audit::$_processedAudits = true;
+		return $this;
+	}
+
+	protected function _setupAutoLogin() {
+		$username = 'admin';
+		$password = 'admin';
+		$user = new User();
+		$user->username = $username;
+		$user->populateWithUsername();
+		if (!$user->userId > 0) {
+			$person = new Person();
+			$person->_shouldAudit = false;
+			$person->last_name = 'Administrator';
+			$person->first_name = 'ClearHealth';
+			$person->middle_name = 'U';
+			$person->persist();
+
+			$user->_shouldAudit = false;
+			$user->person = $person;
+			$user->password = $password;
+			$user->userId = $person->personId;
+			$user->personId = $person->personId;
+			$user->persist();
+		}
+		//Zend_Auth::getInstance()->getStorage()->write($user);
+		Zend_Registry::set('user',$user);
+		return $this;
+	}
+
+	private function __construct() {
+		$this->_computePaths();
+	}
+
+	private function __clone() {}
+
+	public function patientSearch(SimpleXMLElement $request) {
+		// returns rows with personId, firstName, lastName, gender, dateOfBirth(Ymd), mobileNumber, phoneNumber
+		$db = Zend_Registry::get('dbAdapter');
+		$firstName = $request->patient->firstName;
+		$lastName = $request->patient->lastName;
+		$gender = $request->patient->gender;
+		$dateOfBirth = date('Y-m-d',strtotime($request->patient->dateOfBirth));
+
+		$sqlSelect = $db->select()
+				->from('person',array('person_id AS personId','first_name AS firstName','last_name AS lastName','gender','date_of_birth AS dateOfBirth'))
+				->joinInner('number','number.person_id = person.person_id',array('number AS phoneNumber','type AS numberType'))
+				->where("number.type = 'PORTAL' OR number.type = 'PORTALTXT'")
+				->where('person.last_name = '.$db->quote($lastName))
+				->where('person.first_name = '.$db->quote($firstName))
+				->where('person.gender = '.$db->quote($gender))
+				->where('person.date_of_birth = '.$db->quote($dateOfBirth))
+				->order('person.last_name')
+				->order('person.first_name')
+				->order('person.middle_name')
+				->order('person.date_of_birth');
+		$patients = array();
+		$stmt = $db->query($sqlSelect);
+		while ($row = $stmt->fetch()) {
+			unset($row['numberType']);
+			$row['mobileNumber'] = $row['phoneNumber'];
+			$personId = (int)$row['personId'];
+			$visitId = 0;
+			//$providerId = (int)Zend_Auth::getInstance()->getIdentity()->personId;
+			$providerId = (int)Zend_Registry::get('user')->personId;
+			$ccd = new CCD();
+			$contents = $ccd->populate($personId,$providerId,$visitId);
+			$filename = '/tmp/ccd-'.$row['lastName'].'-'.$row['firstName'].'-'.$row['dateOfBirth'].'.xml';
+			file_put_contents($filename,$contents);
+			$row['personId'] = $personId;
+			$patients[] = $row;
+		}
+		return $patients;
+	}
+
+}
+
+
+/** 
+ * Test pickup script for patient-portal
+ *
+ *
+ * @package pickupdaemon
+ * @copyright ClearHealth Inc. (www.clear-health.com)        2010
+ */
+
+/**
+ * Database class for ch3
+ * 
+ * @package chDb
+ *
+ */ 
+Class chDb
+{
+  public $db;
+  function __construct() {
+    if ($this->db = sqlite_open('chsqlitedb', 0666, $sqliteerror)) {
+      if (false == $this->tableExists('requests')) {
+        $this->initDb();
+      }
+      return $this;
+    }
+  }
+
+  /**
+   * Returns true if a table exists
+   *
+   * @param string $mytable
+   * @return boolean
+   */
+  private function tableExists($mytable) {
+    /* counts the tables that match the name given */
+    $result = sqlite_query($this->db,"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='$mytable'");
+
+    /* casts into integer */
+    $count = intval(sqlite_fetch_single($result));
+
+    /* returns true or false */
+    return $count > 0;
+  }
+
+  /**
+   * Creates pickupdaemon database
+   *
+   */
+  function initDb() {
+    sqlite_query($this->db, "
+
+CREATE TABLE requests (
+  requestId INTEGER PRIMARY KEY, 
+  domainName  VARCHAR(100),
+  firstName   VARCHAR(50),
+  lastName    VARCHAR(50),
+  dateOfBirth VARCHAR(20),
+  publicKey   VARCHAR(200), 
+  sessionKey  VARCHAR(10)
+);
+
+CREATE TABLE persons (
+  personId INTEGER PRIMARY KEY,
+  firstName   VARCHAR(50),
+  lastName    VARCHAR(50),
+  gender      CHAR(1),
+  dateOfBirth VARCHAR(20),
+  mobileNumber VARCHAR(15),
+  phoneNumber  VARCHAR(15),
+  isLocked    CHAR(1) DEFAULT 'n'  
+);
+
+CREATE TABLE sessions (
+  sessionId INTEGER PRIMARY KEY,
+  sessionKey VARCHAR(10),
+  lastAccess INTEGER,
+  informationHash VARCHAR(100),
+  requests INTEGER,
+  status VARCHAR(10),
+  timeout INTEGER DEFAULT 0,
+  personId  INTEGER
+);
+    ");
+
+  }
+
+  /**
+   * Searches for a person record 
+   *
+   * @param array $identificationRequest
+   * @return array
+   */
+  public function searchPerson($identificationRequest) {
+		$portal = PortalPickupDaemon::getInstance();
+		$results = $portal->patientSearch($identificationRequest);
+		// INSERT results
+		foreach ($results as $row) {
+			// dateOfBirth format: yyyymmdd
+			$sql = "REPLACE INTO persons(
+					personId,firstName,lastName,gender,
+					dateOfBirth,mobileNumber,phoneNumber)
+				VALUES ({$row['personId']},'{$row['firstName']}','{$row['lastName']}',
+					'{$row['gender']}','{$row['dateOfBirth']}','{$row['mobileNumber']}','{$row['phoneNumber']}')";
+			$result = sqlite_query($this->db,$sql);
+		}
+		return $results;
+
+    $sql = sprintf("SELECT *
+                    FROM persons
+                    WHERE isLocked = 'n' AND
+                          firstName ='%s' AND 
+                          lastName = '%s' AND 
+                          gender = '%s' AND
+                          dateOfBirth = '%s' ",
+                          $identificationRequest->patient->firstName,
+                          $identificationRequest->patient->lastName,
+                          $identificationRequest->patient->gender,
+                          $identificationRequest->patient->dateOfBirth);  
+
+    $result = sqlite_query($this->db, $sql);
+
+    $rows = array();
+    while ($entry = sqlite_fetch_array($result, SQLITE_ASSOC)) {
+      $rows[] = $entry;
+    }
+    return $rows;
+  }
+
+
+  /**
+   * Searches for a person record by Id
+   *
+   * @param integer 
+   * @return array
+   */
+  public function searchPersonById($personId) {
+    $sql = sprintf("SELECT *
+                    FROM persons
+                    WHERE personId = %d", $personId); 
+
+    $result = sqlite_query($this->db, $sql);
+
+    $rows = array();
+    while ($entry = sqlite_fetch_array($result, SQLITE_ASSOC)) {
+      $rows[] = $entry;
+    }
+    return $rows;
+  }
+
+  /**
+   * Locks a patient account for portal access
+   *
+   * @param array $identificationRequest
+   * @return array
+   */
+  public function lockPerson($identificationRequest) {
+    $sql = sprintf("UPDATE persons
+                    SET isLocked = 'y'
+                    WHERE 
+                          firstName ='%s' AND
+                          lastName = '%s' AND
+                          gender = '%s' AND
+                          dateOfBirth = '%s' ",
+                          $identificationRequest->patient->firstName,
+                          $identificationRequest->patient->lastName,
+                          $identificationRequest->patient->gender,
+                          $identificationRequest->patient->dateOfBirth);
+
+    $result = sqlite_query($this->db, $sql);
+  }
+
+
+  /**
+   * Saves portal requests
+   *
+   * @param mixed  $identificationRequest
+   * @param string $requestId
+   * @param string $sessionKey
+   */
+  public function persistRequest($identificationRequest, $requestId, $sessionKey) {
+    $sql = sprintf("REPLACE INTO requests(requestId, domainName, firstName, lastName, dateOfBirth, sessionKey)
+                    VALUES(%d, '%s', '%s', '%s', '%s', '%s')",
+                    $requestId,
+                    $identificationRequest->domain,
+                    $identificationRequest->patient->firstName,
+                    $identificationRequest->patient->lastName,
+                    $identificationRequest->patient->dateOfBirth, $sessionKey);  
+
+    $result = sqlite_query($this->db, $sql);
+  }
+
+  /**
+   * Saves session info to the sessions tabl
+   *
+   * @param string
+   * @param string
+   * @retun boolean
+   */
+  public function persistSession($sessionKey, $informationHash, $personId = 0) {
+    $sql = sprintf("INSERT INTO sessions(sessionKey, informationHash, requests, lastAccess, status, personId)
+                    VALUES('%s', '%s', %d, %d, 'Active', %d)",
+                    $sessionKey,
+                    $informationHash,
+                    1,
+                    time(),
+                    (int) $personId);  
+
+    $result = sqlite_query($this->db, $sql);
+  }  
+
+  /**
+   * Updates number of requests and lastAccess
+   *
+   * @param string
+   * @param string
+   * @retun boolean
+   */
+  public function updateSession($request, $status = 'Active') {
+    $sql = sprintf("UPDATE sessions
+                    SET requests = requests + 1, 
+                        lastAccess = %d,
+                        status = '%s'
+                    WHERE sessionKey = '%s' and informationHash = '%s'",
+                    time(),
+                    $status,
+                    $request->sessionKey,
+                    $request->informationHash
+                    );
+
+    $result = sqlite_query($this->db, $sql);
+  }
+
+ 
+  /**
+   * Updates session timeout
+   *
+   * @param object
+   * @param integer
+   * @retun boolean
+   */
+  public function updateSessionTimeout($request, $timeout) {
+    $sql = sprintf("UPDATE sessions
+                    SET timeout = %d 
+                    WHERE sessionKey = '%s' and informationHash = '%s' and timeout = 0",
+                    $timeout,
+                    $request->sessionKey,
+                    $request->informationHash
+                    );
+
+    $result = sqlite_query($this->db, $sql);
+  }
+
+ 
+  /**
+   * Searches for a person record 
+   *
+   * @param array $request
+   */
+  public function searchSessionKey($request, $activeStatusOnly = true) {
+    if ($activeStatusOnly == true) {
+      $sql = sprintf("SELECT *
+                      FROM sessions
+                      WHERE sessionKey ='%s' and informationHash = '%s' 
+                            and status = 'Active'", 
+                            $request->sessionKey, $request->informationHash);  
+    } else {
+       $sql = sprintf("SELECT *
+                      FROM sessions
+                      WHERE sessionKey ='%s' and informationHash = '%s' 
+                            ", 
+                            $request->sessionKey, $request->informationHash);  
+    }
+
+    $result = sqlite_query($this->db, $sql);
+
+    $rows = array();
+    while ($entry = sqlite_fetch_array($result, SQLITE_ASSOC)) {
+      $rows[] = $entry;
+    }
+    return $rows;
+  }
+
+  /**
+   * Searches for  a session record using informationHash
+   *
+   * @param array $request
+   */
+  public function searchSessionByInformationHash($informationHash) {
+    $sql = sprintf("SELECT *
+                    FROM sessions
+                    WHERE informationHash ='%s'
+                    ORDER by sessionId DESC
+                    LIMIT 1
+                        ",
+                        $informationHash);
+
+    $result = sqlite_query($this->db, $sql);
+
+    $rows = array();
+    while ($entry = sqlite_fetch_array($result, SQLITE_ASSOC)) {
+      $rows[] = $entry;
+    }
+    return $rows;
+  }
+
+  /**
+   * Expires sessions
+   *
+   * @param array $request
+   */
+  public function expireSessions() {
+   trigger_error("Expiring sessions.\n");
+   $sql = sprintf("UPDATE sessions 
+                   SET status = 'Ended'
+                   WHERE (%d - lastAccess) > timeout and status = 'Active'
+                    and timeout <> 0
+                   ",
+                   time());
+
+    $result = sqlite_query($this->db, $sql);
+
+  }
+
+  /**
+   * Searches for a request record
+   *
+   * @param array $request
+   */
+  public function searchRequest($sessionKey) {
+    $sql = sprintf("SELECT *
+                    FROM requests
+                    WHERE sessionKey ='%s'",
+                          $sessionKey);
+    $result = sqlite_query($this->db, $sql);
+
+    $rows = array();
+    while ($entry = sqlite_fetch_array($result, SQLITE_ASSOC)) {
+      $rows[] = $entry;
+    }
+    return $rows;
+  }
+
+  
+}
+
+$DB = new chDb();
+ 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+/*  AES implementation in PHP (c) Chris Veness 2005-2010. Right to use and adapt is granted for   */
+/*    under a simple creative commons attribution licence. No warranty of any form is offered.    */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+/**
+ * AES Cipher function: encrypt 'input' with Rijndael algorithm
+ *
+ * @param input message as byte-array (16 bytes)
+ * @param w     key schedule as 2D byte-array (Nr+1 x Nb bytes) - 
+ *              generated from the cipher key by KeyExpansion()
+ * @return      ciphertext as byte-array (16 bytes)
+ */
+function Cipher($input, $w) {    // main Cipher function [§5.1]
+  $Nb = 4;                 // block size (in words): no of columns in state (fixed at 4 for AES)
+  $Nr = count($w)/$Nb - 1; // no of rounds: 10/12/14 for 128/192/256-bit keys
+
+  $state = array();  // initialise 4xNb byte-array 'state' with input [§3.4]
+  for ($i=0; $i<4*$Nb; $i++) $state[$i%4][floor($i/4)] = $input[$i];
+
+  $state = AddRoundKey($state, $w, 0, $Nb);
+
+  for ($round=1; $round<$Nr; $round++) {  // apply Nr rounds
+    $state = SubBytes($state, $Nb);
+    $state = ShiftRows($state, $Nb);
+    $state = MixColumns($state, $Nb);
+    $state = AddRoundKey($state, $w, $round, $Nb);
+  }
+
+  $state = SubBytes($state, $Nb);
+  $state = ShiftRows($state, $Nb);
+  $state = AddRoundKey($state, $w, $Nr, $Nb);
+
+  $output = array(4*$Nb);  // convert state to 1-d array before returning [§3.4]
+  for ($i=0; $i<4*$Nb; $i++) $output[$i] = $state[$i%4][floor($i/4)];
+  return $output;
+}
+
+
+function AddRoundKey($state, $w, $rnd, $Nb) {  // xor Round Key into state S [§5.1.4]
+  for ($r=0; $r<4; $r++) {
+    for ($c=0; $c<$Nb; $c++) $state[$r][$c] ^= $w[$rnd*4+$c][$r];
+  }
+  return $state;
+}
+
+function SubBytes($s, $Nb) {    // apply SBox to state S [§5.1.1]
+  global $Sbox;  // PHP needs explicit declaration to access global variables!
+  for ($r=0; $r<4; $r++) {
+    for ($c=0; $c<$Nb; $c++) $s[$r][$c] = $Sbox[$s[$r][$c]];
+  }
+  return $s;
+}
+
+function ShiftRows($s, $Nb) {    // shift row r of state S left by r bytes [§5.1.2]
+  $t = array(4);
+  for ($r=1; $r<4; $r++) {
+    for ($c=0; $c<4; $c++) $t[$c] = $s[$r][($c+$r)%$Nb];  // shift into temp copy
+    for ($c=0; $c<4; $c++) $s[$r][$c] = $t[$c];         // and copy back
+  }          // note that this will work for Nb=4,5,6, but not 7,8 (always 4 for AES):
+  return $s;  // see fp.gladman.plus.com/cryptography_technology/rijndael/aes.spec.311.pdf 
+}
+
+function MixColumns($s, $Nb) {   // combine bytes of each col of state S [§5.1.3]
+  for ($c=0; $c<4; $c++) {
+    $a = array(4);  // 'a' is a copy of the current column from 's'
+    $b = array(4);  // 'b' is a.{02} in GF(2^8)
+    for ($i=0; $i<4; $i++) {
+      $a[$i] = $s[$i][$c];
+      $b[$i] = $s[$i][$c]&0x80 ? $s[$i][$c]<<1 ^ 0x011b : $s[$i][$c]<<1;
+    }
+    // a[n] ^ b[n] is a.{03} in GF(2^8)
+    $s[0][$c] = $b[0] ^ $a[1] ^ $b[1] ^ $a[2] ^ $a[3]; // 2*a0 + 3*a1 + a2 + a3
+    $s[1][$c] = $a[0] ^ $b[1] ^ $a[2] ^ $b[2] ^ $a[3]; // a0 * 2*a1 + 3*a2 + a3
+    $s[2][$c] = $a[0] ^ $a[1] ^ $b[2] ^ $a[3] ^ $b[3]; // a0 + a1 + 2*a2 + 3*a3
+    $s[3][$c] = $a[0] ^ $b[0] ^ $a[1] ^ $a[2] ^ $b[3]; // 3*a0 + a1 + a2 + 2*a3
+  }
+  return $s;
+}
+
+/**
+ * Key expansion for Rijndael Cipher(): performs key expansion on cipher key
+ * to generate a key schedule
+ *
+ * @param key cipher key byte-array (16 bytes)
+ * @return    key schedule as 2D byte-array (Nr+1 x Nb bytes)
+ */
+function KeyExpansion($key) {  // generate Key Schedule from Cipher Key [§5.2]
+  global $Rcon;  // PHP needs explicit declaration to access global variables!
+  $Nb = 4;              // block size (in words): no of columns in state (fixed at 4 for AES)
+  $Nk = count($key)/4;  // key length (in words): 4/6/8 for 128/192/256-bit keys
+  $Nr = $Nk + 6;        // no of rounds: 10/12/14 for 128/192/256-bit keys
+
+  $w = array();
+  $temp = array();
+
+  for ($i=0; $i<$Nk; $i++) {
+    $r = array($key[4*$i], $key[4*$i+1], $key[4*$i+2], $key[4*$i+3]);
+    $w[$i] = $r;
+  }
+
+  for ($i=$Nk; $i<($Nb*($Nr+1)); $i++) {
+    $w[$i] = array();
+    for ($t=0; $t<4; $t++) $temp[$t] = $w[$i-1][$t];
+    if ($i % $Nk == 0) {
+      $temp = SubWord(RotWord($temp));
+      for ($t=0; $t<4; $t++) $temp[$t] ^= $Rcon[$i/$Nk][$t];
+    } else if ($Nk > 6 && $i%$Nk == 4) {
+      $temp = SubWord($temp);
+    }
+    for ($t=0; $t<4; $t++) $w[$i][$t] = $w[$i-$Nk][$t] ^ $temp[$t];
+  }
+  return $w;
+}
+
+function SubWord($w) {    // apply SBox to 4-byte word w
+  global $Sbox;  // PHP needs explicit declaration to access global variables!
+  for ($i=0; $i<4; $i++) $w[$i] = $Sbox[$w[$i]];
+  return $w;
+}
+
+function RotWord($w) {    // rotate 4-byte word w left by one byte
+  $tmp = $w[0];
+  for ($i=0; $i<3; $i++) $w[$i] = $w[$i+1];
+  $w[3] = $tmp;
+  return $w;
+}
+
+// Sbox is pre-computed multiplicative inverse in GF(2^8) used in SubBytes and KeyExpansion [§5.1.1]
+$Sbox =  array(0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
+               0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,
+               0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15,
+               0x04,0xc7,0x23,0xc3,0x18,0x96,0x05,0x9a,0x07,0x12,0x80,0xe2,0xeb,0x27,0xb2,0x75,
+               0x09,0x83,0x2c,0x1a,0x1b,0x6e,0x5a,0xa0,0x52,0x3b,0xd6,0xb3,0x29,0xe3,0x2f,0x84,
+               0x53,0xd1,0x00,0xed,0x20,0xfc,0xb1,0x5b,0x6a,0xcb,0xbe,0x39,0x4a,0x4c,0x58,0xcf,
+               0xd0,0xef,0xaa,0xfb,0x43,0x4d,0x33,0x85,0x45,0xf9,0x02,0x7f,0x50,0x3c,0x9f,0xa8,
+               0x51,0xa3,0x40,0x8f,0x92,0x9d,0x38,0xf5,0xbc,0xb6,0xda,0x21,0x10,0xff,0xf3,0xd2,
+               0xcd,0x0c,0x13,0xec,0x5f,0x97,0x44,0x17,0xc4,0xa7,0x7e,0x3d,0x64,0x5d,0x19,0x73,
+               0x60,0x81,0x4f,0xdc,0x22,0x2a,0x90,0x88,0x46,0xee,0xb8,0x14,0xde,0x5e,0x0b,0xdb,
+               0xe0,0x32,0x3a,0x0a,0x49,0x06,0x24,0x5c,0xc2,0xd3,0xac,0x62,0x91,0x95,0xe4,0x79,
+               0xe7,0xc8,0x37,0x6d,0x8d,0xd5,0x4e,0xa9,0x6c,0x56,0xf4,0xea,0x65,0x7a,0xae,0x08,
+               0xba,0x78,0x25,0x2e,0x1c,0xa6,0xb4,0xc6,0xe8,0xdd,0x74,0x1f,0x4b,0xbd,0x8b,0x8a,
+               0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e,
+               0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,
+               0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16);
+
+// Rcon is Round Constant used for the Key Expansion [1st col is 2^(r-1) in GF(2^8)] [§5.2]
+$Rcon = array( array(0x00, 0x00, 0x00, 0x00),
+               array(0x01, 0x00, 0x00, 0x00),
+               array(0x02, 0x00, 0x00, 0x00),
+               array(0x04, 0x00, 0x00, 0x00),
+               array(0x08, 0x00, 0x00, 0x00),
+               array(0x10, 0x00, 0x00, 0x00),
+               array(0x20, 0x00, 0x00, 0x00),
+               array(0x40, 0x00, 0x00, 0x00),
+               array(0x80, 0x00, 0x00, 0x00),
+               array(0x1b, 0x00, 0x00, 0x00),
+               array(0x36, 0x00, 0x00, 0x00) ); 
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+/** 
+ * Encrypt a text using AES encryption in Counter mode of operation
+ *  - see http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf
+ *
+ * Unicode multi-byte character safe
+ *
+ * @param plaintext source text to be encrypted
+ * @param password  the password to use to generate a key
+ * @param nBits     number of bits to be used in the key (128, 192, or 256)
+ * @return          encrypted text
+ */
+function AESEncryptCtr($plaintext, $password, $nBits) {
+  $blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
+  if (!($nBits==128 || $nBits==192 || $nBits==256)) return '';  // standard allows 128/192/256 bit keys
+  // note PHP (5) gives us plaintext and password in UTF8 encoding!
+  
+  // use AES itself to encrypt password to get cipher key (using plain password as source for  
+  // key expansion) - gives us well encrypted key
+  $nBytes = $nBits/8;  // no bytes in key
+  $pwBytes = array();
+  for ($i=0; $i<$nBytes; $i++) $pwBytes[$i] = ord(substr($password,$i,1)) & 0xff;
+  $key = Cipher($pwBytes, KeyExpansion($pwBytes));
+  $key = array_merge($key, array_slice($key, 0, $nBytes-16));  // expand key to 16/24/32 bytes long 
+
+  // initialise counter block (NIST SP800-38A §B.2): millisecond time-stamp for nonce in 
+  // 1st 8 bytes, block counter in 2nd 8 bytes
+  $counterBlock = array();
+  $nonce = floor(microtime(true)*1000);   // timestamp: milliseconds since 1-Jan-1970
+  $nonceSec = floor($nonce/1000);
+  $nonceMs = $nonce%1000;
+  // encode nonce with seconds in 1st 4 bytes, and (repeated) ms part filling 2nd 4 bytes
+  for ($i=0; $i<4; $i++) $counterBlock[$i] = urs($nonceSec, $i*8) & 0xff; 
+  for ($i=0; $i<4; $i++) $counterBlock[$i+4] = $nonceMs & 0xff;
+  // and convert it to a string to go on the front of the ciphertext
+  $ctrTxt = '';
+  for ($i=0; $i<8; $i++) $ctrTxt .= chr($counterBlock[$i]);
+
+  // generate key schedule - an expansion of the key into distinct Key Rounds for each round
+  $keySchedule = KeyExpansion($key);
+  
+  $blockCount = ceil(strlen($plaintext)/$blockSize);
+  $ciphertxt = array();  // ciphertext as array of strings
+  
+  for ($b=0; $b<$blockCount; $b++) {
+    // set counter (block #) in last 8 bytes of counter block (leaving nonce in 1st 8 bytes)
+    // done in two stages for 32-bit ops: using two words allows us to go past 2^32 blocks (68GB)
+    for ($c=0; $c<4; $c++) $counterBlock[15-$c] = urs($b, $c*8) & 0xff;
+    for ($c=0; $c<4; $c++) $counterBlock[15-$c-4] = urs($b/0x100000000, $c*8);
+
+    $cipherCntr = Cipher($counterBlock, $keySchedule);  // -- encrypt counter block --
+
+    // block size is reduced on final block
+    $blockLength = $b<$blockCount-1 ? $blockSize : (strlen($plaintext)-1)%$blockSize+1;
+    $cipherByte = array();
+    
+    for ($i=0; $i<$blockLength; $i++) {  // -- xor plaintext with ciphered counter byte-by-byte --
+      $cipherByte[$i] = $cipherCntr[$i] ^ ord(substr($plaintext, $b*$blockSize+$i, 1));
+      $cipherByte[$i] = chr($cipherByte[$i]);
+    }
+    $ciphertxt[$b] = implode('', $cipherByte);  // escape troublesome characters in ciphertext
+  }
+
+  // implode is more efficient than repeated string concatenation
+  $ciphertext = $ctrTxt . implode('', $ciphertxt);
+  $ciphertext = base64_encode($ciphertext);
+  return $ciphertext;
+}
+
+
+/** 
+ * Decrypt a text encrypted by AES in counter mode of operation
+ *
+ * @param ciphertext source text to be decrypted
+ * @param password   the password to use to generate a key
+ * @param nBits      number of bits to be used in the key (128, 192, or 256)
+ * @return           decrypted text
+ */
+function AESDecryptCtr($ciphertext, $password, $nBits) {
+  $blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
+  if (!($nBits==128 || $nBits==192 || $nBits==256)) return '';  // standard allows 128/192/256 bit keys
+  $ciphertext = base64_decode($ciphertext);
+
+  // use AES to encrypt password (mirroring encrypt routine)
+  $nBytes = $nBits/8;  // no bytes in key
+  $pwBytes = array();
+  for ($i=0; $i<$nBytes; $i++) $pwBytes[$i] = ord(substr($password,$i,1)) & 0xff;
+  $key = Cipher($pwBytes, KeyExpansion($pwBytes));
+  $key = array_merge($key, array_slice($key, 0, $nBytes-16));  // expand key to 16/24/32 bytes long
+  
+  // recover nonce from 1st element of ciphertext
+  $counterBlock = array();
+  $ctrTxt = substr($ciphertext, 0, 8);
+  for ($i=0; $i<8; $i++) $counterBlock[$i] = ord(substr($ctrTxt,$i,1));
+  
+  // generate key schedule
+  $keySchedule = KeyExpansion($key);
+
+  // separate ciphertext into blocks (skipping past initial 8 bytes)
+  $nBlocks = ceil((strlen($ciphertext)-8) / $blockSize);
+  $ct = array();
+  for ($b=0; $b<$nBlocks; $b++) $ct[$b] = substr($ciphertext, 8+$b*$blockSize, 16);
+  $ciphertext = $ct;  // ciphertext is now array of block-length strings
+
+  // plaintext will get generated block-by-block into array of block-length strings
+  $plaintxt = array();
+  
+  for ($b=0; $b<$nBlocks; $b++) {
+    // set counter (block #) in last 8 bytes of counter block (leaving nonce in 1st 8 bytes)
+    for ($c=0; $c<4; $c++) $counterBlock[15-$c] = urs($b, $c*8) & 0xff;
+    for ($c=0; $c<4; $c++) $counterBlock[15-$c-4] = urs(($b+1)/0x100000000-1, $c*8) & 0xff;
+
+    $cipherCntr = Cipher($counterBlock, $keySchedule);  // encrypt counter block
+
+    $plaintxtByte = array();
+    for ($i=0; $i<strlen($ciphertext[$b]); $i++) {
+      // -- xor plaintext with ciphered counter byte-by-byte --
+      $plaintxtByte[$i] = $cipherCntr[$i] ^ ord(substr($ciphertext[$b],$i,1));
+      $plaintxtByte[$i] = chr($plaintxtByte[$i]);
+    
+    }
+    $plaintxt[$b] = implode('', $plaintxtByte); 
+  }
+
+  // join array of blocks into single plaintext string
+  $plaintext = implode('',$plaintxt);
+  
+  return $plaintext;
+}
+
+
+/*
+ * Unsigned right shift function, since PHP has neither >>> operator nor unsigned ints
+ *
+ * @param a  number to be shifted (32-bit integer)
+ * @param b  number of bits to shift a to the right (0..31)
+ * @return   a right-shifted and zero-filled by b bits
+ */
+function urs($a, $b) {
+  $a &= 0xffffffff; $b &= 0x1f;  // (bounds check)
+  if ($a&0x80000000 && $b>0) {   // if left-most bit set
+    $a = ($a>>1) & 0x7fffffff;   //   right-shift one bit & clear left-most bit
+    $a = $a >> ($b-1);           //   remaining right-shifts
+  } else {                       // otherwise
+    $a = ($a>>$b);               //   use normal right-shift
+  } 
+  return $a; 
+}
+
+/**
+ *
+ *
+ */
+function generateResponse($sessionKey, $data = null)
+{
+    $xml  = "<?xml version=\"1.0\"?>\n";
+    $xml .= "<chResponse type=\"identificationResponse\">\n";
+    
+    if (isset($sessionKey['salt'])) {
+      $xml .= "<salt>" . $sessionKey['salt'] . "</salt>\n";
+    }
+
+    if (isset($sessionKey['iteration'])) {
+      $xml .= "<iteration>" . $sessionKey['iteration'] . "</iteration>\n";  
+    }
+
+    if (!is_null($data)) {
+      foreach ($data as $key => $value) {
+        $xml .= "<$key>$value</$key>\n";
+      }
+    }
+    $xml .= "</chResponse>\n";
+
+    $newaeskey = exec("/usr/bin/openssl rand -base64 32");
+
+    $cipher = AESEncryptCtr($xml, $newaeskey, 256);
+
+    return array('data' => $xml, 'cipher' => $cipher, 'aesKey' =>$newaeskey);
+}
+
+
+/**
+ *
+ *
+ */
+function generateCcdResponse($sessionKey, $data = null, $sessionKey = '')
+{
+    global $DB;
+    $xml  = "<?xml version=\"1.0\"?>\n";
+    $xml .= "<chResponse type=\"identificationResponse\">\n";
+
+    if (!is_null($data)) {
+      foreach ($data as $key => $value) {
+        $xml .= "<$key>$value</$key>\n";
+      }
+    }
+
+    $xmlFile = '';
+
+    if (strlen($sessionKey) > 0) {
+      $request = $DB->searchRequest($sessionKey);
+	$file = '';
+      if ($request) {
+        $lastName = $request[0]['lastName'];
+	$file = $request[0]['lastName'].'-'.$request[0]['firstName'].'-'.date('Y-m-d',strtotime($request[0]['dateOfBirth']));
+        echo "lastname: " . $lastName . "\n";
+      }
+	$filename = '/tmp/ccd-'.$file.'.xml';
+	if (file_exists($filename)) {
+		$xmlFile = file_get_contents($filename);
+	}
+    }
+ 
+    $xml .= $xmlFile;
+    $xml .= "</chResponse>\n";
+
+    $newaeskey = exec("/usr/bin/openssl rand -base64 32");
+    $cipher = AESEncryptCtr($xml, $newaeskey, 256);
+    return array('data' => $xml, 'cipher' => $cipher, 'aesKey' =>$newaeskey);
+}
+
+
+
+/** 
+ * Send a POST requst using cURL 
+ * @param string $url to request 
+ * @param array $post values to send 
+ * @param array $options for cURL 
+ * @return string 
+ */ 
+function curl_post($url, array $post = NULL, array $options = array()) 
+{ 
+    $defaults = array( 
+        CURLOPT_POST => 1, 
+        CURLOPT_HEADER => 0,
+        CURLOPT_URL => $url, 
+        CURLOPT_FRESH_CONNECT => 1, 
+        CURLOPT_RETURNTRANSFER => 1, 
+        CURLOPT_FORBID_REUSE => 1, 
+        //CURLOPT_VERBOSE => TRUE,
+        CURLOPT_TIMEOUT => 4, 
+        CURLOPT_SSL_VERIFYPEER => FALSE,
+        CURLOPT_SSL_VERIFYHOST => FALSE,
+        CURLOPT_POSTFIELDS => http_build_query($post) 
+    ); 
+
+    $ch = curl_init(); 
+    curl_setopt_array($ch, ($options + $defaults)); 
+    $result = curl_exec($ch);
+	if (curl_errno($ch)) {
+	}
+    curl_close($ch); 
+    return $result; 
+} 
+
+/** 
+ * Send a GET requst using cURL 
+ * @param string $url to request 
+ * @param array $get values to send 
+ * @param array $options for cURL 
+ * @return string 
+ */ 
+function curl_get($url, array $get = NULL, array $options = array()) 
+{    
+    $defaults = array( 
+        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get), 
+        CURLOPT_HEADER => 0,
+        CURLOPT_SSL_VERIFYPEER => FALSE, 
+        CURLOPT_SSL_VERIFYHOST => FALSE, 
+        CURLOPT_RETURNTRANSFER => TRUE, 
+        CURLOPT_TIMEOUT => 4 
+    ); 
+    
+    $ch = curl_init(); 
+    curl_setopt_array($ch, ($options + $defaults)); 
+    if( ! $result = curl_exec($ch)) 
+    { 
+        trigger_error(curl_error($ch)); 
+    } 
+    curl_close($ch); 
+    return $result; 
+} 
+
+$privateKey =
+'-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQDYdEbbPQJXF964Tpidlo0RGX/+BVIPtu2eW3Jc2xZ2eCb3kT6l
+ROONwD69DOl5l45NSycE/3TqiJYl4gGo1jc6n4gj+1xvpvkVWLe6OzaYUaFr08G9
+cMqqWlvy8v89OdyhspdUsnhRRG0wY9NuL+wF9v04gjtYiH1X7ylR8VkCvwIDAQAB
+AoGAettUtG+memSUB6yktx2SqBf/K+E9OKotqOpiuQ2pbEi6ZV5NXmUBe52Yfplr
+k5ZQMNLtLMsKQ2yPPKVRJ9Geul2pdzNB9VPTH18Vyv4y+KWtC0o782XxnqxH+ARM
+hBHWgWYVeed+22FxjQyG7eFt9wBG0PCNySK8O/BWMmcJwqECQQD71yqdTzgtn/3o
+RHW6HzRioUAayZnljONfqmEm5BWrhMTIn3VFswDNV4XJm/yb9kJYbglYbJuAVSNw
+B6MiYlsJAkEA3Ad9Y3BwS0a1SROiLu7nciXdPoA2zPxdmfRdc0S0vx6Ybt6BZSPh
+yQs+WLoMlnPQRFmiGTsCdG4w+BOVTwY5hwJAA/c3bJK6x70lOmsZj3y+Tm9LmyBh
+lAPL8M22Ce69iJ3mm2InbpmLAbDHIo2aRLp0AQB6lTHgoPy2OiVkpD34QQJAWdop
+J1GEWgk/AN+mrHndRC0YQ2zCdEVex/8VpnvZP+7zmtr8hlv32UzhIgSgHVSgKTld
+S+ZgI0HYd4Yvw/yrwwJBAO73zFtlYd/mf4eQu8GOJsQltSRSbgWwjAeggtU2bl7O
+zdPRGM7X5pabe9YYlgEZTDjQYn6lwUu8H7cajwL43Yw=
+-----END RSA PRIVATE KEY-----';
+
+
+/** PBKDF2 Implementation (described in RFC 2898)
+ *
+ *  @param string p password
+ *  @param string s salt
+ *  @param int c iteration count (use 1000 or higher)
+ *  @param int kl derived key length
+ *  @param string a hash algorithm
+ *
+ *  @return string derived key
+ */
+function pbkdf2( $p, $s, $c, $kl, $a = 'sha256' ) {
+  $hl = strlen(hash($a, null, true)); # Hash length
+  $kb = ceil($kl / $hl);              # Key blocks to compute
+  $dk = '';                           # Derived key
+  # Create key
+  for ( $block = 1; $block <= $kb; $block ++ ) {
+    # Initial hash for this block
+    $ib = $b = hash_hmac($a, $s . pack('N', $block), $p, true);
+    # Perform block iterations
+    for ( $i = 1; $i < $c; $i ++ )
+      # XOR each iterate
+      $ib ^= ($b = hash_hmac($a, $b, $p, true));
+    $dk .= $ib; # Append iterated block
+  }
+  # Return derived key of correct length
+  return substr($dk, 0, $kl);
+}
+
+
+function convert_modulus_to_pem($n, $e = "10001")
+{
+  $n = str_replace("\n", "", $n);
+  $CONF = <<<CONF
+# Start with a SEQUENCE
+asn1=SEQUENCE:pubkeyinfo
+# pubkeyinfo contains an algorithm identifier and the public key wrapped
+# in a BIT STRING
+[pubkeyinfo]
+algorithm=SEQUENCE:rsa_alg
+pubkey=BITWRAP,SEQUENCE:rsapubkey
+# algorithm ID for RSA is just an OID and a NULL
+[rsa_alg]
+algorithm=OID:rsaEncryption
+parameter=NULL
+# Actual public key: modulus and exponent
+[rsapubkey]
+n=INTEGER:0x$n
+e=INTEGER:0x$e
+CONF;
+
+  $tempconf = tempnam("/tmp", "conf");
+  $tempder  = tempnam("/tmp", "der");
+
+  file_put_contents($tempconf, $CONF);
+  $cmd = sprintf("/usr/bin/openssl asn1parse -genconf %s -noout -out %s 1>/dev/null 2>/dev/null",
+                 $tempconf,
+                 $tempder);
+  exec($cmd);
+  $temppem = tempnam("/tmp", "pem");
+  $cmd = sprintf("/usr/bin/openssl rsa -in %s -inform DER -pubin -out %s 1>/dev/null 2>/dev/null ",
+                 $tempder,
+                 $temppem);
+
+  exec($cmd);
+
+  $pem = file_get_contents($temppem);
+
+  unlink($tempconf);
+  unlink($tempder);
+  unlink($temppem);
+
+  return $pem;
+}
+
+function strToHex($string)
+{
+  $hex='';
+  for ($i=0; $i < strlen($string); $i++)
+  {
+      $hex .= dechex(ord($string[$i]));
+  }
+  return $hex;
+}
+
+/**
+ * Removes == from the session key
+ *
+ *
+ */
+function base64clean($base64string) {
+  $base64string = str_replace(array('=','+','/'),'',$base64string);
+  return $base64string;
+} 
+
+/**
+ * Generates session key for the patient
+ *
+ *
+ *
+ */
+function generateSessionKey() {
+  $password = exec("/usr/bin/openssl rand -base64 6", $out);
+
+  // @todo replace with a more secure random generator 
+  $salt = mt_rand();
+
+  $sessionKey['sessionKey'] = base64clean(base64_encode(pbkdf2($password, $salt, 1000, 4)));  
+  $sessionKey['salt'] = $salt;
+  $sessionKey['iteration'] = 1000;
+  return $sessionKey;
+}
+
+/**
+ *
+ *
+ *
+ */
+function requestSendCannotDecryptMessage($domainName, $requestId) {
+    global $portalServer;
+
+    $status = curl_post($portalServer . "30/request-queue/update-request",
+                         array("domainName" => (string) $domainName,
+                               "requestId" => $requestId,
+                               "status"  => "CANNOT_DECRYPT" ));
+
+}
+
+function requestUpdateStatus($domainName, $requestId, $status = 'PICKED_UP', $data = null) {
+  global $portalServer;
+
+  $responseData = array("domainName" => (string) $domainName,
+                        "requestId" => $requestId,
+                        "status" => $status);
+  if (!is_null($data)) {
+    foreach ($data as $key => $value) {
+      $responseData["$key"] = $value;
+    }
+  }
+  $status = curl_post($portalServer . "30/request-queue/update-request",
+                      $responseData);
+
+  return $status;                    
+}
+
+/// Entry point
+
+if (!isset($argv[1])) {
+  trigger_error("Missing IP address server param\n");
+  exit(1);
+}
+
+ini_set("max_execution_time", "0");
+ini_set("max_input_time", "0");
+set_time_limit(0);
+
+$portalServer = "https://" . $argv[1] . "/";
+
+declare(ticks=1);
+$pid = pcntl_fork();
+if ($pid == -1) {
+  die("could not fork");
+} else if ($pid) {
+  exit(); // we are the parent
+} else {
+  // we are the child
+}
+
+// detatch from the controlling terminal
+if (posix_setsid() == -1) {
+  die("could not detach from terminal");
+}
+
+$posid=posix_getpid();
+
+$fp = fopen("/var/run/pickupdaemon.pid", "w");
+fwrite($fp, $posid);
+fclose($fp);
+// setup signal handlers
+pcntl_signal(SIGTERM, "sig_handler");
+pcntl_signal(SIGHUP, "sig_handler");
+// loop forever performing tasks
+
+$VERBOSE = true;
+$SLEEPTIME = 5;
+
+$SESSIONTIMEOUT = 30 * 86400;
+
+while (1) {
+  trigger_error("Getting request from " . $portalServer . '30/request-queue/get-requests' . "\n");
+
+  $DB->expireSessions();
+
+  $str = @file_get_contents($portalServer . '30/request-queue/get-requests');
+  if ($str) {
+    $json = json_decode($str);
+
+    // We'll process 1 row for now
+    if (!isset($json->rows[0])) {
+      trigger_error("No requests for pickup.\n");
+      trigger_error("Sleeping for $SLEEPTIME seconds \n");
+      sleep($SLEEPTIME);
+      continue;
+    }
+
+    $data = $json->rows[0];
+
+    if (isset($data->requestId)) {
+      trigger_error("Updating status of " . $data->domainName . " to PICKED_UP.\n");
+      requestUpdateStatus($data->domainName, $data->requestId, 'PICKED_UP');
+    }
+
+    // Decrypt the AES Key
+    trigger_error("Decypting request using associated private key\n");
+    $status = openssl_private_decrypt(base64_decode($data->aesKey), $decrypted, $privateKey);
+    if (false == $status) {
+      requestSendCannotDecryptMessage($data->domainName, $data->requestId);
+      exit(0);          
+    }
+
+    // Open the XML IndentificationRequest
+    trigger_error("Decrypting request of " .  $data->domainName . "\n");
+    $testDecrypt = AESDecryptCtr($data->identificationRequest, $decrypted, 256);
+    trigger_error("\n" . $testDecrypt . "\n");
+    $identificationRequest = simplexml_load_string($testDecrypt);
+
+    switch ($data->type) {
+    case "Identification Request": 
+      trigger_error("Parsing Identification request XML\n");  
+      trigger_error("\nDomain:" . $identificationRequest->domain . "\n");
+      trigger_error("PublicKey:" . $identificationRequest->publicKey . "\n");
+      trigger_error("Patient Firstname:" . $identificationRequest->patient->firstName . "\n");
+      trigger_error("Lastname:" . $identificationRequest->patient->lastName . "\n");
+      trigger_error("Gender:" . $identificationRequest->patient->gender . "\n");
+      trigger_error("Date of Birth:" . $identificationRequest->patient->dateOfBirth . "\n");
+      /// Search for patient record 
+
+      $persons = $DB->searchPerson($identificationRequest);
+      
+      if (count($persons) == 1) {
+        // Responses: In the identification request that is recieved by the clearhealth 
+        // system a public key is included, this key is used in the same manner as 
+        // for requests to encrypt the response, first the clearhealth system constructs 
+        // the XML response, then it encrypts it using AES256, then encrypts that key 
+        // with the public key found in the identification request.
+
+        $sessionKey = generateSessionKey();
+        trigger_error("Session Key generated:" . $sessionKey['sessionKey'] . "\n");
+        $DB->persistRequest($identificationRequest, $data->requestId, $sessionKey['sessionKey']);
+        $forHash = $identificationRequest->patient->firstName . 
+                   $identificationRequest->patient->lastName .
+                   $identificationRequest->patient->gender .     
+                   $identificationRequest->patient->dateOfBirth;
+                   
+        $DB->persistSession($sessionKey['sessionKey'], hash('sha256', $forHash), $persons[0]['personId']);
+        
+        $status =  'SESSION_KEY_GENERATED';  
+        $response = generateResponse($sessionKey, array('status' => $status));
+        $returnData['mobileNumber'] = $persons[0]['mobileNumber'];
+        $returnData['sessionKey']   = $sessionKey['sessionKey'];
+        $returnData['phoneNumber'] = $persons[0]['phoneNumber'];
+	$personId = (int)$persons[0]['personId'];
+	$note = new PatientNote();
+	$note->patientId = $personId;
+	//$note->userId = (int)Zend_Auth::getInstance()->getIdentity()->personId;
+	$note->userId = (int)Zend_Registry::get('user')->personId;
+	$note->priority = 5;
+	$note->noteDate = date('Y-m-d H:i:s');
+	$note->note = "Portal request: the notification went out via call or txt and security code is {$sessionKey['sessionKey']}";
+	$note->active = 1;
+	$note->persist();
+
+        sleep(3);
+      } elseif (count($persons) == 0) {
+        trigger_error("No matching record in CH3\n");
+        $status = 'DROPPED';
+        $response = generateResponse(null, array("status" => "No matching records found"));
+
+      } elseif (count($persons) > 1) {
+        trigger_error("Multiple matching records found in CH3\n");
+        var_dump($persons);
+        $status = "DROPPED";
+        $response = generateResponse(null, array("status" => "Multiple matching records found"));
+      }
+
+      $irPublicKey = (string) $identificationRequest->publicKey;
+      // Encrypt here using public key from the request
+      $publicKeyPem = convert_modulus_to_pem($irPublicKey);
+      trigger_error("Modulus: " . $irPublicKey . "\n");
+      trigger_error("AES Key to be encrypted:" . $response['aesKey'] . "\n");
+      $encryptStatus = openssl_public_encrypt($response['aesKey'], $encryptedAes, $publicKeyPem);
+      trigger_error($publicKeyPem . "\n");
+      if (false === $encryptStatus) {
+        trigger_error("Failed to encrypt aesKey using public key\n");
+      } 
+
+      $returnData['data'] = $response['cipher'];
+      $returnData['key']  = base64_encode($encryptedAes);
+      trigger_error("encrypted aeskey:" . $returnData['key'] . "\n");
+      $curlstatus = requestUpdateStatus($data->domainName, $data->requestId, $status, $returnData);
+      trigger_error("Reply from portal\n");
+      echo $curlstatus;
+      break;
+    case "Portal Information Summary": 
+      trigger_error("Parsing Portal Information Summary request XML\n");  
+      //print_r($identificationRequest);
+      trigger_error("\nDomain:" . $identificationRequest->domain . "\n");
+      trigger_error("PublicKey:" . $identificationRequest->publicKey . "\n");
+      trigger_error("Session Key:" . $identificationRequest->sessionKey . "\n");
+
+      $persons = $DB->searchSessionKey($identificationRequest);
+
+      if (count($persons) == 1) {
+        $status = 'SESSION_KEY_MATCHED';
+        $DB->updateSession($identificationRequest); 
+        if (isset($identificationRequest->excludeCcd)) { 
+          $response = generateResponse($identificationRequest->sessionKey, array('status' => $status));
+        } else {
+          $response = generateCcdResponse($identificationRequest->sessionKey, array('status' => $status), $identificationRequest->sessionKey);
+        }
+
+        if (isset($identificationRequest->saveSessionKey)) {
+          $DB->updateSessionTimeout($identificationRequest, 2592000);
+        } else {
+          $DB->updateSessionTimeout($identificationRequest, 900);
+        }
+
+        trigger_error("Session key " . $identificationRequest->sessionKey  ." matched\n");
+      } else {
+        $status = 'SESSION_KEY_MISMATCH';
+        $response = generateResponse($identificationRequest->sessionKey, array('status' => $status));
+        trigger_error("SessionKey " . $identificationRequest->sessionKey  ." not found\n");
+      }
+
+      $irPublicKey = (string) $identificationRequest->publicKey;
+      // Encrypt here using public key from the request
+      $publicKeyPem = convert_modulus_to_pem($irPublicKey);
+      trigger_error("Modulus: " . $irPublicKey . "\n");
+      trigger_error("AES Key to be encrypted:" . $response['aesKey'] . "\n");
+      $encryptStatus = openssl_public_encrypt($response['aesKey'], $encryptedAes, $publicKeyPem);
+      trigger_error($publicKeyPem . "\n");
+      if (false === $encryptStatus) {
+        trigger_error("Failed to encrypt aesKey using public key\n");
+        //continue;
+      } 
+      trigger_error("\n" . $response['data'] . "\n");
+      $returnData['data'] = $response['cipher'];
+      $returnData['key']  = base64_encode($encryptedAes);
+      //$returnData['key']  = $response['aesKey'];
+      trigger_error("encrypted aeskey:" . $returnData['key'] . "\n");
+      $curlstatus = requestUpdateStatus($data->domainName, $data->requestId, $status, $returnData);
+      trigger_error("Reply from portal\n");
+      echo $curlstatus;
+      break;
+    case "Lock Account": 
+      trigger_error("Parsing Lock Account request XML\n");  
+      trigger_error("\nDomain:" . $identificationRequest->domain . "\n");
+      trigger_error("PublicKey:" . $identificationRequest->publicKey . "\n");
+      trigger_error("Session Key:" . $identificationRequest->sessionKey . "\n");
+
+      $DB->lockPerson($identificationRequest);
+
+      $status = 'LOCKED_ACCOUNT';
+      $DB->updateSession($identificationRequest); 
+      $response = generateResponse($identificationRequest->sessionKey, array('status' => $status));
+
+      $irPublicKey = (string) $identificationRequest->publicKey;
+      $publicKeyPem = convert_modulus_to_pem($irPublicKey);
+      trigger_error("Modulus: " . $irPublicKey . "\n");
+      trigger_error("AES Key to be encrypted:" . $response['aesKey'] . "\n");
+      $encryptStatus = openssl_public_encrypt($response['aesKey'], $encryptedAes, $publicKeyPem);
+      trigger_error($publicKeyPem . "\n");
+      if (false === $encryptStatus) {
+        trigger_error("Failed to encrypt aesKey using public key\n");
+        //continue;
+      } 
+      trigger_error("\n" . $response['data'] . "\n");
+      $returnData['data'] = $response['cipher'];
+      $returnData['key']  = base64_encode($encryptedAes);
+      //$returnData['key']  = $response['aesKey'];
+      trigger_error("encrypted aeskey:" . $returnData['key'] . "\n");
+      $curlstatus = requestUpdateStatus($data->domainName, $data->requestId, $status, $returnData);
+      trigger_error("Reply from portal\n");
+      echo $curlstatus;
+      break;
+    case "End Session":
+      trigger_error("Parsing End Session request XML\n");
+      trigger_error("\nDomain:" . $identificationRequest->domain . "\n");
+      trigger_error("PublicKey:" . $identificationRequest->publicKey . "\n");
+      trigger_error("Session Key:" . $identificationRequest->sessionKey . "\n");
+
+      $persons = $DB->searchSessionKey($identificationRequest, false);
+
+      if (count($persons) == 1) {
+        $status = 'SESSION_ENDED';
+        $DB->updateSession($identificationRequest, 'Ended');
+        $response = generateResponse($identificationRequest->sessionKey, array('status' => $status));
+        trigger_error("Session key " . $identificationRequest->sessionKey  ." ended\n");
+      }
+
+      $irPublicKey = (string) $identificationRequest->publicKey;
+      // Encrypt here using public key from the request
+      $publicKeyPem = convert_modulus_to_pem($irPublicKey);
+      trigger_error("Modulus: " . $irPublicKey . "\n");
+      trigger_error("AES Key to be encrypted:" . $response['aesKey'] . "\n");
+      $encryptStatus = openssl_public_encrypt($response['aesKey'], $encryptedAes, $publicKeyPem);
+      trigger_error($publicKeyPem . "\n");
+      if (false === $encryptStatus) {
+        trigger_error("Failed to encrypt aesKey using public key\n");
+      }
+      trigger_error("\n" . $response['data'] . "\n");
+      $returnData['data'] = $response['cipher'];
+      $returnData['key']  = base64_encode($encryptedAes);
+      trigger_error("encrypted aeskey:" . $returnData['key'] . "\n");
+      $curlstatus = requestUpdateStatus($data->domainName, $data->requestId, $status, $returnData);
+      trigger_error("Reply from portal\n");
+      echo $curlstatus;
+      break;
+    case "Send Notification":
+      trigger_error("Parsing Send Notification request XML\n");
+      trigger_error("\nDomain:" . $identificationRequest->domain . "\n");
+      trigger_error("PublicKey:" . $identificationRequest->publicKey . "\n");
+      trigger_error("Session Key:" . $identificationRequest->sessionKey . "\n");
+
+      $pSessions = $DB->searchSessionByInformationHash($identificationRequest->informationHash);
+
+      $persons = $DB->searchPersonById($pSessions[0]['personId']);
+
+      trigger_error("Sending notification to " . $persons[0]['mobileNumber'] . "  " . $pSessions[0]['sessionKey']. "\n");
+      $status = "SESSION_KEY_SENT";
+      $response = generateResponse($identificationRequest->sessionKey, array('status' => $status));
+      $irPublicKey = (string) $identificationRequest->publicKey;
+      $publicKeyPem = convert_modulus_to_pem($irPublicKey);
+      $encryptStatus = openssl_public_encrypt($response['aesKey'], $encryptedAes, $publicKeyPem);
+      trigger_error($publicKeyPem . "\n");
+      if (false === $encryptStatus) {
+        trigger_error("Failed to encrypt aesKey using public key\n");
+      }
+      trigger_error("\n" . $response['data'] . "\n");
+      $returnData['data'] = $response['cipher'];
+      $returnData['key']  = base64_encode($encryptedAes);
+      trigger_error("encrypted aeskey:" . $returnData['key'] . "\n");
+      $curlstatus = requestUpdateStatus($data->domainName, $data->requestId, $status, $returnData);
+      trigger_error("Reply from portal\n");
+      echo $curlstatus;
+
+
+      break;
+
+    default:
+
+    }      
+  }        
+  //
+  sleep($SLEEPTIME);  
+}
+fclose($fp);
+
+function sig_handler($signo)
+{
+  switch ($signo) {
+  case SIGTERM:
+    // handle shutdown tasks
+    exit;
+    break;
+  case SIGHUP:
+    // handle restart tasks
+    break;
+  default:
+    // handle all other signals
+  }
+}
+
+
+

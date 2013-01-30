@@ -1,0 +1,22 @@
+<div id="vitals_container" style="width:99%;height:auto;"></div>
+                                <script>
+                                        vcGrid = new dhtmlXGridObject('vitals_container');
+                                        vcGrid.setImagePath("../img/");
+                                        vcGrid.setHeader("Vital,English, Metric, Date");
+                                        vcGrid.setInitWidths("55,*,*,*");
+                                        vcGrid.setColAlign("left");
+                                        vcGrid.setSkin("xp");
+                                        var testdata=[
+                                                ["T","98.6","(37.0 C)", "08/04/2008 15:02:00"],
+                                                ["P","112","", "08/04/2008 15:02:00"],
+                                                ["R","18","", "08/04/2008 15:02:00"],
+                                                ["BP","120/80","", "08/04/2008 15:02:00"],
+                                                ["HT","65","(165.1 cm)", "08/04/2008 15:02:00"],
+                                                ["WT","128.15","(58.128)", "08/04/2008 15:02:00"],
+                                                ["PN","2","", "08/04/2008 15:02:00"],
+                                                ["GLU","6.15","", "08/04/2008 15:02:00"]
+                                        ]
+                                        vcGrid.init();
+                                        vcGrid.parse(testdata,'jsarray');
+                                        
+                                </script>

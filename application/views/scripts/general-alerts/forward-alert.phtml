@@ -1,0 +1,119 @@
+<div style="float:left;">
+	<?=$this->form->renderOpen()?>
+	<fieldset><legend><?=$this->form->message->getValue()?></legend>
+	<div class="formRow">
+		<?=$this->form->comment->renderLabel()?>
+		<?=$this->form->commentInput('FormTextarea',array('style'=>'width:550px;height:80px;'))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div style="float:left;width:200px;">
+			<?=__('Select one or more names to receive forwarded alert')?><br />
+		</div>
+		<div style="float:left;width:100px;margin-left:10px;">&nbsp;</div>
+		<div style="float:left;width:200px;margin-left:10px;">
+			<?=__('Currently selected recipients')?><br />
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<div style="float:left;width:200px;">
+			<div id="availRecipientsGridId" style="width:200px;height:150px;"></div>
+		</div>
+		<div style="float:left;width:100px;margin:30px 0 0 10px;">
+			<input type="button" value="<?=__('Add')?>" style="width:100px;" onClick="gaAddToList()" /><br />
+			<input type="button" value="<?=__('Remove')?>" style="width:100px;" onClick="gaRemoveFromList()" /><br /><br />
+		</div>
+		<div style="float:left;width:200px;margin-left:10px;">
+			<div id="selRecipientsGridId" style="width:200px;height:150px;"></div>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;float:right;">
+		<?=$this->formHidden('recipients',null,array('id'=>'recipients'))?>
+		<?=$this->form->generalAlertIdInput('FormHidden')?>
+		<?=$this->form->okInput()?>
+		<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("'.$this->form->getWindow().'").close()'))?>
+	</div>
+	</fieldset>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	var recipients = dojo.byId("recipients");
+	gaRecipients = [];
+	selRecipientGrid.forEachRow(function(rowId){
+		gaRecipients.push(rowId);
+	});
+	if (!gaRecipients.length > 0) {
+		alert("<?=__('Please select at least one recipient')?>");
+		return false;
+	}
+	recipients.value = gaRecipients.join(",");
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+<?if ($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		window.<?=$this->jsCallback?>(data);
+	}
+<?endif;?>
+	return false;
+}
+
+function gaAddToList() {
+	var rowId = availRecipientGrid.getSelectedRowId();
+	if (rowId == null) {
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		if (selRecipientGrid.doesRowExist(rowIds[i])) {
+			continue;
+		}
+		selRecipientGrid.addRow(rowIds[i],"");
+		selRecipientGrid.cells(rowIds[i],0).setValue(availRecipientGrid.cells(rowIds[i],0).getValue());
+	}
+}
+
+function gaRemoveFromList() {
+	var rowId = selRecipientGrid.getSelectedRowId();
+	if (rowId == null) {
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		if (!selRecipientGrid.doesRowExist(rowIds[i])) {
+			continue;
+		}
+		selRecipientGrid.deleteRow(rowIds[i]);
+	}
+}
+
+availRecipientGrid = new dhtmlXGridObject("availRecipientsGridId");
+availRecipientGrid.setImagePath("<?=$this->baseUrl?>/img/");
+availRecipientGrid.setHeader("");
+availRecipientGrid.setNoHeader(true);
+availRecipientGrid.selMultiRows = true;
+availRecipientGrid.setInitWidths("*");
+availRecipientGrid.setColTypes("ro");
+availRecipientGrid.setSkin("xp");
+availRecipientGrid.init();
+<?foreach ($this->providers as $personId=>$displayName):?>
+availRecipientGrid.addRow("<?=$personId?>","");
+availRecipientGrid.cells("<?=$personId?>",0).setValue("<?=$displayName?>");
+<?endforeach?>
+
+selRecipientGrid = new dhtmlXGridObject("selRecipientsGridId");
+selRecipientGrid.setImagePath("<?=$this->baseUrl?>/img/");
+selRecipientGrid.setHeader("");
+selRecipientGrid.setNoHeader(true);
+selRecipientGrid.selMultiRows = true;
+selRecipientGrid.setInitWidths("*");
+selRecipientGrid.setColTypes("ro");
+selRecipientGrid.setSkin("xp");
+selRecipientGrid.init();
+</script>

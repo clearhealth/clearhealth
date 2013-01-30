@@ -1,0 +1,39 @@
+<script>
+function messagingDateRangeClose() {
+	dhxWins.window("winDateRangeId").close();
+}
+function applyDateRange() {
+	var dateBegin = dojo.byId("date-begin").value;
+	var dateEnd = dojo.byId("date-end").value;
+	var oDateBegin = dojo.date.stamp.fromISOString(dateBegin);
+	var oDateEnd = dojo.date.stamp.fromISOString(dateEnd);
+	var comparison = dojo.date.compare(oDateBegin,oDateEnd);
+	if (comparison > 0) {
+		alert("<?=__('Invalid date range.')?>");
+		return;
+	}
+	messagingFilters = "dateStatus:"+dateBegin+","+dateEnd;
+	messagingGridReload();
+
+	messagingDateRangeClose();
+}
+</script>
+
+<style>table.obj td {border-bottom: none;border-right:none;}</style>
+<div style="float:left;">
+	<div class="formRow">
+		<dt><label for="date-begin"><?=__('Begin Date')?></label></dt>
+		<?=$this->formDateText('dateBegin',date('Y-m-d'),array('id'=>'date-begin'))?>
+	</div>
+	<br />
+	<div class="formRow">
+		<dt><label for="date-end"><?=__("End Date")?></label></dt>
+		<?=$this->formDateText('dateEnd',date('Y-m-d'),array('id'=>'date-end'))?>
+	</div>
+	<br />
+	<br style="clear:left"/>
+	<div style="text-align:right;margin-top:10px;">
+		<input type="button" value="<?=__("Cancel")?>" onClick="messagingDateRangeClose()" />
+		<input type="button" value="<?=__("OK")?>" onClick="applyDateRange()" />
+	</div>
+</div>

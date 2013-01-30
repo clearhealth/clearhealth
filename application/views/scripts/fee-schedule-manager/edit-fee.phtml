@@ -1,0 +1,128 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__('Fee Schedule Information')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Name')?>: <?=$this->form->name->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Guid')?>: <?=$this->form->guid->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Procedure Code')?>: <?=$this->form->procedureCode->getValue()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->mappedCode->renderLabel()?>
+		<?=$this->form->mappedCodeInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->fee->renderLabel()?>
+		<?=$this->form->feeInput('FormNumberSpinner',array('places'=>2))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Modifiers')?>
+		<div id="sfModifiersGridId" style="width:300px;height:150px;"></div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->dateObsolete->renderLabel()?>
+		<?=$this->form->dateObsoleteInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->guidInput('FormHidden')?>
+		<?=$this->form->procedureCodeInput('FormHidden')?>
+		<?=$this->form->okInput()?>
+		<?=$this->formButton('cance',__('Cancel'),array('onClick'=>'dhxWins.window("'.$this->form->getWindow().'").close()'))?>
+	</div>
+</fieldset>
+<?=$this->form->renderClose()?>
+
+<script>
+function setFeesProcessEdit(content) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/fee-schedule-manager.raw/process-set-modifier",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (!data.id) {
+				sfModifiersGrid.cells(content.modifier,0).setChecked(false);
+				alert(data);
+			}
+			else {
+				setFeesGrid.renderRowData(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var sfModifiersGrid = new dhtmlXGridObject("sfModifiersGridId");
+sfModifiersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+sfModifiersGrid.setHeader(",<?=__('Modifier')?>,<?=__('Fee')?>");
+var indexSFSActive = 0;
+var indexSFSModifier = 1;
+var indexSFSFee = 2;
+sfModifiersGrid.setColTypes("ch,ro,ed");
+sfModifiersGrid.setInitWidths("20,*,80");
+sfModifiersGrid.init();
+sfModifiersGrid.load("<?=$this->baseUrl?>/fee-schedule-manager.raw/list-modifiers?guid=<?=$this->form->guid->getValue()?>&code=<?=$this->form->procedureCode->getValue()?>",null,"json");
+
+sfModifiersGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var content = {
+		"guid": "<?=$this->form->guid->getValue()?>",
+		"procedureCode": "<?=$this->form->procedureCode->getValue()?>",
+		"modifier": rowId,
+		"fee": sfModifiersGrid.cells(rowId,indexSFSFee).getValue(),
+		"state": (state)?1:0,
+	};
+	setFeesProcessEdit(content);
+});
+
+function sfModifiersGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue && cellIndex == indexSFSFee) {
+		if (!this.cells(rowId,indexSFSActive).isChecked()) return false;
+		var content = {
+			"guid": "<?=$this->form->guid->getValue()?>",
+			"procedureCode": "<?=$this->form->procedureCode->getValue()?>",
+			"modifier": rowId,
+			"fee": newValue,
+			"state": 1,
+		};
+		setFeesProcessEdit(content);
+	}
+	return true;
+}
+sfModifiersGrid.attachEvent("onEditCell",sfModifiersGridOnEditCell);
+
+function preSubmit<?=$this->form->getId()?>() {
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (!data.id) {
+		alert(data);
+	}
+	else {
+		setFeesGrid.renderRowData(data);
+		dhxWins.window("<?=$this->form->getWindow()?>").close();
+	}
+	return false;
+}
+</script>

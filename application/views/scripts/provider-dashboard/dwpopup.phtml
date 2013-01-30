@@ -1,0 +1,13 @@
+<div align="center">
+<br />
+Component: <?= $this->formSelect('dashwidgetSelect', null, array('style' => 'font-size:1em;'), $this->selectableWidgets); ?><br />
+
+Refresh: <?= $this->formSelect('refreshInterval', null, array('style' => 'font-size:1em;'), $this->refreshInterval); ?>
+
+<br />
+<br />
+<br />
+<br />
+<?= $this->formButton('btnOK', __('OK'), array('onClick' => 'saveDashboardComponent()')); ?>
+<?= $this->formButton('btnCancel', __('Cancel'), array('onClick' => 'winDC.close()')); ?>
+</div>

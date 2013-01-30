@@ -1,0 +1,124 @@
+<fieldset>
+	<legend>Select Pharmacy to Receive Prescription</legend>
+<dl>
+<dd><?=__("Patient's Default Pharmacy is")?>:</dd>
+<dt style="margin-left:15px;" id="defaultPharmacyText">
+<?if (isset($this->defaultPharmacy)):?>
+<?=$this->defaultPharmacy->StoreName?>, <?=$this->defaultPharmacy->AddressLine1?>, <?=$this->defaultPharmacy->City?><?=$this->defaultPharmacy->servliceLineDisplay?></dt>
+<?else:?>
+No default pharmacy set for patient</dt>
+<?endif?>
+</dl>
+<dl>
+<dd style="margin-top:10px;">Filter Pharmacy List:</dd>
+<dt>
+<input type="radio" id="searchModePreferred" name="searchMode" style="width:20px;" checked="checked" onClick="reloadPharmaciesGrid();" checked="checked"/>Prefered List
+<input type="radio" id="searchModePractice" name="searchMode" style="width:20px;" onClick="reloadPharmaciesGrid();"/>Within 20 Miles of Practice
+<input type="radio" id="searchModePatient" name="searchMode" style="width:20px;"  onClick="reloadPharmaciesGrid();" />Within 20 Miles of Patient
+</dt>
+</dl>
+<br />
+<div width="95%" height="150px" id="pharmaciesGridContainer" style="width:95%;height:150px;"></div>
+<script>
+function getPharmacyText(rowId,cellIndex) {
+	pharmacyDisplayText = pharmaciesGrid.rowsAr[rowId].cells[1].textContent;
+	pharmacyDisplayText += ', ' + pharmaciesGrid.rowsAr[rowId].cells[2].textContent;
+	pharmacyDisplayText += ', ' + pharmaciesGrid.rowsAr[rowId].cells[3].textContent;
+	//pharmacyDisplayText += ', ' + pharmaciesGrid.rowsAr[rowId].cells[4].textContent;
+	return pharmacyDisplayText;
+}
+
+function selectPharmacy(rowId, cellIndex) {
+	pharmacyText = getPharmacyText(rowId, cellIndex);
+	dojo.byId('selectedPharmacyText').innerHTML = pharmacyText;
+	dojo.byId('selectedPharmacyId').value = pharmaciesGrid.rowsAr[rowId].cells[0].textContent;
+
+}
+
+function selectPharmacyForPrescription() {
+	pharmacyId = dojo.byId('selectedPharmacyId').value;
+        if (!pharmacyId.length > 1) {
+                alert("<?=__("You must select an alternate pharmacy to use for the prescription or close this window to use the patient's default.")?>");
+                return false;
+        } 
+	dojo.byId('medication-pharmacyId').value = pharmacyId;
+	var rowId = pharmaciesGrid.getSelectedRowId();
+	var pharmacyInfo = dojo.byId("pharmacyInfo");
+	if (rowId != null && pharmacyInfo != null) {
+		var pharmacyDisplayText = pharmaciesGrid.rowsAr[rowId].cells[1].textContent;
+		pharmacyDisplayText += "<br />" + pharmaciesGrid.rowsAr[rowId].cells[2].textContent;
+		pharmacyDisplayText += ", " + pharmaciesGrid.rowsAr[rowId].cells[3].textContent;
+		pharmacyInfo.innerHTML = pharmacyDisplayText;
+	}
+	winSelectPharmacy.close();
+}
+
+function reloadPharmaciesGrid() {
+	pharmaciesGrid.clearAll();
+	pharmaciesGrid.init();
+	if (dojo.byId('searchModePatient').checked) {
+		pharmaciesGrid.load("<?=$this->baseUrl?>/medications.raw/list-pharmacies?filters[distance]=20&filters[zip]=<?=$this->patient->homeAddress->postalCode?>","json");
+	}
+	else if (dojo.byId('searchModePractice').checked) {
+		pharmaciesGrid.load("<?=$this->baseUrl?>/medications.raw/list-pharmacies?filters[distance]=20&filters[zip]=<?=$this->practice->primaryAddress->postalCode?>","json");
+	}
+	else {
+		pharmaciesGrid.load("<?=$this->baseUrl?>/medications.raw/list-pharmacies?filters[preferred]=1","json");
+
+	}
+}
+
+var pharmaciesGrid = new dhtmlXGridObject('pharmaciesGridContainer');
+pharmaciesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+pharmaciesGrid.setHeader(',Name,Address,City,NRx,RfRq,RxF,RxCh,CRx,RxH,RxE');
+pharmaciesGrid.setInitWidths("0,*,250,100,30,30,30,30,30,30,30");
+pharmaciesGrid.setColAlign("center,left,left,left,center,center,center,center,center,center,center");
+pharmaciesGrid.setColTypes("ro");
+pharmaciesGrid.setSkin("xp");
+pharmaciesGrid.attachEvent('onRowSelect','selectPharmacy');
+pharmaciesGrid.init();
+reloadPharmaciesGrid();
+
+function setPatientDefaultPharmacy() {
+	pharmacyId = dojo.byId('selectedPharmacyId').value;
+	if (!pharmacyId.length > 1) {
+		alert('<?=__("You must select a pharmacy before setting it as the patient\'s default")?>');
+		return false;
+	}
+	dojo.xhrGet ({
+        url: '<?=$this->baseUrl?>/patient/ajax-set-patient-default-pharmacy?personId=' + mainController.getActivePatient() + '&pharmacyId=' + pharmacyId,
+        handleAs: 'json',
+        load: function (data) {
+		
+		pharmacyText = getPharmacyText(pharmaciesGrid.getSelectedRowId(), pharmaciesGrid.getSelectedCellIndex());
+		dojo.byId('defaultPharmacyText').innerHTML = pharmacyText;
+
+	},
+        error: function (er) { alert(er) }
+	});
+	
+}
+</script>
+<br />
+<input style="width:auto;float:right;" type="button" name="setDefault" value="<?=__("Set Selected as Patient Default")?>" onClick="setPatientDefaultPharmacy();"/>
+<dl>
+<dd>Selected Pharmacy For Prescription is:</dd>
+<dt style="margin-left:15px;" id="selectedPharmacyText">
+<?if ($this->defaultPharmacy):?>
+<?=$this->defaultPharmacy->StoreName?>, <?=$this->defaultPharmacy->AddressLine1?>, <?=$this->defaultPharmacy->City?></dt>
+<?else:?>
+No pharmacy is selected.
+<?endif?>
+</dl>
+<br />
+<br />
+<input type="hidden" id="selectedPharmacyId" value="0" />
+<input style="width:auto;float:right;" type="button" name="useSelected" value="<?=__("Use Selection for Prescription")?>" onclick="selectPharmacyForPrescription();"/>
+</fieldset>
+<script>
+var pharmacyInfo = dojo.byId("pharmacyInfo");
+if (pharmacyInfo != null) {
+	dojo.byId("selectedPharmacyText").innerHTML = pharmacyInfo.innerHTML.replace("<br>",", ");
+	dojo.byId("selectedPharmacyId").value = dojo.byId("medication-pharmacyId").value;
+}
+</script>

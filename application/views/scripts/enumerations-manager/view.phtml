@@ -1,0 +1,212 @@
+<div id="enumItemsGridContainer" style="width:100%;height:99%;overflow:auto;"></div>
+<script>
+var enumItemsGrid = new dhtmlXGridObject('enumItemsGridContainer');
+enumItemsGrid.enableDragAndDrop(true);
+enumItemsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+enumItemsGrid.setSkin("xp");
+enumItemsGrid.setHeader("<?=__('Name')?>,<?=__('Category')?>,<?=__('Active')?>,ORM");
+enumItemsGrid.setInitWidths("*,100,50,40");
+enumItemsGrid.setColAlign("left,left,left,left");
+enumItemsGrid.setColTypes("tree,coro,ch,ro");
+enumItemsGrid.attachEvent("onDrag",enumItemsDragHandler);
+enumItemsGrid.attachEvent("onDrop",enumItemsDropHandler);
+enumItemsGrid.attachEvent("onEditCell",enumItemsOnEditCell);
+enumItemsGrid.attachEvent("onCheck",enumItemsOnChecked);
+enumItemsGrid.attachEvent("onRowSelect",enumItemsOnRowSelected);
+enumItemsGrid.enableTreeGridLines(true);
+enumItemsGrid.init();
+enumItemsGrid.load("<?=$this->baseUrl?>/enumerations-manager.raw/list-items?enumerationId=<?=$this->enumerationId?>",enumItemsExpand,"xml");
+
+enumItemsGrid.getCombo(1).put("","");
+enumItemsGrid.getCombo(1).put("System","System");
+enumItemsGrid.getCombo(1).put("User","User");
+
+function enumItemsOnRowSelected(rowId,cellIndex) {
+	// get the orm hidden column
+	if (enumItemsGrid.cells(rowId,3).getValue() == '1') { // contains an ORM
+		// enable Edit ORM toolbar
+		enumLeftToolbar.enableItem("tbEditObject");
+		enumLeftToolbar.showItem("tbEditObject");
+	}
+}
+
+function enumItemsOnChecked(rowId,cellIndex,state) {
+	var value = 0;
+	if (state) {
+		value = 1;
+	}
+	enumSingleUpdate('active',rowId,value,cellIndex,enumItemsGrid); // defined in index.phtml
+}
+
+function enumItemsReload(data,reload) {
+	if (reload == undefined || reload == null) {
+		reload = false;
+	}
+	if (reload) {
+		changeAdminContainer("Enumeration Manager",'<?=$this->baseUrl?>/enumerations-manager.raw');
+	}
+	else {
+		enumItemsReloadGrid();
+	}
+}
+
+function enumItemsOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	switch (stage) {
+		case 0:
+			if (cellIndex == 1) { // Category Column
+				if (enumItemsGrid.getLevel(rowId) != 0 && enumItemsGrid.cells(rowId,cellIndex).getValue() == '') {
+					return false;
+				}
+			}
+			break;
+		case 1:
+			break;
+		case 2:
+			if (newValue != oldValue) {
+				var field = '';
+				if (cellIndex == 0) {
+					field = 'name';
+				}
+				else if (cellIndex == 1) {
+					field = 'category';
+				}
+				else {
+					break;
+				}
+				var reload = false;
+				if (enumItemsGrid.getLevel(rowId) == 0) {
+					reload = true; // this requires reload of the entire page
+				}
+				enumSingleUpdate(field,rowId,newValue,cellIndex,enumItemsGrid); // defined in index.phtml
+			}
+			break;
+	}
+	return true;
+}
+
+function enumItemsReloadGrid() {
+	enumItemsGrid.clearAll();
+	enumItemsGrid.load('<?=$this->baseUrl?>/enumerations-manager.raw/list-items?enumerationId=<?=$this->enumerationId?>',enumItemsExpand,"xml");
+}
+
+function enumItemsDragHandler(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/enumerations-manager.raw/process-reorder-items",
+		handleAs: "json",
+		content: {
+			idFrom: idFrom,
+			idTo: idTo,
+		},
+		load: function (data) {
+			enumItemsReloadGrid();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+
+function enumItemsDropHandler(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+
+function enumItemsExpand() {
+	enumItemsGrid.expandAll();
+	enumHideNecessaryToolbars(); // defined in index.phtml
+}
+
+
+var enumItemsMenu = new dhtmlXMenuObject(null ,'standard');
+enumItemsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+enumItemsMenu.renderAsContextMenu();
+enumItemsMenu.setOpenMode("web");
+enumItemsMenu.loadXML('<?=$this->baseUrl?>/enumerations-manager.raw/context-menu.xml');
+enumItemsMenu.attachEvent('onClick',enumItemsMenuClickHandler);
+enumItemsGrid.attachEvent("onBeforeContextMenu",function(rowId,colIndex,gridObj){
+	var ret = true;
+
+	enumItemsMenu.hideItem("import2xFacilities");
+	var rowLevel = gridObj.getLevel(rowId); // 0 for root/first level
+	if (rowLevel != 0 || gridObj.cells(rowId,0).getValue() != "Facilities") return ret;
+	enumItemsMenu.showItem("import2xFacilities");
+	return ret;
+});
+enumItemsGrid.enableContextMenu(enumItemsMenu);
+dhtmlxEvent(enumItemsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+function enumItemsMenuClickHandler(id) {
+	var rowId = enumItemsGrid.getSelectedRowId();
+	switch (id) {
+		case "menuAddSubItem":
+			var ormClass = enumItemsGetOrmClass(rowId);
+			if (ormClass == false) {
+				alert("<?=__('Adding sub item is now allowed')?>");
+				break
+			}
+			enumerationEditWindow(null,rowId,"enumItemsGrid",ormClass); // defined at index.phtml
+			break;
+		case "import2xFacilities":
+			if (!confirm("<?=__('Are you sure you want to continue importing 2.x facilities?')?>")) break;
+			import2xFacilities(rowId);
+			break;
+		case "delete":
+			enumerationDelete(rowId,enumItemsGrid);
+			break;
+	}
+}
+
+function import2xFacilities(parentId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/facilities.raw/process-import-2x-facilities",
+		handleAs: "json",
+		content: {
+			"import": "1",
+			"parentId": parentId,
+		},
+		load: function (data) {
+			enumItemsReloadGrid();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function enumItemsGetOrmClass(rowId) {
+	var ormClass = null
+	var rowLevel = enumItemsGrid.getLevel(rowId); // 0 for root/first level
+	var parentId = enumItemsGrid.getParentId(rowId);
+	if (rowLevel == 0) {
+		parentId = rowId;
+	}
+	var id = parentId;
+	for (var i = 0; i < rowLevel; i++) {
+		if (id == 0) break;
+		parentId = id;
+		id = enumItemsGrid.getParentId(parentId);
+	}
+	if (enumItemsGrid.cells(parentId,0).getValue() == "Facilities") {
+		switch (rowLevel) {
+			case 0: // Practice
+				ormClass = "Practice";
+				break;
+			case 1: // Building
+				ormClass = "Building";
+				break;
+			case 2: // Room
+				ormClass = "Room";
+				break;
+			default:
+				ormClass = false;
+				break;
+		}
+	}
+	return ormClass;
+}
+
+</script>

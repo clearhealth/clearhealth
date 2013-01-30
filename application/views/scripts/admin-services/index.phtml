@@ -1,0 +1,196 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div id="adminServicesToolbarContainer"></div>
+<div id="adminServicesGridContainer" style="width:100%;height:450px;"></div>
+
+<script>
+
+function adminServicesAjaxRequest(url,content) {
+	dojo.xhrPost ({
+		url: url,
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			adminServicesGridReload();
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function adminServicesMenuSettings(val) {
+	adminServicesAjaxRequest("<?=$this->baseUrl?>/menu-manager.raw/ajax-change-cache-settings",{cacheMode:val});
+}
+
+function adminServicesNSDRSystem(event) {
+	adminServicesAjaxRequest("<?=$this->baseUrl?>/nsdr.raw/system",{event:event});
+}
+
+function adminServicesToolbarOnLoaded() {
+	adminServicesToolbar.forEachItem(function (id) {
+			adminServicesToolbar.hideItem(id);
+		});
+}
+
+var adminServicesToolbar = new dhtmlXToolbarObject("adminServicesToolbarContainer","ClearSilver");
+adminServicesToolbar.loadXML("<?=$this->baseUrl?>/admin-services.raw/toolbar",adminServicesToolbarOnLoaded);
+adminServicesToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function adminServicesToolbarOnClicked(id) {
+	switch(id) {
+		case "tbStart":
+			adminServicesNSDRSystem('start');
+			break;
+		case "tbStop":
+			adminServicesNSDRSystem('unload');
+			break;
+		case "tbRestart":
+			adminServicesNSDRSystem('reload');
+			break;
+		case "tbClear":
+			adminServicesMenuSettings('clear');
+			break;
+		case "tbEnable":
+			adminServicesMenuSettings('enable');
+			break;
+		case "tbDisable":
+			adminServicesMenuSettings('disable');
+			break;
+		case "tbMenuReload":
+			adminServicesMenuReload();
+			break;
+		case "tbPermissionStart":
+			adminServicesProcessPermission("start");
+			break;
+		case "tbPermissionStop":
+			adminServicesProcessPermission("stop");
+			break;
+		case "tbPermissionReload":
+			adminServicesProcessPermission("reload");
+			break;
+		default:
+			alert('<?=__("Invalid event: ")?>'+id);
+	}
+}
+adminServicesToolbar.attachEvent("onClick",adminServicesToolbarOnClicked);
+
+function adminServicesProcessPermission(service) {
+	dojo.xhrPost({
+		url: globalBaseUrl+"/admin-services.raw/process-permission",
+		handleAs: "json",
+		content: {
+			"service": service,
+		},
+		load: function (data) {
+			adminServicesGridReload();
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function adminServicesMenuReload() {
+	if (!confirm("<?=__('Reloading the menu can cause problems during live system usage, are you sure you want to continue?')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/menu-manager.raw/process-menu-reload",
+		handleAs: "json",
+		content: {
+		},
+		load: function (data) {
+			if (data == true) {
+				adminServicesMenuRevert();
+			}
+			else {
+				alert(data);
+			}
+			adminServicesGridOnLoaded();
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function adminServicesMenuRevert() {
+	if (confirm("<?=__('Please confirm the refresh of the menu was successful in another window, if there is a problem click cancel to revert to the previous setup')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/menu-manager.raw/process-menu-revert",
+		handleAs: "json",
+		content: {
+		},
+		load: function (data) {
+			if (data == true) {
+				alert("<?=__('Menu reverted successfully.')?>");
+			}
+			else {
+				alert(data);
+			}
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var adminServicesGrid =  new dhtmlXGridObject("adminServicesGridContainer");
+adminServicesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+adminServicesGrid.setHeader('<?=__('Services')?>,<?=__('Status')?>');
+adminServicesGrid.setColTypes("ro,ro");
+adminServicesGrid.setSkin("xp");
+adminServicesGrid.setInitWidths("*");
+adminServicesGrid.enableDragAndDrop(true);
+adminServicesGrid.init();
+
+function adminServicesGridOnLoaded() {
+	var systemsWarning = dojo.byId("systemsWarning");
+	if (systemsWarning == null) {
+		return;
+	}
+	if (adminServicesGrid.getUserData(adminServicesGrid.getRowId(0),'serviceNominal')) {
+		systemsWarning.style.display = "none";
+	}
+	else {
+		systemsWarning.style.display = "block";
+	}
+}
+
+function adminServicesGridReload() {
+	adminServicesToolbarOnLoaded();
+	adminServicesGrid.clearAll();
+	adminServicesGrid.load('<?=$this->baseUrl?>/admin-services.raw/list-services',adminServicesGridOnLoaded,"json");
+}
+adminServicesGridReload();
+
+function adminServicesOnRowSelected(rowId,cellIndex) {
+	adminServicesToolbarOnLoaded();
+	switch (rowId) {
+		case "nsdr":
+			adminServicesToolbar.showItem("tbStart");
+			adminServicesToolbar.showItem("tbStop");
+			adminServicesToolbar.showItem("tbRestart");
+			break;
+		case "menu":
+			adminServicesToolbar.showItem("tbMenuReload");
+			//adminServicesToolbar.showItem("tbClear");
+			//adminServicesToolbar.showItem("tbEnable");
+			//adminServicesToolbar.showItem("tbDisable");
+			break;
+		case "permissions":
+			adminServicesToolbar.showItem("tbPermissionStart");
+			adminServicesToolbar.showItem("tbPermissionStop");
+			adminServicesToolbar.showItem("tbPermissionReload");
+			break;
+	}
+}
+adminServicesGrid.attachEvent("onRowSelect",adminServicesOnRowSelected);
+
+</script>

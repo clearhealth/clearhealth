@@ -1,0 +1,22 @@
+<?='<?xml version="1.0" ?>'?>
+<menu id="0">
+<?foreach($this->menus as $menu):?>
+	<item 
+	<?foreach($menu as $k=>$v):?>
+		<?=$k?>="<?=$v?>"
+	<?endforeach?>
+	/>
+
+<?endforeach?>
+	<item text="Route" img="" id="route">
+		<?foreach($this->stations as $key => $name):?>
+		<item text="<?=$name?>" img="" id="routeTo_<?=$key?>" />
+		<?endforeach?>
+	</item>
+	<item text="Mark" img="" id="mark">
+		<item text="Cancel" img="" id="mark_CAN" />
+		<item text="No Show" img="" id="mark_NS" />
+		<item text="Confirmed" img="" id="mark_CFM" />
+		<item text="Complete" img="" id="mark_COM" />
+	</item>
+</menu>

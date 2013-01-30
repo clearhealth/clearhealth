@@ -1,0 +1,40 @@
+<script>
+function sendEPrescribing() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-eprescribe/process-send-pharmacy",
+		handleAs: "json",
+		content: {
+			"pharmacyId": pharmacyId,
+			"recordChange": dojo.byId("RecordChange").value
+		},
+		load: function (data) {
+			if (data != true) {
+				alert(data);
+			}
+			else {
+				alert("<?=__('Successfully transmitted')?>");
+				refreshCurrentTab();
+			}
+		},
+		error: function (er) {
+			console.error("ERROR: ",er);
+		}
+	});	
+}
+</script>
+<?if ($this->pharmacy && ($this->pharmacy->pharmacyId == '0' || strlen($this->pharmacy->pharmacyId) == 0)):?>
+<?=__('No pharmacy is selected, you must select a pharmacy to edit.')?>
+<?else:?>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<div style="float:left;">
+		<fieldset><legend><?=__('ePrescribing Information')?></legend>
+			<div class="formRow" style="padding-top:4px;">
+				<?=__('Change Record')?>: <?=$this->formSelect('RecordChange',$this->pharmacy->RecordChange,array('id'=>'RecordChange','style'=>'width:180px;'),array('N'=>'New','U'=>'Updated',/*'D'=>'Deactivated'*/))?>
+			</div>
+			<br style="clear:both;" />
+			<br style="clear:both;" />
+			<input type="button" value="Send ePrescribing" onClick="sendEPrescribing();"/>
+		</fieldset>
+	</div>
+</div>
+<?endif;?>

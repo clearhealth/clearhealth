@@ -1,0 +1,358 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+
+<?if ($this->person->person_id == 0):?>
+<?=__("No person is selected, you must select a person to edit.")?>
+<?else:?>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<div style="float:left;">
+	<?if ($this->message):?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+	<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__('Person Information')?></legend>
+		<div style="float:left;">
+			<div>
+				<div style="display:table-cell; vertical-align:middle; height:100px;">
+					<img src="<?=$this->baseUrl?>/img/no-person-image.png">
+				</div>
+			</div>
+		</div>
+		<div style="float:left;width:400px;">
+			<div style="margin-left:10px;">
+				<?foreach ($this->form->getErrorMessages() as $error) {?>
+				<?=$error?>
+				<?}?>
+				<?=$this->form->personIdInput('FormHidden')?>
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->lastName->renderLabel()?>
+						<?=$this->form->lastNameInput()?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->firstName->renderLabel()?>
+						<?=$this->form->firstNameInput()?>
+					</div>
+				</div>
+				<br class="formRowDivider" />
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->middleName->renderLabel()?>
+						<?=$this->form->middleNameInput()?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->dateOfBirth->renderLabel()?>
+						<?=$this->form->dateOfBirthInput()?>
+					</div>
+				</div>
+				<br class="formRowDivider" />
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->identifier->renderLabel()?>
+						<?=$this->form->identifierInput()?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->identifierType->renderLabel()?>
+						<?=$this->form->identifierTypeInput('FormSelect',array('options'=>$this->identifierTypes))?>
+					</div>
+				</div>
+				<br class="formRowDivider" />
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->gender->renderLabel()?>
+						<?=$this->form->genderInput('FormSelect',array('options'=>$this->genders))?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->maritalStatus->renderLabel()?>
+						<?=$this->form->maritalStatusInput('FormSelect',array('options'=>$this->maritalStatuses))?>
+					</div>
+				</div>
+				<br class="formRowDivider" />
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->email->renderLabel()?>
+						<?=$this->form->emailInput()?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->secondaryEmail->renderLabel()?>
+						<?=$this->form->secondaryEmailInput()?>
+					</div>
+				</div>
+				<br class="formRowDivider" />
+				<div class="formRow">
+					<div style="float:left;">
+						<?=$this->form->primaryPracticeId->renderLabel()?>
+						<?=$this->form->primaryPracticeIdInput('FormSelect',array('options'=>$this->practices))?>
+					</div>
+					<div style="float:left;margin-left:10px;">
+						<?=$this->form->active->renderLabel()?>
+						<?$activeOptions = array('id'=>'activeInput','helper'=>'formText');
+						if ($this->form->active->getValue()) {
+							$activeOptions['checked']='checked';
+						}
+						?>
+						<?=$this->formCheckbox('activeInput',$this->form->active->getValue(),$activeOptions)?>
+						<?=$this->form->activeInput('FormHidden')?>
+					</div>
+				</div>
+			</div>
+		</div>
+		</fieldset>
+		<?=$this->form->renderClose()?>
+		<div style="text-align:right;">
+			<?=$this->form->okInput('FormButton')?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div style="width:70%;float:left;">
+		<fieldset><legend><?=__('Phone numbers')?> (<a href="javascript:personPhonesAdd()" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div id="personPhonesGridContainer" style="height:150px;"></div>
+		</fieldset>
+		<fieldset><legend><?=__('Addresses')?> (<a href="javascript:personAddrAdd()" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div class="xhdr" id="personAddrGridContainer" style="height:150px;"></div>
+		</fieldset>
+	</div>
+</div>
+
+
+<script>
+function preSubmitpersondetail() {
+	var activeInput = dojo.byId("activeInput");
+	var activeHiddenInput = dojo.byId("person-active");
+	var val = 0;
+	if (activeInput.checked) {
+		val = 1;
+	}
+	activeHiddenInput.value = val;
+	return true;
+}
+
+
+var personPhonesGrid = new dhtmlXGridObject("personPhonesGridContainer");
+personPhonesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+personPhonesGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Number')?>,<?=__('Notes')?>,<?=__('Active')?>");
+personPhonesGrid.setInitWidths("*,60,*,*,50");
+personPhonesGrid.setColTypes("ed,coro,ed,ed,ch");
+personPhonesGrid.setSkin("xp");
+personPhonesGrid.attachEvent("onEditCell",personPhonesGridOnCellEdited);
+personPhonesGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var val = 0;
+	if (state) {
+		val = 1;
+	}
+	personSingleUpdate(rowId,personPhonesColFields[cellIndex],val,"phone",personPhonesGridReload);
+});
+
+// phone types
+personPhonesGrid.getCombo(1).put("","");
+<?foreach ($this->phoneTypes as $key=>$name):?>
+personPhonesGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+function personPhonesGridReload() {
+	personPhonesGrid.clearAll();
+	personPhonesGrid.load("<?=$this->baseUrl?>/admin-persons.raw/ajax-list-phones?personId=<?=$this->form->personId->getValue()?>","json");
+}
+personPhonesGrid.init();
+personPhonesGridReload();
+
+function personPhonesRemove(id) {
+	personRemove(id,"phone",personPhonesGridReload);
+}
+
+function personPhonesAdd() {
+	if (personPhonesGrid.doesRowExist(0)) {
+		personPhonesGrid.selectRow(personPhonesGrid.getRowIndex(0),true);
+	}
+	else {
+		personSingleUpdate(0,personPhonesColFields[0],"blank","phone",personPhonesGridReload);
+	}
+}
+
+function personPhonesMenuOnClicked(menuItemId,type) {
+	var rowCol = type.split("_");
+	switch (menuItemId) {
+		case "menuRemove":
+			personPhonesRemove(rowCol[0]);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>");
+	}
+}
+
+var personPhonesMenu = new dhtmlXMenuObject('personPhonesMenu','standard');
+personPhonesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+personPhonesMenu.renderAsContextMenu();
+personPhonesMenu.setOpenMode("web");
+personPhonesMenu.attachEvent("onClick",personPhonesMenuOnClicked);
+personPhonesMenu.loadXML("<?=$this->baseUrl?>/admin-persons.raw/ajax-get-context-menu");
+
+personPhonesGrid.enableContextMenu(personPhonesMenu);
+dhtmlxEvent(personPhonesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+var personPhonesColFields = new Array();
+// Phone field names, in order based on personPhonesGrid.setHeader
+personPhonesColFields.push("name");
+personPhonesColFields.push("type");
+personPhonesColFields.push("number");
+personPhonesColFields.push("notes");
+personPhonesColFields.push("active");
+
+function personPhonesGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		personSingleUpdate(rowId,personPhonesColFields[cellIndex],newValue,"phone",personPhonesGridReload);
+	}
+	return true;
+}
+
+var personAddrGrid = new dhtmlXGridObject("personAddrGridContainer");
+personAddrGrid.setImagePath("<?=$this->baseUrl?>/img/");
+personAddrGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Line1')?>,<?=__('Line2')?>,<?=__('City')?>,<?=__('State')?>,<?=__('Zip')?>,<?=__('Notes')?>,<?=__('Active')?>");
+personAddrGrid.setInitWidths("*,60,*,*,*,40,*,*,40");
+personAddrGrid.setColTypes("ed,coro,ed,ed,ed,coro,ed,ed,ch");
+personAddrGrid.setSkin("xp");
+personAddrGrid.attachEvent("onEditCell",personAddrGridOnCellEdited);
+personAddrGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var val = 0;
+	if (state) {
+		val = 1;
+	}
+	personSingleUpdate(rowId,personAddrColFields[cellIndex],val,"address",personAddrGridReload);
+});
+
+// address types
+personAddrGrid.getCombo(1).put("","");
+<?foreach ($this->addressTypes as $key=>$name):?>
+personAddrGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+// state
+personAddrGrid.getCombo(5).put("","");
+<?foreach ($this->statesList as $key=>$name):?>
+personAddrGrid.getCombo(5).put("<?=$key?>","<?=$key?>");
+<?endforeach;?>
+
+function personAddrGridReload() {
+	personAddrGrid.clearAll();
+	personAddrGrid.load("<?=$this->baseUrl?>/admin-persons.raw/ajax-list-addresses?personId=<?=$this->form->personId->getValue()?>","json");
+}
+personAddrGrid.init();
+personAddrGridReload();
+
+function personAddrRemove(id) {
+	personRemove(id,"address",personAddrGridReload);
+}
+
+function personAddrAdd() {
+	if (personAddrGrid.doesRowExist(0)) {
+		personAddrGrid.selectRow(personAddrGrid.getRowIndex(0),true);
+	}
+	else {
+		personSingleUpdate(0,personAddrColFields[0],"blank","address",personAddrGridReload);
+	}
+}
+
+function personAddrMenuOnClicked(menuItemId,type) {
+	var rowCol = type.split("_");
+	switch (menuItemId) {
+		case "menuRemove":
+			personAddrRemove(rowCol[0]);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>");
+	}
+}
+
+var personAddrMenu = new dhtmlXMenuObject("personAddrMenu","standard");
+personAddrMenu.setImagePath("<?=$this->baseUrl?>/img/");
+personAddrMenu.renderAsContextMenu();
+personAddrMenu.setOpenMode("web");
+personAddrMenu.attachEvent("onClick",personAddrMenuOnClicked);
+personAddrMenu.loadXML("<?=$this->baseUrl?>/admin-persons.raw/ajax-get-context-menu");
+
+personAddrGrid.enableContextMenu(personAddrMenu);
+dhtmlxEvent(personAddrGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+var personAddrColFields = new Array();
+// Address field names, in order based on personAddrGrid.setHeader
+personAddrColFields.push("name");
+personAddrColFields.push("type");
+personAddrColFields.push("line1");
+personAddrColFields.push("line2");
+personAddrColFields.push("city");
+//personAddrColFields.push("region");
+personAddrColFields.push("state");
+personAddrColFields.push("postal_code");
+personAddrColFields.push("notes");
+personAddrColFields.push("active");
+
+function personAddrGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		personSingleUpdate(rowId,personAddrColFields[cellIndex],newValue,"address",personAddrGridReload);
+	}
+	return true;
+}
+
+function personSingleUpdate(id,field,value,type,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-persons.raw/process-edit-by-field",
+		handleAs: "json",
+		content: {
+			personId: "<?=$this->form->personId->getValue()?>",
+			type: type,
+			id: id,
+			field: field,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function personRemove(id,type,callback) {
+	if (!confirm("Are you sure you want to remove selected "+type+"?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-persons.raw/process-delete",
+		handleAs: "json",
+		content: {
+			personId: "<?=$this->form->personId->getValue()?>",
+			type: type,
+			id: id,
+		},
+		load: function (data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>
+
+<?endif;?>

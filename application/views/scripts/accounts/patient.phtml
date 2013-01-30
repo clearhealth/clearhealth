@@ -1,0 +1,137 @@
+<style>
+div.gridbox table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+</style>
+<fieldset><legend><?=__('Filter')?></legend>
+	Date: <?=$this->formDateText('dateStart',$this->filters['dateStart'],array('id'=>'dateStart','style'=>'width:75px;'))?> to <?=$this->formDateText('dateEnd',$this->filters['dateEnd'],array('id'=>'dateEnd','style'=>'width:75px;'))?>
+	&nbsp; Facility: <?=$this->formSelect('facilityId',$this->filters['facilityId'],array('id'=>'facilityId','style'=>array('width:110px;')),$this->facilities)?>
+	&nbsp; Payer: <?=$this->formSelect('payerId',$this->filters['payerId'],array('id'=>'payerId','style'=>array('width:110px;')),$this->payers)?>
+	&nbsp; Provider: <?=$this->formSelect('providerId',$this->filters['providerId'],array('id'=>'providerId','style'=>array('width:110px;')),$this->providers)?>
+	&nbsp; Entered By: <?=$this->formSelect('enteredBy',$this->filters['userId'],array('id'=>'enteredBy','style'=>array('width:70px;')),$this->users)?>
+	&nbsp; <?=$this->formButton('filterId',__('Filter'),array('onClick'=>'patientAcctSetFilters()'))?>
+</fieldset>
+<fieldset><legend><?=__('Account History')?></legend>
+	<div id="patientAcctGridId" style="width:auto;height:445px;position:relative;"></div>
+	<div id="totalDivId">
+		<div style="float:left;margin-left:200px;"><b>Totals:</b></div>
+		<div style="float:left;margin-left:130px;"><?=$this->formText('amountBilledId','0.00',array('id'=>'amountBilledId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?></div>
+		<!--<div style="float:left;margin-left:20px;"><?=$this->formText('pendingInsuranceId','0.00',array('id'=>'pendingInsuranceId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?></div>-->
+		<?=$this->formHidden('pendingInsuranceId','0.00',array('id'=>'pendingInsuranceId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?>
+		<div style="float:left;margin-left:20px;"><?=$this->formText('paidInsuranceId','0.00',array('id'=>'paidInsuranceId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?></div>
+		<div style="float:left;margin-left:20px;"><?=$this->formText('paidPatientId','0.00',array('id'=>'paidPatientId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?></div>
+		<div style="float:left;margin-left:20px;"><?=$this->formText('balanceId','0.00',array('id'=>'balanceId','style'=>'width:100px;border:0;','readonly'=>'readonly'))?></div>
+	</div>
+</fieldset>
+<script>
+var patientAcctGrid = new dhtmlXGridObject("patientAcctGridId");
+patientAcctGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patientAcctGrid.setHeader(",<?=__('Date of Service')?>,<?=__('Current Payer')?>,<?=__('Amount Billed')?>,<?=__('Pending Insurance')?>,<?=__('Paid Insurance')?>,<?=__('Paid Patient')?>,<?=__('Balance')?>");
+patientAcctGrid.setInitWidths("20,90,*,120,0,120,120,120");
+patientAcctGrid.setColTypes("sub_row_grid,ro,ro,ro,ro,ro,ro,ro");
+patientAcctGrid.enableMultiselect(true);
+patientAcctGrid.setSkin("xp");
+patientAcctGrid.init();
+dhtmlxEvent(patientAcctGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+patientAcctGrid.attachEvent("onRowDblClicked",function(rowId,cellIndex){
+	var params = ["visitId="+rowId];
+	globalCreateWindow("winAccountsId",params,"<?=$this->baseUrl?>/visit-select.raw/claim","<?=__('Accounts')?>",850,700);
+});
+patientAcctGrid.attachEvent("onSubGridCreated",function(subgrid,rowId,rowIndex,content){
+	subgrid.setHeader("<?=__('Id')?>,<?=__('Payer Name')?>,<?=__('Date Billed')?>,<?=__('Date')?>,<?=__('Billed')?>,<?=__('Paid')?>,<?=__('Write Off')?>,<?=__('Balance')?>,<?=__('Chk #')?>,<?=__('Facility')?>,<?=__('Provider')?>,<?=__('Entered By')?>");
+	subgrid.setInitWidths("*,*,100,100,80,80,80,80,*,*,*,*");
+	subgrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+	subgrid.init();
+	subgrid.objBox.style.position = "relative";
+	subgrid.load(content,function(){
+		// workaround on height
+		patientAcctGrid.toggleSubRow(patientAcctGrid.cells(rowId,0).cell.firstChild);
+		patientAcctGrid.toggleSubRow(patientAcctGrid.cells(rowId,0).cell.firstChild);
+	},"json");
+	subgrid.attachEvent("onSubRowOpen",function(cell,expanded){
+		this.adjustHeightSubRow(cell);
+	});
+	return false;  // block default behavior
+});
+
+function patientAcctGridReload() {
+	patientAcctGrid.forEachRow(function(rowId){
+		patientAcctGrid.collapseSubRow(patientAcctGrid.cells(rowId,0).cell);
+	});
+	patientAcctGrid.clearAll();
+	patientAcctGrid.load("<?=$this->baseUrl?>/accounts.raw/list-patient-accounts?personId=<?=$this->personId?>",function(){
+		var amountBilled = 0;
+		var pendingInsurance = 0;
+		var paidInsurance = 0;
+		var paidPatient = 0;
+		var balance = 0;
+		patientAcctGrid.forEachRow(function(rowId){
+			var amount = parseFloat((this.cells(rowId,3).getValue() + "").substr(1));
+			if (!isNaN(amount)) amountBilled += amount;
+			amount = parseFloat((this.cells(rowId,4).getValue() + "").substr(1));
+			if (!isNaN(amount)) pendingInsurance += amount;
+			amount = parseFloat((this.cells(rowId,5).getValue() + "").substr(1));
+			if (!isNaN(amount)) paidInsurance += amount;
+			amount = parseFloat((this.cells(rowId,6).getValue() + "").substr(1));
+			if (!isNaN(amount)) paidPatient += amount;
+			amount = parseFloat((this.cells(rowId,7).getValue() + "").substr(1));
+			if (!isNaN(amount)) balance += amount;
+		});
+		dojo.byId("amountBilledId").value = "$" + amountBilled.toFixed(2);
+		dojo.byId("pendingInsuranceId").value = "$" + pendingInsurance.toFixed(2);
+		dojo.byId("paidInsuranceId").value = "$" + paidInsurance.toFixed(2);
+		dojo.byId("paidPatientId").value = "$" + paidPatient.toFixed(2);
+		dojo.byId("balanceId").value = "$" + balance.toFixed(2);
+	},"json");
+}
+patientAcctGridReload();
+
+function patientAcctSetFilters() {
+	var facilityId = "";
+	var facilitySelect = dojo.byId("facilityId");
+	if (facilitySelect.selectedIndex >= 0) {
+		facilityId = facilitySelect.options[facilitySelect.selectedIndex].value;
+	}
+	var payerId = "";
+	var payerSelect = dojo.byId("payerId");
+	if (payerSelect.selectedIndex >= 0) {
+		payerId = payerSelect.options[payerSelect.selectedIndex].value;
+	}
+	var providerId = "";
+	var providerSelect = dojo.byId("providerId");
+	if (providerSelect.selectedIndex >= 0) {
+		providerId = providerSelect.options[providerSelect.selectedIndex].value;
+	}
+	var enteredBy = "";
+	var userSelect = dojo.byId("enteredBy");
+	if (userSelect.selectedIndex >= 0) {
+		enteredBy = userSelect.options[userSelect.selectedIndex].value;
+	}
+	var filters = {
+		"filters[dateStart]": dojo.byId("dateStart").value,
+		"filters[dateEnd]": dojo.byId("dateEnd").value,
+		"filters[facilityId]": facilityId,
+		"filters[payerId]": payerId,
+		"filters[providerId]": providerId,
+		"filters[userId]": enteredBy,
+	};
+	dojo.xhrPost({
+		url: globalBaseUrl + "/accounts.raw/set-patient-filters",
+		handleAs: "json",
+		content: filters,
+		load: function(data) {
+			patientAcctGridReload();
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+</script>

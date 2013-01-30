@@ -1,0 +1,115 @@
+
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;width:100%;">
+	<div style="float:left;">
+		<?if ($this->message) :?>
+		<div style="background-color:PaleGreen; width:100%;">
+    		<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset>
+		<div style="float:left;width:100%;">
+			<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+			<?=$error?>
+			<?}?>
+			<?=$this->form->menuIdInput('FormHidden')?>
+			<div>
+			<?=$this->form->type->renderLabel()?>
+        <?foreach ($this->types as $v):
+            $checked = '';
+            if ($v == $this->data['type']) {
+                $checked = 'checked="checked"';
+            }
+        ?>
+            <input type="radio" id="menuItem-type" name="menuItem[type]" <?=$checked?> value="<?=$v?>" onclick="updateMenuType(this.value);" /> <?=$v?>
+        <?endforeach?>
+			</div>
+
+
+            <div id="typeFreeForm">
+			    <?=__('Action')?>
+                <input type="text" name="typefreeform" id="typefreeform" value="<?=($this->data['type']=='freeform')?$this->data['typeValue']:''?>" />
+            </div>
+
+            <div id="typeReport">
+			    <?=__('Action')?>
+                <select id="typereport" name="typereport">
+                <?foreach ($this->data['report'] as $reportId => $reports):?>
+                <optgroup label="<?=$reports['label']?>">
+                    <?foreach ($reports['items'] as $report):
+                        $selected = '';
+                        if ($this->data['type'] == 'report' && $report['reportTemplateId'] == $this->data['dynamicKey']) {
+                            $selected = 'selected="selected"';
+                        }
+                    ?>
+                        <option value="<?=$report['id'].'-'.$report['reportTemplateId']?>" <?=$selected?>><?=$report['name']?></option>
+                    <?endforeach?>
+                    </optgroup>
+                <?endforeach?>
+                </select>
+            </div>
+
+            <div id="typeForm">
+			    <?=__('Action')?>
+                <select id="typeform" name="typeform">
+                <?foreach ($this->data['form'] as $form):
+                    $selected = '';
+                    if ($this->data['type'] == 'form' && $form['formId'] == $this->data['dynamicKey']) {
+                        $selected = 'selected="selected"';
+                    }
+                ?>
+                    <option value="<?=$form['formId']?>" <?=$selected?>><?=$form['name']?></option>
+                <?endforeach?>
+                </select>
+            </div>
+
+
+			<div>
+			<?=$this->form->siteSection->renderLabel()?>
+        <?foreach ($this->mainTabs as $k=>$v):
+            $checked = '';
+            // replace $k with the correct key
+            $siteSection = $k;
+            if ($k == 'All') {
+                $siteSection = 'default';
+            }
+            if ($siteSection == $this->data['siteSection']) {
+                $checked = 'checked="checked"';
+            }
+        ?>
+        <input type="radio" id="chSiteSection" name="chSiteSection" <?=$checked?> value="<?=$siteSection?>" onclick="updateSiteSection(this.value);" /> <?=$k?>
+        <?endforeach?>
+			</div>
+			<div>
+			<?=$this->form->parentIdInput('FormHidden')?>
+			</div>
+			<div>
+			<?=$this->form->active->renderLabel()?>
+            <input type="checkbox" id="chActive" name="chActive" <?=($this->form->active->getValue())?'checked="checked"':''?> onclick="updateActive();" />
+			</div>
+			<div>
+			<?=$this->form->title->renderLabel()?>
+			<?=$this->form->titleInput()?>
+			</div>
+			<div>
+			<?=$this->form->dynamicKey->renderLabel()?>
+			<?=$this->form->dynamicKeyInput()?>
+			</div>
+			<div>
+			<?=$this->form->displayOrder->renderLabel()?>
+			<?=$this->form->displayOrderInput()?>
+			</div>
+			<div>
+			<?=$this->form->prefix->renderLabel()?>
+            <?=$this->form->prefixInput()?>
+			</div>
+			</div>
+    </form>
+			</fieldset>
+			<div style="text-align:right;">
+			<?=$this->form->okInput('FormButton')?>
+			</div>
+		</div>
+</div>
+

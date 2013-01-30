@@ -1,0 +1,95 @@
+<?if ($this->provider && $this->provider->person_id == 0):?>
+<?=__("No person is selected, you must select a person to edit.")?>
+<?else:?>
+<script>
+function enableEPrescribing() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-eprescribe/add-process?personId="+personId,
+		content: {
+			"dateActiveStart": dojo.byId("<?=$this->form->dateActiveStart->getId()?>").value,
+			"dateActiveEnd": dojo.byId("<?=$this->form->dateActiveEnd->getId()?>").value,
+			"serviceLevel": dojo.byId("<?=$this->form->serviceLevel->getId()?>").value,
+		},
+		handleAs: "json",
+		load: function (data) {
+			if (data.error && data.error.length > 0) {
+				alert(data.error);
+			}
+			else if (data.message && data.message.length > 0) {
+				alert(data.message);
+				localRefreshCurrentTab();
+			}
+		},
+		error: function (er) {
+			console.error("ERROR: ",er);
+		}
+	});	
+}
+</script>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<div style="float:left;">
+	<?if ($this->message):?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+	<?endif?>
+		<fieldset><legend><?=__("ePrescribing Information")?></legend>
+		<?=$this->form->renderOpen()?>
+	<div>
+		<div style="float:left;">
+			<?=$this->form->dateActiveStart->renderLabel()?>
+			<?=$this->form->dateActiveStartInput()?>
+		</div>
+		<div style="margin-left:20px;float:left;">
+			<?=$this->form->dateActiveEnd->renderLabel()?>
+			<?=$this->form->dateActiveEndInput()?>
+		</div>
+		<div style="margin-left:20px;float:left;">
+			<?=$this->form->serviceLevel->renderLabel()?>
+			<?=$this->form->serviceLevelInput('FormSelect',array('options'=>$this->serviceLevels,'style'=>'width:200px;'))?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<?if (strlen($this->provider->sureScriptsSPI) == 0):?>
+		ePrescribing service is not enabled for this provider, would you like to enable it? <br /><input type="button" value="Enable ePrescribing" onClick="enableEPrescribing();"/>
+	<?else:?>
+		<div style="float:left;width:400px;">
+			<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error):?>
+			<?=$error?>
+			<?endforeach?>
+			</div>
+			<?=__('SureScripts SPI')?> <br /><?=$this->form->sureScriptsSPIInput()?>
+			<?=$this->form->personIdInput('FormHidden')?>
+			<div style="text-align:right;">
+				<?=$this->form->okInput('FormButton')?>
+			</div>
+		</div>
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.xhrPost ({
+		url: "<?=$this->form->getAction()?>",
+		form: "<?=$this->form->getId()?>",
+		handleAs: "json",
+		load: function(data){
+			if (data.error && data.error.length > 0) {
+				alert(data.error);
+			}
+			else if (data.message && data.message.length > 0) {
+				alert(data.message);
+				localRefreshCurrentTab();
+			}
+		},
+		error: function (error) {
+			console.error ("Error: ",error);
+		}
+	});
+	return false;
+}
+</script>
+	<?endif?>
+			<?=$this->form->renderClose()?>
+		</fieldset>
+	</div>
+</div>
+<?endif;?>

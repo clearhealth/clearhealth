@@ -1,0 +1,16 @@
+<div id="accordContainer" style="position: relative; width: 320px; height: 400px;"></div>
+<div id="toolbarContainer"></div>
+<script>
+	var coAccord = new dhtmlXAccordion("accordContainer");
+</script>
+<?foreach($this->commonOrders as $order):?>
+<div id="toolbarContainer<?=$order['id']?>" style="overflow:auto"></div>
+<script>
+	coAccord.addItem('<?=$order['id']?>','<?=$order['text']?>');
+	coAccord.cells('<?=$order['id']?>').attachObject('toolbarContainer<?=$order['id']?>');
+	coToolbar<?=$order['id']?> = new dhtmlXToolbarObject('toolbarContainer<?=$order['id']?>','ClearSilver');
+	coToolbar<?=$order['id']?>.setIconsPath("<?=$this->baseUrl?>/img/");
+	coToolbar<?=$order['id']?>.loadXML('<?=$this->baseUrl?>/orders.raw/toolbar.xml?id=<?=$order['id']?>')
+</script>
+<?endforeach?>
+

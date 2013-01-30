@@ -1,0 +1,11 @@
+<div>
+	<div id="locationsTreeContainer" style="width:200px;height:400px;"></div> 
+	<script>  
+		locationsTree=new dhtmlXTreeObject(dojo.byId('locationsTreeContainer'),"100%","100%",0); 
+		locationsTree.setImagePath("<?=$this->baseUrl?>/img/"); 
+		locationsTree.enableCheckBoxes(false); 
+		locationsTree.enableDragAndDrop(true);
+		locationsTree.setXMLAutoLoading("http://127.0.0.1/xml/tree.xml"); 
+		locationsTree.loadXML('<?=$this->baseUrl?>/locations.raw/list-locations-tree-xml'); 
+	</script> 
+</div>

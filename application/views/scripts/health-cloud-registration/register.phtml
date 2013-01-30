@@ -1,0 +1,33 @@
+<fieldset><legend><?=__('HealthCloud Registration')?></legend>
+<?if(isset($this->data['data'])):?>
+	<?=$this->formTextarea('textContainerId',$this->data['data'],array('id'=>'textContainerId','readonly'=>true,'style'=>'background-color:#fff;height:380px;width:560px;'))?>
+<?endif;?>
+	<div style="float:right;margin-top:10px;">
+		<?=$this->formButton('continue',__('Continue'),array('id'=>'continue','onClick'=>'healthCloudRegistrationContinue()'))?>
+		<?=$this->formButton('cancel',__('Cancel'),array('id'=>'cancel','onClick'=>'closeThisWindow()'))?>
+	</div>
+</fieldset>
+<script>
+function healthCloudRegistrationContinue() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/health-cloud-registration.raw/process-registration",
+		content: {
+			"updateFileId": "<?=$this->updateFileId?>",
+		},
+		handleAs: "json",
+		load: function (response) {
+			if (response.error) {
+				alert(response.error);
+				return;
+			}
+			if (response.data && response.data != 200) {
+				alert(response.data);
+			}
+			if (dhxWins.window("winApplyUpdateId")) dhxWins.window("winApplyUpdateId").close();
+		},
+		error: function (error) {
+			console.error("Error: ", error);
+		}
+	});
+}
+</script>

@@ -1,0 +1,298 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+#feeScheduleSubGridId {
+	z-index: 999999;
+}
+</style>
+<div id="feeScheduleContainerId" style="height:420px;">
+	<div id="feeScheduleToolbarId" style=""></div>
+	<div id="feeScheduleGridId" style="width:100%;height:300px;"></div>
+	<div id="feeScheduleSubGridId" style="position:absolute;width:250px;height:100%;overflow:auto;"></div>
+</div>
+
+<script>
+function feeScheduleEditWindow(id) {
+	var label = "Add";
+	var params = [];
+	if (id) {
+		params.push("id="+id);
+		label = "Edit";
+	}
+	var winEditFeeSchedule = globalCreateWindow("windowEditFeeScheduleId",params,"<?=$this->baseUrl?>/fee-schedule-manager.raw/edit",label+" <?=__('Fee Schedule')?>",350,470);
+}
+
+function feeScheduleSetFeesWindow(id) {
+	if (!id) {
+		id = feeScheduleGrid.getSelectedRowId();
+	}
+	if (!id) {
+		alert("<?=__('No selected fee schedule.')?>");
+		return;
+	}
+	var params = [];
+	params.push("id="+id);
+	var winSetFeesFeeSchedule = globalCreateWindow("windowSetFeesFeeScheduleId",params,"<?=$this->baseUrl?>/fee-schedule-manager.raw/set-fees","<?=__('Set Fees')?>",800,400);
+}
+
+var feeScheduleToolbar = new dhtmlXToolbarObject("feeScheduleToolbarId","ClearSilver");
+function feeScheduleToolbarOnLoaded() {
+	feeScheduleToolbar.disableItem("editId");
+	feeScheduleToolbar.disableItem("deleteId");
+	feeScheduleToolbar.disableItem("setFeesId");
+}
+feeScheduleToolbar.loadXML("<?=$this->baseUrl?>/fee-schedule-manager.raw/toolbar",feeScheduleToolbarOnLoaded);
+feeScheduleToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function feeScheduleToolbarOnClicked(id) {
+	switch(id) {
+		case "newId":
+			feeScheduleEditWindow();
+			break;
+		case "editId":
+			var rowId = feeScheduleGrid.getSelectedRowId();
+			if (rowId == null) {
+				break;
+			}
+			feeScheduleEditWindow(rowId);
+			break;
+		case "deleteId":
+			var rowId = feeScheduleGrid.getSelectedRowId();
+			if (rowId == null) {
+				break;
+			}
+			if (!confirm("<?=__('Are you sure you want to delete selected items?')?>")) break;
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/fee-schedule-manager.raw/process-delete",
+				handleAs: "json",
+				content: {
+					"id": rowId,
+				},
+				load: function (data) {
+					feeScheduleGridReload();
+				},
+				error: function (error) {
+					alert(error);
+					console.error("Error: ", error);
+				}
+			});
+			break;
+		case "setFeesId":
+			var rowId = feeScheduleGrid.getSelectedRowId();
+			if (rowId == null) {
+				break;
+			}
+			feeScheduleSetFeesWindow(rowId);
+			break;
+		case "refreshId":
+			feeScheduleGridReload();
+			feeScheduleToolbarOnLoaded();
+			break;
+		default:
+			alert("<?=__("Invalid event: ")?>"+id);
+	}
+}
+feeScheduleToolbar.attachEvent("onClick",feeScheduleToolbarOnClicked);
+
+var globalSelectedRowId = null;
+var feeScheduleSubGrid = new dhtmlXGridObject("feeScheduleSubGridId");
+feeScheduleSubGrid.setImagePath("<?=$this->baseUrl?>/img/");
+feeScheduleSubGrid.setHeader(",<?=__('Program')?>");
+var indexFSSActive = 0;
+var indexFSSProgram = 1;
+feeScheduleSubGrid.setColTypes("ch,ro");
+feeScheduleSubGrid.setInitWidths("20,210");
+feeScheduleSubGrid.enableAutoHeight(true,200);
+feeScheduleSubGrid.init();
+feeScheduleSubGrid.load("<?=$this->baseUrl?>/fee-schedule-manager.raw/list-insurance-programs",null,"json");
+feeScheduleSubGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var oldValue = "";
+	var ips = feeScheduleGrid.getUserData(globalSelectedRowId,"IPs");
+	if (ips) {
+		var oldValues = [];
+		for (var i in ips) {
+			oldValues.push(ips[i]);
+		}
+		oldValue = oldValues.join(", ");
+	}
+	else {
+		ips = {};
+	}
+	if (state) {
+		ips[rowId] = this.getUserData(rowId,"program");
+	}
+	else {
+		if (ips[rowId]) {
+			delete ips[rowId];
+		}
+	}
+	var newIdValues = [];
+	var newValues = [];
+	for (var i in ips) {
+		newIdValues.push(i);
+		newValues.push(ips[i]);
+	}
+	var newValue = newValues.join(", ");
+	var newIdValue = newIdValues.join(",");
+	feeScheduleGrid.setUserData(globalSelectedRowId,ips);
+
+	var content = {
+		"feeSchedule[guid]": globalSelectedRowId,
+	};
+	content["feeSchedule["+fsColumnNames[indexFSIP]+"]"] = newIdValue;
+	feeScheduleProcessEdit(content);
+});
+
+var feeScheduleGrid = new dhtmlXGridObject("feeScheduleGridId");
+feeScheduleGrid.setImagePath("<?=$this->baseUrl?>/img/");
+feeScheduleGrid.setHeader("<?=__('Name')?>,<?=__('DOS Start')?>,<?=__('DOS End')?>,<?=__('Ins. Programs')?>");
+var indexFSName = 0;
+var indexFSDOSStart = 1;
+var indexFSDOSEnd = 2;
+var indexFSIP = 3;
+var indexFSMC = 4;
+var fsColumnNames = ["name","dateOfServiceStart","dateOfServiceEnd","insuranceProgramIds"];
+feeScheduleGrid.setColTypes("ro,ro,ro,ro");
+feeScheduleGrid._dtmask = "%Y-%m-%d"; // hacks for calendar date format
+feeScheduleGrid.setSkin("xp");
+feeScheduleGrid.setInitWidths("200,100,100,*");
+feeScheduleGrid.enableMultiselect(true);
+feeScheduleGrid.init();
+function feeScheduleGridReload() {
+	feeScheduleHideSubGrid();
+	feeScheduleGrid.clearAll();
+	feeScheduleGrid.load("<?=$this->baseUrl?>/fee-schedule-manager.raw/list",null,"json");
+}
+feeScheduleGridReload();
+
+function feeScheduleOnRowSelected(rowId,cellIndex) {
+	if (rowId != globalSelectedRowId || cellIndex != indexFSIP) {
+		feeScheduleHideSubGrid();
+	}
+	feeScheduleToolbar.enableItem("editId");
+	feeScheduleToolbar.enableItem("deleteId");
+	feeScheduleToolbar.enableItem("setFeesId");
+}
+feeScheduleGrid.attachEvent("onRowSelect",feeScheduleOnRowSelected);
+// overrides onEditCell event
+feeScheduleGrid.attachEvent("onRowDblClicked",function(rowId,cellIndex){
+	feeScheduleToolbarOnClicked("editId");
+});
+feeScheduleGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 0) {
+		if (cellIndex == indexFSIP) {
+			feeScheduleShowSubGrid(rowId,cellIndex);
+		}
+		else {
+			feeScheduleHideSubGrid();
+		}
+	}
+	else if (stage == 2 && newValue != oldValue && cellIndex != indexFSIP) {
+		var content = {
+			"feeSchedule[guid]": rowId,
+		};
+		content["feeSchedule["+fsColumnNames[cellIndex]+"]"] = newValue;
+		feeScheduleProcessEdit(content);
+	}
+	return true;
+});
+
+function feeScheduleProcessEdit(content) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/fee-schedule-manager.raw/process-edit",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data.error) {
+				alert(data.error);
+				feeScheduleSetRowData(data.data);
+			}
+			else {
+				feeScheduleSetRowData(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+function feeScheduleShowSubGrid(rowId,cellIndex) {
+	globalSelectedRowId = rowId;
+	var obj = feeScheduleGrid.cells(rowId,cellIndex).cell;
+	var offsetLeft = 0;
+	var offsetTop = 0;
+	if (obj.offsetParent) {
+		var scrollDiff = 0;
+		var gridOffsetHeight = feeScheduleGrid.entBox.offsetHeight - feeScheduleGrid.hdr.offsetHeight;
+		if (obj.offsetTop > gridOffsetHeight) {
+			scrollDiff = obj.offsetTop - gridOffsetHeight + 100;
+		}
+		while (true) {
+			offsetLeft += obj.offsetLeft;
+			offsetTop += obj.offsetTop;
+			if (!obj.offsetParent) break;
+			obj = obj.offsetParent;
+		}
+		offsetTop -= scrollDiff;
+	}
+	else if (obj.x) {
+		offsetLeft += obj.x;
+		offsetTop += obj.y;
+	}
+
+	offsetLeft = 400;
+	offsetTop -= 80;
+
+	var IPs = feeScheduleGrid.getUserData(rowId,"IPs");
+	feeScheduleSubGrid.forEachRow(function(subRowId){
+		if (IPs[subRowId]) {
+			this.cells(subRowId,0).setChecked(true);
+		}
+		else {
+			this.cells(subRowId,0).setChecked(false);
+		}
+	});
+	var fsSubGrid = dojo.byId("feeScheduleSubGridId");
+	fsSubGrid.style.display = "";
+	fsSubGrid.style.left = offsetLeft + "px";
+	fsSubGrid.style.top = offsetTop + "px";
+}
+
+function feeScheduleDivOnClicked(evt) {
+	var target = evt.target;
+	var isOverlay = false;
+	var parentNode = target;
+	while (parentNode) {
+		if (parentNode.id == "feeScheduleSubGridId") {
+			isOverlay = true;
+			break;
+		}
+		parentNode = parentNode.parentNode;
+	}
+	if (!isOverlay) {
+		feeScheduleHideSubGrid();
+	}
+}
+dojo.connect(dojo.byId("feeScheduleContainerId"),"onclick","feeScheduleDivOnClicked");
+
+function feeScheduleHideSubGrid() {
+	var fsSubGrid = dojo.byId("feeScheduleSubGridId");
+	fsSubGrid.style.display = "none";
+}
+
+function feeScheduleSetRowData(data) {
+	if (!data.id) return;
+	if (!feeScheduleGrid.doesRowExist(data.id)) {
+		feeScheduleGrid.addRow(data.id,"");
+	}
+	for (var i in data.data) {
+		feeScheduleGrid.cells(data.id,i).setValue(data.data[i]);
+	}
+	for (var i in data.userdata) {
+		feeScheduleGrid.setUserData(data.id,i,data.userdata[i]);
+	}
+}
+</script>

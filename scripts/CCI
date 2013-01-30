@@ -1,0 +1,200 @@
+#!/usr/bin/php
+<?php
+/*****************************************************************************
+*       CHPullInbounds
+*
+*       Author:  ClearHealth Inc. (www.clear-health.com)        2009
+*       
+*       ClearHealth(TM), HealthCloud(TM), WebVista(TM) and their 
+*       respective logos, icons, and terms are registered trademarks 
+*       of ClearHealth Inc.
+*
+*       Though this software is open source you MAY NOT use our 
+*       trademarks, graphics, logos and icons without explicit permission. 
+*       Derivitive works MUST NOT be primarily identified using our 
+*       trademarks, though statements such as "Based on ClearHealth(TM) 
+*       Technology" or "incoporating ClearHealth(TM) source code" 
+*       are permissible.
+*
+*       This file is licensed under the GPL V3, you can find
+*       a copy of that license by visiting:
+*       http://www.fsf.org/licensing/licenses/gpl.html
+*       
+*****************************************************************************/
+
+if (!isset($argv[2])) {
+	echo 'No zip file specified.'.PHP_EOL;
+	die;
+}
+
+function __($str) {
+	return $str;
+}
+
+define('APPLICATION_ENVIRONMENT','production');
+$appFile = realpath(dirname(__FILE__) . '/../application/library/WebVista/App.php');
+require_once $appFile;
+
+class CCIGroups extends WebVista {
+
+	public static function getInstance() {
+        	if (null === self::$_instance) {
+        		self::$_instance = new self();
+        	}
+		return self::$_instance;
+	}
+
+	public function _run() {
+		$this->_setupEnvironment()
+			->_setupDb()
+			->_setupCache()
+			->_setupTranslation()
+			->_setupAutoLogin();
+		return $this;
+	}
+
+	protected function _setupEnvironment() {
+		parent::_setupEnvironment();
+		// disable strict reporting
+		error_reporting(E_ALL);
+		return $this;
+	}
+
+	protected function _setupAutoLogin() {
+		$username = 'admin';
+		$password = 'admin';
+		$user = new User();
+		$user->username = $username;
+		$user->populateWithUsername();
+		if (!$user->userId > 0) {
+			$person = new Person();
+			$person->_shouldAudit = false;
+			$person->last_name = 'Administrator';
+			$person->first_name = 'ClearHealth';
+			$person->middle_name = 'U';
+			$person->persist();
+
+			$user->_shouldAudit = false;
+			$user->person = $person;
+			$user->password = $password;
+			$user->userId = $person->personId;
+			$user->personId = $person->personId;
+			$user->persist();
+		}
+		Zend_Auth::getInstance()->getStorage()->write($user);
+		return $this;
+	}
+
+	private function __construct() {
+		$this->_computePaths();
+		$this->_run();
+	}
+
+	private function __clone() {}
+
+	public function persistGroup($zipFile) {
+		try {
+			$zip = zip_open($zipFile);
+			if ($zip) {
+				while ($zipEntry = zip_read($zip)) {
+					$filename = zip_entry_name($zipEntry);
+					if (substr($filename,-4) != '.txt') continue;
+					echo 'Generating from file '.$filename.'.'.PHP_EOL;
+					$name = zip_entry_name($zipEntry);
+					zip_entry_open($zip,$zipEntry,'r');
+					$data = zip_entry_read($zipEntry,zip_entry_filesize($zipEntry));
+					$lines = explode("\n",$data);
+					foreach (explode("\n",$data) as $line) {
+						$x = explode("\t",$line);
+						if (!isset($x[5]) || !(strlen($x[0]) > 0) || !(strlen($x[1]) > 0)) continue;
+						// 0 = code range, 1 = cpt code, 2 = (* = In existence prior to 1996), 3 = Effective Date, 4 = (Deletion Date *=no data), 5 = (Modifier; 0=not allowed, 1=allowed, 9=not applicable)
+						if (substr($filename,0,6) == 'ccimeg') {
+							$cci = new CCIMEGroup();
+						}
+						else {
+							$cci = new CCIGroup();
+						}
+						$cci->_shouldAudit = false;
+						$cci->codeRange = $x[0];
+						$cci->code = $x[1];
+						$cci->existsPriorTo1996 = $x[2];
+						$cci->dateEffective = $x[3];
+						$cci->dateDeletion = $x[4];
+						$cci->modifier = $x[5];
+						$cci->persist();
+					}
+					zip_entry_close($zipEntry);
+				}
+				zip_close($zip);
+			}
+			else {
+				echo 'Zip error unpacking pharmacy data: '.$zip.PHP_EOL;
+			}
+		}
+		catch (Exception $e) {
+			echo $e->getMessage().PHP_EOL;
+		}
+		return $this;
+	}
+
+	public function persistMUE($zipFile) {
+		try {
+			$zip = zip_open($zipFile);
+			if ($zip) {
+				$serviceTypes = null;
+				while ($zipEntry = zip_read($zip)) {
+					$filename = zip_entry_name($zipEntry);
+					if (substr($filename,-4) != '.txt') continue;
+					echo 'Generating from file '.$filename.'.'.PHP_EOL;
+					$name = zip_entry_name($zipEntry);
+					zip_entry_open($zip,$zipEntry,'r');
+					$data = zip_entry_read($zipEntry,zip_entry_filesize($zipEntry));
+					$lines = explode("\n",$data);
+					foreach (explode("\n",$data) as $line) {
+						$x = explode("\t",$line);
+						if (!isset($x[1]) || !(strlen($x[0]) >= 5) || !(strlen($x[1]) > 0)) continue;
+						$fx = explode('_Services_',$filename);
+						$serviceType = str_replace('_',' ',$fx[0]);
+						$cci = new CCIMUE();
+						if ($serviceTypes === null) $serviceTypes = $cci->_serviceTypes;
+						$cci->_shouldAudit = false;
+						$cci->code = $x[0];
+						$cci->MUE = $x[1];
+						$cci->serviceType = (int)$serviceTypes[$serviceType];
+						$cci->persist();
+					}
+					zip_entry_close($zipEntry);
+				}
+				zip_close($zip);
+			}
+			else {
+				echo 'Zip error unpacking pharmacy data: '.$zip.PHP_EOL;
+			}
+		}
+		catch (Exception $e) {
+			echo $e->getMessage().PHP_EOL;
+		}
+		return $this;
+	}
+
+}
+
+$CCIGroups = CCIGroups::getInstance();
+$method = 'persistGroup';
+if (strtolower($argv[1]) == 'mue') {
+	$method = 'persistMUE';
+	$ctr = 2;
+}
+else if (strtolower($argv[1]) == 'group') {
+	$ctr = 2;
+}
+else {
+	$ctr = 1;
+}
+echo 'Executing '.$method.PHP_EOL;
+while (isset($argv[$ctr])) {
+	$zipFile = $argv[$ctr++];
+	if (!file_exists($zipFile)) continue;
+	$CCIGroups->$method($zipFile);
+}
+

@@ -1,0 +1,135 @@
+<div style="float:left;width:100%;">
+	<form name="filterFormId" id="filterFormId" method="post">
+	<fieldset><legend><?=__('Filter Information')?></legend>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="filter-name" class="optional"><?=__('Name')?></label></dt>
+		<?=$this->formText('filter[name]',$this->filterData['name'],array('id'=>'filter-name','style'=>'width:350px;'))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="filter-defaultValue" class="optional"><?=__('Default Value')?></label></dt>
+		<?=$this->formText('filter[defaultValue]',$this->filterData['defaultValue'],array('id'=>'filter-defaultValue','style'=>'width:350px;'))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="filter-type" class="optional"><?=__('Type')?></label></dt>
+		<?=$this->formSelect('filter[type]',$this->filterData['type'],array('id'=>'filter-type','style'=>'width:350px;','onChange'=>'filterTypeOnChanged(this.value);'),$this->types)?>
+	</div>
+	<div id="filterTypeEnumNameId" style="display:none;">
+		<br style="clear:left"/>
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="filter-filterEnumNameAutoCompleteDivId" class="optional"><?=__('ENUM Name')?></label></dt>
+			<div id="filterEnumNameAutoCompleteDivId"></div>
+			<?=$this->formHidden('filter[enumName][value]',$this->filterData['enumName']['value'],array('id'=>'filter-enumName-value'))?>
+		</div>
+	</div>
+	<div id="filterTypeQueryId" style="display:none;">
+		<br style="clear:left"/>
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="filter-query" class="optional"><?=__('Query')?></label></dt>
+			<?=$this->formSelect('filter[query]',$this->filterData['query'],array('id'=>'filter-query','style'=>'width:250px;'),$this->reportQueries)?>
+			<input type="checkbox" name="filter[includeBlank]" id="filter-includeBlank" <?=($this->filterData['includeBlank'])?'checked="checked"':''?> /> <?=__('Include Blank')?>
+		</div>
+	</div>
+	<div id="filterTypeSpecialId" style="display:none;">
+		<br style="clear:left"/>
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label for="filter-special" class="optional"><?=__('Special Options')?></label></dt>
+			<?foreach ($this->reportSpecial as $key=>$value):?>
+			<div style="float:left;margin-right:10px;"><input type="radio" name="filter[special]" id="filter-special" value="<?=$key?>" <?=(isset($this->filterData['special']) && $this->filterData['special'] == $key)?'checked="checked"':''?> /> <?=$value?> </div>
+			<?endforeach;?>
+		</div>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<dt><label for="filter-options" class="optional"><?=__('Options')?></label></dt>
+		<?foreach ($this->options as $key=>$value):?>
+			<div style="float:left;margin-right:10px;"><input type="checkbox" value="<?=$key?>" name="filter[options][<?=$key?>]" <?=isset($this->filterData['options'][$key])?'checked="checked"':''?> /> <?=$value?></div>
+		<?endforeach;?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:10px;">
+		<?=$this->formHidden('filter[id]',$this->filterData['id'],array('id'=>'filter-id'))?>
+		<?=$this->formButton('ok',__('OK'),array('id'=>'ok','onClick'=>'submitFilter();'))?>
+	</div>
+	</fieldset>
+	</form>
+</div>
+<script>
+function submitFilter() {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-add-filter",
+		handleAs: "json",
+		form: "filterFormId",
+		content: {
+			"baseId": "<?=$this->baseId?>",
+			"filterId": "<?=$this->filterId?>",
+		},
+		load: function (data) {
+			if (!data) return;
+			if (!reportBaseFiltersGrid.doesRowExist(data.id)) {
+				reportBaseFiltersGrid.addRow(data.id,"");
+			}
+			for (var i in data.data) {
+				reportBaseFiltersGrid.cells(data.id,i).setValue(data.data[i]);
+			}
+			dhxWins.window("winReportBaseFilterId").close();
+		},
+		error: function (error) {
+			alert(error);
+			console.error('Error: ', error);
+		}
+	});
+}
+
+function filterTypeOnChanged(value) {
+	var filterTypeEnumName = dojo.byId("filterTypeEnumNameId");
+	var filterTypeQuery = dojo.byId("filterTypeQueryId");
+	var filterTypeSpecial = dojo.byId("filterTypeSpecialId");
+	filterTypeEnumName.style.display = "none";
+	filterTypeQuery.style.display = "none";
+	filterTypeSpecial.style.display = "none";
+	switch (value) {
+		case "<?=ReportBase::FILTER_TYPE_DATE?>":
+			break;
+		case "<?=ReportBase::FILTER_TYPE_STRING?>":
+			break;
+		case "<?=ReportBase::FILTER_TYPE_ENUM?>":
+			filterTypeEnumName.style.display = "";
+			break;
+		case "<?=ReportBase::FILTER_TYPE_QUERY?>":
+			filterTypeQuery.style.display = "";
+			break;
+		case "<?=ReportBase::FILTER_TYPE_SPECIAL?>":
+			filterTypeSpecial.style.display = "";
+			break;
+	}
+}
+
+var fencb = dijit.byId("filterEnumNameAutoCompleteDivId");
+if (fencb != undefined) { 
+	fencb.destroyRecursive();
+	fencb = null;
+}
+var fenac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/reports-manager.raw/auto-complete-enum-filter",requestMethod:"get"},"filterEnumNameAutoComplete");
+fencb = new dijit.form.FilteringSelect({name:"filter[enumName][id]",autocomplete:true,store:fenac},"filterEnumNameAutoCompleteDivId");
+fencb.validate = function() {
+	return true;
+};
+
+dojo.connect(fencb,"onChange","filterEnumGetDetails");
+function filterEnumGetDetails(args) {
+	if (args === undefined) return;
+	fencb.setValue(args);
+	dojo.byId("filter-enumName-value").value = dojo.byId("filterEnumNameAutoCompleteDivId").value;
+}
+fencb.setDisplayedValue(dojo.byId("filter-enumName-value").value);
+fencb.setValue("<?=$this->filterData['enumName']['id']?>");
+fencb.domNode.style.width = "350px";
+
+var filterType = dojo.byId("filter-type");
+if (filterType != null) {
+	var filterValue = filterType.options[filterType.selectedIndex].value
+	filterTypeOnChanged(filterValue);
+}
+</script>

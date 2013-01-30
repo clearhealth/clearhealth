@@ -1,0 +1,129 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+</style>
+
+<div id="schedContainerId" style="width:100%;height:500px;">
+	<div id="schedToolbarId" style="width:100%;border:1px solid Silver;"></div>
+	<div id="schedColumnId" style="width:auto;height:200px;overflow:auto;"></div>
+	<fieldset><legend><?=__('Schedule Events')?></legend>
+		<div id="schedEventsGridId" style="width:auto;height:200px;overflow:auto;"></div>
+	</fieldset>
+	<div id="schedExtraId" style="width:auto;overflow:auto;">
+		<?=__('Templates')?>: <?=$this->formSelect('providerTemplates',null,array('id'=>'provider-templates','style'=>'width:150px;','onchange'=>'providerTemplatesOnChanged(this.options[this.selectedIndex])'),$this->templates)?>
+	</div>
+</div>
+<script>
+var thisWindow = dhxWins.window("winNewScheduleId");
+thisWindow.setText(thisWindow.getText()+": <?=$this->headerText?>");
+
+function providerTemplatesOnChanged(selObj) {
+	schedToolbar.enableItem("copy_template");
+	if (selObj.value == "" && selObj.text == "") {
+		schedToolbar.disableItem("copy_template");
+	}
+}
+
+var schedToolbar = new dhtmlXToolbarObject("schedToolbarId","ClearSilver");
+schedToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+schedToolbar.attachEvent("onClick",function(id){
+	switch(id) {
+		case "new_distinct_id":
+			alert("New distinct sections not yet implemented");
+			break;
+		case "copy_template":
+			alert("Copy from another room/resource or providers templates to the currently selected provider or room/resource not yet implemented");
+			break;
+		case "holidays":
+			globalCreateWindow("winHolidayId",[],"<?=$this->baseUrl?>/holidays.raw","<?=__('Holidays')?>",400,400);
+			break;
+		default:
+			alert("Button "+id+" was pressed");
+	}
+});
+
+function schedToolbarOnLoaded() {
+}
+schedToolbar.loadXML("<?=$this->baseUrl?>/schedule.xml/toolbar-xml",schedToolbarOnLoaded);
+
+var schedColumnGrid = new dhtmlXGridObject("schedColumnId");
+schedColumnGrid.enableDragAndDrop(true);
+schedColumnGrid.setImagePath("<?=$this->baseUrl?>/img/");
+schedColumnGrid.setHeader("<?=__('Monday')?>,<?=__('Tuesday')?>,<?=__('Wednesday')?>,<?=__('Thursday')?>,<?=__('Friday')?>,<?=__('Saturday')?>,<?=__('Sunday')?>");
+schedColumnGrid.setInitWidths("*,*,*,*,*,*,*");
+schedColumnGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
+schedColumnGrid.setSkin("xp");
+schedColumnGrid.init();
+
+dhtmlxEvent(schedColumnGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+
+var schedEventsGrid = new dhtmlXGridObject("schedEventsGridId");
+schedEventsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+schedEventsGrid.selMultiRows = true;
+schedEventsGrid.setHeader("<?=__('Title')?>,<?=__('Start')?>,<?=__('End')?>");
+schedEventsGrid.setInitWidths("*,*,*");
+schedEventsGrid.setColTypes("ro,ro,ro");
+schedEventsGrid.setSkin("xp");
+
+dhtmlxEvent(schedEventsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble = true;
+	return false;
+});
+
+var schedEventsMenu = new dhtmlXMenuObject(null,"standard");
+schedEventsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+schedEventsMenu.renderAsContextMenu();
+schedEventsMenu.setOpenMode("web");
+schedEventsMenu.loadXML("<?=$this->baseUrl?>/schedule.raw/get-events-context-menu");
+schedEventsMenu.attachEvent("onClick",schedEventsMenuOnClicked);
+function schedEventsMenuOnClicked(id,zoneId,casState) {
+	var rowCol = zoneId.split("_");
+	switch (id) {
+		case "remove":
+			schedEventsRemove(rowCol[0]);
+			break;
+	}
+}
+schedEventsGrid.enableContextMenu(schedEventsMenu);
+schedEventsGrid.init();
+
+function schedEventsGridOnLoaded() {
+}
+
+function schedEventsGridReload() {
+	schedEventsGrid.clearAll();
+	schedEventsGrid.load(globalBaseUrl+"/schedule.raw/list-events?providerId=<?=$this->providerId?>&roomId=<?=$this->roomId?>",schedEventsGridOnLoaded,"json");
+}
+schedEventsGridReload();
+
+function schedEventsRemove(rowId) {
+	if (rowId == undefined) {
+		rowId = schedEventsGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert("<?=__('No row selected')?>");
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule.raw/process-delete-events",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			schedEventsGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

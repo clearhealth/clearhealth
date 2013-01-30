@@ -1,0 +1,501 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+div.dhtmlxToolbar_ClearSilver#reportsResultsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemPressed {
+	background-color: #D3E2E5;
+	border-bottom: #D3E2E5 1px solid;
+}
+div.dhtmlxToolbar_ClearSilver#reportsResultsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem td.dhtmlxToolbarTEXT span {
+	margin-left: -10px;
+	margin-right: 10px;
+}       
+</style>
+<div id="reportsResultsContainerId" style="width:100%;overflow:auto;">
+	<div id="reportsViewsGridId" style="display:none;width:96%;"></div>
+	<div id="reportsResultsSubContainerId" style="height:370px;">
+		<div id="reportsResultsToolbarId" style="overflow:auto;width:100%;"></div>
+		<div id="reportsResultsGridContainerId" style="height:300px;overflow:auto;"></div>
+	</div>
+</div>
+<div id="reportsLayoutId" style="width:100%;height:480px;"></div>
+<div id="reportsIframeDivId" style="display:none;"></div>
+<iframe id="iframeReportsPrintId" style="width:0px;height:0px;margin:0;padding:0;position:relative;float:top;border:none;" />
+<script>
+
+var globVars  = {
+	current:null,
+	previous:null,
+	executed:false,
+	buttonClicked:false,
+};
+var grids = [];
+function reportsResize() {
+	/*
+	var rightPaneWidth = parseInt(reportsLayout.cells("b").getWidth()) - 5;
+
+	rightPaneWidth = rightPaneWidth - 15;
+	reportsViewsGrid.setInitWidths(""+(rightPaneWidth - 15)+",0,0");
+	dojo.byId("reportsViewsGridId").style.width = rightPaneWidth + "px";
+
+	for (var index in grids) {
+		dojo.byId("reportsResultsGridId"+index).style.width = "96%";
+	}
+
+	dojo.byId("reportsResultsGridContainerId").style.width = rightPaneWidth + "px";
+	*/
+}
+
+var reportsLayout = new dhtmlXLayoutObject("reportsLayoutId","2U");
+reportsLayout.setEffect("collapse",true);
+reportsLayout.cells("a").setText("<?=__('Report')?>");
+reportsLayout.cells("a").setWidth("250");
+reportsLayout.cells("b").setText("");
+reportsLayout.attachEvent("onPanelResizeFinish",reportsResize);
+reportsLayout.attachEvent("onExpand",reportsResize);
+reportsLayout.attachEvent("onCollapse",reportsResize);
+
+var filterValues = {};
+function reportsSearchResults(viewId) {
+	if (viewId == null) {
+		viewId = reportsViewsGrid.getSelectedRowId();
+	}
+	reportsResultsToolbar.forEachItem(function(itemId){
+		var value = reportsResultsToolbar.getValue(itemId);
+		if (value == null || itemId.substr(0,7) != "filter_") return;
+		filterValues[itemId] = value;
+	});
+	var buildResultsIn = reportsViewsGrid.cells(viewId,indexRVShowResultsIn).getValue();
+	if (buildResultsIn == "grid") {
+		return reportsGetResultsGrid(viewId);
+	}
+	var filters = ["viewId="+viewId];
+	for (var i in filterValues) {
+		filters.push(i+"="+filterValues[i]);
+	}
+	window.open("<?=$this->baseUrl?>/reports.raw/get-results?"+filters.join("&"));return;
+	var iframe = document.createElement("IFRAME");
+	iframe.setAttribute("src","<?=$this->baseUrl?>/reports.raw/get-results?"+filters.join("&"));
+	iframe.style.display = "none";
+	var reportsIframeDiv = dojo.byId("reportsIframeDivId");
+	reportsIframeDiv.innerHTML = "";
+	reportsIframeDiv.appendChild(iframe);
+}
+
+function reportsGetResultsGrid(viewId) {
+	globVars.executed = true;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports.raw/get-results?viewId="+viewId,
+		handleAs: "json",
+		content: filterValues,
+		load: function (data) {
+			return reportsBuildResultsGrid(data);
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+function reportsViewsRun(rowId) {
+	var reportsResultsContainer = dojo.byId("reportsResultsGridContainerId");
+	reportsResultsContainer.innerHTML = "";
+	if (!rowId) {
+		rowId = reportsViewsGrid.getSelectedRowId();
+	}
+	var buildResultsIn = reportsViewsGrid.cells(rowId,indexRVShowResultsIn).getValue();
+	reportsResultsToolbar.showItem("downloadQueries");
+	reportsResultsToolbar.hideItem("executeQueries");
+	switch (buildResultsIn) {
+		case "file":
+			reportsResultsContainer.innerHTML = "<?=__('This view generates a flatfile for download, click the download button to being downloading the results file')?>";
+			break;
+		case "xml":
+			reportsResultsContainer.innerHTML = "<?=__('This view generates an XML for download, click the download button to being downloading the results file')?>";
+			break;
+		case "pdf":
+			reportsResultsContainer.innerHTML = "This view generates a PDF for download, click the download button to being downloading the results file";
+			break;
+		case "graph":
+			reportsResultsContainer.innerHTML = "This view generates a Graph. Not yet implemented";
+			reportsResultsToolbar.hideItem("downloadQueries");
+			reportsResultsToolbar.hideItem("executeQueries");
+			break;
+		case "pqri":
+			reportsResultsContainer.innerHTML = "<?=__('This view generates a PQRI 2009 Registry XML for download, click the download button to being downloading the results file')?>";
+			break;
+		default:
+			reportsResultsToolbar.showItem("executeQueries");
+			reportsResultsToolbar.hideItem("downloadQueries");
+			break;
+	}
+
+	if (!rowId) {
+		rowId = reportsViewsGrid.getSelectedRowId();
+	}
+	if (rowId != null && reportsViewsGrid.cells(rowId,indexRVRunQueriesImmediately).getValue() == 1) {
+		reportsSearchResults(rowId);
+	}
+}
+
+function reportsBuildResultsGrid(data) {
+	var parentDiv = dojo.byId("reportsResultsGridContainerId");
+	parentDiv.innerHTML = "";
+
+	grids = [];
+	for (var index in data) {
+		var query = data[index];
+		if (query.error) {
+			alert(query.error);
+			continue;
+		}
+		var newFieldset = document.createElement("fieldset");
+		var newLegend = document.createElement("legend");
+		newLegend.innerHTML = query.reportQuery.displayName;
+		newFieldset.appendChild(newLegend);
+		var newDiv = document.createElement("div");
+		newDiv.setAttribute("id","reportsResultsGridId"+index);
+		newDiv.setAttribute("style","width:96%;");
+		newFieldset.appendChild(newDiv);
+		parentDiv.appendChild(newFieldset);
+
+		grids[index] = new dhtmlXGridObject("reportsResultsGridId"+index);
+		grids[index].setImagePath(globalBaseUrl+"/img/");
+		grids[index].enableDynamicLoading(true);
+		grids[index]._offsetHeight = 100;
+		var headers = [];
+		var widths = ["*"];
+		var colTypes = ["ro"];
+		var colSorts = ["str"];
+		for (var i in query.headers) {
+			var j = query.headers[i];
+			if (!query.reportQuery.customColNames) {
+				var name = j.replace(/_/," ");
+				var prettyName = name.replace(/([A-Z])(?![A-Z])/," $1");
+				prettyName = prettyName.replace(/^(.)|\s(.)/g,function ($1) {
+					return $1.toUpperCase();
+				});
+				j = prettyName;
+			}
+			headers.push(j);
+			widths.push("*");
+			colTypes.push("ro");
+			colSorts.push("str");
+		}
+		grids[index].setHeader(headers.join(","));
+		grids[index].setInitWidths(widths.join(","));
+		grids[index].setColTypes(colTypes.join(","));
+		grids[index].setColSorting(colSorts.join(","));
+		grids[index].setSkin("xp");
+		grids[index].enableAutoHeight(true,"100",true);
+		grids[index].init();
+		grids[index].parse({"rows":query.rows},"json");
+
+		grids[index].userScrollTop = 0;
+		grids[index].userOffset = 0;
+		grids[index].userHasRows = true;
+		grids[index].userIndex = index;
+		grids[index].displayName = query.reportQuery.displayName;
+		dhtmlxEvent(grids[index].entBox,"contextmenu",function(e){
+			(e||event).cancelBubble=true;
+			return false;
+		});
+	}
+}
+
+function reportsDateFilterOnChanged(value,id) {
+	var month = value.getMonth() + 1;
+	if (month < 10)  {
+		month = "0"+month;
+	}
+	filterValues[id] = value.getFullYear() + "-" + month + "-" + value.getDate();
+	reportsViewsRun();
+}
+
+function reportsGetResults(baseId) {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/reports.raw/get-report",
+		handleAs: "json",
+		content: {
+			"baseId": baseId,
+		},
+		load: function (data) {
+			dojo.byId("reportsViewsGridId").style.display = "";
+			reportsResultsToolbarClearAll();
+			var ctr = 0;
+			for (var i in data.filters) {
+				var filter = data.filters[i];
+				var name = filter.name;
+				var prettyName = name.replace(/([A-Z])(?![A-Z])/," $1");
+				prettyName = prettyName.replace(/^(.)|\s(.)/g,function ($1) {
+					return $1.toUpperCase();
+				});
+				switch (filter.type) {
+					case "<?=ReportBase::FILTER_TYPE_DATE?>":
+						var params = {
+							"uid": "filter_"+filter.id,
+							"name": "filter"+name,
+							"id": "filter"+name.replace(/[^a-zA-Z\.]/,''),
+							"onChange": "reportsDateFilterOnChanged",
+							"style": "width:80px;",
+							"value": filter.defaultValue,
+						};
+						reportsResultsToolbar.addDatePicker(params,filter.id,ctr++,prettyName,"filter.png","filter.png");
+						break;
+					case "<?=ReportBase::FILTER_TYPE_STRING?>":
+						reportsResultsToolbar.addInputBox("filter_"+filter.id,ctr++,filter.defaultValue,"80",prettyName);
+						break;
+					case "<?=ReportBase::FILTER_TYPE_ENUM?>":
+						var opts = [];
+						for (var j in filter.enums) {
+							var enums = filter.enums[j];
+							opts.push(["filter_"+filter.id+"_"+enums.id,"obj",enums.name,"blank.gif"]);
+						}
+						reportsResultsToolbar.addButtonSelect(filter.id,ctr++,prettyName,opts,"filter.png","filter.png");
+						reportsResultsToolbar.setItemToolTip(filter.id,prettyName);
+						break;
+					case "<?=ReportBase::FILTER_TYPE_QUERY?>":
+						var opts = [];
+						for (var j in filter.queries) {
+							var query = filter.queries[j];
+							opts.push(["filter_"+filter.id+"_"+query.id,"obj",query.name.replace(/\&/,"&amp;"),"blank.gif"]);
+						}
+						reportsResultsToolbar.addButtonSelect(filter.id,ctr++,prettyName,opts,"filter.png","filter.png");
+						reportsResultsToolbar.setItemToolTip(filter.id,prettyName);
+						break;
+					case "<?=ReportBase::FILTER_TYPE_LIST_BUILDING?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_PRACTICE?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_PROVIDER?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_ROOM?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_BUILDING_PREF?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_ROOM_PREF?>":
+					case "<?=ReportBase::FILTER_TYPE_LIST_PROVIDER_PREF?>":
+						var opts = [];
+						for (var j in filter.lists) {
+							var list = filter.lists[j];
+							opts.push(["filter_"+filter.id+"_"+list.id,"obj",list.name,"blank.gif"]);
+						}
+						reportsResultsToolbar.addButtonSelect(filter.id,ctr++,prettyName,opts,"filter.png","filter.png");
+						reportsResultsToolbar.setItemToolTip(filter.id,prettyName);
+						break;
+				}
+			}
+			reportsResultsToolbar.addButton("executeQueries",ctr++,"<?=__('Execute')?>","save.png","save.png");
+			reportsResultsToolbar.hideItem("executeQueries");
+			reportsResultsToolbar.addButton("downloadQueries",ctr++,"<?=__('Download')?>","save.png","save.png");
+			reportsResultsToolbar.hideItem("downloadQueries");
+
+			reportsViewsGrid.clearAll();
+			for (var i in data.views) {
+				var view = data.views[i];
+				reportsViewsGrid.addRow(view.id,"");
+				for (var j in view.data) {
+					var val = view.data[j];
+					if (j == 0) {
+						if (i == 0) val += " (default)";
+						val += " <input type=\"button\" value=\"Print\" onClick=\"reportsResultsPrint('"+view.id+"')\" style=\"width:50px;\" />";
+					}
+					reportsViewsGrid.cells(view.id,j).setValue(val);
+				}
+			}
+			var rowId = reportsViewsGrid.getRowId(0);
+			if (rowId != null) {
+				//var value = reportsViewsGrid.cells(rowId,0).getValue() + " (default)";
+				//reportsViewsGrid.cells(rowId,0).setValue(value);
+				reportsViewsGrid.selectRow(0,true);
+			}
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportsResultsPrint(rowId) {
+	if (rowId != globVars.current || !globVars.executed) {
+		alert("<?=__('Please select filters and execute that view to generate results that can be printed')?>");
+		return;
+	}
+	globVars.buttonClicked = true;
+
+	var tableHtml = "";
+	var printHtml = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+	for (var i = 0; i < grids.length; i++) {
+		var grid = grids[i];
+		var rowsNum = grid.getRowsNum();
+		if (rowsNum <= 0) continue;
+		var colsNum = grid.getColumnsNum();
+
+		tableHtml = grid.displayName+"<table border=\"1\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\">";
+		tableHtml += "<tr>";
+		for (var col = 0; col < colsNum; col++) {
+			var val = grid.getColumnLabel(col);
+			if (val.length < 1) val = "&nbsp;";
+			tableHtml += "<td style=\"font-size:12px;\"><strong>"+val+"</strong></td>";
+		}
+		tableHtml += "</tr>";
+		for (var row = 0; row < rowsNum; row++) {
+			tableHtml += "<tr>";
+			for (col = 0; col < colsNum; col++) {
+				tableHtml += "<td style=\"font-size:12px;\">";
+				var val = grid.cells2(row,col).getValue();
+				if (val.length < 1) val = "&nbsp;";
+				tableHtml += val;
+				tableHtml += "</td>";
+			}
+			tableHtml += "</tr>";
+		}
+		tableHtml += "</table>";
+		printHtml += "<tr><td><div style=\"margin-bottom:10px;font-size:18px;\">"+tableHtml+"</div></td></tr>";
+	}
+	if (tableHtml == "") {
+		alert("No results found");
+		return;
+	}
+	printHtml += "</tbody></table>";
+
+	var doc = null;
+	var iframe = dojo.byId("iframeReportsPrintId");
+	if (iframe.contentDocument) {
+		// Firefox/Opera
+		doc = iframe.contentDocument;
+	}
+	else if (iframe.contentWindow) {
+		// Internet Explorer
+		doc = iframe.contentWindow.document;
+	}
+	else if (iframe.document) {
+		// Others
+		doc = iframe.document;
+	}
+	if (doc == null) {
+		throw "Document not initialized";
+	}
+	doc.open();
+	doc.write(printHtml);
+	doc.close();
+
+	iframe.contentWindow.focus();
+	iframe.contentWindow.print();
+}
+
+function reportsLayoutLeftGridHasChildren(rowId) {
+	var ret = false;
+	var row = reportsLayoutLeftGrid._h2.get[rowId];
+	if (row && row.childs.length > 0) {
+		ret = true;
+	}
+	return ret;
+}
+
+function reportsLayoutLeftGridOnRowSelected(rowId,cellIndex) {
+	//if (reportsLayoutLeftGrid.hasChildren(rowId)) {
+	if (reportsLayoutLeftGridHasChildren(rowId)) {
+		alert("<?=__('Please select a sub-report')?>");
+		return;
+	}
+	reportsLayout.cells("b").setText(reportsLayoutLeftGrid.cells(rowId,0).getValue());
+	reportsGetResults(rowId);
+}
+
+var reportsLayoutLeftGrid = reportsLayout.cells("a").attachGrid();
+reportsLayoutLeftGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportsLayoutLeftGrid.setHeader("");
+reportsLayoutLeftGrid.setNoHeader(true);
+reportsLayoutLeftGrid.setInitWidths("*");
+reportsLayoutLeftGrid.setColTypes("tree");
+reportsLayoutLeftGrid.setSkin("xp");
+reportsLayoutLeftGrid.attachEvent("onRowSelect",reportsLayoutLeftGridOnRowSelected);
+reportsLayoutLeftGrid.init();
+function reportsLayoutLeftGridOnLoaded() {
+	if (typeof globalReportsGridCallbacks == "undefined") globalReportsGridCallbacks = [];
+	for (var i in globalReportsGridCallbacks) {
+		var func = globalReportsGridCallbacks[i];
+		if (typeof func != "function") continue;
+		func(reportsLayoutLeftGrid);
+	}
+}
+function reportsLayoutLeftGridReload() {
+	reportsLayoutLeftGrid.clearAll();
+	reportsLayoutLeftGrid.load(globalBaseUrl+"/reports.raw/list-reports",reportsLayoutLeftGridOnLoaded,"xml");
+}
+reportsLayoutLeftGridReload();
+
+dhtmlxEvent(reportsLayoutLeftGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+var reportsViewsGrid = new dhtmlXGridObject("reportsViewsGridId");
+reportsViewsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportsViewsGrid.setHeader("<?=__('Views')?>,<?=__('Run Queries Immediately')?>,<?=__('Show Results In')?>");
+reportsViewsGrid.setInitWidths("*,0,0");
+//reportsViewsGrid.setNoHeader(true);
+reportsViewsGrid.setColTypes("ro,ro,ro");
+reportsViewsGrid.setSkin("xp");
+//reportsViewsGrid.enableAutoWidth(true);
+reportsViewsGrid.enableAutoHeight(true,"100",true);
+var indexRVDisplayName = 0;
+var indexRVRunQueriesImmediately = 1;
+var indexRVShowResultsIn = 2;
+function reportsViewsGridOnRowSelected(rowId,cellIndex) {
+	if (globVars.buttonClicked) {
+		globVars.buttonClicked = false;
+		return;
+	}
+	filterValues = {};
+	reportsResultsToolbar.hideItem("executeQueries");
+	if (reportsViewsGrid.cells(rowId,indexRVRunQueriesImmediately).getValue() == 0) {
+		reportsResultsToolbar.showItem("executeQueries");
+	}
+	globVars.previous = globVars.current;
+	globVars.current = rowId;
+	globVars.executed = false;
+	reportsViewsRun(rowId);
+}
+reportsViewsGrid.attachEvent("onRowSelect",reportsViewsGridOnRowSelected);
+reportsViewsGrid.init();
+dhtmlxEvent(reportsViewsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+var reportsResultsToolbar = new dhtmlXToolbarObject("reportsResultsToolbarId","ClearSilver");
+reportsResultsToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function reportsResultsToolbarOnClicked(id) {
+	if (id == "executeQueries" || id == "downloadQueries") {
+		reportsSearchResults();
+		return;
+	}
+	if (!id || id.substr(0,7) != "filter_") return;
+	var value = id.substr(7);
+	var arrVal = value.split("_");
+	if (arrVal.length < 2) return;
+	if (arrVal[1] == "") {
+		reportsResultsToolbar.setItemText(arrVal[0],reportsResultsToolbar.getItemToolTip(arrVal[0]));
+	}
+	else {
+		reportsResultsToolbar.setItemText(arrVal[0],reportsResultsToolbar.getListOptionText(arrVal[0],id));
+	}
+	filterValues["filter_"+arrVal[0]] = arrVal[1];
+	reportsViewsRun();
+}
+reportsResultsToolbar.attachEvent("onClick",reportsResultsToolbarOnClicked);
+reportsResultsToolbar.attachEvent("onEnter",function(id,value){
+	filterValues[id] = value;
+	reportsViewsRun();
+});
+function reportsResultsToolbarClearAll() {
+	reportsResultsToolbar.forEachItem(function(itemId){
+		reportsResultsToolbar.removeItem(itemId);
+	});
+}
+
+reportsLayout.cells("b").attachObject("reportsResultsContainerId");
+reportsResize();
+</script>

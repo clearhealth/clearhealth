@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<menu name="" absolutePosition="auto"  mixedImages="yes" >
+	<MenuItem name="File" id="menu_file" height="25">
+		<MenuItem name="Select Patient" height="25"  id="file_select_patient"/>
+		<MenuItem name="New Patient" height="25"  id="file_new_patient"/>
+<!--		<MenuItem name="Close Patient" height="25"  src="../img/closex.png" id="file_close_patient" disabled="disabled"/>
+		<MenuItem name="Update Provider / Location" height="25"  id="file_update_provider_location" disabled="disabled"/>-->
+		<MenuItem name="Review / Sign Changes" height="25"  src="../img/sign.png" id="file_review_sign_changes" />
+		<divider id="div_1"/>
+<!--		<MenuItem name="Print Setup" height="25"  id="file_print_setup"/>-->
+		<divider id="div_2"/>
+		<MenuItem name="Quit" height="25"  src="../img/quit.png" id="file_quit"/>
+	</MenuItem>  
+	<MenuItem name="Edit" id="menu_edit"  height="25">
+		<!--<MenuItem name="Find" height="25"  id="edit_find"/>
+		<MenuItem name="Find Next" height="25"  id="edit_find_next"/>
+		<MenuItem name="Find Previous" height="25"  id="edit_find_previous"/>
+		<MenuItem name="Replace" height="25"  id="edit_replace"/>
+		<MenuItem name="Replace All" height="25"  id="edit_replace_all"/>-->
+	</MenuItem>
+	<MenuItem name="View" id="menu_view"  height="25">
+		<!--<MenuItem name="Refresh" height="25"  id="view_fresh"/>
+		<divider id="div_1"/>
+		<MenuItem name="Text Size" height="25"  id="view_text_size">
+			<MenuItem name="Larger Text" height="25"  id="view_text_size_larger"/>
+			<MenuItem name="Smaller Text" height="25"  id="view_text_size_smaller"/>
+			<MenuItem name="Normal Size" height="25"  id="view_text_size_normal"/>
+		</MenuItem>
+		<divider id="div_2"/>
+		<MenuItem name="Chart Tab" height="25"  id="view_chart_tab">
+			<MenuItem name="Patient Summary Tab" height="25"  id="view_chart_tab_patient_summary"/>
+			<MenuItem name="Problem List Tab" height="25"  id="view_chart_tab_problem_list"/>
+			<MenuItem name="Medications Tab" height="25"  id="view_chart_tab_medications"/>
+			<MenuItem name="Orders Tab" height="25"  id="view_chart_tab_orders"/>
+			<MenuItem name="Clinical Notes Tab" height="25"  id="view_chart_tab_clinical_notes"/>
+			<MenuItem name="Consults/Procedures Tab" height="25"  id="view_chart_tab_consults_procedures"/>
+			<MenuItem name="Discharge Summary Tab" height="25"  id="view_chart_tab_discharge_summary"/>
+			<MenuItem name="Vital Signs Tab" height="25"  id="view_chart_tab_vital_signs"/>
+			<MenuItem name="Lab Results Tab" height="25"  id="view_chart_tab_lab_results"/>
+			<MenuItem name="Chart Inquiries Tab" height="25"  id="view_chart_tab_chart_inquiries"/>
+		</MenuItem>-->
+		<divider id="div_3"/>
+		<!--<MenuItem name="Patient Photo" height="25"  id="view_patient_photo"/>
+		<MenuItem name="Demographics" height="25"  id="view_demographics"/>
+		<MenuItem name="Postings" height="25"  id="view_postings"/>-->
+	</MenuItem>
+	<MenuItem name="Actions" id="menu_actions"  height="25" hide="hide">
+	</MenuItem>
+	<MenuItem name="Tools" id="menu_tools"  height="25">
+		<!--<MenuItem name="Group Notes" height="25"  id="view_postings"/>-->
+		<MenuItem name="Vitals" height="25"  id="action_vitals"/>
+		<MenuItem name="Location" height="25"  id="action_location"/>
+		<MenuItem name="Admision del Paciente " height="25"  id="action_pacient_admision"/>
+		<MenuItem name="Historia Clinica" height="25"  id="action_historia_clinica"/>
+		<!--<MenuItem name="Up to Date" height="25"  id="view_postings"/>
+		<MenuItem name="CHMED" height="25"  id="view_postings"/>
+		<divider id="div_1"/>
+		<MenuItem name="Enter/Edit Electronic Signature" height="25"  id="view_postings"/>
+		<MenuItem name="Pharmakokinetic Dosing Calculator" height="25"  id="view_postings"/>
+		<divider id="div_2"/>
+		<MenuItem name="Attach Images or Scanned Documents" height="25"  id="view_postings"/>
+		<MenuItem name="View Images and Scanned Documents" height="25"  id="view_postings"/>
+		<divider id="div_3"/>
+		<MenuItem name="Preferences" height="25"  id="tools_preferences"/>-->
+	</MenuItem>
+	<MenuItem name="Help" height="25"  id="menu_help">  
+		<!--<MenuItem name="Contents" height="25"  id="help_content" />  
+		<divider id="div_1"/>
+		<MenuItem name="Icon Legend" height="25"  id="help_content" />  
+		<divider id="div_2"/>
+		<MenuItem name="About"  height="25"  id="help_about" />  -->
+	</MenuItem> 
+</menu> 

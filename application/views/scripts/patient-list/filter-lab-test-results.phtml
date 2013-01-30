@@ -1,0 +1,134 @@
+<div style="margin-top:5px;">
+	<div id="labTestAutoCompleteId"></div>
+	<?=$this->formButton('labTestResultsAddButton',__('Add to list'),array('id'=>'labTestResultsAddButton','disabled'=>'disabled','onClick'=>'addSelectedLabTestResults()'))?>
+	<br />
+	<div id="filterLabTestResultsGridId" style="width:auto;height:250px;"></div>
+	<div style="float:left;">
+		<?=$this->formButton('removeId',__('Remove'),array('onClick'=>'filterLabTestResultsRemove()'))?>
+	</div>
+	<div style="float:right;">
+		<?=$this->formButton('applyFilters',__('Apply Filters'),array('onClick'=>'filterLabTestResultsApply()','id'=>'applyFilters','disable'=>'disable'))?>
+	</div>
+</div>
+<script>
+var lscb = dijit.byId("labTestAutoCompleteId");
+if (lscb != undefined) { 
+	lscb.destroyRecursive();
+	lscb = null;
+}
+var lsac = new dojox.data.QueryReadStore({
+	url:"<?=$this->baseUrl?>/orders.raw/lab-test-auto-complete",
+	requestMethod:"get"
+},"labTestAutoCompleteId");
+lscb = new dijit.form.ComboBox({
+	name:"labTestName",
+	autocomplete:false,
+	store:lsac,
+	hasDownArrow:false,
+	value:""
+},"labTestAutoCompleteId");
+lscb.domNode.style.width = "300px";
+
+function labTestResultsOnChanged(arg) {
+	dojo.byId("labTestResultsAddButton").disabled = false;
+}
+dojo.connect(lscb,"onChange","labTestResultsOnChanged");
+
+function labTestGetDetails(labTestId) {
+	if (!labTestId) return;
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/orders.raw/get-lab-test-info",
+		content: {
+			"labTestId": labTestId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			if (!data.system) return;
+			labTestPopulateDetails(data);
+		},
+		error: function (er) {
+			alert("err: " + er);
+		}
+	});
+}
+
+var filterLabTestResultsGrid = new dhtmlXGridObject("filterLabTestResultsGridId");
+filterLabTestResultsGrid.enableMultiselect(true);
+filterLabTestResultsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+filterLabTestResultsGrid.setHeader("<?=__('Test Result')?>,<?=__('Operator')?>,<?=__('Value')?>,<?=__('Value 2')?>,<?=__('Unit')?>,<?=__('OR')?>");
+filterLabTestResultsGrid.setInitWidths("*,120,80,80,80,30");
+filterLabTestResultsGrid.setColTypes("ro,coro,ed,ed,ed,ch");
+filterLabTestResultsGrid.setSkin("xp");
+filterLabTestResultsGrid.init();
+filterLabTestResultsGrid.load("<?=$this->baseUrl?>/patient-list.raw/list-filter-lab-test-results","json");
+filterLabTestResultsGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 0 && cellIndex == 3) {
+		if (this.cells(rowId,1).getValue() != "between") return false;
+	}
+	dojo.byId("applyFilters").disabled = false;
+	return true;
+});
+filterLabTestResultsGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	dojo.byId("applyFilters").disabled = false;
+});
+
+<?foreach ($this->operators as $key=>$value):?>
+filterLabTestResultsGrid.getCombo(1).put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+function addSelectedLabTestResults() {
+	if (!lscb.item || !lscb.item.i) {
+		alert("Selected lab test result was changed.");
+		return;
+	}
+	var key = lscb.item.i.label;
+	var value = lscb.item.i.name;
+	if (filterLabTestResultsGrid.doesRowExist(key)) {
+		alert("LabTestResults "+value+ " already exists.");
+		return;
+	}
+	filterLabTestResultsGrid.addRow(key,",,,,,");
+	filterLabTestResultsGrid.cells(key,0).setValue(value);
+	dojo.byId("labTestResultsAddButton").disabled = true;
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterLabTestResultsRemove() {
+	var rowId = filterLabTestResultsGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("No selected item.");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		var id = rowIds[i];
+		if (filterLabTestResultsGrid.doesRowExist(id)) filterLabTestResultsGrid.deleteRow(id);
+	}
+	dojo.byId("applyFilters").disabled = false;
+}
+
+function filterLabTestResultsApply() {
+	var content = {};
+	filterLabTestResultsGrid.forEachRow(function(rowId){
+		content["filters["+rowId+"][labTest]"] = this.cells(rowId,0).getValue();
+		content["filters["+rowId+"][operator]"] = this.cells(rowId,1).getValue();
+		content["filters["+rowId+"][operand1]"] = this.cells(rowId,2).getValue();
+		content["filters["+rowId+"][operand2]"] = this.cells(rowId,3).getValue();
+		content["filters["+rowId+"][unit]"] = this.cells(rowId,4).getValue();
+		content["filters["+rowId+"][OR]"] = this.cells(rowId,5).getValue();
+	});
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-list.raw/process-filter-lab-test-results",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			dojo.byId("applyFilters").disabled = true;
+			patientListGridReload();
+			return data;
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+</script>

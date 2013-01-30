@@ -1,0 +1,369 @@
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+
+<script>
+// Tab State Class definition
+// == BEGIN ==
+function TabStateClass() {
+}
+
+// initialize default date range (2 weeks)
+TabStateClass.prototype.params = {"dateBegin":"<?=date('Y-m-d',strtotime('-2 weeks',time()))?>","dateEnd":"<?=date('Y-m-d')?>","selectedLabTests":0,"orderId":0};
+
+TabStateClass.prototype.setParam = function(params) {
+	if (typeof params == "object") {
+		for (var key in params) {
+			eval('this.params.'+key+' = params[key];');
+		}
+	}
+}
+TabStateClass.prototype.redrawTab = function() {
+	redrawLabTestsView();
+}
+TabStateClass.prototype.getParam = function(index) {
+	var ret = null;
+	if (typeof this.params == "object") {
+		for (var key in this.params) {
+			if (key == index) {
+				ret = this.params[key];
+				break;
+			}
+		}
+	}
+	return ret;
+}
+TabStateClass.prototype.getAllParams = function() {
+	return this.params;
+}
+// instantiate global object
+TabState = new TabStateClass();
+// == END ==
+
+
+function redrawTabGrid(params) {
+}
+
+function openSelectLabTestsWindow() {
+	var params = [];
+	params.push("personId="+mainController.getActivePatient());
+	params.push("dateBegin="+TabState.getParam("dateBegin"));
+	params.push("dateEnd="+TabState.getParam("dateEnd"));
+	winSelectLabTests = globalCreateWindow("windowSelectLabTests",params,"<?=$this->baseUrl?>/lab-results.raw/select-lab-tests","<?=__('Select Lab Tests')?>",350,240);
+}
+
+function closeSelectLabTestsWindow() {
+	winSelectLabTests.close();
+}
+
+function openWorksheetWindow() {
+	winWorksheet = globalCreateWindow("windowSelectLabTests",[],"<?=$this->baseUrl?>/lab-results.raw/worksheet","<?=__('Select Lab Tests for Worksheet')?>",400,350);
+}
+
+function closeWorksheetWindow() {
+	winWorksheet.close();
+}
+
+function openDateRangeWindow() {
+	winDateRange = globalCreateWindow("windowDateRange",[],"<?=$this->baseUrl?>/lab-results.raw/date-range","<?=__('Select a Date Range')?>",175,150);
+}
+
+function closeDateRangeWindow() {
+	winDateRange.close();
+}
+
+function backLabResults() {
+	changeDateRange(false);
+	reloadLabResultsGrid();
+}
+
+function forwardLabResults() {
+	changeDateRange(true);
+	reloadLabResultsGrid();
+}
+
+function changeDateRange(advance) {
+	if (typeof advance == 'undefined') {
+		advance = true;
+	}
+	var dateBegin = TabState.getParam("dateBegin");
+	var dateEnd = TabState.getParam("dateEnd");
+	var oDateBegin = dojo.date.stamp.fromISOString(dateBegin);
+	var oDateEnd = dojo.date.stamp.fromISOString(dateEnd);
+	var dayDiff = dojo.date.difference(oDateBegin,oDateEnd,defaultDateInterval);
+	if (advance) {
+		oTmpDate = dojo.date.add(oDateEnd,defaultDateInterval,dayDiff);
+	}
+	else {
+		oTmpDate = dojo.date.add(oDateBegin,defaultDateInterval,-dayDiff);
+	}
+	var day = oTmpDate.getDate();
+	if (day < 10) {
+		day = '0' + day;
+	}
+	var month = oTmpDate.getMonth() + 1;
+	if (month < 10) {
+		month = '0' + month;
+	}
+	var yr = oTmpDate.getFullYear();
+	var tmpDate = yr + '-' + month + '-' + day;
+
+	if (advance) {
+		dateBegin = dateEnd;
+		dateEnd = tmpDate;
+	}
+	else {
+		dateEnd = dateBegin;
+		dateBegin = tmpDate;
+	}
+	TabState.setParam({"dateBegin":dateBegin,"dateEnd":dateEnd});
+	TabState.setParam({"selectedLabTests":0});
+	TabState.setParam({"orderId":0});
+}
+
+</script>
+
+<div id="labResultsLayout" style="position:relative;width:100%;height:480px;"></div>
+<div id="labResultsLeftLayout" style="position:relative;width:100%;height:480px;"></div>
+
+<div id="labResultsRightContainer" style="float:left;width:100%;">
+	<div style="padding-left:5px;height:30px;padding-top:4px; margin:0;background-color:#ece9d8;">
+		<div style="float:left;">
+			<input type="button" id="backButton" value="Back" onClick="backLabResults()">&nbsp; <strong>Showing:</strong> <label id="labResultLabel">All Tests</label>
+		</div>
+		<div style="float:right;">
+			<input type="button" id="forwardButton" value="Forward" onClick="forwardLabResults()">
+		</div>
+	</div>
+	<div id="labTestsView" style="position:relative;width:100%;"></div>
+</div>
+
+<script>
+var defaultDateInterval = 'day';
+var defaultDate = 'today';
+var selectedDate = defaultDate;
+
+// Main Layout
+var labLayout = new dhtmlXLayoutObject("labResultsLayout", "2U");
+labLayout.setImagePath("<?=$this->baseUrl?>/img/");
+currentWidth = labLayout.cells("a").getWidth() / 2;
+labLayout.cells("a").setWidth(currentWidth);
+labLayout.cells("a").hideHeader();
+labLayout.cells("a").attachObject("labResultsLeftLayout");
+labLayout.cells("a").fixSize(true,false); 
+labLayout.cells("b").hideHeader();
+labLayout.cells("b").attachObject("labResultsRightContainer");
+labLayout.cells("b").fixSize(true,false); 
+labLayout.setEffect('collapse',true);
+labLayout.setEffect("resize",true);
+
+//Left Layout
+var labResultsLeftLayout = new dhtmlXLayoutObject("labResultsLeftLayout", "3E");
+labResultsLeftLayout.setImagePath("<?=$this->baseUrl?>/img/");
+labResultsLeftLayout.cells("a").hideHeader();
+labResultsLeftLayout.cells("a").setHeight("150");
+labResultsLeftLayout.cells("a").fixSize(false,true); 
+var lrepGrid = labResultsLeftLayout.cells("a").attachGrid();
+labResultsLeftLayout.cells("b").hideHeader();
+labResultsLeftLayout.cells("b").setHeight("200");
+labResultsLeftLayout.cells("b").fixSize(false,true); 
+var drGrid = labResultsLeftLayout.cells("b").attachGrid();
+labResultsLeftLayout.cells("c").hideHeader();
+labResultsLeftLayout.cells("c").fixSize(false,true); 
+var loGrid = labResultsLeftLayout.cells("c").attachGrid();
+labResultsLeftLayout.setEffect('collapse',true);
+labResultsLeftLayout.setEffect("resize", true);
+</script>
+
+<div>
+	<div style="width:20%;float:left;"></div>
+</div>
+
+<script>
+//lrepGrid = new dhtmlXGridObject('labReportsContainer');
+lrepGrid.setImagePath("<?=$this->baseUrl?>/img/");
+lrepGrid.setHeader('<?=__('Reports')?>');
+lrepGrid.setInitWidths("*");
+lrepGrid.setColTypes("ro");
+lrepGrid.setSkin("xp");
+lrepGrid.attachEvent('onRowSelect',onLabReportsRowSelected);
+lrepGrid.init();
+lrepGrid.addRow("tests_by_date","<?=__('Tests By Date')?>");
+lrepGrid.addRow("selected_tests_by_date","<?=__('Selected Tests By Date')?>");
+
+function onLabReportsRowSelected(rowId,cellIndex) {
+	patientId = mainController.getActivePatient();
+	if (patientId <= 0) {
+		alert('<?=__('No patient selected.')?>');
+		return;
+	}
+	switch (rowId) {
+		case 'tests_by_date':
+			TabState.setParam({"selectedLabTests":0});
+			TabState.setParam({"orderId":0});
+			redrawLabTestsView();
+			break;
+		case 'selected_tests_by_date':
+			openSelectLabTestsWindow();
+			break;
+		case 'worksheet':
+			openWorksheetWindow();
+			break;
+		case 'cumulative':
+		case 'microbiology':
+		case 'anatomic_pathology':
+		case 'blood_bank':
+		case 'lab_status':
+			redrawLabTestsView('report-tests-view');
+			break;
+	}
+}
+redrawLabTestsView();
+
+function reloadLabResultsGrid() {
+	if (!window.resultsGrid) {
+		return;
+	}
+	var params = "patientId="+mainController.getActivePatient()+"&dateBegin="+TabState.getParam('dateBegin')+"&dateEnd="+TabState.getParam('dateEnd')+"&selectedLabTests="+TabState.getParam('selectedLabTests');
+	var orderId = TabState.getParam('orderId');
+	if (orderId > 0) {
+		params = "orderId="+orderId;
+	}
+	resultsGrid.clearAll();
+	resultsGrid.load("<?=$this->baseUrl?>/lab-results.raw/results.json?"+params,onPostLoad,"json");
+	setLabResultLabel();
+}
+
+function redrawLabTestsView(view) {
+	if (!view) {
+		view = 'lab-tests-view';
+	}
+	if (view == 'lab-tests-view' && TabState.getParam("labTestView") == view) { // cache view
+		reloadLabResultsGrid();
+		return;
+	}
+	TabState.setParam({"labTestView":view});
+	dojo.xhrGet( {
+		url: "<?=$this->baseUrl?>/lab-results.raw/"+view,
+		handleAs: "text",
+		load: function(data, ioArgs) {
+			dojo.setInnerHTML(dojo.byId('labTestsView'),data);
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+drGrid.setImagePath("<?=$this->baseUrl?>/img/");
+drGrid.setHeader('<?=__('Date Range')?>');
+drGrid.setInitWidths("*");
+drGrid.setColTypes("ro");
+drGrid.setSkin("xp");
+drGrid.attachEvent('onRowSelect',onDateRangeRowSelected);
+drGrid.init();
+drGrid.addRow("date_range","<?=__('Date Range')?>");
+drGrid.addRow("today","<?=__('Today')?>");
+drGrid.addRow("one_week","<?=__('One Week')?>");
+drGrid.addRow("two_weeks","<?=__('Two Weeks')?>");
+drGrid.addRow("one_month","<?=__('One Month')?>");
+drGrid.addRow("six_months","<?=__('Six Months')?>");
+drGrid.addRow("one_year","<?=__('One Year')?>");
+drGrid.addRow("two_years","<?=__('Two Years')?>");
+drGrid.addRow("all_results","<?=__('All Results')?>");
+
+function onDateRangeRowSelected(rowId,cellIndex) {
+	patientId = mainController.getActivePatient();
+	if (patientId <= 0) {
+		alert('<?=__('No patient selected.')?>');
+		return;
+	}
+
+	// enable forward and backward buttons
+	dojo.byId("forwardButton").disabled = false;
+	dojo.byId("backButton").disabled = false;
+
+	switch (rowId) {
+		case 'date_range':
+			defaultDateInterval = "day";
+			openDateRangeWindow();
+			break;
+		case 'today':
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d')?>"});
+			defaultDateInterval = "day";
+			break;
+		case 'one_week':
+			defaultDateInterval = "week";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-1 week',time()))?>"});
+			break;
+		case 'two_weeks':
+			defaultDateInterval = "week";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-2 weeks',time()))?>"});
+			break;
+		case 'one_month':
+			defaultDateInterval = "month";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-1 month',time()))?>"});
+			break;
+		case 'six_months':
+			defaultDateInterval = "month";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-6 months',time()))?>"});
+			break;
+		case 'one_year':
+			defaultDateInterval = "year";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-1 year',time()))?>"});
+			break;
+		case 'two_years':
+			defaultDateInterval = "year";
+			TabState.setParam({"dateEnd":"<?=date('Y-m-d')?>","dateBegin":"<?=date('Y-m-d',strtotime('-2 years',time()))?>"});
+			break;
+		case 'all_results':
+			// disable forward and backward buttons
+			dojo.byId("forwardButton").disabled = true;
+			dojo.byId("backButton").disabled = true;
+			TabState.setParam({"dateEnd":"*"});
+			break;
+	}
+	if (rowId != 'date_range') {
+		TabState.redrawTab();
+	}
+}
+
+loGrid.setImagePath("<?=$this->baseUrl?>/img/");
+loGrid.setHeader('<?=__('Orders')?>');
+loGrid.setInitWidths("*");
+loGrid.setColTypes("ro");
+loGrid.setSkin("xp");
+loGrid.attachEvent("onRowSelect",function(rowId,cellIndex){TabState.setParam({"orderId":rowId});reloadLabResultsGrid();});
+loGrid.init();
+
+function loGridReload() {
+	loGrid.clearAll();
+	loGrid.load("<?=$this->baseUrl?>/lab-results.raw/lab-orders.json?personId="+mainController.getActivePatient(),"json");
+}
+
+loGridReload();
+
+function setLabResultLabel() {
+	var rowId = lrepGrid.getSelectedRowId();
+	if (rowId == null) {
+		rowId = lrepGrid.getRowId(0);
+	}
+	if (rowId == null) {
+		setTimeout("setLabResultLabel();",1000)
+		return;
+	}
+	var labResultLabel = lrepGrid.cells(rowId,0).getValue();
+	var dateEnd = TabState.getParam("dateEnd");
+	if (dateEnd == '*') {
+		labResultLabel += ": <?=__('All Tests')?>";
+	}
+	else {
+		var dateBegin = TabState.getParam("dateBegin");
+		labResultLabel += ": "+dateBegin+" - "+dateEnd;
+	}
+	dojo.byId("labResultLabel").innerHTML = labResultLabel;
+}
+// set the lab result labels
+setLabResultLabel();
+
+</script>

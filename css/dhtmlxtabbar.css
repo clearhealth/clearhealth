@@ -1,0 +1,232 @@
+.dhx_tabbar_zoneV{
+   position:relative;
+}
+.dhx_tabbar_zoneVB{
+    position:relative;
+}
+.dhx_tabbar_zone .dhx_tablist_zone{
+  padding:5px 0px 0px 0px;
+}
+.dhx_tabbar_zoneB .dhx_tablist_zone{
+  padding:5px 0px 0px 0px;
+}
+.dhx_tabbar_zoneV .dhx_tablist_zone{
+  padding:0px 0px 0px 0px;
+}
+.dhx_tabbar_zoneVB .dhx_tablist_zone{
+  padding:0px 0px 0px 0px;
+  position:absolute;
+}
+.dhx_tabcontent_sub_zone{
+	width:100%;
+	height:100%;
+	overflow:auto;
+	padding: 0px 0px 0px 0px !important
+}
+.dhx_tabcontent_zone{
+  overflow:hidden;
+  position:relative;
+  background-color:#F0F8FF;
+  overflow:auto;
+}
+.dhx_tabbar_zone .dhx_tabcontent_zone{
+  border-bottom:1px solid #91A7B4;
+  border-left:1px solid #91A7B4;
+  border-right:1px solid #91A7B4;
+  border-top:0px solid #91A7B4;  
+}
+.dhx_tabbar_zoneB .dhx_tabcontent_zone{
+  border-top:1px solid #91A7B4;
+  border-left:1px solid #91A7B4;
+  border-right:1px solid #91A7B4;
+  border-bottom:0px solid #91A7B4;
+}
+.dhx_tabbar_zoneV .dhx_tabcontent_zone{
+  border-bottom:1px solid #91A7B4;
+  border-top:1px solid #91A7B4;
+  border-right:1px solid #91A7B4;
+  border-left:0px solid #91A7B4;
+  position:absolute; top:0px;
+}
+.dhx_tabbar_zoneVB .dhx_tabcontent_zone{
+  border-bottom:1px solid #91A7B4;
+  border-top:1px solid #91A7B4;
+  border-left:1px solid #91A7B4;
+  border-right:0px solid #91A7B4;
+  position:absolute; top:0px;
+  left:0px;
+}
+
+
+
+
+
+
+.dhx_tab_element div{
+    font-family:Tahoma;
+    font-size:8pt;
+}
+.dhx_tabbar_zoneB .dhx_tab_element div{
+    background-position:bottom;
+}
+.dhx_tabbar_zoneVB .dhx_tab_element div{
+    background-position:right;
+}
+
+
+
+
+.dhx_tab_element{
+    font-family:Tahoma;
+    font-size:8pt;
+    text-align:center;
+    cursor:pointer;
+    position:absolute;
+
+    overflow:hidden;
+}
+.dhx_tabbar_zone .dhx_tab_element{
+    padding:3px 0px 3px 0px;
+}
+.dhx_tabbar_zoneB .dhx_tab_element{
+    padding:0px 0px 0px 0px;
+
+}
+.dhx_tabbar_zoneV .dhx_tab_element{
+    padding:0px 3px 0px 3px;
+}
+.dhx_tabbar_zoneVB .dhx_tab_element{
+    padding:0px 0px 0px 0px;
+}
+
+
+
+
+
+
+
+
+.dhx_tab_element_inactive{
+    font-weight:normal;
+    z-Index:4;
+}
+.dhx_tabbar_zone .dhx_tab_element_inactive{
+    margin-top:3px;
+    margin-left:0px;
+}
+.dhx_tabbar_zoneB .dhx_tab_element_inactive{
+    margin-top:0px;
+    margin-left:0px;
+}
+ .dhx_tabbar_zoneV .dhx_tab_element_inactive{
+    margin-left:3px;
+    margin-top:0px;
+}
+.dhx_tabbar_zoneVB .dhx_tab_element_inactive{
+    margin-left:0px;
+    margin-top:0px;
+}
+
+
+.dhx_tab_element_active{
+    background-color: #F0F8FF;
+    font-weight:bold;
+    z-Index:6;
+}
+.dhx_tabbar_zoneB .dhx_tab_element_active{
+    margin-top:0px;
+}
+
+.dhx_tab_element_disabled{
+	color:silver;
+	cursor:default;
+}
+
+
+.dhx_tabbar_row{
+    overflow:hidden;
+}
+.dhx_tabbar_zone .dhx_tabbar_row{
+    margin-top:-5px;
+    position:relative;
+    }
+.dhx_tabbar_zoneB .dhx_tabbar_row{
+    margin-top:-5px;
+    position:relative;
+    }
+.dhx_tabbar_zoneV .dhx_tabbar_row{
+    margin-left:0px;
+    margin-top: 0px;
+    top:0px;
+    position:absolute;
+    }
+.dhx_tabbar_zoneVB .dhx_tabbar_row{
+    margin-left:0px;
+    margin-top: 0px;
+    top:0px;
+    position:absolute;
+    }
+
+
+
+
+
+
+.dhx_tablist_scroll{
+    position:absolute;
+    top:5px;
+    right:4px;
+    height:15px;
+    width:32px;
+    z-Index:6;
+    cursor:pointer;
+}
+.dhx_tabbar_zoneV .dhx_tabbar_row .dhx_tablist_scroll{
+    height:32px;
+    width:15px;
+}
+.dhx_tabbar_zoneVB .dhx_tabbar_row .dhx_tablist_scroll{
+    height:32px;
+    width:15px;
+}
+
+
+
+
+
+.dhx_tablist_line{
+    height:1px;
+    overflow:hidden;
+    background-color:#91A7B4;
+    width:100%;
+    position:absolute;
+    left:0px;
+    z-Index:5;
+}
+
+.dhx_tabbar_zoneB .dhx_tabbar_row .dhx_tablist_line{
+    height:1px;
+    width:100%;
+    left:0px;
+}
+.dhx_tabbar_zoneV .dhx_tabbar_row .dhx_tablist_line{
+    width:1px;
+    height:100%;
+    top:0px;
+}
+.dhx_tabbar_zoneVB .dhx_tabbar_row .dhx_tablist_line{
+    width:1px;
+    height:100%;
+    top:0px;
+}
+
+.dhx_ajax_loader{
+    margin-top:20px;
+    margin-left:10px;    
+    font-size:10pt;
+    font-family:Arial,Tahoma;
+    font-weight:bold;
+    vertical-align: absmiddle;
+}
+
+

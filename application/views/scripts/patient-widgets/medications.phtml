@@ -1,0 +1,14 @@
+<div id="medication_container" style="width:99%;height:auto;"></div>
+                                <script>
+                                        amGrid = new dhtmlXGridObject('medication_container');
+                                        amGrid.setImagePath("../img/");
+                                        amGrid.setHeader("Active Medication,Status");
+                                        amGrid.setInitWidths("300,*");
+                                        amGrid.setColAlign("left");
+                                        amGrid.setSkin("xp");
+                                        var testdata=[
+                                                ["Home-Med Erythromicin 50 MG Oral Tablet","Active"]
+                                        ]
+                                        amGrid.init(); 
+                                        amGrid.parse(testdata,"jsarray");
+                                </script>

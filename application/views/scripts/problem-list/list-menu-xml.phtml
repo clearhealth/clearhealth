@@ -1,0 +1,23 @@
+<?='<?xml version="1.0" ?>'?>
+<menu id="0">
+	<item id="new" text="<?=__('New Problem')?>" />
+	<item id="sep1" type="separator"/>
+	<item id="edit" text="<?=__('Edit')?>" enabled="false" />
+	<item id="activate" text="<?=__('Mark Active')?>" enabled="false" />
+	<item id="inactivate" text="<?=__('Mark Inactive')?>" enabled="false" />
+	<item id="verify" text="<?=__('Mark Verify')?>" enabled="false" />
+	<item id="flags" text="<?=__('Flags')?>" enabled="false">
+		<?foreach ($this->flags as $key=>$value):?>
+		<item id="flags_<?=$key?>" text="<?=$value?>" />
+		<?endforeach;?>
+	</item>
+	<item id="sep2" type="separator"/>
+	<item id="annotate" text="<?=__('Annotate')?>" enabled="false" />
+	<item id="sep3" type="separator"/>
+	<item id="remove" text="<?=__('Remove')?>" enabled="false" />
+	<item id="restore" text="<?=__('Restore')?>" enabled="false" />
+	<item id="resolve" text="<?=__('Resolve')?>" enabled="false" />
+	<item id="sep4" type="separator"/>
+	<item id="view" text="<?=__('View Details')?>" />
+	<!--<item id="show_comments" text="<?=__('Show Comments')?>" type="checkbox" checked="true" enabled="true" />-->
+</menu>

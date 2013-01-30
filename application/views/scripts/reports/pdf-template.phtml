@@ -1,0 +1,15 @@
+<?=$this->xmlHeader?>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/" timeStamp="2008-01-16T02:06:28Z" uuid="6aee0086-4ab9-40a0-8119-5a0f3d39220a">
+<xfa:datasets xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">
+<xfa:data>
+<form1>
+<data>
+<?foreach($this->report->reportQueries as $query):?>
+<?=$query->execute()->toXml()?>
+<?endforeach;?>
+</data>
+</form1>
+</xfa:data>
+</xfa:datasets>
+<pdf href="https://<?=$_SERVER['HTTP_HOST']?><?=$this->baseUrl?>/reports.raw/binary-template?templateId=<?=$this->templateId?>" xmlns="http://ns.adobe.com/xdp/pdf/" />
+</xdp:xdp>

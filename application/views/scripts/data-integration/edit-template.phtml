@@ -1,0 +1,56 @@
+
+<div style="width:100%;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',55)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',55)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->templateInput('FormTextarea',array('style'=>'width:470px;height:250px;'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->dataIntegrationTemplateId->getValue())?>
+	<?=$this->form->dataIntegrationTemplateIdInput('FormHidden')?>
+	<?=$this->formHidden('type',$this->form->handlerType->getValue())?>
+	<?=$this->form->handlerTypeInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('winEditDataIntegrationTemplateId').close()"/>
+</div>
+
+<script>
+function postSubmitedittemplate(data) {
+<?if (strlen($this->callback) > 0):?>
+	if (window.<?=$this->callback?>) {
+		window.<?=$this->callback?>(data);
+	}
+<?endif;?>
+	dhxWins.window('winEditDataIntegrationTemplateId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

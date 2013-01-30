@@ -1,0 +1,79 @@
+<script>
+function allergiesLookup() {
+	var q = dojo.byId("q").value;
+	if (q.length < 2) {
+		alert("<?=__('Enter at least 3 characters to search')?>");
+		return;
+	}
+	allergiesLookupGrid.clearAll();
+	allergiesLookupGrid.load("<?=$this->baseUrl?>/allergies.raw/process-lookup?q="+q,allergiesLookupGridOnLoaded,"json");
+}
+
+function selectedAllergiesLookup(rowId) {
+	if (!rowId) {
+		var rowId = allergiesLookupGrid.getSelectedRowId();
+	}
+	if (rowId == null) {
+		alert('<?=__('No allergy selected')?>');
+		return;
+	}
+	<?if($this->jsCallback != ''):?>
+	if (window.<?=$this->jsCallback?>) {
+		var parentId = allergiesLookupGrid.getParentId(rowId);
+		var category = allergiesLookupGrid.cells(parentId,0).getValue();
+		globalSelectedAllergy = {"category":category,"id":rowId};
+		<?=$this->jsCallback?>(allergiesLookupGrid.cells(rowId,0).getValue());
+	}
+	<?endif;?>
+	dhxWins.window("winLookupAllergiesId").close();
+}
+
+function keyPressInput(e) {
+	var key = window.event ? e.keyCode : e.which;
+	if (key == 13) {
+		allergiesLookup();
+	}
+}
+</script>
+
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+
+<div style="margin-bottom:5px;">
+<?=$this->formText('q','',array('id'=>'q','style'=>'width:80%;','onkeypress'=>'keyPressInput(event);'))?>
+<?=$this->formButton('searchLabel',__('Search'),array('id'=>'searchLabel','onClick'=>'allergiesLookup();'))?>
+</div>
+<div style="overflow:auto;">
+	<div id="allergiesLookupGridId" style="width:100%;height:280px;"></div>
+</div>
+
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="selectedAllergiesLookup()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('winLookupAllergiesId').close()" style="width:150px;margin-top:10px;" />
+</div>
+<script>
+var allergiesLookupGrid = new dhtmlXGridObject("allergiesLookupGridId");
+allergiesLookupGrid.setImagePath("<?=$this->baseUrl?>/img/");
+allergiesLookupGrid.setHeader("");
+allergiesLookupGrid.setNoHeader(true);
+allergiesLookupGrid.setInitWidths("800"); // * does not work here
+allergiesLookupGrid.setColAlign("left");
+allergiesLookupGrid.setColTypes("tree");
+function allergiesLookupGridOnRowDblClicked(rowId,colIndex) {
+	selectedAllergiesLookup(rowId);
+}
+allergiesLookupGrid.attachEvent("onRowDblClicked",allergiesLookupGridOnRowDblClicked);
+function allergiesLookupGridOnBeforeSelected(newSelectedRow,oldSelectedRow) {
+	var parentId = allergiesLookupGrid.getParentId(newSelectedRow);
+	if (parentId == null || parentId == 0) {
+		// root/parent
+		return false;
+	}
+	return true;
+}
+allergiesLookupGrid.attachEvent("onBeforeSelect",allergiesLookupGridOnBeforeSelected);
+allergiesLookupGrid.init();
+
+function allergiesLookupGridOnLoaded() {
+	allergiesLookupGrid.expandAll();
+}
+</script>

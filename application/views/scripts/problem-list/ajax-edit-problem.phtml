@@ -1,0 +1,206 @@
+<script>
+
+function toggleDisabled(el,disabled) {
+	try {
+		el.disabled = disabled;
+	}
+	catch(e) {}
+
+	if (el.childNodes && el.childNodes.length > 0) {
+		for (var x = 0; x < el.childNodes.length; x++) {
+			toggleDisabled(el.childNodes[x],disabled);
+		}
+	}
+}
+
+function toggleImmediacy(disabled) {
+	var immediacy = dojo.byId('problemList-immediacy');
+	var immediacy = document.getElementsByName('problemList[immediacy]');
+	for(var i=0; i < immediacy.length; i++) {
+		immediacy[i].disabled = disabled;
+	}
+}
+function addComment() {
+	var comment = null;
+		comment = window.prompt('Please enter your comment');
+		if (comment == null) {
+			return;
+		}
+	// add to comments grid
+	var currentDate = '<?=date('m/d/Y')?>';
+	var newId = 'plc'+(new Date()).valueOf();
+	var currentUser = '<?=$this->currentUser?>';
+	commentsGrid.addRow(newId,convertComma(comment)+','+convertComma(currentUser)+','+convertComma(currentDate));
+}
+function editComment() {
+	var selId = commentsGrid.getSelectedRowId();
+	if (selId == null) {
+		return;
+	}
+	var commentValue = commentsGrid.cells(selId,0).getValue();
+	var comment = null;
+	comment = window.prompt('Please enter your comment',commentValue);
+		if (comment == null) {
+			return;
+		}
+	commentsGrid.cells(selId,0).setValue(comment);
+}
+function removeComment() {
+	commentsGrid.deleteSelectedRows();
+}
+function convertComma(str) {
+	return str.replace(/,/g, "&#44;");
+}
+</script>
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+
+<div style="width:495px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__("Add Problem")?></legend>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="problemList-code"><?=__("Problem")?></label></dt>
+	<input type="text" name="problemList[codeTextShort]" id="problemList-code-text-short" readonly="readonly" style="width:400px" value="<?=$this->form->codeTextShort->getValue()?>" />
+	<input type="hidden" name="problemList[code]" id="problemList-code" value="<?=$this->form->code->getValue()?>" />
+	<input type="button" onClick="openLookupProblemWindow()" value="..." />
+</div>
+
+<?$dateOfOnsetValue = '';
+if ($this->form->dateOfOnset->getValue()) {
+	$dateOfOnsetValue = date('Y-m-d',strtotime($this->form->dateOfOnset->getValue()));
+}?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="problemList-dateOfOnset"><?=__('Diagnosis Date')?></label></dt>
+	<?if(!$this->form->dateOfOnset->getValue())
+		$this->form->dateOfOnset->setValue(date('Y-m-d'));?>
+        <?=$this->form->dateOfOnsetInput()?>
+</div>
+
+<!--
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+        <?=__($this->form->service->renderLabel())?>
+	<select id="problemList-service" name="problemList[service]" style="width:325px;">
+	<?foreach($this->services as $service):?>
+		<option value="<?=$service?>" <?if ($service == $this->form->service->getValue()): ?>selected="selected"<?endif;?>><?=$service?></option>
+	<?endforeach;?>
+	</select>
+</div>
+-->
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="problemList-provider-id"><?=__("Provider")?></label></dt>
+	<select id="problemList-provider-id" name="problemList[providerId]" style="width:325px;">
+		<option value="0" selected="selected"><?=__('No Provider')?></option>
+	<?foreach(Provider::getArray() as $personId => $name):?>
+		<option value="<?=$personId?>" <?if ($personId == $this->form->providerId->getValue()): ?>selected="selected"<?endif;?>><?=$name?></option>
+	<?endforeach;?>
+	</select>
+</div>
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;width:97%;">
+	<div style="float:left;width:50%;">
+        <strong><?=__($this->form->status->renderLabel())?></strong>
+        <input type="radio" id="problemList-status" name="problemList[status]" value="Active" onClick="toggleImmediacy(false)" <?=($this->form->status->getValue() == 'Active' || !$this->form->status->getValue())?'checked="checked"':''?> /> Active
+        <input type="radio" id="problemList-status" name="problemList[status]" value="Inactive" onClick="toggleImmediacy(true)" <?=($this->form->status->getValue() == 'Inactive')?'checked="checked"':''?> /> Inactive
+	</div>
+	<div style="float:right;width:50%">
+        <strong><?=__($this->form->immediacy->renderLabel())?></strong>
+        <input type="radio" id="problemList-immediacy" name="problemList[immediacy]" value="Acute" <?=($this->form->immediacy->getValue() == 'Acute')?'checked="checked"':''?> /> <?=__('Acute')?>
+        <input type="radio" id="problemList-immediacy" name="problemList[immediacy]" value="Chronic" <?=($this->form->immediacy->getValue() == 'Chronic')?'checked="checked"':''?> /> <?=__('Chronic')?>
+        <input type="radio" id="problemList-immediacy" name="problemList[immediacy]" value="unknown" <?=($this->form->immediacy->getValue() == 'unknown' || !$this->form->immediacy->getValue())?'checked="checked"':''?> /> <?=__('unknown')?>
+	</div>
+</div>
+
+<script>
+<?if($this->form->status->getValue() == 'Inactive'):?>
+var stats = true;
+<?else:?>
+var stats = false;
+<?endif?>
+toggleImmediacy(stats);
+</script>
+
+<br style="clear:left;" />
+<div id="commentsInputContainer"></div>
+<div id="commentsContainer" style="height:200px;width:100%;"></div>
+<script>
+	commentsGrid = new dhtmlXGridObject('commentsContainer');
+	commentsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+	commentsGrid.setHeader('<?=__('Comment,Author,Date')?>');
+	commentsGrid.setInitWidths("*,*,100");
+	commentsGrid.setColTypes("ro");
+	commentsGrid.setSkin("xp");
+	commentsGrid.attachEvent("onRowSelect",commentsRowSelectHandler);
+	commentsGrid.attachEvent("onRowDblClicked",commentsRowDoubleClickedHandler);
+	commentsGrid.init();
+
+	function commentsRowSelectHandler(rowId,cellIndex) {
+	}
+
+	function commentsRowDoubleClickedHandler(rowId,colIndex) {
+		editComment();
+	}
+
+	function saveForm() {
+		var rowsNum = commentsGrid.getRowsNum();
+		var commentsContainer = dojo.byId('commentsInputContainer');
+		for (var i = 0; i < rowsNum; i++) {
+			var newInput = document.createElement('input');
+			newInput.type = 'hidden';
+			newInput.name = 'comments[]';
+			newInput.value = commentsGrid.getRowId(i) + '_' + commentsGrid.cellByIndex(i,0).getValue();
+			commentsContainer.appendChild(newInput);
+		}
+
+
+		dojo.xhrPost ({
+			url: '<?=$this->baseUrl?>/problem-list.raw/ajax-process-edit-problem',
+			form: 'editProblem',
+			load: function (data) {
+				filterRowSelectHandler(previousFilterRowId,previousFilterCellIndex);
+				dhxWins.window("<?=$this->form->getWindow()?>").close();
+			},
+			error: function (er) {
+				alert('err: ' + er.responseText);
+			}
+		});
+	}
+
+	<?foreach($this->problemList->problemListComments as $comment):?>
+		commentsGrid.addRow('<?=$comment->problemListCommentId?>',convertComma('<?=$comment->comment?>')+','+convertComma('<?=$comment->last_name.', '.$comment->first_name?>')+','+convertComma('<?=$comment->date?>'));
+	<?endforeach?>
+</script>
+<div class="formRow">
+	<input type="button" value="<?=__('Add')?>" onClick="addComment()" />
+	<input type="button" value="<?=__('Edit')?>" onClick="editComment()" />
+	<input type="button" value="<?=__('Remove')?>" onClick="removeComment()" />
+</div>
+
+<br style="clear:left;" />
+<?=$this->form->personIdInput('FormHidden')?>
+<div class="formRow" style="padding-top:8px;">
+	<input type="hidden" name="problemList[problemListId]" id="problemList-problem-list-id" value="<?=$this->problemList->problemListId?>" />
+	<input type="button" value="<?=__('Save')?>" style="width:150px;" onClick="saveForm()" />
+	<input type="button" value="<?=__('Cancel')?>" style="width:150px;margin-top:10px;" onClick="dhxWins.window('<?=$this->form->getWindow()?>').close();"/>
+</div>
+	<?=$this->form->renderClose()?>
+
+</fieldset>
+</div>
+
+</form>

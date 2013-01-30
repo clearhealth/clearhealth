@@ -1,0 +1,31 @@
+<?
+echo '<?xml version="1.0" ?>
+<menu id="0">';
+
+$addSubReport = '<item id="addSubReport" text="'.__('Add Sub Report').'" img="" />';
+$add = '<item id="add" text="'.__('Add').'" img="" />';
+$edit = '<item id="edit" text="'.__('Edit').'" img="" />';
+$delete = '<item id="delete" text="'.__('Delete').'" img="" />';
+$loadMetaFromQueries = '<item id="loadMetaFromQueries" text="'.__('Load column-meta-data from Queries').'" img="" />';
+
+switch ($this->type) {
+	case 'filter':
+	case 'query':
+	case 'view':
+		echo $add;
+		echo $edit;
+		echo $delete;
+		break;
+	case 'mapping':
+		echo $loadMetaFromQueries;
+		echo $add;
+		echo $delete;
+		break;
+	default:
+		echo $addSubReport;
+		/*echo $add;
+		echo $edit;
+		echo $delete;*/
+}
+echo '</menu>';
+?>

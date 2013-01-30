@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<toolbar name="WebVista v1.0 BETA" width="100%" disableType="image" absolutePosition="auto" toolbarAlign="left">
+	<ImageTextButton  src="../img/no-person-image.png" height="60" width="350px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="float:left;"><strong>No Patient</strong><!--<strong>Brogdon, Aletha</strong><br /> MRN: 114344<br />Age/Sex: 41 (Female) </div><div style="float:left;margin-left:10px;">Wt: 128.15 lb <br />Ht: 5' 5"<br />BMI/BSA: 21.3 (1.63)--></div>]]></ImageTextButton>
+	<divider id="div_1"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="300px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <strong>Visit Not Selected</strong> <!--<br /> Provider: MANAGER,SYSTEM <br />Admit Dx: None--> ]]></ImageTextButton>
+	<divider id="div_2"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="250px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <!--<div><strong>Postings:&nbsp;&nbsp; <a href="" style="color:red;">A</a></strong></div><br /> <strong>Alerts</strong>: <img style="vertical-align:middle;" src="../img/alert.png" /><img style="vertical-align:middle;margin-left:5px;" src="../img/reminder.png" />--> ]]></ImageTextButton>
+	<divider id="div_3"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="250px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <!--<strong>Care Team</strong><br />Admitting MD: None <br />Attending MD: None--> ]]></ImageTextButton>
+</toolbar>

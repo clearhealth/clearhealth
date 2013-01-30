@@ -1,0 +1,62 @@
+<div style="float:left;width:100%;">
+	<fieldset><legend><?=__('Query Information')?></legend>
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->type->renderLabel()?>
+		<?=$this->form->typeInput('FormSelect',array('style'=>'width:350px;','options'=>$this->types))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->displayName->renderLabel()?>
+		<?=$this->form->displayNameInput('FormText',array('style'=>'width:350px;'))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->query->renderLabel()?>
+		<?=$this->form->queryInput('FormTextarea',array('cols'=>50,'rows'=>15,'style'=>'width:350px;height:180px;'))?>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="padding-top:4px;">
+		<span id="availableFiltersId"></span>
+	</div>
+	<br style="clear:left"/>
+	<div class="formRow" style="margin-top:10px;">
+		<?=$this->form->okInput()?>
+	</div>
+	<?=$this->form->reportQueryIdInput('FormHidden')?>
+	<?=$this->form->reportBaseIdInput('FormHidden')?>
+	<?=$this->form->renderClose()?>
+	</fieldset>
+</div>
+<script>
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (!data) return;
+	if (!reportBaseQueriesGrid.doesRowExist(data.id)) {
+		reportBaseQueriesGrid.addRow(data.id,"");
+	}
+	for (var i in data.data) {
+		reportBaseQueriesGrid.cells(data.id,i).setValue(data.data[i]);
+	}
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	/*if (window.reportBaseQueriesGridReload) {
+		reportBaseQueriesGridReload();
+	}*/
+	return false;
+}
+
+var filters = [];
+reportBaseFiltersGrid.forEachRow(function(rowId){
+	var value = this.cells(rowId,0).getValue();
+	if (value.length <= 0) return;
+	var prettyName = value.replace(/([A-Z])(?![A-Z])/," $1");
+	prettyName = prettyName.replace(/^(.)|\s(.)/g,function ($1) {
+        		return $1.toUpperCase();
+	});
+
+	filters.push(prettyName+" = {{"+value+"}}");
+});
+
+var availableFilters = dojo.byId("availableFiltersId");
+availableFilters.innerHTML = "<?=__('Available filters')?>: "+filters.join(" , ");
+</script>

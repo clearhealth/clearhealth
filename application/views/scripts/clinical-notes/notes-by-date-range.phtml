@@ -1,0 +1,20 @@
+<style>table.obj td {border-bottom: none;border-right:none;}</style>
+<div style="float:left;">
+	<div class="formRow">
+		<dt><label for="date-begin"><?=__("Begin Date")?></label></dt>
+		<?$dateBeginValue = date('Y-m-d');?>
+		<?=$this->formDateText('dateBegin',$dateBeginValue,array('id'=>'date-begin'))?>
+	</div>
+	<br />
+	<div class="formRow">
+		<dt><label for="date-end"><?=__("End Date")?></label></dt>
+		<?$dateEndValue = date('Y-m-d');?>
+		<?=$this->formDateText('dateEnd',$dateEndValue,array('id'=>'date-end'))?>
+	</div>
+	<br />
+	<br style="clear:left"/>
+	<div style="text-align:right;margin-top:10px;">
+		<input type="button" value="<?=__("Cancel")?>" onClick="closeNotesByDateRangeWindow()" />
+		<input type="button" value="<?=__("OK")?>" onClick="TabState.setParam({'filter':'byDateRange&dateRange','dateRange':dojo.byId('date-begin').value + '^' + dojo.byId('date-end').value});TabState.redrawTab();closeNotesByDateRangeWindow();" />
+	</div>
+</div>

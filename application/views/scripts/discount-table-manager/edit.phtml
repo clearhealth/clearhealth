@@ -1,0 +1,210 @@
+<style>
+#<?=$this->form->guid->getId()?>,#<?=$this->form->name->getId()?> {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 25em;
+}
+div.gridbox_xp#discountGridId table.hdr td div.hdrcell {
+	font-size: 90%;
+}
+</style>
+<fieldset><legend><?=__('Discount Table Information')?></legend>
+<?=$this->form->renderOpen()?>
+<div id="discountTableContainerId" style="width:750px;height:330px;">
+	<div style="float:left;">
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->guid->renderLabel()?>
+			<?=$this->form->guidInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->name->renderLabel()?>
+			<?=$this->form->nameInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->dateStart->renderLabel()?>
+			<?=$this->form->dateStartInput()?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->dateEnd->renderLabel()?>
+			<?=$this->form->dateEndInput()?>
+		</div>
+	</div>
+	<div style="float:right;margin-left:10px;">
+		<div class="formRow" style="padding-top:4px;">
+			<dt><label class="optional"><?=__('Insurance Programs')?></label></dt>
+			<div id="IPGridId" style="width:400px;height:150px;"></div>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=__('Discount Levels')?>
+		<div id="discountGridId" style="width:750px;height:200px;"></div>
+		<img src="<?=$this->baseUrl?>/img/plus.gif" title="<?=__('Add discount')?>" alt="<?=__('Add discount')?>" onClick="discountAddRow()" />
+		<img src="<?=$this->baseUrl?>/img/minus.gif" title="<?=__('Remove selected discount')?>" alt="<?=__('Remove selected discount')?>" onClick="discountRemoveSelectedRows()" />
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->okInput()?>
+		<?=$this->formHidden('oldGuid',$this->form->guid->getValue())?>
+		<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close();'))?>
+		<?=$this->form->insuranceProgramIdsInput('FormHidden')?>
+		<?=$this->form->familySize1Input('FormHidden')?>
+		<?=$this->form->familySize2Input('FormHidden')?>
+		<?=$this->form->familySize3Input('FormHidden')?>
+		<?=$this->form->familySize4Input('FormHidden')?>
+		<?=$this->form->familySize5Input('FormHidden')?>
+		<?=$this->form->familySize6Input('FormHidden')?>
+		<?=$this->form->familySize7Input('FormHidden')?>
+		<?=$this->form->familySize8Input('FormHidden')?>
+		<?=$this->form->familySize9Input('FormHidden')?>
+		<?=$this->form->familySize10Input('FormHidden')?>
+		<div id="familySizeContainerId" style="display:none;"></div>
+	</div>
+</div>
+<?=$this->form->renderClose()?>
+</fieldset>
+
+<script>
+var IPGrid = new dhtmlXGridObject("IPGridId");
+IPGrid.setImagePath("<?=$this->baseUrl?>/img/");
+IPGrid.setHeader(",<?=__('Program')?>");
+IPGrid.setColTypes("ch,ro");
+IPGrid.setSkin("xp");
+IPGrid.setInitWidths("20,380");
+IPGrid.init();
+IPGrid.load("<?=$this->baseUrl?>/discount-table-manager.raw/list-insurance-programs?id=<?=$this->form->guid->getValue()?>",null,"json");
+
+function preSubmit<?=$this->form->getId()?>() {
+	if (discountGrid.getRowsNum() < 2) {
+		alert("<?=__('No discount level defined.')?>");
+		return false;
+	}
+	var familySizeContainer = dojo.byId("familySizeContainerId");
+	discountGrid.forEachRow(function(rowId){
+		if (rowId == "incomeSize") {
+			<?$ctr = 1; for ($i = 2; $i <= 11; $i++):?>
+			dojo.byId("<?=$this->form->{'familySize'.$ctr++}->getId()?>").value = this.cells(rowId,<?=$i?>).getValue();
+			<?endfor;?>
+		}
+		else {
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "incomes["+rowId+"][discount]";
+			input.value = this.cells(rowId,0).getValue();
+			familySizeContainer.appendChild(input);
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "incomes["+rowId+"][discountType]";
+			input.value = this.cells(rowId,1).getValue();
+			familySizeContainer.appendChild(input);
+			for (var i = 2; i <= 11; i++) {
+				var input = document.createElement("input");
+				input.type = "hidden";
+				input.name = "incomes["+rowId+"][income"+(i-1)+"]";
+				input.value = this.cells(rowId,i).getValue();
+				familySizeContainer.appendChild(input);
+			}
+		}
+	});
+	var insurancePrograms = [];
+	IPGrid.forEachRow(function(rowId){
+		if (IPGrid.cells(rowId,0).isChecked()) {
+			insurancePrograms.push(rowId);
+		}
+	});
+	dojo.byId("<?=$this->form->insuranceProgramIds->getId()?>").value = insurancePrograms.join(",");
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (!data.id) {
+		alert(data);
+	}
+	else {
+		if (dtmGrid) {
+			if (data.id != "<?=$this->form->guid->getValue()?>" && dtmGrid.doesRowExist("<?=$this->form->guid->getValue()?>")) {
+				dtmGrid.setRowId(dtmGrid.getRowIndex("<?=$this->form->guid->getValue()?>"),data.id);
+			}
+			dtmGrid.renderRowData(data);
+		}
+		dhxWins.window("<?=$this->form->getWindow()?>").close();
+	}
+	return false;
+}
+
+var discountGrid = new dhtmlXGridObject("discountGridId");
+discountGrid.setImagePath("<?=$this->baseUrl?>/img/");
+discountGrid.setSkin("xp");
+discountGrid.setHeader("<?=__('Discount')?>,<?=__('Discount Type')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>,<?=__('Family Size')?>");
+discountGrid.setColTypes("ed,coro,ed,ed,ed,ed,ed,ed,ed,ed,ed,ed");
+discountGrid.setInitWidths("50,80,*,*,*,*,*,*,*,*,*,*");
+discountGrid.enableMultiselect(true);
+discountGrid.init();
+var combo = discountGrid.getCombo(1);
+<?foreach ($this->discountTypes as $key=>$value):?>
+combo.put("<?=$key?>","<?=$value?>");
+<?endforeach;?>
+
+function discountGridOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	switch(stage) {
+		case 0:
+			if (rowId == "incomeSize" && cellIndex <= 1) return false; // top most left cell is clicked
+			break;
+		case 1:
+			break;
+		case 2:
+			if (newValue == oldValue) break;
+			if (rowId == "incomeSize") { // top most row is modified
+				// check for possible duplicates
+				for (var i = 0; i < this.getColumnsNum(); i++) {
+					if (i == cellIndex) continue;
+					if (newValue == this.cells(rowId,i).getValue()) {
+						alert("<?=__('Duplicate value is detected')?>");
+						return false;
+					}
+				}
+			}
+			break;
+	}
+	return true;
+}
+discountGrid.attachEvent("onEditCell",discountGridOnEditCell);
+
+function discountGridOnLoaded() {
+}
+
+function discountGridReload() {
+	discountGrid.clearAll();
+	var url = "<?=$this->baseUrl?>/discount-table-manager.raw/list-discount?id=<?=$this->form->guid->getValue()?>";
+	discountGrid.load(url,discountGridOnLoaded,"json");
+}
+discountGridReload();
+
+function discountAddRow() {
+	defaultValues = [""];
+	for (var i = 2, ctr = discountGrid.getColumnsNum(); i < ctr; i++) {
+		defaultValues[i] = "0";
+	}
+	discountGrid.addRow(discountGrid.getRowsNum(),defaultValues.join(","));
+}
+
+function discountRemoveSelectedRows() {
+	var rowId = discountGrid.getSelectedRowId();
+	if (!rowId) {
+		alert("<?=__('No item(s) selected.')?>");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i = 0; i < rowIds.length; i++) {
+		if (rowIds[i] == "incomeSize") continue;
+		discountGrid.deleteRow(rowIds[i]);
+	}
+}
+</script>

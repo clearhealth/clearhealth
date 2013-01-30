@@ -1,0 +1,38 @@
+<script>
+
+function applyLabResults() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/lab-results.raw/session-selected-lab-tests?personId="+mainController.getActivePatient(),
+		form: "labResults",
+		handleAs: "json",
+		load: function (data) {
+			TabState.setParam({"selectedLabTests":1});
+			TabState.redrawTab();
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+	closeSelectLabTestsWindow();
+}
+</script>
+
+<br style="clear:left;" />
+<form id="labResults" method="post">
+
+<div style="width:100%;">
+	<dt><label for="available-lab-tests" class="optional"><?=('Available Lab Tests')?>:</label></dt>
+	<select id="available-lab-tests[]" name="availableLabTests[]" multiple size="7" style="width:100%;">
+	<?foreach ($this->tests as $key=>$val):?>
+		<option value="<?=$key?>"<?=isset($this->selectedLabTests[$key])?' selected="selected"':''?>><?=$val?></option>
+	<?endforeach;?>
+	</select>
+</div>
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:8px;">
+	<button name="ok" id="ok" type="button" value="<?=__('OK')?>" helper="formButton" onclick="applyLabResults();"><?=__('OK')?></button>
+	<button name="cancel" id="cancel" type="button" value="<?=__('Cancel')?>" helper="formButton" onclick="closeSelectLabTestsWindow();"><?=__('Cancel')?></button>
+</div>
+
+</form>

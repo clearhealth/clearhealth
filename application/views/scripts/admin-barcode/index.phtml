@@ -1,0 +1,107 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+<div id="abToolbarContainer"></div>
+<div id="abMacroGridContainer" style="width:100%;height:450px;"></div>
+
+<script>
+function abMacroEditWindow(name) {
+	var additionalArgs = new Array();
+	if (name) {
+		additionalArgs.push("name="+name);
+	}
+	var winEditBarcodeMacro = globalCreateWindow("windowEditBarcodeMacroId",additionalArgs,"<?=$this->baseUrl?>/admin-barcode.raw/edit","<?=__('Add/Edit Barcode Macro')?>",350,470);
+}
+
+var abToolbar = new dhtmlXToolbarObject("abToolbarContainer","ClearSilver");
+function abToolbarOnLoaded() {
+	abToolbar.disableItem("tbEditMacro");
+	abToolbar.disableItem("tbDeleteMacro");
+}
+abToolbar.loadXML("<?=$this->baseUrl?>/admin-barcode.raw/toolbar",abToolbarOnLoaded);
+abToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function abToolbarOnClicked(id) {
+	switch(id) {
+		case "tbNewMacro":
+			abMacroEditWindow();
+			break;
+		case "tbEditMacro":
+			var rowId = abMacroGrid.getSelectedRowId();
+			abMacroEditWindow(rowId);
+			break;
+		case "tbDeleteMacro":
+			var rowId = abMacroGrid.getSelectedRowId();
+			if (rowId == null) {
+				break;
+			}
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/admin-barcode.raw/process-delete",
+				handleAs: "json",
+				content: {
+					name: rowId,
+				},
+				load: function (data) {
+					abMacroGridReload();
+				},
+				error: function (error) {
+					alert(error);
+					console.error ('Error: ', error);
+				}
+			});
+			break;
+		default:
+			alert('<?=__("Invalid event: ")?>'+id);
+	}
+}
+abToolbar.attachEvent("onClick",abToolbarOnClicked);
+
+var abMacroGrid =  new dhtmlXGridObject("abMacroGridContainer");
+abMacroGrid.setImagePath("<?=$this->baseUrl?>/img/");
+abMacroGrid.setHeader('<?=__('Macros')?>');
+abMacroGrid.setColTypes("ro");
+abMacroGrid.setSkin("xp");
+abMacroGrid.setInitWidths("*");
+abMacroGrid.enableDragAndDrop(true);
+abMacroGrid.init();
+abMacroGrid.load('<?=$this->baseUrl?>/admin-barcode.raw/list-macros',null,"json");
+
+function abMacroGridReload() {
+	abMacroGrid.clearAll();
+	abMacroGrid.load('<?=$this->baseUrl?>/admin-barcode.raw/list-macros',null,"json");
+}
+
+function abMacroOnRowSelected(rowId,cellIndex) {
+	abToolbar.enableItem("tbEditMacro");
+	abToolbar.enableItem("tbDeleteMacro");
+}
+abMacroGrid.attachEvent("onRowSelect",abMacroOnRowSelected);
+
+function abMacroOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/admin-barcode.raw/process-reorder",
+		handleAs: "json",
+		content: {
+			nameFrom: idFrom,
+			nameTo: idTo,
+		},
+		load: function (data) {
+			abMacroGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+abMacroGrid.attachEvent("onDrag",abMacroOnDragged);
+function abMacroOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+abMacroGrid.attachEvent("onDrop",abMacroOnDropped);
+
+abMacroGrid.attachEvent("onRowDblClicked", function(rowId,colIndex){ abMacroEditWindow(rowId); });
+</script>

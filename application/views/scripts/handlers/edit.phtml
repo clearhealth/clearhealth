@@ -1,0 +1,173 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',35)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<?if($this->form->handlerType->getValue() == Handler::HANDLER_TYPE_HSA):?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->timeframe->renderLabel()?>
+	<?$this->form->timeframe->setAttrib('size',35)?>
+	<?=$this->form->timeframeInput()?>
+</div>
+<?endif;?>
+<?if (isset($this->listDirections)):?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->direction->renderLabel()?>
+	<script>
+
+	function handlerEditWindow(winId,params,url,winText,width,height) {
+		return winEditHandler;
+	}
+
+	function directionOnChanged() {
+		var directionSelect = dojo.byId("handler-direction");
+		var direction = directionSelect.options[directionSelect.selectedIndex].value;
+
+		var destination = dojo.byId("dataIntegrationDestinationId");
+		var action = dojo.byId("dataIntegrationActionId");
+		if (direction == 'OUTGOING') {
+			//datasource, template, and destination
+			destination.style.display = "block";
+			action.style.display = "none";
+		}
+		else if (direction == 'INCOMING') {
+			//datasource, template action
+			destination.style.display = "none";
+			action.style.display = "block";
+		}
+		else {
+			alert('<?=__('Invalid direction ')?>'+direction);
+		}
+	}
+	</script>
+	<?=$this->form->directionInput('FormSelect',array('options' => $this->listDirections,'onchange'=>'directionOnChanged()'))?>
+</div>
+<?endif;?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->condition->renderLabel()?>
+	<?=$this->form->conditionInput('FormSelect',array('options' => $this->listConditions))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->dataIntegrationDatasourceId->renderLabel()?>
+	<?=$this->form->dataIntegrationDatasourceIdInput('FormSelect',array('options' => $this->listDatasources))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->dataIntegrationTemplateId->renderLabel()?>
+	<?=$this->form->dataIntegrationTemplateIdInput('FormSelect',array('options' => $this->listTemplates))?>
+</div>
+<?if (isset($this->listDestinations) && isset($this->listActions)):?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<div id="dataIntegrationDestinationId">
+		<?=$this->form->dataIntegrationDestinationId->renderLabel()?>
+		<?=$this->form->dataIntegrationDestinationIdInput('FormSelect',array('options' => $this->listDestinations))?>
+	</div>
+	<div id="dataIntegrationActionId">
+		<?=$this->form->dataIntegrationActionId->renderLabel()?>
+		<?=$this->form->dataIntegrationActionIdInput('FormSelect',array('options' => $this->listActions))?>
+	</div>
+</div>
+<?endif;?>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->conditionObject->renderLabel()?>
+	<script>
+	function handlerConditionObjectEdit() {
+		var params = new Array();
+		params.push('id=<?=$this->form->handlerId->getValue()?>');
+		params.push('type=<?=$this->form->handlerType->getValue()?>');
+		globalCreateWindow("winConditionObjectEditId",params,"<?=$this->baseUrl?>/handlers.raw/edit-condition-object","<?=__('Edit Condition Object')?>",500,430);
+	}
+	</script>
+	<?$attrib = array();
+	$attrib['onclick'] = 'handlerConditionObjectEdit()';
+	if (($this->form->condition->getValue() <= 0 && $this->form->condition->getValue() != 'custom') || 
+	    $this->form->dataIntegrationDatasourceId->getValue() <= 0 || 
+	    $this->form->dataIntegrationTemplateId->getValue() <= 0 ||
+	    ($this->form->handlerType->getValue() === Handler::HANDLER_TYPE_HL7 &&
+		($this->form->direction->getValue() == '0' ||
+		($this->form->direction->getValue() == 'INCOMING' && $this->form->dataIntegrationActionId->getValue() <= 0) ||
+		($this->form->direction->getValue() == 'OUTGOING' && $this->form->dataIntegrationDestinationId->getValue() <= 0)))
+	   ) {
+		$attrib['disabled'] = 'disabled';
+	}?>
+	<?=$this->formButton('conditionObject',__('Edit Code'),$attrib)?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->active->renderLabel()?>
+	<input type="checkbox" name="activeInput" id="activeInput" value="<?=$this->form->active->getValue()?>" helper="formText"<?=($this->form->active->getValue())?' checked="checked"':''?> />
+	<?=$this->form->activeInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->handlerId->getValue())?>
+	<?=$this->form->handlerIdInput('FormHidden')?>
+	<?=$this->formHidden('type',$this->form->handlerType->getValue())?>
+	<?=$this->form->handlerTypeInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('winEditHandlerId').close()"/>
+</div>
+
+<script>
+function preSubmitedit() {
+	var activeInput = dojo.byId("activeInput");
+	var activeHiddenInput = dojo.byId("handler-active");
+	var val = 0;
+	if (activeInput.checked) {
+		val = 1;
+	}
+	activeHiddenInput.value = val;
+	activeInput.checked = false;
+	return true;
+}
+
+function postSubmitedit(data) {
+<?if (strlen($this->callback) > 0):?>
+	if (window.<?=$this->callback?>) {
+		window.<?=$this->callback?>(data);
+	}
+<?endif;?>
+	alert("<?=__('You must restart CHProcessingDaemon for the changes to take effect.')?>");
+	dhxWins.window('winEditHandlerId').close();
+	return false;
+}
+
+<?if (isset($this->listDirections)):?>
+var directionSelect = dojo.byId("handler-direction");
+if (directionSelect.options[directionSelect.selectedIndex].value != 0) {
+	directionOnChanged();
+}
+<?endif;?>
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

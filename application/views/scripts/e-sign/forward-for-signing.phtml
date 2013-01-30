@@ -1,0 +1,70 @@
+<div style="float:left;width:100%;">
+	<strong><?=__('User')?></strong><br />
+	<div id="userSelectAutoCompleteDiv"></div>
+	<?=$this->formSelect('userSelectMultiSelect',null,array('id'=>'userSelectMultiSelect','onChange'=>'eSignSetUserId(this.options[this.selectedIndex].value)','style'=>'width:100%;height:100px;','multiple'=>'multiple'))?>
+	<div style="float:right;">
+		<?=$this->formButton('forward',__('Forward'),array('onClick'=>'eSignforward()'))?>
+		<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'dhxWins.window(\'winForwardForSigningId\').close()'))?>
+		<?=$this->formHidden('providerId',null,array('id'=>'providerId'))?>
+		<?=$this->formHidden('ormClass',$this->ormClass,array('id'=>'ormClass'))?>
+		<?=$this->formHidden('ormId',$this->ormId,array('id'=>'ormId'))?>
+	</div>
+</div>
+<script>
+var uscb = dijit.byId("userSelectAutoCompleteDiv");
+if (uscb != undefined) { 
+	uscb.destroyRecursive();
+	uscb = null;
+}
+var usac = new custom.PatientSelectAutoComplete({url:"<?=$this->baseUrl?>/team-manager.raw/user-select-auto-complete",requestMethod:"get"},"userSelectAutoComplete");
+uscb = new dijit.form.ComboBox({name:"userSelectAutoCompleteId",autocomplete:false,store:usac,hasDownArrow:false,value:""},"userSelectAutoCompleteDiv");
+dojo.connect(uscb,"_openResultList","eSignCaptureUserList");
+function eSignCaptureUserList(/*Object*/ results, /*Object*/ dataObject) {
+	uscb._hideResultList();
+	var selectList = dojo.byId("userSelectMultiSelect");
+	selectList.options.length = 0;
+	for (i=0;i<results.length;i++) {
+		var newOption = document.createElement('option');
+		newOption.text = results[i].i['name'];
+		newOption.value = results[i].i['label'];
+
+		try {
+			selectList.add(newOption,null); // standards compliant; doesn't work in IE
+		}
+		catch(ex) {
+			selectList.add(newOption,null); // IE only
+		}
+		if (i==0) {
+			selectList.selectedIndex = 0;
+			eSignSetUserId(selectList.options[selectList.selectedIndex].value);
+		}
+	}
+}
+
+function eSignforward() {
+	var providerId = dojo.byId("providerId").value;
+	if (providerId <= 0) {
+		alert("No selected provider");
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/e-sign.raw/process-forward-for-signing",
+		handleAs: "json",
+		content: {
+			"providerId": dojo.byId("providerId").value,
+			"ormClass": dojo.byId("ormClass").value,
+			"ormId": dojo.byId("ormId").value,
+		},
+		load: function (data) {
+			dhxWins.window("winForwardForSigningId").close();
+		},
+		error: function (error) {
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function eSignSetUserId(userId) {
+	dojo.byId("providerId").value = userId;
+}
+</script>

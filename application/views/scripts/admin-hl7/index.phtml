@@ -1,0 +1,287 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+.buttonAddHL7 {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+}
+</style>
+<div id="adminHL7LayoutId" style="height:444px;"></div>
+</div>
+
+<script>
+
+function hl7EditWindow(winId,params,url,winText,width,height) {
+	return globalCreateWindow(winId,params,url,winText,width,height);
+}
+
+var adminHL7Layout = new dhtmlXLayoutObject("adminHL7LayoutId","6I");
+adminHL7Layout.setImagePath("<?=$this->baseUrl?>/img/");
+adminHL7Layout.cells("a").setText('<?=__("Handlers")?> <button class="buttonAddHL7" onClick="hl7AddHandler()" title="<?=__('Add New Handler')?>"><?=__('Add')?></button>');
+adminHL7Layout.cells("b").setText('<?=__("Datasources")?> <button class="buttonAddHL7" onClick="hl7DatasourcesEditWindow()" title="<?=__('Add New Datasource')?>"><?=__('Add')?></button> <button class="buttonAddHL7" id="hl7CopyDatasourceId" onClick="hl7DatasourcesCopy()" title="<?=__('Copy')?>" disabled="disabled"><?=__('Copy')?></button>');
+adminHL7Layout.cells("c").setText('<?=__("Template/Mappers")?> <button class="buttonAddHL7" onClick="hl7TemplatesEditWindow()" title="<?=__('Add New Template/Mapper')?>"><?=__('Add')?></button>');
+adminHL7Layout.cells("d").setText('<?=__("Actions")?> <button class="buttonAddHL7" onClick="hl7ActionsEditWindow()" title="<?=__('Add New Action')?>"><?=__('Add')?></button>');
+adminHL7Layout.cells("e").setText('<?=__("Destinations")?> <button class="buttonAddHL7" onClick="hl7DestinationsEditWindow()" title="<?=__('Add New Destination')?>"><?=__('Add')?></button>');
+adminHL7Layout.cells("f").setText('<?=__("")?>');
+adminHL7Layout.cells("f").collapse();
+
+adminHL7Layout.setEffect('collapse',true);
+adminHL7Layout.setEffect("resize", true);
+
+var heightLayout = 444;
+var heightPerPane = heightLayout / 3;
+adminHL7Layout.cells("a").setHeight(heightPerPane);
+adminHL7Layout.cells("b").setHeight(heightPerPane);
+adminHL7Layout.cells("c").setHeight(heightPerPane);
+adminHL7Layout.cells("d").setHeight(heightPerPane);
+adminHL7Layout.cells("e").setHeight(heightPerPane);
+adminHL7Layout.cells("f").setHeight(heightPerPane);
+
+
+// === HANDLER ===
+var hl7HandlersGrid =  adminHL7Layout.cells("a").attachGrid();
+hl7HandlersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hl7HandlersGrid.setHeader('<?=__('Name')?>,<?=__('Direction')?>,<?=__('Condition')?>,<?=__('Active')?>');
+hl7HandlersGrid.setColTypes("ro,ro,ro,ch");
+hl7HandlersGrid.setSkin("xp");
+hl7HandlersGrid.setInitWidths("*,*,*,50");
+hl7HandlersGrid.init();
+function hl7HandlersGridReload() {
+	hl7HandlersGrid.clearAll();
+	hl7HandlersGrid.load('<?=$this->baseUrl?>/handlers.raw/list?type=<?=Handler::HANDLER_TYPE_HL7?>',null,"json");
+}
+
+function hl7AddHandler() {
+	hl7HandlerEditSingle('name','blank');
+}
+
+function hl7HandlersEdit(id) {
+	if (!id) {
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	params.push('type=<?=Handler::HANDLER_TYPE_HL7?>');
+	params.push('callback=hl7HandlersGridReload');
+	hl7EditWindow('winEditHandlerId',params,'<?=$this->baseUrl?>/handlers.raw/edit','<?=__('Add/Edit HL7 Handler')?>',350,500);
+}
+
+function hl7HandlersOnRowDblClicked(rowId,colIndex) {
+	hl7HandlersEdit(rowId);
+}
+hl7HandlersGrid.attachEvent('onRowDblClicked',hl7HandlersOnRowDblClicked);
+
+function hl7HandlerEditSingle(field,value,id) {
+	if (!id) {
+		id = 0;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/handlers.raw/process-edit-single?type=<?=Handler::HANDLER_TYPE_HL7?>",
+		handleAs: "json",
+		content: {
+			'id': parseInt(id),
+			'field': field,
+			'value': value,
+		},
+		load: function (data) {
+			hl7HandlersGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function hl7HandlersOnChecked(rowId,cellIndex,state) {
+	var val = 0;
+	if (state) {
+		val = 1;
+	}
+	hl7HandlerEditSingle('active',val,rowId);
+}
+hl7HandlersGrid.attachEvent('onCheck',hl7HandlersOnChecked);
+hl7HandlersGridReload();
+
+
+// === DATASOURCE ===
+var hl7DatasourcesGrid =  adminHL7Layout.cells("b").attachGrid();
+hl7DatasourcesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hl7DatasourcesGrid.setHeader('<?=__('Name')?>');
+hl7DatasourcesGrid.setColTypes("ro");
+hl7DatasourcesGrid.setSkin("xp");
+hl7DatasourcesGrid.setInitWidths("*,*");
+hl7DatasourcesGrid.init();
+
+function hl7DatasourcesGridOnLoaded() {
+	dojo.byId("hl7CopyDatasourceId").disabled = true;
+}
+
+function hl7DatasourcesGridReload() {
+	hl7DatasourcesGrid.clearAll();
+	hl7DatasourcesGrid.load('<?=$this->baseUrl?>/data-integration.raw/list-datasources?type=<?=Handler::HANDLER_TYPE_HL7?>',hl7DatasourcesGridOnLoaded,"json");
+}
+
+function hl7DatasourcesEditWindow(id) {
+	if (!id) {
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	params.push('type=<?=Handler::HANDLER_TYPE_HL7?>');
+	params.push('callback=hl7DatasourcesGridReload');
+	hl7EditWindow('winEditDataIntegrationDatasourceId',params,'<?=$this->baseUrl?>/data-integration.raw/edit-datasource','<?=__('Add/Edit HL7 Datasource')?>',500,430);
+}
+
+function hl7DatasourcesCopy() {
+	var rowId = hl7DatasourcesGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert('<?=__('No datasource selected')?>');
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/data-integration.raw/process-copy-datasource",
+		handleAs: "json",
+		content: {
+			'id': rowId,
+			'type': <?=Handler::HANDLER_TYPE_HL7?>,
+		},
+		load: function (data) {
+			hl7DatasourcesGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function hl7DatasourcesGridOnRowSelected(rowId,colIndex) {
+	dojo.byId("hl7CopyDatasourceId").disabled = false;
+}
+hl7DatasourcesGrid.attachEvent("onRowSelect",hl7DatasourcesGridOnRowSelected);
+
+function hl7DatasourcesGridOnRowDblClicked(rowId,colIndex) {
+	hl7DatasourcesEditWindow(rowId);
+}
+hl7DatasourcesGrid.attachEvent("onRowDblClicked",hl7DatasourcesGridOnRowDblClicked);
+
+hl7DatasourcesGridReload();
+
+
+// === TEMPLATE/MAPPER ===
+var hl7TemplatesGrid =  adminHL7Layout.cells("c").attachGrid();
+hl7TemplatesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hl7TemplatesGrid.setHeader('<?=__('Name')?>');
+hl7TemplatesGrid.setColTypes("ro");
+hl7TemplatesGrid.setSkin("xp");
+hl7TemplatesGrid.setInitWidths("*,*");
+hl7TemplatesGrid.init();
+function hl7TemplatesGridOnLoaded() {
+	var actionSelect = hl7HandlersGrid.getCombo(2);
+	actionSelect.clear(); // clear all items on Action column
+	// add templates one by one on handlers action
+	hl7TemplatesGrid.forEachRow(function(rowId){
+		var template = hl7TemplatesGrid.cells(rowId,0).getValue();
+		actionSelect.put(rowId,template);
+	});
+}
+function hl7TemplatesGridReload() {
+	hl7TemplatesGrid.clearAll();
+	hl7TemplatesGrid.load('<?=$this->baseUrl?>/data-integration.raw/list-templates?type=<?=Handler::HANDLER_TYPE_HL7?>',hl7TemplatesGridOnLoaded,"json");
+}
+
+function hl7TemplatesOnRowSelected(rowId,cellIndex) {
+}
+hl7TemplatesGrid.attachEvent("onRowSelect",hl7TemplatesOnRowSelected);
+
+function hl7TemplatesEditWindow(id) {
+	if (!id) {
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	params.push('type=<?=Handler::HANDLER_TYPE_HL7?>');
+	params.push('callback=hl7TemplatesGridReload');
+	hl7EditWindow('winEditDataIntegrationTemplateId',params,'<?=$this->baseUrl?>/data-integration.raw/edit-template','<?=__('Add/Edit HL7 Template')?>',500,430);
+}
+
+function hl7TemplatesGridOnRowDblClicked(rowId,colIndex) {
+	hl7TemplatesEditWindow(rowId);
+}
+hl7TemplatesGrid.attachEvent("onRowDblClicked",hl7TemplatesGridOnRowDblClicked);
+
+hl7TemplatesGridReload();
+
+
+
+// === ACTION ===
+var hl7ActionsGrid =  adminHL7Layout.cells("d").attachGrid();
+hl7ActionsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hl7ActionsGrid.setHeader('<?=__('Name')?>');
+hl7ActionsGrid.setColTypes("ro");
+hl7ActionsGrid.setSkin("xp");
+hl7ActionsGrid.setInitWidths("*,*");
+hl7ActionsGrid.init();
+function hl7ActionsGridReload() {
+	hl7ActionsGrid.clearAll();
+	hl7ActionsGrid.load('<?=$this->baseUrl?>/data-integration.raw/list-actions?type=<?=Handler::HANDLER_TYPE_HL7?>',null,"json");
+}
+
+function hl7ActionsEditWindow(id) {
+	if (!id) {
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	params.push('type=<?=Handler::HANDLER_TYPE_HL7?>');
+	params.push('callback=hl7ActionsGridReload');
+	hl7EditWindow('winEditDataIntegrationActionId',params,'<?=$this->baseUrl?>/data-integration.raw/edit-action','<?=__('Add/Edit HL7 Action')?>',500,430);
+}
+
+function hl7ActionsGridOnRowDblClicked(rowId,colIndex) {
+	hl7ActionsEditWindow(rowId);
+}
+hl7ActionsGrid.attachEvent("onRowDblClicked",hl7ActionsGridOnRowDblClicked);
+
+hl7ActionsGridReload();
+
+
+
+// === DESTINATION ===
+var hl7DestinationsGrid =  adminHL7Layout.cells("e").attachGrid();
+hl7DestinationsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+hl7DestinationsGrid.setHeader('<?=__('Name')?>');
+hl7DestinationsGrid.setColTypes("ro");
+hl7DestinationsGrid.setSkin("xp");
+hl7DestinationsGrid.setInitWidths("*,*");
+hl7DestinationsGrid.init();
+function hl7DestinationsGridReload() {
+	hl7DestinationsGrid.clearAll();
+	hl7DestinationsGrid.load('<?=$this->baseUrl?>/data-integration.raw/list-destinations?type=<?=Handler::HANDLER_TYPE_HL7?>',null,"json");
+}
+
+function hl7DestinationsEditWindow(id) {
+	if (!id) {
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	params.push('type=<?=Handler::HANDLER_TYPE_HL7?>');
+	params.push('callback=hl7DestinationsGridReload');
+	hl7EditWindow('winEditDataIntegrationDestinationId',params,'<?=$this->baseUrl?>/data-integration.raw/edit-destination','<?=__('Add/Edit HL7 Destination')?>',500,430);
+}
+
+function hl7DestinationsGridOnRowDblClicked(rowId,colIndex) {
+	hl7DestinationsEditWindow(rowId);
+}
+hl7DestinationsGrid.attachEvent("onRowDblClicked",hl7DestinationsGridOnRowDblClicked);
+
+hl7DestinationsGridReload();
+
+
+</script>

@@ -1,0 +1,540 @@
+<style>
+div.gridbox table.obj tr.rowselected td { /* elements in the selected row */
+	background-color: #ccc;
+}
+div.gridbox table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected { /* element in the selected cell */
+	background-color: #ccc;
+}
+div.gridbox_xp table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+table.refillInfo {
+	margin-left: 10px;
+	z-index: 9999;
+}
+table.refillInfo th {
+	text-align: center;
+	padding: 5px;
+	font-weight: bold;
+	border-right: 1px solid Silver;
+	border-bottom: 1px solid Silver;
+	border-top: 1px solid Silver;
+}
+table.refillInfo td {
+	padding: 5px;
+	border-right: 1px solid Silver;
+	border-bottom: 1px solid Silver;
+	vertical-align: top;
+	font-size: 10px;
+}
+table.refillInfo th.firstCol {
+	border-left: 1px solid Silver;
+	border-top: 1px solid Silver;
+}
+table.refillInfo td.firstCol {
+	border-left: 1px solid Silver;
+}
+table.refillInfo th.lastCol {
+	border-top: 1px solid Silver;
+}
+</style>
+
+<div id="medicationTopPaneId" style="width:99%;">
+	<div id="medicationToolbar" style="height:50px;width:100%;border:1px solid Silver;"></div>
+	<div id="medicationContainer" style="width:100%;height:140px;"></div>
+</div>
+<div id="medicationLayoutId" style="width:100%;height:450px;"></div>
+
+<script>
+var medicationLayout = new dhtmlXLayoutObject("medicationLayoutId","2E");
+medicationLayout.setImagePath("<?=$this->baseUrl?>/img/");
+medicationLayout.setEffect("resize",false);
+medicationLayout.cells("a").fixSize(true,true);
+medicationLayout.cells("a").setText("");
+medicationLayout.cells("a").hideHeader();
+medicationLayout.cells("a").attachObject("medicationTopPaneId");
+
+medicationLayout.cells("b").fixSize(true,true);
+medicationLayout.cells("b").setText("");
+medicationLayout.cells("b").hideHeader();
+
+function getActivePatient() {
+	return mainController.getActivePatient();
+}
+
+chToolbar=new dhtmlXToolbarObject('medicationToolbar','ClearSilver');
+chToolbar.attachEvent("onClick",chToolbarOnClicked);
+chToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+chToolbar.loadXML("<?=$this->baseUrl?>/medications.raw/toolbar");
+
+function chToolbarOnClicked(itemId) {
+	if (mainController.getActivePatient() <= 0) {
+		alert("<?=__('No patient selected.')?>");
+		return;
+	}
+	if (itemId == "medtbNewMedication" || itemId == "medtbChangeMedication" || itemId == "medtbCopyMedication") {
+		dojo.xhrPost({
+			url: "<?=$this->baseUrl?>/medications.raw/ajax-check-patient-info?personId="+mainController.getActivePatient(),
+			handleAs: "json",
+			load: function (data) {
+				if (data.error) {
+					alert(data.error);
+				}
+				else {
+					onButtonClick(itemId);
+				}
+			},
+			error: function (er) {
+				alert("err: " + er);
+			}
+		});
+	}
+	else {
+		onButtonClick(itemId);
+	}
+}
+
+function onButtonClick(itemId) {
+	if (mainController.getActivePatient() <= 0) {
+		alert("<?=__('No patient selected.')?>");
+		return;
+	}
+	if (itemId != "medtbCancelMedication") {
+		var rowIds = mGrid.getSelectedRowId();
+		if (rowIds != null) {
+			var arrRowIds = rowIds.split(",");
+			if (arrRowIds.length > 1) {
+				mGrid.clearSelection();
+				var mostRecentRowId = arrRowIds[(arrRowIds.length - 1)];
+				mGrid.selectRow(mGrid.getRowIndex(mostRecentRowId));
+			}
+		}
+	}
+	switch (itemId) {
+		case 'medtbNewMedication':
+			openNewMedicationWindow();
+			break;
+		case 'medtbChangeMedication':
+			changeMedication();
+			break;
+		case 'medtbCancelMedication':
+			cancelMedication();
+			break;
+		case 'medtbCopyMedication':
+			copyMedication();
+			break;
+		case "medtbDetailsMedication":
+			openDetailsMedicationWindow();
+			break;
+		case 'medtbRefreshMedication':
+			/*var winAbout = globalCreateWindow("winAboutId",[],"<?=$this->baseUrl?>/index.raw/about","<?=__('About ClearHealth')?>",400,330);
+			winAbout.button("park").hide();
+			winAbout.button("minmax1").hide();
+			winAbout.button("minmax2").hide();*/
+			loadMedication();
+			break;
+		case "delete":
+			medicationId = mGrid.getSelectedRowId();
+			if (medicationId == null) {
+				alert("<?=__('No selected item.')?>");
+				break;
+			}
+			if (!confirm("<?=__('Are you sure you want to delete selected medication?')?>")) break;
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/medications.raw/process-delete-medication",
+				content: {
+					"medicationId": medicationId,
+				},
+				handleAs: "json",
+				load: function (data) {
+					if (data != true) {
+						alert(data);
+					}
+					else {
+						loadMedication();
+					}
+				},
+				error: function (er) {
+					alert("err: "+er);
+				}
+			});
+			break;
+		case "copyAndDiscontinue":
+			copyMedication(1);
+			break;
+		case "filter":
+			var winFilter = globalCreateWindow("winFilterId",[],"<?=$this->baseUrl?>/medications.raw/filter","<?=__('Filter Medication')?>",300,200);
+			break;
+	}
+}
+
+function openNewMedicationWindow(medicationId,duplicate,discontinue) {
+	var label = '<?=__('New Medication')?>';
+	var additionalArgs = '';
+	if (medicationId != undefined) {
+		label = '<?=__('Change Medication')?>';
+		additionalArgs += '&medicationId=' + medicationId;
+	}
+	if (duplicate != undefined) {
+		label = '<?=__('Copy Medication')?>';
+		additionalArgs += '&copy=1';
+	}
+	if (discontinue != undefined) {
+		label += " and Discontinue";
+		additionalArgs += "&discontinue=1";
+	}
+	var url = "<?=$this->baseUrl?>/medications.raw/edit-medication?personId="+mainController.getActivePatient()+additionalArgs;
+	winNewMedObjects = globalCreateWindow("windowNewMedication",[],url,label,520,600);
+}
+
+function closeNewMedicationWindow() {
+	winNewMedObjects.close();
+}
+
+function reloadMedicationGrid() {
+	closeNewMedicationWindow();
+	// reload medication grid here if required
+	loadMedication(true);
+	openNewMedicationWindow();
+}
+
+function loadMedication(medicationId) {
+	mGrid.clearAll();
+	mGrid.load("<?=$this->baseUrl?>/medications.raw/list-medications?personId="+mainController.getActivePatient(),function(){
+				if (mGrid.doesRowExist(medicationId)) {
+					mGrid.selectRow(mGrid.getRowIndex(medicationId),true);
+				}
+			},"json");
+
+	rrGridReload();
+}
+
+function changeMedication(medicationId) {
+	if (!medicationId) {
+		medicationId = mGrid.getSelectedRowId();
+	}
+	if (medicationId == null) {
+		return;
+	}
+	openNewMedicationWindow(medicationId);
+}
+
+
+function cancelMedication() {
+	medicationId = mGrid.getSelectedRowId();
+	if (medicationId == null) {
+		return;
+	}
+	if (!confirm("<?=__('Are you sure you want to discontinue selected medication?')?>")) {
+		return;
+	}
+	dojo.xhrPost ({
+		url: '<?=$this->baseUrl?>/medications.raw/ajax-discontinue-medication?medicationId='+medicationId,
+		handleAs: 'json',
+		load: function (data) {
+			if (data.length > 0) {
+				alert(data);
+			}
+			else {
+				loadMedication();
+			}
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function copyMedication(discontinue) {
+	medicationId = mGrid.getSelectedRowId();
+	if (medicationId == null) {
+		return;
+	}
+	openNewMedicationWindow(medicationId,true,discontinue);
+}
+
+function transmitEPrescription(medicationId) {
+	dojo.xhrGet ({
+                url: '<?=$this->baseUrl?>/medications.raw/transmit-eprescription?medicationId='+medicationId,
+                handleAs: 'json',
+                load: function (data) {
+                        alert(data);
+                },
+                error: function (er) {
+                        alert('err: ' + er);
+                }
+        });
+}
+function getPrescriptionPDF(medicationId) {
+	medIframe = document.createElement("IFRAME");
+	medIframe.setAttribute('src','<?=$this->baseUrl?>/medications.raw/get-prescription-pdf?medicationId='+medicationId);
+	medIframe.style.display = 'none';
+	document.body.appendChild(medIframe);
+}
+
+function updatePrintedRx(medicationId) {
+	dojo.xhrPost ({
+		url: '<?=$this->baseUrl?>/medications.raw/process-printed-rx?medicationId='+medicationId,
+		handleAs: 'json',
+		load: function (data) {
+			loadMedication();
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+function handleMedicationsContextClick(item,rowId) {
+	//var medicationId = rowId.split('_');
+	var medicationId = mGrid.getSelectedRowId();
+	switch (item) {
+		case 'medications_printRx':
+			getPrescriptionPDF(medicationId);
+			updatePrintedRx(medicationId);
+			break;
+		case "medications_sign":
+			windowReviewSignDocuments(medicationId);
+			break;
+		case "medicationsForward":
+			windowForwardForSigning("Medication",medicationId);
+			break;
+		default:
+			alert(item);
+	}
+}
+
+
+medcxMenu = new dhtmlXMenuObject(null ,'standard');
+medcxMenu.setImagePath("<?=$this->baseUrl?>/img/");
+medcxMenu.renderAsContextMenu();
+medcxMenu.setOpenMode("web");
+medcxMenu.attachEvent('onClick',handleMedicationsContextClick);
+medcxMenu.loadXML('<?=$this->baseUrl?>/medications.xml/medications-context-menu');
+
+
+
+var mGrid = new dhtmlXGridObject('medicationContainer');
+//var mGrid = medicationLayout.cells("a").attachGrid();
+mGrid.selMultiRows = true;
+mGrid.setImagePath("<?=$this->baseUrl?>/img/");
+mGrid.setHeader(",Medication,Action,Status,Expires,Last Filled,Refills,Details,");
+mGrid.setInitWidths("25,400,70,150,120,*,40,300,0");
+mGrid.setColAlign("center,left,center,center,center,center,center,center,left,left");
+mGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
+mGrid.setSkin("xp");
+mGrid.enableAlterCss("even","uneven");
+mGrid.attachEvent("onRowSelect",rowSelectHandler);
+mGrid.attachEvent("onRowDblClicked",medRowDblClicked);
+mGrid.attachEvent("onBeforeContextMenu",function(zoneId){
+	var medicationId = zoneId;
+	medcxMenu.showItem("medicationsForward");
+	if (this.cells(medicationId,8).getValue() > 0) { // signed
+		medcxMenu.hideItem("medicationsForward");
+	}
+	return true;
+});
+mGrid.init();
+mGrid.enableContextMenu(medcxMenu);
+dhtmlxEvent(mGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function rowSelectHandler(rowId,cellIndex) {
+	//chToolbar.enableItem('medtbChangeMedication');
+	chToolbar.enableItem('medtbCancelMedication');
+	chToolbar.enableItem('medtbCopyMedication');
+	chToolbar.disableItem("delete");
+	chToolbar.enableItem("copyAndDiscontinue");
+	if (mGrid.cells(rowId,8).getValue() <= 0) { // not signed
+		chToolbar.enableItem("delete");
+	}
+
+	medcxMenu.showItem("medications_sign");
+	if (mGrid.cells(rowId,8).getValue() > 0) {
+		medcxMenu.hideItem("medications_sign");
+	}
+	chToolbar.enableItem("medtbDetailsMedication");
+}
+
+function medRowDblClicked(rowId,colIndex) {
+	if (mGrid.cells(rowId,8).getValue() > 0) {
+		openDetailsMedicationWindow(rowId);
+	}
+	else {
+		changeMedication(rowId);
+	}
+}
+
+function openDetailsMedicationWindow(medicationId) {
+	if (!medicationId) {
+		medicationId = mGrid.getSelectedRowId();
+	}
+	if (medicationId == null) {
+		return;
+	}
+	windowDetailsMed = globalCreateWindow("winDetailsMedId",["medicationId="+medicationId],"<?=$this->baseUrl?>/medications.raw/details-medication","<?=__('Medication Details')?>",520,550);
+}
+
+//rrGrid = new dhtmlXGridObject('rrMedicationContainer');
+var rrGrid = medicationLayout.cells("b").attachGrid();
+rrGrid.setImagePath("<?=$this->baseUrl?>/img/");
+rrGrid.setHeader(",<?=__('Refills & Re-Authorizations')?>,<?=__('Description')?>,<?=__('Status')?>,<?=__('Details')?>,");
+rrGrid.setInitWidths("20,350,300,160,300,0");
+rrGrid.setColTypes("sub_row,ro,ro,ro,ro,ro");
+rrGrid.setSkin("xp");
+rrGrid.enableAlterCss("even","uneven");
+rrGrid.attachEvent("onRowSelect",rrGridOnRowSelected);
+rrGrid.init();
+dhtmlxEvent(rrGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+rrGrid.attachEvent("onSubRowOpen",function(id,state){
+	if (state) {
+//		this.cells(id,0).cell.style.paddingTop = "200px";
+	}
+	return true;
+});
+
+var prevMedicationId = null;
+function rrGridOnRowSelected(rowId,cellIndex) {
+	var medicationId = rrGrid.cells(rowId,5).getValue();
+	if (prevMedicationId != null && prevMedicationId == medicationId) return;
+	if (mGrid.doesRowExist(medicationId)) {
+		mGrid.setRowColor(medicationId,"yellow");
+		if (prevMedicationId != null && mGrid.doesRowExist(prevMedicationId)) {
+			mGrid.setRowColor(prevMedicationId,"");
+		}
+		prevMedicationId = medicationId;
+	}
+}
+
+/*
+var rrMenu = new dhtmlXMenuObject(null,"standard");
+rrMenu.setImagePath("<?=$this->baseUrl?>/img/");
+rrMenu.renderAsContextMenu();
+rrMenu.setOpenMode("web");
+rrMenu.attachEvent("onClick",rrGridOnContextMenu);
+rrMenu.loadXML("<?=$this->baseUrl?>/medications.xml/refills-context-menu");
+rrGrid.enableContextMenu(rrMenu);
+function rrGridOnContextMenu(item,rowId) {
+	var arr = rowId.split("_");
+	var medicationId = arr[0];
+	switch (item) {
+		case "approved":
+		case "approvedWithChanges":
+		case "denied":
+		case "deniedNewPrescriptionToFollow":
+			refillResponse(medicationId,item);
+			break;
+		default:
+			alert(item);
+	}
+}
+
+function refillResponse(medicationId,response) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/medications.raw/process-refill-response",
+		handleAs: "json",
+		content: {
+			"medicationId": medicationId,
+			"response": response
+		},
+		load: function (data) {
+			rrGridReload();
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+*/
+
+function rrGridReload() {
+	rrGrid.clearAll();
+	rrGrid.load("<?=$this->baseUrl?>/medications.raw/list-medication-refills?personId="+mainController.getActivePatient(),"json");
+	prevMedicationId = null;
+}
+loadMedication();
+
+
+function refillResponse(messageId,response,controlled) {
+	var params = [];
+	params.push("messagingId="+messageId);
+
+	if (controlled) {
+		params.push("controlled="+controlled);
+	}
+	refillResponseOnClicked(messageId,response,true);
+	switch (response) {
+		case "approved":
+			windowRefillResponseApproved = globalCreateWindow("winRefillResponseApproved",params,"<?=$this->baseUrl?>/messaging.raw/refill-response-approved","<?=__('Refill Response - Approved')?>",500,500);
+			windowRefillResponseApproved.attachEvent("onClose", function(win) {
+				refillResponseOnClicked(messageId,response,false);
+				return true; 
+			});
+			break;
+		case "denied":
+			windowRefillResponseDenied = globalCreateWindow("winRefillResponseDenied",params,"<?=$this->baseUrl?>/messaging.raw/refill-response-denied","<?=__('Refill Response - Denied')?>",500,500);
+			windowRefillResponseDenied.attachEvent("onClose", function(win) {
+				refillResponseOnClicked(messageId,response,false);
+				return true; 
+			});
+			break;
+		default:
+			alert("<?=__('Invalid event')?>: "+response);
+	}
+}
+
+function refillResponseOnClicked(messageId,response,disabled) {
+	var btnApproved = dojo.byId("approved-"+messageId);
+	var btnDenied = dojo.byId("denied-"+messageId);
+
+	if (response == "approved") {
+		var btnActive = btnApproved;
+		var btnInactive = btnDenied;
+	}
+	else if (response == "denied") {
+		var btnActive = btnDenied;
+		var btnInactive = btnApproved;
+	}
+	else {
+		return;
+	}
+	if (btnInactive) {
+		// hide the button that was not selected
+		var display = (disabled)?"none":"inline";
+		btnInactive.style.display = display;
+	}
+	// disable the selected button
+	btnActive.disabled = disabled;
+}
+
+function messagingRefillResponse(content) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-refill-response",
+		handleAs: "json",
+		content: content,
+		load: function (data) {
+			if (data != true) {
+				alert(data);
+			}
+			switch (mainTabbar.getActiveTab()) {
+				case "tab_Medications":
+					rrGridReload();
+					break;
+				case "tab_Messaging":
+					messagingGridReload();
+					break;
+			}
+		},
+		error: function (er) {
+			alert('err: ' + er);
+		}
+	});
+}
+
+</script>

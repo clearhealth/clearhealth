@@ -1,0 +1,54 @@
+<script>
+function toggleAutoAttach() {
+	dojo.byId("messaging-defaultClinicalNote").disabled = !dojo.byId("messaging-autoAttach").checked;
+}
+function messagingSettingsClose() {
+	dhxWins.window("winSettingsId").close();
+}
+function submitMessagingSettings() {
+	var autoAttach = 0;
+	if (dojo.byId("messaging-autoAttach").checked) {
+		autoAttach = 1;
+	}
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-settings",
+		handleAs: "json",
+		content: {
+			"messaging[autoAttach]": autoAttach,
+			"messaging[defaultClinicalNote]": dojo.byId("messaging-defaultClinicalNote").value,
+		},
+		load: function (data) {
+			<?if ($this->callback != ''):?>
+			if (window.<?=$this->callback?>) {
+				window.<?=$this->callback?>(data);
+			}
+			<?endif?>
+			messagingSettingsClose();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+</script>
+<div style="float:left;">
+	<br style="clear:left"/>
+	<div class="formRow">
+		<input type="checkbox" name="messaging[autoAttach]" id="messaging-autoAttach" size="16" helper="formText" value="1"<?=($this->autoAttach)?' checked="checked"':''?> onClick="toggleAutoAttach();" /> <?=__('Auto-attach documents with barcoded MRN')?>
+	</div>
+	<br style="clear:left"/>
+	<br style="clear:left"/>
+	<div class="formRow">
+		<dt><label for="messaging-defaultClinicalNote" class="optional"><?=__('Default clinical note that will be created for the document to be attached to')?></label></dt>
+		<?=$this->formSelect('messaging[defaultClinicalNote]',$this->defaultClinicalNote,array('id'=>'messaging-defaultClinicalNote'),$this->clinicalNoteDefinitions->toArray('clinicalNoteDefinitionId','title'))?>
+	</div>
+	<br style="clear:left"/>
+	<div style="text-align:center;margin-top:10px;">
+		<input type="button" value="<?=__('OK')?>" onClick="submitMessagingSettings()" />
+		<input type="button" value="<?=__('Cancel')?>" onClick="messagingSettingsClose()"/>
+	</div>
+</div>
+<script>
+toggleAutoAttach();
+</script>

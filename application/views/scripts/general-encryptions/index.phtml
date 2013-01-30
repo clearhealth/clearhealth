@@ -1,0 +1,194 @@
+<div id="generalEncryptionTabId" style="width:auto;height:300px;"></div>
+
+<div style="width:auto;" id="generalEncryptionContainerDivId">
+<form name="cryptFormId" id="cryptFormId" method="post" enctype="multipart/form-data">
+	<div style="width:100%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+		<div class="formRow" style="padding-top:8px;">
+			<label><strong><?=__('File')?></strong></label>
+			<input type="file" name="uploadFile"/>
+			<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressKey'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<label><strong><?=__('Passphrase')?></strong></label>
+			<?=$this->formPassword('passphrase')?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->formButton('encrypt',__('Encrypt'),array('id'=>'encrypt','onClick'=>'processUploadFile(this.name);'))?>
+			<?=$this->formButton('decrypt',__('Decrypt'),array('id'=>'encrypt','onClick'=>'processUploadFile(this.name);'))?>
+		</div>
+	</div>
+	<div style="width:280px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+		<strong><?=__('Progress')?>:</strong>
+		<div style="width:280px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+			<div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:20px;">
+		<fieldset><legend>Results</legend>
+		<div id="resultsId" style="width:250px;"></div>
+		</fieldset>
+	</div>
+</form>
+</div>
+
+<div style="width:auto;" id="hashContainerDivId">
+<form name="hashFormId" id="hashFormId" method="post" enctype="multipart/form-data">
+	<div style="width:100%;margin-left:auto;margin-right:auto;" id="fileUploadHashFormId">
+		<div class="formRow" style="padding-top:8px;">
+			<label><strong><?=__('File')?></strong></label>
+			<input type="file" name="uploadHashFile"/>
+			<?=$this->formHidden('APC_UPLOAD_PROGRESS',uniqid(''),array('id'=>'progressHashKey'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->formButton('hashId',__('Hash'),array('id'=>'hashId','onClick'=>'processUploadHashFile(this.name);'))?>
+		</div>
+	</div>
+	<div style="width:280px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadHashProgressId">
+		<strong><?=__('Progress')?>:</strong>
+		<div style="width:280px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;">
+			<div id="uploadHashProgressBarId" style="background-color:blue; width:0px;height:100%;"></div>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:20px;">
+		<fieldset><legend>SHA1 Hash</legend>
+		<div id="resultsHashId" style="width:250px;"></div>
+		</fieldset>
+	</div>
+</form>
+</div>
+
+<script>
+var progressTimer = "";
+var uploadStarted = false;
+function processUploadFile(action) {
+	if (!action || (action != "encrypt" && action != "decrypt")) action = "encrypt";
+	uploadStarted = true;
+	var fileUploadForm = dojo.byId("fileUploadFormId");
+	fileUploadForm.style.display = "none";
+	var fileUploadProgress = dojo.byId("fileUploadProgressId");
+	fileUploadProgress.style.display = "";
+	var results = dojo.byId("resultsId");
+	results.innerHTML = "";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/general-encryptions.raw/process-"+action,
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "cryptFormId",
+		load: function(data) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else if (data.filename) {
+				var msg = action + "ed file";
+				results.innerHTML = "<a href=\"<?=$this->baseUrl?>/general-encryptions.raw/download?filename="+data.filename+"\">Download "+msg+"</a>";
+			}
+			uploadStarted = false;
+			dojo.byId("cryptFormId").reset();
+			clearTimeout(progressTimer);
+			fileUploadProgress.style.display = "none";
+			fileUploadForm.style.display = "";
+			dojo.byId("uploadProgressBarId").style.width = "0%";
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+	processProgressBar();
+}
+
+function processProgressBar(progressKey) {
+	if (!uploadStarted) return;
+	if (progressKey == undefined) {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/general-encryptions.raw/view-upload-progress?uploadKey=" + progressKey,
+		handleAs: "json",
+		load: function (data) {
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout("processProgressBar('"+progressKey+"')", 1000);
+		}, 
+		error: function (er) {
+			alert("err: " + er.responseText)
+		}
+	});
+}
+
+
+var progressHashTimer = "";
+var uploadHashStarted = false;
+function processUploadHashFile(action) {
+	uploadHashStarted = true;
+	var fileUploadHashForm = dojo.byId("fileUploadHashFormId");
+	fileUploadHashForm.style.display = "none";
+	var fileUploadHashProgress = dojo.byId("fileUploadHashProgressId");
+	fileUploadHashProgress.style.display = "";
+	var resultsHash = dojo.byId("resultsHashId");
+	resultsHash.innerHTML = "";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/general-encryptions.raw/process-hash",
+		method: "post",
+		handleAs: "json",
+		method: "post",
+		form: "hashFormId",
+		load: function(data) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else if (data.hash) {
+				resultsHash.innerHTML = data.hash;
+			}
+			uploadHashStarted = false;
+			dojo.byId("hashFormId").reset();
+			clearTimeout(progressHashTimer);
+			fileUploadHashProgress.style.display = "none";
+			fileUploadHashForm.style.display = "";
+			dojo.byId("uploadHashProgressBarId").style.width = "0%";
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+	processHashProgressBar();
+}
+
+function processHashProgressBar(progressHashKey) {
+	if (!uploadHashStarted) return;
+	if (progressHashKey == undefined) {
+		progressHashKey = dojo.byId("progressHashKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/general-encryptions.raw/view-upload-progress?uploadKey=" + progressHashKey,
+		handleAs: "json",
+		load: function (data) {
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadHashProgressBarId").style.width = data + "%";
+			progressHashTimer = setTimeout("processHashProgressBar('"+progressHashKey+"')", 1000);
+		}, 
+		error: function (er) {
+			alert("err: " + er.responseText)
+		}
+	});
+}
+
+
+var generalEncryptionTab = new dhtmlXTabBar("generalEncryptionTabId");
+generalEncryptionTab.setImagePath("<?=$this->baseUrl?>/img/");
+generalEncryptionTab.setStyle("silver");
+generalEncryptionTab.setHrefMode("ajax");
+generalEncryptionTab.setSkinColors("#FFFFFF,#FFFACD");
+
+generalEncryptionTab.addTab("generalEncryption","<?=__('General Encryption')?>","150px");
+generalEncryptionTab.addTab("hash","<?=__('Hash')?>","150px");
+generalEncryptionTab.setContent("generalEncryption","generalEncryptionContainerDivId");
+generalEncryptionTab.setContent("hash","hashContainerDivId");
+generalEncryptionTab.setTabActive("generalEncryption");
+
+</script>

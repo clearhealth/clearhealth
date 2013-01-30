@@ -1,0 +1,208 @@
+<style>
+div.dhtmlxToolbar_ClearSilver#accountsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemPressed {
+	background-color: #D3E2E5;
+	border-bottom: #D3E2E5 1px solid;
+}
+div.dhtmlxToolbar_ClearSilver#accountsToolbarId table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem td.dhtmlxToolbarTEXT span {
+	margin-left: -10px;
+	margin-right: 10px;
+}       
+div.gridbox table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+</style>
+<div id="accountsToolbarId" style="width:auto;position:relative;"></div>
+<div id="accountsGridId" style="width:auto;height:330px;position:relative;"></div>
+<div id="totalDivId">
+	<div style="float:right;margin-right:320px;"><?=$this->formText('balanceIdRO','0.00',array('id'=>'balanceIdRO','style'=>'width:80px;border:0;','readonly'=>'readonly'))?></div>
+	<div style="float:right;margin-right:20px;"><?=$this->formText('writeOffIdRO','0.00',array('id'=>'writeOffIdRO','style'=>'width:80px;border:0;','readonly'=>'readonly'))?></div>
+	<div style="float:right;margin-right:20px;"><?=$this->formText('paidIdRO','0.00',array('id'=>'paidIdRO','style'=>'width:80px;border:0;','readonly'=>'readonly'))?></div>
+	<div style="float:right;margin-right:20px;"><?=$this->formText('billedIdRO','0.00',array('id'=>'billedIdRO','style'=>'width:80px;border:0;','readonly'=>'readonly'))?></div>
+	<div style="float:right;margin-right:50px;"><b>Totals:</b></div>
+</div>
+<br style="clear:both;" />
+<br style="clear:both;" />
+<div id="agingGridId" style="width:auto;height:80px;"></div>
+<script>
+var accountsGrid = new dhtmlXGridObject("accountsGridId");
+accountsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+accountsGrid.setHeader("<?=__('Date')?>,<?=__('Date Billed')?>,<?=__('Patient')?>,<?=__('Payer')?>,<?=__('Billed')?>,<?=__('Paid')?>,<?=__('Write Off')?>,<?=__('Balance')?>,<?=__('Facility')?>,<?=__('Provider')?>");
+accountsGrid.setInitWidths("80,80,*,*,100,100,100,100,150,150");
+accountsGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+accountsGrid.enableMultiselect(true);
+accountsGrid.setSkin("xp");
+accountsGrid.enableDynamicLoading(true);
+accountsGrid.init();
+dhtmlxEvent(accountsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+accountsGrid.attachEvent("onRowDblClicked",function(rowId,cellIndex){
+	return;
+	var params = ["visitId="+rowId];
+	globalCreateWindow("winAccountsId",params,"<?=$this->baseUrl?>/visit-select.raw/claim","<?=__('Accounts')?>",850,700);
+});
+
+var agingGrid = new dhtmlXGridObject("agingGridId");
+agingGrid.setImagePath("<?=$this->baseUrl?>/img/");
+agingGrid.setHeader(",<?=__('Balance')?>,<?=__('0 - 30')?>,<?=__('31 - 60')?>,<?=__('61 - 90')?>,<?=__('91 - 120')?>,<?=__('120+')?>");
+//agingGrid.setInitWidths("*,100,100,100,100,100,100");
+agingGrid.setInitWidths("*,*,*,*,*,*,*");
+agingGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
+agingGrid.setSkin("xp");
+agingGrid.init();
+agingGrid.addRow("total","");
+agingGrid.cells("total",0).setValue("<?=__('Total')?>");
+agingGrid.addRow("ageing","");
+agingGrid.cells("ageing",0).setValue("<?=__('Ageing (%)')?>");
+
+function accountsGridReload() {
+	accountsGrid.clearAll();
+	accountsGrid.load("<?=$this->baseUrl?>/accounts.raw/list",function(){
+		var billed = 0;
+		var paid = 0;
+		var writeOff = 0;
+		var balance = 0;
+		var aging_0_30 = 0;
+		var aging_31_60 = 0;
+		var aging_61_90 = 0;
+		var aging_91_120 = 0;
+		var aging_120_plus = 0;
+		if (accountsGrid.getRowsNum() > 0) {
+			var rowId = accountsGrid.getRowId(0);
+			var amount = parseFloat(accountsGrid.getUserData(rowId,"totalBilled"));
+			if (!isNaN(amount)) billed = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"totalPaid"));
+			if (!isNaN(amount)) paid = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"totalWriteoff"));
+			if (!isNaN(amount)) writeOff = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"totalBalance"));
+			if (!isNaN(amount)) balance = amount;
+
+			amount = parseFloat(accountsGrid.getUserData(rowId,"aging_0_30"));
+			if (!isNaN(amount)) aging_0_30 = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"aging_31_60"));
+			if (!isNaN(amount)) aging_31_60 = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"aging_61_90"));
+			if (!isNaN(amount)) aging_61_90 = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"aging_91_120"));
+			if (!isNaN(amount)) aging_91_120 = amount;
+			amount = parseFloat(accountsGrid.getUserData(rowId,"aging_120_plus"));
+			if (!isNaN(amount)) aging_120_plus = amount;
+		}
+		var displayBalance = "$" + balance.toFixed(2);
+		dojo.byId("billedIdRO").value = "$" + billed.toFixed(2);
+		dojo.byId("paidIdRO").value = "$" + paid.toFixed(2);
+		dojo.byId("writeOffIdRO").value = "$" + writeOff.toFixed(2);
+		dojo.byId("balanceIdRO").value = displayBalance;
+		agingGrid.cells("total",1).setValue(displayBalance);
+		agingGrid.cells("ageing",1).setValue("%100.00");
+		// 0 - 30
+		var percentage = (aging_0_30 / balance) * 100;
+		if (isNaN(percentage)) percentage = 0;
+		agingGrid.cells("total",2).setValue("$" + aging_0_30.toFixed(2));
+		agingGrid.cells("ageing",2).setValue("%" + percentage.toFixed(2));
+		// 31 - 60
+		percentage = (aging_31_60 / balance) * 100;
+		if (isNaN(percentage)) percentage = 0;
+		agingGrid.cells("total",3).setValue("$" + aging_31_60.toFixed(2));
+		agingGrid.cells("ageing",3).setValue("%" + percentage.toFixed(2));
+		// 61 - 90
+		percentage = (aging_61_90 / balance) * 100;
+		if (isNaN(percentage)) percentage = 0;
+		agingGrid.cells("total",4).setValue("$" + aging_61_90.toFixed(2));
+		agingGrid.cells("ageing",4).setValue("%" + percentage.toFixed(2));
+		// 91 - 120
+		percentage = (aging_91_120 / balance) * 100;
+		if (isNaN(percentage)) percentage = 0;
+		agingGrid.cells("total",5).setValue("$" + aging_91_120.toFixed(2));
+		agingGrid.cells("ageing",5).setValue("%" + percentage.toFixed(2));
+		// 120+
+		percentage = (aging_120_plus / balance) * 100;
+		if (isNaN(percentage)) percentage = 0;
+		agingGrid.cells("total",6).setValue("$" + aging_120_plus.toFixed(2));
+		agingGrid.cells("ageing",6).setValue("%" + percentage.toFixed(2));
+	},"json");
+}
+accountsGridReload();
+
+var accountsToolbar = new dhtmlXToolbarObject("accountsToolbarId","ClearSilver");
+accountsToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+function accountsToolbarOnClicked(id) {
+	var parentId = null;
+	var value = null;
+	if (id == "advancedFilters") {
+		globalCreateWindow("windowAccountsAdvancedFiltersId",[],"<?=$this->baseUrl?>/accounts.raw/advanced-filters","<?=__('Advanced Filters')?>",800,500);
+	}
+	else if (id.substr(0,9) == "provider_") {
+		parentId = "provider";
+		value = id.substr(9);
+	}
+	if (parentId != null) {
+		accountsToolbar.setItemText(parentId,accountsToolbar.getListOptionText(parentId,id));
+		var filters = {};
+		filters["filters["+parentId+"]"] = value;
+		accountsSetFilters(filters);
+	}
+}
+accountsToolbar.attachEvent("onClick",accountsToolbarOnClicked);
+accountsToolbar.attachEvent("onEnter",function(id,value){
+});
+
+function accountsDateFilterOnChanged(value,uid) {
+	var filters = {};
+	filters["filters["+uid+"]"] = value.getFullYear()+"-"+(value.getMonth()+1)+"-"+value.getDate();
+	accountsSetFilters(filters);
+}
+
+var ctr = 1;
+var params = {
+	"uid": "DateStart",
+	"name": "DateStart",
+	"id": "DateStart",
+	"onChange": "accountsDateFilterOnChanged",
+	"style": "width:80px;",
+	"value": "<?=$this->filters['DateStart']?>",
+};
+accountsToolbar.addDatePicker(params,"DateStart",ctr++,"<?=__('Date Start')?>","dhtmlxcalendar_icon.gif","dhtmlxcalendar_icon.gif");
+accountsToolbar.addSeparator("sep"+ctr,ctr++);
+
+params = {
+	"uid": "DateEnd",
+	"name": "DateEnd",
+	"id": "DateEnd",
+	"onChange": "accountsDateFilterOnChanged",
+	"style": "width:80px;",
+	"value": "<?=$this->filters['DateEnd']?>",
+};
+accountsToolbar.addDatePicker(params,"DateEnd",ctr++,"<?=__('Date End')?>","dhtmlxcalendar_icon.gif","dhtmlxcalendar_icon.gif");
+accountsToolbar.addSeparator("sep"+ctr,ctr++);
+accountsToolbar.addButton("advancedFilters",ctr++,"<?=__('Advanced Filters')?>","filter.png","filter.png");
+
+function accountsFilterExec(filters) {
+	accountsSetFilters(filters);
+}
+
+function accountsSetFilters(filters,callback) {
+	dojo.xhrPost({
+		url: globalBaseUrl + "/accounts.raw/set-filters",
+		handleAs: "json",
+		content: filters,
+		load: function(data) {
+			if (typeof callback == "function") {
+				callback(data);
+			}
+			else {
+				accountsGridReload();
+			}
+			return data;
+		},
+		error: function(response) {
+			console.error("ERROR: ",response.responseText);
+			return response;
+		}
+	});
+}
+
+</script>

@@ -1,0 +1,147 @@
+<?=$this->form->renderOpen()?>
+
+<fieldset>
+<legend><?=__("Note Definition")?></legend>
+<div id="cnmedForm" style="float:left;">
+	<div class="formRow">
+		<?=$this->form->clinicalNoteDefinitionIdInput('FormHidden')?>
+		<?=$this->form->clinicalNoteTemplateIdInput('FormHidden')?>
+
+		<?=$this->form->title->renderLabel()?>
+		<?$this->form->title->setAttrib('size',60)?>
+
+		<?=$this->form->titleInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->active->renderLabel()?>
+
+		<input type="checkbox" name="cnDefinition[active]" id="cnDefinition-active" <?=($this->form->active->getValue())?'checked="checked"':''?> />
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->okInput('FormButton')?>
+		<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowEditDefinitionId').close();" />
+
+	</div>
+</div>
+</fieldset>
+
+<?=$this->form->renderClose()?>
+
+<script>
+function postSubmitcnDefinition() {
+	// reload all Definition items
+	onTemplateRowSelected(cnmTemplateGrid.getSelectedRowId(),cnmTemplateGrid.getSelectedCellIndex());
+	dhxWins.window("windowEditDefinitionId").close();
+	return false;
+}
+</script>
+
+
+<?if($this->form->clinicalNoteDefinitionId->getValue() > 0):?>
+<fieldset>
+<legend><?=__("Attachments")?></legend>
+
+<div style="padding:5px;">
+
+<div style="float:left;" id="uploadAttachmentContainer" style="border: thin solid blank;">
+<form id="addCNMAttachmentsForm" name="addCNMAttachmentsForm" method="post" action="<?=$this->baseUrl?>/attachments.raw/process-add-attachments" enctype="multipart/form-data">
+	<div style="margin-left:10px;width:350px;">
+		<div style="width:99.9%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+			<strong><?=__("Add Attachments")?>:</strong>
+			<input type="hidden" name="attachmentReferenceId" value="<?=$this->form->clinicalNoteDefinitionId->getValue()?>">
+			<input type="hidden" name="MAX_FILE_SIZE" value="10485760">
+			<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progressKey" value="<?=uniqid('');?>"/>
+			<input type="file" name="uploadFile"/>
+			<input type="button" value="<?=__("Upload")?>" onClick="ajaxUploadFile();" />
+		</div>
+		<div style="width:325px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+			<strong><?=__("Progress")?>:</strong>
+			<div style="width:320px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;"><div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div></div>
+		</div>
+	</div>
+</form>
+</div>
+
+<script>
+progressTimer = '';
+function ajaxUploadFile() {
+	dojo.byId('fileUploadFormId').style.display = "none";
+	dojo.io.iframe.send({
+		url: '<?=$this->baseUrl?>/attachments.raw/process-add-attachments',
+		method: "post",
+		handleAs: "json",
+		method: 'post',
+		form: 'addCNMAttachmentsForm',
+		load: function(data){ 
+			clearTimeout(progressTimer);
+			dojo.byId('uploadProgressBarId').style.width = '100%';
+			//dojo.byId('uploadAttachmentContainer').innerHTML = '<strong>Upload Completed Successfully</strong>.';
+			attachmentId = data.attachmentId;
+			cnmedAttachmentsGrid.clearAll();
+			cnmedAttachmentsGrid.load('<?=$this->baseUrl?>/attachments.raw/list-attachments?attachmentReferenceId=<?=$this->form->clinicalNoteDefinitionId->getValue()?>',null,"json");
+			dojo.byId('fileUploadProgressId').style.display = "none";
+			dojo.byId('fileUploadFormId').style.display = "block";
+			document.addCNMAttachmentsForm.reset();
+		},
+		error: function (er) {
+			alert("ERROR: " + er.responseText);
+		}
+	});
+		initProgressBar();
+}
+
+function addedNewAttachments() {
+
+}
+function initProgressBar(progressKey) {
+	if (dojo.byId('progressKey') == undefined) return;
+	if (progressKey == undefined) {
+		progressKey = dojo.byId('progressKey').value;
+	}
+	dojo.byId('fileUploadProgressId').style.display = "block";
+	dojo.xhrGet ({
+		url: '<?=$this->baseUrl?>/attachments.raw/view-upload-progress?uploadKey=' + progressKey,
+		handleAs: 'json', 
+		load: function (data) {
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId('uploadProgressBarId').style.width = data + '%';
+			progressTimer = setTimeout("initProgressBar(progressKey)", 1000);
+		}, 
+		error: function (er) {
+			alert("ERROR: " + er.responseText);
+		}
+	});
+}
+</script>
+
+
+<br style="clear:left;" />
+<br />
+<div id="cnmedAttachments" style="width:94%;height:200px;">
+</div>
+</fieldset>
+
+<script>
+var cnmedAttachmentsGrid = new dhtmlXGridObject("cnmedAttachments");
+cnmedAttachmentsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+cnmedAttachmentsGrid.setHeader('Type,Filename,Date/Time');
+cnmedAttachmentsGrid.setInitWidths("75,280,140");
+cnmedAttachmentsGrid.setSkin("xp");
+cnmedAttachmentsGrid.init();
+cnmedAttachmentsGrid.load('<?=$this->baseUrl?>/attachments.raw/list-attachments?attachmentReferenceId=<?=$this->form->clinicalNoteDefinitionId->getValue()?>',null,"json");
+</script>
+
+<?else:?>
+
+<script>
+dhxWins.window("windowEditDefinitionId").setDimension(550,175);
+</script>
+
+<?endif;?>
+

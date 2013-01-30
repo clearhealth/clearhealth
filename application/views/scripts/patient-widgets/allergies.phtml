@@ -1,0 +1,14 @@
+<div id="allergies_reactions_container" style="width:99%;height:auto;"></div>
+                                <script>
+                                        aarGrid = new dhtmlXGridObject('allergies_reactions_container');
+                                        aarGrid.setImagePath("../img/");
+                                        aarGrid.setHeader("Allergies / Adverse Reactions");
+                                        aarGrid.setInitWidths("*");
+                                        aarGrid.setColAlign("left");
+                                        aarGrid.setSkin("xp");
+                                        var testdata=[
+                                                ["Penicillin / AM110"]
+                                        ]
+                                        aarGrid.init(); 
+                                        aarGrid.parse(testdata,"jsarray");
+                                </script>

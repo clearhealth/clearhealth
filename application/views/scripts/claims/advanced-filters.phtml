@@ -1,0 +1,166 @@
+<style>
+.filterOperator {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:17px;
+	width:120px;
+}
+</style>
+<fieldset style="float:left;width:370px;height:150px;"><legend><?=__('Facilities')?></legend>
+	<div id="facilitiesGridId" style="width:370px;height:140px;"></div>
+</fieldset>
+<fieldset style="float:left;width:370px;height:150px;"><legend><?=__('Payers')?></legend>
+	<div id="payersGridId" style="width:370px;height:140px;"></div>
+</fieldset>
+<br style="clear:left;" />
+<fieldset><legend><?=__('Misc')?></legend>
+	<?$inputFields = array(
+		'total'=>__('Total'),
+		'billed'=>__('Billed'),
+		'paid'=>__('Paid'),
+		'writeoff'=>__('Writeoff'),
+		'balance'=>__('Balance'),
+	);
+	foreach ($inputFields as $name=>$label):?>
+	<div class="formRow" style="padding-top:5px;">
+		<div style="float:left;">
+			<input type="checkbox" name="<?=$name?>ActiveId" id="<?=$name?>ActiveId" value="1" onClick="filtersToggleInputFields('<?=$name?>',!this.checked)" /> <?=$label?>
+			<?=$this->formSelect($name.'Operator',$this->filters[$name]['operator'],array('id'=>$name.'Operator','class'=>'filterOperator','onChange'=>'filtersOperatorOnChanged(this,"'.$name.'")'),$this->balanceOperators)?>
+			<?=$this->formCurrencyText($name.'Id',$this->filters[$name]['operand1'],array('id'=>$name.'Id','style'=>'width:60px;vertical-align:bottom;margin-right:2px;'))?>
+		</div>
+		<div id="<?=$name?>DivId" style="float:left;display:none;">
+			<?=__('AND')?> <?=$this->formCurrencyText($name.'Id2',$this->filters[$name]['operand2'],array('id'=>$name.'Id2','style'=>'width:60px;margin-left:2px;'))?>
+		</div>
+	</div>
+	<br style="clear:left;" />
+	<?endforeach;?>
+	<div class="formRow" style="padding-top:5px;">
+		<div style="float:left;"><input type="radio" name="openClosed" id="openClosed" value="0" <?=($this->filters['openClosed'] == '0')?'checked="checked"':''?> /> <?=__('Open')?> </div>
+		<div style="float:left;"><input type="radio" name="openClosed" id="openClosed" value="1" <?=($this->filters['openClosed'] == '1')?'checked="checked"':''?> /> <?=__('Closed')?> </div>
+		<div style="float:left;"><input type="radio" name="openClosed" id="openClosed" value="2" <?=($this->filters['openClosed'] == '2')?'checked="checked"':''?> /> <?=__('Open & Closed')?> </div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:5px;">
+		<div style="float:left;">
+			<?=__('MRN')?>
+			<?=$this->formText('mrnId',$this->filters['mrn'],array('id'=>'mrnId','style'=>'width:100px;margin-left:2px;'))?>
+		</div>
+	</div>
+</fieldset>
+<div class="formRow" style="padding-top:8px;">
+	<?=$this->formButton('ok',__('OK'),array('onClick'=>'claimsAdvancedFiltersSet()'))?>
+	<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'closeThisForm()'))?>
+</div>
+<script>
+var facilitiesGrid = new dhtmlXGridObject("facilitiesGridId");
+facilitiesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+facilitiesGrid.setHeader(",<?=__('Facility')?>");
+facilitiesGrid.setNoHeader(true);
+facilitiesGrid.setSkin("xp");
+facilitiesGrid.setColTypes("ch,ro");
+facilitiesGrid.setInitWidths("15,*");
+facilitiesGrid.init();
+<?$index = 0;
+foreach($this->facilities as $key=>$value):
+	$idx = -1;
+	$checked = 0;
+	if (isset($this->filters['facilities'][$key]) && $this->filters['facilities'][$key]) {
+		$checked = 1;
+		$idx = $index++;
+	}?>
+facilitiesGrid.addRow("<?=$key?>","<?=$checked?>",<?=$idx?>);
+facilitiesGrid.cells("<?=$key?>",1).setValue("<?=htmlentities($value)?>");
+<?endforeach?>
+
+var payersGrid = new dhtmlXGridObject("payersGridId");
+payersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+payersGrid.setHeader(",<?=__('Facility')?>");
+payersGrid.setNoHeader(true);
+payersGrid.setSkin("xp");
+payersGrid.setColTypes("ch,ro");
+payersGrid.setInitWidths("15,*");
+payersGrid.init();
+<?$index = 0;
+foreach(InsuranceProgram::getInsurancePrograms() as $key=>$value):
+	$idx = -1;
+	$checked = 0;
+	if (isset($this->filters['payers'][$key]) && $this->filters['payers'][$key]) {
+		$checked = 1;
+		$idx = $index++;
+	}?>
+payersGrid.addRow("<?=$key?>","<?=$checked?>",<?=$idx?>);
+payersGrid.cells("<?=$key?>",1).setValue("<?=htmlentities($value)?>");
+<?endforeach?>
+
+function filtersToggleInputFields(name,value) {
+	dojo.byId(name+"Operator").disabled = value;
+	dojo.byId(name+"Id").disabled = value;
+	dojo.byId(name+"Id2").disabled = value;
+}
+
+var inputNames = [];
+<?foreach ($inputFields as $name=>$label) {
+	$active = ($this->filters[$name]['active'])?'true':'false';
+	echo '
+inputNames.push("'.$name.'");
+dojo.byId("'.$name.'ActiveId").checked = '.$active.';
+filtersToggleInputFields("'.$name.'",!'.$active.');
+filtersOperatorOnChanged(dojo.byId("'.$name.'Operator"),"'.$name.'")';
+}?>
+
+function filtersOperatorOnChanged(obj,name) {
+	var div = dojo.byId(name+"DivId");
+	div.style.display = "none";
+	if (obj.value == "between") {
+		div.style.display = "";
+	}
+}
+
+function claimsAdvancedFiltersSet() {
+	var openClosed = "";
+	var openClosedId = dojo.byId("openClosed");
+	var openClosedName = document.getElementsByName(openClosedId.name);
+	for (var i = 0; i < openClosedName.length; i++) {
+		if (openClosedName[i].checked) {
+			openClosed = openClosedName[i].value;
+		}
+	}
+	var filters = {
+		"filters[openClosed]": openClosed,
+		"filters[mrn]": dojo.byId("mrnId").value,
+	};
+	facilitiesGrid.forEachRow(function(rowId){
+		filters["filters[facilities]["+rowId+"]"] = this.cells(rowId,0).getValue();
+	});
+	payersGrid.forEachRow(function(rowId){
+		filters["filters[payers]["+rowId+"]"] = this.cells(rowId,0).getValue();
+	});
+	for (var i = 0; i < inputNames.length; i++) {
+		var name = inputNames[i];
+		filters["filters["+name+"][active]"] = dojo.byId(name+"ActiveId").checked?"1":"0";
+		var operatorSelect = dojo.byId(name+"Operator");
+		var operator = operatorSelect.options[operatorSelect.selectedIndex].value;
+		filters["filters["+name+"][operator]"] = operator;
+		var operand1 = dojo.byId(name+"Id").value;
+		var operand2 = 0;
+		var inValid = isNaN(operand1);
+		if (operator == "between") {
+			operand2 = dojo.byId(name+"Id2").value;
+			inValid = (inValid || isNaN(operand2))
+		}
+		if (inValid) {
+			alert("<?=__('Please correct all invalid fields')?>");
+			return;
+		}
+		filters["filters["+name+"][operand1]"] = operand1;
+		filters["filters["+name+"][operand2]"] = operand2;
+	}
+
+	claimsSetFilters(filters);
+	closeThisForm();
+}
+
+function closeThisForm() {
+	dhxWins.window("windowClaimsAdvancedFiltersId").close();
+}
+</script>

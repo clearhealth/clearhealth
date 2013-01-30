@@ -1,0 +1,25 @@
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formTextarea('codeEditName',null,array('id'=>'codeEditId','cols'=>108,'rows'=>33))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formButton('OkName','   '.__('OK').'   ',array('onClick'=>'codeEditorApply()'))?>
+	<?=$this->formButton('CancelName',__('Cancel'),array('onClick'=>'dhxWins.window("winCodeEditorId").close()'))?>
+</div>
+<script>
+function codeEditorApply() {
+<?if (strlen($this->jsVar) > 0):?>
+	var oldJsVar = <?=$this->jsVar?>;
+	var newJsVar = dojo.byId("codeEditId").value;
+	if (newJsVar != oldJsVar && confirm("<?=__('Are you sure you want to overwrite?')?>")) {
+		<?=$this->jsVar?> = newJsVar;
+	}
+<?endif;?>
+	dhxWins.window('winCodeEditorId').close();
+}
+
+<?if (strlen($this->jsVar) > 0):?>
+dojo.byId("codeEditId").value = <?=$this->jsVar?>;
+<?endif;?>
+</script>

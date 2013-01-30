@@ -1,0 +1,167 @@
+<script>
+function nsdrRemove(uuid,url,callback) {
+	dojo.xhrPost({
+		url: url,
+		handleAs: "json",
+		content: {
+			uuid: uuid,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function applyMethodChanges(rowId,newMethodName,newMethod) {
+	if (newMethodName == methodName && newMethod == method) {
+		// do nothing, just return
+		return;
+	}
+	mGrid.cells(rowId,0).setValue(newMethodName);
+	mGrid.cells(rowId,1).setCTxtValue(newMethod);
+}
+
+function openMethodWindow(id) {
+	// get the alias value
+	var aliasForValue = dojo.byId('nsdrDefinition-aliasFor').value;
+	var ormClass = dojo.byId('nsdrDefinition-ORMClass').value;
+	if (aliasForValue.length > 0 || ormClass.length > 0) {
+		alert('<?=("Adding/editing new method is not allowed.")?>');
+		return;
+	}
+
+	if (!id) {
+		id = '';
+	}
+
+	var url = "<?=$this->baseUrl?>/nsdr-manager.raw/edit-method?id="+id+"&parentId=<?=$this->form->uuid->getValue()?>";
+	winMethod = globalCreateWindow("windowEditMethodId",[],url,"<?=__('Add/Edit Method')?>",500,450);
+}
+function contentLoadedHandler() {
+}
+
+function closeMethodWindow() {
+	winMethod.close();
+}
+</script>
+
+<?=$this->form->renderOpen()?>
+
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?if($this->code):?>
+<div id="code" style="display:hidden"><?=$this->code?></div>
+<?endif;?>
+
+<fieldset>
+<legend><?=__(ucwords($this->event)." NSDR Definition")?></legend>
+<div style="float:left;">
+	<div class="formRow">
+		<?=$this->form->uuidInput('FormHidden')?>
+
+		<?=$this->form->namespace->renderLabel()?>
+		<?$this->form->namespace->setAttrib('size',50)?>
+
+		<?=$this->form->namespaceInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->aliasFor->renderLabel()?>
+		<?$this->form->aliasFor->setAttrib('size',50)?>
+
+		<?=$this->form->aliasForInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->ORMClass->renderLabel()?>
+		<?$this->form->ORMClass->setAttrib('size',50)?>
+
+		<?=$this->form->ORMClassInput()?>
+
+	</div>
+
+	<br style="clear:left;" />
+	<div class="formRow" style="width:100%">
+		<dt><label for="nsdrDefinition-method" class="optional">NSDR Definition Methods</label></dt>
+		<div id="methodsContainer" style="height:150px;"></div>
+		<script>
+		mGrid = new dhtmlXGridObject('methodsContainer');
+		mGrid.setImagePath("<?=$this->baseUrl?>/img/");
+		mGrid.setHeader('<?=__('Method Name,Method')?>');
+		mGrid.setInitWidths("*,0");
+		mGrid.setColTypes("ro,ro");
+		mGrid.setSkin("xp");
+		mGrid.init();
+		mGrid.attachEvent("onRowDblClicked", function(rowId,colIndex){ openMethodWindow(rowId); });
+
+		function removeMethod() {
+			var rowId = mGrid.getSelectedRowId();
+			if (rowId == null) {
+				alert("<?=__('No method selected.')?>");
+				return;
+			}
+			nsdrRemove(rowId,"<?=$this->baseUrl?>/nsdr-manager.raw/process-remove-method",nsdrMethodReload);
+		}
+
+		function nsdrMethodReload() {
+			mGrid.clearAll();
+			mGrid.load("<?=$this->baseUrl?>/nsdr-manager.raw/list?parentId=<?=$this->form->uuid->getValue()?>","json");
+		}
+		nsdrMethodReload();
+		</script>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow">
+		<input type="button" value="<?=__('Add New')?>" onClick="openMethodWindow()"<?=($this->noMethod)?' disabled="disabled"':''?> />
+		<input type="button" value="<?=__('Remove Selected')?>" onClick="removeMethod()"<?=($this->noMethod)?' disabled="disabled"':''?> />
+	</div>
+
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->form->okInput('FormButton')?>
+
+	</div>
+</div>
+</fieldset>
+
+<?=$this->form->renderClose()?>
+
+
+
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	if (dojo.byId("<?=$this->form->namespace->getId()?>").value != "<?=$this->form->namespace->getValue()?>") {
+		var msg = "Changing an NSDR item while the NSDR service is running can have non-deterministic results. You should stop the service before changing an item. Are you sure you want to continue with the change?";
+		if (!confirm(msg)) {
+			return false;
+		}
+	}
+	return true;
+}
+function postSubmit<?=$this->form->getId()?>() {
+	// remove all children on parent items
+	nsdrDataPointsTree.deleteChildItems('<?=$this->parentId?>');
+
+	// reload all children on parent items
+	nsdrDataPointsTree.loadXML("<?=$this->baseUrl?>/nsdr-manager.raw/data-points.xml?id=<?=$this->parentId?>");
+	dojo.setInnerHTML(dojo.byId('nsdrDefinition'),'');
+	alert("<?=__('You must restart NSDR service for the changes to take effect.')?>");
+	return false;
+}
+</script>

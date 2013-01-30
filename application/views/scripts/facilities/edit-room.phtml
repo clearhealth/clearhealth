@@ -1,0 +1,49 @@
+<div style="float:left;width:100%;">
+	<?=$this->form->renderOpen()?>
+	<fieldset><legend><?=__('Room Information')?></legend>
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->name->renderLabel()?>
+			<?=$this->form->nameInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->description->renderLabel()?>
+			<?=$this->form->descriptionInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->numberSeats->renderLabel()?>
+			<?=$this->form->numberSeatsInput('FormText',array('style'=>'width:200px;'))?>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->color->renderLabel()?>
+			<select name="<?=$this->form->color->getFullyQualifiedName()?>" id="<?=$this->form->color->getId()?>" style="width:200px;" helper="formText">
+				<option value=""></option>
+				<?foreach ($this->colors as $key=>$value):?>
+				<option value="<?=$key?>" style="background-color:<?=$key?>"><?=$value?></option>
+				<?endforeach;?>
+			</select>
+		</div>
+		<br style="clear:left;" />
+		<div class="formRow" style="padding-top:4px;">
+			<?=$this->form->routingStation->renderLabel()?>
+			<?=$this->form->routingStationInput('FormSelect',array('style'=>'width:200px;','options'=>$this->routingStations))?>
+		</div>
+	</fieldset>
+	<br style="clear:left;" />
+	<div class="formRow" style="float:right;">
+		<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+		<?=$this->form->idInput('FormHidden')?>
+		<?=$this->form->buildingIdInput('FormHidden')?>
+		<?=$this->formButton('btnCancel','Cancel',array('onClick'=>'dhxWins.window("windowEditORMObjectId").close();'))?>
+		<?=$this->form->okInput('FormButton')?>
+	</div>
+	<?=$this->form->renderClose()?>
+</div>
+<script>
+function postSubmit<?=$this->form->getId()?>() {
+	dhxWins.window("windowEditORMObjectId").close();
+	return false;
+}
+</script>

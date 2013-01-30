@@ -1,0 +1,49 @@
+<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+<div id="immunizationsSelectionListContainer" style="width:99%;height:80%;"></div>
+<div class="formRow">
+	<input type="button" value="<?=__('Select')?>" onClick="immunizationsSelectionListSelected()" style="width:150px;" />
+	<input type="button" value="<?=__('Cancel')?>" onClick="dhxWins.window('windowImmunizationsSelectionListId').close()" style="width:150px;margin-top:10px;" />
+</div>
+
+<script>
+function immunizationsSelectionListSelected() {
+	var rowId = immunizationsSelectionListGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert('<?=__('No immunization selected')?>');
+		return;
+	}
+	<?if($this->jsCallback != ''):?>
+	if ('<?=$this->jsCallback?>' != '' && window.<?=$this->jsCallback?>) {
+		<?=$this->jsCallback?>(rowId,immunizationsSelectionListGrid.cellById(rowId,"0").getValue());
+	}
+	<?endif;?>
+	dhxWins.window("windowImmunizationsSelectionListId").close();
+}
+
+var immunizationsSelectionListGrid = new dhtmlXGridObject('immunizationsSelectionListContainer');
+immunizationsSelectionListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+immunizationsSelectionListGrid.setHeader("<?=__('Description')?>,<?=__('Code')?>");
+immunizationsSelectionListGrid.setInitWidths("*,100");
+immunizationsSelectionListGrid.setColAlign("left,right");
+immunizationsSelectionListGrid.setColTypes("ro,ro");
+immunizationsSelectionListGrid.setSkin("xp");
+immunizationsSelectionListGrid.attachEvent("onRowSelect",immunizationsSelectionListRowSelectHandler);
+immunizationsSelectionListGrid.attachEvent("onRowDblClicked",immunizationsSelectionListRowDoubleClickedHandler);
+immunizationsSelectionListGrid.init();
+
+<?foreach ($this->lists as $key=>$value):?>
+immunizationsSelectionListGrid.addRow("<?=$key?>","");
+immunizationsSelectionListGrid.cells("<?=$key?>",0).setValue("<?=$value?>");
+immunizationsSelectionListGrid.cells("<?=$key?>",1).setValue("<?=$key?>");
+<?endforeach;?>
+//immunizationsSelectionListGrid.load("<?=$this->baseUrl?>/immunizations.raw/immunizations-list","json");
+
+function immunizationsSelectionListRowSelectHandler(rowId,cellIndex) {
+}
+
+function immunizationsSelectionListRowDoubleClickedHandler(rowId,colIndex) {
+	immunizationsSelectionListSelected();
+}
+
+</script>
+

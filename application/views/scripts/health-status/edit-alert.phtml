@@ -1,0 +1,58 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->message->renderLabel()?>
+	<?$this->form->message->setAttrib('size',35)?>
+	<?=$this->form->messageInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->dateDue->renderLabel()?>
+	<?$this->form->dateDue->setAttrib('size',35)?>
+	<?=$this->form->dateDueInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->healthStatusAlertId->getValue())?>
+	<?=$this->form->healthStatusAlertIdInput('FormHidden')?>
+	<?=$this->form->personIdInput('FormHidden')?>
+	<?=$this->form->statusInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('winHSAEditAlertId').close()"/>
+</div>
+
+<script>
+function preSubmiteditalert() {
+	dojo.byId("hsaAlert-personId").value = mainController.getActivePatient();
+	dojo.byId("hsaAlert-status").value = "active";
+	return true;
+}
+
+function postSubmiteditalert(data) {
+<?if (strlen($this->callback) > 0):?>
+	if (window.<?=$this->callback?>) {
+		window.<?=$this->callback?>(data);
+	}
+<?endif;?>
+	dhxWins.window('winHSAEditAlertId').close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

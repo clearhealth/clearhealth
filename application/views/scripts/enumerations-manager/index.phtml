@@ -1,0 +1,226 @@
+<style>
+body {
+	margin:0;
+	padding:0;
+}
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+</style>
+
+<?
+$categories = $this->enumIterator->toArray('category','category');
+$categories['System'] = "System";
+$categories['User'] = "User";
+?>
+<div id="enumLayout" style="position:relative;width:100%;height:440px;">
+	<div id="enumLeftPane" style="width:100%;height:100%;margin:0px;">
+		<div id="enumLeftToolbar"></div>
+		<select id="enumCategorySelect" name="enumCategorySelect" onChange="enumUpdateListGrid()">
+		<?foreach ($categories as $enumerationIdId=>$category):?>
+		<option<?=($category=="User")?' selected="selected"':''?>><?=$category?></option>
+		<?endforeach;?>
+		</select>
+		<div id="enumListGridContainer" style="position:relative;width:100%;height:84%;"></div>
+	</div>
+
+	<div id="enumRightPane" style="width:100%;height:100%;margin:0px;overflow:auto"></div>
+</div>
+
+<script>
+
+function enumEditObject(enumerationId,isAdd) {
+	isAdd = (isAdd)?1:0;
+	var params = [];
+	params.push("enumerationId="+enumerationId);
+	params.push("isAdd="+isAdd);
+	var winEditORM = globalCreateWindow("windowEditORMObjectId",params,"<?=$this->baseUrl?>/generic-edit.raw",((isAdd)?"<?=__('Add')?>":"<?=__('Edit')?>")+" <?=__('ORM Object')?>",500,600);
+}
+
+function enumSingleUpdate(field,id,value,cellIndex,grid) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/enumerations-manager.raw/process-edit-single-item",
+		handleAs: "json",
+		content: {
+			field: field,
+			enumerationId: id,
+			value: value,
+		},
+		load: function (data) {
+			grid.cells(id,cellIndex).setValue(data);
+			if (grid == enumItemsGrid && enumListGrid.doesRowExist(id)) {
+				enumListGrid.cells(id,0).setValue(data);
+			}
+			if (grid == enumListGrid && enumItemsGrid.doesRowExist(id)) {
+				enumItemsGrid.cells(id,0).setValue(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function enumUpdateListGrid() {
+	var enumCategorySelect = dojo.byId('enumCategorySelect');
+	var enumCategory = enumCategorySelect.options[enumCategorySelect.selectedIndex].value;
+	enumListGrid.clearAll();
+	if (typeof enumItemsGrid != 'undefined') {
+		enumItemsGrid.clearAll();
+	}
+	if (enumCategory == "select") {
+		return;
+	}
+	enumListGrid.load('<?=$this->baseUrl?>/enumerations-manager.raw/list?category='+enumCategory,null,"json");
+}
+
+//Layouts
+var enumLayout = new dhtmlXLayoutObject("enumLayout","2U");
+enumLayout.setImagePath("<?=$this->baseUrl?>/img/");
+var leftPaneWidth = enumLayout.cells("a").getWidth() / 2;
+leftPaneWidth += leftPaneWidth / 2;
+enumLayout.cells("a").setWidth(leftPaneWidth);
+enumLayout.cells("a").setText('<?=__("Enumerations")?>');
+enumLayout.cells("b").setText('<?=__("Enumeration Details")?>');
+enumLayout.cells("a").hideHeader();
+enumLayout.cells("b").hideHeader();
+enumLayout.cells("a").attachObject("enumLeftPane");
+enumLayout.cells("b").attachObject("enumRightPane");
+enumLayout.setEffect('collapse',true);
+enumLayout.setEffect("resize", true);
+
+function enumHideNecessaryToolbars() {
+	enumLeftToolbar.disableItem("tbNewObject");
+	enumLeftToolbar.hideItem("tbNewObject");
+	enumLeftToolbar.disableItem("tbEditObject");
+	enumLeftToolbar.hideItem("tbEditObject");
+}
+
+// Left Pane Toolbar
+var enumLeftToolbar = new dhtmlXToolbarObject("enumLeftToolbar","ClearSilver");
+enumLeftToolbar.loadXML("<?=$this->baseUrl?>/enumerations-manager.raw/toolbar",enumOnToolbarLoaded);
+function enumOnToolbarLoaded() {
+	enumLeftToolbar.disableItem("delete");
+	enumHideNecessaryToolbars();
+}
+enumLeftToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+enumLeftToolbar.attachEvent("onClick",enumOnToolbarClicked);
+function enumOnToolbarClicked(id) {
+	switch(id) {
+		case "tbNewEnumeration":
+			enumerationEditWindow();
+			break;
+		case "delete":
+			enumerationDelete();
+			break;
+		case "refresh":
+			enumUpdateListGrid();
+			break;
+		default:
+			alert('<?=__("Invalid event: ")?>'+id);
+	}
+}
+
+function enumerationDelete(enumerationId,grid) {
+	if (!grid) grid = enumListGrid;
+	if (!enumerationId) {
+		enumerationId = grid.getSelectedRowId();
+	}
+	if (!enumerationId || !confirm("<?=__('Are you sure you want to delete enumeration')?>: "+grid.cells(enumerationId,0).getValue()+"?\n<?=__('NOTE: This will delete all its children recursively.')?>")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/enumerations-manager.raw/process-delete",
+		handleAs: "json",
+		content: {
+			"enumerationId": enumerationId,
+		},
+		load: function (data) {
+			enumUpdateListGrid();
+		},
+		error: function (error) {
+			alert(error);
+			console.error("Error: ",error);
+		}
+	});
+}
+
+// Left Pane Grid
+var enumListGrid =  new dhtmlXGridObject("enumListGridContainer");
+enumListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+enumListGrid.setHeader('<?=__('Enumerations')?>');
+enumListGrid.setColTypes("ed");
+enumListGrid.setSkin("xp");
+enumListGrid.setInitWidths("*");
+enumListGrid.init();
+function enumListGridOnLoaded() {
+	enumLeftToolbar.disableItem("delete");
+}
+function enumListGridReload() {
+	enumListGrid.clearAll();
+	enumListGrid.load("<?=$this->baseUrl?>/enumerations-manager.raw/list",enumListGridOnLoaded,"json");
+}
+//enumListGridReload();
+
+function enumReloadRightPane(id) {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/enumerations-manager.raw/view?enumerationId=" + id,
+		handleAs: "text",
+		load: function (data) {
+			dojo.setInnerHTML(dojo.byId("enumRightPane"),data);
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+enumListGrid.attachEvent("onRowSelect",enumOnRowSelected);
+function enumOnRowSelected(rowId,cellIndex) {
+	enumLeftToolbar.enableItem("delete");
+	//enumHideNecessaryToolbars();
+	enumReloadRightPane(rowId);
+}
+
+enumListGrid.attachEvent("onEditCell",enumOnEditCell);
+function enumOnEditCell(stage,rowId,cellIndex,newValue,oldValue) {
+	switch (stage) {
+		case 2:
+			if (newValue != oldValue) {
+				enumSingleUpdate("name",rowId,newValue,cellIndex,enumListGrid);
+			}
+			break;
+	}
+	return true;
+}
+
+function enumerationEditWindow(enumerationId,parentId,grid,ormClass) {
+	var params = [];
+	if (parentId) {
+		eval("var className = "+grid+".getUserData(parentId,\"ormClass\") + \"\";");
+		if (className.length > 0) {
+			return enumEditObject(parentId,true);
+		}
+		params.push("parentId="+parentId);
+	}
+	if (enumerationId) {
+		params.push("enumerationId="+enumerationId);
+	}
+	if (grid) {
+		params.push("grid="+grid);
+	}
+	if (ormClass) {
+		params.push("ormClass="+ormClass);
+	}
+
+	var enumCategorySelect = dojo.byId("enumCategorySelect");
+	var enumCategory = enumCategorySelect.options[enumCategorySelect.selectedIndex].value;
+	if (enumCategory == "select") {
+		enumCategory = "User";
+	}
+	params.push("category="+enumCategory);
+	var winEditEnumeration = globalCreateWindow("windowEditORMObjectId",params,"<?=$this->baseUrl?>/enumerations-manager.raw/edit","<?=__('Add/Edit Enumeration')?>",400,600);
+}
+
+enumUpdateListGrid();
+</script>

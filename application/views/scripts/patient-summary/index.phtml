@@ -1,0 +1,145 @@
+			<style>div.gridbox_xp table.obj td {border-bottom: none;border-right:none;}</style>
+			<div>
+				<!--<div id="active_problems_container" style="float:left;width:34%;height:150px;
+"></div> 
+				<script>
+					/*apGrid = new dhtmlXGridObject('active_problems_container');
+					apGrid.setImagePath("../img/");
+					apGrid.setHeader("Active Problems");
+					apGrid.setInitWidths("*");
+					apGrid.setColAlign("left");
+					apGrid.setSkin("xp");
+					var testdata=[
+						["Diabetes Mellitus Type II or unspecified",""],
+						["Hypertension"]
+					]
+					apGrid.init(); 
+					apGrid.parse(testdata,"jsarray");*/
+				</script>-->
+				<!--<div id="allergies_reactions_container" style="float:left;width:32.5%;height:150px;"></div> 
+				<script>
+					/*aarGrid = new dhtmlXGridObject('allergies_reactions_container');
+					aarGrid.setImagePath("../img/");
+					aarGrid.setHeader("Allergies / Adverse Reactions");
+					aarGrid.setInitWidths("*");
+					aarGrid.setColAlign("left");
+					aarGrid.setSkin("xp");
+					var testdata=[
+                                                ["Penicillin / AM110"]
+                                        ]
+					aarGrid.init(); 
+                                        aarGrid.parse(testdata,"jsarray");*/
+				</script>-->
+				<!--<div>
+					<div id="patient_record_flags_container" style="width:33%;height:75px;"></div>
+                                <script>
+                                        /*prfGrid = new dhtmlXGridObject('patient_record_flags_container');
+                                        prfGrid.setImagePath("../img/");
+                                        prfGrid.setHeader("Patient Record Flags");
+                                        prfGrid.setInitWidths("*");
+                                        prfGrid.setColAlign("left");
+                                        prfGrid.setSkin("xp");
+					var testdata=[
+                                                ["No Results Found"]
+                                        ]
+                                        prfGrid.init();
+					prfGrid.parse(testdata,'jsarray');*/
+                                </script>-->
+				<!--<div id="date_posting_container" style="width:33%;height:73px;"></div>
+                                <script>
+                                        /*dpGrid = new dhtmlXGridObject('date_posting_container');
+                                        dpGrid.setImagePath("../img/");
+                                        dpGrid.setHeader("Date,Posting");
+                                        dpGrid.setInitWidths("75,*");
+                                        dpGrid.setColAlign("left");
+                                        dpGrid.setSkin("xp");
+					var testdata=[
+                                                ["","Allergies"]
+                                        ]
+                                        dpGrid.init();
+                                        dpGrid.parse(testdata,'jsarray');*/
+                                </script>
+				</div>-->
+			</div>
+			<div>
+				<div id="medication_container" style="float:left;width:49.5%;height:200px;"></div>
+                                <script>
+                                        amGrid = new dhtmlXGridObject('medication_container');
+                                        amGrid.setImagePath("../img/");
+                                        amGrid.setHeader("Active Medication,Status");
+                                        amGrid.setInitWidths("300,*");
+                                        amGrid.setColAlign("left");
+                                        amGrid.setSkin("xp");
+					/*var testdata=[
+						["Home-Med Erythromicin 50 MG Oral Tablet","Active"]
+                                        ]*/
+					amGrid.init(); 
+                                        //amGrid.parse(testdata,"jsarray");
+                                </script>
+				<!--<div id="clinical_reminders_container" style="float:left;width:50%;height:200px;"></div>
+                                <script>
+                                        /*cmGrid = new dhtmlXGridObject('clinical_reminders_container');
+                                        cmGrid.setImagePath("../img/");
+                                        cmGrid.setHeader("Clinical Reminders,Due Date");
+                                        cmGrid.setInitWidths("200,*");
+                                        cmGrid.setColAlign("left");
+                                        cmGrid.setSkin("xp");
+					var testdata=[
+                                                ["PAP Smear Screening", "DUE NOW"]
+                                        ]
+                                        cmGrid.init();
+                                        cmGrid.parse(testdata,"jsarray");*/
+                                </script>
+			</div>-->
+			<div>
+				<div id="recent_labs_container" style="float:left;width:33%;height:200px;"></div>
+                                <script>
+                                        rlGrid = new dhtmlXGridObject('recent_labs_container');
+                                        rlGrid.setImagePath("../img/");
+                                        rlGrid.setHeader("Recent Lab Results,Date");
+                                        rlGrid.setInitWidths("200,*");
+                                        rlGrid.setColAlign("left");
+                                        rlGrid.setSkin("xp");
+					/*var testdata=[
+                                                ["ABO Group - RBC (14578-9)",'08/04/2008 14:15']
+                                        ]*/
+                                        rlGrid.init();
+                                        //rlGrid.parse(testdata,"jsarray");
+                                </script>
+				<div id="vitals_container" style="float:left;width:33%;height:200px;"></div>
+                                <script>
+                                        vcGrid = new dhtmlXGridObject('vitals_container');
+                                        vcGrid.setImagePath("../img/");
+                                        vcGrid.setHeader("Vital,English, Metric, Date");
+                                        vcGrid.setInitWidths("125,*,*,125");
+                                        vcGrid.setColAlign("left");
+                                        vcGrid.setSkin("xp");
+					/*var testdata=[
+                                                ["T","98.6","(37.0 C)", "08/04/2008 15:02:00"],
+                                                ["P","112","", "08/04/2008 15:02:00"],
+                                                ["R","18","", "08/04/2008 15:02:00"],
+                                                ["BP","120/80","", "08/04/2008 15:02:00"],
+                                                ["HT","65","(165.1 cm)", "08/04/2008 15:02:00"],
+                                                ["WT","128.15","(58.128)", "08/04/2008 15:02:00"],
+                                                ["PN","2","", "08/04/2008 15:02:00"],
+                                                ["GLU","6.15","", "08/04/2008 15:02:00"]
+                                        ]*/
+                                        vcGrid.init();
+					vcGrid.load('<?=$this->baseUrl?>/vital-signs.raw/list-most-recent',null,"json");
+					
+                                </script>
+				<div id="admits_container" style="float:left;width:33.5%;height:200px;"></div>
+                                <script>
+                                        adGrid = new dhtmlXGridObject('admits_container');
+                                        adGrid.setImagePath("../img/");
+                                        adGrid.setHeader("Date,Appt./Visit/Admission Type,Location");
+                                        adGrid.setInitWidths("75,250,*,*");
+                                        adGrid.setColAlign("left");
+                                        adGrid.setSkin("xp");
+					/*var testdata=[
+                                                ["08/04/2008","","Central"]
+                                        ]*/
+                                        adGrid.init();
+					//adGrid.parse(testdata,'jsarray');
+                                </script>
+

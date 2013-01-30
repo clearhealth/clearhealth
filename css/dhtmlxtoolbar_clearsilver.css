@@ -1,0 +1,689 @@
+/*****************************************************************************************************************************************************************
+								dhtmlxToolbar "CLEAR SILVER" skin
+*****************************************************************************************************************************************************************/
+.dhtmlxToolbarIMG {
+	text-align: center;
+	padding-top: 4px;
+	padding-right: 10px;
+	vertical-align: top;
+}
+.dhtmlxToolbarIMG img {
+	padding: 0 4px 0 4px;
+}
+.itemDefault {
+	border: solid 1px #ece9d8;
+}
+
+.itemOver {
+	border: solid 1px #6495ed;
+}
+
+table.dhtmlxToolbarTableOuter_ClearSilver {
+	height: 31px;
+}
+td.dhtmlxToolbarTopLeft_ClearSilver {
+	width: 7px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_top_bg_left.gif");
+	background-repeat: no-repeat;
+}
+td.dhtmlxToolbarTopRight_ClearSilver {
+	width: 7px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_top_bg_right.gif");
+	background-repeat: no-repeat;
+}
+div.dhtmlxToolbar_ClearSilver {
+	#background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_top_bg_middle.gif");
+	background-color: #ece9d8;
+	#background-repeat: repeat-x;
+	width: 1100px;
+}
+div.dhtmlxToolbarVer_ClearSilver {
+	position: absolute;
+	top: 50px;
+	left: 20px;
+	/*
+	background-image: url("../img/dhtmlxtoolbar/webbar_bg_ver.gif");
+	background-repeat: repeat;
+	*/
+	background-color: #C5CBCC;
+	/* width: 1%; */
+	height: 600px;
+	border: silver 1px solid;
+	/* -moz-user-select: none; */
+	overflow: hidden;
+}
+div.dhtmlxToolbar_ClearSilver table.dhtmlxToolbarTable_ClearSilver {
+	#width: 100%;
+	height: 100%;
+	/*
+	border: #FFFFFF 1px solid;
+	border-bottom: #E0E0E0 1px solid;
+	*/
+}
+div.dhtmlxToolbarVer_ClearSilver table.dhtmlxToolbarTable_ClearSilver {
+	@height: 100%;
+	border: #FFFFFF 1px solid;
+	border-bottom: #E0E0E0 1px solid;
+	/* border-bottom: none; */
+}
+div table.dhtmlxToolbarTable_ClearSilver td {
+	white-space: nowrap;
+	position: relative;
+}
+/*****************************************************************************************************************************************************************
+	SEPARATOR
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemSeparator div.dhtmlxToolbarSeparator {
+	position: relative;
+	width: 0px;
+	margin-left: 3px;
+	margin-right: 3px;
+	border-left: #A7A7A7 1px solid;
+	border-right: #F7F7F7 1px solid;
+	margin-top: -2px;
+	#margin-top: 1px;
+	font-size: 1px;
+	cursor: default;
+	height: 27px;
+	-moz-user-select: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSeparatorVert div.dhtmlxToolbarSeparator {
+	padding-left: 3px;
+	margin-right: 3px;
+	border-bottom: #808080 1px solid;
+	margin-top: 1px;
+	font-size: 1px;
+	cursor: default;
+	height: 1px;
+	-moz-user-select: none;
+}
+/*****************************************************************************************************************************************************************
+	TEXT
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemText div.dhtmlxToolbarText {
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 4px;
+	font-size: 11px;
+	font-family: Tahoma;
+	font-weight: bold;
+	color: #303030;
+	cursor: default;
+	height: 18px;
+	-moz-user-select: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemTextVert div.dhtmlxToolbarText {
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 4px;
+	font-size: 11px;
+	font-family: Tahoma;
+	font-weight: bold;
+	color: #303030;
+	cursor: default;
+	-moz-user-select: none;
+}
+/*****************************************************************************************************************************************************************
+	INPUT
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonInput .dhtmlxToolbarButtonInput {
+	position: relative;
+	height: 15px;
+	border-top: #BFBFBF 1px solid;
+	border-left: #BFBFBF 1px solid;
+	border-right: #ECECEC 1px solid;
+	border-bottom: #ECECEC 1px solid;
+	margin-top: -1px;
+	#margin-top: 3px;
+	padding-left: 2px;
+	padding-right: 2px;
+	font-family: Tahoma;
+	font-size: 11px;
+	padding-top: 2px;
+}
+/*****************************************************************************************************************************************************************
+	BUTTON
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton {
+	cursor: pointer;
+	font-family: Tahoma;
+	font-size: 11px;
+	-moz-user-select: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.itemDefault {
+	position: absolute;
+	display: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.itemOver {
+	position: absolute;
+	border-top: #F7F7F7 1px solid;
+	border-left: #F7F7F7 1px solid;
+	border-bottom: #A7A7A7 1px solid;
+	border-right: #A7A7A7 1px solid;
+	top: 1px;
+	left: 0px;
+	height: 25px;
+	right: 0px;
+	width: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.itemPressed {
+	position: absolute;
+	border-top: #BFBFBF 1px solid;
+	border-left: #BFBFBF 1px solid;
+	border-bottom: #ECECEC 1px solid;
+	border-right: #ECECEC 1px solid;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_top_bg_pressed.gif");
+	background-repeat: repeat-x;
+	top: 1px;
+	left: 0px;
+	height: 25px;
+	right: 0px;
+	width: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.dhtmlxToolbarButton {
+	position: relative;
+	height: 100%;
+	color: #000000;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.dhtmlxToolbarButtonDisabled {
+	position: relative;
+	height: 100%;
+	color: #909090;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.dhtmlxToolbarImage {
+	position: relative;
+	width: 16px;
+	height: 16px;
+	margin-top: 5px;
+	margin-left: 2px;
+	margin-right: 2px;
+	margin-bottom: 3px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButton div.dhtmlxToolbarText {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: bold;
+	padding-top: 6px;
+	padding-right: 2px;
+	padding-left: 2px;
+}
+/*****************************************************************************************************************************************************************
+	BUTTONSELECT
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect {
+	cursor: pointer;
+	font-family: Tahoma;
+	font-size: 11px;
+	-moz-user-select: none;
+}
+.dhtmlxButtonSelectTBL {
+	height: 31px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.itemDefault {
+	position: absolute;
+	display: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.itemOver {
+	position: absolute;
+	border-top: #F7F7F7 1px solid;
+	border-left: #F7F7F7 1px solid;
+	border-bottom: #A7A7A7 1px solid;
+	border-right: #A7A7A7 1px solid;
+	top: 1px;
+	left: 0px;
+	height: 25px;
+	right: 0px;
+	width: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.itemPressed {
+	position: absolute;
+	border-top: #BFBFBF 1px solid;
+	border-left: #BFBFBF 1px solid;
+	border-bottom: #ECECEC 1px solid;
+	border-right: #ECECEC 1px solid;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_top_bg_pressed.gif");
+	background-repeat: repeat-x;
+	top: 1px;
+	left: 0px;
+	height: 25px;
+	right: 0px;
+	width: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrow {
+	position: relative;
+	width: 13px;
+	height: 28px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 10;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrowDisabled {
+	position: relative;
+	width: 13px;
+	height: 28px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 10;
+}
+div.dhtmlxToolbar_ClearSilver table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrow {
+	background-image: url("../img/dhtmlxtoolbar/webbar_btnarrow.gif");
+}
+div.dhtmlxToolbar_ClearSilver table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrowDisabled {
+	background-image: url("../img/dhtmlxtoolbar/webbar_btnarrow_dis.gif");
+}
+div.dhtmlxToolbarVer_ClearSilver table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrow {
+	background-image: url("../img/dhtmlxtoolbar/webbar_btnarrow_ver.gif");
+}
+div.dhtmlxToolbarVer_ClearSilver table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButtonArrowDisabled {
+	background-image: url("../img/dhtmlxtoolbar/webbar_btnarrow_ver_dis.gif");
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelectArrow div.dhtmlxToolbarButton {
+	position: relative;
+	height: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelectArrow div.dhtmlxToolbarButtonDisabled {
+	position: relative;
+	height: 100%;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarButton {
+	position: relative;
+	height: 100%;
+	color: #000000;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarDisabled {
+	position: relative;
+	height: 100%;
+	color: #909090;
+}
+
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarImage {
+	position: relative;
+	width: 16px;
+	height: 16px;
+	margin-top: 4px;
+	margin-left: 2px;
+	margin-right: 2px;
+	margin-bottom: 4px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemButtonSelect div.dhtmlxToolbarText {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: bold;
+	padding-top: 6px;
+	padding-right: 2px;
+	padding-left: 2px;
+}
+/* button's sublevel polygon */
+div.dhtmlxToolbarButtonPolygon_ClearSilver {
+	/*
+	position: absolute;
+	border-top: #E0E0E0 1px solid;
+	border-left: #E0E0E0 1px solid;
+	border-bottom: #808080 1px solid;
+	border-right: #808080 1px solid;
+	background-color: #E0E0E0;
+	cursor: default;
+	-moz-user-select: none;
+	*/
+	margin-top: -2px;
+	position: absolute;
+	padding-top: 1px;
+	background-color: #FFFFFF;
+	border-top: #D3D2D2 1px solid;
+	border-bottom: #B4B3B3 1px solid;
+	border-left: #D3D2D2 1px solid;
+	border-right: #B4B3B3 1px solid;
+	-moz-user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div.buttonItem {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	color: #333333;
+	border-left: #FFFFFF 1px solid;
+	border-right: #FFFFFF 1px solid;
+	background-color: #E6E5E5;
+	margin: 0px 0px 0px 0px;
+	padding: 5px 28px 5px 28px;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div.buttonItemDis {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	color: #999999;
+	background-color: #E6E5E5;
+	margin: 0px 0px 0px 0px;
+	padding: 5px 28px 5px 28px;
+	border-left: #FFFFFF 1px solid;
+	border-right: #FFFFFF 1px solid;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div.buttonItemOver {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	color: #333333;
+	background-color: #CCCCCC;
+	margin: 0px 0px 0px 0px;
+	padding: 5px 28px 5px 28px;
+	border-left: #CCCCCC 1px solid;
+	border-right: #CCCCCC 1px solid;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div.buttonItemSelected {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	color: #333333;
+	background-color: #FF0000;
+	margin: 0px 0px 0px 0px;
+	padding: 5px 28px 5px 28px;
+	border-left: #CCCCCC 1px solid;
+	border-right: #CCCCCC 1px solid;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div img.buttonImage {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	margin-top: -2px;
+	margin-left: -23px;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div img.buttonImageFake {
+	position: absolute;
+	right: 2px;
+	width: 0px;
+	height: 0px;
+}
+div.dhtmlxToolbarButtonPolygon_ClearSilver div.buttonSeparator {
+	border-top: #D3D2D2 1px solid;
+	border-bottom: #FFFFFF 1px solid;
+	cursor: default;
+	-moz-user-select: none;
+}
+/*****************************************************************************************************************************************************************
+	SLIDER
+*****************************************************************************************************************************************************************/
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider div.dhtmlxToolbarSlider {
+	height: 28px;
+	position: relative;
+	#position: static;
+	-moz-user-select: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider div.dhtmlxToolbarSliderDisabled {
+	height: 28px;
+	position: relative;
+	#position: static;
+	-moz-user-select: none;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert div.dhtmlxToolbarSlider {
+	position: relative;
+	#position: static;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert div.dhtmlxToolbarSliderDisabled {
+	position: relative;
+	#position: static;
+}
+div table.dhtmlxToolbarTable_ClearSilver div.dhtmlxToolbarSlider {
+	color: #000000;
+}
+div table.dhtmlxToolbarTable_ClearSilver div.dhtmlxToolbarSliderDisabled {
+	color: #909090;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderText {
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	/* color: #000000; */
+	cursor: default;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider table.dhtmlxToolbarSlider table.dhtmlxToolbarSliderLineHor {
+	height: 29px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgLeft {
+	font-size: 1px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_left.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgMiddle {
+	font-size: 1px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_middle.gif");
+	background-position: center;
+	background-repeat: repeat-x;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgRight {
+	font-size: 1px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_right.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider div.dhtmlxToolbarSliderPen {
+	position: absolute;
+	top: 8px;
+	width: 7px;
+	height: 15px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_pen.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider div.dhtmlxToolbarSliderPenDis {
+	position: absolute;
+	top: 8px;
+	width: 7px;
+	height: 15px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_pen_dis.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSlider div.dhtmlxToolbarSliderPenOver {
+	position: absolute;
+	top: 8px;
+	width: 7px;
+	height: 15px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_slider_hor_pen_over.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div.dhtmlxToolbarSliderPenLabel_ClearSilver {
+	position: absolute;
+	border: #A3A172 1px solid;
+	background-color: #FFF992;
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #000000;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	cursor: default;
+	-moz-user-select: none;
+	z-index: 8422;
+}
+/* vert */
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgLeft {
+	font-size: 1px;
+	height: 2px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_sliderleftvert.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgMiddle {
+	font-size: 1px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_slidermiddlevert.gif");
+	background-position: center;
+	background-repeat: repeat-y;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderImgRight {
+	font-size: 1px;
+	height: 2px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_sliderrightvert.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert table.dhtmlxToolbarSlider td.dhtmlxToolbarSliderText {
+	font-family: Arial;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert div.dhtmlxToolbarSliderPen {
+	position: absolute;
+	left: 4px;
+	width: 16px;
+	height: 11px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_sliderpenvert.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert div.dhtmlxToolbarSliderPenDis {
+	position: absolute;
+	left: 4px;
+	width: 16px;
+	height: 11px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_sliderpendisvert.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+div table.dhtmlxToolbarTable_ClearSilver td.itemSliderVert div.dhtmlxToolbarSliderPenOver {
+	position: absolute;
+	left: 4px;
+	width: 16px;
+	height: 11px;
+	background-image: url("../img/dhtmlxtoolbar/webbar_sliderpenoververt.gif");
+	background-repeat: no-repeat;
+	-moz-user-select: none;
+	cursor: default;
+}
+/* select button arrow */
+td.dhtmlxToolbarArrow {
+	-moz-user-select: none;
+}
+div.dhtmlxToolbarArrow {
+	width: 9px;
+	-moz-user-select: none;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemDefault div.dhtmlxToolbarArrow {
+	height: 29px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_btnarrow.gif");
+}
+table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemOver div.dhtmlxToolbarArrow {
+	height: 29px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_btnarrow.gif");
+}
+table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemPressed div.dhtmlxToolbarArrow {
+	height: 29px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_btnarrow.gif");
+}
+table.dhtmlxToolbarTable_ClearSilver td.dhtmlxToolbarItem table.itemDisabled div.dhtmlxToolbarArrow {
+	height: 29px;
+	background-image: url("../img/dhtmlxtoolbar/clearsilver/dhtmlxtoolbar_btnarrow_dis.gif");
+}
+/* button select polygon */
+div.dhtmlxToolbarPoly_ClearSilver {
+	position: absolute;
+	margin: 0px;
+	padding: 0px;
+	border-top: #A7C7DF 1px solid;
+	border-left: #A7C7DF 1px solid;
+	border-right: #739DCC 1px solid;
+	border-bottom: #739DCC 1px solid;
+	background-color: #FFF;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhtmlxToolbarPoly_ClearSilver div.buttonItem {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_ClearSilver div.buttonItemDis {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #999999;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_ClearSilver div.buttonItemOver {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	background-color: #CCC;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_ClearSilver div.buttonItemSelected {
+	position: relative;
+	font-family: Tahoma;
+	font-size: 11px;
+	font-weight: normal;
+	cursor: default;
+	white-space: nowrap;
+	-moz-user-select: none;
+	color: #333333;
+	/*background-color: #FFEB0F;*/
+	background-color: #D3E2E5;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 12px 2px 18px;
+}
+div.dhtmlxToolbarPoly_ClearSilver div.buttonSeparator {
+	position: relative;
+	border-top: #A7C7DF 1px solid;
+	font-size: 1px;
+}
+div.dhtmlxToolbarPoly_ClearSilver img.buttonImage {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	top: 2px;
+	margin-left: -16px;
+}

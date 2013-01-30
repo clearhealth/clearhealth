@@ -1,0 +1,343 @@
+<style>
+input,select {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+
+<div id="patientFormId" style="margin-left:auto;margin-right:auto;">
+	<div style="float:left;">
+		<?if ($this->message) :?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__("Patient Information")?></legend>
+		<div style="float:left;">
+			<div style="display:table-cell; vertical-align:middle; height:100px;">
+				<img src="<?=$this->baseUrl?>/img/no-person-image.png">
+			</div>
+		</div>
+		<div style="float:left;">
+			<div style="margin-left:10px;">
+				<?foreach ($this->form->getErrorMessages() as $error) {?>
+				<?=$error?>
+				<?}?>
+			</div>
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->formPerson->lastName->renderLabel()?>
+					<?=$this->form->formPerson->lastNameInput()?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->formPerson->firstName->renderLabel()?>
+					<?=$this->form->formPerson->firstNameInput()?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->formPerson->middleName->renderLabel()?>
+					<?=$this->form->formPerson->middleNameInput()?>
+				</div>
+			</div>
+			<br class="formRowDivider">
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->formPerson->dateOfBirth->renderLabel()?>
+					<?=$this->form->formPerson->dateOfBirthInput('FormDateText',array('style'=>'width:15em;'))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->formPerson->gender->renderLabel()?>
+					<?=$this->form->formPerson->genderInput('FormSelect',array("options" => Enumeration::getEnumArray('Gender','key')))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->recordNumber->renderLabel()?>
+					<?=$this->form->recordNumberInput()?>
+				</div>
+			</div>
+			<br class="formRowDivider">
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->formPerson->maritalStatus->renderLabel()?>
+					<?=$this->form->formPerson->maritalStatusInput('FormSelect',array("options" => Enumeration::getEnumArray('Marital Status','key')))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->confidentiality->renderLabel()?>
+					<?=$this->form->confidentialityInput('FormSelect',array("options" => Enumeration::getEnumArray('Confidentiality','key')))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->defaultProvider->renderLabel()?>
+					<?=$this->form->defaultProviderInput('FormSelect',array("options" => Provider::getArray()))?>
+				</div>
+			</div>
+			<br class="formRowDivider">
+			<div class="formRow">
+				<?=__('Active')?> <input type="checkbox" name="<?=$this->form->formPerson->active->getFullyQualifiedName()?>" id="<?=$this->form->formPerson->active->getId()?>" helper="formText"<?=($this->form->formPerson->active->getValue())?' checked="checked"':''?> style="width:30px;" />
+			</div>
+		</div>
+		</fieldset>
+
+		<div>
+			<fieldset><legend><?=__('Phone numbers')?></legend>
+				<div id="patientPhonesGridId" style="height:140px;"></div>
+			</fieldset>
+			<fieldset><legend><?=__('Addresses')?></legend>
+				<div id="patientAddrGridId" style="height:140px;"></div>
+			</fieldset>
+		</div>
+		<div style="text-align:right;">
+			<?=$this->form->okInput('FormButton')?>
+			<?=$this->form->personIdInput('FormHidden')?>
+			<?=$this->form->formPerson->personIdInput('FormHidden')?>
+			<?=$this->formHidden('patientId',$this->patientId,array('id'=>'patientId'))?>
+		</div>
+		<div id="addressPhoneContainerId"></div>
+		<?=$this->form->renderClose()?>
+	</div>
+</div>
+<div id="patientDuplicateId" style="margin-left:auto;margin-right:auto;display:none;">
+	<div style="float:left;">
+		<br />
+		<div style="color:red;width:100%;">
+		<?=__('Warning! The system has found a few patient records that closely match the details you have just entered. Please check the following list of existing patient records to see if there is a match. Clicking the \'Submit New Record Anyway\' button will create a new patient record.')?></div>
+		<br />
+		<div id="patientDuplicateGridId" style="height:300px;"></div>
+		<?=$this->formButton('submitNew',__('Submit New Record Anyway'),array('onClick'=>'submitNewPatient()'))?>
+		<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'cancelPatientDuplicate()'))?>
+	</div>
+</div>
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	var active = dojo.byId("<?=$this->form->formPerson->active->getId()?>");
+	active.value = "0";
+	if (active.checked) {
+		active.value = "1";
+	}
+
+	var addressPhoneContainer = dojo.byId("addressPhoneContainerId");
+	addressPhoneContainer.innerHTML = "";
+
+	var phoneMaps = ["name","type","number","notes","active"];
+	patientPhonesGrid.forEachRow(function(rowId){
+		for (var i in phoneMaps) {
+			var oInput = document.createElement("input");
+			oInput.setAttribute("type","hidden");
+			oInput.setAttribute("name","phones["+rowId+"]["+phoneMaps[i]+"]");
+			oInput.setAttribute("value",this.cells(rowId,i).getValue());
+			addressPhoneContainer.appendChild(oInput);
+		}
+	});
+
+	var addrMaps = ["name","type","line1","line2","city","state","postalCode","notes","active"];
+	patientAddrGrid.forEachRow(function(rowId){
+		for (var i in addrMaps) {
+			var oInput = document.createElement("input");
+			oInput.setAttribute("type","hidden");
+			oInput.setAttribute("name","addresses["+rowId+"]["+addrMaps[i]+"]");
+			oInput.setAttribute("value",this.cells(rowId,i).getValue());
+			addressPhoneContainer.appendChild(oInput);
+		}
+	});
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	try {
+		var data = dojo.fromJson(data);
+		if (data.duplicates) {
+			dojo.byId("patientFormId").style.display = "none";
+			dojo.byId("patientDuplicateId").style.display = "";
+			patientDuplicateGrid.clearAll();
+			for (var i in data.duplicates) {
+				var row = data.duplicates[i];
+				patientDuplicateGrid.addRow(row.personId,"");
+				patientDuplicateGrid.cells(row.personId,0).setValue(row.name);
+				patientDuplicateGrid.cells(row.personId,1).setValue(row.dateOfBirth);
+				patientDuplicateGrid.cells(row.personId,2).setValue(row.gender);
+				patientDuplicateGrid.cells(row.personId,3).setValue(row.ssn);
+			}
+		}
+		else {
+			alert(data.msg);
+			patientNewResetForm();
+			mainController.setActivePatient(data.personId);
+			refreshCurrentTab();
+		}
+	}
+	catch (e) { // new page
+		return true;
+	}
+	return false;
+}
+
+function patientNewResetForm() {
+	dojo.byId("<?=$this->form->getId()?>").reset();
+	patientAddrGrid.clearAll();
+	patientPhonesGrid.clearAll();
+}
+
+function submitNewPatient() {
+	preSubmit<?=$this->form->getId()?>();
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-new.raw/process-new-patient",
+		handleAs: "json",
+		form: "<?=$this->form->getId()?>",
+		load: function (data) {
+			patientNewResetForm();
+			cancelPatientDuplicate();
+			alert(data.msg);
+			mainController.setActivePatient(data.personId);
+			refreshCurrentTab();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function cancelPatientDuplicate() {
+	dojo.byId("patientFormId").style.display = "";
+	dojo.byId("patientDuplicateId").style.display = "none";
+}
+
+
+var patientDuplicateGrid = new dhtmlXGridObject("patientDuplicateGridId");
+patientDuplicateGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patientDuplicateGrid.setHeader("<?=__('Patient Name')?>,<?=__('Date of Birth')?>,<?=__('Gender')?>,<?=__('SSN')?>");
+patientDuplicateGrid.setInitWidths("*,120,*,*");
+patientDuplicateGrid.setColTypes("ro,ro,ro,ro");
+patientDuplicateGrid.init();
+
+function patientDuplicateGridOnRowDblClicked(rowId,cellIndex) {
+	mainController.setActivePatient(rowId);
+	windowPatientDetails();
+}
+patientDuplicateGrid.attachEvent("onRowDblClicked",patientDuplicateGridOnRowDblClicked);
+
+
+
+var patientPhonesGrid = new dhtmlXGridObject("patientPhonesGridId");
+patientPhonesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patientPhonesGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Number')?>,<?=__('Notes')?>,<?=__('Active')?>");
+patientPhonesGrid.setInitWidths("*,60,*,*,40");
+patientPhonesGrid.setColTypes("ed,coro,ed,ed,ch");
+patientPhonesGrid.setSkin("xp");
+patientPhonesGrid.init();
+
+var indexPPActive = 4;
+
+// phone types
+patientPhonesGrid.getCombo(1).put("","");
+<?foreach ($this->phoneTypes as $key=>$name):?>
+patientPhonesGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+function patientPhonesMenuOnClicked(menuItemId,type) {
+	var rowCol = type.split("_");
+	switch (menuItemId) {
+		case "add":
+			var rowId = patientPhonesGrid.uid();
+			patientPhonesGrid.addRow(rowId,"blank");
+			patientPhonesGrid.cells(rowId,indexPPActive).setValue(1);
+			break;
+		case "remove":
+			patientPhonesGrid.deleteRow(rowCol[0]);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>");
+	}
+}
+
+var patientPhonesMenu = new dhtmlXMenuObject(null,"standard");
+patientPhonesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+patientPhonesMenu.renderAsContextMenu();
+patientPhonesMenu.setOpenMode("web");
+patientPhonesMenu.attachEvent("onClick",patientPhonesMenuOnClicked);
+patientPhonesMenu.loadXML("<?=$this->baseUrl?>/patient-new.raw/get-context-menu");
+
+patientPhonesGrid.hdr.id = patientPhonesGrid.uid();
+patientPhonesMenu.addContextZone(patientPhonesGrid.hdr.id);
+patientPhonesGrid.enableContextMenu(patientPhonesMenu);
+
+patientPhonesMenu.attachEvent("onContextMenu",function(id){
+	patientPhonesMenu.hideItem("remove");
+	var rowId = patientPhonesGrid.getSelectedRowId();
+	if (rowId != null) {
+		patientPhonesMenu.showItem("remove");
+	}
+});
+
+
+dhtmlxEvent(patientPhonesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+var patientAddrGrid = new dhtmlXGridObject("patientAddrGridId");
+patientAddrGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patientAddrGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Line1')?>,<?=__('Line2')?>,<?=__('City')?>,<?=__('State')?>,<?=__('Zip')?>,<?=__('Notes')?>,<?=__('Active')?>");
+patientAddrGrid.setInitWidths("*,60,*,*,*,40,*,*,40");
+patientAddrGrid.setColTypes("ed,coro,ed,ed,ed,coro,ed,ed,ch");
+patientAddrGrid.setSkin("xp");
+patientAddrGrid.init();
+
+var indexPAActive = 8;
+
+// state
+patientAddrGrid.getCombo(5).put("","");
+<?foreach ($this->statesList as $key=>$name):?>
+patientAddrGrid.getCombo(5).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+// address types
+patientAddrGrid.getCombo(1).put("","");
+<?foreach ($this->addressTypes as $key=>$name):?>
+patientAddrGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+
+function patientAddrMenuOnClicked(menuItemId,type) {
+	var rowCol = type.split("_");
+	switch (menuItemId) {
+		case "add":
+			var rowId = patientAddrGrid.uid();
+			patientAddrGrid.addRow(rowId,"blank");
+			patientAddrGrid.cells(rowId,indexPAActive).setValue(1);
+			break;
+		case "remove":
+			patientAddrGrid.deleteRow(rowCol[0]);
+			break;
+		default:
+			alert("<?=__('Invalid event')?>");
+	}
+}
+
+var patientAddrMenu = new dhtmlXMenuObject(null,"standard");
+patientAddrMenu.setImagePath("<?=$this->baseUrl?>/img/");
+patientAddrMenu.renderAsContextMenu();
+patientAddrMenu.setOpenMode("web");
+patientAddrMenu.attachEvent("onClick",patientAddrMenuOnClicked);
+patientAddrMenu.loadXML("<?=$this->baseUrl?>/patient-new.raw/get-context-menu");
+
+patientAddrGrid.hdr.id = patientAddrGrid.uid();
+patientAddrMenu.addContextZone(patientAddrGrid.hdr.id);
+patientAddrGrid.enableContextMenu(patientAddrMenu);
+
+patientAddrMenu.attachEvent("onContextMenu",function(id){
+	patientAddrMenu.hideItem("remove");
+	var rowId = patientAddrGrid.getSelectedRowId();
+	if (rowId != null) {
+		patientAddrMenu.showItem("remove");
+	}
+});
+
+dhtmlxEvent(patientAddrGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+</script>

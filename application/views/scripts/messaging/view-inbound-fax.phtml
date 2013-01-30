@@ -1,0 +1,74 @@
+<fieldset><legend><?=__('Inbound Fax/Scan')?></legend>
+<?if(isset($this->error)):?>
+	<h3><?=$this->error?></h3>
+<?else:?>
+	<div class="formRow">
+		<?=__('Patient Name')?>: 
+		<?if($this->patient->personId > 0):?>
+			<?=$this->patient->displayName?>
+		<?else:?>
+			<?=__('No patient assigned')?>
+		<?endif;?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Status')?>: <?=$this->messaging->status?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Date Received')?>: <?=$this->messaging->dateStatus?>
+	</div>
+	<br style="clear:left" />
+	<?if($this->patient->personId > 0):?>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?if($this->attachment->attachmentReferenceId != md5($this->messaging->messageId)):?>
+		<strong><?=__('Note')?></strong>: <?=__('The document was already attached to clinical notes')?>
+		<?else:?>
+		<?=$this->formButton('createNote',__('Create New Clinical Note'),array('onClick'=>'inboundFaxCreateNote()'))?>
+		<?endif;?>
+	</div>
+	<?endif;?>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=$this->formButton('viewDoc',__('View Doc'),array('onClick'=>'inboundFaxViewDoc()'))?>
+	</div>
+<?endif;?>
+</fieldset>
+<script>
+function inboundFaxViewDoc() {
+	window.open("<?=$this->baseUrl?>/attachments.raw/view-attachment?attachmentId=<?=$this->attachment->attachmentId?>","viewDocument");
+}
+
+var winNoteId = null;
+function inboundFaxCreateNote() {
+	<?if(!$this->patient->personId > 0):?>
+	alert("<?=__("You must have a patient assigned to add a note")?>");
+	return false;
+	<?endif;?>
+	var params = [];
+	params.push("personId=<?=$this->patient->personId?>");
+	winNoteId = globalCreateWindow("windowNewNoteId",params,"<?=$this->baseUrl?>/clinical-notes.raw/add-note","<?=__('Attach to Clinical Note')?>",400,375);
+}
+
+function addedNewNote(clinicalNoteId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-attach-to-notes",
+		handleAs: "json",
+		content: {
+			"attachmentId": "<?=$this->attachment->attachmentId?>",
+			"attachmentReferenceId": clinicalNoteId,
+		},
+		load: function (data) {
+			//alert(data.msg);
+			winNoteId.close();
+			winMessagingInboundId.close();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

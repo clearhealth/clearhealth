@@ -1,0 +1,59 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+.buttonAddGA {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+}
+</style>
+<div id="GALayoutId" style="height:444px;"></div>
+</div>
+
+<script>
+
+function GAEditWindow(winId,params,url,winText,width,height) {
+	return globalCreateWindow(winId,params,url,winText,width,height);
+}
+
+var GALayout = new dhtmlXLayoutObject("GALayoutId","2E");
+GALayout.setImagePath("<?=$this->baseUrl?>/img/");
+GALayout.cells("a").setText('<?=__("Handlers")?> <button class="buttonAddGA" onClick="GAHandlersEdit()" title="<?=__('Add New Handler')?>"><?=__('Add')?></button>');
+GALayout.cells("b").collapse();
+GALayout.setEffect('collapse',true);
+GALayout.setEffect("resize",true);
+
+// === HANDLER ===
+var GAHandlersGrid =  GALayout.cells("a").attachGrid();
+GAHandlersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+GAHandlersGrid.setHeader('<?=__('Name')?>,<?=__('Condition')?>,<?=__('Active')?>');
+GAHandlersGrid.setColTypes("ro,ro,ro");
+GAHandlersGrid.setSkin("xp");
+GAHandlersGrid.setInitWidths("*,*,50");
+GAHandlersGrid.init();
+function GAHandlersGridReload() {
+	GAHandlersGrid.clearAll();
+	GAHandlersGrid.load("<?=$this->baseUrl?>/general-alerts.raw/list-handlers",null,"json");
+}
+
+function GAHandlersEdit(id) {
+	var addEditLabel = "<?=__('Edit')?>";
+	if (!id) {
+		addEditLabel = "<?=__('Add')?>";
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	globalCreateWindow('winEditHandlerId',params,'<?=$this->baseUrl?>/general-alerts.raw/edit-handler',addEditLabel+" <?=__('General Alert Handler')?>",350,400);
+}
+
+function GAHandlersOnRowDblClicked(rowId,colIndex) {
+	GAHandlersEdit(rowId);
+}
+GAHandlersGrid.attachEvent('onRowDblClicked',GAHandlersOnRowDblClicked);
+GAHandlersGridReload();
+
+</script>

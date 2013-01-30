@@ -1,0 +1,10 @@
+hl7response=MSH|^~\&|PPMI|MCITY|MCITY|ClearHealth|<?=date('YmdHi')?>||ADT^A19|ControlId|P|2.3
+MSA|AA|ControlId||||0
+QRD|<?=date('YmdHi')?>|R|I|ControlId|||1^A19|14.0|DEM|||T
+PID|1|14.0|||<?=$this->patient->person->lastName?>^<?=$this->patient->person->firstName?>^<?=$this->patient->person->middleName?>^^^||<?=date('Ymd',strtotime($this->patient->person->dateOfBirth))?>|<?=$this->patient->person->gender?>||O|1901 NW 2nd Street^^Madison^CA^95653||(916)678-5674|||M||14.0|908-78-7695
+PV1|0001||||||^Simpson M.D.^Frances^D^^^^^L
+GT1|0001|||<?=$this->patient->person->lastName?>^<?=$this->patient->person->firstName?>^<?=$this->patient->person->middleName?>^^^||1901 NW 2nd Street^^Madison^CA^95653|(916)678-5674|||||1|908-78-7695
+IN1|0001||AMH12|AMH - Employer Plan|1145 Third St^^Madison^CA^95653^||(818)689-5467|GPI4567727|||||||||<?=$this->patient->person->lastName?>^<?=$this->patient->person->firstName?>^<?=$this->patient->person->middleName?>^^^|1||1901 NW 2nd Street^^Madison^CA^95653^|||||||||||||||||9444599333339
+IN2||908-78-7695
+IN1|0002||NATWID6|Nationwide Health In|4567 Newberry Rd.^^Los Angeles^CA^98706^||(213)456-7654|BELL LABS/ME|||||||||<?=$this->patient->person->lastName?>^<?=$this->patient->person->firstName?>^<?=$this->patient->person->middleName?>^^^|1||1901 NW 2nd Street^^Madison^CA^95653^|||||||||||||||||383-548469K-245
+IN2||908-78-7695&hl7done=done

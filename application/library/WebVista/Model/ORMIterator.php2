@@ -1,0 +1,86 @@
+<?php
+
+
+class WebVista_Model_ORMIterator implements SeekableIterator {
+	protected $_ormClass;
+	protected $_dbSelect;
+	protected $_dbStmt;
+	protected $_baseTableName;
+	protected $_offset = 0;
+
+	public function __construct($class, $dbSelect = null) {
+		$db = Zend_Registry::get('dbAdapter');
+		$this->_ormClass = $class;
+		$obj = new $this->_ormClass();
+		$this->_baseTableName = $obj->_table;
+		unset($obj);
+		if (is_null($dbSelect)) {
+			$dbSelect = $db->select()->from($this->_baseTableName,null);
+		}
+		$this->_dbSelect = $dbSelect;
+
+	}
+
+	public function __destroy() {
+		$this->_dbStmt->closeCursor();
+	}
+	
+	public function rewind() {
+		$this->_offset = 0;
+		return $this;
+	}
+	
+	public function valid() {
+		if (is_null($this->_dbStmt)) {
+			$this->_initDbStmt();
+		}
+		if ($this->_offset + 1 > $this->_dbStmt->rowCount()) {
+			return false;
+		}
+		return true;
+	}
+
+	public function key() {
+		return $this->_offset;
+	}
+
+	public function current() {
+		$ormObj = new $this->_ormClass();
+		$row = $this->_dbStmt->fetch(null,null,$this->_offset);
+		$ormObj->populateWithArray($row);
+		return $ormObj;
+	}
+	public function seek($offset) {
+		$this->_offset = $offset;
+		return $this->current();
+	}
+
+	public function next() {
+		$this->_offset++;
+
+	}
+
+	public function toArray($key = null, $value) {
+		$array = array();
+		foreach($this as $count => $obj) {
+			if (is_null($key)) {
+				$array[$count] = $obj->$value;
+			}
+			else {
+				$array[$obj->$key] = $obj->$value;
+			}
+		}
+		return $array;
+	}
+
+	private function _initDbStmt() {
+		$db = Zend_Registry::get('dbAdapter');
+		if (
+                $this->_dbSelect->columns('*',$this->_baseTableName);
+                $this->_dbStmt = $db->query($this->_dbSelect);
+	}
+
+	public function setColumns($columns) {
+		$this->_dbSelect->columns($columns);
+	}
+}

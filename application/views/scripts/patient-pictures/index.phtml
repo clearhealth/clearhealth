@@ -1,0 +1,203 @@
+<div id="ppLayoutId" style="height:100%;"></div>
+<div id="ppLeftPaneId" style="width:100%;height:100%;">
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="550" height="400" id="ch-vid-upload" align="middle">
+		<param name="allowScriptAccess" value="sameDomain" />
+		<param name="allowFullScreen" value="false" />
+		<param name="movie" value="<?=$this->baseUrl?>/img/patientPicture.swf?attachmentReferenceId=<?=$this->personId?>" />
+		<param name="quality" value="high" />
+		<param name="bgcolor" value="#ffffff" />
+		<embed src="<?=$this->baseUrl?>/img/patientPicture.swf?attachmentReferenceId=<?=$this->personId?>" quality="high" bgcolor="#ffffff" width="700" height="400" name="ch-vid-upload" align="middle" allowScriptAccess="sameDomain" allowFullScreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+	</object>
+</div>
+<div id="ppBottomRightId" style="width:100%;height:100%;">
+	<form id="ppUploadFormId" name="ppUploadFormId" method="post" action="<?=$this->baseUrl?>/attachments.raw/process-add-attachments" enctype="multipart/form-data">
+	<div style="width:99.9%;margin-left:auto;margin-right:auto;" id="fileUploadFormId">
+		<div id="formRow" style="margin-left:10px;">
+			<strong><?=__('Picture')?>:</strong><br />
+			<input type="hidden" name="attachmentReferenceId" value="<?=$this->personId?>">
+			<input type="hidden" name="MAX_FILE_SIZE" value="204857600">
+			<input type="hidden" name="APC_UPLOAD_PROGRESS" id="progressKey" value="<?=uniqid('');?>"/>
+			<input type="file" name="uploadFile"/>
+		</div>
+		<br style="clear:left;" />
+		<div id="formRow" style="margin-left:10px;">
+			<?=$this->formButton('upload',__('Upload'),array('onClick'=>'ajaxUploadFile();'))?>
+		</div>
+	</div>
+	<div style="width:325px;margin-left:auto;margin-right:auto;display:none;" id="fileUploadProgressId">
+		<strong><?=__('Progress')?>:</strong><br />
+		<div style="width:320px;margin-left:auto;margin-right:auto;border:thin solid black;height:20px;"><div id="uploadProgressBarId" style="background-color:blue; width:0px;height:100%;"></div></div>
+	</div>
+	</form>
+</div>
+<div id="ppTopRightId" style="width:100%;height:100%;">
+	<div id="ppToolbarId"></div>
+	<div id="ppFoldersId" style="width:250px;height:300px;overflow:hidden;float:left"></div>
+</div> 
+
+<script>
+var ppLayout = new dhtmlXLayoutObject("ppLayoutId","3L");
+var leftPane = ppLayout.cells("a");
+var topRight = ppLayout.cells("b");
+var bottomRight = ppLayout.cells("c");
+var height = leftPane.getHeight() * 0.2;
+topRight.setWidth(250);
+leftPane.setText("<?=__('Capture patient picture')?>");
+leftPane.attachObject("ppLeftPaneId");
+bottomRight.setHeight(height);
+bottomRight.setText("<?=__('Upload patient picture')?>");
+bottomRight.attachObject("ppBottomRightId");
+topRight.setText("<?=__('Captured/uploaded pictures')?>");
+topRight.attachObject("ppTopRightId");
+
+
+function ppDelete(id) {
+	if (!id) {
+		id = ppFolders.getSelectedId();
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-pictures.raw/process-delete-picture",
+		handleAs: "json",
+		content: {
+			"personId": "<?=$this->personId?>",
+			"id": id,
+		},
+		load: function (data) {
+			patientPicturesReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function ppSetActivePicture(id) {
+	if (!id) {
+		id = ppFolders.getSelectedId();
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-pictures.raw/process-set-active-picture",
+		handleAs: "json",
+		content: {
+			"personId": "<?=$this->personId?>",
+			"id": id,
+		},
+		load: function (data) {
+			patientPicturesReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+var ppToolbar = new dhtmlXToolbarObject("ppToolbarId","ClearSilver");
+ppToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+var ctr = 0;
+ppToolbar.addButton("delete",ctr++,"<?=__('Delete')?>","removeproblem.png","removeproblem.png");
+ppToolbar.disableItem("delete");
+ppToolbar.addButton("setActive",ctr++,"<?=__('Set Active')?>","editproblem.png","editproblem.png");
+ppToolbar.disableItem("setActive");
+ppToolbar.addButton("reload",ctr++,"<?=__('Reload')?>","refresh.png","refresh.png");
+function ppToolbarOnClicked(id) {
+	switch (id) {
+		case "delete":
+			ppToolbar.disableItem(id);
+			ppDelete();
+			break;
+		case "setActive":
+			ppToolbar.disableItem(id);
+			ppSetActivePicture();
+			break;
+		case "reload":
+			patientPicturesReload();
+			break;
+	}
+}
+ppToolbar.attachEvent("onClick",ppToolbarOnClicked);
+
+var ppFolders = new dhtmlxFolders("ppFoldersId");
+ppFolders.setImagePath("<?=$this->baseUrl?>/img/");
+ppFolders.setItemType("fthumbs");
+ppFolders.setUserData("icons_src_dir","./images/");
+ppFolders.setUserData("thumbs_creator_url","<?=$this->baseUrl?>/files.raw/thumbs-creator");
+ppFolders.setUserData("photos_rel_dir","");
+
+function ppFoldersOnClicked(id) {
+	ppToolbar.enableItem("delete");
+	//varDump(ppFolders.getItem(id).data.dataObj.textContent);
+	var active = ppFolders.getItemDataObject(id).getAttribute("active");
+	ppToolbar.disableItem("setActive");
+	if (active == "0") {
+		ppToolbar.enableItem("setActive");
+	}
+}
+ppFolders.attachEvent("onClick",ppFoldersOnClicked);
+
+function patientPicturesReload() {
+	ppToolbar.disableItem("delete");
+	ppFolders.clearAll();
+	ppFolders.loadXML("<?=$this->baseUrl?>/patient-pictures.raw/list-pictures?personId=<?=$this->personId?>","<?=$this->baseUrl?>/files.raw/types?type=thumbs");
+	// refresh patient toolbar
+	initMainToolbar(null,mainController.getActivePatient());
+}
+patientPicturesReload();
+
+var progressTimer = "";
+var uploadStarted = false;
+function ajaxUploadFile() {
+	uploadStarted = true;
+	dojo.byId("fileUploadFormId").style.display = "none";
+	dojo.io.iframe.send({
+		url: "<?=$this->baseUrl?>/attachments.raw/process-add-attachments",
+		handleAs: "json",
+		method: "post",
+		form: "ppUploadFormId",
+		load: function(data){
+			uploadStarted = false;
+			dojo.byId("ppUploadFormId").reset();
+			clearTimeout(progressTimer);
+			dojo.byId("uploadProgressBarId").style.width = "100%";
+			if (data.attachmentId) ppSetActivePicture(data.attachmentId);
+			else patientPicturesReload();
+			dojo.byId("fileUploadProgressId").style.display = "none";
+			dojo.byId("fileUploadFormId").style.display = "";
+		},
+		error: function(er) {
+			console.error("error: ",er);
+			return er;
+		}
+	});
+	updateFileInitProgressBar();
+	return false;
+}
+
+function updateFileInitProgressBar(progressKey) {
+	if (!uploadStarted) return;
+	dojo.byId("fileUploadProgressId").style.display = "";
+	if (typeof progressKey == "undefined") {
+		progressKey = dojo.byId("progressKey").value;
+	}
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/attachments.raw/view-upload-progress?uploadKey="+progressKey,
+		handleAs: "json", 
+		load: function (data) {
+			if (typeof data.err_msg != "undefined") {
+				clearTimeout(progressTimer);
+				dojo.byId("fileUploadProgressId").style.display = "none";
+				dojo.byId("fileUploadFormId").style.display = "";
+				alert(data.err_msg);
+				return;
+			}
+			//alert('progressKey: ' + progressKey + ' :: '  + data);
+			dojo.byId("uploadProgressBarId").style.width = data + "%";
+			progressTimer = setTimeout('updateFileInitProgressBar("'+progressKey+'")',1000);
+		}, 
+		error: function (er) {
+			alert("err: "+er)
+		}
+	});
+}
+</script>

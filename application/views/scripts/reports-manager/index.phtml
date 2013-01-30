@@ -1,0 +1,220 @@
+<div id="reportsManagerContainerId" style="position:absolute;width:100%;height:400px;">
+	<div id="reportsManagerToolbarId" style="width:100%;"></div>
+	<div id="reportsManagerGridId" style="width:100%;height:100%;overflow:auto;"></div>
+</div>
+
+<script>
+var reportsManagerTemplateId = null;
+var reportsManagerToolbar = new dhtmlXToolbarObject("reportsManagerToolbarId","ClearSilver");
+reportsManagerToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+reportsManagerToolbar.attachEvent("onClick",reportsManagerOnToolbarClicked);
+
+var ctr = 1;
+reportsManagerToolbar.addButton("addReport",ctr++,"<?=__('Add report')?>","newproblem.png","newproblem.png");
+reportsManagerToolbar.addButton("editReport",ctr++,"<?=__('Edit report')?>","editproblem.png","editproblem.png");
+reportsManagerToolbar.disableItem("editReport");
+reportsManagerToolbar.addButton("deleteReport",ctr++,"<?=__('Delete report')?>","removeproblem.png","removeproblem.png");
+reportsManagerToolbar.disableItem("deleteReport");
+reportsManagerToolbar.addButton("refreshReport",ctr++,"<?=__('Refresh')?>","refresh.png","refresh.png");
+
+function reportsManagerAdd(parentId) {
+	var displayName = null;
+	do {
+		displayName = prompt("<?=__('Report Display Name')?>");
+	} while (displayName != null && displayName.length <= 0);
+	if (displayName == null) {
+		return;
+	}
+	useParentId = "off";
+	parentId = parseInt(parentId);
+	if (parentId > 0) {
+		useParentId = "on";
+	}
+
+	// convert value to camelCase
+	var systemName = displayName.toLowerCase();
+	systemName = systemName.replace(/[^A-Z0-9 ]/ig,""); // remove character other than alphanumeric and space
+	systemName = systemName.replace(/^(.)|\s(.)/g,function ($1) {
+        		return $1.toUpperCase();
+	});
+	systemName = systemName.replace(/ /g,"");
+	systemName = systemName.charAt(0).toLowerCase() + systemName.substr(1);
+
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-add-base",
+		handleAs: "json",
+		content: {
+			"reportBase[displayName]": displayName,
+			"reportBase[systemName]": systemName,
+			"useParentId": useParentId,
+			"parentId": parentId,
+		},
+		load: function (data) {
+			reportsManagerGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportsManagerEdit(baseId) {
+	if (!baseId) return;
+
+	var params = [];
+	label = "<?=__('Edit Report')?>";
+	if (reportsManagerGrid.cells(baseId,0) != null) {
+		label += ": "+reportsManagerGrid.cells(baseId,0).getValue();
+	}
+	else {
+		var rowId = reportsManagerGrid.getSelectedRowId();
+		if (rowId != null && rowId != "rootId") {
+			params.push("parentId="+rowId);
+		}
+		baseId = 0;
+	}
+	params.push("baseId="+baseId);
+	globalCreateWindow("winReportManagerBaseId",params,"<?=$this->baseUrl?>/reports-manager.raw/edit-base",label,800,600);
+}
+
+function reportsManagerDelete(baseId) {
+	if (!confirm("<?=__('Are you sure you want to delete selected report(s)?')?>")) {
+		return;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-delete-base",
+		handleAs: "json",
+		content: {
+			"baseId": baseId,
+		},
+		load: function (data) {
+			reportsManagerGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function reportsManagerOnToolbarClicked(id) {
+	switch (id) {
+		case "addReport":
+			reportsManagerAdd();
+			break;
+		case "editReport":
+			reportsManagerEdit(reportsManagerGrid.getSelectedRowId());
+			break;
+		case "deleteReport":
+			reportsManagerDelete(reportsManagerGrid.getSelectedRowId());
+			break;
+		case "refreshReport":
+			reportsManagerGridReload();
+			break;
+		default:
+			alert("<?=__('Invalid event.')?>: "+id);
+	}
+}
+
+var reportsManagerGrid = new dhtmlXGridObject("reportsManagerGridId");
+reportsManagerGrid.enableDragAndDrop(true);
+reportsManagerGrid.setImagePath("<?=$this->baseUrl?>/img/");
+reportsManagerGrid.selMultiRows = true;
+reportsManagerGrid.setHeader("<?=__('Display Name')?>,<?=__('System Name')?>");
+reportsManagerGrid.setInitWidths("*,*");
+reportsManagerGrid.setColTypes("tree,ro");
+reportsManagerGrid.init();
+
+function reportsManagerGridOnRowDblClicked(rowId,cellIndex) {
+	if (rowId == "rootId") return;
+	reportsManagerEdit(rowId);
+}
+reportsManagerGrid.attachEvent("onRowDblClicked",reportsManagerGridOnRowDblClicked);
+
+function reportsManagerGridOnRowSelected(rowId,cellIndex) {
+	reportsManagerToolbar.enableItem("editReport");
+	reportsManagerToolbar.enableItem("deleteReport");
+}
+reportsManagerGrid.attachEvent("onRowSelect",reportsManagerGridOnRowSelected);
+
+function reportsManagerGridOnDragged(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/reports-manager.raw/process-reorder-base",
+		handleAs: "json",
+		content: {
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			reportsManagerGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+}
+reportsManagerGrid.attachEvent("onDrag",reportsManagerGridOnDragged);
+
+function reportsManagerGridOnDropped(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo) {
+	return false;
+}
+reportsManagerGrid.attachEvent("onDrop",reportsManagerGridOnDropped);
+
+
+/* === MENU === */
+var reportsManagerMenu = new dhtmlXMenuObject(null,"standard");
+reportsManagerMenu.setImagePath("<?=$this->baseUrl?>/img/");
+reportsManagerMenu.renderAsContextMenu();
+reportsManagerMenu.setOpenMode("web");
+function reportsManagerMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "addSubReport":
+			reportsManagerAdd(reportsManagerGrid.getSelectedRowId());
+			//reportsManagerEdit(null);
+			break;
+		case "edit":
+			reportsManagerEdit(reportsManagerGrid.getSelectedRowId());
+			break;
+		case "delete":
+			reportsManagerDelete(reportsManagerGrid.getSelectedRowId());
+			break;
+		default:
+			alert("<?=__('Invalid event')?>: "+menuItemId);
+	}
+}
+reportsManagerMenu.attachEvent("onClick",reportsManagerMenuOnClicked);
+
+function reportsManagerMenuOnLoaded() {
+}
+reportsManagerMenu.loadXML("<?=$this->baseUrl?>/reports-manager.raw/get-context-menu",reportsManagerMenuOnLoaded);
+
+reportsManagerMenu.attachEvent("onContextMenu",function(id){
+	reportsManagerMenu.hideItem("edit");
+	reportsManagerMenu.hideItem("delete");
+	var rowId = reportsManagerGrid.getSelectedRowId();
+	if (rowId != null && rowId != "rootId") {
+		reportsManagerMenu.showItem("edit");
+		reportsManagerMenu.showItem("delete");
+	}
+});
+reportsManagerGrid.enableContextMenu(reportsManagerMenu);
+
+function reportsManagerGridOnLoaded() {
+	reportsManagerToolbar.disableItem("editReport");
+	reportsManagerToolbar.disableItem("deleteReport");
+	reportsManagerGrid.expandAll();
+}
+function reportsManagerGridReload() {
+	reportsManagerGrid.clearAll();
+	reportsManagerGrid.load("<?=$this->baseUrl?>/reports-manager.raw/list",reportsManagerGridOnLoaded,"xml");
+}
+reportsManagerGridReload();
+
+dhtmlxEvent(reportsManagerGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+</script>

@@ -1,0 +1,42 @@
+<?=$this->xmlHeader?>
+<toolbar>
+	<item type="button" imgStyle="display:none;" img="blank.gif" height="60" width="375" id="tbSelectPatient" title="<?=__('Selected Patient')?>" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="float:left;text-align:left;"><img src="<?=$this->baseUrl?>/<?if($this->patient && $this->patient->activePhoto > 0):?>attachments.raw/view-attachment?attachmentId=<?=$this->patient->activePhoto?><?else:?>img/no-person-image.png<?endif;?>" <?if($this->patient):?>onClick="globalPhotoIsClicked=true;windowPatientPictures(<?=(int)$this->patient->personId?>)" height="50" width="50"<?endif;?> /></div><div style="float:left;text-align:left;"><? if ($this->patient):?><strong><?=utf8_decode($this->patient->lastName)?>, <?=utf8_encode($this->patient->firstName)?> <?=utf8_decode($this->patient->middleInitial)?></strong><br /> <?=__("MRN")?>: <?=$this->patient->recordNumber?> <br /><?=__("Age/Sex")?>:  (<label style="display:inline;" title="<?=$this->patient->person->ageTitle?>"><?=$this->patient->person->age?></label>/<?=$this->patient->displayGender?>) </div><div style="float:left;text-align:left;margin-left:10px;"><?=__("Wt")?>: <?=$this->patient->getWeight()?>  <br /><?=__("Ht")?>: <?=$this->patient->getHeight()?><br /><?=__("BMI/BSA")?>: <?=$this->patient->getBMI()?> (<?=$this->patient->getBSA()?>)<? else: ?><strong><?=__("No Patient Selected")?></strong><? endif; ?></div>]]>
+</item>
+	<item id="sep1" type="separator"/>
+        <item type="button" img="blank.gif" imgStyle="display:none;" height="60" width="300" id="tbSelectVisit" title="Select Admission" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="text-align:left;"><? if($this->visit): ?><strong><?=__("Visit Detail")?></strong> <br /> <?=__("Visited")?>: <?=date('Y-m-d',strtotime($this->visit->dateOfTreatment))?><br />Provider: <?=$this->visit->getProviderDisplayName()?><br /><!--<?=__("Visit Dx")?>: <?=__("None")?> --><? else: ?><strong><?=__("Visit Not Selected")?></strong><br /><?=__("Current Loc.")?>: <?=$this->location?><? endif;?><script>mainController.setActiveVisit(<?=($this->visit)?(int)$this->visit->visitId:0?>);</script></div>]]></item>
+	<item id="sep2" type="separator"/>
+	<item type="button" img="blank.gif" imgStyle="display:none;" height="60" width="300" id="tbAlerts" title="Alerts" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="text-align:left;">
+<strong><?=__('Postings')?></strong>: <?
+if($this->patient):
+?><strong><a href="javascript:openPostings()" style="color:<?=($this->allergies)?'#ff0000':'#000000'?>;" title="<?=__('Allergies')?>">A</a></strong><?
+?> <strong><a href="javascript:openPostings()" style="color:<?=($this->notes)?'#ff0000':'#000000'?>;" title="<?=__('Notes')?>">N</a></strong>
+<?else:?>
+<?=__('none')?>
+<?endif;?>
+<br /><strong>Alerts</strong>: 
+<?if ($this->alerts):?>
+<a onClick="windowSelectPatient(true)" title="<?=$this->alerts . ' ' . __('alerts pending')?>"><img style="vertical-align:middle;" src="../img/alert.png" /></a>
+<?else:?>
+<?=__('none')?>
+<?endif;?>
+<br /><strong>Health Status</strong>:
+<?if ($this->reminders):?> <a onClick="openHealthStatusAlerts()" title="<?=$this->reminders . ' ' . __('reminders are due')?>"><img style="vertical-align:middle;margin-left:5px;" src="../img/reminder.png" /></a>
+<?else:?>
+<?=__('none')?>
+<?endif;?>
+
+</div>]]></item>
+	<item id="sep3" type="separator"/>
+	<item type="button" img="blank.gif" imgStyle="display:none;" height="60" width="300" id="tbSelectTeam" title="Select Team" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="text-align:left;"><strong><?=__("Care Team")?></strong><br /><?
+if($this->patient):
+	if (isset($this->team)):
+		echo $this->team;
+	else:
+		echo __("No team set for this patient, click to select");
+	endif;
+else:
+	echo __("No Patient Selected");
+endif;?></div>]]></item>
+	<item id="sep4" type="separator"/>
+	<item type="button" img="blank.gif" imgStyle="display:none;" height="60" width="50" id="currentUser" title="Current Users" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <div style="text-align:left;"><?=__("Logged in as: ")?><br /><?=$this->identity->username?>]]></item>
+</toolbar>

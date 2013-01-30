@@ -1,0 +1,83 @@
+<div id="claimRulesGridId" style="float:left;width:100%;height:440px;overflow:auto;"></div>
+<script>
+function claimRulesEdit(id) {
+	var label = "Add";
+	var params = [];
+	if (id) {
+		params.push("groupId="+id);
+		label = "Edit";
+	}
+	var winEditClaimRules = globalCreateWindow("windowEditClaimRuleId",params,"<?=$this->baseUrl?>/claim-rules.raw/"+label.toLowerCase(),label+" <?=__('Claim Rules')?>",600,600);
+}
+
+function claimRulesDelete(id) {
+	if (!id) id = claimRulesGrid.getSelectedRowId();
+	if (id <= 0) {
+		alert("No selected rule to delete");
+		return;
+	}
+	if (!confirm("Are you sure you want to delete rule '"+claimRulesGrid.cells(id,0).getValue()+"'?")) return;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/claim-rules.raw/process-delete-group",
+		handleAs: "json",
+		content: {
+			"groupId": id,
+		},
+		load: function (data) {
+			claimRulesGridReload();
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var claimRulesGrid = new dhtmlXGridObject("claimRulesGridId");
+claimRulesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+claimRulesGrid.setHeader("<?=__('Title')?>,<?=__('Event')?>,<?=__('Message')?>");
+claimRulesGrid.setInitWidths("*,100,*");
+claimRulesGrid.setColTypes("ro,ro,ro");
+claimRulesGrid.setSkin("xp");
+claimRulesGrid.init();
+
+var claimRulesMenu = new dhtmlXMenuObject(null,"standard");
+claimRulesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+claimRulesMenu.renderAsContextMenu();
+claimRulesMenu.setOpenMode("web");
+claimRulesMenu.attachEvent("onClick",function(menuItemId,type){
+	switch(menuItemId) {
+		case "add":
+			claimRulesEdit();
+			break;
+		case "delete":
+			claimRulesDelete();
+			break;
+	}
+});
+claimRulesMenu.loadXML("<?=$this->baseUrl?>/claim-rules.raw/get-menu",function(){
+});
+claimRulesGrid.hdr.id = claimRulesGrid.uid();
+claimRulesMenu.addContextZone(claimRulesGrid.hdr.id);
+claimRulesGrid.enableContextMenu(claimRulesMenu);
+claimRulesMenu.attachEvent("onContextMenu",function(rowId,colIndex,gridObj) {
+	claimRulesMenu.hideItem("delete");
+	var id = claimRulesGrid.getSelectedRowId();
+	if (id > 0) claimRulesMenu.showItem("delete");
+	return true;
+});
+
+claimRulesGrid.attachEvent("onRowDblClicked",function(rowId,colIndex){
+	claimRulesEdit(rowId);
+});
+dhtmlxEvent(claimRulesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+function claimRulesGridReload() {
+	claimRulesGrid.clearAll();
+	claimRulesGrid.load("<?=$this->baseUrl?>/claim-rules.raw/list-groups",function(){
+	},"json");
+}
+claimRulesGridReload();
+</script>

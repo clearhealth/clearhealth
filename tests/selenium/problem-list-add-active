@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>problem-list-add-active</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">problem-list-add-active</td></tr>
+</thead><tbody>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemListToolbar']/table/tbody/tr/td[2]/table/tbody/tr/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//input[@id='q']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>typeKeys</td>
+	<td>q</td>
+	<td>DMII</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@id='searchLabel']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td>DMII KETOACD UNCONTROLD</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemLookupContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Select']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>//input[@id='problemList-code']</td>
+	<td>250.12</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>dateOfOnsetInput</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>problemList-provider-id</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>problemList-provider-id</td>
+	<td>label=Gooddoc, Horace F</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//option[@value='48502']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@id='problemList-status' and @name='problemList[status]' and @value='Active']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>problemList-immediacy</td>
+	<td></td>
+</tr>
+<tr>
+	<td>answerOnNextPrompt</td>
+	<td>first comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Add']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertPrompt</td>
+	<td>Please enter your comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>answerOnNextPrompt</td>
+	<td>yet another comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Add']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertPrompt</td>
+	<td>Please enter your comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//input[@value='Save']</td>
+	<td></td>
+</tr>
+
+
+</tbody></table>
+</body>
+</html>

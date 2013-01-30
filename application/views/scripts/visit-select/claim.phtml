@@ -1,0 +1,321 @@
+<style>
+#insuranceProgramId,#changeIP {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+#changeIP {
+	width: 6em;
+}
+.even1 {
+	background-color: #F0F8FF;
+}
+.uneven1 {
+	background-color: #F0FFFF;
+}
+.even2 {
+	background-color: #DCDCDC;
+}
+.uneven2 {
+	background-color: #E6E6FA;
+}
+
+div.gridbox#claimFeeGridId table.obj td {
+	border-bottom: none;
+	border-right:none;
+}
+/*div.gridbox#claimFeeGridId div.dhx_sub_row table.obj tr.rowselected td {
+	background-color: #CDCDCD;
+}
+div.gridbox#claimFeeGridId div.dhx_sub_row div.dhx_sub_row table.obj tr.rowselected td.cellselected, div.gridbox#claimFeeGridId div.dhx_sub_row div.dhx_sub_row table.obj td.cellselected {
+	background-color: #00FFFF;
+}*/
+</style>
+<div>
+	<div class="formRow" style="padding-top:4px;float:right;">
+<?=__('Visit Insurance Program')?>: <?=$this->formSelect('insuranceProgramId',$this->insuranceProgramId,array('id'=>'insuranceProgramId'),$this->insurancePrograms)?> <?=$this->formButton('changeIP',__('Change'),array('id'=>'changeIP','onClick'=>'claimChangePayer()'))?>
+	</div>
+	<br style="clear:both;" />
+	<fieldset><legend><?=__('Fees Table')?></legend>
+		<div id="claimFeeGridId" style="position:relative;width:800px;height:500px;overflow:hidden;" ></div>
+		<div style="margin-top:5px;">Discounts applied: <textarea id="discountId" style="border:0;width:800px;height:60px;" readonly="readonly"></textarea></div>
+	</fieldset>
+</div>
+<script>
+function claimChangePayer() {
+	var insurancePrograms = dojo.byId("insuranceProgramId");
+	var selectedIndex = insurancePrograms.selectedIndex;
+	if (selectedIndex == -1) return;
+	var payerId = insurancePrograms.options[selectedIndex].value;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/visit-select.raw/process-set-insurance-program",
+		handleAs: "json",
+		content: {
+			"visitId": "<?=$this->visitId?>",
+			"payerId": payerId,
+		},
+		load: function (data) {
+			visitTypeGetContent("claim"); // page reloads
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+
+var claimFeeGrid = new dhtmlXGridObject("claimFeeGridId");
+claimFeeGrid.setImagePath("<?=$this->baseUrl?>/img/");
+claimFeeGrid.setHeader(",<?=__('Code/Title')?>,<?=__('Fee')?>,<?=__('Discounted Fee')?>");
+claimFeeGrid.setInitWidths("20,500,125,125");
+claimFeeGrid.setColTypes("sub_row_grid,ro,ro,ro");
+claimFeeGrid.setSkin("xp");
+claimFeeGrid.init(); 
+function claimFeeGridOnLoaded() {
+	claimFeeGrid.forEachRow(function(id){
+		if (id == "totals") return;
+		this.toggleSubRow(this.cells(id,0).cell.firstChild);
+	});
+}
+function claimFeeGridReload() {
+	claimFeeGrid.clearAll();
+	claimFeeGrid.load("<?=$this->baseUrl?>/claims.raw/list-claims?visitId=<?=$this->visitId?>",claimFeeGridOnLoaded,"json");
+}
+claimFeeGridReload();
+
+function claimFeeNumberFormat(n) {
+	n += "";
+	x = n.split(".");
+	x1 = x[0];
+	x2 = x.length > 1 ? "." + x[1] : "";
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, "$1" + "," + "$2");
+	}
+	return x1 + x2;
+}
+
+function claimFeeSubGridOnLoaded(subgrid,rowId) {
+	// workaround on height
+	claimFeeGrid.toggleSubRow(claimFeeGrid.cells(rowId,0).cell.firstChild);
+	claimFeeGrid.toggleSubRow(claimFeeGrid.cells(rowId,0).cell.firstChild);
+
+	var totalFee = 0;
+	var totalDiscount = 0;
+	if (rowId == "procedures") {
+		var discountApplied = dojo.byId("discountId");
+		discountApplied.value = "";
+		if (subgrid.getRowsNum() > 0) {
+			var firstRowId = subgrid.getRowId(0);
+			totalFee = subgrid.getUserData(firstRowId,"total");
+			totalDiscount = totalFee - subgrid.getUserData(firstRowId,"discounted");
+			discountApplied.value = subgrid.getUserData(firstRowId,"discountApplied");
+		}
+		claimFeeGrid.cells(rowId,2).setValue(claimFeeNumberFormat(totalFee.toFixed(2)));
+		claimFeeGrid.cells(rowId,3).setValue(claimFeeNumberFormat(totalDiscount.toFixed(2)));
+		claimFeeRecalculate();
+		return;
+	}
+
+	var fee = 0;
+	var discount = 0;
+	subgrid.forEachRow(function(id){
+		fee = parseFloat(this.cells(id,2).getValue());
+		if (!isNaN(fee)) {
+			totalFee += fee;
+		}
+		discount = parseFloat(this.cells(id,3).getValue());
+		if (!isNaN(discount)) {
+			totalDiscount += discount;
+		}
+	});
+	claimFeeGrid.cells(rowId,2).setValue(claimFeeNumberFormat(totalFee.toFixed(2)));
+	claimFeeGrid.cells(rowId,3).setValue(claimFeeNumberFormat(totalDiscount.toFixed(2)));
+	claimFeeRecalculate();
+}
+
+function claimFeeRecalculate() {
+	var totalFee = 0;
+	var totalDiscount = 0;
+	var fee = 0;
+	var discount = 0;
+	claimFeeGrid.forEachRow(function(id){
+		if (id == "totals") return;
+		fee = parseFloat(this.cells(id,2).getValue().replace(/,/g,""));
+		if (!isNaN(fee)) {
+			if (id == "misc-payments") totalFee -= fee;
+			else totalFee += fee;
+		}
+		discount = parseFloat(this.cells(id,3).getValue().replace(/,/g,""));
+		if (!isNaN(discount)) {
+			if (id == "misc-payments") totalDiscount -= fee;
+			else totalDiscount += discount;
+		}
+	});
+	var rowId = "totals";
+	claimFeeGrid.cells(rowId,2).setValue("<strong>"+claimFeeNumberFormat(totalFee.toFixed(2))+"</strong>");
+	claimFeeGrid.cells(rowId,3).setValue("<strong>"+claimFeeNumberFormat(totalDiscount.toFixed(2))+"</strong>");
+}
+
+function claimFeeRefreshProcedureModifier(claimId) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/claims.raw/list-procedures?visitId=<?=$this->visitId?>&id="+claimId,
+		handleAs: "json",
+		load: function (data) {
+			if (data.rows.length > 0) {
+				var row = data.rows[0];
+				var firstRowId = procedureSubGrid.getRowId(0);
+				procedureSubGrid.setUserData(firstRowId,"total",row.userdata.total);
+				procedureSubGrid.setUserData(firstRowId,"discounted",row.userdata.discounted);
+				procedureSubGrid.cells(row.id,2).setValue(row.data[2]);
+				procedureSubGrid.cells(row.id,3).setValue(row.data[3]);
+			}
+			claimFeeSubGridOnLoaded(procedureSubGrid,"procedures");
+		},
+		error: function (error) {
+			alert(error.responseText);
+			console.error("Error: ", error);
+		}
+	});
+}
+
+var procedureSubGrid = null;
+claimFeeGrid.attachEvent("onSubGridCreated",function(sub1grid,rowId,rowIndex,content){
+	sub1grid.setHeader(",,,");
+	sub1grid.setNoHeader(true);
+	sub1grid.setColTypes("sub_row_grid,ro,ro,ro");
+	var width0 = 10;
+	var width1 = 500;
+	if (rowId == "procedures") {
+		procedureSubGrid = sub1grid;
+		width0 = 20;
+		width1 = 490;
+	}
+	sub1grid.setInitWidths(width0+","+width1+",125,125");
+	sub1grid.init();
+	sub1grid.objBox.style.position = "relative";
+	sub1grid.load(content,function(){
+		claimFeeSubGridOnLoaded(sub1grid,rowId);
+	},"json");
+
+	sub1grid.attachEvent("onSubGridCreated",function(sub2grid,sub1RowId,rowIndex,content){
+		sub2grid.setHeader(",");
+		sub2grid.setNoHeader(true);
+		sub2grid.setColTypes("sub_row_grid,ro");
+		sub2grid.setInitWidths("20,*");
+		//sub2grid.enableAlterCss("even1","uneven1");
+		sub2grid.init();
+		sub2grid.addRow("diagnoses","dummy.xml,<?=__('Diagnoses')?>");
+		sub2grid.addRow("modifiers","dummy.xml,<?=__('Modifiers')?>");
+
+		sub2grid.attachEvent("onSubGridCreated",function(sub3grid,sub2RowId,rowIndex,content){
+			sub3grid.setHeader(",");
+			sub3grid.setNoHeader(true);
+			sub3grid.setColTypes("ch,ro");
+			sub3grid.setInitWidths("15,650");
+			//sub3grid.enableAlterCss("even2","uneven2");
+			sub3grid.enableAutoHeight(true,120);
+			sub3grid.init();
+			function sub3gridReload(firstLoad) {
+				sub3grid.clearAll();
+				sub3grid.load("<?=$this->baseUrl?>/claims.raw/list-"+sub2RowId+"?visitId=<?=$this->visitId?>&id="+sub1RowId,function(){
+					sub3grid.objBox.style.overflow="auto";
+					// workaround on top
+					claimFeeGrid.toggleSubRow(sub2grid.cells(sub2RowId,0).cell.firstChild);
+					claimFeeGrid.toggleSubRow(sub2grid.cells(sub2RowId,0).cell.firstChild);
+					if (!firstLoad && sub2RowId == "modifiers") claimFeeRefreshProcedureModifier(sub1RowId);
+				},"json");
+			}
+			sub3gridReload(true);
+			sub3grid.attachEvent("onCheck",function(rowId,cellIndex,state) {
+				var checked = (state)?"1":"0";
+				dojo.xhrPost({
+					url: "<?=$this->baseUrl?>/claims.raw/process-set-"+sub2RowId,
+					handleAs: "json",
+					content: {
+						"code": rowId,
+						"id": sub1RowId,
+						"state": checked,
+					},
+					load: function (data) {
+						if (data != true) {
+							alert(data);
+							sub3grid.cells(rowId,cellIndex).setChecked(!state);
+						}
+						else {
+							sub3gridReload();
+						}
+					},
+					error: function (error) {
+						alert(error.responseText);
+						console.error("Error: ", error);
+					}
+				});
+			});
+			sub3grid.objBox.style.position="relative";
+			sub3grid.attachEvent("onSubRowOpen",function(cell,expanded){
+				this.adjustHeightSubRow(cell);
+			});
+
+			sub3grid.enableDragAndDrop(true);
+			sub3grid.attachEvent("onDrag",function(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo){
+				if (gridFrom != gridTo) return false
+				if (!gridFrom.cells(idFrom,0).isChecked() || !gridTo.cells(idTo,0).isChecked()) {
+					if (!gridFrom.cells(idFrom,0).isChecked()) {
+						alert("<?=__('Dragging uncheck item is not allowed')?>");
+					}
+					else {
+						alert("<?=__('Dropping to uncheck item is not allowed')?>");
+					}
+					return false
+				}
+				dojo.xhrPost({
+					url: "<?=$this->baseUrl?>/claims.raw/process-reorder-"+sub2RowId,
+					handleAs: "json",
+					content: {
+						"claimId": sub1RowId,
+						"from": idFrom,
+						"to": idTo,
+					},
+					load: function (data) {
+						if (data != true) {
+							alert(data);
+						}
+						else {
+							sub3gridReload();
+						}
+					},
+					error: function (error) {
+						alert(error.responseText);
+						console.error("Error: ", error);
+					}
+				});
+				return false;
+			});
+			sub3grid.attachEvent("onDrop",function(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo){
+				return true;
+			});
+
+			return false;  // block default behavior
+		});
+
+		sub2grid.objBox.style.position="relative";
+		sub2grid.attachEvent("onSubRowOpen",function(cell,expanded){
+			this.adjustHeightSubRow(cell);
+			// workaround on top
+			claimFeeGrid.toggleSubRow(sub1grid.cells(sub1RowId,0).cell.firstChild);
+			claimFeeGrid.toggleSubRow(sub1grid.cells(sub1RowId,0).cell.firstChild);
+		});
+		return false;  // block default behavior
+	});
+
+	sub1grid.objBox.style.position="relative";
+	sub1grid.attachEvent("onSubRowOpen",function(cell,expanded){
+		this.adjustHeightSubRow(cell);
+	});
+	return false;  // block default behavior
+});
+</script>

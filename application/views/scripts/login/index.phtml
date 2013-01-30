@@ -1,0 +1,35 @@
+<?if ($this->authenticated):
+	if ($this->errorMessage):
+		//NOTE: for "Access denied" most of the client side error handlers depends on this error message; changes to this format MUST also change the var globalAccessDeniedLabel of js/custom/locale.php
+?>
+<label style="color:red;"><?=$this->errorMessage?></label>
+<?	else:?>
+    You are already authenticated, <?php echo $this->escape($this->user->getId()) ?>.
+<a href="<?=$this->baseUrl ?>/logout">Logout</a>
+<?	endif;?>
+<?else:?>
+<script>
+// changes to this window must also sync with the mainControllerClass.prototype.popupLoginWindow in js/ch3main.js
+if (dhxWins.isWindow("windowLoginId")) {
+	winSP = dhxWins.window("windowLoginId");
+}
+else {
+	winSP = dhxWins.createWindow("windowLoginId",60,10,400,300);
+}
+winSP.progressOn();
+winSP.setText('<?=__('Login')?>');
+winSP.attachURL(globalBaseUrl + '/login.popup/panel',true);
+winSP.setModal(true);
+winSP.centerOnScreen();
+// hides window buttons
+winSP.button("park").hide();
+winSP.button("minmax1").hide();
+winSP.button("minmax2").hide();
+winSP.button("close").hide();
+// clear timer to prevent multiple login popup
+if (globalLogoutTimer) {
+	clearTimeout(globalLogoutTimer);
+	globalLogoutTimer = null;
+}
+</script>
+<?endif;?>

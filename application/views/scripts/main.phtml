@@ -1,0 +1,99 @@
+<style>
+body {
+        margin:0;
+        padding:0;
+}
+div.gridbox_xp table.obj td {
+    border-bottom: thin dashed;border-right:none;
+}
+</style>
+
+
+<div style="height:800px;">
+
+<div id="adminPersonsContainer" style="position:relative;width:100%;height:800px;"></div>
+<div id="mainContainer">
+
+<div>
+<div>
+<label><?=__("Select Person to View/Edit")?></label>
+</div>
+<div id="personSelectAutoCompleteDiv"></div>
+<br style="clear:all;"/>
+<div id="personEditTabContainer" style="height:400px;"></div>
+<script>
+var personId = 0;
+//djConfig.usePlainJson=true;
+//dojo.require("dojo.parser");
+//dojo.require("dojox.data.QueryReadStore");
+//dojo.require("dijit.form.FilteringSelect");
+var pscb = dijit.byId('personSelectAutoCompleteDiv');
+                if (pscb != undefined) { 
+                  pscb.destroyRecursive();
+                  pscb = null;
+                }
+                  var psac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/admin-persons/auto-complete",requestMethod:"get"},'personSelectAutoComplete');
+                  pscb = new dijit.form.FilteringSelect({name:"personSelectAutoCompleteId",autocomplete:true,store:psac},"personSelectAutoCompleteDiv");
+		pscb.validate = function () {return true;};
+	dojo.connect(pscb,"onChange", "loadPerson");
+	function loadPerson(id) {
+		if (id > 0) {
+			personId = id;
+			personEditTabbar.setContentHref('tab_personDetails','<?=$this->baseUrl?>/admin-persons/edit?personId=' + personId);
+			personEditTabbar.setTabActive('tab_personDetails');
+			refreshCurrentTab();
+		}
+	}
+	function refreshCurrentTab() {
+                personEditTabbar.forceLoad(personEditTabbar.getActiveTab());        
+        }
+	personEditTabbar = new dhtmlXTabBar('personEditTabContainer','top','25');
+        personEditTabbar.setImagePath('<?=$this->baseUrl?>/img/');
+        personEditTabbar.setStyle('silver');
+        personEditTabbar.setHrefMode('ajax-html');
+        personEditTabbar.setSkinColors('#FFFFFF,#FFFACD');
+        personEditTabbar.addTab('tab_personDetails','Person Details','125');
+        personEditTabbar.setContentHref('tab_personDetails','blank.php');
+        personEditTabbar.addTab('tab_providerDetails','Provider Details','145');
+        personEditTabbar.setContentHref('tab_providerDetails','blank.php');
+        personEditTabbar.addTab('tab_userDetails','User Details','125');
+        personEditTabbar.setContentHref('tab_userDetails','blank.php');
+        personEditTabbar.addTab('tab_eprescribeDetails','ePrescribe Details','155');
+        personEditTabbar.setContentHref('tab_eprescribeDetails','blank.php');
+
+	function onPersonTabbarClick(id) {
+                        switch(id) {
+                                case 'tab_personDetails':
+                                        personEditTabbar.setContentHref(id,'<?=$this->baseUrl?>/admin-persons/edit?personId=' + personId);
+                                	break;
+                                case 'tab_providerDetails':
+                                        personEditTabbar.setContentHref(id,'<?=$this->baseUrl?>/admin-providers/edit?personId=' + personId);
+                                	break;
+                                case 'tab_userDetails':
+                                        personEditTabbar.setContentHref(id,'<?=$this->baseUrl?>/admin-users/edit?personId=' + personId);
+                                	break;
+				default:
+					break;
+			}
+		return true;
+	}
+	personEditTabbar.setOnSelectHandler (onPersonTabbarClick);
+        personEditTabbar.setTabActive('tab_personDetails');
+</script>
+</div>
+
+<script>
+//Layouts
+var adminPersonsLayout = new dhtmlXLayoutObject("nsdrContainer", "1C");
+adminPersonsLayout.setImagePath("<?=$this->baseUrl?>/img/");
+adminPersonsLayout.cells("a").setText('<?=__("Admin Persons");?>');
+currentWidth = adminPersonsLayout.cells("a").getWidth() / 2;
+adminPersonsLayout.cells("a").setWidth(currentWidth);
+adminPersonsLayout.cells("b").setText('<?=__("Select Person")?>');
+adminPersonsLayout.cells("a").showHeader();
+adminPersonsLayout.cells("a").attachObject("mainContainer");
+adminPersonsLayout.setEffect('collapse',true);
+adminPersonsLayout.setEffect("resize", true);
+
+</script>
+

@@ -1,0 +1,101 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+.buttonAddGA {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+}
+.dhx_textarea {
+	height:300px;
+}
+</style>
+<div id="DCMGridId" style="height:444px;width:99%;"></div>
+
+<script>
+var DCMGrid = new dhtmlXGridObject("DCMGridId");
+DCMGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexDCMName = 0;
+var indexDCMSystemName = 1;
+var indexDCMType = 2;
+var indexDCMContent = 3;
+
+var DCMColFields = [];
+DCMColFields[indexDCMName] = "name";
+DCMColFields[indexDCMSystemName] = "systemName";
+DCMColFields[indexDCMType] = "type";
+DCMColFields[indexDCMContent] = "content";
+
+DCMGrid.setHeader("<?=__('Name')?>,<?=__('System Name')?>,<?=__('Type')?>,<?=__('Content')?>");
+DCMGrid.setColTypes("ed,ed,coro,txt");
+DCMGrid.setSkin("xp");
+DCMGrid.setInitWidths("150,100,50,*");
+function DCMGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexDCMName: // name
+			case indexDCMSystemName: // systemName
+			case indexDCMContent: // content
+			case indexDCMType: // type
+				break;
+			default:
+				return;
+		}
+		DCMProcessEdit(rowId,cellIndex,newValue,oldValue);
+	}
+	return true;
+}
+DCMGrid.attachEvent("onEditCell",DCMGridOnCellEdited);
+DCMGrid.init();
+
+<?foreach ($this->types as $type):?>
+DCMGrid.getCombo(indexDCMType).put("<?=$type?>","<?=$type?>");
+<?endforeach;?>
+
+function DCMGridOnLoaded() {
+	DCMGrid.addRow("0","",0);
+}
+function DCMGridReload() {
+	DCMGrid.clearAll();
+	DCMGrid.load(globalBaseUrl+"/dashboard-components-manager.raw/list",DCMGridOnLoaded,"json");
+}
+DCMGridReload();
+
+dhtmlxEvent(DCMGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function DCMProcessEdit(rowId,cellIndex,newValue,oldValue) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/dashboard-components-manager.raw/process-edit",
+		handleAs: "json",
+		content: {
+			"dashboardComponentId": rowId,
+			"field": DCMColFields[cellIndex],
+			"value": newValue,
+		},
+		load: function (data) {
+			if (data.error) {
+				DCMGrid.cells(rowId,cellIndex).setValue(oldValue);
+				alert(data.error);
+				return;
+			}
+			if (data.id != rowId) {
+				DCMGrid.setRowId(DCMGrid.getRowIndex(rowId),data.id);
+				rowId = data.id;
+				DCMGrid.addRow("0","",0);
+			}
+			DCMGrid.cells(rowId,cellIndex).setValue(data.value);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

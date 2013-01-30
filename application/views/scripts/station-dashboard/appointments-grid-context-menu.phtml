@@ -1,0 +1,9 @@
+<?=$this->xmlHeader?>
+<menu id="0">
+	<item text="Check In" img="" id="route_checkIn"/>
+	<item text="Route" img="" id="route">
+		<?foreach($this->stations as $key => $name):?>
+		<item text="<?=$name?>" img="" id="routeTo_<?=$key?>" />
+		<?endforeach?>
+	</item>
+</menu>

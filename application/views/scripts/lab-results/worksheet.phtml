@@ -1,0 +1,37 @@
+
+<script>
+function applyLabResultsWorksheet() {
+	closeWorksheetWindow();
+}
+</script>
+
+<br style="clear:left;" />
+<form id="labResultsWorksheet" method="post">
+
+<div style="width:100%;">
+	<dt><label for="test-groups" class="optional"><?=('Test Groups')?>:</label></dt>
+	<select id="test-groups" name="testGroups" style="width:100%;">
+	</select>
+</div>
+<div style="width:100%;">
+	<dt><label for="laboratory-tests" class="optional"><?=('Laboratory Tests')?>:</label></dt>
+	<select id="laboratory-tests" name="laboratoryTests" multiple size="8" style="width:100%;">
+	<?foreach ($this->tests as $key=>$val):?>
+		<option value="<?=$val?>"><?=$val?></option>
+	<?endforeach;?>
+	</select>
+</div>
+<div style="width:100%;">
+	<dt><label for="specimen" class="optional"><?=('Specimen')?>:</label></dt>
+	<select id="specimen" name="specimen" style="width:100%;">
+	</select>
+</div>
+
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:8px;">
+	<button name="ok" id="ok" type="button" value="<?=__('OK')?>" helper="formButton" onclick="applyLabResultsWorksheet();"><?=__('OK')?></button>
+	<button name="cancel" id="cancel" type="button" value="<?=__('Cancel')?>" helper="formButton" onclick="closeWorksheetWindow();"><?=__('Cancel')?></button>
+</div>
+
+</form>
+

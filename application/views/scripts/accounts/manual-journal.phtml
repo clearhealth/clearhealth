@@ -1,0 +1,189 @@
+<fieldset><legend><?=__('Posting Journal Information')?></legend>
+	<?=$this->form->renderOpen()?>
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->patientId->renderLabel()?>
+		<div id="patientSelectDivId"></div>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->visitId->renderLabel()?>
+		<?=$this->form->visitIdInput('FormSelect',array('style'=>'width:300px;','onChange'=>'populateClaimLineList(this.value)'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->payerId->renderLabel()?>
+		<?=$this->form->payerIdInput('FormSelect',array('style'=>'width:300px;','onChange'=>'populateClaimLineList(null,this.value)'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->claimLineId->renderLabel()?>
+		<?=$this->form->claimLineIdInput('FormSelect',array('style'=>'width:300px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->amount->renderLabel()?>
+		<?=$this->form->amountInput('FormCurrencyText')?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->datePosted->renderLabel()?>
+		<?=$this->form->datePostedInput()?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->note->renderLabel()?>
+		<?=$this->form->noteInput('FormTextarea',array('style'=>'width:300px;height:30px;'))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<?=$this->form->patientIdInput('FormHidden')?>
+		<?=$this->form->okInput()?>
+	</div>
+	<?=$this->form->renderClose()?>
+</fieldset>
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	var ret = false;
+	var patientId = dojo.byId("<?=$this->form->patientId->getId()?>").value;
+	var amount = parseFloat(dojo.byId("<?=$this->form->amount->getId()?>").value);
+	if (patientId.length <= 0) alert("Patient is required");
+	else if (isNaN(amount) || amount == 0) alert("Amount is invalid");
+	else ret = true;
+	return ret;
+}
+
+function postSubmit<?=$this->form->getId()?>(rawData) {
+	var data = dojo.fromJson(rawData);
+	if (data.error) {
+		alert(data.error);
+	}
+	else {
+		if (data.msg) alert(data.msg);
+		dhxWins.window("<?=$this->form->getWindow()?>").close();
+	}
+	return false;
+}
+
+var pscb = dijit.byId("patientSelectDivId");
+if (pscb != undefined) { 
+	pscb.destroyRecursive();
+	pscb = null;
+}
+var psac = new dojox.data.QueryReadStore({
+	url:"<?=$this->baseUrl?>/patient.raw/auto-complete",
+	requestMethod:"get"
+},"personSelectAutoComplete");
+pscb = new custom.SelectComboBox({
+	name:"patientSelectAutoCompleteId",
+	autocomplete:false,
+	store:psac,
+	hasDownArrow:false
+},"patientSelectDivId");
+pscb.domNode.style.width = "300px";
+dojo.connect(pscb,"onChange","patientSelected");
+function patientSelected(id) {
+	var patientId = pscb.selectedKey;
+	if (patientId <= 0) return;
+	dojo.byId("<?=$this->form->patientId->getId()?>").value = patientId;
+	populateVisitList();
+}
+
+function populateVisitList(patientId) {
+	if (typeof patientId == "undefined") patientId = dojo.byId("<?=$this->form->patientId->getId()?>").value;
+
+	// VISIT SELECT
+	var visitSelect = dojo.byId("<?=$this->form->visitId->getId()?>");
+	visitSelect.options.length = 0;
+	visitSelect.options[0] = new Option("Please wait loading patient visits...","");
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/visit-select.raw/list-visits",
+		content: {
+			"personId": patientId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			visitSelect.options.length = 0;
+			if (!data || !data.rows || data.rows.length <= 0) return;
+			var ctr = 0;
+			visitSelect.options[ctr++] = new Option("","");
+			var value = "";
+			var row = null;
+			for (var i in data.rows) {
+				row = data.rows[i];
+				value = [];
+				value.push((row.data[0] != null)?row.data[0]:"");
+				value.push((row.data[1] != null)?row.data[1]:"");
+				value.push((row.data[2] != null)?row.data[2]:"");
+				value.push((row.data[3] != null)?row.data[3]:"");
+				visitSelect.options[ctr++] = new Option(value.join(" - "),row.id);
+			}
+		},
+		error: function (er) {
+			visitSelect.options.length = 0;
+			alert("err: " + er)
+		}
+	});
+
+	// PAYER SELECT
+	var payerSelect = dojo.byId("<?=$this->form->payerId->getId()?>");
+	payerSelect.options.length = 0;
+	payerSelect.options[0] = new Option("Please wait loading patient payers...","");
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/patient.raw/list-insurers",
+		content: {
+			"patientId": patientId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			payerSelect.options.length = 0;
+			if (!data || !data.rows || data.rows.length <= 0) return;
+			var ctr = 0;
+			payerSelect.options[ctr++] = new Option("","");
+			var value = "";
+			var row = null;
+			for (var i in data.rows) {
+				row = data.rows[i];
+				value = [];
+				value.push((row.data[0] != null)?row.data[0]:"");
+				value.push((row.data[1] != null)?row.data[1]:"");
+				payerSelect.options[ctr++] = new Option(value.join("->"),row.id);
+			}
+		},
+		error: function (er) {
+			payerSelect.options.length = 0;
+			alert("err: " + er)
+		}
+	});
+}
+
+function populateClaimLineList(visitId,payerId) {
+	// CLAIM LINE SELECT
+	if (typeof visitId == "undefined" || visitId == null) visitId = dojo.byId("<?=$this->form->visitId->getId()?>").value;
+	if (typeof payerId == "undefined" || payerId == null) payerId = dojo.byId("<?=$this->form->payerId->getId()?>").value;
+
+	var claimLineSelect = dojo.byId("<?=$this->form->claimLineId->getId()?>");
+	claimLineSelect.options.length = 0;
+	claimLineSelect.options[0] = new Option("Please wait loading claim lines...","");
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/accounts.raw/list-claim-lines",
+		content: {
+			"visitId": visitId,
+			"payerId": payerId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			claimLineSelect.options.length = 0;
+			if (!data || data.length <= 0) return;
+			var ctr = 0;
+			claimLineSelect.options[ctr++] = new Option("","");
+			for (var i in data) {
+				claimLineSelect.options[ctr++] = new Option(data[i],i);
+			}
+		},
+		error: function (er) {
+			claimLineSelect.options.length = 0;
+			alert("err: " + er)
+		}
+	});
+}
+</script>

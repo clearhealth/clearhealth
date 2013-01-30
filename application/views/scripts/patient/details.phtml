@@ -1,0 +1,862 @@
+<style>
+dt {
+	display:block;
+}
+dd {
+	display:block;
+}
+input,select,#markDuplicateId {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+</style>
+
+<div style="width:100%;height:100%;" id="pdContainerId">
+	<div style="float:left;width:45%;">
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__('Patient Information')?></legend>
+		<div style="float:left;">
+			<div style="float:left;">
+				<div style="display:table-cell;vertical-align:middle;height:100px;">
+					<img src="<?=$this->baseUrl?>/<?if($this->form->formPerson->activePhoto->getValue() > 0):?>attachments.raw/view-attachment?attachmentId=<?=$this->form->formPerson->activePhoto->getValue()?><?else:?>img/no-person-image.png<?endif;?>" height="50" width="50" onClick="windowPatientPictures()" />
+				</div>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<div style="float:left;">
+					<?=$this->form->formPerson->lastName->renderLabel()?>
+					<?=$this->form->formPerson->lastNameInput('FormText',array('style'=>'width:80px;'))?>
+				</div>
+				<div style="float:left;margin-left:5px;">
+					<?=$this->form->formPerson->suffix->renderLabel()?>
+					<?=$this->form->formPerson->suffixInput('FormText',array('style'=>'width:25px;'))?>
+				</div>
+				<div style="float:left;margin-left:5px;">
+					<?=$this->form->formPerson->firstName->renderLabel()?>
+					<?=$this->form->formPerson->firstNameInput('FormText',array('style'=>'width:80px;'))?>
+				</div>
+				<div style="float:left;margin-left:5px;">
+					<?=$this->form->formPerson->middleName->renderLabel()?>
+					<?=$this->form->formPerson->middleNameInput('FormText',array('style'=>'width:80px;'))?>
+				</div>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<div style="float:left;">
+					<div>
+						<?=$this->form->recordNumber->renderLabel()?>
+						<?=$this->form->recordNumberInput('FormText',array('style'=>'width:90px;'))?>
+					</div>
+					<div>
+						<?=$this->form->formPerson->identifier->renderLabel()?>
+						<?=$this->form->formPerson->identifierInput('FormText',array('style'=>'width:90px;'))?>
+					</div>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<div>
+						<?=$this->form->formPerson->dateOfBirth->renderLabel()?>
+						<?=$this->form->formPerson->dateOfBirthInput('FormDateText',array('style'=>'width:90px;'))?>
+					</div>
+					<div>
+						<?=$this->form->signedHipaaDate->renderLabel()?>
+						<?=$this->formDateText('patient[signedHipaaDate]',$this->form->signedHipaaDate->getValue(),array('id'=>'patient-signedHipaaDate','style'=>'width:90px;'))?>
+					</div>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<div>
+						<?=$this->form->formPerson->gender->renderLabel()?>
+						<?=$this->form->formPerson->genderInput('FormSelect',array('options'=>Enumeration::getEnumArray('Gender','key'),'style'=>'width:90px;'))?>
+					</div>
+					<div>
+						<?=$this->form->formPerson->maritalStatus->renderLabel()?>
+						<?=$this->form->formPerson->maritalStatusInput('FormSelect',array('options'=>Enumeration::getEnumArray('Marital Status','key'),'style'=>'width:90px;'))?>
+					</div>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<dt><label for="<?=$this->form->formPerson->active->getId()?>" class="optional">&nbsp;</label></dt>
+					<?=__('Active')?> <input type="checkbox" name="<?=$this->form->formPerson->active->getFullyQualifiedName()?>" id="<?=$this->form->formPerson->active->getId()?>"<?=($this->form->formPerson->active->getValue())?' checked="checked"':''?> style="width:30px;" />
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->confidentiality->renderLabel()?>
+					<?=$this->form->confidentialityInput('FormSelect',array('options'=>Enumeration::getEnumArray('Confidentiality','key'),'style'=>'width:120px;'))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<dt><label for="markDuplicateId" class="optional">&nbsp;</label></dt>
+					<?=$this->formButton('markDuplicateId',__('Mark Duplicate'),array('id'=>'markDuplicateId','onClick'=>'','style'=>'width:120px;'))?>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->formPerson->primaryPracticeId->renderLabel()?>
+					<?=$this->form->formPerson->primaryPracticeIdInput('FormSelect',array('options'=>$this->facilityIterator->toArray('practiceId','name'),'style'=>'width:120px;'))?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->form->defaultProvider->renderLabel()?>
+					<?=$this->form->defaultProviderInput('FormSelect',array('options'=>Provider::getArray(),'style'=>'width:120px;'))?>
+				</div>
+			</div>
+			<br class="formRowDivider" />
+			<div class="formRow">
+				<div style="float:left;">
+					<?=$this->form->personIdInput('FormHidden')?>
+					<?=$this->form->formPerson->personIdInput('FormHidden')?>
+					<?=$this->form->okInput()?>
+				</div>
+				<div style="float:left;margin-left:10px;">
+					<?=$this->formButton('selectPatient',__('Select Patient'),array('onClick'=>'patDetailsSelectPatient()'))?>
+				</div>
+			</div>
+			<?=$this->form->renderClose()?>
+		</div>
+		</fieldset>
+	</div>
+
+	<div style="float:left;width:55%;">
+		<fieldset><legend><?=__('Phone numbers')?> (<a href="javascript:patDetailsPhonesEdit(0,0,'blank')" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div id="patDetailsPhonesGridContainer" style="height:95px;"></div>
+		</fieldset>
+		<fieldset><legend><?=__('Addresses')?> (<a href="javascript:patDetailsAddrEdit(0,0,'blank')" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div id="patDetailsAddrGridContainer" style="height:95px;"></div>
+		</fieldset>
+	</div>
+
+	<br style="clear:left;" />
+	<div style="width:100%;">
+		<div style="float:left;width:40%;">
+			<fieldset><legend><?=__('Patient Statistics')?></legend>
+				<div id="pdStatsGridId" style="height:100px;"></div>
+				<div id="pdStatsContainerId" style="position:absolute;display:none;background-color:Silver;padding:3px;border:1px solid #000;width:200px;z-index: 9999;">
+					<div style="float:left;width:100%;background-color:#fff;">
+						<fieldset><legend><?=__('Edit Statistics')?></legend>
+						<div id="pdStatsPanelId"></div>
+						<br />
+						<?=$this->formButton('pdStatsOK',__('OK'),array('id'=>'pdStatsOK','class'=>'smallButton','disabled'=>true,'onClick'=>'pdStatsSave()'))?>
+						</fieldset>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+		<div style="float:left;width:60%;">
+			<fieldset><legend><?=__('Notes')?> (<a href="javascript:patDetailsNoteEdit(0,0,'blank')" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+				<div id="pdNotesGridId" style="height:100px;"></div>
+			</fieldset>
+		</div>
+	</div>
+
+	<br style="clear:left;" />
+	<div style="float:left;width:100%;">
+		<fieldset><legend><?=__('Insurers')?> (<a href="javascript:pdInsurersEdit()" title="<?=__('Add New')?>"><?=__('Add New')?></a>)</legend>
+			<div id="pdInsurersGridId" style="height:150px;"></div>
+		</fieldset>
+	</div>
+</div>
+
+<script>
+function pdSingleUpdate(id,field,value,type,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-edit-by-field",
+		handleAs: "json",
+		content: {
+			personId: "<?=$this->form->personId->getValue()?>",
+			type: type,
+			id: id,
+			field: field,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function pdRemove(id,type,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-delete",
+		handleAs: "json",
+		content: {
+			personId: '<?=$this->form->personId->getValue()?>',
+			type: type,
+			id: id,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function patDetailsSelectPatient() {
+	windowSelectPatient();
+	winPD.close();
+}
+
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/patient.raw/process-details",
+		form: 'patientdetails',
+		load: function(data) {
+			initMainToolbar(null,mainController.getActivePatient());
+			alert(data);
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+
+	return false; // don't submit anymore, it's already submitted
+}
+
+function patDetailsSingleUpdate(id,field,value,type,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-edit-by-field",
+		handleAs: "json",
+		content: {
+			personId: '<?=$this->form->personId->getValue()?>',
+			type: type,
+			id: id,
+			field: field,
+			value: value,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function patDetailsRemove(id,type,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-delete",
+		handleAs: "json",
+		content: {
+			personId: '<?=$this->form->personId->getValue()?>',
+			type: type,
+			id: id,
+		},
+		load: function (data) {
+			if (typeof callback == 'function') {
+				callback(data);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+function patDetailsProcessEdit(action,params,callback) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/"+action,
+		handleAs: "json",
+		content: params,
+		load: function (data) {
+			if (data.error) {
+				alert(data.error);
+				return;
+			}
+			if (typeof callback == "function") callback(data);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+}
+
+
+// PHONE GRID
+function patDetailsPhonesEdit(rowId,cellIndex,value) {
+	var params = {};
+	params["phone[phoneNumberId]"] = rowId;
+	params["phone[personId]"] = "<?=$this->form->personId->getValue()?>";
+	params["phone["+patDetailsPhonesColFields[cellIndex]+"]"] = value;
+	var action = (rowId > 0)?"process-edit-phone":"process-add-phone";
+	patDetailsProcessEdit(action,params,function(data){
+		if (action == "process-add-phone") {
+			patDetailsPhonesGrid.renderRowData(data);
+			return;
+		}
+		if (data.id && !patDetailsPhonesGrid.doesRowExist(data.id)) patDetailsPhonesGrid.addRow(data.id,",,,,");
+		if (data.data[cellIndex]) patDetailsPhonesGrid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+	});
+}
+
+function patDetailsPhonesRemove(id) {
+	patDetailsRemove(id,"phone",patDetailsPhonesGridReload);
+}
+
+var patDetailsPhonesColFields = [];
+// Phone field names, in order based on patDetailsPhonesGrid.setHeader
+patDetailsPhonesColFields.push("name");
+patDetailsPhonesColFields.push("type");
+patDetailsPhonesColFields.push("number");
+patDetailsPhonesColFields.push("notes");
+patDetailsPhonesColFields.push("active");
+
+var patDetailsPhonesGrid = new dhtmlXGridObject("patDetailsPhonesGridContainer");
+patDetailsPhonesGrid.enableDragAndDrop(true);
+patDetailsPhonesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patDetailsPhonesGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Number')?>,<?=__('Notes')?>,<?=__('Active')?>");
+patDetailsPhonesGrid.setInitWidths("*,60,*,*,40");
+patDetailsPhonesGrid.setColTypes("ed,coro,ed,ed,ch");
+patDetailsPhonesGrid.setSkin("xp");
+patDetailsPhonesGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) patDetailsPhonesEdit(rowId,cellIndex,newValue);
+	return true;
+});
+patDetailsPhonesGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var val = (state)?1:0;
+	patDetailsPhonesEdit(rowId,cellIndex,val);
+});
+// phone types
+patDetailsPhonesGrid.getCombo(1).put("","");
+<?foreach ($this->phoneTypes as $key=>$name):
+//if ($key == 'FAX' || $name == 'Fax') continue;?>
+patDetailsPhonesGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+function patDetailsPhonesGridReload() {
+	patDetailsPhonesGrid.clearAll();
+	patDetailsPhonesGrid.load("<?=$this->baseUrl?>/patient.raw/ajax-list-phones?patientId=<?=$this->form->personId->getValue()?>","json");
+}
+patDetailsPhonesGrid.init();
+patDetailsPhonesGridReload();
+
+patDetailsPhonesGrid.attachEvent("onDrag",function(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-reorder-phones",
+		handleAs: "json",
+		content: {
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			patDetailsPhonesGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+});
+patDetailsPhonesGrid.attachEvent("onDrop",function(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	return false;
+});
+
+// PHONE MENU
+var patDetailsPhonesMenu = new dhtmlXMenuObject("patDetailsPhonesMenu","standard");
+patDetailsPhonesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+patDetailsPhonesMenu.renderAsContextMenu();
+patDetailsPhonesMenu.setOpenMode("web");
+patDetailsPhonesMenu.attachEvent("onClick",function (menuItemId,type){
+	var rowCol = type.split("_");
+	if (menuItemId == "menuRemove" && confirm("<?=__('Are you sure you want to remove selected phone?')?>")) patDetailsPhonesRemove(rowCol[0]);
+});
+patDetailsPhonesMenu.loadXML("<?=$this->baseUrl?>/patient.raw/ajax-get-context-menu");
+
+patDetailsPhonesGrid.enableContextMenu(patDetailsPhonesMenu);
+dhtmlxEvent(patDetailsPhonesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+// ADDRESS GRID
+function patDetailsAddrEdit(rowId,cellIndex,value) {
+	var params = {};
+	params["address[addressId]"] = rowId;
+	params["address[personId]"] = "<?=$this->form->personId->getValue()?>";
+	params["address["+patDetailsAddrColFields[cellIndex]+"]"] = value;
+	var action = (rowId > 0)?"process-edit-address":"process-add-address";
+	patDetailsProcessEdit(action,params,function(data){
+		if (action == "process-add-address") {
+			patDetailsAddrGrid.renderRowData(data);
+			return;
+		}
+		if (data.id && !patDetailsAddrGrid.doesRowExist(data.id)) patDetailsAddrGrid.addRow(data.id,",,,,,,,,");
+		if (data.data[cellIndex]) patDetailsAddrGrid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+	});
+}
+
+function patDetailsAddrRemove(id) {
+	patDetailsRemove(id,"address",patDetailsAddrGridReload);
+}
+
+var patDetailsAddrColFields = [];
+// Address field names, in order based on patDetailsAddrGrid.setHeader
+patDetailsAddrColFields.push("name");
+patDetailsAddrColFields.push("type");
+patDetailsAddrColFields.push("line1");
+patDetailsAddrColFields.push("line2");
+patDetailsAddrColFields.push("city");
+//patDetailsAddrColFields.push("region");
+patDetailsAddrColFields.push("state");
+patDetailsAddrColFields.push("postal_code");
+patDetailsAddrColFields.push("notes");
+patDetailsAddrColFields.push("active");
+
+var patDetailsAddrGrid = new dhtmlXGridObject("patDetailsAddrGridContainer");
+patDetailsAddrGrid.enableDragAndDrop(true);
+patDetailsAddrGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patDetailsAddrGrid.setHeader("<?=__('Description')?>,<?=__('Type')?>,<?=__('Line1')?>,<?=__('Line2')?>,<?=__('City')?>,<?=__('State')?>,<?=__('Zip')?>,<?=__('Notes')?>,<?=__('Active')?>");
+patDetailsAddrGrid.setInitWidths("*,60,*,*,*,40,*,*,40");
+patDetailsAddrGrid.setColTypes("ed,coro,ed,ed,ed,coro,ed,ed,ch");
+patDetailsAddrGrid.setSkin("xp");
+patDetailsAddrGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) patDetailsAddrEdit(rowId,cellIndex,newValue);
+	return true;
+});
+
+patDetailsAddrGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var val = (state)?1:0;
+	patDetailsAddrEdit(rowId,cellIndex,val);
+});
+// state
+patDetailsAddrGrid.getCombo(5).put("","");
+<?foreach ($this->statesList as $key=>$name):?>
+patDetailsAddrGrid.getCombo(5).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+// address types
+patDetailsAddrGrid.getCombo(1).put("","");
+<?foreach ($this->addressTypes as $key=>$name):?>
+patDetailsAddrGrid.getCombo(1).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+function patDetailsAddrGridReload() {
+	patDetailsAddrGrid.clearAll();
+	patDetailsAddrGrid.load("<?=$this->baseUrl?>/patient.raw/ajax-list-addresses?patientId=<?=$this->form->personId->getValue()?>","json");
+}
+patDetailsAddrGrid.init();
+patDetailsAddrGridReload();
+
+patDetailsAddrGrid.attachEvent("onDrag",function(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-reorder-addresses",
+		handleAs: "json",
+		content: {
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			patDetailsAddrGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+});
+
+patDetailsAddrGrid.attachEvent("onDrop",function(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	return false;
+});
+
+// ADDRESS MENU
+var patDetailsAddrMenu = new dhtmlXMenuObject("patDetailsAddrMenu","standard");
+patDetailsAddrMenu.setImagePath("<?=$this->baseUrl?>/img/");
+patDetailsAddrMenu.renderAsContextMenu();
+patDetailsAddrMenu.setOpenMode("web");
+patDetailsAddrMenu.attachEvent("onClick",function(menuItemId,type){
+	var rowCol = type.split("_");
+	if (menuItemId == "menuRemove" && confirm("<?=__('Are you sure you want to remove selected address?')?>")) patDetailsAddrRemove(rowCol[0]);
+});
+patDetailsAddrMenu.loadXML("<?=$this->baseUrl?>/patient.raw/ajax-get-context-menu");
+
+patDetailsAddrGrid.enableContextMenu(patDetailsAddrMenu);
+dhtmlxEvent(patDetailsAddrGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+// NOTES GRID
+function patDetailsNoteEdit(rowId,cellIndex,value) {
+	var params = {};
+	params["patientNote[patientNoteId]"] = rowId;
+	params["patientNote[patientId]"] = "<?=$this->form->personId->getValue()?>";
+	params["patientNote["+pdNotesColFields[cellIndex]+"]"] = value;
+	var action = (rowId > 0)?"process-edit-note":"process-add-note";
+	patDetailsProcessEdit(action,params,function(data){
+		if (action == "process-add-note") {
+			pdNotesGrid.renderRowData(data);
+			return;
+		}
+		if (data.id && !pdNotesGrid.doesRowExist(data.id)) pdNotesGrid.addRow(data.id,",,,,,");
+		if (data.data[cellIndex]) pdNotesGrid.cells(data.id,cellIndex).setValue(data.data[cellIndex]);
+	});
+}
+
+function pdNotesRemove(id) {
+	patDetailsRemove(id,"note",pdNotesGridReload);
+}
+
+var pdNotesColFields = [];
+// Note field names, in order based on pdNotesGrid.setHeader
+pdNotesColFields.push("priority");
+pdNotesColFields.push("note_date");
+pdNotesColFields.push("user_id");
+pdNotesColFields.push("reason");
+pdNotesColFields.push("note");
+pdNotesColFields.push("active");
+
+var pdNotesGrid = new dhtmlXGridObject("pdNotesGridId");
+pdNotesGrid.setImagePath("<?=$this->baseUrl?>/img/");
+pdNotesGrid.setHeader("<?=__('Priority')?>,<?=__('Date')?>,<?=__('User')?>,<?=__('Reason')?>,<?=__('Note')?>,<?=__('Done')?>");
+pdNotesGrid.setInitWidths("45,120,80,80,*,35");
+pdNotesGrid.setColTypes("coro,ed,ro,coro,txt,coro");
+pdNotesGrid.setSkin("xp");
+pdNotesGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) patDetailsNoteEdit(rowId,cellIndex,newValue);
+	return true;
+});
+pdNotesGrid.attachEvent("onCheck",function(rowId,cellIndex,state){
+	var val = (state)?1:0;
+	patDetailsNoteEdit(rowId,cellIndex,val);
+});
+for (var i = 1; i <= 5; i++) {
+	pdNotesGrid.getCombo(0).put(i,i);
+}
+pdNotesGrid.getCombo(5).put("1","<?=__('No')?>");
+pdNotesGrid.getCombo(5).put("0","<?=__('Yes')?>");
+
+<?foreach ($this->reasons as $id=>$reason):?>
+pdNotesGrid.getCombo(3).put("<?=$id?>","<?=$reason?>");
+<?endforeach;?>
+function pdNotesGridReload() {
+	pdNotesGrid.clearAll();
+	pdNotesGrid.load("<?=$this->baseUrl?>/patient.raw/list-notes?patientId=<?=$this->form->personId->getValue()?>","json");
+}
+pdNotesGrid.init();
+pdNotesGridReload();
+
+// NOTES MENU
+var pdNotesMenu = new dhtmlXMenuObject("pdNotesMenu","standard");
+pdNotesMenu.setImagePath("<?=$this->baseUrl?>/img/");
+pdNotesMenu.renderAsContextMenu();
+pdNotesMenu.setOpenMode("web");
+pdNotesMenu.attachEvent("onClick",function(menuItemId,type){
+	var rowCol = type.split("_");
+	if (menuItemId == "menuRemove" && confirm("<?=__('Are you sure you want to remove selected note?')?>")) pdNotesRemove(rowCol[0]);
+});
+
+pdNotesMenu.loadXML('<?=$this->baseUrl?>/patient.raw/ajax-get-context-menu');
+
+pdNotesGrid.enableContextMenu(pdNotesMenu);
+dhtmlxEvent(pdNotesGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+// INSURER GRID
+var pdInsurersGrid = new dhtmlXGridObject("pdInsurersGridId");
+pdInsurersGrid.enableDragAndDrop(true);
+pdInsurersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+pdInsurersGrid.setHeader("<?=__('Company')?>,<?=__('Program')?>,<?=__('Group Name')?>,<?=__('Group Number')?>,<?=__('Co-pay')?>,<?=__('Subscriber')?>,<?=__('Effective')?>,<?=__('Active')?>");
+pdInsurersGrid.setInitWidths("150,150,150,150,100,200,120,50");
+pdInsurersGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro");
+pdInsurersGrid.setSkin("xp");
+pdInsurersGrid.getCombo(6).put("<?=__('No')?>","<?=__('No')?>");
+pdInsurersGrid.getCombo(6).put("<?=__('Yes')?>","<?=__('Yes')?>");
+function pdInsurersGridReload() {
+	pdInsurersGrid.clearAll();
+	pdInsurersGrid.load("<?=$this->baseUrl?>/patient.raw/list-insurers?patientId=<?=$this->form->personId->getValue()?>","json");
+}
+pdInsurersGrid.attachEvent("onRowDblClicked",function(rowId,colIndex) {
+	pdInsurersEdit(rowId);
+});
+pdInsurersGrid.attachEvent("onDrag",function(idFrom,idTo,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-reorder-payers",
+		handleAs: "json",
+		content: {
+			"from": idFrom,
+			"to": idTo,
+		},
+		load: function (data) {
+			pdInsurersGridReload();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ('Error: ', error);
+		}
+	});
+	return false;
+});
+
+pdInsurersGrid.attachEvent("onDrop",function(idFrom,idTo,idMercy,gridFrom,gridTo,colIndexFrom,colIndexTo){
+	return false;
+});
+pdInsurersGrid.init();
+pdInsurersGridReload();
+
+function pdInsurersRemove(id) {
+	patDetailsRemove(id,"insurer",pdInsurersGridReload);
+}
+
+function pdInsurersEdit(id) {
+	var winLabel = "<?=__('Edit')?>";
+	if (!id) {
+		winLabel = "<?=__('Add')?>";
+		id = 0;
+	}
+	var params = [];
+	params.push("id="+id);
+	params.push("patientId=<?=$this->form->personId->getValue()?>");
+	globalCreateWindow("winEditInsurerId",params,"<?=$this->baseUrl?>/patient.raw/edit-insurer",winLabel+" <?=__('Insurer')?>",500,600);
+}
+
+// INSURER MENU
+var pdInsurersMenu = new dhtmlXMenuObject("pdInsurersMenu","standard");
+pdInsurersMenu.setImagePath("<?=$this->baseUrl?>/img/");
+pdInsurersMenu.renderAsContextMenu();
+pdInsurersMenu.setOpenMode("web");
+pdInsurersMenu.attachEvent("onClick",function(menuItemId,type){
+	var rowCol = type.split("_");
+	if (menuItemId == "menuRemove" && confirm("<?=__('Are you sure you want to remove selected insurer?')?>")) pdInsurersRemove(rowCol[0]);
+});
+pdInsurersMenu.loadXML("<?=$this->baseUrl?>/patient.raw/ajax-get-context-menu");
+
+pdInsurersGrid.enableContextMenu(pdInsurersMenu);
+dhtmlxEvent(pdInsurersGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+
+// STATS GRID
+var pdStatsGrid = new dhtmlXGridObject("pdStatsGridId");
+pdStatsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+pdStatsGrid.setHeader("<?=__('Statistic')?>,<?=__('Data')?>");
+pdStatsGrid.setInitWidths("*,*");
+pdStatsGrid.setColTypes("ro,ro");
+pdStatsGrid.setSkin("xp");
+pdStatsGrid.init();
+function pdStatsGridReload() {
+	pdStatsGrid.clearAll();
+	pdStatsGrid.load("<?=$this->baseUrl?>/patient.raw/list-stats?personId=<?=$this->form->personId->getValue()?>",pdStatsGridOnLoaded,"json");
+}
+pdStatsGridReload();
+
+function pdStatsGridOnLoaded() {
+	pdStatsHidePanel();
+}
+
+function pdStatsEdit(name,value) {
+	pdStatsHidePanel();
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient.raw/process-edit-stats",
+		handleAs: "json",
+		content: {
+			"personId": "<?=$this->form->personId->getValue()?>",
+			"name": name,
+			"value": value,
+		},
+		load: function (data) {
+			if (!data) {
+				alert("<?=__('Failed to save')?>");
+			}
+			else {
+				pdStatsGridReload();
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ",error);
+		}
+	});
+}
+pdStatsGrid.attachEvent("onEditCell",function(stage,rowId,cellIndex,newValue,oldValue){
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case 1:
+				pdStatsEdit(rowId,newValue);
+				break;
+			default:
+				return false;
+		}
+	}
+	return true;
+});
+
+dhtmlxEvent(pdStatsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+var globalPDStatsId = null;
+pdStatsGrid.attachEvent("onRowDblClicked",function(rowId,cellIndex){
+	var obj = pdStatsGrid.cells(rowId,1).cell;
+	var offsetLeft = 0;
+	var offsetTop = 0;
+	if (obj.offsetParent) {
+		var scrollDiff = 0;
+		var gridOffsetHeight = pdStatsGrid.entBox.offsetHeight - pdStatsGrid.hdr.offsetHeight;
+		if (obj.offsetTop > gridOffsetHeight) {
+			scrollDiff = obj.offsetTop - gridOffsetHeight + 100;
+		}
+		while (true) {
+			offsetLeft += obj.offsetLeft;
+			offsetTop += obj.offsetTop;
+			if (!obj.offsetParent) break;
+			obj = obj.offsetParent;
+		}
+		offsetTop -= scrollDiff;
+	}
+	else if (obj.x) {
+		offsetLeft += obj.x;
+		offsetTop += obj.y;
+	}
+	var win = dhxWins.window("<?=$this->form->getWindow()?>");
+	if (win) {
+		var pos = win.getPosition();
+		offsetLeft -= (pos[0] + 6); // left
+		offsetTop -= (pos[1] + 12); // top
+	}
+//	offsetLeft -= 340;
+
+	var pdStatsContainer = dojo.byId("pdStatsContainerId");
+	pdStatsContainer.style.display = "";
+	pdStatsContainer.style.left = offsetLeft + "px";
+	pdStatsContainer.style.top = offsetTop + "px";
+
+	var statsValue = pdStatsGrid.getUserData(rowId,"value");
+	var pdStatsOK = dojo.byId("pdStatsOK");
+	pdStatsOK.disabled = false;
+	var pdStatsPanel = dojo.byId("pdStatsPanelId");
+	pdStatsPanel.innerHTML = "";
+	var options = pdStatsGrid.getUserData(rowId,"options");
+	globalPDStatsId = rowId;
+	switch (pdStatsGrid.getUserData(rowId,"type")) {
+		case "<?=PatientStatisticsDefinition::TYPE_ENUM?>":
+			pdStatsPanel.innerHTML = (<r><![CDATA[
+				<select name="pdStatsTypeEnumId" id="pdStatsTypeEnumId"></select>
+			]]></r>).toString();
+			var enumSelect = dojo.byId("pdStatsTypeEnumId");
+			enumSelect.length = 0;
+			var ctr = 0;
+			var selectedIndex = 0;
+			for (var i in options) {
+				if (options[i].key == statsValue) {
+					selectedIndex = ctr;
+				}
+				enumSelect.options[ctr++] = new Option(options[i].value,options[i].key);
+			}
+			enumSelect.selectedIndex = selectedIndex;
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_INPUT?>":
+			pdStatsPanel.innerHTML = (<r><![CDATA[
+				<input type="text" name="pdStatsTypeInputId" id="pdStatsTypeInputId" />
+			]]></r>).toString();
+			dojo.byId("pdStatsTypeInputId").value = statsValue;
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_CHECKBOX?>":
+			pdStatsPanel.innerHTML = (<r><![CDATA[
+				<input type="checkbox" name="pdStatsTypeCheckboxId" id="pdStatsTypeCheckboxId" />
+			]]></r>).toString();
+			dojo.byId("pdStatsTypeCheckboxId").checked = (statsValue == "1")?true:false;
+			dojo.byId("pdStatsTypeCheckboxId").value = statsValue;
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_DATE?>":
+			pdStatsPanel.innerHTML = (<r><![CDATA[
+				<input type="text" name="pdStatsTypeDateId" id="pdStatsTypeDateId" />
+			]]></r>).toString();
+			pdStatsBuildDatePicker(statsValue);
+			break;
+		default:
+			pdStatsOK.disabled = true;
+			break;
+	}
+});
+
+var pdStatsTypeDate = null;
+function pdStatsBuildDatePicker(value) {
+	pdStatsTypeDate = dijit.byId("pdStatsTypeDateId");
+	if (typeof pdStatsTypeDate != "undefined") {
+		pdStatsTypeDate.destroyRecursive();
+		pdStatsTypeDate = null;
+	}
+	pdStatsTypeDate = new dijit.form.DateTextBox({name:"pdStatsTypeDateId",constraints:{datePattern:"yyyy-MM-dd"},disabled:false,style:"width:90px;"},dojo.byId("pdStatsTypeDateId"));
+	var datetmp = new Date();
+	if (value.length > 0 && value.substr(0,10) != "0000-00-00") {
+		var x = value.split("-");
+		datetmp.setFullYear(x[0],(x[1]-1),x[2].substr(0,2));
+	}
+	pdStatsTypeDate.setValue(datetmp);
+}
+
+function pdStatsDivOnClicked(evt) {
+	var target = evt.target;
+	var isOverlay = false;
+	var parentNode = target;
+	while (parentNode) {
+		if (parentNode.id == "pdStatsContainerId") {
+			isOverlay = true;
+			break;
+		}
+		parentNode = parentNode.parentNode;
+	}
+	if (!isOverlay) {
+		pdStatsHidePanel();
+	}
+}
+dojo.connect(dojo.byId("pdContainerId"),"onclick","pdStatsDivOnClicked");
+
+function pdStatsSave() {
+	if (globalPDStatsId == null) return;
+	var value = "";
+	switch (pdStatsGrid.getUserData(globalPDStatsId,"type")) {
+		case "<?=PatientStatisticsDefinition::TYPE_ENUM?>":
+			var enumSelect = dojo.byId("pdStatsTypeEnumId");
+			value = enumSelect.options[enumSelect.selectedIndex].value;
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_INPUT?>":
+			value = dojo.byId("pdStatsTypeInputId").value;
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_CHECKBOX?>":
+			value = 0;
+			if (dojo.byId("pdStatsTypeCheckboxId").checked) {
+				value = 1;
+			}
+			break;
+		case "<?=PatientStatisticsDefinition::TYPE_DATE?>":
+			var statsValue = pdStatsTypeDate.getValue();
+			value = statsValue.getFullYear()+"-"+(statsValue.getMonth()+1)+"-"+statsValue.getDate();
+			break;
+		default:
+			return;
+	}
+	pdStatsEdit(globalPDStatsId,value);
+}
+
+function pdStatsHidePanel() {
+	globalPDStatsId = null;
+	var pdStatsContainer = dojo.byId("pdStatsContainerId");
+	pdStatsContainer.style.display = "none";
+}
+</script>

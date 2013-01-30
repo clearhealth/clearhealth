@@ -1,0 +1,97 @@
+<div id="claimEditsContainerId" style="width:100%;margin-top:2px;">
+	<div id="claimEditsGridId" style="float:left;width:80%;height:440px;"></div>
+</div>
+<script>
+function claimEditsEdit(rowId) {
+	var params = [];
+	var action = "add";
+	var label = "Add Rule";
+	if (rowId) {
+		action = "edit";
+		label = "Edit Rule";
+		params.push("id="+rowId);
+	}
+	globalCreateWindow("winClaimEditsId",params,"<?=$this->baseUrl?>/claim-edits-manager.raw/edit",label,400,400);
+}
+
+function claimEditsDelete(rowId) {
+	if (!confirm("<?=__('Are you sure you want to continue?')?>")) return;
+	dojo.xhrPost ({
+		url: "<?=$this->baseUrl?>/claim-edits-manager.raw/process-delete",
+		handleAs: "json",
+		content: {
+			"id": rowId,
+		},
+		load: function (data) {
+			claimEditsGridReload();
+		},
+		error: function (er) {
+			alert("Error: "+er);
+		}
+	});
+}
+
+var claimEditsGrid = new dhtmlXGridObject("claimEditsGridId");
+claimEditsGrid.setImagePath("<?=$this->baseUrl?>/img/");
+claimEditsGrid.setHeader("<?=__('Rule')?>,<?=__('Value')?>");
+claimEditsGrid.setInitWidths("*,*");
+claimEditsGrid.setColTypes("ro,ro");
+claimEditsGrid.setSkin("xp");
+claimEditsGrid.init();
+function claimEditsGridOnLoaded() {
+}
+function claimEditsGridReload() {
+	claimEditsGrid.clearAll();
+	claimEditsGrid.load("<?=$this->baseUrl?>/claim-edits-manager.raw/list",claimEditsGridOnLoaded,"json");
+}
+claimEditsGridReload();
+dhtmlxEvent(claimEditsGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+function claimEditsGridOnRowDblClicked(rowId,cellIndex) {
+	claimEditsEdit(rowId);
+}
+claimEditsGrid.attachEvent("onRowDblClick",claimEditsGridOnRowDblClicked);
+
+var claimEditsMenu = new dhtmlXMenuObject(null,"standard");
+claimEditsMenu.setImagePath("<?=$this->baseUrl?>/img/");
+claimEditsMenu.renderAsContextMenu();
+claimEditsMenu.setOpenMode("web");
+function claimEditsMenuOnClicked(menuItemId,type) {
+	switch(menuItemId) {
+		case "add":
+			claimEditsEdit();
+			break;
+		case "edit":
+			claimEditsEdit(claimEditsGrid.getSelectedRowId());
+			break;
+		case "delete":
+			claimEditsDelete(claimEditsGrid.getSelectedRowId());
+			break;
+		default:
+			alert("<?=__('Invalid event')?>:"+menuItemId);
+			break;
+	}
+}
+claimEditsMenu.attachEvent("onClick",claimEditsMenuOnClicked);
+
+function claimEditsMenuOnLoaded() {
+}
+claimEditsMenu.loadXML("<?=$this->baseUrl?>/claim-edits-manager.raw/get-context-menu",claimEditsMenuOnLoaded);
+
+claimEditsMenu.attachEvent("onContextMenu",function(id){
+	claimEditsMenu.hideItem("edit");
+	claimEditsMenu.hideItem("delete");
+	var rowId = claimEditsGrid.getSelectedRowId();
+	if (rowId != null) {
+		claimEditsMenu.showItem("edit");
+		claimEditsMenu.showItem("delete");
+	}
+});
+
+claimEditsGrid.hdr.id = claimEditsGrid.uid();
+claimEditsMenu.addContextZone(claimEditsGrid.hdr.id);
+claimEditsGrid.enableContextMenu(claimEditsMenu);
+
+</script>

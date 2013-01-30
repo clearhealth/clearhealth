@@ -1,0 +1,189 @@
+<div id="statsMgrContainerId" style="position:absolute;width:100%;height:400px;">
+	<div id="statsMgrToolbarId" style="width:99.9%;"></div>
+	<div id="statsMgrGridId" style="width:100%;height:100%;overflow:auto;"></div>
+</div>
+<script>
+var statsMgrTemplateId = null;
+var statsMgrToolbar = new dhtmlXToolbarObject("statsMgrToolbarId","ClearSilver");
+statsMgrToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+statsMgrToolbar.attachEvent("onClick",statsMgrToolbarOnClicked);
+
+var ctr = 1;
+statsMgrToolbar.addButton("new",ctr++,"<?=__('New')?>","newproblem.png","newproblem.png");
+statsMgrToolbar.addButton("edit",ctr++,"<?=__('Edit')?>","editproblem.png","editproblem.png");
+statsMgrToolbar.disableItem("edit");
+statsMgrToolbar.addButton("delete",ctr++,"<?=__('Delete')?>","removeproblem.png","removeproblem.png");
+statsMgrToolbar.disableItem("delete");
+statsMgrToolbar.addButton("refresh",ctr++,"<?=__('Refresh')?>","refresh.png","refresh.png");
+function statsMgrToolbarOnClicked(id) {
+	switch (id) {
+		case "new":
+			statsMgrEditStats();
+			break;
+		case "edit":
+			var id = statsMgrGrid.getSelectedRowId();
+			if (id == null) {
+				alert("<?=__('No selected item')?>");
+				break;
+			}
+			statsMgrEditStats(id);
+			break;
+		case "delete":
+			var id = statsMgrGrid.getSelectedRowId();
+			if (id == null) {
+				alert("<?=__('No selected item')?>");
+				break;
+			}
+			statsMgrDeleteStats(id);
+			break;
+		case "refresh":
+			statsMgrGridReload();
+			break;
+		default:
+			alert("<?=__('Invalid event.')?>");
+	}
+}
+
+function statsMgrDeleteStats(id) {
+	if (!confirm("<?=__('Are you sure you want to delete?')?>")) return false;
+	if (!id) {
+		alert("<?=__('No selected item')?>");
+		return false;
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/statistics-manager.raw/process-delete",
+		handleAs: "json",
+		content: {
+			"id": id,
+		},
+		load: function(data,ioArgs) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else {
+				statsMgrGrid.deleteRow(id);
+				statsMgrToolbar.disableItem("edit");
+				statsMgrToolbar.disableItem("delete");
+			}
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function statsMgrEditStats(id) {
+	var label = "<?=__('New Statistics')?>";
+	var params = [];
+	if (id) {
+		params.push("id="+id);
+		label = "<?=__('Edit Statistics')?>";
+	}
+	globalCreateWindow("winEditStatsId",params,"<?=$this->baseUrl?>/statistics-manager.raw/edit",label,400,400);
+}
+
+var statsMgrGrid = new dhtmlXGridObject("statsMgrGridId");
+statsMgrGrid.setImagePath("<?=$this->baseUrl?>/img/");
+statsMgrGrid.setHeader("<?=__('Name')?>,<?=__('Type')?>,<?=__('Value')?>,<?=__('Active')?>");
+statsMgrGrid.setInitWidths("*,*,*,50");
+statsMgrGrid.setColTypes("ro,coro,ro,ch");
+function statsMgrGridOnChecked(rowId,cellIndex,state) {
+	statsMgrEdit({
+		"stats[patientStatisticsDefinitionId]": rowId,
+		"stats[active]": (state)?1:0,
+	});
+}
+statsMgrGrid.attachEvent("onCheck",statsMgrGridOnChecked);
+
+function statsMgrGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexStatsMgrType:
+				statsMgrEdit({
+					"stats[patientStatisticsDefinitionId]":rowId,
+					"stats[type]": newValue,
+				});
+				break;
+			default:
+				return false;
+		}
+	}
+	return true;
+}
+statsMgrGrid.attachEvent("onEditCell",statsMgrGridOnCellEdited);
+
+function statsMgrGridOnRowDblClicked(rowId,cellIndex) {
+	statsMgrEditStats(rowId);
+}
+statsMgrGrid.attachEvent("onRowDblClicked",statsMgrGridOnRowDblClicked);
+
+function statsMgrGridOnRowSelected(rowId,cellIndex) {
+	statsMgrToolbar.enableItem("edit");
+	statsMgrToolbar.enableItem("delete");
+}
+statsMgrGrid.attachEvent("onRowSelect",statsMgrGridOnRowSelected);
+statsMgrGrid.init();
+
+var indexStatsMgrName = 0;
+var indexStatsMgrType = 1;
+var indexStatsMgrValue = 2;
+var indexStatsMgrActive = 3;
+
+statsMgrGrid.getCombo(indexStatsMgrType).put("","");
+<?foreach ($this->types as $key=>$name):?>
+statsMgrGrid.getCombo(indexStatsMgrType).put("<?=$key?>","<?=$name?>");
+<?endforeach;?>
+
+function statsMgrEdit(data) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/statistics-manager.raw/process-edit",
+		handleAs: "json",
+		content: data,
+		load: function(data,ioArgs) {
+			if (data.error) {
+				alert(data.error);
+			}
+			else {
+				statsMgrGridFillRow({"rows":[data]});
+			}
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function statsMgrGridOnLoaded() {
+	statsMgrToolbar.disableItem("edit");
+	statsMgrToolbar.disableItem("delete");
+}
+
+function statsMgrGridReload() {
+	statsMgrGrid.clearAll();
+	statsMgrGrid.load("<?=$this->baseUrl?>/statistics-manager.raw/list",statsMgrGridOnLoaded,"json");
+}
+statsMgrGridReload();
+
+function statsMgrGridFillRow(data) {
+	if (!data.rows) return false;
+	for (var i in data.rows) {
+		var row = data.rows[i];
+		if (!statsMgrGrid.doesRowExist(row.id)) {
+			statsMgrGrid.addRow(row.id,"");
+		}
+		for (var i in row.data) {
+			statsMgrGrid.cells(row.id,i).setValue(row.data[i]);
+		}
+	}
+	return true;
+}
+
+dhtmlxEvent(statsMgrGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+</script>

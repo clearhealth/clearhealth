@@ -1,0 +1,135 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom: thin dashed;
+	border-right:none;
+}
+div.gridbox#patientListGridId table.obj tr.rowselected td {
+	background-color: #ccc;
+}
+.smallButton {
+	border:1px solid #b3b3b3;
+	font-size:7pt;
+	height:15px;
+}
+</style>
+
+<div id="patientListToolbarId" style="width:auto;border:1px solid Silver;"></div>
+<div id="patientListGridId" style="width:auto;height:550px;"></div>
+<div id="patientListIframeDivId" style="display:none;"></div>
+
+<script>
+var patientListToolbar = new dhtmlXToolbarObject("patientListToolbarId","ClearSilver");
+patientListToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+patientListToolbar.attachEvent("onClick",function(id){
+	switch(id) {
+		case "problems":
+			patientListProblem();
+			break;
+		case "medications":
+			patientListMedication();
+			break;
+		case "demographics":
+			patientListDemographics();
+			break;
+		case "labTestResults":
+			patientListLabTestResults();
+			break;
+		case "allergies":
+			patientListAllergies();
+			break;
+		case "hsa":
+			patientListHSA();
+			break;
+		case "refresh":
+			patientListGridReload();
+			break;
+		case "export":
+			patientListExport();
+			break;
+		default:
+			alert("Invalid event: "+id);
+	}
+});
+
+var ctr = 1;
+patientListToolbar.addButton("problems",ctr++,"<?=__('Problems')?>","filter.png","filter.png");
+patientListToolbar.addButton("medications",ctr++,"<?=__('Medications')?>","filter.png","filter.png");
+patientListToolbar.addButton("demographics",ctr++,"<?=__('Demographics')?>","filter.png","filter.png");
+patientListToolbar.addButton("labTestResults",ctr++,"<?=__('Lab test results')?>","filter.png","filter.png");
+patientListToolbar.addButton("allergies",ctr++,"<?=__('Allergies')?>","filter.png","filter.png");
+patientListToolbar.addButton("hsa",ctr++,"<?=__('HSA')?>","filter.png","filter.png");
+patientListToolbar.addButton("refresh",ctr++,"<?=__('Refresh')?>","refresh.png","refresh.png");
+patientListToolbar.addButton("export",ctr++,"<?=__('Export')?>","save.png","save.png");
+
+function patientListProblem() {
+	globalCreateWindow("windowPatientListProblemId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-problems","<?=__('Problem Filters')?>",450,400);
+}
+
+function patientListMedication() {
+	globalCreateWindow("windowPatientListMedicationId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-medications","<?=__('Medication Filters')?>",650,400);
+}
+
+function patientListDemographics() {
+	globalCreateWindow("windowPatientListDemographicsId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-demographics","<?=__('Demographics Filters')?>",650,400);
+}
+
+function patientListLabTestResults() {
+	globalCreateWindow("windowPatientListLabTestResultsId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-lab-test-results","<?=__('Lab Test Results Filters')?>",650,400);
+}
+
+function patientListAllergies() {
+	globalCreateWindow("windowPatientListAllergiesId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-allergies","<?=__('Allergies')?>",650,400);
+}
+
+function patientListHSA() {
+	globalCreateWindow("windowPatientListHSAId",[],"<?=$this->baseUrl?>/patient-reminders.raw/filter-hsa","<?=__('Active Health Status Alerts')?>",650,400);
+}
+
+function patientListExport() {
+	var ctr = patientListGrid.getRowsNum();
+	if (ctr == 0) {
+		alert("Patient list is empty.");
+		return;
+	}
+	var ids = [];
+	for (var i = 0; i < ctr; i++) {
+		ids.push(patientListGrid.getRowId(i));
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/patient-reminders.raw/export",
+		handleAs: "json",
+		content: {"ids": ids.join(",")},
+		load: function (data) {
+			if (data.filename) {
+				var iframe = document.createElement("IFRAME");
+				iframe.setAttribute("src","<?=$this->baseUrl?>/patient-list.raw/download-exported?filename="+data.filename);
+				iframe.style.display = "none";
+				var iframeDiv = dojo.byId("patientListIframeDivId");
+				iframeDiv.innerHTML = "";
+				iframeDiv.appendChild(iframe);
+			}
+			else if (data.error) {
+				alert(data.error);
+			}
+		},
+		error: function (er) {
+			alert("err: " + er.responseText);
+		}
+	});
+}
+
+var patientListGrid = new dhtmlXGridObject("patientListGridId");
+patientListGrid.setImagePath("<?=$this->baseUrl?>/img/");
+patientListGrid.setHeader("<?=__('MRN')?>,<?=__('Last Name')?>,<?=__('First Name')?>,<?=__('Middle Name')?>,<?=__('Address')?>,<?=__('Phone')?>,<?=__('Problems')?>,<?=__('Medications')?>,<?=__('Demographics')?>,<?=__('LabTest Results')?>,<?=__('Allergies')?>,<?=__('HSA')?>");
+patientListGrid.setInitWidths("110,*,*,*,*,*,*,*,*,*,*,*,*");
+patientListGrid.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
+patientListGrid.setColSorting("int,str,str,str,str,str,str,str,str,str,str,str,str");
+patientListGrid.setSkin("xp");
+patientListGrid.init();
+
+function patientListGridReload() {
+	patientListGrid.clearAll();
+	patientListGrid.load("<?=$this->baseUrl?>/patient-reminders/list","json");
+}
+patientListGridReload();
+</script>

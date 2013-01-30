@@ -1,0 +1,59 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+.buttonAddHSA {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+}
+</style>
+<div id="HSALayoutId" style="height:444px;"></div>
+</div>
+
+<script>
+function viewSubscribedPatients(handlerId) {
+	globalCreateWindow('winViewSubscribedPatientsId',new Array(),'<?=$this->baseUrl?>/health-status.raw/view-subscribed-patients?handlerId='+handlerId,'<?=__('View Subscribed Patients')?>',350,380);
+}
+
+var HSALayout = new dhtmlXLayoutObject("HSALayoutId","2E");
+HSALayout.setImagePath("<?=$this->baseUrl?>/img/");
+HSALayout.cells("a").setText('<?=__("Handlers")?> <button class="buttonAddHSA" onClick="HSAHandlersEdit()" title="<?=__('Add New Handler')?>"><?=__('Add')?></button>');
+HSALayout.cells("b").collapse();
+HSALayout.setEffect('collapse',true);
+HSALayout.setEffect("resize",true);
+
+// === HANDLER ===
+var HSAHandlersGrid =  HSALayout.cells("a").attachGrid();
+HSAHandlersGrid.setImagePath("<?=$this->baseUrl?>/img/");
+HSAHandlersGrid.setHeader('<?=__('Name')?>,<?=__('Condition')?>,<?=__('Timeframe')?>,<?=__('Active')?>,<?=__('View')?>');
+HSAHandlersGrid.setColTypes("ro,ro,ro,ro,ro");
+HSAHandlersGrid.setSkin("xp");
+HSAHandlersGrid.setInitWidths("*,*,*,50,100");
+HSAHandlersGrid.init();
+function HSAHandlersGridReload() {
+	HSAHandlersGrid.clearAll();
+	HSAHandlersGrid.load('<?=$this->baseUrl?>/health-status.raw/list-handlers',null,"json");
+}
+
+function HSAHandlersEdit(id) {
+	var addEditLabel = "<?=__('Edit')?>";
+	if (!id) {
+		addEditLabel = "<?=__('Add')?>";
+		id = 0;
+	}
+	var params = new Array();
+	params.push('id='+id);
+	globalCreateWindow('winEditHandlerId',params,'<?=$this->baseUrl?>/health-status.raw/edit-handler',addEditLabel+" <?=__('Health Status Alert Handler')?>",350,400);
+}
+
+function HSAHandlersOnRowDblClicked(rowId,colIndex) {
+	HSAHandlersEdit(rowId);
+}
+HSAHandlersGrid.attachEvent('onRowDblClicked',HSAHandlersOnRowDblClicked);
+
+HSAHandlersGridReload();
+
+</script>

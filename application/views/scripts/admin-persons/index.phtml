@@ -1,0 +1,158 @@
+<div>
+	<div>
+		<label><?=__("Select Person to View/Edit")?></label>
+	</div>
+	<div id="personSelectAutoCompleteDiv"></div><?=$this->formButton('btnAdd',__('Add'),array('onClick'=>'adminPersonAdd()','id'=>'btnAdd','disabled'=>'disabled'))?>
+	<br style="clear:all;"/>
+	<div id="personEditTabContainer" style="height:400px;"></div>
+</div>
+<script>
+function adminPersonAdd() {
+	var username = pscb.getDisplayedValue();
+	var pat = /[^a-zA-Z0-9]+/g;
+	var matches = username.match(pat);
+	if (matches != null && matches.length > 0) {
+		varDump(matches);
+		return;
+	}
+	if (<?=(int)User::communityEditionPlusEnabled()?> == 1 && !confirm("<?=__('Adding new user requires HealthCloud registration which will cost you points, continue?')?>")) {
+		return false;
+	}
+	var btnAdd = dojo.byId("btnAdd");
+	btnAdd.disabled = true;
+	dojo.xhrPost({
+		url: globalBaseUrl+"/admin-users.raw/process-add",
+		content: {
+			"username": username,
+		},
+		handleAs: "json",
+		load: function(data,ioArgs) {
+			if (data.error) {
+				btnAdd.disabled = false;
+				alert(data.error);
+				return;
+			}
+			personId = data;
+			localRefreshCurrentTab();
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+var personId = 0;
+var pscb = dijit.byId("personSelectAutoCompleteDiv");
+if (pscb != undefined) { 
+	pscb.destroyRecursive();
+	pscb = null;
+}
+var psac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/admin-persons.raw/auto-complete",requestMethod:"get"},"personSelectAutoComplete");
+pscb = new dijit.form.FilteringSelect({name:"personSelectAutoCompleteId",autocomplete:true,store:psac,searchDelay:500},"personSelectAutoCompleteDiv");
+pscb.validate = function () {
+	dojo.byId("btnAdd").disabled = true;
+	var username = pscb.getDisplayedValue();
+	if (username.length <= 0) return true;
+	var pat = /[^a-zA-Z0-9]+/;
+	var matches = username.match(pat);
+	if (username.length > 0 && matches == null && psac._items.length == 0) {
+		dojo.byId("btnAdd").disabled = false;
+	}
+	return true;
+};
+pscb._onKeyPress = function(evt) {
+	this.inherited("_onKeyPress",arguments);
+	if (evt.keyCode == dojo.keys.ENTER) {
+		pscbCheckStore();
+	}
+};
+dojo.connect(pscb,"onBlur","pscbCheckStore");
+function pscbCheckStore() {
+	var value = pscb.getDisplayedValue();
+	if (pscb.store && pscb.store._items.length > 0) {
+		for (var i = 0; i < pscb.store._items.length; i++) {
+			var item = pscb.store._items[i].i;
+			if (item.name != value) continue;
+			if (item.label != personId) loadPerson(item.label);
+			break;
+		}
+	}
+};
+dojo.connect(pscb,"onChange","loadPerson");
+function loadPerson(id) {
+	if (id > 0) {
+		personId = id;
+		//personEditTabbar.setTabActive("tab_personDetails");
+		localRefreshCurrentTab();
+	}
+}
+
+function localRefreshCurrentTab() {
+	var activeTab = personEditTabbar.getActiveTab();
+	onPersonTabbarClick(activeTab);
+	if (activeTab != "tab_eprescribeDetails") {
+		personEditTabbar.disableTab("tab_eprescribeDetails");
+	}
+	if (activeTab != "tab_locationDetails") {
+		personEditTabbar.disableTab("tab_locationDetails");
+	}
+	var str = dojo.byId("personSelectAutoCompleteDiv").value;
+	var pat = /\(.*\)/gi;
+	if (str.match(pat) != "()") {
+		//personEditTabbar.enableTab("tab_eprescribeDetails");
+		personEditTabbar.enableTab("tab_locationDetails");
+	}
+}
+personEditTabbar = new dhtmlXTabBar("personEditTabContainer","top","25");
+personEditTabbar.setImagePath("<?=$this->baseUrl?>/img/");
+personEditTabbar.setStyle("silver");
+personEditTabbar.setSkinColors("#FFFFFF,#FFFACD");
+personEditTabbar.addTab("tab_personDetails","<?=__('Person Details')?>","125");
+personEditTabbar.addTab("tab_providerDetails","<?=__('Provider Details')?>","145");
+personEditTabbar.addTab("tab_userDetails","<?=__('User Details')?>","125");
+//personEditTabbar.addTab("tab_eprescribeDetails","<?=__('ePrescribe Details')?>","155");
+personEditTabbar.addTab("tab_locationDetails","<?=__('Location Details')?>","125");
+//personEditTabbar.disableTab("tab_eprescribeDetails",true);
+personEditTabbar.disableTab("tab_locationDetails",true);
+
+function personEditTabbarAttachContent(id,url) {
+	dojo.xhrGet({
+		url: url,
+		handleAs: "text",
+		load: function(data,ioArgs) {
+			personEditTabbar.setContentHTML(id,data);
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function onPersonTabbarClick(id) {
+	switch(id) {
+		case "tab_personDetails":
+			personEditTabbarAttachContent(id,"<?=$this->baseUrl?>/admin-persons.raw/edit?personId="+personId);
+			break;
+		case "tab_providerDetails":
+			personEditTabbarAttachContent(id,"<?=$this->baseUrl?>/admin-providers.raw/edit?personId="+personId);
+			break;
+		case "tab_userDetails":
+			personEditTabbarAttachContent(id,"<?=$this->baseUrl?>/admin-users.raw/edit?personId="+personId);
+			break;
+		case "tab_eprescribeDetails":
+			personEditTabbarAttachContent(id,"<?=$this->baseUrl?>/admin-eprescribe.raw/edit?personId="+personId);
+			break;
+		case "tab_locationDetails":
+			personEditTabbarAttachContent(id,"<?=$this->baseUrl?>/admin-users.raw/edit-location?personId="+personId);
+			break;
+		default:
+			break;
+	}
+	return true;
+}
+personEditTabbar.setOnSelectHandler(onPersonTabbarClick);
+personEditTabbar.setTabActive("tab_personDetails");
+</script>

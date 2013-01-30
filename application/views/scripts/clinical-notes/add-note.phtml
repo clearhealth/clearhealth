@@ -1,0 +1,30 @@
+<div style="float:left;">
+	<form id="addNewNoteForm" method="post" action="<?=$this->baseUrl?>/clinical-notes.raw/process-add-note">
+	<div style="margin-left:10px;width:350px;">
+	<div style="width:325px;margin-left:auto;margin-right:auto;">
+	<strong><?=__("Title")?>:</strong>
+	<?=$this->form->clinicalNoteDefinitionIdInput('FormSelect',array('options'=>$this->clinicalNoteDefinitions->toArray('clinicalNoteDefinitionId','title'),'multiple'=>'multiple','style'=>'width:325px;height:100px;'))?>
+	</div>
+<br />
+	<div class="formRow">
+	<dt><label for="clinical-note-authoring-user-id" class="optional"><?=__("Author")?></label></dt>
+	<select id="clinical-note-authoring-person-id"  name="clinicalNote[authoringPersonId]" style="width:325px;">
+        <?foreach(Provider::getArray() as $personId => $name):?>
+                <option value="<?=$personId?>" <?if ($personId == $this->currentPersonId):?>selected="selected"<?endif;?>><?=$name?></option>
+        <?endforeach;?>
+        </select>
+	</div>
+<br />
+<div class="formRow" style="padding-top:4px;">
+        <dt><label for="clinical-note-date-time" class="optional"><?=__("Date/Time")?></label></dt>
+	<?=$this->form->dateTimeInput()?>
+        </div>
+<br style="clear:left"/>
+<div style="text-align:right;margin-top:10px;">
+	<input type="button" value="<?=__("Cancel")?>" onClick="parent.closeWindowNewNote()"/>
+	<input type="button" value="<?=__("Select")?>" onClick="dojo.xhrPost ({url: '<?=$this->baseUrl?>/clinical-notes.raw/process-add-note?personId=<?=$this->personId?>',form: 'addNewNoteForm', handleAs: 'json', load: function (data) {
+if (typeof addedNewNote == 'function') {addedNewNote(data.clinicalNoteId);} else { dashboardInnerLayout.dhxWins.getTopmostWindow().close();  }
+}, error: function (er) {alert('ERROR: ' + er.responseText);}});" />
+</div>
+</form>
+</div>

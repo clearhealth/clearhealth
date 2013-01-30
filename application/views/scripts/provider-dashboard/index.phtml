@@ -1,0 +1,740 @@
+<div id="providerDashboardLayoutContainer" style="position:absolute;width:100%;height:100%;overflow:none;"></div>
+<script>
+function getBaseUrl() {
+	return  baseUrl;
+}
+
+function DashboardComponent() {
+    this.dashboardComponentId = '';
+    this.content = '';
+    this.type = '';
+    this.personId = '';
+    this.systemName = '';
+    this.cellId = '';
+}
+
+/*JS Dashboard Component Base Object*/
+function JSDashboardComponent() {
+	this.jsObject = false;
+};
+JSDashboardComponent.prototype = new DashboardComponent();
+JSDashboardComponent.prototype.render = function () {
+    var html_doc = document.getElementsByTagName('head').item(0);
+    var js = document.createElement('script');
+    js.setAttribute('language', 'javascript');
+    js.setAttribute('type', 'text/javascript');
+    js.text = this.content;
+    html_doc.appendChild(js);
+
+	if (typeof eval(this.systemName+'JSDashboardComponent') == 'function') {
+		this.jsObject = eval('new ' +this.systemName+'JSDashboardComponent()');
+		//todo implement check to see if render and refresh functions exist on object, if not alert to check for JS errors or to double check spelling. Not js errors probably mean the functions are attached to the wrong prototype or object due to spelling mismatch or such
+        this.jsObject.render(this);
+	} else {
+		alert('Count not find object in component content load for component:' + this.systemName + " in cell:" + this.cellId);
+	}
+}
+JSDashboardComponent.prototype.refresh = function() {
+	if (this.jsObject) {
+		this.jsObject.refresh(dashboardInnerLayout.cells(this.cellId), this.personId);
+	}
+	return;
+}
+JSDashboardComponent.prototype.actionLink = function(currentDC) {
+	if (this.jsObject && this.jsObject.actionLink) {
+		this.jsObject.actionLink(currentDC, this.personId);
+	}
+}
+JSDashboardComponent.prototype.actionLinkDisplay = function() {
+	if (this.jsObject && this.jsObject.actionLinkDisplay) {
+		return this.jsObject.actionLinkDisplay(this.cellId, this.personId);
+	}
+	return '';
+}
+
+/*PHP Dashboard Component Base Object*/
+function PHPDashboardComponent() {};
+PHPDashboardComponent.prototype = new DashboardComponent();
+PHPDashboardComponent.prototype.render = function () {
+    dashboardInnerLayout.cells(this.cellId).attachURL(baseUrl +
+    'provider-dashboard/render-PHP-dashboard-component?dashboardComponentId=' + this.dashboardComponentId 
+    + '&actionn=render');
+}
+
+PHPDashboardComponent.prototype.refresh = function () {
+    dashboardInnerLayout.cells(this.cellId).attachURL(baseUrl +
+    'provider-dashboard/render-PHP-dashboard-component?dashboardComponentId=' + this.dashboardComponentId 
+    + '&actionn=refresh&personId=' + this.personId);
+}
+PHPDashboardComponent.prototype.actionLink = function() {
+	return false;
+}
+PHPDashboardComponent.prototype.actionLinkDisplay = function() {
+	return '';
+}
+
+/*URL Dashboard Component Base Object*/
+function URLDashboardComponent() {};
+URLDashboardComponent.prototype = new DashboardComponent();
+
+URLDashboardComponent.prototype.render = function () {
+    dashboardInnerLayout.cells(this.cellId).attachURL(baseUrl + this.content);
+}
+URLDashboardComponent.prototype.refresh = function () {
+    dashboardInnerLayout.cells(this.cellId).attachURL(baseUrl + this.content + '?personId=' + this.personId);
+}
+URLDashboardComponent.prototype.actionLink = function() {
+	return false;
+}
+URLDashboardComponent.prototype.actionLinkDisplay = function() {
+ return '';
+}
+
+
+/*Dashboard Component Marshall Object*/
+function DashboardComponentMarshall() {
+    this.dcArray = [];
+    this._this;
+    this.intervalId;
+};
+DashboardComponentMarshall.prototype.render = function () {
+    dashboardInnerLayout.cells(this.cellId).attachURL(baseUrl + this.content);
+}
+DashboardComponentMarshall.prototype.init = function (dashboardComponents) {
+        if (dashboardComponents.length < 1) { this.addPanes(); return; }
+        for (var dc in dashboardComponents) {
+            //console.dir(dashboardComponents);
+            if ( dashboardComponents[dc]['GUID']) {
+                this.getDashComponent(dashboardComponents[dc]['GUID'], dashboardComponents[dc]['refresh'], dc);
+            } else {
+                this.addPlusSign(dc);
+            }
+        }
+        this.refreshComponents();
+}
+DashboardComponentMarshall.prototype.addPanes = function () {
+    i = 0;
+    this.dcArray = [];
+    dcArray = this.dcArray;
+    dashboardInnerLayout.forEachItem(function(item){
+        pdc = new DashboardComponent();
+        pdc.cellId = item.getId();
+        pdc.content = 'plussign'; 
+        pdc.displayName    = ''; 
+        pdc.systemName = '';
+        dcArray[i] = pdc;
+        i = i+1; 
+    });
+}
+DashboardComponentMarshall.prototype.addPane = function (callerCellId, objCell) {
+    nr = this.lt2nr(callerCellId);
+    this.dcArray[nr] = objCell;
+}
+DashboardComponentMarshall.prototype.addPlusSign = function (callerCellId) {
+        pdc = new DashboardComponent();
+        pdc.cellId = callerCellId;
+        pdc.content = 'plussign'; 
+        pdc.displayName    = ''; 
+        pdc.systemName = '';
+        pdc.dashboardComponentId = '';
+        this.dcArray[this.lt2nr(callerCellId)] = pdc;
+        attachPlusSign(callerCellId);
+}
+DashboardComponentMarshall.prototype.lt2nr = function (letter) {
+    switch(letter) {
+        case 'a': nr = 0; break;
+        case 'b': nr = 1; break;
+        case 'c': nr = 2; break;
+        case 'd': nr = 3; break;
+        case 'e': nr = 4; break;
+        case 'f': nr = 5; break;
+    }
+    return nr;
+}
+DashboardComponentMarshall.prototype.getDashComponent = function (GUID, refreshComponent, pane) {
+    this.refreshCom = refreshComponent;
+    _this = this;
+    dojo.xhrGet ({
+        url: '<?=$this->baseUrl?>/provider-dashboard/get-dash-com-content?guid=' + GUID,
+        handleAs: 'json',
+        load: function(responseObject, ioArgs){
+            _this.loadDashComponent(responseObject, pane, GUID); 
+		return responseObject; },
+        error: function (er) { alert(er) }
+    });
+}
+DashboardComponentMarshall.prototype.loadDashComponent = function (contentComponent, pane, GUID) {
+	var pdDashComponent = tabStateObject.getParam("pdDashComponent");
+	if (pdDashComponent == null) {
+		pdDashComponent = new Array();
+	}
+	pdDashComponent.push({"contentComponent":contentComponent,"pane":pane,"GUID":GUID});
+	tabStateObject.setParam({"pdDashComponent":pdDashComponent});
+    dashType = contentComponent['type'];
+    dashName = contentComponent['name'];
+    dashSystemName = contentComponent['systemName'];
+    var dc       = '';
+
+    if ( dashType == 'URL' ) {
+        dc = new URLDashboardComponent();
+        dc.type = 'URL';
+        dc.content = contentComponent['content'];
+    }
+
+    if ( dashType == 'JS' ) {
+        dc = new JSDashboardComponent();
+        dc.systemName = dashSystemName;
+        dc.type = 'JS';
+        dc.content = contentComponent['content'];
+    }
+
+    if ( dashType == 'PHP' ) {
+        dc = new PHPDashboardComponent();
+        dc.type = 'PHP';
+    }
+
+    dc.cellId = pane;
+    dc.refreshCom = this.refreshCom;
+
+    dc.dashboardComponentId = GUID;
+    dc.render();
+
+    time = new Date();
+    dc.lastRefresh = Math.round(time.getTime()/1000);
+
+    // pane title
+    strcallerCellId = "'"+pane + "'";
+
+    cellTitle ='<a href="javascript:void(0);" onclick="windowSelectDashComponent(' + strcallerCellId +');">' + dashName + "</a>";
+	if (dc.actionLinkDisplay(strcallerCellId).length > 0) {
+		cellTitle += dc.actionLinkDisplay();
+	}
+
+    dashboardInnerLayout.cells(pane).setText(cellTitle);
+
+    this.addPane(pane, dc);
+}
+DashboardComponentMarshall.prototype.refreshComponents = function () {
+    this.intervalId = setInterval(function() {
+        for ( i = 0; i < this.dcArray.length; i++ ) {
+            if (this.dcArray[i].dashboardComponentId != "" ) {
+                var DC = this.dcArray[i];
+                dType = DC.type;
+                dRefresh = DC.refreshCom;
+                dLastRefresh = DC.lastRefresh;
+
+                time    = new Date();
+                now     = Math.round(time.getTime()/1000);
+                diff    = now - dLastRefresh;
+                if ( dRefresh > 0 && diff >= dRefresh ) {
+                    DC.refresh(dashboardInnerLayout.cells(DC.cellId));
+                    DC.lastRefresh = now;
+                } 
+            }
+        }
+    }, 30000);
+}
+DashboardComponentMarshall.prototype.refreshComponentsById = function (personIdParam) {
+	
+    if (!personIdParam > 0) {
+		personId = mainController.getActivePatient(); 
+		personIdParam = (personId > 0) ? personId : null;
+	}
+    if (null != personIdParam) { 
+        for ( i = 0; i < this.dcArray.length; i++ ) {
+            if (this.dcArray[i].dashboardComponentId != "" ) {
+                var DC = this.dcArray[i];
+                DC.personId = personIdParam;
+                DC.refresh(dashboardInnerLayout.cells(DC.cellId));
+                now     = Math.round(time.getTime()/1000);
+                DC.lastRefresh = now;
+            }
+        }
+    }
+}
+
+DashboardComponentMarshall.prototype.listComponents = function () {
+    allDC = [];
+    for ( i = 0; i < this.dcArray.length; i++ ) {
+        DC = this.dcArray[i];
+        allDC[i] = [DC.cellId, DC.dashboardComponentId, DC.refreshCom]; 
+    }
+    return allDC;
+}
+
+DashboardComponentMarshall.prototype.callActionContent = function (cellId) {
+	currentDC = this.dcArray[this.lt2nr(cellId)];
+	currentDC.actionLink(currentDC);
+	currentDC = null;
+}
+
+
+function providerSelectOnChanged() {
+	var providerSelect = dojo.byId("provider_id");
+	var providerId = providerSelect.options[providerSelect.selectedIndex].value;
+	if (providerId.length <= 0) {
+		return;
+	}
+	tabStateObject.setParam({"pdProviderId":providerId});
+	pdAppointmentsGrid.providerId = providerId;
+	pdAppointmentsGridReload();
+}
+
+function pdAppointmentsOnLoaded() {
+	pdAppointmentsGrid.forEachRow(function(id){
+		if (pdAppointmentsGrid.cells(id,0).getValue() == mainController.getActivePatient()) {
+			pdAppointmentsGrid.selectRow(pdAppointmentsGrid.getRowIndex(id),true);
+		}
+	});
+}
+
+function pdAppointmentsGridReload() {
+	pdAppointmentsGrid.clearAll();
+	pdAppointmentsGrid.load('<?=$this->baseUrl?>/provider-dashboard.raw/list-appointments?providerId='+pdAppointmentsGrid.providerId,pdAppointmentsOnLoaded,'json');
+}
+</script>
+
+
+
+<div id="providerSelect" style="display:none;">
+<?= $this->formSelect('provider_id', null, array('style' => 'font-size:8pt;', 'onChange' => "providerSelectOnChanged()"),$this->providersArray); ?>
+<img src="<?=$this->baseUrl?>/img/refresh.png" style="width:16px;height:16px;margin-left:40px;" onClick="pdAppointmentsGridReload()"/>
+</div>
+
+
+
+
+<div id="demographicsContainer" style="display:none;">
+                        <div style="margin-left:10px;">
+                        <div id="selectPatientNoPatient"><strong><?=__("No Patient")?></strong><br /></div>
+                        <div id="selectPatientDetailDisplay" style="display: none;">
+                        <strong><span id="patientDetailName"></span></strong><br />
+                        <?=__("MRN")?>: <span id="patientDetailMRN"></span><br />
+                        <?=__("Age/Sex")?>: <span id="patientDetailAge"></span> (<span id="patientDetailSex"></span>)<br />
+                        <?=__("DOB")?>: <span id="patientDetailDateOfBirth"></span><br />
+                        </div>
+                        </div>
+</div>
+
+<div id="layoutAdd" style="display: none; height: 100px; width: 100px; text-align: center; position: absolute; left: 50%; top: 50%; margin-left: -50px; margin-top: -50px;">
+    <a href="javascript:void(0)" onclick="windowSelectDashComponent('a');" id="layoutHref">
+        <img src="<?=$this->baseUrl?>/img/plussign.jpg"/>
+    </a>
+</div>
+
+<div id="layoutSelect" style="display:none;">
+        <?= $this->formSelect('layout_id', null, array('style' => 'font-size:8pt;', 'onChange' => "loadLayout(null, this);"), $this->selectableLayouts); ?>
+        <?= $this->formSelect('templatesDropdown', null, 
+            array('style' => 'font-size:8pt;', 'onChange' => "processTemplatesDropdown(this);"), 
+            array("a" => "Select Template","b" => "--Global",  "b" => "--Mine",  "-1" => "Save Current Layout To...")); ?>
+</div>
+
+
+
+<style>div.gridbox_xp table.obj td {border-bottom: thin dashed;border-right:none;}</style>
+<script>
+
+function createTemplatesDropdown() {
+    dojo.xhrGet ({
+        url: '<?=$this->baseUrl?>/provider-dashboard.raw/get-templates-layout-dropdown',
+        handleAs: 'json',
+        load: function(responseObject, ioArgs){
+            buildDropdown(responseObject);
+            return responseObject;},
+        error: function (er) { alert(er) }
+    });
+}
+
+/* build the dropdown for layout templates */
+function buildDropdown(optionsArr) {
+    var templdrop = dojo.byId('templatesDropdown')
+    templdrop.options.length = 0;
+
+    templdrop.options[0] = new Option('Select Template', 0);
+    templdrop.options[1] = new Option('-- Mine', 0);
+
+    // first user saved
+    var usertempl = optionsArr[0];
+    var arLen1 = usertempl.length;
+    var iterator = 2;
+    for( var i = 0; i < arLen1; i++ ){
+        templdrop.options[i+iterator] = new Option(usertempl[i]['name'], usertempl[i]['id']); 
+    }
+    iterator += arLen1;
+    templdrop.options[iterator] = new Option('-- Global', 0); iterator++;
+
+    // then global saved
+    var globaltempl = optionsArr[1];
+    var arLen2 = globaltempl.length;
+    for(var i = 0; i < arLen2; i++){
+        templdrop.options[i+iterator] = new Option(globaltempl[i]['name'], globaltempl[i]['id']);
+    }
+    iterator += arLen2;
+    templdrop.options[iterator] = new Option('Save Current Layout To...', -1);
+    pdLayout.cells("b").setText("Dashboard" + dojo.byId('layoutSelect').innerHTML);
+}
+
+function loadDemographics(data) {
+	dojo.byId('patientDetailName').innerHTML = data[0]['last_name'] + ', ' + data[0]['first_name'] + ' ' + data[0]['middle_name'];
+                        dojo.byId('patientDetailMRN').innerHTML = data[0]['record_number'];
+                        dojo.byId('patientDetailAge').innerHTML = "";//patient['age'];
+                        dojo.byId('patientDetailSex').innerHTML = "";//patient['gender'];
+                        dojo.byId('patientDetailDateOfBirth').innerHTML = "";//patient['dateOfBirth'];
+
+		dojo.byId('selectPatientNoPatient').style.display = 'none';
+		dojo.byId('selectPatientDetailDisplay').style.display = 'block';
+}
+
+/* saving or loading a template layout from the dropdown */
+function processTemplatesDropdown(data) {
+	var templateSelect = dojo.byId("templatesDropdown");
+	var pdTemplateValue = templateSelect.options[templateSelect.selectedIndex].value;
+	var pdTemplateText = templateSelect.options[templateSelect.selectedIndex].text;
+	tabStateObject.setParam({"pdTemplateState":{"data":data,"pdTemplateValue":pdTemplateValue,"pdTemplateText":pdTemplateText}});
+    if ( data.value == "-1" ) {
+        // we save current layout
+	if (dashboardInnerLayout.dhxWins.isWindow("windowSaveCurLayout")) { // close any existing open window
+		winDC = dashboardInnerLayout.dhxWins.window("windowSaveCurLayout");
+	}
+	else {
+	        winDC = dashboardInnerLayout.dhxWins.createWindow('windowSaveCurLayout',60,10,450,250);
+	}
+        dashboardInnerLayout.dhxWins.setImagePath("<?=$this->baseUrl?>/img/");
+        dashboardInnerLayout.dhxWins.setSkin('clear_silver');
+        winDC.setText("<?=__("Save Current Layout To");?>");
+        winDC.attachURL('<?=$this->baseUrl?>/provider-dashboard.raw/slpopup',true);
+        winDC.setModal(true);
+        winDC.centerOnScreen();
+    } else if ( data.value != 0 ) {
+        // we load a layout
+        dojo.xhrGet ({
+            url: '<?=$this->baseUrl?>/provider-dashboard/get-template-content?templateId=' + data.value,
+            handleAs: 'json',
+            load: function(responseObject, ioArgs){
+                loadLayout(responseObject, null); return responseObject; },
+            error: function (er) { alert(er) }
+        });
+        DCM.init(dcmArray);
+        DCM.refreshComponents();
+    }
+}
+
+
+var winDC;
+var callerCellId;
+var baseUrl = '<?=$this->baseUrl?>/';
+
+
+function windowSelectDashComponent(cellId) {
+	if (dashboardInnerLayout.dhxWins.isWindow("windowSelectDashCom")) { // close any existing open window
+		winDC = dashboardInnerLayout.dhxWins.window("windowSelectDashCom");
+	}
+	else {
+		winDC = dashboardInnerLayout.dhxWins.createWindow('windowSelectDashCom',60,10,450,250);
+	}
+    dashboardInnerLayout.dhxWins.setImagePath("<?=$this->baseUrl?>/img/");
+    dashboardInnerLayout.dhxWins.setSkin('clear_silver');
+
+    winDC.setText("<?=__('Select Dashboard Component');?>");
+    winDC.attachURL(baseUrl + '/provider-dashboard.raw/dwpopup',true);
+    winDC.setModal(true);
+    winDC.centerOnScreen();
+    callerCellId = cellId;
+}
+
+function saveDashboardComponent() {
+    selectedComponent = dojo.byId('dashwidgetSelect');
+    refreshComponent = dojo.byId('refreshInterval');
+    DCM.getDashComponent(selectedComponent.value, refreshComponent.value, callerCellId);
+    winDC.close();
+}
+
+
+/* loads a saved layout */
+function loadLayout(templateContent, selObject) {
+	var pdDashComponent = new Array();
+	tabStateObject.setParam({"pdDashComponent":pdDashComponent});
+	if (selObject == null) {
+		var selObject = dojo.byId("layout_id");
+	}
+	var pdLayoutValue = selObject.options[selObject.selectedIndex].value;
+	var pdLayoutText = selObject.options[selObject.selectedIndex].text;
+	tabStateObject.setParam({"pdLayoutState":{"templateContent":templateContent,"pdLayoutValue":pdLayoutValue,"pdLayoutText":pdLayoutText}});
+    if ( null == templateContent ) {
+        dhtml_template = selObject.options[selObject.selectedIndex].value;
+        initializationArr = [];
+    } else {
+        dhtml_template = templateContent['layout'];
+        initializationArr = templateContent['state']; 
+    }
+    currentLayout = dhtml_template;
+
+    dashboardInnerLayout = new dhtmlXLayoutObject(pdLayout.cells("b"), dhtml_template);
+    if ( null == templateContent ) {
+        dashboardInnerLayout.forEachItem(function(item){
+            cellId = item.getId();
+            layoutHref.setAttribute("onclick","windowSelectDashComponent('"+cellId+"');");
+            item.attachObject(dojo.clone(layoutAdd));
+        });
+    }
+
+    DCM.init(initializationArr);
+    DCM.refreshComponents();
+}
+
+/* attach the plussign for cells w/out preselected content */
+function attachPlusSign(cellId){
+    layoutHref.setAttribute("onclick","windowSelectDashComponent('"+cellId+"');");
+    dashboardInnerLayout.cells(cellId).attachObject(dojo.clone(layoutAdd));
+}
+
+/* saves the layout(template) for a provider - slpopup */
+function saveLayout() {
+    radioGlobalElem   = document.getElementsByName('optType');
+    for(var i=0; i< radioGlobalElem.length; i++) {
+        if ( radioGlobalElem[i].checked ) {
+            globalLayout = radioGlobalElem[i].value;
+        }
+    }
+
+    nameLayout     = dojo.byId('txtName');
+    dcComponents = DCM.listComponents();
+    var dcComponentsStr = dcComponents.join();
+
+    dojo.xhrPost ({
+        url: '<?=$this->baseUrl?>/provider-dashboard/save-template-layout',
+        content: {
+            "dcComponentsStr" : dcComponentsStr,
+            "globalLayout" : globalLayout,
+            "nameLayout": nameLayout.value,
+            "typeLayout": currentLayout
+        },
+        error: function(data, ioArgs) {
+           alert('There was an error');
+        },
+        load: function() {
+           alert('Layout saved');
+        }
+    });
+
+    createTemplatesDropdown();
+}
+
+createTemplatesDropdown();
+
+function handlePDContextClick(menuItemId, type) {
+	var routingId = type.split('_');
+	var appointmentId = type.split('_');
+	switch(menuItemId) {
+		case 'route_checkIn':
+			dojo.xhrGet ({
+        		url: '<?=$this->baseUrl?>/routing.raw/ajax-set-checked-in?routingId=' + routingId[0],
+		        handleAs: 'json',
+		        load: function(responseObject, ioArgs){
+				pdcxMenu.currentGrid.updateFromXML(pdcxMenu.currentGrid.xmlFileUrl,true,true);
+			},
+		        error: function (er) { alert('Error: ' + er) }
+			});	
+		break;
+		default:
+			action = menuItemId.split('_');
+			switch(action[0]) {
+			case 'routeTo':
+				routeActionUrl = '<?=$this->baseUrl?>/routing.raw/ajax-set-next-station?routingId=' + routingId[0] + '&stationId=' + action[1];
+				if (pdcxMenu.currentGrid == undefined) {
+					routeActionUrl = '<?=$this->baseUrl?>/routing.raw/ajax-station-from-appointment?appointmentId=' + pdAppointmentsGrid.rowAppointmentId + '&stationId=' + action[1];
+				}
+				dojo.xhrGet ({
+                        	url: routeActionUrl,
+                        	handleAs: 'json',
+                        	load: function(responseObject, ioArgs){
+					if (pdcxMenu.currentGrid != undefined) {
+                                		pdcxMenu.currentGrid.loadXML(pdcxMenu.currentGrid.xmlFileUrl);
+					}
+					else {
+						pdAppointmentsGridReload();
+					}
+                        	},
+                        	error: function (er) { alert('Error: ' + er) }
+                        	});
+				break;
+			case 'mark':
+				dojo.xhrGet ({
+                                url: '<?=$this->baseUrl?>/appointment.raw/ajax-mark-appointment?appointmentId=' + appointmentId[0] + '&mark=' + action[1],
+                                handleAs: 'json',
+                                load: function(responseObject, ioArgs){
+					pdAppointmentsGridReload();
+                                },
+                                error: function (er) { alert('Error: ' + er) }
+                                });
+				break;
+			default:
+			alert('<?=__('The action you selected is not available on this item: ')?>' + menuItemId);
+			break;
+		}	
+	}
+}
+function varDump(obj) {
+        var out = '';
+        for (var i in obj) {
+                out += i + ": " + obj[i] + "\n";
+        }
+
+        alert(out);
+}
+function handlePDContextBeforeClick(rowId,colIndex,gridObj, cellRef) {
+	gridId = cellRef.parentNode.parentNode.parentNode.parentNode.parentNode.id;
+	if (gridId.indexOf('cgrid2') == 0) {
+		pdcxMenu.currentGrid = cellRef.parentNode.parentNode.parentNode.parentNode.parentNode.grid;
+		//pdcxMenu.currentCell = cellRef;
+		//varDump(pdcxMenu.currentCell);
+	}
+	//re-enable each item if some where disabled before
+	pdcxMenu.forEachItem(function (item) {pdcxMenu.setItemEnabled(item) });
+
+	var row = pdAppointmentsGrid.getRowIndex(rowId);
+	if (row != -1) {
+		pdcxMenu.setItemDisabled('route_checkIn');
+		personId = gridObj.cellById(rowId,0).getValue();
+		pdAppointmentsGrid.rowPersonId = personId; 
+		pdAppointmentsGrid.rowAppointmentId = rowId; 
+		dojo.xhrGet ({
+		        url: '<?=$this->baseUrl?>/routing/ajax-current-patient-station?personId=' + personId,
+		        handleAs: 'json',
+		        load: function(responseObject, ioArgs){
+			
+				if (pdcxMenu.getItemType('routeTo_' + responseObject) != null) {
+			            pdcxMenu.setItemDisabled('routeTo_' + responseObject);
+				}
+			},
+		        error: function (er) { alert(er) }
+	 	});
+	}
+	else {
+		pdcxMenu.setItemEnabled('route_checkIn');
+		currentStationId = pdcxMenu.currentGrid.cellById(rowId,1).getValue();
+        	pdcxMenu.setItemDisabled('routeTo_' + currentStationId);
+	}
+	return true;
+}
+
+var pdLayout = new dhtmlXLayoutObject('providerDashboardLayoutContainer',"2U");
+pdLayout.setImagePath("<?=$this->baseUrl?>/img/");
+pdLayout.cells("a").setText("Appointments For " + dojo.byId('providerSelect').innerHTML);
+pdLayout.cells("a").setWidth(400);
+//pdLayout.cells("b").setText("Dashboard" + dojo.byId('layoutSelect').innerHTML);
+pdLayout.setEffect('collapse',true);
+
+pdcxMenu = new dhtmlXMenuObject(null ,'standard');
+pdcxMenu.setImagePath("<?=$this->baseUrl?>/img/");
+pdcxMenu.renderAsContextMenu();
+pdcxMenu.setOpenMode("web");
+pdcxMenu.attachEvent('onClick',handlePDContextClick);
+pdcxMenu.loadXML('<?=$this->baseUrl?>/provider-dashboard.raw/appointments-grid-context-menu');
+pdAppointmentsGrid = pdLayout.cells('a').attachGrid();
+pdAppointmentsGrid.setImagePath('<?=$this->baseUrl?>/img/');
+pdAppointmentsGrid.setHeader('personId,Time,,,Details');
+pdAppointmentsGrid.setColTypes('ro,ro,img,sub_row_grid,ro');
+pdAppointmentsGrid.setInitWidths("0,125,20,20,*");
+pdAppointmentsGrid.setSkin("xp");
+pdAppointmentsGrid.attachEvent("onSubRowOpen", function (id) {
+	 return true;});
+pdAppointmentsGrid.attachEvent("onRowSelect", function (rowId) {
+	personId = pdAppointmentsGrid.cells(rowId, 0).getValue();
+	mainController.setActivePatient(personId);
+	//DCM.refreshComponentsById automatically called because it listens for the setActivePatient event
+	//DCM.refreshComponentsById(personId);
+});
+pdAppointmentsGrid.attachEvent('onBeforeContextMenu',handlePDContextBeforeClick);
+dhtmlxEvent(pdAppointmentsGrid.entBox,"contextmenu",function(e){
+  (e||event).cancelBubble=true;
+  return false;
+});
+
+var testdata=[
+                 [0,"","","","Please select provider"]
+             ];
+
+pdAppointmentsGrid.init();
+//pdAppointmentsGrid.setColumnHidden(0, true);
+pdAppointmentsGrid.enableContextMenu(pdcxMenu);
+pdAppointmentsGrid.parse(testdata,"jsarray");
+
+dashboardInnerLayout = new dhtmlXLayoutObject(pdLayout.cells("b"), "1C");
+dashboardInnerLayout.setImagePath("<?=$this->baseUrl?>/img/");
+dashboardInnerLayout.cells("a").attachObject("layoutAdd");
+
+// save now for future usage
+var layoutAdd = dojo.byId('layoutAdd');
+var layoutHref = dojo.byId('layoutHref');
+var currentLayout = '1C';
+
+var DCM = new DashboardComponentMarshall();
+
+//this is generated in a PHP loop on the server side from a list of DC's that should be appearing on the default display (the default providerDashboardState), if none would be empty.
+dcmArray = new Array();
+
+DCM.init(dcmArray);
+DCM.refreshComponents(null);
+//dojo.connect(mainController, "setActivePatient", DCM, "refreshComponentsById");
+
+
+var pdProviderId = tabStateObject.getParam("pdProviderId");
+if (pdProviderId == null) {
+	pdProviderId = '<?=$this->currentPersonId?>';
+	tabStateObject.setParam({"pdProviderId":pdProviderId});
+}
+var pdProviderSelect = dojo.byId("provider_id");
+for (var i in pdProviderSelect.options) {
+	if (pdProviderSelect.options[i].value == pdProviderId) {
+		pdProviderSelect.options[i].selected = true;
+		break;
+	}
+}
+providerSelectOnChanged();
+
+var pdDashComponent = tabStateObject.getParam("pdDashComponent");
+
+var pdLayoutState = tabStateObject.getParam("pdLayoutState");
+if (pdLayoutState != null) {
+	var pdLayoutSelect = dojo.byId("layout_id");
+	for (var i in pdLayoutSelect.options) {
+		if (pdLayoutSelect.options[i].value == pdLayoutState.pdLayoutValue && pdLayoutSelect.options[i].text == pdLayoutState.pdLayoutText) {
+			pdLayoutSelect.options[i].selected = true;
+			break;
+		}
+	}
+	// backup the pdDashComponent
+	tmpPdDashComponent = pdDashComponent;
+	loadLayout(pdLayoutState.templateContent,pdLayoutSelect);
+	pdDashComponent = tmpPdDashComponent;
+	// save it back to tabState
+	tabStateObject.setParam({"pdDashComponent":pdDashComponent});
+}
+
+var pdTemplateState = tabStateObject.getParam("pdTemplateState");
+if (pdTemplateState != null) {
+	var pdTemplateSelect = dojo.byId("templatesDropdown");
+	for (var i in pdTemplateSelect.options) {
+		if (pdTemplateSelect.options[i].value == pdTemplateState.pdTemplateValue && pdTemplateSelect.options[i].text == pdTemplateState.pdTemplateText) {
+			pdTemplateSelect.options[i].selected = true;
+			break;
+		}
+	}
+	//processTemplatesDropdown(pdTemplateState.data);
+}
+
+if (pdDashComponent != null) {
+	var guidList = {};
+	var dashComp = [];
+	for (var i in pdDashComponent) {
+		var dc = pdDashComponent[i];
+		if (guidList[dc.GUID]) continue;
+		dashComp.push(dc);
+		guidList[dc.GUID] = true;
+		DCM.loadDashComponent(dc.contentComponent,dc.pane,dc.GUID);
+	}
+	tabStateObject.setParam({"pdDashComponent":dashComp});
+}
+
+</script>

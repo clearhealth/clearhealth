@@ -1,0 +1,57 @@
+<?if (!$this->user->personId > 0):?>
+<?=__("No person is selected, you must select a person to edit.")?>
+<?else:?>
+<div style="margin-left:auto;margin-right:auto;font-size:9pt;">
+	<div style="float:left;">
+		<?if ($this->message):?>
+		<div style="background-color:PaleGreen; width:100%;">
+		<?=$this->message?>
+		</div>
+		<?endif;?>
+		<?=$this->form->renderOpen()?>
+		<fieldset><legend><?=__("User Information")?></legend>
+		<div style="float:left;">
+			<div>
+			<div style="display:table-cell; vertical-align:middle; height:100px;">
+				<img src="<?=$this->baseUrl?>/img/no-person-image.png">
+			</div>
+			</div>
+		</div>
+		<div style="float:left;width:400px;">
+			<div style="margin-left:10px;">
+			<?foreach ($this->form->getErrorMessages() as $error) {?>
+			<?=$error?>
+			<?}?>
+			<?=$this->form->userIdInput('FormHidden')?>
+			<?=$this->form->personIdInput('FormHidden')?>
+			<?=$this->formHidden('personId',$this->form->personId->getValue())?>
+			<div class="formRow">
+			<?=$this->form->username->renderLabel()?>
+			<?=$this->form->usernameInput()?>
+			</div>
+			<div class="formRow">
+			<?=$this->form->password->renderLabel()?>
+			<?=$this->form->passwordInput()?>
+			</div>
+			<br style="clear:left;" />
+			<br style="clear:left;" />
+			<div class="formRow">
+				<?=$this->form->permissionTemplateId->renderLabel()?>
+				<?=$this->form->permissionTemplateIdInput('FormSelect',array('options'=>$this->permissionTemplates,'style'=>'width:250px;'))?>
+			</div>
+			<br style="clear:left;" />
+			<br style="clear:left;" />
+			<div class="formRow">
+				<?=$this->form->defaultBuildingId->renderLabel()?>
+				<?=$this->form->defaultBuildingIdInput('FormSelect',array('options'=>Building::getBuildingArray(),'style'=>'width:250px;'))?>
+			</div>
+			</div>
+			<?=$this->form->renderClose()?>
+			</fieldset>
+			<div style="text-align:right;">
+			<?=$this->form->okInput('FormButton')?>
+			<!--<input type="submit" />-->
+			</div>
+		</div>
+</div>
+<?endif;?>

@@ -1,0 +1,231 @@
+<style>
+select {
+	margin: 0em 0.1em;
+	line-height: normal;
+	font-size: 100%;
+	width: 15em;
+}
+input,select,textarea {
+	border:1px solid #b3b3b3;
+	font-size:8pt;
+}
+</style>
+
+<?=$this->form->renderOpen()?>
+<div style="float:left;width:45%">
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Available Lab Tests')?></label></dt>
+		<div id="labTestAutoCompleteId"></div>
+		<?=$this->form->labTestInput('FormHidden')?>
+	</div>
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Lab Test Info')?></label></dt>
+		<textarea id="labTestInfo" style="width:300px;height:120px;" readonly="readonly"></textarea>
+	</div>
+	<div class="formRow" style="float:left;padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Collection Type')?></label></dt>
+		<?=$this->form->collectionTypeInput('FormSelect',array('style'=>'width:150px;','onChange'=>'labTestCommentsOnChanged()','options'=>$this->collectionTypes))?>
+	</div>
+	<div class="formRow" style="float:left;padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Collection Date/Time')?></label></dt>
+		<?=$this->form->dateCollectionInput(null,array('style'=>'width:150px;'))?>
+	</div>
+</div>
+<div style="float:left;width:55%">
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Collect Sample')?></label></dt>
+		<?=$this->form->collectionSampleInput('FormSelect',array('style'=>'width:350px;','onChange'=>'labTestCollectionSampleOnChanged(this)','options'=>$this->collectionSamples))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Specimen')?></label></dt>
+		<?=$this->form->specimenInput('FormSelect',array('style'=>'width:350px;','onChange'=>'labTestSpecimenOnChanged(this)','options'=>$this->specimens))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Urgency')?></label></dt>
+		<?=$this->form->urgencyInput('FormSelect',array('style'=>'width:350px;','onChange'=>'labTestCommentsOnChanged()','options'=>$this->urgencies))?>
+	</div>
+	<br style="clear:left;" />
+	<div class="formRow" style="padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('Enter order comment')?></label></dt>
+		<?=$this->form->commentsInput('FormTextarea',array('cols'=>55,'rows'=>5))?>
+	</div>
+</div>
+<br style="clear:left;" />
+<div id="labTestInfoContainerId" style="width:550px;height:100px;display:none;">
+	<br style="clear:left;" />
+	<strong><?=__('Unit Comment')?></strong>
+	<?=$this->formTextarea('labTestInfoName',null,array('id'=>'labTestInfoId','readonly'=>'readonly','cols'=>75,'rows'=>3))?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+	<!--<div class="formRow" style="float:left;padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('How Often?')?></label></dt>
+		<?=$this->form->scheduleInput('FormSelect',array('style'=>'width:150px;','onChange'=>'labTestCommentsOnChanged()','options'=>$this->oftens))?>
+	</div>
+	<div class="formRow" style="float:left;padding-top:4px;">
+		<dt style="line-height:20px;"><label><?=__('How Long?')?></label></dt>
+		<?=$this->form->daysSupplyInput('FormNumberSpinner')?>
+	</div>-->
+</div>
+
+<br style="clear:left;" />
+<hr style="color:#b3b3b3;" />
+<div class="formRow" style="padding-top:4px;">
+	<div style="float:left;">
+	<?=$this->form->formOrder->orderTextInput('FormTextarea',array('cols'=>75,'rows'=>5))?>
+	<?=$this->form->formOrder->serviceInput('FormHidden')?>
+	<?=$this->form->formOrder->patientIdInput('FormHidden')?>
+	<?=$this->form->orderIdInput('FormHidden')?>
+	</div>
+	<div style="float:left;margin-left:10px;">
+		<div>
+			<?=$this->formButton('order',__('Order'),array('style'=>'width:100px;','onClick'=>'submit'.$this->form->getId().'Form()'))?> 
+		</div>
+		<div style="margin-top:5px;">
+			<?=$this->formButton('cancel',__('Cancel'),array('style'=>'width:100px;','onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?>
+		</div>
+	</div>
+</div>
+
+<?=$this->form->renderClose()?>
+
+
+<script>
+var lscb = dijit.byId("labTestAutoCompleteId");
+if (lscb != undefined) { 
+	lscb.destroyRecursive();
+	lscb = null;
+}
+var lsac = new dojox.data.QueryReadStore({
+	url:"<?=$this->baseUrl?>/orders.raw/lab-test-auto-complete",
+	requestMethod:"get"
+},"labTestAutoCompleteId");
+lscb = new dijit.form.ComboBox({
+	name:"<?=$this->form->labTest->getFullyQualifiedName()?>",
+	autocomplete:false,
+	store:lsac,
+	hasDownArrow:false,
+	value:""
+},"labTestAutoCompleteId");
+lscb.domNode.style.width = "300px";
+dojo.connect(lscb,"onChange",function(arg){
+	var labTest = dojo.byId("<?=$this->form->labTest->getId()?>");
+	labTest.value = "";
+	if (!this.item) return;
+	labTest.value = this.item.i.label; // .name == arg
+	labTestGetDetails(labTest.value);
+});
+
+function labTestGetDetails(labTestId) {
+	if (!labTestId) return;
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/orders.raw/get-lab-test-info",
+		content: {
+			"labTestId": labTestId,
+		},
+		handleAs: "json",
+		load: function (data) {
+			if (!data.system) return;
+			labTestPopulateDetails(data);
+		},
+		error: function (er) {
+			alert("err: " + er);
+		}
+	});
+}
+
+function labTestPopulateDetails(data) {
+	if (!data.system) return;
+	var collectionSample = dojo.byId("<?=$this->form->collectionSample->getId()?>");
+	for (var i=0; i<collectionSample.options.length; i++) {
+		if (collectionSample.options[i].value == data.system) {
+			collectionSample.selectedIndex = i;
+			break;
+		}
+	}
+	var label = data.shortname;
+	if (label.length <= 0) {
+		label = data.long_common_name;
+	}
+	dojo.byId("labTestAutoCompleteId").value = label;
+	dojo.byId("labTestInfo").value = data.comments;
+	labTestCommentsOnChanged();
+}
+
+function labTestCollectionSampleOnChanged(select) {
+	labTestCommentsOnChanged();
+}
+
+function labTestSpecimenOnChanged(select) {
+	labTestCommentsOnChanged();
+}
+
+function preSubmit<?=$this->form->getId()?>() {
+	var labTestId = dojo.byId("<?=$this->form->labTest->getId()?>").value;
+	if (labTestId == "") {
+		alert("<?=__('Invalid lab test')?>");
+		return false;
+	}
+	var labTestService = dojo.byId("<?=$this->form->formOrder->service->getId()?>");
+	labTestService.value = "Lab";
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	orderListGridReload();
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+var labTestComments = ""; // lab test + collect sample + specimen + urgency + collection type + how often
+function labTestCommentsOnChanged() {
+	var labTestOrderText = dojo.byId("<?=$this->form->formOrder->orderText->getId()?>");
+
+	labTestComments = dojo.byId("labTestAutoCompleteId").value;
+
+	var ids = [];
+	ids.push({"id":"<?=$this->form->collectionSample->getId()?>","value":"text"});
+	ids.push({"id":"<?=$this->form->specimen->getId()?>","value":"text"});
+	ids.push({"callback":"labTestSetUrgencyComment()"});
+	ids.push({"id":"<?=$this->form->collectionType->getId()?>","value":"value"});
+	//ids.push({"id":"<?=$this->form->schedule->getId()?>","value":"text"});
+	for (var i in ids) {
+		var val = ids[i];
+		if (typeof val.callback != "undefined") {
+			eval(val.callback);
+			continue;
+		}
+		var selectList = dojo.byId(val.id);
+		if (selectList.options.length == 0 || selectList.selectedIndex < 0) {
+			continue;
+		}
+		var comment = selectList.options[selectList.selectedIndex].text;
+		if (comment != "") {
+			if (val.value == "value") {
+				labTestComments += " " + selectList.options[selectList.selectedIndex].value;
+			}
+			else {
+				labTestComments += " " + comment;
+			}
+		}
+	}
+
+	labTestOrderText.value = labTestComments;
+}
+
+function labTestSetUrgencyComment() {
+	var selectList = dojo.byId("<?=$this->form->urgency->getId()?>");
+	if (selectList.options.length == 0 || selectList.selectedIndex < 0) {
+		return;
+	}
+	var comment = selectList.options[selectList.selectedIndex].value;
+	if (comment != "" && comment != "ROUTINE") {
+		labTestComments += " " + comment;
+	}
+}
+
+if ("<?=$this->form->labTest->getValue()?>" != "") {
+	labTestGetDetails("<?=$this->form->labTest->getValue()?>");
+}
+</script>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<toolbar name="" width="100%" disableType="image" absolutePosition="auto" toolbarAlign="left">
+	<ImageTextButton src="../img/no-person-image.png" height="60" width="350px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <span style="color:grey"><strong>No Patient Selected</strong></span> ]]></ImageTextButton>
+	<divider id="div_1"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="300px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <span style="color:grey"><strong>Visit Not Selected</strong> <br /> Provider Not Selected</span> ]]></ImageTextButton>
+	<divider id="div_2"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="250px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <span style="color:grey"><strong>No Patient Selected</strong></span><br /> <strong>Alerts</strong>: <img style="vertical-align:middle;" src="../img/alert.png" /> ]]></ImageTextButton>
+	<divider id="div_3"/>
+	<ImageTextButton src="../img/blank.gif" height="60" width="250px" id="0_delete" tooltip="Delete" disableImage="../images/iconDelete_dis.gif"><![CDATA[ <span style="color:grey"><strong>No Patient Selected</strong></span> ]]></ImageTextButton>
+</toolbar>

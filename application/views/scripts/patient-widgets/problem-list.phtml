@@ -1,0 +1,16 @@
+<div id="active_problems_container" style="width:99%;height:auto;
+"></div>
+                                <script>
+                                        apGrid = new dhtmlXGridObject('active_problems_container');
+                                        apGrid.setImagePath("../img/");
+                                        apGrid.setHeader("Active Problems");
+                                        apGrid.setInitWidths("*");
+                                        apGrid.setColAlign("left");
+                                        apGrid.setSkin("xp");
+                                        var testdata=[
+                                                ["Diabetes Mellitus Type II or unspecified",""],
+                                                ["Hypertension"]
+                                        ]
+                                        apGrid.init(); 
+                                        apGrid.parse(testdata,"jsarray");
+                                </script>

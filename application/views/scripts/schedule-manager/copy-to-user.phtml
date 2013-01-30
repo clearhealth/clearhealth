@@ -1,0 +1,311 @@
+<style>
+div.gridbox table.obj td { /* data cell */
+	text-align: left; /* alternative for grid.setColAlign("center") since it currently not working; it assumes that all cells be a centered align */
+}
+div.gridbox table.obj tr.rowselected td { /* elements in the selected row */
+	background-color: #ccc;
+}
+</style>
+<div id="scheduleCopyToUserContainerId" style="width:100%;margin-left:10px;">
+	<div style="float:left;">
+		<dt><label class="optional"><?=__('Start date')?></label></dt>
+		<?=$this->formDateText('dateStart',null,array('id'=>'dateStart'))?>
+	</div>
+	<div style="float:left;margin-left:10px;">
+		<dt><label class="optional"><?=__('End date')?></label></dt>
+		<?=$this->formDateText('dateEnd',null,array('id'=>'dateEnd'))?>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div style="float:left;">
+		<dt><label class="optional"><?=__('Available User/Room')?></label></dt>
+		<div id="availUserRoomGridId" style="width:180px;height:150px;"></div>
+	</div>
+	<div style="float:left;margin-left:10px;margin-top:30px;">
+		<?=$this->formButton('add',__('Add'),array('id'=>'add','onClick'=>'addSelectedUserRoom()','style'=>'width:70px;'))?><br />
+		<?=$this->formButton('remove',__('Remove'),array('id'=>'remove','onClick'=>'removeSelectedUserRoom()','style'=>'width:70px;'))?>
+	</div>
+	<div style="float:left;margin-left:10px;">
+		<dt><label class="optional"><?=__('Selected User/Room')?></label></dt>
+		<div id="selUserRoomGridId" style="width:180px;height:150px;"></div>
+	</div>
+	<br style="clear:left;" />
+	<br style="clear:left;" />
+	<div class="formRow">
+		<?=$this->formButton('copyToUser',__('Apply'),array('onClick'=>'copyToUserOnSaved()'))?>
+	</div>
+</div>
+<div id="scheduleCopyToUserProgressContainerId" style="width:100%;margin:10px;display:none;">
+	<div id="scheduleCopyToUserProgressId" style="width:470px;height:200px;background-color:white;overflow:auto;"></div>
+	<br /><?=$this->formButton('cancel',__('Cancel'),array('id'=>'cancel','onClick'=>'copyToUserOnCancelled()'))?>
+</div>
+<script>
+winScheduleCopyToUser.setText("<label title=\"<?=$this->header?>\"><?=$this->header?></label>");
+<?$dateStart = explode('-',$this->dateStart);?>
+var dateStart = new Date(<?=(int)$dateStart[0]?>,<?=((int)$dateStart[1] - 1)?>,<?=(int)$dateStart[2]?>);
+<?$dateEnd = explode('-',$this->dateEnd);?>
+var dateEnd = new Date(<?=(int)$dateEnd[0]?>,<?=((int)$dateEnd[1] - 1)?>,<?=(int)$dateEnd[2]?>);
+var dateToday = new Date(<?=date('Y')?>,<?=(date('m') - 1)?>,<?=date('d')?>);
+var dateThreeYears = dojo.date.add(dateToday,"year",3);
+var copyCancelled = false;
+
+dojo.connect(boxDateStart,"onChange","dateStartOnChanged");
+function dateStartOnChanged(value) {
+	if (value.getTime() < dateStart.getTime()) {
+		//boxDateStart.setValue(dateStart);
+	}
+}
+
+var startDateGrid = dojo.byId("headerLabel1").title;
+var arrStartDateGrid = startDateGrid.split("-");
+var startDateOfTheWeek = new Date(arrStartDateGrid[0],(arrStartDateGrid[1]-1),arrStartDateGrid[2]);
+if (dateToday.getTime() < startDateOfTheWeek.getTime()) {
+	boxDateStart.setValue(dateToday);
+}
+else {
+	boxDateStart.setValue(startDateOfTheWeek);
+}
+
+dojo.connect(boxDateEnd,"onChange","dateEndOnChanged");
+function dateEndOnChanged(value) {
+	if (value.getTime() > dateThreeYears.getTime()) {
+		boxDateEnd.setValue(dateThreeYears);
+	}
+	else if (value.getTime() < boxDateStart.getValue()) {
+		boxDateEnd.setValue(dateEnd);
+	}
+}
+boxDateEnd.setValue(dojo.date.add(boxDateStart.getValue(),"day",6));
+
+var dateStartCopy = null;
+var dateEndCopy = null;
+var userRoomId = [];
+function copyToUserOnSaved() {
+	if (selUserRoomGrid.getRowsNum() <= 0) {
+		alert("<?=__('No selected user/room')?>");
+		return;
+	}
+	if (!confirm("<?=__('Copying schedule events to selected User/Room will remove all existing schedules.')?>\n<?=__('Continue?')?>")) {
+		return;
+	}
+	copyCancelled = false;
+	dateStartCopy = boxDateStart.getValue();
+	dateEndCopy = boxDateEnd.getValue();
+
+	userRoomId = [];
+	var providerId = 0;
+	var roomId = 0;
+	selUserRoomGrid.forEachRow(function(rowId){
+		var pref = rowId.substr(0,3);
+		var id = parseInt(rowId.substr(3));
+		providerId = 0;
+		roomId = 0;
+		if (pref == "rid") {
+			roomId = id;
+		}
+		else {
+			providerId = id;
+		}
+		userRoomId.push({"providerId":providerId,"roomId":roomId});
+	});
+
+	dojo.byId("scheduleCopyToUserContainerId").style.display = "none";
+	dojo.byId("scheduleCopyToUserProgressContainerId").style.display = "block";
+
+	var userRoom = userRoomId.shift();
+	if (userRoom != undefined) {
+		dojo.byId("scheduleCopyToUserProgressId").innerHTML = "";
+		copyToUserStartAdd(dateStartCopy,dojo.date.add(dateStartCopy,"day",7),userRoom.providerId,userRoom.roomId);
+	}
+}
+
+function copyToUserStartRemove(start,end,providerId,roomId) {
+	dojo.xhrGet({
+		url: globalBaseUrl+"/schedule-manager.raw/get-schedule-data",
+		handleAs: "json",
+		content: {
+			"dateStart": dateStartCopy.getFullYear() + "-" + (dateStartCopy.getMonth() + 1) + "-" + dateStartCopy.getDate(),
+			"dateEnd": dateEndCopy.getFullYear() + "-" + (dateEndCopy.getMonth() + 1) + "-" + dateEndCopy.getDate(),
+			"providerId": providerId,
+			"roomId": roomId,
+		},
+		load: function (data) {
+			var scheduleCopyToUserProgress = dojo.byId("scheduleCopyToUserProgressId");
+			if (scheduleCopyToUserProgress.innerHTML.length > 0) {
+				scheduleCopyToUserProgress.innerHTML += "<br />";
+			}
+			dojo.byId("scheduleCopyToUserProgressId").innerHTML += "<?=__('Removing existing')?> "+data.numberOfEvents+" <?=__('schedule events for')?> "+data.title+" <?=__('from')?> "+data.dateStart+" - " +data.dateEnd+": <strong><label id=\"remCtr"+providerId+""+roomId+"Id\">0</label>/"+data.numberOfEvents+"</strong>";
+			copyToUserRemove(start,end,providerId,roomId);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function copyToUserStartAdd(start,end,providerId,roomId) {
+	dojo.xhrGet({
+		url: globalBaseUrl+"/schedule-manager.raw/get-schedule-data",
+		handleAs: "json",
+		content: {
+			"dateStart": dateStartCopy.getFullYear() + "-" + (dateStartCopy.getMonth() + 1) + "-" + dateStartCopy.getDate(),
+			"dateEnd": dateEndCopy.getFullYear() + "-" + (dateEndCopy.getMonth() + 1) + "-" + dateEndCopy.getDate(),
+			"providerId": globProviderId,
+			"roomId": globRoomId,
+		},
+		load: function (data) {
+			var scheduleCopyToUserProgress = dojo.byId("scheduleCopyToUserProgressId");
+			if (scheduleCopyToUserProgress.innerHTML.length > 0) {
+				scheduleCopyToUserProgress.innerHTML += "<br />";
+			}
+			dojo.byId("scheduleCopyToUserProgressId").innerHTML += "<?=__('Adding')?> "+data.numberOfEvents+" <?=__('events for')?> "+data.title+" <?=__('from')?> "+data.dateStart+" - " +data.dateEnd+": <strong><label id=\"addCtr"+providerId+""+roomId+"Id\">0</label>/"+data.numberOfEvents+"</strong>";
+			copyToUserAdd(start,end,providerId,roomId);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function copyToUserRemove(start,end,providerId,roomId) {
+	if (end.getTime() > dateEndCopy.getTime()) {
+		end = dateEndCopy;
+	}
+	if (start.getTime() > dateEndCopy.getTime()) {
+		copyToUserStartAdd(dateStartCopy,dojo.date.add(dateStartCopy,"day",7),providerId,roomId);
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-copy-to-user-remove",
+		handleAs: "json",
+		content: {
+			"dateStart": start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate(),
+			"dateEnd": end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate(),
+			"providerId": providerId,
+			"roomId": roomId,
+		},
+		load: function (data) {
+			var remObj = dojo.byId("remCtr"+providerId+""+roomId+"Id");
+			var remCtr = parseInt(remObj.innerHTML);
+			remObj.innerHTML = remCtr + parseInt(data);
+			if (!copyCancelled) {
+				copyToUserRemove(dojo.date.add(start,"day",8),dojo.date.add(end,"day",8),providerId,roomId);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function copyToUserAdd(start,end,providerId,roomId) {
+	if (end.getTime() > dateEndCopy.getTime()) {
+		end = dateEndCopy;
+	}
+	if (start.getTime() > dateEndCopy.getTime()) {
+		var userRoom = userRoomId.shift();
+		if (userRoom == undefined) {
+			copyToUserOnCancelled();
+			return;
+		}
+		copyToUserStartAdd(dateStartCopy,dojo.date.add(dateStartCopy,"day",7),userRoom.providerId,userRoom.roomId);
+		return;
+	}
+	dojo.xhrPost({
+		url: globalBaseUrl+"/schedule-manager.raw/process-copy-to-user-add",
+		handleAs: "json",
+		content: {
+			"dateStart": start.getFullYear() + "-" + (start.getMonth() + 1) + "-" + start.getDate(),
+			"dateEnd": end.getFullYear() + "-" + (end.getMonth() + 1) + "-" + end.getDate(),
+			"providerIdTo": providerId,
+			"roomIdTo": roomId,
+			"providerIdFrom": globProviderId,
+			"roomIdFrom": globRoomId,
+		},
+		load: function (data) {
+			var addObj = dojo.byId("addCtr"+providerId+""+roomId+"Id");
+			var addCtr = parseInt(addObj.innerHTML);
+			addObj.innerHTML = addCtr + parseInt(data);
+			if (!copyCancelled) {
+				copyToUserAdd(dojo.date.add(start,"day",8),dojo.date.add(end,"day",8),providerId,roomId);
+			}
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+function copyToUserOnCancelled() {
+	copyCancelled = true;
+	copyToUserDone();
+}
+
+function copyToUserDone() {
+	dateStartCopy = null;
+	dateEndCopy = null;
+	userRoomId = [];
+	dojo.byId("scheduleCopyToUserContainerId").style.display = "block";
+	dojo.byId("scheduleCopyToUserProgressContainerId").style.display = "none";
+}
+
+
+var availUserRoomGrid = new dhtmlXGridObject("availUserRoomGridId");
+availUserRoomGrid.setImagePath("<?=$this->baseUrl?>/img/");
+availUserRoomGrid.selMultiRows = true;
+availUserRoomGrid.setHeader("");
+availUserRoomGrid.setNoHeader(true);
+availUserRoomGrid.setInitWidths("*");
+availUserRoomGrid.setColTypes("ro");
+availUserRoomGrid.setSkin("xp");
+availUserRoomGrid.init();
+
+function availUserRoomGridOnLoaded() {
+}
+availUserRoomGrid.load(globalBaseUrl+"/schedule-manager.raw/list-user-room?providerId="+globProviderId+"&roomId="+globRoomId,availUserRoomGridOnLoaded,"json");
+
+
+var selUserRoomGrid = new dhtmlXGridObject("selUserRoomGridId");
+selUserRoomGrid.setImagePath("<?=$this->baseUrl?>/img/");
+selUserRoomGrid.selMultiRows = true;
+selUserRoomGrid.setHeader("");
+selUserRoomGrid.setNoHeader(true);
+selUserRoomGrid.setInitWidths("*");
+selUserRoomGrid.setColTypes("ro");
+selUserRoomGrid.setSkin("xp");
+selUserRoomGrid.init();
+
+function addSelectedUserRoom() {
+	var rowId = availUserRoomGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert("<?=__('No selected row')?>");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		if (selUserRoomGrid.doesRowExist(rowIds[i])) {
+			alert(availUserRoomGrid.cells(rowIds[i],0).getValue() + " already added");
+			continue;
+		}
+		selUserRoomGrid.addRow(rowIds[i],"");
+		selUserRoomGrid.cells(rowIds[i],0).setValue(availUserRoomGrid.cells(rowIds[i],0).getValue());
+	}
+}
+
+function removeSelectedUserRoom() {
+	var rowId = selUserRoomGrid.getSelectedRowId();
+	if (rowId == null) {
+		alert("<?=__('No selected row')?>");
+		return;
+	}
+	var rowIds = rowId.split(",");
+	for (var i in rowIds) {
+		selUserRoomGrid.deleteRow(rowIds[i]);
+	}
+}
+
+</script>

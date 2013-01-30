@@ -1,0 +1,337 @@
+<style>
+body {
+	margin:0;
+	padding:0;
+}
+div.gridbox_xp table.obj td {
+    border-bottom: thin dashed;border-right:none;
+}
+</style>
+
+<div id="mainPane" style="position: relative; width: 100%; height: 800px;">
+    <div id="leftPane">
+        <div id="leftToolbar"></div>
+        <div id="menuTree" style="position: relative; width: 100%; height: 733px;"></div>
+    </div>
+
+    <div id="rightContent" style="width:100%; height:100%; margin:0px; overflow:auto"></div>
+
+    <!--<div id="rightPane">-->
+        <!--<div id="rightTab" style="position: absolute; width: 100%; height: 333px;"></div>-->
+    <!--</div>-->
+</div>
+
+<script>
+
+var menuTree = null;
+var selectedMenuId = 0;
+var siteSection = '';
+var chActive = 0;
+
+function getCheckedValue(id) {
+    objRadioId = dojo.byId(id);
+    objRadio = document.getElementsByName(objRadioId.name);
+    if (!objRadio) {
+        return "";
+    }
+    var radioLen = objRadio.length;
+    if (radioLen == undefined) {
+        if (objRadio.checked) {
+            return objRadio.value;
+        }
+        else {
+            return "";
+        }
+    }
+    for (var i = 0; i < radioLen; i++) {
+        if (objRadio[i].checked) {
+            return objRadio[i].value;
+        }
+    }
+    return "";
+}
+
+
+function ajaxGet(act, divId, args) {
+    dojo.xhrGet( {
+        url: "<?=$this->baseUrl?>/menu-manager.raw/"+act,
+        handleAs: "text",
+        timeout: 5000, // Time in milliseconds
+        content: args,
+
+        load: function(response, ioArgs) {
+            dojo.byId(divId).innerHTML = response;
+            return response;
+        },
+
+        error: function(response, ioArgs) {
+            console.error("HTTP status code: ", ioArgs.xhr.status);
+            return response;
+        }
+    });
+}
+
+function changeCacheSettings(val) {
+    dojo.xhrPost ({
+        url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-change-cache-settings",
+        content: {
+            cacheMode: val,
+        },
+        load: function (data) {
+            dojo.byId("rightContent").innerHTML = data;
+        },
+        error: function (error) {
+            console.error ('Error: ', error);
+        }
+    });
+}
+
+
+//Layouts
+//var pdLayout = new dhtmlXLayoutObject(document.body,"2U");
+var pdLayout = new dhtmlXLayoutObject("mainPane", "2U");
+pdLayout.setImagePath("<?=$this->baseUrl?>/img/");
+pdLayout.cells("a").setWidth(pdLayout.cells("a").getWidth()/2);
+pdLayout.cells("a").setText('<?=__("Menu")?>');
+pdLayout.cells("b").setText('<?=__("Menu Settings")?>');
+pdLayout.cells("a").showHeader();
+pdLayout.cells("a").attachObject("leftPane");
+//pdLayout.cells("b").attachObject("rightPane");
+pdLayout.cells("b").attachObject("rightContent");
+pdLayout.setEffect('collapse',true);
+pdLayout.setEffect("resize", true);
+
+onLoadLeftFunction = function(){
+    leftToolbar.disableItem("delete");
+}
+var leftToolbar = new dhtmlXToolbarObject("leftToolbar","ClearSilver");
+leftToolbar.loadXML("<?=$this->baseUrl?>/menu-manager.raw/left-toolbar.xml", onLoadLeftFunction);
+leftToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+leftToolbar.attachEvent("onClick", function(id){
+    switch(id) {
+        case 'add':
+            var str = '<?=__("Add New Menu Item");?>';
+            pdLayout.cells("b").setText(str);
+            menuTree.openItem("menu");
+            menuTree.insertNewChild("menu","newMenuItem","",0,0,0,0,"SELECT,CALL,TOP,CHILD");
+            dojo.xhrGet( {
+                url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-edit",
+                handleAs: "text",
+                timeout: 5000, // Time in milliseconds
+                content: {menuId: "newMenuItem"},
+
+                load: function(response, ioArgs) {
+                    dojo.byId("rightContent").innerHTML = response;
+                    updateMenuType("freeform");
+                    return response;
+                },
+
+                error: function(response, ioArgs) {
+                    console.error("HTTP status code: ", ioArgs.xhr.status);
+                    return response;
+                }
+            });
+            break;
+        case 'delete':
+            if (confirm('<?=__("Are you sure you want to delete menu id#")?>'+selectedMenuId+"?")) {
+                if (selectedMenuId.substr(0,11) == 'newMenuItem') {
+                    menuTree.deleteChildItems(selectedMenuId);
+                    menuTree.deleteItem(selectedMenuId,"menu");
+                    alert('<?=__('New Menu Item successfully deleted.')?>');
+                    return;
+                }
+                // temporarily reload menu tree, because dhtmlxTree free
+                // version does not support removing of node in the tree
+                dojo.xhrPost ({
+                    url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-delete",
+        	        content: {
+                        menuId: selectedMenuId,
+                    },
+                    handleAs: "json",
+                    load: function (objResponse, ioArgs) {
+                        alert(objResponse.msg);
+                    },
+                    error: function (error) {
+                        console.error ('Error: ', error);
+                    }
+                });
+                populateMenuTree();
+                leftToolbar.disableItem("delete");
+            }
+            break;
+        default:
+            alert('<?=__("Invalid event.")?>');
+    }
+});
+
+function menuMoveDropHandler(idFrom,idTo, idBefore, movingTreeNode, moveToTreeNode){
+	//alert(idFrom + " " + idTo + " " + idBefore);
+    //if we return false then drag&drop be aborted
+    if (idTo == 0 && parseInt(idBefore,0) == 0) {
+        alert('<?=__("Moving to root is not allowed!")?>');
+        return false;
+    }
+
+	if (parseInt(idBefore,0) > 0) {
+	//do this on a sinbling move, reordering items
+	dojo.xhrGet( {
+        url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-move-menu-item",
+        handleAs: "json",
+        content: { idFrom: idFrom, idTo: idTo, idBefore: idBefore },
+        load: function(response, ioArgs) {
+                alert("<?=__("Menu change saved")?>");
+		return true;
+        },
+        error: function(response, ioArgs) {
+            console.error("HTTP status code: ", ioArgs.xhr.status);
+            menuTree.moveItem(idFrom,"item_sibling",idTo);
+        }
+    });
+    onNodeSelect(idFrom);
+	return true;
+	}
+//do this when the move is a changing levels in hierarchy
+    dojo.xhrGet( {
+        url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-move-menu-item,",
+        handleAs: "json",
+        content: { idFrom: idFrom, idTo: idTo, idBefore: 0 },
+        load: function(response, ioArgs) {
+		alert("<?=__("Menu change saved")?>");
+		return true;
+        },
+        error: function(response, ioArgs) {
+            console.error("HTTP status code: ", ioArgs.xhr.status);
+            menuTree.moveItem(idFrom,"item_sibling",idTo);
+            return response;
+        }
+    });
+    onNodeSelect(idFrom);
+	return true;
+}
+
+function updateMenuType(val) {
+    dojo.style("typeFreeForm", "display", "none");
+    dojo.style("typeReport", "display", "none");
+    dojo.style("typeForm", "display", "none");
+    switch (val) {
+        case 'freeform':
+            dojo.style("typeFreeForm", "display", "inline");
+            break;
+        case 'report':
+            dojo.style("typeReport", "display", "inline");
+            break;
+        case 'form':
+            dojo.style("typeForm", "display", "inline");
+            break;
+        case 'submenu':
+            break;
+    }
+}
+
+//set function object to call on node select
+function onNodeSelect(nodeId) {
+    //populateMenuTree();
+    leftToolbar.enableItem("delete");
+    selectedMenuId = nodeId;
+    if (nodeId == 'menu') {
+        var str = '<?=__("Menu Settings")?>';
+        pdLayout.cells("b").setText(str);
+        ajaxGet("ajax-menu-settings", "rightContent");
+    } else {
+        var strLabel = menuTree.getItemText(nodeId);
+        var str = '<?=__("Editing Menu Item: ")?>'+strLabel;
+        pdLayout.cells("b").setText(str);
+        dojo.xhrGet( {
+            url: "<?=$this->baseUrl?>/menu-manager.raw/ajax-edit",
+            handleAs: "text",
+            timeout: 5000, // Time in milliseconds
+            content: {menuId: nodeId},
+
+            load: function(response, ioArgs) {
+                dojo.byId("rightContent").innerHTML = response;
+                updateMenuType(getCheckedValue("menuItem-type"));
+                updateActive();
+                return response;
+            },
+
+            error: function(response, ioArgs) {
+                console.error("HTTP status code: ", ioArgs.xhr.status);
+                return response;
+            }
+        });
+    }
+}
+
+function populateMenuTree() {
+    dojo.byId("menuTree").innerHTML = '';
+    menuTree = new dhtmlXTreeObject("menuTree","100%","100%",0);
+    menuTree.setImagePath("<?=$this->baseUrl?>/img/");
+    //enable Drag&Drop
+    menuTree.setDragBehavior('complex');
+    menuTree.enableDragAndDrop(1);
+    //set my Drag&Drop handler
+    menuTree.attachEvent("onDrop",menuMoveDropHandler);
+    menuTree.setDataMode("json");
+    menuTree.loadJSON("<?=$this->baseUrl?>/menu-manager.raw/menu.json");
+    menuTree.attachEvent("onClick",onNodeSelect);
+}
+
+populateMenuTree();
+
+
+
+
+//djConfig.usePlainJson=true;
+
+function submitmenuitemForm() {
+    dojo.xhrPost ({
+        url: getBaseUrl() + "/menu-manager.raw/edit-process",
+        form: 'menuitem',
+        content: {
+            active: chActive,
+        },
+        handleAs: "json",
+        load: function(objResponse, ioArgs) {
+            alert(objResponse.msg);
+            //alert(objResponse.content);
+            populateMenuTree();
+            onNodeSelect("menu");
+            leftToolbar.disableItem("delete");
+        },
+        error: function (error) {
+    	    console.error ('Error: ', error);
+        }
+    });
+}
+
+
+function updateSiteSection(val) {
+    if (val == undefined) {
+        val = dojo.byId('chSiteSection').value;
+    }
+    siteSection = val;
+}
+
+function updateActive() {
+    chActive = (getCheckedValue("chActive").length > 0)? 1 : 0;
+}
+
+
+
+function changeCacheSettings(val) {
+    dojo.xhrPost ({
+        url: getBaseUrl() + "/menu-manager.raw/ajax-change-cache-settings",
+        content: {
+            cacheMode: val,
+        },
+        handleAs: "json",
+        load: function(objResponse, ioArgs) {
+            alert(objResponse.msg);
+        },
+        error: function (error) {
+    	    console.error ('Error: ', error);
+        }
+    });
+}
+
+</script>

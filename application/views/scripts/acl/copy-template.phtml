@@ -1,0 +1,103 @@
+<fieldset><legend><?=__('Copy Template')?></legend>
+	<div class="formRow">
+		<label><?=__('Copy From')?></label>
+		<?=$this->formSelect('permissionTemplateId',$this->permissionTemplateId,array('id'=>'permissionTemplateId','style'=>'width:250px;'),$this->permissionTemplates)?>
+	</div>
+	<br style="clear:both;"/>
+	<br style="clear:both;"/>
+	<div class="formRow">
+		<label><?=__('Copy To')?></label>
+		<?=$this->formSelect('copyTo','user',array('id'=>'copyTo','style'=>'width:250px;','onChange'=>'aclCopyTemplateToggle(this.value)'),array('user'=>'User Template','template'=>'Permission Template'))?>
+	</div>
+	<br style="clear:both;"/>
+	<br style="clear:both;"/>
+	<div id="userDivId" class="formRow">
+		<label><?=__('User')?></label>
+		<div id="aclCopyTemplateUserSelectAutoCompleteDivId"></div>
+	</div>
+	<div id="templateDivId" class="formRow" style="display:none;">
+		<label><?=__('Template Name')?></label>
+		<?=$this->formText('templateName',null,array('id'=>'templateName','style'=>'width:250px;'))?>
+	</div>
+	<br style="clear:both;"/>
+	<br style="clear:both;"/>
+	<div class="formRow">
+		<?=$this->formButton('aclCopy',__('Copy'),array('id'=>'aclCopy','onClick'=>'aclCopyTemplate()'))?>
+	</div>
+</fieldset>
+<script>
+var aclCopyTemplateUserId = null;
+var actpscb = dijit.byId("aclCopyTemplateUserSelectAutoCompleteDivId");
+if (actpscb != undefined) { 
+	actpscb.destroyRecursive();
+	actpscb = null;
+}
+var actpsac = new dojox.data.QueryReadStore({url:"<?=$this->baseUrl?>/admin-users.raw/auto-complete",requestMethod:"get"},"aclCopyTemplateUserSelectAutoComplete");
+actpscb = new dijit.form.FilteringSelect({name:"aclCopyTemplateUserSelectAutoCompleteId",autocomplete:true,store:actpsac},"aclCopyTemplateUserSelectAutoCompleteDivId");
+actpscb.validate = function () {
+	return true;
+};
+dojo.connect(actpscb,"onChange","aclCopyTemplateLoadUser");
+function aclCopyTemplateLoadUser(id) {
+	if (typeof id == "undefined") return;
+	aclCopyTemplateUserId = id;
+}
+function aclCopyTemplateToggle(val) {
+	switch (val) {
+		case "user":
+			dojo.byId(val+"DivId").style.display = "block";
+			dojo.byId("templateDivId").style.display = "none";
+			break;
+		case "template":
+			dojo.byId(val+"DivId").style.display = "block";
+			dojo.byId("userDivId").style.display = "none";
+			break;
+	}
+}
+function aclCopyTemplate() {
+	var templateType = "";
+	var templateValue = "";
+	if (dojo.byId("userDivId").style.display != "none") { // user
+		templateType = "user";
+		if (aclCopyTemplateUserId == null) {
+			alert("<?=__('No user selected')?>");
+			return;
+		}
+		templateValue = aclCopyTemplateUserId;
+	}
+	else if (dojo.byId("templateDivId").style.display != "none") { // template
+		templateType = "template";
+		var templateName = dojo.byId("templateName").value;
+		if (templateName.length == 0) {
+			alert("<?=__('Template Name is required')?>");
+			return;
+		}
+		templateValue = templateName;
+	}
+	else {
+		return;
+	}
+
+	var permissionTemplateSelect = dojo.byId("permissionTemplateId");
+	var permissionTemplateId = permissionTemplateSelect.options[permissionTemplateSelect.selectedIndex].value;
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/acl.raw/process-copy-template",
+		handleAs: "json",
+		content: {
+			"permissionTemplateId": permissionTemplateId,
+			"templateType": templateType,
+			"templateValue": templateValue,
+		},
+		load: function(data,ioArgs) {
+			alert("<?=__('New template saved')?>: "+data.name);
+			aclTemplateOnProcessed(data);
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+
+}
+</script>

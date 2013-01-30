@@ -1,0 +1,176 @@
+<div id="adminLayout" style="position:relative;float:left;width:100%;height:480px;"></div>
+<script>
+                var adminLayout = new dhtmlXLayoutObject("adminLayout","2U");
+                adminLayout.setImagePath("<?=$this->baseUrl?>/img/");
+                adminLayout.cells("a").setText("System Administration");
+                adminLayout.cells("a").setWidth(400);
+		adminLayout.cells("b").setText('');
+                adminLayout.setEffect('collapse',true);
+                adminAccordion = adminLayout.cells('a').attachAccordion();
+                        adminAccordion.setIconsPath("<?=$this->baseUrl?>/img/");
+                        adminAccordion.addItem("systemObjects","System Objects");
+			sysObjectsTree = adminAccordion.cells('systemObjects').attachTree();
+			sysObjectsTree.setImagePath("<?=$this->baseUrl?>/img/");
+			sysObjectsTree.attachEvent('onClick',onSystemObjectsTreeItemSelect);
+			sysObjectsTree.insertNewChild(0,21,"<?=__('Appointment Rules')?>");
+			sysObjectsTree.insertNewChild(0,10,'Barcode Manager');
+			//sysObjectsTree.insertNewChild(0,24,"<?=__('Claim Edits Manager')?>");
+			sysObjectsTree.insertNewChild(0,27,"<?=__('Claim Rules')?>");
+			sysObjectsTree.insertNewChild(0,20,"<?=__('Dashboard Components Manager')?>");
+			//sysObjectsTree.insertNewChild(0,13,'Data Integration Logs');
+			sysObjectsTree.insertNewChild(0,26,"Discount Table Manager");
+			sysObjectsTree.insertNewChild(0,9,'Enumeration Manager');
+			sysObjectsTree.insertNewChild(0,25,"Fee Schedule Manager");
+			sysObjectsTree.insertNewChild(0,8,'Formulary Manager');
+			sysObjectsTree.insertNewChild(0,14,'General Alerts');
+			sysObjectsTree.insertNewChild(0,15,'Health Status Alerts');
+			sysObjectsTree.insertNewChild(0,12,'HL7 & Data Integration Manager');
+			sysObjectsTree.insertNewChild(0,16,"<?=__('Insurance Manager')?>");
+			//sysObjectsTree.insertNewChild(0,4,'Menu Manager');
+			sysObjectsTree.insertNewChild(0,7,'Note Templates');
+			sysObjectsTree.insertNewChild(0,3,'NSDR Manager');
+			sysObjectsTree.insertNewChild(0,5,'Permissions Templates');
+			sysObjectsTree.insertNewChild(0,1,'Persons/Users');
+			sysObjectsTree.insertNewChild(0,18,"<?=__('Pharmacy')?>");
+			sysObjectsTree.insertNewChild(0,2,'Physical Plant');
+			sysObjectsTree.insertNewChild(0,6,'Prescriptions');
+			sysObjectsTree.insertNewChild(0,22,"<?=__('Reports Manager')?>");
+			sysObjectsTree.insertNewChild(0,11,'Services');
+			sysObjectsTree.insertNewChild(0,23,"<?=__('Statistics Manager')?>");
+			sysObjectsTree.insertNewChild(0,19,"<?=__('Templated Text Manager')?>");
+			sysObjectsTree.insertNewChild(0,17,"<?=__('Update Manager')?>");
+			sysObjectsTree.closeAllItems();
+
+                        adminAccordion.addItem("healthcloud","HealthCloud");
+			healthCloudTree = adminAccordion.cells('healthcloud').attachTree();
+			healthCloudTree.setImagePath("<?=$this->baseUrl?>/img/");
+			healthCloudTree.insertNewChild(0,1,'CHMED');
+			healthCloudTree.attachEvent('onClick',onHealthCloudTreeItemSelect);
+			healthCloudTree.insertNewChild(0,2,'CHMED Pharmacies');
+			healthCloudTree.closeAllItems();
+
+		 adminAccordion.cells("systemObjects").open();
+
+function onSystemObjectsTreeItemSelect(itemId) {
+	itemName = sysObjectsTree.getItemText(itemId);
+	switch (itemId) {
+		case 1: // Persons/Users
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-persons.raw');
+			break;
+		case 2: // Physical Plant
+			break;
+		case 3: // NSDR Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/nsdr-manager.raw');
+			break;
+		//case 4: //Menu Manager
+		//	changeAdminContainer(itemName,'<?=$this->baseUrl?>/menu-manager.raw');
+		//	break;
+		case 5: // Permissions Templates
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/acl.raw');
+			break;
+		case 6: // Prescriptions
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-prescriptions.raw');
+			break;
+		case 7: // Note Templates
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/clinical-notes-manager.raw');
+			break;
+		case 8: // Formulary Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/formulary-manager.raw');
+			break;
+		case 9: // Enumeration Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/enumerations-manager.raw');
+			break;
+		case 10: // Barcode Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-barcode.raw');
+			break;
+		case 11: // Services
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-services.raw');
+			break;
+		case 12: // HL7 & Data Integration Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-hl7.raw');
+			break;
+		case 13: // Data Integration Logs
+			break;
+		case 14: // General Alerts
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/general-alerts.raw');
+			break;
+		case 15: // Health Status Alerts
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/health-status.raw');
+			break;
+		case 16: // Insurance Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/insurance-manager.raw');
+			break;
+		case 17: // Update Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/update-manager.raw');
+			break;
+		case 18: // Pharmacy
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-pharmacies.raw');
+			break;
+		case 19: // Templated Text Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/templated-text-manager.raw');
+			break;
+		case 20: // Dashboard Components Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/dashboard-components-manager.raw');
+			break;
+		case 21: // Appointment Rules
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/appointment-rules.raw');
+			break;
+		case 22: // Reports Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/reports-manager.raw');
+			break;
+		case 23: // Statistics Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/statistics-manager.raw');
+			break;
+		case 24: // Claim Edits Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/claim-edits-manager.raw');
+			break;
+		case 25: // Fee Schedule Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/fee-schedule-manager.raw');
+			break;
+		case 26: // Discount Table Manager
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/discount-table-manager.raw');
+			break;
+		case 27: // Claim Rules
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/claim-rules.raw');
+			break;
+		default:
+			alert('\'' + itemName + '\' does not have an action defined');
+	}
+}
+
+function changeAdminContainer(itemName,url) {
+	var adminContainerId = 'adminContainerId';
+	var oContainer = dojo.byId(adminContainerId);
+	if (!oContainer) {
+		oContainer = document.createElement('div');
+		oContainer.setAttribute('id',adminContainerId);
+	}
+	dojo.xhrGet({
+		url: url,
+		handleAs: "text",
+		load: function(data,ioArgs) {
+			dojo.setInnerHTML(oContainer,data);
+			adminLayout.cells("b").attachObject(oContainer);
+			adminLayout.cells("b").setText(itemName);
+			return data;
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+function onHealthCloudTreeItemSelect(itemId) {
+	itemName = healthCloudTree.getItemText(itemId);
+	switch (itemId) {
+		case 1: // CHMED
+			break;
+		case 2: // CHMED Pharmacies
+			changeAdminContainer(itemName,'<?=$this->baseUrl?>/admin-pharmacies.raw');
+			break;
+		default:
+			alert('\'' + itemName + '\' does not have an action defined');
+	}
+}
+</script>

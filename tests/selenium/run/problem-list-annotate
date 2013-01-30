@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>problem-list-annotate</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">problem-list-annotate</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>1000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='problemsFilterContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemsFilterContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='problemsListContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='problemsListContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td>Active</td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemsListContainer']/div[2]/table/tbody/tr[2]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>answerOnNextPrompt</td>
+	<td>here is my comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemListToolbar']/table/tbody/tr/td[6]/table/tbody/tr/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//div[@id='problemsListContainer']/div[2]/table/tbody/tr[2]/td[2]/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAt</td>
+	<td>//div[@id='problemsListContainer']/div[2]/table/tbody/tr[2]/td[2]/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='problemsListContainer']/div[2]/div/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>here is my comment</td>
+	<td></td>
+</tr>
+<tr>
+	<td>setSpeed</td>
+	<td>0</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

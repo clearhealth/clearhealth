@@ -1,0 +1,91 @@
+<style>
+div.gridbox_xp table.obj td {
+	border-bottom:thin dashed;
+	border-right:none;
+}
+.buttonAddGA {
+	margin: 0em 0.1em;
+	border:1px solid #b3b3b3;
+	line-height: normal;
+	font-size: 100%;
+}
+.dhx_textarea {
+	height:300px;
+}
+</style>
+<div id="TTMGridId" style="height:444px;"></div>
+
+<script>
+var TTMGrid = new dhtmlXGridObject("TTMGridId");
+TTMGrid.setImagePath("<?=$this->baseUrl?>/img/");
+var indexTTMName = 0;
+var indexTTMTemplate = 1;
+
+var TTMColFields = [];
+TTMColFields[indexTTMName] = "name";
+TTMColFields[indexTTMTemplate] = "template";
+
+TTMGrid.setHeader("<?=__('Name')?>,<?=__('Template')?>");
+TTMGrid.setColTypes("ed,txt");
+TTMGrid.setSkin("xp");
+TTMGrid.setInitWidths("200,*");
+function TTMGridOnCellEdited(stage,rowId,cellIndex,newValue,oldValue) {
+	if (stage == 2 && newValue != oldValue) {
+		switch (cellIndex) {
+			case indexTTMName: // name
+			case indexTTMTemplate: // template
+				break;
+			default:
+				return;
+		}
+		TTMProcessEdit(rowId,cellIndex,newValue,oldValue);
+	}
+	return true;
+}
+TTMGrid.attachEvent("onEditCell",TTMGridOnCellEdited);
+TTMGrid.init();
+
+function TTMGridOnLoaded() {
+	TTMGrid.addRow("0","",0);
+}
+function TTMGridReload() {
+	TTMGrid.clearAll();
+	TTMGrid.load(globalBaseUrl+"/templated-text-manager.raw/list",TTMGridOnLoaded,"json");
+}
+TTMGridReload();
+
+dhtmlxEvent(TTMGrid.entBox,"contextmenu",function(e){
+	(e||event).cancelBubble=true;
+	return false;
+});
+
+function TTMProcessEdit(rowId,cellIndex,newValue,oldValue) {
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/templated-text-manager.raw/process-edit",
+		handleAs: "json",
+		content: {
+			"templateId": rowId,
+			"field": TTMColFields[cellIndex],
+			"value": newValue,
+		},
+		load: function (data) {
+			if (data.error) {
+				TTMGrid.cells(rowId,cellIndex).setValue(oldValue);
+				alert(data.error);
+				return;
+			}
+			if (data.id != rowId) {
+				TTMGrid.setRowId(TTMGrid.getRowIndex(rowId),data.id);
+				rowId = data.id;
+				TTMGrid.addRow("0","",0);
+			}
+			TTMGrid.cells(rowId,cellIndex).setValue(data.value);
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+
+</script>

@@ -1,0 +1,147 @@
+<style>
+body {
+	margin:0;
+	padding:0;
+}
+div.gridbox_xp table.obj td {
+    border-bottom: thin dashed;border-right:none;
+}
+</style>
+
+
+<div style="height:800px;">
+
+<div id="nsdrContainer" style="position:relative;width:100%;height:440px;"></div>
+<div id="nsdrLeftContainer">
+	<div id="nsdrLeftToolbar"></div>
+	<div id="nsdrDataPointsTree" style="float:left;width:100%;height:370px;"></div>
+</div>
+
+<div id="nsdrRightContainer">
+	<div id="nsdrDefinition" style="float:left;width:100%;height:430px;"></div>
+</div>
+
+</div>
+
+<script>
+//Layouts
+var nsdrLayout = new dhtmlXLayoutObject("nsdrContainer", "2U");
+nsdrLayout.setImagePath("<?=$this->baseUrl?>/img/");
+nsdrLayout.cells("a").setText('<?=__("NSDR Definitions");?>');
+var currentWidth = nsdrLayout.cells("a").getWidth() / 2;
+currentWidth += currentWidth / 2;
+nsdrLayout.cells("a").setWidth(currentWidth);
+nsdrLayout.cells("b").setText('<?=__("NSDR Definition")?>');
+nsdrLayout.cells("a").showHeader();
+nsdrLayout.cells("a").attachObject("nsdrLeftContainer");
+nsdrLayout.cells("b").attachObject("nsdrRightContainer");
+nsdrLayout.setEffect('collapse',true);
+nsdrLayout.setEffect("resize", true);
+
+function updateLabel() {
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/nsdr.raw/system?event=status",
+		handleAs: "json",
+		load: function (data) {
+			var stat = data.msg;
+			stat += '';
+			var f = stat.charAt(0).toUpperCase();
+			stat = f + stat.substr(1);
+			nsdrLayout.cells("a").setText('<?=__("NSDR Definitions");?>'+' (Status: '+stat+')');
+		},
+		error: function (error) {
+			console.error ('Error: ', error);
+		}
+	});
+}
+updateLabel();
+
+// LEFT PANE SECTION
+var nsdrLeftToolbar = new dhtmlXToolbarObject("nsdrLeftToolbar","ClearSilver");
+nsdrLeftToolbar.loadXML("<?=$this->baseUrl?>/nsdr-manager.raw/left-toolbar.xml");
+nsdrLeftToolbar.setIconsPath("<?=$this->baseUrl?>/img/");
+nsdrLeftToolbar.attachEvent("onClick", function(id){
+	switch (id) {
+		case 'add':
+		case 'delete':
+			redrawNSDR(id);
+			break;
+		case 'start':
+		case 'reload':
+		case 'status':
+			dojo.xhrPost ({
+				url: "<?=$this->baseUrl?>/nsdr.raw/system",
+				handleAs: "json",
+				content: {
+					event: id,
+				},
+				load: function (data) {
+					alert(data.msg);
+					updateLabel();
+				},
+				error: function (error) {
+					console.error ('Error: ', error);
+				}
+			});
+			break;
+	}
+});
+
+function redrawNSDR(event,id,parentId) {
+	if (!id) {
+		var id = nsdrDataPointsTree.getSelectedItemId();
+	}
+	if (!parentId) {
+		var parentId = nsdrDataPointsTree.getParentId(id);
+	}
+	//var parentId = nsdrDataPointsTree.getUserData(selectedParentId,'uuid');
+	if (id.length <= 0 && event != 'add') {
+		alert("No item selected.");
+		return;
+	}
+
+	var action = 'edit';
+	if (event == 'delete') {
+		action = 'ajax-delete';
+		var msg = "Deleting "+id+"\n\nAre you sure you want to continue?";
+		if (!confirm(msg)) {
+			return;
+		}
+	}
+
+	var uuid = nsdrDataPointsTree.getUserData(id,'uuid');
+	dojo.xhrGet( {
+		url: "<?=$this->baseUrl?>/nsdr-manager.raw/"+action,
+		handleAs: "text",
+		timeout: 5000, // Time in milliseconds
+		content: {
+			event: event,
+			uuid: uuid,
+			parentId: parentId,
+		},
+		load: function(data) {
+			if (event == 'delete') {
+				nsdrDataPointsTree.deleteItem(id);
+				// remove all children on parent items
+				nsdrDataPointsTree.deleteChildItems(parentId);
+				// reload all children on parent items
+				nsdrDataPointsTree.loadXML("<?=$this->baseUrl?>/nsdr-manager.raw/data-points.xml?id="+parentId);
+				data = "";
+			}
+			dojo.setInnerHTML(dojo.byId('nsdrDefinition'),data);
+		},
+		error: function(response, ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+}
+
+var nsdrDataPointsTree = new dhtmlXTreeObject("nsdrDataPointsTree","100%","100%",0);
+nsdrDataPointsTree.setImagePath("<?=$this->baseUrl?>/img/");
+nsdrDataPointsTree.setXMLAutoLoading("<?=$this->baseUrl?>/nsdr-manager.raw/data-points.xml");
+nsdrDataPointsTree.loadXML("<?=$this->baseUrl?>/nsdr-manager.raw/data-points.xml?id=0");
+nsdrDataPointsTree.attachEvent("onClick", function(id,prevId){ redrawNSDR("edit",id); });
+
+
+</script>

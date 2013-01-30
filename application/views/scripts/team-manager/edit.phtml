@@ -1,0 +1,93 @@
+<?if(isset($this->message)):?>
+<h1 style="color:red;"><?=$this->message?></h1>
+<?else:?>
+	<div style="float:left;width:100%;">
+		<strong><?=__("All Users (Most Recent)")?></strong><br />
+		<div id="userSelectAutoCompleteDiv"></div>
+		<script>
+		var teamUserId = "<?=$this->teamMember->personId?>";
+		function teamManagerCaptureUserList(/*Object*/ results, /*Object*/ dataObject) {
+			uscb._hideResultList();
+			var selectList = dojo.byId('userSelectMultiSelect');
+			selectList.options.length = 0;
+			for (i=0;i<results.length;i++) {
+				var newOption = document.createElement('option');
+				newOption.text = results[i].i['name'];
+				newOption.value = results[i].i['label'];
+
+				try {
+					selectList.add(newOption,null); // standards compliant; doesn't work in IE
+				}
+				catch(ex) {
+					selectList.add(newOption,null); // IE only
+				}
+				if (i==0) {
+					selectList.selectedIndex = 0;
+					teamManagerSetUserId(selectList.options[selectList.selectedIndex].value);
+				}
+			}
+		}
+
+		function teamManagerSetUserId(userId) {
+			teamUserId = userId;
+		}
+
+		var uscb = dijit.byId('userSelectAutoCompleteDiv');
+		if (uscb != undefined) { 
+			uscb.destroyRecursive();
+			uscb = null;
+		}
+		var usac = new custom.PatientSelectAutoComplete({url:"<?=$this->baseUrl?>/team-manager.raw/user-select-auto-complete",requestMethod:"get"},'userSelectAutoComplete');
+		uscb = new dijit.form.ComboBox({name:"userSelectAutoCompleteId",autocomplete:false,store:usac,hasDownArrow:false,value:"<?=$this->defaultUser[$this->teamMember->personId]?>"},"userSelectAutoCompleteDiv");
+		dojo.connect(uscb,"_openResultList",'teamManagerCaptureUserList');
+
+		function teamManagerUpdate() {
+			var cosignWithParentCheckbox = dojo.byId("team-cosignWithParent");
+			var cosignWithParent = 0;
+			if (!cosignWithParentCheckbox.disabled && cosignWithParentCheckbox.checked) {
+				cosignWithParent = 1;
+			}
+			dojo.xhrPost({
+				url: "<?=$this->baseUrl?>/team-manager.raw/process-edit",
+				handleAs: "json",
+				content: {
+					"enumerationId": dojo.byId("enumerationId").value,
+					"team[teamMemberId]": "<?=$this->teamMember->teamMemberId?>",
+					"team[personId]": teamUserId,
+					"team[cosignWithParent]": cosignWithParent,
+					"team[role]": dojo.byId("team-role").value,
+				},
+				load: function (data) {
+					dhxWins.window('windowEditORMObjectId').close();
+				},
+				error: function (error) {
+					alert(error);
+					console.error ('Error: ', error);
+				}
+			});
+		}
+		</script>
+		<?=$this->formSelect("userSelectMultiSelect",$this->teamMember->role,array("id"=>"userSelectMultiSelect","onChange"=>"teamManagerSetUserId(this.options[this.selectedIndex].value)","style"=>"width:100%;height:200px;","multiple"=>"multiple"),$this->defaultUser)?>
+
+		<div class="formRow" style="padding-top:4px;">
+			<strong><?=__("Role")?>:</strong> <?=$this->formText("team[role]",$this->teamMember->role,array("id"=>"team-role"))?>
+		</div>
+		<div class="formRow" style="padding-top:4px;">
+			<?$attributes = array();
+			$attributes['id'] = "team-cosignWithParent";
+			if (!$this->hasUserParent) {
+				$attributes['disabled'] = "disabled";
+			}
+			$attributes['checked'] = (bool)$this->teamMember->cosignWithParent;
+			echo $this->formCheckbox("team[cosignWithParent]",null,$attributes);
+			echo ' ' . __("Add Cosignature Requests with Immediate Supervisor")?>
+		</div>
+		<br style="clear:left;" />
+		<br style="clear:left;" />
+		<div style="float:right;">
+			<?=$this->formHidden('enumerationId',$this->enumerationId)?>
+			<input type="button" value="<?=__("Cancel")?>" onClick="dhxWins.window('windowEditORMObjectId').close()"/>
+			<input type="button" value="   <?=__("OK")?>   " onClick="teamManagerUpdate()"/>
+		</div>
+	</div>
+<?endif?>

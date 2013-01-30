@@ -1,0 +1,14 @@
+<div align="center">
+<br />
+<?=__('Name'); ?> 
+<?= $this->formText('txtName');  ?><br />
+
+<?= $this->formRadio('optType', 0, '', array(0 => 'Mine', 1 => 'Global'));?><br /><br />
+
+<br />
+<br />
+<br />
+<br />
+<?= $this->formButton('btnOK', __('OK'), array('onClick' => 'saveLayout(); winDC.close();')); ?>
+<?= $this->formButton('btnCancel', __('Cancel'), array('onClick' => 'winDC.close()')); ?>
+</div>

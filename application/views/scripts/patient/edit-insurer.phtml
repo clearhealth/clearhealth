@@ -1,0 +1,257 @@
+<style>
+.insuranceProgram {
+        margin: 0em 0.1em;
+        border:1px solid #b3b3b3;
+        line-height: normal;
+        font-size: 100%;
+        width: 20em;
+}
+</style>
+
+
+<div style="width:100%;">
+<?=$this->form->renderOpen()?>
+
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->insuranceProgramId->renderLabel()?>
+	<?=$this->form->insuranceProgramIdInput('FormSelect',array('class'=>'insuranceProgram','options'=>$this->insurancePrograms));?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->groupName->renderLabel()?>
+	<?=$this->form->groupNameInput('FormText',array('class'=>'insuranceProgram'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->groupNumber->renderLabel()?>
+	<?=$this->form->groupNumberInput('FormText',array('class'=>'insuranceProgram'))?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+	<dt><label style="padding-top:4px;"><?=__('Effective Date Range')?> </label></dt>
+	<?=$this->form->effectiveStartInput('FormDateText',array('style'=>'width:90px;'))?>
+	to <?=$this->form->effectiveEndInput('FormDateText',array('style'=>'width:90px;'))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->assigning->renderLabel()?>
+	<?=$this->form->assigningInput('FormSelect',array('class'=>'insuranceProgram','options'=>$this->assignings));?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->copay->renderLabel()?>
+	<?$this->form->copay->setAttrib('class','insuranceProgram')?>
+	<?=$this->form->copayInput('FormNumberSpinner',array('places'=>2))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->subscriberId->renderLabel()?>
+	<?=$this->form->subscriberIdInput('FormHidden')?>
+	<?=$this->form->subscriberToPatientRelationshipInput('FormSelect',array('class'=>'insuranceProgram','options'=>$this->subscribers,'onChange'=>'insurerSubscriberOnChanged(this)'));?>
+</div>
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->verified->renderLabel()?>
+	<?=$this->form->verifiedInput('FormSelect',array('class'=>'insuranceProgram','options'=>$this->listVerified));?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<fieldset style="width:450px;"><legend><?=__('Subscriber')?></legend>
+	<div id="subscriberDivId">
+		<div style="margin-bottom:10px;">
+			<input type="radio" name="subscriberSelectId" id="subscriberPatientSearchId" style="width:20px;" onClick="subscriberPatientSearch()" checked="checked" /> <?=__('Search Current Patients')?> &nbsp;
+			<input type="radio" name="subscriberSelectId" id="subscriberPatientNewId" style="width:20px;" onClick="subscriberPatientNew()" /> <?=__('New Patient')?>
+		</div>
+		<div id="subscriberPatientSearchDivId">
+			<?=__('Search')?>: <?=$this->formText('q','',array('id'=>'q'))?>
+		</div>
+		<div id="subscriberPatientNewDivId" style="margin-left:100px;">
+			<div style="float:left;">
+				<?=$this->form->formSubscriber->firstName->renderLabel()?>
+				<?=$this->form->formSubscriber->firstNameInput()?>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<?=$this->form->formSubscriber->lastName->renderLabel()?>
+				<?=$this->form->formSubscriber->lastNameInput()?>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<dt><label style="padding-top:4px;"><?=__('SSN')?> </label></dt>
+				<?=$this->form->formSubscriber->identifierInput()?>
+				<?$this->form->formSubscriber->identifierType->setValue('SSN')?>
+				<?=$this->form->formSubscriber->identifierTypeInput('FormHidden')?>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<?=$this->form->formSubscriber->dateOfBirth->renderLabel()?>
+				<?=$this->form->formSubscriber->dateOfBirthInput()?>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<?=$this->form->formSubscriber->gender->renderLabel()?>
+				<?=$this->form->formSubscriber->genderInput('FormSelect',array('options'=>Enumeration::getEnumArray('Gender','key')))?>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<?=$this->formHidden('subscriber[phoneId]',$this->subscriberPhone->numberId,array('id'=>'subscriber-phoneId'))?>
+				<dt><label style="padding-top:4px;"><?=__('Phone#')?> </label></dt>
+				<?=$this->formText('subscriber[phone]',$this->subscriberPhone->number,array('id'=>'subscriber-phone'))?>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<?=$this->formHidden('subscriber[address][addressId]',$this->subscriberAddress->addressId,array('id'=>'subscriber-address-addressId'))?>
+				<dt><label style="padding-top:4px;"><?=__('Address')?> </label></dt>
+				<?=$this->formText('subscriber[address][line1]',$this->subscriberAddress->line1,array('id'=>'subscriber-address-line1'))?>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<dt><label style="padding-top:4px;">&nbsp;</label></dt>
+				<?=$this->formText('subscriber[address][line2]',$this->subscriberAddress->line2,array('id'=>'subscriber-address-line2'))?>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<dt><label style="padding-top:4px;"><?=__('City')?> </label></dt>
+				<?=$this->formText('subscriber[address][city]',$this->subscriberAddress->city,array('id'=>'subscriber-address-city'))?>
+			</div>
+			<div style="float:left;margin-left:10px;">
+				<dt><label style="padding-top:4px;"><?=__('State')?> </label></dt>
+				<?=$this->formSelect('subscriber[address][state]',$this->subscriberAddress->state,array('id'=>'subscriber-address-state'),Address::getStatesList())?>
+			</div>
+			<br style="clear:left;" />
+			<div style="float:left;">
+				<dt><label style="padding-top:4px;"><?=__('Zip')?> </label></dt>
+				<?=$this->formText('subscriber[address][postalCode]',$this->subscriberAddress->postalCode,array('id'=>'subscriber-address-postalCode'))?>
+			</div>
+		</div>
+	</div>
+	<div id="subscriberDivId1" style="display:none;">Subscriber is self</div>
+	</fieldset>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="<?=$this->form->active->getId()?>" class="optional"><?=__('Active')?> <input type="checkbox" name="activeInput" id="activeInput" value="<?=$this->form->active->getValue()?>" helper="formText"<?=($this->form->active->getValue())?' checked="checked"':''?> style="width:30px;" /></label></dt>
+	<?=$this->form->activeInput('FormHidden')?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->formHidden('id',$this->form->insuredRelationshipId->getValue())?>
+	<?=$this->form->personIdInput('FormHidden')?>
+	<?=$this->form->insuredRelationshipIdInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('btnCancel',__('Cancel'),array('onclick'=>'dhxWins.window("'.$this->form->getWindow().'").close()'))?>
+</div>
+
+<?=$this->form->renderClose()?>
+</div>
+
+<script>
+function insurerSubscriberOnChanged(obj) {
+	if (typeof obj == "undefined") obj = dojo.byId("<?=$this->form->subscriberToPatientRelationship->getId()?>");
+	if (!obj) return;
+	var selIndex = obj.selectedIndex;
+	if (selIndex < 0) return;
+	var subscriberDiv = dojo.byId("subscriberDivId");
+	var subscriberDiv1 = dojo.byId("subscriberDivId1");
+	subscriberDiv.style.display = "";
+	subscriberDiv1.style.display = "none";
+	if (dojo.byId("subscriberPatientNewId").checked) subscriberToggle(false);
+	if ((selIndex+"").toLowerCase() == "self" || (obj.options[selIndex].text+"").toLowerCase() == "self") {
+		dojo.byId("<?=$this->form->subscriberId->getId()?>").value = dojo.byId("<?=$this->form->personId->getId()?>").value;
+		subscriberDiv.style.display = "none";
+		subscriberDiv1.style.display = "";
+		subscriberToggle(true);
+	}
+}
+
+function preSubmit<?=$this->form->getId()?>() {
+	var activeInput = dojo.byId("activeInput");
+	var val = (activeInput.checked)?1:0;
+	var activeHiddenInput = dojo.byId("<?=$this->form->active->getId()?>");
+	activeHiddenInput.value = val;
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+	pdInsurersGridReload();
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+
+var pscb = dijit.byId("q");
+if (pscb != undefined) { 
+	pscb.destroyRecursive();
+	pscb = null;
+}
+var psac = new dojox.data.QueryReadStore({
+	url:"<?=$this->baseUrl?>/patient.raw/subscriber-auto-complete",
+	requestMethod:"get"
+},"q");
+pscb = new dijit.form.ComboBox({
+	name:"q",
+	autocomplete:false,
+	store:psac,
+	hasDownArrow:false,
+	searchDelay:500,
+	value:""
+},"q");
+pscb.domNode.style.width = "150px";
+dojo.connect(pscb,"onChange",function(arg){
+	var subscriber = dojo.byId("<?=$this->form->subscriberId->getId()?>");
+	subscriber.value = "";
+	if (!this.item) return;
+	subscriber.value = this.item.i.label; // .name == arg
+	dojo.xhrGet({
+		url: "<?=$this->baseUrl?>/patient.raw/get-details",
+		handleAs: "json",
+		content: {
+			"personId": subscriber.value,
+		},
+		load: function(data) {
+			if (!data) return;
+			dojo.byId("<?=$this->form->formSubscriber->firstName->getId()?>").value = data.person.first_name;
+			dojo.byId("<?=$this->form->formSubscriber->lastName->getId()?>").value = data.person.last_name;
+			dojo.byId("<?=$this->form->formSubscriber->identifier->getId()?>").value = data.person.identifier;
+			dojo.byId("<?=$this->form->formSubscriber->dateOfBirth->getId()?>").value = data.person.date_of_birth;
+			dojo.byId("<?=$this->form->formSubscriber->gender->getId()?>").value = data.person.gender;
+			dojo.byId("subscriber-phoneId").value = data.phoneNumber.number_id;
+			dojo.byId("subscriber-phone").value = data.phoneNumber.number;
+			dojo.byId("subscriber-address-addressId").value = data.address.address_id;
+			dojo.byId("subscriber-address-line1").value = data.address.line1;
+			dojo.byId("subscriber-address-line2").value = data.address.line2;
+			dojo.byId("subscriber-address-city").value = data.address.city;
+			dojo.byId("subscriber-address-state").value = data.address.state;
+			dojo.byId("subscriber-address-postalCode").value = data.address.postal_code;
+			return data;
+		},
+		error: function(response,ioArgs) {
+			console.error("HTTP status code: ", ioArgs.xhr.status);
+			return response;
+		}
+	});
+});
+
+function subscriberPatientSearch() {
+	subscriberToggle(true);
+}
+
+function subscriberPatientNew() {
+	subscriberToggle(false);
+}
+
+function subscriberToggle(search) {
+	var state = false;
+	if (search) state = true;
+	dojo.byId("q").disabled = !state;
+
+	dojo.byId("<?=$this->form->formSubscriber->firstName->getId()?>").disabled = state;
+	dojo.byId("<?=$this->form->formSubscriber->lastName->getId()?>").disabled = state;
+	dojo.byId("<?=$this->form->formSubscriber->identifier->getId()?>").disabled = state;
+	dojo.byId("<?=$this->form->formSubscriber->identifierType->getId()?>").disabled = state;
+	dojo.byId("<?=$this->form->formSubscriber->dateOfBirth->getId()?>").disabled = state;
+	boxInsurerSubscriberDateOfBirth.setDisabled(state);
+	dojo.byId("<?=$this->form->formSubscriber->gender->getId()?>").disabled = state;
+	dojo.byId("subscriber-phone").disabled = state;
+	dojo.byId("subscriber-address-line1").disabled = state;
+	dojo.byId("subscriber-address-line2").disabled = state;
+	dojo.byId("subscriber-address-city").disabled = state;
+	dojo.byId("subscriber-address-state").disabled = state;
+	dojo.byId("subscriber-address-postalCode").disabled = state;
+}
+
+subscriberToggle(true);
+insurerSubscriberOnChanged();
+</script>
+

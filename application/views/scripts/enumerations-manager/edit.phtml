@@ -1,0 +1,118 @@
+
+<div style="width:300px;">
+<?if ($this->message) :?>
+<div style="background-color:PaleGreen; width:100%;">
+<?=$this->message?>
+</div>
+<?endif;?>
+
+<?=$this->form->renderOpen()?>
+<fieldset><legend><?=__("Enumeration Information")?></legend>
+
+<div style="margin-left:10px;">
+<?foreach ($this->form->getErrorMessages() as $error) {?>
+<?=$error?>
+<?}?>
+</div>
+
+<div class="formRow" style="padding-top:4px;">
+<?//if (isset($this->parent) && !strlen($this->form->category->getValue()) > 0):?>
+<?if (isset($this->parent)):?>
+	<dt><label for="enumeration-parent" class="optional">Parent</label></dt>
+	<dt><strong><?=$this->parent->name?></strong></dt>
+	<input type="hidden" name="parentId" value="<?=$this->parent->enumerationId?>" />
+<?else:
+	$categories = $this->categoryIterator->toArray('category','category');
+	$categories[''] = '';
+	$categories['System'] = "System";
+	$categories['User'] = "User";
+	echo $this->form->category->renderLabel();
+	echo $this->form->categoryInput('FormSelect',array("options" => $categories));
+endif;?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->guid->renderLabel()?>
+	<?$this->form->guid->setAttrib('size',35)?>
+	<?=$this->form->guidInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->key->renderLabel()?>
+	<?$this->form->key->setAttrib('size',35)?>
+	<?=$this->form->keyInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->name->renderLabel()?>
+	<?$this->form->name->setAttrib('size',35)?>
+	<?=$this->form->nameInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->ormClass->renderLabel()?>
+	<?$this->form->ormClass->setAttrib('size',35);
+	if ($this->ormClass !== null) {
+		$this->form->ormClass->setValue($this->ormClass);
+		$this->form->ormClass->setAttrib('readonly',true);
+	}
+	?>
+	<?=$this->form->ormClassInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<dt><label for="enumeration-ormClass" class="optional">Orm Id</label></dt>
+	<?$this->form->ormId->setAttrib('size',35)?>
+	<?=$this->form->ormIdInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->ormEditMethod->renderLabel()?>
+	<?$this->form->ormEditMethod->setAttrib('size',35)?>
+	<?=$this->form->ormEditMethodInput()?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->active->renderLabel()?>
+	<?$this->form->active->setAttrib('size',35)?>
+	<?=$this->form->activeInput('FormCheckbox',array('checked' => (int)$this->form->active->getValue()))?>
+</div>
+<br style="clear:left;" />
+<div class="formRow" style="padding-top:4px;">
+	<?=$this->form->enumerationIdInput('FormHidden')?>
+	<?=$this->form->okInput()?>
+	<?=$this->formButton('cancel',__('Cancel'),array('onClick'=>'dhxWins.window(\''.$this->form->getWindow().'\').close()'))?>
+</div>
+
+</fieldset>
+
+<script>
+function preSubmit<?=$this->form->getId()?>() {
+	dojo.byId("<?=$this->form->active->getId()?>").value = "1";
+	dojo.byId("<?=$this->form->ormClass->getId()?>").readOnly = false;
+	return true;
+}
+
+function postSubmit<?=$this->form->getId()?>(data) {
+<?if (strlen($this->grid) > 0):?>
+	var jsonData = dojo.fromJson(data);
+	if (<?=$this->grid?>) {
+		if (!<?=$this->grid?>.doesRowExist(jsonData.id)) {
+			<?=$this->grid?>.addRow(jsonData.id,"",0,jsonData.parentId);
+		}
+		<?=$this->grid?>.renderRowData(jsonData);
+		if (jsonData.parentId) {
+			<?=$this->grid?>.openItem(jsonData.parentId);
+		}
+	}
+<?else:?>
+	enumUpdateListGrid();
+<?endif;?>
+	dhxWins.window("<?=$this->form->getWindow()?>").close();
+	return false;
+}
+</script>
+
+<?=$this->form->renderClose()?>
+</div>
+

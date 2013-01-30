@@ -1,0 +1,74 @@
+<fieldset><legend><?=__('Outbound Fax')?></legend>
+	<div class="formRow">
+		<?=__('Date Faxed')?>: <?=$this->messaging->dateStatus?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Status')?>: <?=$this->messaging->status?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Note')?>: <?=$this->messaging->note?>
+	</div>
+	<br style="clear:left" />
+	<div class="formRow">
+		<strong>
+		<?if($this->messaging->finalDisposition > 0) {
+			if ($this->messaging->faxStatus == 0) {
+				echo __('Fax successfully received');
+			}
+			else {
+				echo $this->messaging->faxStatusDescription;
+			}
+		}
+		else {
+			echo __('Fax final disposition not yet received');
+		}?>
+		</strong>
+	</div>
+	<br style="clear:left" />
+	<br style="clear:left" />
+	<div class="formRow">
+		<?=__('Fax Number')?>: <?=$this->formText('faxNumber',null,array('id'=>'fax-number'))?>
+		<?=$this->formButton('resend',__('Resend'),array('onClick'=>'outboundFaxResend()'))?>
+	</div>
+</fieldset>
+<script>
+function outboundFaxChangeNumber() {
+	var faxNumber = dojo.byId("fax-number").value;
+	var validFaxNumber = parseInt(faxNumber,10);
+	if (faxNumber != validFaxNumber) {
+		alert("<?=__('Invalid fax number')?>");
+		return false;
+	}
+	else if (faxNumber.length < 10) {
+		alert("<?=__('Fax number must be 10 digit or more')?>");
+		return false;
+	}
+	return faxNumber;
+}
+
+function outboundFaxResend() {
+	var faxNumber = outboundFaxChangeNumber();
+	if (!faxNumber) {
+		faxNumber = "";
+	}
+	dojo.xhrPost({
+		url: "<?=$this->baseUrl?>/messaging.raw/process-resend-outbound-fax",
+		handleAs: "json",
+		content: {
+			"messagingId": "<?=$this->messaging->messagingId?>",
+			"faxNumber": faxNumber,
+		},
+		load: function (data) {
+			//alert(data.msg);
+			winNoteId.close();
+			winMessagingInboundId.close();
+		},
+		error: function (error) {
+			alert(error);
+			console.error ("Error: ", error);
+		}
+	});
+}
+</script>

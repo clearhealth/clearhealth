@@ -1,0 +1,20 @@
+<?='<?xml version="1.0" ?>'?>
+<menu id="0">
+<?switch ($this->type) {
+	case 'lab-results':
+		echo '
+	<!--<item text="'.__('Add').'" img="" id="add"/>-->
+	<item text="'.__('Delete').'" img="" id="delete"/>';
+		break;
+	default:
+		echo '
+	<item text="'.__('Discontinue').'" img="" id="discontinue"/>
+	<item text="'.__('Copy').'" img="" id="copy"/>
+	<item text="'.__('View Details').'" img="" id="viewDetails"/>
+	<item text="'.__('Release').'" img="" id="release"/>
+	<item text="'.__('Unrelease').'" img="" id="unrelease"/>
+	<item text="'.__('Enter Lab Results').'" img="" id="labResults"/>';
+		break;
+	}
+?>
+</menu>
